@@ -1,0 +1,32 @@
+name: GetCandy Core Tests
+on:
+  pull_request:
+jobs:
+  run:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: ['ubuntu-latest']
+        php-versions: ['8.1']
+        phpunit-versions: ['latest']
+        include:
+        - operating-system: 'ubuntu-latest'
+          php-versions: '8.0'
+          phpunit-versions: '8.5.21'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        extensions: mbstring, intl, amqp, dba
+        ini-values: post_max_size=256M, max_execution_time=180
+        tools: phpunit:${{ matrix.phpunit-versions }}
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      env:
+        APP_ENV: testing
+        DB_CONNECTION: testing
+        DB_DATABASE: ":memory:"
+      run: vendor/bin/phpunit
