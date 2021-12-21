@@ -1,0 +1,387 @@
+<?php
+
+namespace GetCandy\Hub\Http\Livewire\Components\Collections;
+
+use GetCandy\FieldTypes\TranslatedText;
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Jobs\Collections\RebuildCollectionTree;
+use GetCandy\Models\Collection;
+use GetCandy\Models\CollectionGroup;
+use GetCandy\Models\Language;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Livewire\Component;
+
+class CollectionGroupShow extends Component
+{
+    use Notifies;
+
+    /**
+     * The current collection group.
+     *
+     * @var CollectionGroup
+     */
+    public CollectionGroup $group;
+
+    /**
+     * The new collection we're making.
+     *
+     * @var array
+     */
+    public $collection = null;
+
+    /**
+     * Show confirmation if we want to delete the group.
+     *
+     * @var bool
+     */
+    public bool $showDeleteConfirm = false;
+
+    /**
+     * The ID of the collection we want to remove.
+     *
+     * @var int
+     */
+    public $collectionToRemoveId = null;
+
+    /**
+     * Whether we should show the create form.
+     *
+     * @var bool
+     */
+    public $showCreateForm = false;
+
+    /**
+     * The new collection to creates parent.
+     *
+     * @var mixed
+     */
+    public $newCollectionParent = null;
+
+    /**
+     * Whether we should be showing search results.
+     *
+     * @var bool
+     */
+    public $showCollectionSearchResults = true;
+
+    /**
+     * The collections we want to move.
+     *
+     * @var array
+     */
+    public $collectionMove = [
+        'source' => null,
+        'target' => null,
+    ];
+
+    /**
+     * Search term for searching collections.
+     *
+     * @var string
+     */
+    public $searchTerm = null;
+
+    /**
+     * Return the validation rules.
+     *
+     * @return void
+     */
+    public function rules()
+    {
+        return [
+            'group.name' => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
+            'collection.name' => 'required|string|max:255',
+        ];
+    }
+
+    /**
+     * Watcher for when the group name is updated.
+     *
+     * @return void
+     */
+    public function updatedGroupName()
+    {
+        $this->validateOnly('group.name');
+        $this->group->handle = Str::slug($this->group->name);
+        $this->group->save();
+        $this->notify(__('adminhub::notifications.collection-groups.updated'));
+    }
+
+    /**
+     * Called when component is dehydrated.
+     *
+     * @return void
+     */
+    public function dehydrate()
+    {
+        $this->group->unsetRelations();
+    }
+
+    /**
+     * Add a collection ready for saving.
+     *
+     * @param  string  $parent
+     * @return void
+     */
+    public function addCollection($parent = null)
+    {
+        $this->newCollectionParent = $parent;
+        $this->showCreateForm = true;
+    }
+
+    /**
+     * Delete the collection group.
+     *
+     * @return void
+     */
+    public function deleteGroup()
+    {
+        $this->showDeleteConfirm = false;
+        DB::transaction(function () {
+            foreach ($this->group->collections as $collection) {
+                $collection->products()->detach();
+                $collection->customerGroups()->detach();
+                $collection->channels()->detach();
+                $collection->forceDelete();
+            }
+            $this->group->forceDelete();
+        });
+
+        $this->notify(__('adminhub::notifications.collection-groups.deleted'), 'hub.collection-groups.index');
+    }
+
+    /**
+     * Move a collection to the root of the tree.
+     *
+     * @param  string|int  $id
+     * @return void
+     */
+    public function moveToRoot($id)
+    {
+        $collection = Collection::find($id);
+
+        $collection->makeRoot()->save();
+
+        $this->notify(__('adminhub::notifications.collections.moved_root'));
+    }
+
+    /**
+     * Move a collection.
+     *
+     * @return void
+     */
+    public function moveCollection()
+    {
+        if ($this->targetCollection) {
+            $this->targetCollection->appendNode($this->sourceCollection);
+        } else {
+            $this->sourceCollection->makeRoot()->save();
+        }
+
+        $this->searchTerm = null;
+        $this->showCollectionSearchResults = true;
+
+        $this->notify(
+            __('adminhub::notifications.collections.moved_child', [
+                'target' => $this->targetCollection->translateAttribute('name'),
+            ])
+        );
+
+        $this->collectionMove = [
+            'source' => null,
+            'target' => null,
+        ];
+    }
+
+    /**
+     * Listener for when search term updates.
+     *
+     * @return void
+     */
+    public function updatedSearchTerm()
+    {
+        $this->showCollectionSearchResults = true;
+    }
+
+    /**
+     * Set the target collection to move.
+     *
+     * @param  int  $id
+     * @return void
+     */
+    public function setMoveTarget($id)
+    {
+        $this->collectionMove['target'] = $id;
+        $this->showCollectionSearchResults = false;
+    }
+
+    /**
+     * Get the collection search results.
+     *
+     * @return void
+     */
+    public function getSearchedCollectionsProperty()
+    {
+        if (! $this->searchTerm) {
+            return [];
+        }
+
+        return Collection::search($this->searchTerm)
+            ->get();
+    }
+
+    /**
+     * Get the target collection to move into.
+     *
+     * @return null|\GetCandy\Models\Collection
+     */
+    public function getTargetCollectionProperty()
+    {
+        if (! $this->collectionMove['target']) {
+            return null;
+        }
+
+        return Collection::find($this->collectionMove['target']);
+    }
+
+    /**
+     * Get the source collection we want to move.
+     *
+     * @return null|\GetCandy\Models\Collection
+     */
+    public function getSourceCollectionProperty()
+    {
+        if (! $this->collectionMove['source']) {
+            return null;
+        }
+
+        return Collection::find($this->collectionMove['source']);
+    }
+
+    /**
+     * Delete the collection.
+     *
+     * @return void
+     */
+    public function deleteCollection()
+    {
+        $this->collectionToRemove->delete();
+        $this->collectionToRemoveId = null;
+        $this->notify(
+            __('adminhub::notifications.collections.deleted')
+        );
+    }
+
+    /**
+     * Create the new collection.
+     *
+     * @return void
+     */
+    public function createCollection()
+    {
+        $this->validateOnly('collection.name', null, [
+            'collection.name.required' => __('adminhub::validation.generic_required'),
+        ]);
+
+        Collection::create([
+            'collection_group_id' => $this->group->id,
+            'attribute_data' => collect([
+                'name' => new TranslatedText([
+                    $this->defaultLanguage => $this->collection['name'],
+                ]),
+            ]),
+        ], $this->collectionParent);
+
+        $this->collection = null;
+
+        $this->showCreateForm = false;
+        $this->notify(
+            __('adminhub::notifications.collections.added')
+        );
+    }
+
+    /**
+     * Return the collection tree.
+     *
+     * @return \Kalnoy\Nestedset\Collection
+     */
+    public function getCollectionTree()
+    {
+        return $this->group->load('collections')->collections()->defaultOrder()->get()->toTree();
+    }
+
+    /**
+     * Sort the collections.
+     *
+     * @param  array  $payload
+     * @return void
+     */
+    public function sort($payload)
+    {
+        $parent = null;
+
+        $nodes = $payload['items'];
+
+        if ($parentId = ($nodes[0]['parent'] ?? false)) {
+            $parent = Collection::find($parentId);
+        }
+
+        RebuildCollectionTree::dispatch(
+            $nodes,
+            $this->getCollectionTree()->toArray(),
+            $parent
+        );
+
+        $this->notify(
+            __('adminhub::notifications.collections.reordered')
+        );
+    }
+
+    /**
+     * Getter for returning the collection to remove.
+     *
+     * @return \GetCandy\Models\Collection|null
+     */
+    public function getCollectionToRemoveProperty()
+    {
+        return $this->collectionToRemoveId ?
+            Collection::find($this->collectionToRemoveId) :
+            null;
+    }
+
+    /**
+     * Getter for the collection parent.
+     *
+     * @return \GetCandy\Models\Collection|null
+     */
+    public function getCollectionParentProperty()
+    {
+        return $this->newCollectionParent ?
+            Collection::find($this->newCollectionParent) :
+            null;
+    }
+
+    /**
+     * Get the default language code.
+     *
+     * @return void
+     */
+    public function getDefaultLanguageProperty()
+    {
+        return Language::getDefault()->code;
+    }
+
+    /**
+     * Render the livewire component.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function render()
+    {
+        return view('adminhub::livewire.components.collections.collection-groups.show')
+            ->layout('adminhub::layouts.collection-groups', [
+                'title' => __('adminhub::catalogue.collections.index.title'),
+            ]);
+    }
+}

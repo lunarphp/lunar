@@ -1,0 +1,27 @@
+{
+  "name": "admin-hub",
+  "version": "2.0.0",
+  "description": "GetCandy Admin Hub",
+  "main": "index.js",
+  "author": "GetCandy",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "prod": "npm run production",
+    "production": "mix --production"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "laravel-mix": "^6.0.39",
+    "sortablejs": "^1.14.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.4.0",
+    "tailwindcss": "^3.0.2"
+  }
+}

@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+p > code {
+    @apply font-mono;
+    @apply text-sm;
+    @apply bg-gray-100;
+    @apply text-purple-600;
+}
+
+[x-cloak] {
+    display: none;
+}
+/* Add the lines below */
+@layer utilities {
+    .masonry {
+        column-count: 4;
+        column-gap: 1em;
+    }
+    .break-inside {
+        break-inside: avoid;
+    }
+}
+
+.sortable-ghost .sort-item-element {
+    @apply bg-blue-50;
+    @apply text-blue-600;
+    @apply border-blue-300;
+}
