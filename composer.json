@@ -3,6 +3,7 @@
     "description": "GetCandy Admin Hub",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "beta",
     "authors": [
         {
           "name": "GetCandy",
