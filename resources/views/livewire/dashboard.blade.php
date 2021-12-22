@@ -107,48 +107,15 @@
               </tr>
             </thead>
             <tbody>
+              @foreach($this->recentOrders as $order)
               <tr>
-                <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">123456789</a></td>
-                <td class="pt-4 text-sm text-center">Mr Jeff Smith</td>
-                <td class="pt-4 text-sm text-center">3</td>
-                <td class="pt-4 text-sm text-center">5:34pm, 3rd Nov 2021</td>
-                <td class="pt-4 text-sm text-right">$374.22</td>
+                <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">{{ $order->reference }}</a></td>
+                <td class="pt-4 text-sm text-center">{{ $order->billingAddress->full_name }}</td>
+                <td class="pt-4 text-sm text-center">{{ $order->lines_count }}</td>
+                <td class="pt-4 text-sm text-center">{{ $order->placed_at->format('jS F Y h:ma')}}</td>
+                <td class="pt-4 text-sm text-right">{{ $order->total->formatted }}</td>
               </tr>
-              <tr>
-                <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">123456789</a></td>
-                <td class="pt-4 text-sm text-center">Mr Jeff Smith</td>
-                <td class="pt-4 text-sm text-center">3</td>
-                <td class="pt-4 text-sm text-center">5:34pm, 3rd Nov 2021</td>
-                <td class="pt-4 text-sm text-right">$374.22</td>
-              </tr>
-              <tr>
-                <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">123456789</a></td>
-                <td class="pt-4 text-sm text-center">Mr Jeff Smith</td>
-                <td class="pt-4 text-sm text-center">3</td>
-                <td class="pt-4 text-sm text-center">5:34pm, 3rd Nov 2021</td>
-                <td class="pt-4 text-sm text-right">$374.22</td>
-              </tr>
-              <tr>
-                <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">123456789</a></td>
-                <td class="pt-4 text-sm text-center">Mr Jeff Smith</td>
-                <td class="pt-4 text-sm text-center">3</td>
-                <td class="pt-4 text-sm text-center">5:34pm, 3rd Nov 2021</td>
-                <td class="pt-4 text-sm text-right">$374.22</td>
-              </tr>
-              <tr>
-                <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">123456789</a></td>
-                <td class="pt-4 text-sm text-center">Mr Jeff Smith</td>
-                <td class="pt-4 text-sm text-center">3</td>
-                <td class="pt-4 text-sm text-center">5:34pm, 3rd Nov 2021</td>
-                <td class="pt-4 text-sm text-right">$374.22</td>
-              </tr>
-              <tr>
-                <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">123456789</a></td>
-                <td class="pt-4 text-sm text-center">Mr Jeff Smith</td>
-                <td class="pt-4 text-sm text-center">3</td>
-                <td class="pt-4 text-sm text-center">5:34pm, 3rd Nov 2021</td>
-                <td class="pt-4 text-sm text-right">$374.22</td>
-              </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
@@ -157,38 +124,24 @@
         <div class="p-8 bg-white rounded-lg h-96">
           <h3 class="text-lg font-semibold text-gray-900">Top Selling Products</h3>
 
-          <div class="relative flex items-center py-8 space-x-3 bg-white border-b border-slate-100">
-            <div class="flex-shrink-0">
-              <img class="w-24 h-24 rounded-lg" src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+          @foreach($this->topSellingProducts as $product)
+            <div class="relative flex items-center py-8 space-x-3 bg-white border-b border-slate-100">
+              <div class="flex-shrink-0">
+                <img class="w-24 h-24 rounded-lg" src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+              </div>
+              <div class="flex-1 min-w-0">
+                <a href="#" class="focus:outline-none">
+                  <span class="absolute inset-0" aria-hidden="true"></span>
+                  <p class="text-sm font-medium text-gray-900">
+                    {{ $product->purchasable->getDescription() }}
+                  </p>
+                  <p class="text-sm text-gray-500 truncate">
+                    {{ $product->sub_total->formatted }}
+                  </p>
+                </a>
+              </div>
             </div>
-            <div class="flex-1 min-w-0">
-              <a href="#" class="focus:outline-none">
-                <span class="absolute inset-0" aria-hidden="true"></span>
-                <p class="text-sm font-medium text-gray-900">
-                  Nike Shoes Green
-                </p>
-                <p class="text-sm text-gray-500 truncate">
-                  $87.99
-                </p>
-              </a>
-            </div>
-          </div>
-          <div class="relative flex items-center py-8 space-x-3 bg-white border-slate-100">
-            <div class="flex-shrink-0">
-              <img class="w-24 h-24 rounded-lg" src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-            </div>
-            <div class="flex-1 min-w-0">
-              <a href="#" class="focus:outline-none">
-                <span class="absolute inset-0" aria-hidden="true"></span>
-                <p class="text-sm font-medium text-gray-900">
-                  Nike Shoes Pink
-                </p>
-                <p class="text-sm text-gray-500 truncate">
-                  $105.99
-                </p>
-              </a>
-            </div>
-          </div>
+          @endforeach
         </div>
       </div>
     </div>
