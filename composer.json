@@ -36,7 +36,7 @@
         "php": "^8.0",
         "getcandy/core": "^2.0",
         "livewire/livewire": "^2.0",
-        "getcandy/licensing": "^2.0",
+        "getcandy/licensing": "dev-main",
         "livewire-ui/modal": "^1.0"
     },
     "require-dev": {
