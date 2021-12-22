@@ -127,7 +127,7 @@
           </div>
 
           <div class="flex items-center flex-shrink-0 px-4">
-            <img class="w-auto h-8" src="https://getcandy.io/getcandy_logo.svg" alt="Workflow">
+            <img class="w-auto h-8" src="https://getcandy.io/getcandy_logo.svg" alt="GetCandy">
           </div>
           <div class="flex-1 h-0 mt-5 overflow-y-auto">
             <nav class="px-2 space-y-1">
