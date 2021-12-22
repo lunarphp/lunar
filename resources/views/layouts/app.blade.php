@@ -176,7 +176,7 @@
           <!-- Sidebar component, swap this element with another sidebar if you like -->
           <div class="flex flex-col grow pt-5 pb-4 overflow-y-auto bg-white">
             <div class="flex items-center flex-shrink-0 px-4 mx-4 my-2">
-              <img class="w-auto" src="https://getcandy.io/getcandy_logo.svg" alt="Workflow">
+              <img class="w-auto" src="https://getcandy.io/getcandy_logo.svg" alt="GetCandy">
             </div>
             <div class="flex flex-col grow mt-5">
               <nav class="flex-1 px-2 space-y-1 bg-white">
