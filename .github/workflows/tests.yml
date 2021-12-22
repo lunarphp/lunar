@@ -3,7 +3,7 @@ on:
   pull_request:
 defaults:
   run:
-    working-directory: ./packages/getcandy/admin-hub
+    working-directory: ./
 jobs:
   run:
     runs-on: ${{ matrix.operating-system }}

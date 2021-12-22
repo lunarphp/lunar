@@ -87,13 +87,13 @@ class SidebarMenu
             ->icon('cash');
         });
 
-        $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.customers')
-            )->handle('hub.customers')
-            ->route('hub.index')
-            ->icon('users');
-        });
+        // $slot->addItem(function ($item) {
+        //     $item->name(
+        //         __('adminhub::menu.sidebar.customers')
+        //     )->handle('hub.customers')
+        //     ->route('hub.index')
+        //     ->icon('users');
+        // });
 
         return $this;
     }
