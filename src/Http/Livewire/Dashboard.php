@@ -8,6 +8,8 @@ use Carbon\CarbonPeriod;
 use DateTime;
 use GetCandy\DataTypes\Price;
 use GetCandy\Models\Currency;
+use GetCandy\Models\Customer;
+use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
 use GetCandy\Models\OrderLine;
@@ -108,6 +110,16 @@ class Dashboard extends Component
     }
 
     /**
+     * Return the computed property for default currency.
+     *
+     * @return \GetCandy\Models\Currency
+     */
+    public function getDefaultCurrencyProperty()
+    {
+        return Currency::getDefault();
+    }
+
+    /**
      * Return computed property for order totals.
      *
      * @return \GetCandy\DataTypes\Price
@@ -121,7 +133,7 @@ class Dashboard extends Component
             DB::RAW('SUM(sub_total) as total')
         )->first();
 
-        return new Price($query->total->value, Currency::getDefault(), 1);
+        return new Price($query->total->value, $this->defaultCurrency, 1);
     }
 
     /**
@@ -173,8 +185,6 @@ class Dashboard extends Component
             }
         }
 
-        $currency = Currency::getDefault();
-
         return collect([
             'chart' => [
                 'type' => 'area',
@@ -211,7 +221,7 @@ class Dashboard extends Component
             ],
             'yaxis' => [
                 'title' => [
-                    'text' => "Turnover {$currency->code}",
+                    'text' => "Turnover {$this->defaultCurrency->code}",
                 ],
             ],
             'tooltip' => [
@@ -243,10 +253,9 @@ class Dashboard extends Component
     public function getTopSellingProductsProperty()
     {
         $orderTable = (new Order)->getTable();
-        $orderLinesTable = (new OrderLine)->getTable();
 
         return OrderLine::with(['purchasable'])->select([
-            "{$orderLinesTable}.*",
+            "purchasable_type",
             'purchasable_id',
             DB::RAW('COUNT(*) as count')
         ])->join(
@@ -258,22 +267,76 @@ class Dashboard extends Component
             now()->parse($this->range['from']),
             now()->parse($this->range['to']),
         ])->where('type', '!=', 'shipping')
-        ->groupBy('id', 'purchasable_id')
+        ->groupBy('purchasable_type', 'purchasable_id')
         ->orderBy('count', 'desc')
         ->take(2)->get();
     }
 
-    public function render()
+    /**
+     * Return computed property for customer group orders.
+     *
+     * @return array
+     */
+    public function getCustomerGroupOrdersProperty()
     {
-        $categories = [];
+        $userModel = config('auth.providers.users.model');
 
-        for ($i = 0; $i < 10; $i++) {
-            $categories[] = Carbon::now()->addDays($i)->toDateTimeString();
+        $ordersTable = (new Order)->getTable();
+        $usersTable = (new $userModel)->getTable();
+        $customer = (new Customer);
+        $customersTable = $customer->getTable();
+        $customerUserTable = $customer->users()->getTable();
+        $customerCustomerGroupTable = $customer->customerGroups()->getTable();
+
+        $orders = DB::table($ordersTable, 'o')
+            ->selectRaw("
+                ccg.customer_group_id,
+                count(o.id) as order_count
+            ")->leftJoin(
+                DB::raw("{$usersTable} u"),
+                'o.user_id',
+                '=',
+                'u.id'
+            )->leftJoin(
+                DB::RAW("{$customerUserTable} cu"),
+                'cu.user_id',
+                '=',
+                'u.id'
+            )->leftJoin(
+                DB::RAW("{$customersTable} c"),
+                'cu.customer_id',
+                '=',
+                'c.id'
+            )->leftJoin(
+                DB::RAW("{$customerCustomerGroupTable} ccg"),
+                'c.id',
+                '=',
+                'ccg.customer_id'
+            )->whereBetween('placed_at', [
+                now()->parse($this->range['from']),
+                now()->parse($this->range['to']),
+            ])->groupBy('ccg.customer_group_id')
+            ->get();
+
+        $customerGroups = CustomerGroup::get();
+
+        $labels = $customerGroups->pluck('name')->toArray();
+
+        $series = collect();
+
+        foreach ($customerGroups as $group) {
+            // Find our counts...
+            $data = $orders->filter(function ($row) use ($group) {
+                if ($group->default && !$row->customer_group_id) {
+                    return true;
+                }
+                return $group->id == $row->customer_group_id;
+            });
+
+            $series->push($data->sum('order_count'));
         }
 
-
-        // Customer Group Orders
-        $options2 = collect([
+        return collect([
             'chart' => [
                 'type' => 'donut',
                 'toolbar' => [
@@ -284,14 +347,16 @@ class Dashboard extends Component
             'dataLabels' => [
                 'enabled' => false,
             ],
-            'series' => [104, 55, 13, 33],
-            'labels' => ['Guest', 'Retail', 'Trade', 'Distributor'],
+            'series' => $series->toArray(),
+            'labels' => $labels,
             'legend' => [
                 'position' => 'bottom',
             ],
         ]);
+    }
 
-        return view('adminhub::livewire.dashboard')
-            ->with('options2', $options2);
+    public function render()
+    {
+        return view('adminhub::livewire.dashboard');
     }
 }

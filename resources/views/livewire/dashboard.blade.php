@@ -85,7 +85,7 @@
         <div class="p-4 bg-white rounded-lg h-96">
           <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">Customer Group Orders</h3>
           <div class="h-80">
-            @livewire('hub.components.reporting.apex-chart', ['options' => $options2])
+            @livewire('hub.components.reporting.apex-chart', ['options' => $this->customerGroupOrders])
           </div>
         </div>
       </div>
@@ -127,16 +127,22 @@
           @foreach($this->topSellingProducts as $product)
             <div class="relative flex items-center py-8 space-x-3 bg-white border-b border-slate-100">
               <div class="flex-shrink-0">
-                <img class="w-24 h-24 rounded-lg" src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                @if($thumbnail = $product->purchasable->getThumbnail())
+                  <img class="rounded shadow" src="{{ $thumbnail }}" class="w-24 h-24 rounded-lg" />
+                @else
+                    <x-hub::icon ref="photograph" class="w-24 h-24 text-gray-200 rounded-lg" />
+                @endif
+
               </div>
               <div class="flex-1 min-w-0">
                 <a href="#" class="focus:outline-none">
                   <span class="absolute inset-0" aria-hidden="true"></span>
                   <p class="text-sm font-medium text-gray-900">
                     {{ $product->purchasable->getDescription() }}
+                    <span class="block text-sm">{{ $product->purchasable->getIdentifier() }}</span>
                   </p>
                   <p class="text-sm text-gray-500 truncate">
-                    {{ $product->sub_total->formatted }}
+                    {{ $product->count }} orders
                   </p>
                 </a>
               </div>
