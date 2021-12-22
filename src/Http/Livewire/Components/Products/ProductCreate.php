@@ -5,6 +5,7 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
+use GetCandy\Models\TaxClass;
 
 class ProductCreate extends AbstractProduct
 {
@@ -24,6 +25,7 @@ class ProductCreate extends AbstractProduct
         $this->variantsEnabled = $this->getVariantsCount() > 1;
         $this->variant = new ProductVariant([
             'purchasable' => 'always',
+            'tax_class_id' => TaxClass::first()->id,
             'shippable' => true,
             'stock' => 0,
             'backorder' => 0,
