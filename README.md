@@ -28,7 +28,7 @@ The admin hub is an open source app that allows you to manage all aspects of you
 Install the package via composer.
 
 ```sh
-composer require getcandy/admin-hub
+composer require getcandy/getcandy
 ```
 
 ## Authentication
