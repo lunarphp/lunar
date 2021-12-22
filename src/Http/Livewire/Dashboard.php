@@ -124,6 +124,11 @@ class Dashboard extends Component
         return new Price($query->total->value, Currency::getDefault(), 1);
     }
 
+    /**
+     * Return the computed sales performance property.
+     *
+     * @return array
+     */
     public function getSalesPerformanceProperty()
     {
         $start = now()->parse($this->range['from']);
