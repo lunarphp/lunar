@@ -4,20 +4,188 @@ namespace GetCandy\Hub\Http\Livewire;
 
 use Asantibanez\LivewireCharts\Facades\LivewireCharts;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use DateTime;
+use GetCandy\DataTypes\Price;
+use GetCandy\Models\Currency;
+use GetCandy\Models\Customer;
+use GetCandy\Models\CustomerGroup;
+use GetCandy\Models\Order;
+use GetCandy\Models\OrderAddress;
+use GetCandy\Models\OrderLine;
+use GetCandy\Models\Product;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public function render()
-    {
-        $categories = [];
+    /**
+     * The date range for the dashboard reports.
+     *
+     * @var array
+     */
+    public array $range = [
+        'from' => null,
+        'to' => null
+    ];
 
-        for ($i = 0; $i < 10; $i++) {
-            $categories[] = Carbon::now()->addDays($i)->toDateTimeString();
+    /**
+     * {@inheritDoc}
+     */
+    protected $queryString = ['range'];
+
+    public function mount()
+    {
+        $this->range['from'] = $this->range['from'] ?? now()->startOfWeek()->format('Y-m-d');
+        $this->range['to'] = $this->range['too'] ?? now()->endOfWeek()->format('Y-m-d');
+    }
+
+    public function rules()
+    {
+        return [
+            'range.from' => 'date',
+            'range.to' => 'date,after:range.from',
+        ];
+    }
+    /**
+     * Get the computed property for new products count.
+     *
+     * @return int
+     */
+    public function getNewProductsCountProperty(): int
+    {
+        return Product::whereBetween('created_at', [
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
+        ])->count();
+    }
+
+    /**
+     * Return the computed property for customer percentage.
+     *
+     * @return int|float
+     */
+    public function getReturningCustomersPercentProperty()
+    {
+        $table = (new OrderAddress)->getTable();
+
+        $query = DB::table($table)->where("{$table}.type", '=', 'billing')
+            ->select(
+                DB::RAW("COUNT(*) count"),
+                "{$table}.contact_email"
+            )
+            ->whereBetween("{$table}.created_at", [
+                now()->parse($this->range['from']),
+                now()->parse($this->range['to']),
+            ])->whereNotNull("{$table}.contact_email")
+            ->leftJoin(
+                DB::raw((new OrderAddress)->getTable().' address_join'),
+                'address_join.contact_email',
+                '=',
+                "{$table}.contact_email"
+            )->groupBy("{$table}.id");
+
+        $total = $query->clone()->get()->count();
+
+        $returning = $query->clone()->having('count', '<=', 1)->count();
+
+        if (!$returning) {
+            return 0;
         }
 
-        // Sales Performance
-        $options1 = collect([
+        return round(($returning / $total) * 100, 2);
+    }
+
+    /**
+     * Return computed property for order count.
+     *
+     * @return string
+     */
+    public function getOrderCountProperty()
+    {
+        return number_format(Order::whereBetween('placed_at', [
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
+        ])->count(), 0);
+    }
+
+    /**
+     * Return the computed property for default currency.
+     *
+     * @return \GetCandy\Models\Currency
+     */
+    public function getDefaultCurrencyProperty()
+    {
+        return Currency::getDefault();
+    }
+
+    /**
+     * Return computed property for order totals.
+     *
+     * @return \GetCandy\DataTypes\Price
+     */
+    public function getOrderTotalProperty()
+    {
+        $query = Order::whereBetween('placed_at', [
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
+        ])->select(
+            DB::RAW('SUM(sub_total) as total')
+        )->first();
+
+        return new Price($query->total->value, $this->defaultCurrency, 1);
+    }
+
+    /**
+     * Return the computed sales performance property.
+     *
+     * @return array
+     */
+    public function getSalesPerformanceProperty()
+    {
+        $start = now()->parse($this->range['from']);
+        $end = now()->parse($this->range['to']);
+
+        $thisPeriod = Order::select(
+            DB::RAW('SUM(sub_total) as sub_total'),
+            DB::RAW("DATE_FORMAT(placed_at, '%Y-%m') as format_date")
+        )->whereNotNull('placed_at')
+        ->whereBetween('placed_at', [
+            $start,
+            $end,
+        ])->groupBy('format_date')->get();
+
+        $previousPeriod = Order::select(
+            DB::RAW('SUM(sub_total) as sub_total'),
+            DB::RAW("DATE_FORMAT(placed_at, '%Y-%m') as format_date")
+        )->whereNotNull('placed_at')
+        ->whereBetween('placed_at', [
+            $start->clone()->subYear(),
+            $end->clone()->subYear(),
+        ])->groupBy('format_date')->get();
+
+        $period = CarbonPeriod::create($start, '1 month', $end);
+
+        $thisPeriodMonths = collect();
+        $previousPeriodMonths = collect();
+        $months = collect();
+
+        foreach ($period as $datetime) {
+            $months->push($datetime->toDateTimeString());
+            // Do we have some totals for this month?
+            if ($totals = $thisPeriod->first(fn($p) => $p->format_date == $datetime->format('Y-m'))) {
+                $thisPeriodMonths->push($totals->sub_total->decimal);
+            } else {
+                $thisPeriodMonths->push(0);
+            }
+            if ($prevTotals = $previousPeriod->first(fn($p) => $p->format_date == $datetime->format('Y-m'))) {
+                $previousPeriodMonths->push($prevTotals->sub_total->decimal);
+            } else {
+                $previousPeriodMonths->push(0);
+            }
+        }
+
+        return collect([
             'chart' => [
                 'type' => 'area',
                 'toolbar' => [
@@ -40,20 +208,20 @@ class Dashboard extends Component
             'series' => [
                 [
                     'name' => 'This Period',
-                    'data' => [3000, 4000, 3500, 5000, 4900, 6000, 7000, 9100, 12500, 6300],
+                    'data' => $thisPeriodMonths->toArray(),
                 ],
                 [
                     'name' => 'Previous Period',
-                    'data' => [2000, 3000, 4500, 4000, 2900, 7000, 8000, 4100, 9500, 9400],
+                    'data' => $previousPeriodMonths->toArray(),
                 ],
             ],
             'xaxis' => [
                 'type' => 'datetime',
-                'categories' => $categories,
+                'categories' => $months->toArray(),
             ],
             'yaxis' => [
                 'title' => [
-                    'text' => 'Turnover $ USD',
+                    'text' => "Turnover {$this->defaultCurrency->code}",
                 ],
             ],
             'tooltip' => [
@@ -62,9 +230,113 @@ class Dashboard extends Component
                 ],
             ],
         ]);
+    }
 
-        // Customer Group Orders
-        $options2 = collect([
+    /**
+     * Return the computed property for recent orders.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getRecentOrdersProperty()
+    {
+        return Order::withCount(['lines'])
+            ->orderBy('placed_at', 'desc')
+            ->take(6)
+            ->get();
+    }
+
+    /**
+     * Return the computed property for top selling products.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTopSellingProductsProperty()
+    {
+        $orderTable = (new Order)->getTable();
+
+        return OrderLine::with(['purchasable'])->select([
+            "purchasable_type",
+            'purchasable_id',
+            DB::RAW('COUNT(*) as count')
+        ])->join(
+            $orderTable,
+            'order_id',
+            '=',
+            "{$orderTable}.id"
+        )->whereBetween("{$orderTable}.placed_at", [
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
+        ])->where('type', '!=', 'shipping')
+        ->groupBy('purchasable_type', 'purchasable_id')
+        ->orderBy('count', 'desc')
+        ->take(2)->get();
+    }
+
+    /**
+     * Return computed property for customer group orders.
+     *
+     * @return array
+     */
+    public function getCustomerGroupOrdersProperty()
+    {
+        $userModel = config('auth.providers.users.model');
+
+        $ordersTable = (new Order)->getTable();
+        $usersTable = (new $userModel)->getTable();
+        $customer = (new Customer);
+        $customersTable = $customer->getTable();
+        $customerUserTable = $customer->users()->getTable();
+        $customerCustomerGroupTable = $customer->customerGroups()->getTable();
+
+        $orders = DB::table($ordersTable, 'o')
+            ->selectRaw("
+                ccg.customer_group_id,
+                count(o.id) as order_count
+            ")->leftJoin(
+                DB::raw("{$usersTable} u"),
+                'o.user_id',
+                '=',
+                'u.id'
+            )->leftJoin(
+                DB::RAW("{$customerUserTable} cu"),
+                'cu.user_id',
+                '=',
+                'u.id'
+            )->leftJoin(
+                DB::RAW("{$customersTable} c"),
+                'cu.customer_id',
+                '=',
+                'c.id'
+            )->leftJoin(
+                DB::RAW("{$customerCustomerGroupTable} ccg"),
+                'c.id',
+                '=',
+                'ccg.customer_id'
+            )->whereBetween('placed_at', [
+                now()->parse($this->range['from']),
+                now()->parse($this->range['to']),
+            ])->groupBy('ccg.customer_group_id')
+            ->get();
+
+        $customerGroups = CustomerGroup::get();
+
+        $labels = $customerGroups->pluck('name')->toArray();
+
+        $series = collect();
+
+        foreach ($customerGroups as $group) {
+            // Find our counts...
+            $data = $orders->filter(function ($row) use ($group) {
+                if ($group->default && !$row->customer_group_id) {
+                    return true;
+                }
+                return $group->id == $row->customer_group_id;
+            });
+
+            $series->push($data->sum('order_count'));
+        }
+
+        return collect([
             'chart' => [
                 'type' => 'donut',
                 'toolbar' => [
@@ -75,15 +347,16 @@ class Dashboard extends Component
             'dataLabels' => [
                 'enabled' => false,
             ],
-            'series' => [104, 55, 13, 33],
-            'labels' => ['Guest', 'Retail', 'Trade', 'Distributor'],
+            'series' => $series->toArray(),
+            'labels' => $labels,
             'legend' => [
                 'position' => 'bottom',
             ],
         ]);
+    }
 
-        return view('adminhub::livewire.dashboard')
-            ->with('options1', $options1)
-            ->with('options2', $options2);
+    public function render()
+    {
+        return view('adminhub::livewire.dashboard');
     }
 }
