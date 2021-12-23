@@ -57,8 +57,6 @@ class LoginForm extends Component
     {
         $this->validate();
 
-        $this->loggingIn = true;
-
         $authCheck = Auth::guard('staff')->attempt([
             'email' => $this->email,
             'password' => $this->password,
