@@ -29,7 +29,12 @@
           </x-hub::input.group>
         </div>
         <div>
-          <x-hub::input.group :label="__('adminhub::inputs.unit_quantity.label')" :instructions="__('adminhub::inputs.unit_quantity.instructions')" for="unit_quantity">
+          <x-hub::input.group
+            :label="__('adminhub::inputs.unit_quantity.label')"
+            :instructions="__('adminhub::inputs.unit_quantity.instructions')"
+            :errors="$errors->get('variant.unit_quantity')"
+            for="unit_quantity"
+          >
             <x-hub::input.text type="number" wire:model="variant.unit_quantity" id="unit_quantity" />
           </x-hub::input.group>
         </div>
