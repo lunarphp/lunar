@@ -20,6 +20,21 @@
         </div>
       </div>
 
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <input wire:model="remember" id="remember-me" name="remember-me" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+          <label for="remember-me" class="block ml-2 text-sm text-gray-900">
+            Remember me
+          </label>
+        </div>
+
+        {{-- <div class="text-sm">
+          <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+            Forgot your password?
+          </a>
+        </div> --}}
+      </div>
+
       <div>
         <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           <div wire:loading wire:target="login">
@@ -36,6 +51,7 @@
         </button>
       </div>
     </form>
+
   </div>
   @if (session()->has('error'))
     <!-- This example requires Tailwind CSS v2.0+ -->

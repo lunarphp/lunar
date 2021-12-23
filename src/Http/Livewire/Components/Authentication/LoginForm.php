@@ -22,8 +22,16 @@ class LoginForm extends Component
 
     public $password;
 
+    /**
+     * Whether to set the remember token.
+     *
+     * @var boolean
+     */
+    public $remember = false;
+
     protected $rules = [
         'email' => 'required|email',
+        'remember' => 'nullable',
         'password' => 'required',
     ];
 
@@ -36,7 +44,7 @@ class LoginForm extends Component
         $authCheck = Auth::guard('staff')->attempt([
             'email' => $this->email,
             'password' => $this->password,
-        ]);
+        ], $this->remember);
 
         if ($authCheck) {
             $this->redirectRoute('hub.index');
