@@ -241,7 +241,7 @@ trait HasPrices
                         'id' => $price->id,
                         'currency_id' => $price->currency_id,
                         'price' => $price->price->decimal,
-                        'compare_price' => $price->compare_price?->decimal,
+                        'compare_price' => $price->compare_price->value ? $price->compare_price->decimal : null,
                     ],
                 ];
             });
