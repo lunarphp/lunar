@@ -266,7 +266,10 @@ class CollectionGroupShow extends Component
      */
     public function deleteCollection()
     {
-        $this->collectionToRemove->delete();
+        $this->collectionToRemove->products()->detach();
+        $this->collectionToRemove->customerGroups()->detach();
+        $this->collectionToRemove->channels()->detach();
+        $this->collectionToRemove->forceDelete();
         $this->collectionToRemoveId = null;
         $this->notify(
             __('adminhub::notifications.collections.deleted')
