@@ -47,5 +47,9 @@ Route::group([
         Route::group([
             'prefix' => 'settings',
         ], __DIR__.'/includes/settings.php');
+
+        Route::group([
+            'prefix' => 'customers',
+        ], __DIR__.'/includes/customers.php');
     });
 });
