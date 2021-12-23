@@ -2,16 +2,21 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Authentication;
 
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\ComponentConcerns\PerformsRedirects;
 
 class LoginForm extends Component
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, PerformsRedirects;
 
-    public $loggingIn = false;
+    /**
+     * The current state of the view.
+     *
+     * @var string
+     */
+    public $view = 'login';
 
     public $email;
 
@@ -34,10 +39,8 @@ class LoginForm extends Component
         ]);
 
         if ($authCheck) {
-            return redirect()->route('hub.index');
+            $this->redirectRoute('hub.index');
         }
-
-        $this->loggingIn = false;
 
         session()->flash('error', 'The provided credentials do not match our records.');
     }
