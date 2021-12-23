@@ -13,8 +13,8 @@ return [
     |
     */
     'sku' => [
-        'required' => false,
-        'unique' => false,
+        'required' => true,
+        'unique' => true,
     ],
     'gtin' => [
         'required' => false,
