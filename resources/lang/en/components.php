@@ -9,6 +9,7 @@ return [
     'products.product-selector.selected_tab' => 'Selected options',
     'products.product-selector.selected_empty' => 'Unable to find any options with the given search term.',
     'products.product-selector.no_results' => 'Unable to find any options with the given search term.',
+    'products.product-selector.no_options' => 'There are no options available, create a new option to see it here.',
     'products.product-selector.add_new_btn' => 'Add new option',
     'products.product-selector.use_selected_btn' => 'Use selected options',
     'products.product-selector.title' => 'Select Options',

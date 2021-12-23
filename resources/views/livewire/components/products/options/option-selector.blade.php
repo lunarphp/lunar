@@ -59,7 +59,14 @@
                     @endif
                 </div>
               @empty
-                  {{ __('adminhub::components.products.product-selector.no_results') }}
+                <div class="px-3 py-2 mt-4 text-sm text-gray-500 bg-gray-100 rounded">
+                  @if(!$searchTerm)
+                    {{ __('adminhub::components.products.product-selector.no_options') }}
+                  @else
+                    {{ __('adminhub::components.products.product-selector.no_results') }}
+                  @endif
+
+                </div>
               @endforelse
           </div>
         </div>
