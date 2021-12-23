@@ -28,6 +28,7 @@ class ProductCreate extends AbstractProduct
             'tax_class_id' => TaxClass::first()->id,
             'shippable' => true,
             'stock' => 0,
+            'unit_quantity' => 1,
             'backorder' => 0,
         ]);
 
