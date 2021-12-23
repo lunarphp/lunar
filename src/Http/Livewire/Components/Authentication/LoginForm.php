@@ -18,8 +18,18 @@ class LoginForm extends Component
      */
     public $view = 'login';
 
+    /**
+     * The staff members email address.
+     *
+     * @var string
+     */
     public $email;
 
+    /**
+     * The staff users password.
+     *
+     * @var string
+     */
     public $password;
 
     /**
@@ -29,12 +39,20 @@ class LoginForm extends Component
      */
     public $remember = false;
 
+    /**
+     * {@inheritDoc}
+     */
     protected $rules = [
         'email' => 'required|email',
         'remember' => 'nullable',
         'password' => 'required',
     ];
 
+    /**
+     * Perform the login
+     *
+     * @return void
+     */
     public function login()
     {
         $this->validate();
@@ -53,6 +71,9 @@ class LoginForm extends Component
         session()->flash('error', 'The provided credentials do not match our records.');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function render()
     {
         return view('adminhub::livewire.components.login-form')
