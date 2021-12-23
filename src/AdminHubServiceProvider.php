@@ -107,7 +107,7 @@ class AdminHubServiceProvider extends ServiceProvider
             collect($this->configFiles)->each(function ($config) {
                 $this->publishes([
                     "{$this->root}/config/$config.php" => config_path("getcandy-hub/$config.php"),
-                ], 'getcandyhub');
+                ], 'getcandy');
             });
 
             $this->commands([
