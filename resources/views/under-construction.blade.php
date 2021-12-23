@@ -6,7 +6,7 @@
     <div class="mt-12">
       <span class="text-lg font-bold text-gray-600 uppercase">Under Construction</span>
       <div class="mt-6 space-y-1 text-gray-500">
-        <p>We're currently building this part of the hub out, please bear with us!</p>
+        <p>We're currently building this part of the hub, please bear with us!</p>
         <p>Feel free to reach out on our <a href="https://discord.gg/uW7f6k76" class="text-indigo-500 hover:underline">Discord server</a> for updates.</p>
       </div>
     </div>
