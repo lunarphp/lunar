@@ -53,6 +53,16 @@ abstract class AbstractStaff extends Component
     }
 
     /**
+     * Listener for when password confirmation is updated.
+     *
+     * @return void
+     */
+    public function updatedPasswordConfirmation()
+    {
+        $this->validateOnly('password');
+    }
+
+    /**
      * Toggle whether the staff member is an admin.
      *
      * @return void

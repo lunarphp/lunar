@@ -34,7 +34,7 @@
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-12 md:col-span-6">
             <strong>{{ __('adminhub::inputs.danger_zone.label', ['model' => 'language']) }}</strong>
-            <p class="text-xs text-gray-600">{{ __('adminhub::inputs.danger_zone.instructions', ['model' => 'language']) }}</p>
+            <p class="text-xs text-gray-600">{{ __('adminhub::inputs.danger_zone.instructions', ['attribute' => 'name', 'model' => 'language']) }}</p>
           </div>
           <div class="col-span-9 lg:col-span-4">
             <x-hub::input.text wire:model="deleteConfirm" />

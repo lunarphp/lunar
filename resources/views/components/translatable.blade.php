@@ -1,6 +1,7 @@
 <div
   x-data="{ showTranslations: {{ $expanded ? 'true' : 'false' }} }"
   >
+    @if($languages->count())
     <div class="absolute top-0 left-0 -ml-10 -mt-7">
         <button
           @click.prevent="showTranslations = !showTranslations"
@@ -9,6 +10,7 @@
           <x-hub::icon ref="translate" class="w-3 h-4" />
         </button>
     </div>
+    @endif
     <div class="flex items-center">
       <div  x-show="showTranslations" x-cloak>
         <span class="p-2 pr-3 text-xs text-gray-600 uppercase bg-gray-100 border rounded-l border-r-none">
@@ -19,6 +21,7 @@
         {{ $slot }}
       </div>
     </div>
+    @if($languages->count())
     <div class="pb-2 mt-2 space-y-2" x-show="showTranslations" x-cloak>
       @foreach($languages as $language)
         @if(${"{$language->code}"} ?? null)
@@ -35,4 +38,5 @@
         @endif
       @endforeach
     </div>
+    @endif
 </div>

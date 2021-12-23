@@ -34,8 +34,13 @@
         </div>
 
         <div class="space-y-4" x-show="tab == 'search'">
-          <div>
+          <div class="flex">
             <x-hub::input.text wire:model.debounce.300ms="searchTerm" />
+            <div class="w-1/3 text-right">
+              <x-hub::button type="button" wire:click.prevent="$set('createPanelVisible', true)" theme="green">
+                {{ __('adminhub::components.products.product-selector.add_new_btn') }}
+              </x-hub::button>
+            </div>
           </div>
           <div class="space-y-2">
             @forelse($this->options as $option)
@@ -59,7 +64,14 @@
                     @endif
                 </div>
               @empty
-                  {{ __('adminhub::components.products.product-selector.no_results') }}
+                <div class="px-3 py-2 mt-4 text-sm text-gray-500 bg-gray-100 rounded">
+                  @if(!$searchTerm)
+                    {{ __('adminhub::components.products.product-selector.no_options') }}
+                  @else
+                    {{ __('adminhub::components.products.product-selector.no_results') }}
+                  @endif
+
+                </div>
               @endforelse
           </div>
         </div>
@@ -87,9 +99,7 @@
       </div>
 
       <x-slot name="footer">
-        <x-hub::button type="button" wire:click.prevent="$set('createPanelVisible', true)" theme="green">
-          {{ __('adminhub::components.products.product-selector.add_new_btn') }}
-        </x-hub::button>
+
         <x-hub::button type="submit" wire:click.prevent="submitOptions" :disabled="!$this->selectedModels->count()">
           {{ __('adminhub::components.products.product-selector.use_selected_btn') }}
         </x-hub::button>
