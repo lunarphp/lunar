@@ -9,8 +9,8 @@
       </x-hub::input.group>
     </div>
 
-    <x-hub::input.group label="{{ __('adminhub::inputs.email') }}" for="email" :error="$errors->first('user.email')">
-      <x-hub::input.text wire:model="staff.email" type="email" name="email" id="email" :error="$errors->first('user.email')" />
+    <x-hub::input.group label="{{ __('adminhub::inputs.email') }}" for="email" :error="$errors->first('staff.email')">
+      <x-hub::input.text wire:model="staff.email" type="email" name="email" id="email" :error="$errors->first('staff.email')" />
     </x-hub::input.group>
 
     <div class="grid grid-cols-2 gap-4">
