@@ -83,7 +83,7 @@ class Dashboard extends Component
                 'address_join.contact_email',
                 '=',
                 "{$table}.contact_email"
-            )->groupBy("{$table}.id");
+            )->groupBy("{$table}.id","{$table}.contact_email"); 
 
         $total = $query->clone()->get()->count();
 
