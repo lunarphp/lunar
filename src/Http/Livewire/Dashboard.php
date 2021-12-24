@@ -71,7 +71,7 @@ class Dashboard extends Component
 
         $query = DB::table($table)->where("{$table}.type", '=', 'billing')
             ->select(
-                DB::RAW("COUNT(*) count"),
+                DB::RAW("COUNT(*) as count"),
                 "{$table}.contact_email"
             )
             ->whereBetween("{$table}.created_at", [
@@ -87,7 +87,7 @@ class Dashboard extends Component
 
         $total = $query->clone()->get()->count();
 
-        $returning = $query->clone()->having('count', '<=', 1)->count();
+        $returning = $query->clone()->having(DB::RAW("COUNT(*)"), '<=', 1)->count();
 
         if (!$returning) {
             return 0;
@@ -148,7 +148,7 @@ class Dashboard extends Component
 
         $thisPeriod = Order::select(
             DB::RAW('SUM(sub_total) as sub_total'),
-            DB::RAW("DATE_FORMAT(placed_at, '%Y-%m') as format_date")
+            db_date('placed_at', '%Y-%m', 'format_date')
         )->whereNotNull('placed_at')
         ->whereBetween('placed_at', [
             $start,
@@ -157,7 +157,7 @@ class Dashboard extends Component
 
         $previousPeriod = Order::select(
             DB::RAW('SUM(sub_total) as sub_total'),
-            DB::RAW("DATE_FORMAT(placed_at, '%Y-%m') as format_date")
+            db_date('placed_at', '%Y-%m', 'format_date')
         )->whereNotNull('placed_at')
         ->whereBetween('placed_at', [
             $start->clone()->subYear(),
