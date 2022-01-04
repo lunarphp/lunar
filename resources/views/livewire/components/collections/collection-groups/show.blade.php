@@ -103,7 +103,7 @@
           @endif
         </x-slot>
         <x-slot name="footer">
-          <x-hub::button type="button" wire:click="moveCollection" :disabled="!$this->sourceCollection && !$this->targetCollection">
+          <x-hub::button type="button" wire:click="moveCollection" :disabled="!$this->targetCollection">
             {{ __('adminhub::catalogue.collections.groups.move.btn') }}
           </x-hub::button>
         </x-slot>

@@ -228,7 +228,7 @@ class CollectionGroupShow extends Component
         }
 
         return Collection::search($this->searchTerm)
-            ->get();
+            ->get()->filter(fn($collection) => $collection->id != $this->collectionMove['source']);
     }
 
     /**
