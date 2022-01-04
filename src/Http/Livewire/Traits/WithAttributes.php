@@ -38,7 +38,7 @@ trait WithAttributes
 
     protected function mapAttributes()
     {
-        $this->attributeMapping = $this->availableAttributes->map(function ($attribute, $index) {
+        $this->attributeMapping = $this->availableAttributes->mapWithKeys(function ($attribute, $index) {
             $data = $this->attributeData ?
                 $this->attributeData->first(fn ($value, $handle) => $handle == $attribute->handle)
                 : null;
@@ -49,12 +49,12 @@ trait WithAttributes
                 $value = $this->prepareTranslatedText($value);
             }
 
-            return [
+            return [$attribute->id => [
                 'name' => $attribute->translate('name'),
                 'group' => $attribute->attributeGroup->translate('name'),
                 'group_handle' => $attribute->attributeGroup->handle,
                 'id' => $attribute->handle,
-                'signature' => 'attributeMapping.'.$index.'.data',
+                'signature' => 'attributeMapping.'.$attribute->id.'.data',
                 'type' => $attribute->type,
                 'handle' => $attribute->handle,
                 'configuration' => $attribute->configuration,
@@ -63,7 +63,7 @@ trait WithAttributes
                     $attribute->type
                 )),
                 'data' => $value,
-            ];
+            ]];
         });
     }
 
