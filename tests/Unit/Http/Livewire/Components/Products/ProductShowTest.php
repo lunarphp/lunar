@@ -252,10 +252,10 @@ class ProductShowTest extends TestCase
         ]);
 
         // Need some attributes...
-        Attribute::factory()->create([
+        $name = Attribute::factory()->create([
             'handle' => 'name',
         ]);
-        Attribute::factory()->create([
+        $description = Attribute::factory()->create([
             'handle' => 'description',
         ]);
 
@@ -282,8 +282,8 @@ class ProductShowTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product->refresh(),
-            ])->set('attributeMapping.0.data', 'nouseforaname')
-            ->set('attributeMapping.1.data', 'nouseforadescription');
+            ])->set('attributeMapping.'.$name->id.'.data', 'nouseforaname')
+            ->set('attributeMapping.'.$description->id.'.data', 'nouseforadescription');
 
         $component->call('save')->assertHasNoErrors();
 
