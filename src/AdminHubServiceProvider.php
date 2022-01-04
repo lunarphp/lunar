@@ -10,6 +10,7 @@ use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
+use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
@@ -64,7 +65,7 @@ use Livewire\Livewire;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
-    protected $configFiles = ['products'];
+    protected $configFiles = ['products', 'customers'];
 
     protected $root = __DIR__.'/..';
 
@@ -153,6 +154,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerReportingComponents();
         $this->registerSettingsComponents();
         $this->registerOrderComponents();
+        $this->registerCustomerComponents();
 
         // Blade Components
         Blade::componentNamespace('GetCandy\\Hub\\Views\\Components', 'hub');
@@ -186,6 +188,11 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         Livewire::component('hub.components.orders.index', OrdersIndex::class);
         Livewire::component('hub.components.orders.show', OrderShow::class);
+    }
+
+    protected function registerCustomerComponents()
+    {
+        Livewire::component('hub.components.customers.index', CustomersIndex::class);
     }
 
     /**

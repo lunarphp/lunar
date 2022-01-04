@@ -80,4 +80,9 @@ return [
     'product-types.show.delete.disabled_message' => 'You cannot remove a product type that has products attached.',
     'product-types.show.delete.delete_notification' => 'Product type removed',
     'product-types.show.delete.confirm_text' => 'Confirm Deletion',
+    /**
+     * Customers
+     */
+    'customers.index.title' => 'Customers',
+    'customers.index.placeholder' => 'Search customers',
 ];

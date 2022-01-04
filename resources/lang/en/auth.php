@@ -18,4 +18,6 @@ return [
     'permissions.catalogue.products.description' => 'Allow the staff member to edit products.',
     'permissions.catalogue.orders.name' => 'Manage Orders',
     'permissions.catalogue.orders.description' => 'Allow the staff member to manage orders.',
+    'permissions.catalogue.customers.name' => 'Manage Customers',
+    'permissions.catalogue.customers.description' => 'Allow the staff member to manage customers.',
 ];
