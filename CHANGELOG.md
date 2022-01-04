@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed [Issue 19](https://github.com/getcandy/getcandy/issues/19)
 - Fixed [Issue 18](https://github.com/getcandy/getcandy/issues/18), wrong name on Activity Log
 - Fixed [Issue 4](https://github.com/getcandy/getcandy/issues/4)
+- Fixed [Issue 23](https://github.com/getcandy/getcandy/issues/23)
+
+### Changed
+- Removed requirement to specify `staff` guard in `config/auth.php`. This can be safely removed.
+
 
 ## 2.0-beta4 - 2021-12-24
 ### Fixed
