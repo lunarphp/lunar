@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Fixed [Issue 19](https://github.com/getcandy/getcandy/issues/19)
+
 ## 2.0-beta4 - 2021-12-24
 ### Fixed
 - Fixed group by statement on dashboard query by [@itcyborg](https://github.com/itcyborg)
