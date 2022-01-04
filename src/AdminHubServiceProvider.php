@@ -99,6 +99,7 @@ class AdminHubServiceProvider extends ServiceProvider
         });
 
         $this->registerLivewireComponents();
+        $this->registerAuthGuard();
         $this->registerPermissionManifest();
         $this->registerPublishables();
 
@@ -291,6 +292,18 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/getcandy/admin-hub/'),
         ], 'getcandy:hub:public');
+    }
+
+    /**
+     * Register our auth guard.
+     *
+     * @return void
+     */
+    protected function registerAuthGuard()
+    {
+        $this->app['config']->set('auth.guards.staff', [
+            'driver' => 'getcandyhub',
+        ]);
     }
 
     /**
