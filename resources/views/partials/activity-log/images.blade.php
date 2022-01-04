@@ -15,7 +15,7 @@
       <div class="flex-1 min-w-0">
         <div>
           <div class="text-sm">
-            <a href="#" class="font-medium text-gray-900">Alec Ritson</a>
+            <a href="#" class="font-medium text-gray-900">{{ $batch->first()->causer->fullName }}</a>
           </div>
           <p class="mt-0.5 text-sm text-gray-500">
             {{ __('adminhub::partials.activity-log.added_images.description', ['count' => $batch->count()]) }} {{ $batch->first()->created_at->diffForHumans() }}
