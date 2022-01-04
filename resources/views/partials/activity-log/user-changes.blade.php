@@ -15,7 +15,7 @@
           <div class="flex-1 min-w-0">
             <div>
               <div class="text-sm">
-                <a href="#" class="font-medium text-gray-900">Alec Ritson</a>
+                <a href="#" class="font-medium text-gray-900">{{ $row->causer->fullName }}</a>
               </div>
               <p class="mt-0.5 text-sm text-gray-500">
                 {{ ucfirst($row->description) }} {{ $row->created_at->diffForHumans() }}
