@@ -42,7 +42,7 @@
                   {{ $price->price->formatted }}
                 </x-hub::table.cell>
                 <x-hub::table.cell>
-                  15 (5)
+                  {{ $variant->stock }} ({{ $variant->backorder }})
                 </x-hub::table.cell>
                 <x-hub::table.cell class="w-3">
                   <a href="{{ route('hub.products.variants.show', [

@@ -158,7 +158,13 @@
         </x-hub::table.cell>
 
         <x-hub::table.cell>
-          {{ $product->sku }}
+          @if($product->variants->count() > 2)
+            <x-hub::tooltip text="{{ $product->variants->pluck('sku')->join(', ') }}" left>
+              Multiple
+            </x-hub::tooltip>
+          @else
+            {{ $product->variants->pluck('sku')->join(', ') }}
+          @endif
         </x-hub::table.cell>
 
         <x-hub::table.cell>
@@ -166,7 +172,7 @@
         </x-hub::table.cell>
 
         <x-hub::table.cell>
-          250
+          {{ $product->variants->sum('stock') }}
         </x-hub::table.cell>
 
         <x-hub::table.cell>

@@ -1,5 +1,9 @@
 <div
-  class="relative flex justify-center"
+  @class([
+    'relative flex',
+    'justify-center' => !$attributes->get('left'),
+    'justify-left' => $attributes->get('left')
+  ])
   x-data="{
     showToolTip: false
   }"
