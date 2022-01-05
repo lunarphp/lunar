@@ -11,6 +11,7 @@ use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
@@ -193,6 +194,7 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerCustomerComponents()
     {
         Livewire::component('hub.components.customers.index', CustomersIndex::class);
+        Livewire::component('hub.components.customers.show', CustomerShow::class);
     }
 
     /**
