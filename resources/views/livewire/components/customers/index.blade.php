@@ -60,7 +60,9 @@
             @endforeach
 
             <x-hub::table.cell>
-              <a href="{{ route('hub.orders.show', $customer->id) }}" class="text-indigo-500 hover:underline">View</a>
+              <a href="{{ route('hub.customers.show', $customer->id) }}" class="text-indigo-500 hover:underline">
+                {{ __('adminhub::global.view') }}
+              </a>
             </x-hub::table.cell>
           </x-hub::table.row>
         @endforeach
