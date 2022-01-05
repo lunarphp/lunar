@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Initial customer listing screen
+- Initial customer editing screen
+
 ### Fixed
 - Fixed [Issue 19](https://github.com/getcandy/getcandy/issues/19)
 - Fixed [Issue 18](https://github.com/getcandy/getcandy/issues/18), wrong name on Activity Log
