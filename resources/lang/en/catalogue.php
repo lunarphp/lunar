@@ -85,4 +85,6 @@ return [
      */
     'customers.index.title' => 'Customers',
     'customers.index.placeholder' => 'Search customers',
+    'customers.show.save_btn' => 'Save Customer',
+    'customers.show.customer_groups_updated' => 'Customer groups updated',
 ];

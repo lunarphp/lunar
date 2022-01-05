@@ -53,4 +53,5 @@ return [
     'company_name' => 'Company Name',
     'vat_no' => 'VAT No.',
     'view' => 'View',
+    'save' => 'Save',
 ];

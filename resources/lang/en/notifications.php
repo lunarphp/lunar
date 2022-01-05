@@ -17,4 +17,5 @@ return [
     'collection-groups.deleted' => 'Collection group deleted',
     'option-values.created' => 'Created option value',
     'product-options.created' => 'Product option created',
+    'customer.updated' => 'Customer Updated',
 ];
