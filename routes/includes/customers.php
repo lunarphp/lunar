@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::group([
     // 'middleware' => 'can:catalogue:manage-customers',
+    'middleware' => 'can:catalogue:manage-customers',
 ], function () {
     Route::get('/', CustomersIndex::class)->name('hub.customers.index');
 });
