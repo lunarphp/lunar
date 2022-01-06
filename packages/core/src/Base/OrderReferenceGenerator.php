@@ -3,7 +3,6 @@
 namespace GetCandy\Base;
 
 use Closure;
-use GetCandy\Base\OrderReferenceGeneratorInterface;
 use GetCandy\Models\Order;
 use Illuminate\Support\Facades\DB;
 
@@ -30,13 +29,13 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
         $month = $order->created_at->format('m');
 
         $latest = Order::select(
-                DB::RAW('MAX(reference) as reference')
-            )->whereYear('created_at', '=', $year)
+            DB::RAW('MAX(reference) as reference')
+        )->whereYear('created_at', '=', $year)
             ->whereMonth('created_at', '=', $month)
             ->where('id', '!=', $order->id)
             ->first();
 
-        if (! $latest || ! $latest->reference) {
+        if (!$latest || !$latest->reference) {
             $increment = 1;
         } else {
             $segments = explode('-', $latest->reference);
@@ -54,7 +53,8 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
     /**
      * Override the current method of generating a reference.
      *
-     * @param  Closure  $callback
+     * @param Closure $callback
+     *
      * @return self
      */
     public function override(Closure $callback)

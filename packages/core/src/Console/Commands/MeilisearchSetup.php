@@ -2,7 +2,6 @@
 
 namespace GetCandy\Console\Commands;
 
-use GetCandy\Addons\Manifest;
 use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use GetCandy\Models\Product;
@@ -53,7 +52,8 @@ class MeilisearchSetup extends Command
 
         // Make sure we have the relevant indexes ready to go.
         foreach ($this->searchables as $searchable) {
-            $indexName = (new $searchable)->searchableAs();
+            $indexName = (new $searchable())->searchableAs();
+
             try {
                 $this->engine->getIndex($indexName);
             } catch (ApiException $e) {
@@ -75,7 +75,7 @@ class MeilisearchSetup extends Command
     protected function setUpOrders()
     {
         $index = $this->engine->getIndex(
-            (new Order)->searchableAs()
+            (new Order())->searchableAs()
         );
 
         $index->updateFilterableAttributes([

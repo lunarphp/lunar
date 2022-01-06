@@ -3,7 +3,6 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Database\Factories\CollectionGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

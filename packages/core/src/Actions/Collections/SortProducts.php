@@ -4,15 +4,15 @@ namespace GetCandy\Actions\Collections;
 
 use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
-use GetCandy\Models\Product;
 
 class SortProducts
 {
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $groups
+     * @param Model                          $owner
+     * @param \Illuminate\Support\Collection $groups
+     *
      * @return void
      */
     public function execute(Collection $collection)

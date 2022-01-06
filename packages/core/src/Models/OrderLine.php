@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OrderLine extends BaseModel
 {
-    use LogsActivity, HasFactory;
+    use LogsActivity;
+    use HasFactory;
 
     /**
      * Return a new factory instance for the model.
@@ -36,14 +37,14 @@ class OrderLine extends BaseModel
      * @var array
      */
     protected $casts = [
-        'unit_quantity' => 'integer',
-        'quantity' => 'integer',
-        'meta' => 'object',
-        'tax_breakdown' => 'object',
-        'sub_total' => Price::class,
-        'tax_total' => Price::class,
+        'unit_quantity'  => 'integer',
+        'quantity'       => 'integer',
+        'meta'           => 'object',
+        'tax_breakdown'  => 'object',
+        'sub_total'      => Price::class,
+        'tax_total'      => Price::class,
         'discount_total' => Price::class,
-        'total' => Price::class,
+        'total'          => Price::class,
     ];
 
     /**

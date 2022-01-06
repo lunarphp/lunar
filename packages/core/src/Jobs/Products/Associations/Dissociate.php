@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\DB;
 
 class Dissociate implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $tries = 1;
 
@@ -41,9 +44,9 @@ class Dissociate implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \GetCandy\Models\Product  $product
-     * @param  mixed  $targets
-     * @param  string  $type
+     * @param \GetCandy\Models\Product $product
+     * @param mixed                    $targets
+     * @param string                   $type
      */
     public function __construct(Product $product, $targets, $type = null)
     {
@@ -51,7 +54,7 @@ class Dissociate implements ShouldQueue
             $targets = collect($targets);
         }
 
-        if (! $targets instanceof Collection) {
+        if (!$targets instanceof Collection) {
             $targets = collect([$targets]);
         }
 

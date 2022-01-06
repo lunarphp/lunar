@@ -2,7 +2,6 @@
 
 namespace GetCandy\Models;
 
-use App\Models\User;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasPersonalDetails;
 use GetCandy\Database\Factories\CustomerFactory;
@@ -11,7 +10,9 @@ use Laravel\Scout\Searchable;
 
 class Customer extends BaseModel
 {
-    use HasFactory, HasPersonalDetails, Searchable;
+    use HasFactory;
+    use HasPersonalDetails;
+    use Searchable;
 
     /**
      * Define the guarded attributes.
@@ -24,7 +25,7 @@ class Customer extends BaseModel
      * {@inheritDoc}
      */
     protected $casts = [
-        'meta' => 'object'
+        'meta' => 'object',
     ];
 
     /**
@@ -47,10 +48,10 @@ class Customer extends BaseModel
         $metaFields = config('getcandy-hub.customers.searchable_meta', []);
 
         $data = [
-            'id' => $this->id,
-            'name' => $this->fullName,
+            'id'           => $this->id,
+            'name'         => $this->fullName,
             'company_name' => $this->company_name,
-            'vat_no' => $this->vat_no,
+            'vat_no'       => $this->vat_no,
         ];
 
         foreach ($metaFields as $field) {

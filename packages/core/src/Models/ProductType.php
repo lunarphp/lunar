@@ -5,9 +5,7 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasAttributes;
 use GetCandy\Database\Factories\ProductTypeFactory;
-use GetCandy\Models\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class ProductType extends BaseModel
 {

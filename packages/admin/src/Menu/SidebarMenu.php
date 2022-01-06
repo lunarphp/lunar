@@ -13,7 +13,7 @@ class SidebarMenu
      */
     public static function make()
     {
-        (new static)
+        (new static())
             ->makeTopLevel()
             ->addSections();
     }

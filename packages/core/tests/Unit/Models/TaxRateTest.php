@@ -2,10 +2,6 @@
 
 namespace GetCandy\Tests\Unit\Models;
 
-use GetCandy\Models\Country;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\State;
-use GetCandy\Models\TaxClass;
 use GetCandy\Models\TaxRate;
 use GetCandy\Models\TaxRateAmount;
 use GetCandy\Models\TaxZone;
@@ -23,13 +19,13 @@ class TaxRateTest extends TestCase
     public function can_make_a_tax_rate()
     {
         $data = [
-            'name' => 'VAT',
+            'name'        => 'VAT',
             'tax_zone_id' => TaxZone::factory()->create()->id,
         ];
 
         $rate = TaxRate::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxRate)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
 
         $this->assertInstanceOf(TaxZone::class, $rate->taxZone);
     }
@@ -38,13 +34,13 @@ class TaxRateTest extends TestCase
     public function tax_rate_can_have_amounts()
     {
         $data = [
-            'name' => 'VAT',
+            'name'        => 'VAT',
             'tax_zone_id' => TaxZone::factory()->create()->id,
         ];
 
         $rate = TaxRate::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxRate)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
 
         $this->assertCount(0, $rate->taxRateAmounts);
 

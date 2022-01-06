@@ -11,19 +11,20 @@ use Laravel\Scout\Searchable;
 
 class Order extends BaseModel
 {
-    use HasFactory, Searchable;
+    use HasFactory;
+    use Searchable;
 
     /**
      * {@inheritDoc}
      */
     protected $casts = [
-        'tax_breakdown' => TaxBreakdown::class,
-        'meta' => 'object',
-        'placed_at' => 'datetime',
-        'sub_total' => Price::class,
+        'tax_breakdown'  => TaxBreakdown::class,
+        'meta'           => 'object',
+        'placed_at'      => 'datetime',
+        'sub_total'      => Price::class,
         'discount_total' => Price::class,
-        'tax_total' => Price::class,
-        'total' => Price::class,
+        'tax_total'      => Price::class,
+        'total'          => Price::class,
     ];
 
     /**
@@ -180,26 +181,26 @@ class Order extends BaseModel
         }
 
         return [
-            'id' => $this->id,
+            'id'        => $this->id,
             'reference' => $this->reference,
-            'status' => $this->status,
-            'charges' => $this->transactions->map(function ($transaction) {
+            'status'    => $this->status,
+            'charges'   => $this->transactions->map(function ($transaction) {
                 return [
                     'reference' => $transaction->reference,
                 ];
             }),
             'addresses' => $this->addresses->map(function ($address) {
                 return [
-                    'postcode' => $address->postcode,
+                    'postcode'   => $address->postcode,
                     'first_name' => $address->first_name,
-                    'last_name' => $address->last_name,
+                    'last_name'  => $address->last_name,
                 ];
             })->toArray(),
             'currency' => $this->currency_code,
-            'lines' => $this->productLines->map(function ($line) {
+            'lines'    => $this->productLines->map(function ($line) {
                 return [
                     'description' => $line->description,
-                    'identifier' => $line->identifier,
+                    'identifier'  => $line->identifier,
                 ];
             })->toArray(),
         ];

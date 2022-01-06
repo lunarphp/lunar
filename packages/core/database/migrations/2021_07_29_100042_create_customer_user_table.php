@@ -19,7 +19,7 @@ class CreateCustomerUserTable extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained($this->prefix.'customers');
             $table->foreignId('user_id')->constrained(
-                (new $userModel)->getTable()
+                (new $userModel())->getTable()
             );
             $table->timestamps();
         });

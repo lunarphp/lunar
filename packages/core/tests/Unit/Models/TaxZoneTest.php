@@ -20,32 +20,32 @@ class TaxZoneTest extends TestCase
     public function can_make_a_tax_zone_class()
     {
         $data = [
-            'name' => 'UK Mainland',
-            'zone_type' => 'state',
+            'name'          => 'UK Mainland',
+            'zone_type'     => 'state',
             'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
+            'active'        => true,
+            'default'       => true,
         ];
 
         TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
     }
 
     /** @test */
     public function tax_zone_can_have_countries()
     {
         $data = [
-            'name' => 'UK Mainland',
-            'zone_type' => 'state',
+            'name'          => 'UK Mainland',
+            'zone_type'     => 'state',
             'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
+            'active'        => true,
+            'default'       => true,
         ];
 
         $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
         $country = Country::factory()->create();
 
@@ -62,16 +62,16 @@ class TaxZoneTest extends TestCase
     public function tax_zone_can_have_states()
     {
         $data = [
-            'name' => 'L.A.',
-            'zone_type' => 'state',
+            'name'          => 'L.A.',
+            'zone_type'     => 'state',
             'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
+            'active'        => true,
+            'default'       => true,
         ];
 
         $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
         $country = Country::factory()->create();
         $state = State::factory()->create([
@@ -91,16 +91,16 @@ class TaxZoneTest extends TestCase
     public function tax_zone_can_have_postcodes()
     {
         $data = [
-            'name' => 'L.A.',
-            'zone_type' => 'state',
+            'name'          => 'L.A.',
+            'zone_type'     => 'state',
             'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
+            'active'        => true,
+            'default'       => true,
         ];
 
         $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
         $country = Country::factory()->create();
 
@@ -108,7 +108,7 @@ class TaxZoneTest extends TestCase
 
         $zone->postcodes()->create([
             'country_id' => $country->id,
-            'postcode' => 12345,
+            'postcode'   => 12345,
         ]);
 
         $this->assertCount(1, $zone->refresh()->postcodes);
@@ -118,16 +118,16 @@ class TaxZoneTest extends TestCase
     public function tax_zone_can_have_customer_groups()
     {
         $data = [
-            'name' => 'L.A.',
-            'zone_type' => 'state',
+            'name'          => 'L.A.',
+            'zone_type'     => 'state',
             'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
+            'active'        => true,
+            'default'       => true,
         ];
 
         $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
         $country = Country::factory()->create();
 

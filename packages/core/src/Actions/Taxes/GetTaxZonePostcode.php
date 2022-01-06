@@ -2,7 +2,6 @@
 
 namespace GetCandy\Actions\Taxes;
 
-use GetCandy\Models\TaxZone;
 use GetCandy\Models\TaxZonePostcode;
 
 class GetTaxZonePostcode
@@ -10,7 +9,8 @@ class GetTaxZonePostcode
     /**
      * Execute the action.
      *
-     * @param  string  $postcode
+     * @param string $postcode
+     *
      * @return null|\GetCandy\Models\TaxZonePostcode
      */
     public function execute($postcode)
@@ -21,19 +21,19 @@ class GetTaxZonePostcode
             return $postcodeZone;
         }
 
-        if (! $postcodeZone) {
+        if (!$postcodeZone) {
             return null;
         }
 
         $match = $postcodeZone->map(function ($pZone) use ($postcode) {
             return [
                 'postcode' => $pZone,
-                'matches' => $this->matchWildcard($pZone->postcode, $postcode),
+                'matches'  => $this->matchWildcard($pZone->postcode, $postcode),
             ];
         })->sort(fn ($current, $next) => $current['matches'] < $next['matches'])->first();
 
         // Give up, use default...
-        if (! $match) {
+        if (!$match) {
             return null;
         }
 
@@ -43,7 +43,8 @@ class GetTaxZonePostcode
     /**
      * Return the zone or zones which match this postcode.
      *
-     * @param  string  $postcode
+     * @param string $postcode
+     *
      * @return \GetCandy\Models\TaxZonePostcode|\Illuminate\Support\Collection
      */
     protected function getZoneMatches($postcode)
@@ -60,8 +61,9 @@ class GetTaxZonePostcode
     /**
      * Match wildcard postcodes and return number of matches.
      *
-     * @param  string  $wildcard
-     * @param  string  $haystack
+     * @param string $wildcard
+     * @param string $haystack
+     *
      * @return int
      */
     private function matchWildcard($wildcard, $haystack)

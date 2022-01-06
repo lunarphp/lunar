@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxZone extends BaseModel
 {
-    use HasFactory, HasDefaultRecord;
+    use HasFactory;
+    use HasDefaultRecord;
 
     /**
      * Return a new factory instance for the model.
@@ -35,7 +36,7 @@ class TaxZone extends BaseModel
      * @var array
      */
     protected $casts = [
-        'active' => 'boolean',
+        'active'  => 'boolean',
         'default' => 'boolean',
     ];
 

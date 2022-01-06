@@ -11,7 +11,7 @@ class NumberTest extends TestCase
     /** @test */
     public function can_set_value()
     {
-        $field = new Number;
+        $field = new Number();
         $field->setValue(12345);
 
         $this->assertEquals(12345, $field->getValue());

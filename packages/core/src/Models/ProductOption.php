@@ -11,7 +11,10 @@ use Laravel\Scout\Searchable;
 
 class ProductOption extends BaseModel
 {
-    use HasFactory, HasMedia, HasTranslations, Searchable;
+    use HasFactory;
+    use HasMedia;
+    use HasTranslations;
+    use Searchable;
 
     /**
      * Get the name of the index associated with the model.
@@ -66,9 +69,10 @@ class ProductOption extends BaseModel
         if (config('scout.driver') == 'mysql') {
             return $this->only(array_keys($this->getAttributes()));
         }
+
         return [
-            'id' => $this->id,
-            'name' => $this->translate('name'),
+            'id'      => $this->id,
+            'name'    => $this->translate('name'),
             'options' => $this->values->map(function ($option) {
                 return $option->translate('name');
             })->toArray(),

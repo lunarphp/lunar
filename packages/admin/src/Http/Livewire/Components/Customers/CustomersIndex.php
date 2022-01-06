@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 
 use GetCandy\Models\Customer;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 

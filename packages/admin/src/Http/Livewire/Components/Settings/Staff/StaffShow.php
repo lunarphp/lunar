@@ -31,11 +31,11 @@ class StaffShow extends AbstractStaff
     {
         return [
             'staffPermissions' => 'array',
-            'staff.email' => 'required|email|unique:'.$this->staff->getTable().',email,'.$this->staff->id,
-            'staff.firstname' => 'string|max:255',
-            'staff.lastname' => 'string|max:255',
-            'staff.admin' => 'nullable|boolean',
-            'password' => 'nullable|min:8|max:255|confirmed',
+            'staff.email'      => 'required|email|unique:'.$this->staff->getTable().',email,'.$this->staff->id,
+            'staff.firstname'  => 'string|max:255',
+            'staff.lastname'   => 'string|max:255',
+            'staff.admin'      => 'nullable|boolean',
+            'password'         => 'nullable|min:8|max:255|confirmed',
         ];
     }
 
@@ -80,7 +80,7 @@ class StaffShow extends AbstractStaff
         $this->validate();
 
         // If we only have one admin, we can't remove it.
-        if (! $this->staff->admin && ! Staff::where('id', '!=', $this->staff->id)->whereAdmin(true)->exists()) {
+        if (!$this->staff->admin && !Staff::where('id', '!=', $this->staff->id)->whereAdmin(true)->exists()) {
             $this->notify('You must have at least one admin');
 
             return;

@@ -11,8 +11,9 @@ class SortProductsByPrice
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $groups
+     * @param Model                          $owner
+     * @param \Illuminate\Support\Collection $groups
+     *
      * @return void
      */
     public function execute(Collection $products, Currency $currency, $direction = 'asc')

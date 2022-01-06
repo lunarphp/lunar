@@ -12,8 +12,8 @@ return [
     |
     */
     'draft_status' => 'awaiting-payment',
-    'statuses' => [
+    'statuses'     => [
         'awaiting-payment' => 'Awaiting Payment',
-        'dispatched' => 'Dispatched',
+        'dispatched'       => 'Dispatched',
     ],
 ];

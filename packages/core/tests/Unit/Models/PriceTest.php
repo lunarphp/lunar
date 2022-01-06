@@ -5,7 +5,6 @@ namespace GetCandy\Tests\Unit\Models;
 use GetCandy\DataTypes\Price as DataTypesPrice;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Price;
-use GetCandy\Models\Product;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,20 +23,20 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format' => '£{value}',
+            'format'         => '£{value}',
         ]);
 
         $data = [
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => 123,
-            'tier' => 1,
+            'price'          => 123,
+            'tier'           => 1,
         ];
 
         Price::factory()->create($data);
 
-        $this->assertDatabaseHas((new Price)->getTable(), $data);
+        $this->assertDatabaseHas((new Price())->getTable(), $data);
     }
 
     /** @test */
@@ -47,15 +46,15 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format' => '£{value}',
+            'format'         => '£{value}',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => 123,
-            'tier' => 1,
+            'price'          => 123,
+            'tier'           => 1,
         ]);
 
         $this->assertInstanceOf(DataTypesPrice::class, $price->price);
@@ -68,15 +67,15 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format' => '£{value}',
+            'format'         => '£{value}',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => 12.99,
-            'tier' => 1,
+            'price'          => 12.99,
+            'tier'           => 1,
         ]);
 
         $this->assertEquals(1299, $price->price->value);
@@ -85,15 +84,15 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 3,
-            'format' => '£{value}',
+            'format'         => '£{value}',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => 12.995,
-            'tier' => 1,
+            'price'          => 12.995,
+            'tier'           => 1,
         ]);
 
         $this->assertEquals(12995, $price->price->value);
@@ -102,15 +101,15 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format' => '£{value}',
+            'format'         => '£{value}',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => 1299,
-            'tier' => 1,
+            'price'          => 1299,
+            'tier'           => 1,
         ]);
 
         $this->assertEquals(1299, $price->price->value);
@@ -119,15 +118,15 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format' => '{value}DK',
+            'format'         => '{value}DK',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => '1,250.95',
-            'tier' => 1,
+            'price'          => '1,250.95',
+            'tier'           => 1,
         ]);
 
         $this->assertEquals(125095, $price->price->value);
@@ -136,15 +135,15 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 3,
-            'format' => '£{value}',
+            'format'         => '£{value}',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => '1,250.955',
-            'tier' => 1,
+            'price'          => '1,250.955',
+            'tier'           => 1,
         ]);
 
         $this->assertEquals(1250955, $price->price->value);
@@ -159,16 +158,16 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format' => '£{value}',
+            'format'         => '£{value}',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id' => $currency->id,
-            'priceable_id' => $variant->id,
+            'currency_id'    => $currency->id,
+            'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price' => 12.99,
-            'compare_price' => 13.99,
-            'tier' => 1,
+            'price'          => 12.99,
+            'compare_price'  => 13.99,
+            'tier'           => 1,
         ]);
 
         $this->assertInstanceOf(DataTypesPrice::class, $price->compare_price);

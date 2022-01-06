@@ -13,7 +13,7 @@ class CreateCartsTable extends Migration
 
             $table->bigIncrements('id');
             $table->foreignId('user_id')->nullable()->constrained(
-                (new $userModel)->getTable()
+                (new $userModel())->getTable()
             );
             $table->foreignId('merged_id')->nullable()->constrained($this->prefix.'carts');
             $table->foreignId('currency_id')->constrained($this->prefix.'currencies');

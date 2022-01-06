@@ -101,17 +101,17 @@ class CartManagerTest extends TestCase
         $purchasable = ProductVariant::factory()->create();
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
+            'priceable_id'   => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 1,
+            'purchasable_id'   => $purchasable->id,
+            'quantity'         => 1,
         ]);
 
         $manager = new CartManager($cart);
@@ -139,17 +139,17 @@ class CartManagerTest extends TestCase
         $purchasable = ProductVariant::factory()->create();
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
+            'priceable_id'   => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 2,
+            'purchasable_id'   => $purchasable->id,
+            'quantity'         => 2,
         ]);
 
         $manager = new CartManager($cart);
@@ -177,17 +177,17 @@ class CartManagerTest extends TestCase
         $purchasable = ProductVariant::factory()->create();
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
+            'priceable_id'   => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 1,
+            'purchasable_id'   => $purchasable->id,
+            'quantity'         => 1,
         ]);
 
         // Modifier will set total to 5000
@@ -352,19 +352,19 @@ class CartManagerTest extends TestCase
         $purchasableB = ProductVariant::factory()->create();
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasableA),
-            'priceable_id' => $purchasableA->id,
+            'priceable_id'   => $purchasableA->id,
         ]);
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasableB),
-            'priceable_id' => $purchasableB->id,
+            'priceable_id'   => $purchasableB->id,
         ]);
 
         $cart->lines()->createMany([
@@ -374,7 +374,7 @@ class CartManagerTest extends TestCase
 
         $newLines = $cart->lines()->get()->map(function ($line) {
             return [
-                'id' => $line->id,
+                'id'       => $line->id,
                 'quantity' => $line->quantity + 1,
             ];
         });
@@ -384,12 +384,12 @@ class CartManagerTest extends TestCase
         $dataCheck = $newLines->map(function ($line) {
             return [
                 'purchasable_type' => ProductVariant::class,
-                'quantity' => (string) $line['quantity'],
+                'quantity'         => (string) $line['quantity'],
             ];
         });
 
         foreach ($dataCheck as $check) {
-            $this->assertDatabaseHas((new CartLine)->getTable(), $check);
+            $this->assertDatabaseHas((new CartLine())->getTable(), $check);
         }
     }
 
@@ -406,19 +406,19 @@ class CartManagerTest extends TestCase
         $purchasableB = ProductVariant::factory()->create();
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasableA),
-            'priceable_id' => $purchasableA->id,
+            'priceable_id'   => $purchasableA->id,
         ]);
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasableB),
-            'priceable_id' => $purchasableB->id,
+            'priceable_id'   => $purchasableB->id,
         ]);
 
         $cart->lines()->createMany([
@@ -448,19 +448,19 @@ class CartManagerTest extends TestCase
         $anotherLine = CartLine::factory()->create();
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasableA),
-            'priceable_id' => $purchasableA->id,
+            'priceable_id'   => $purchasableA->id,
         ]);
 
         PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasableB),
-            'priceable_id' => $purchasableB->id,
+            'priceable_id'   => $purchasableB->id,
         ]);
 
         $cart->lines()->createMany([

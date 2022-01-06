@@ -10,7 +10,6 @@ use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\HasUrls;
 use GetCandy\Database\Factories\CollectionFactory;
-use GetCandy\Models\CustomerGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;

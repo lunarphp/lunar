@@ -5,7 +5,6 @@ namespace GetCandy\Tests\Unit\Models;
 use GetCandy\Models\Channel;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Activitylog\Models\Activity;
 
 class ChannelTest extends TestCase
 {
@@ -15,10 +14,10 @@ class ChannelTest extends TestCase
     public function can_make_a_channel()
     {
         $channel = Channel::factory()->create([
-            'name' => 'Webstore',
-            'handle' => 'webstore',
+            'name'    => 'Webstore',
+            'handle'  => 'webstore',
             'default' => true,
-            'url' => 'http://mystore.test',
+            'url'     => 'http://mystore.test',
         ]);
 
         $this->assertEquals('Webstore', $channel->name);

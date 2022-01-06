@@ -2,12 +2,9 @@
 
 namespace GetCandy\Tests\Unit\Console;
 
-use GetCandy\GetCandyServiceProvider;
 use GetCandy\Models\Country;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -79,15 +76,15 @@ class AddressDataTest extends TestCase
         $this->artisan('getcandy:import:address-data');
 
         $this->assertDatabaseHas('getcandy_countries', [
-            'name' => 'United Kingdom',
-            'iso3' => 'GBR',
-            'iso2' => 'GB',
+            'name'      => 'United Kingdom',
+            'iso3'      => 'GBR',
+            'iso2'      => 'GB',
             'phonecode' => '44',
-            'capital' => 'London',
-            'currency' => 'GBP',
-            'native' => 'United Kingdom',
-            'emoji' => '🇬🇧',
-            'emoji_u' => 'U+1F1EC U+1F1E7',
+            'capital'   => 'London',
+            'currency'  => 'GBP',
+            'native'    => 'United Kingdom',
+            'emoji'     => '🇬🇧',
+            'emoji_u'   => 'U+1F1EC U+1F1E7',
         ]);
 
         $country = Country::first();

@@ -22,12 +22,12 @@ class AddressTest extends TestCase
         $customer = Customer::factory()->create();
 
         $data = [
-            'country_id' => $country->id,
-            'customer_id' => $customer->id,
-            'first_name' => 'Tony',
-            'last_name' => 'Stark',
-            'line_one' => 'Stark Industries Headquarters',
-            'city' => 'Los Angeles',
+            'country_id'       => $country->id,
+            'customer_id'      => $customer->id,
+            'first_name'       => 'Tony',
+            'last_name'        => 'Stark',
+            'line_one'         => 'Stark Industries Headquarters',
+            'city'             => 'Los Angeles',
             'shipping_default' => true,
         ];
 
@@ -43,24 +43,24 @@ class AddressTest extends TestCase
         $customer = Customer::factory()->create();
 
         $data = [
-            'country_id' => $country->id,
-            'customer_id' => $customer->id,
-            'first_name' => 'Tony',
-            'last_name' => 'Stark',
-            'line_one' => 'Stark Industries Headquarters',
-            'line_two' => 'Line Two',
-            'line_three' => 'Line Three',
-            'state' => 'Southern California',
-            'postcode' => 123456,
+            'country_id'            => $country->id,
+            'customer_id'           => $customer->id,
+            'first_name'            => 'Tony',
+            'last_name'             => 'Stark',
+            'line_one'              => 'Stark Industries Headquarters',
+            'line_two'              => 'Line Two',
+            'line_three'            => 'Line Three',
+            'state'                 => 'Southern California',
+            'postcode'              => 123456,
             'delivery_instructions' => 'Pass on to Happy',
-            'contact_email' => 'deliveries@stark.com',
-            'contact_phone' => '123123123',
-            'meta' => [
+            'contact_email'         => 'deliveries@stark.com',
+            'contact_phone'         => '123123123',
+            'meta'                  => [
                 'door_code' => 0000,
             ],
             'shipping_default' => true,
-            'billing_default' => true,
-            'city' => 'Los Angeles',
+            'billing_default'  => true,
+            'city'             => 'Los Angeles',
         ];
 
         $address = Address::create($data);

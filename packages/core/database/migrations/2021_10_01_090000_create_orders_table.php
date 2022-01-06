@@ -12,7 +12,7 @@ class CreateOrdersTable extends Migration
             $userModel = config('auth.providers.users.model');
             $table->bigIncrements('id');
             $table->foreignId('user_id')->nullable()->constrained(
-                (new $userModel)->getTable()
+                (new $userModel())->getTable()
             );
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
             $table->string('status')->index();

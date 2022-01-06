@@ -16,10 +16,10 @@ class AttributeGroupFactory extends Factory
     {
         return [
             'attributable_type' => 'product_type',
-            'name' => collect([
+            'name'              => collect([
                 'en' => $this->faker->name(),
             ]),
-            'handle' => Str::slug($this->faker->name()),
+            'handle'   => Str::slug($this->faker->name()),
             'position' => self::$position++,
         ];
     }

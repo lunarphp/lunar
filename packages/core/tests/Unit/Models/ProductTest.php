@@ -22,8 +22,8 @@ class ProductTest extends TestCase
     public function can_make_a_product()
     {
         $attribute_data = collect([
-            'meta_title' => new \GetCandy\FieldTypes\Text('I like cake'),
-            'pack_qty' => new \GetCandy\FieldTypes\Number(12345),
+            'meta_title'  => new \GetCandy\FieldTypes\Text('I like cake'),
+            'pack_qty'    => new \GetCandy\FieldTypes\Number(12345),
             'description' => new \GetCandy\FieldTypes\TranslatedText(collect([
                 'en' => new \GetCandy\FieldTypes\Text('Blue'),
                 'fr' => new \GetCandy\FieldTypes\Text('Bleu'),
@@ -84,11 +84,11 @@ class ProductTest extends TestCase
         $this->assertDatabaseHas(
             'getcandy_channelables',
             [
-                'channel_id' => $channel->id,
+                'channel_id'       => $channel->id,
                 'channelable_type' => Product::class,
-                'channelable_id' => $product->id,
-                'enabled' => '1',
-                'published_at' => $publishDate->toDateTimeString(),
+                'channelable_id'   => $product->id,
+                'enabled'          => '1',
+                'published_at'     => $publishDate->toDateTimeString(),
             ],
         );
 
@@ -110,9 +110,9 @@ class ProductTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => '1',
-                'ends_at' => null,
+                'enabled'           => 1,
+                'purchasable'       => '1',
+                'ends_at'           => null,
             ],
         );
     }
@@ -133,10 +133,10 @@ class ProductTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 1,
-                'starts_at' => $start,
-                'ends_at' => null,
+                'enabled'           => 1,
+                'purchasable'       => 1,
+                'starts_at'         => $start,
+                'ends_at'           => null,
             ],
         );
 
@@ -148,10 +148,10 @@ class ProductTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 1,
-                'starts_at' => $start,
-                'ends_at' => $end,
+                'enabled'           => 1,
+                'purchasable'       => 1,
+                'starts_at'         => $start,
+                'ends_at'           => $end,
             ],
         );
     }
@@ -167,7 +167,7 @@ class ProductTest extends TestCase
         $end = now();
 
         $product->scheduleCustomerGroup($customerGroup, null, null, [
-            'visible' => 0,
+            'visible'     => 0,
             'purchasable' => 0,
         ]);
 
@@ -175,10 +175,10 @@ class ProductTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 0,
-                'visible' => 0,
-                'ends_at' => null,
+                'enabled'           => 1,
+                'purchasable'       => 0,
+                'visible'           => 0,
+                'ends_at'           => null,
             ],
         );
 
@@ -190,10 +190,10 @@ class ProductTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 1,
-                'starts_at' => $start,
-                'ends_at' => $end,
+                'enabled'           => 1,
+                'purchasable'       => 1,
+                'starts_at'         => $start,
+                'ends_at'           => $end,
             ],
         );
     }
@@ -217,16 +217,16 @@ class ProductTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'visible' => 1,
-                'purchasable' => 1,
-                'ends_at' => $end,
-                'starts_at' => $start,
+                'enabled'           => 1,
+                'visible'           => 1,
+                'purchasable'       => 1,
+                'ends_at'           => $end,
+                'starts_at'         => $start,
             ],
         );
 
         $product->unscheduleCustomerGroup($customerGroup, [
-            'visible' => 0,
+            'visible'     => 0,
             'purchasable' => 0,
         ]);
 
@@ -234,11 +234,11 @@ class ProductTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 0,
-                'starts_at' => null,
-                'ends_at' => null,
-                'purchasable' => 0,
-                'visible' => 0,
+                'enabled'           => 0,
+                'starts_at'         => null,
+                'ends_at'           => null,
+                'purchasable'       => 0,
+                'visible'           => 0,
             ],
         );
     }
@@ -268,7 +268,7 @@ class ProductTest extends TestCase
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'cross-sell',
+            'type'              => 'cross-sell',
         ]);
 
         $this->assertCount(1, $parent->refresh()->associations);
@@ -283,19 +283,19 @@ class ProductTest extends TestCase
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'cross-sell',
+            'type'              => 'cross-sell',
         ]);
 
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'up-sell',
+            'type'              => 'up-sell',
         ]);
 
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'alternate',
+            'type'              => 'alternate',
         ]);
 
         $crossSell = $parent->associations()->crossSell()->get();
@@ -323,7 +323,7 @@ class ProductTest extends TestCase
         ProductAssociation::factory(5)->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'cross-sell',
+            'type'              => 'cross-sell',
         ]);
 
         $this->assertCount(5, $parent->refresh()->associations);
@@ -338,7 +338,7 @@ class ProductTest extends TestCase
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'custom-type',
+            'type'              => 'custom-type',
         ]);
 
         $assoc = $parent->associations()->type('custom-type')->get();
@@ -356,7 +356,7 @@ class ProductTest extends TestCase
         $parent->associations()->create([
             'product_target_id' => $parent->id,
             'product_target_id' => $target->id,
-            'type' => 'custom-type',
+            'type'              => 'custom-type',
         ]);
 
         $assoc = $parent->associations()->type('custom-type')->get();
@@ -402,7 +402,7 @@ class ProductTest extends TestCase
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'cross-sell',
+            'type'              => 'cross-sell',
         ]);
 
         $this->assertCount(1, $parent->refresh()->associations);
@@ -421,13 +421,13 @@ class ProductTest extends TestCase
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'cross-sell',
+            'type'              => 'cross-sell',
         ]);
 
         ProductAssociation::factory()->create([
             'product_parent_id' => $parent,
             'product_target_id' => $target,
-            'type' => 'up-sell',
+            'type'              => 'up-sell',
         ]);
 
         $this->assertCount(2, $parent->refresh()->associations);

@@ -2,8 +2,6 @@
 
 namespace GetCandy\Actions\Collections;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Product;
 use Illuminate\Support\Collection;
 
 class SortProductsBySku
@@ -11,8 +9,9 @@ class SortProductsBySku
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $groups
+     * @param Model                          $owner
+     * @param \Illuminate\Support\Collection $groups
+     *
      * @return void
      */
     public function execute(Collection $products, $direction = 'asc')

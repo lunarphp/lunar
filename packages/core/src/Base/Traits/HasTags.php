@@ -5,8 +5,6 @@ namespace GetCandy\Base\Traits;
 use GetCandy\Jobs\SyncTags;
 use GetCandy\Models\Tag;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 trait HasTags
 {

@@ -2,9 +2,9 @@
 
 namespace GetCandy\Console;
 
-use GetCandy\Models\Attribute;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Hub\Models\Staff;
+use GetCandy\Models\Attribute;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
@@ -47,7 +47,7 @@ class InstallGetCandy extends Command
 
             $this->info('Publishing configuration...');
 
-            if (! $this->configExists('getcandy')) {
+            if (!$this->configExists('getcandy')) {
                 $this->publishConfiguration();
             } else {
                 if ($this->shouldOverwriteConfig()) {
@@ -60,23 +60,23 @@ class InstallGetCandy extends Command
 
             $this->info('Publishing hub assets');
 
-            if (! Country::count()) {
+            if (!Country::count()) {
                 $this->info('Importing countries');
                 $this->call('getcandy:import:address-data');
             }
 
-            if (! Channel::whereDefault(true)->exists()) {
+            if (!Channel::whereDefault(true)->exists()) {
                 $this->info('Setting up default channel');
 
                 Channel::create([
-                    'name' => 'Webstore',
-                    'handle' => 'webstore',
+                    'name'    => 'Webstore',
+                    'handle'  => 'webstore',
                     'default' => true,
-                    'url' => 'localhost',
+                    'url'     => 'localhost',
                 ]);
             }
 
-            if (! Staff::whereAdmin(true)->exists()) {
+            if (!Staff::whereAdmin(true)->exists()) {
                 $this->info('Create an admin user');
 
                 $firstname = $this->ask('Whats your first name?');
@@ -86,45 +86,45 @@ class InstallGetCandy extends Command
 
                 Staff::create([
                     'firstname' => $firstname,
-                    'lastname' => $lastname,
-                    'email' => $email,
-                    'password' => bcrypt($password),
-                    'admin' => true,
+                    'lastname'  => $lastname,
+                    'email'     => $email,
+                    'password'  => bcrypt($password),
+                    'admin'     => true,
                 ]);
             }
 
-            if (! Language::count()) {
+            if (!Language::count()) {
                 $this->info('Adding default language');
 
                 Language::create([
-                    'code' => 'en',
-                    'name' => 'English',
+                    'code'    => 'en',
+                    'name'    => 'English',
                     'default' => true,
                 ]);
             }
 
-            if (! Currency::whereDefault(true)->exists()) {
+            if (!Currency::whereDefault(true)->exists()) {
                 $this->info('Adding a default currency (USD)');
 
                 Currency::create([
-                    'code' => 'USD',
-                    'name' => 'US Dollar',
-                    'exchange_rate' => 1,
-                    'format' => '${value}',
-                    'decimal_point' => '.',
+                    'code'           => 'USD',
+                    'name'           => 'US Dollar',
+                    'exchange_rate'  => 1,
+                    'format'         => '${value}',
+                    'decimal_point'  => '.',
                     'thousand_point' => ',',
                     'decimal_places' => 2,
-                    'default' => true,
-                    'enabled' => true,
+                    'default'        => true,
+                    'enabled'        => true,
                 ]);
             }
 
-            if (! CustomerGroup::whereDefault(true)->exists()) {
+            if (!CustomerGroup::whereDefault(true)->exists()) {
                 $this->info('Adding a default customer group.');
 
                 CustomerGroup::create([
-                    'name' => 'Retail',
-                    'handle' => 'retail',
+                    'name'    => 'Retail',
+                    'handle'  => 'retail',
                     'default' => true,
                 ]);
             }
@@ -133,12 +133,12 @@ class InstallGetCandy extends Command
                 $this->info('Adding an initial collection group');
 
                 CollectionGroup::create([
-                    'name' => 'Main',
+                    'name'   => 'Main',
                     'handle' => 'main',
                 ]);
             }
 
-            if (! TaxClass::count()) {
+            if (!TaxClass::count()) {
                 $this->info('Adding a default tax class.');
 
                 TaxClass::create([
@@ -146,38 +146,38 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (! Attribute::count()) {
+            if (!Attribute::count()) {
                 $this->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
                     'attributable_type' => ProductType::class,
-                    'name' => collect([
+                    'name'              => collect([
                         'en' => 'Details',
                     ]),
-                    'handle' => 'details',
+                    'handle'   => 'details',
                     'position' => 1,
                 ]);
 
                 $collectionGroup = AttributeGroup::create([
                     'attributable_type' => Collection::class,
-                    'name' => collect([
+                    'name'              => collect([
                         'en' => 'Details',
                     ]),
-                    'handle' => 'collection_details',
+                    'handle'   => 'collection_details',
                     'position' => 1,
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => ProductType::class,
+                    'attribute_type'     => ProductType::class,
                     'attribute_group_id' => $group->id,
-                    'position' => 1,
-                    'name' => [
+                    'position'           => 1,
+                    'name'               => [
                         'en' => 'Name',
                     ],
-                    'handle' => 'name',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => true,
+                    'handle'        => 'name',
+                    'section'       => 'main',
+                    'type'          => TranslatedText::class,
+                    'required'      => true,
                     'default_value' => null,
                     'configuration' => [
                         'type' => 'text',
@@ -186,16 +186,16 @@ class InstallGetCandy extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Collection::class,
+                    'attribute_type'     => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position' => 1,
-                    'name' => [
+                    'position'           => 1,
+                    'name'               => [
                         'en' => 'Name',
                     ],
-                    'handle' => 'name',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => true,
+                    'handle'        => 'name',
+                    'section'       => 'main',
+                    'type'          => TranslatedText::class,
+                    'required'      => true,
                     'default_value' => null,
                     'configuration' => [
                         'type' => 'text',
@@ -204,16 +204,16 @@ class InstallGetCandy extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => ProductType::class,
+                    'attribute_type'     => ProductType::class,
                     'attribute_group_id' => $group->id,
-                    'position' => 2,
-                    'name' => [
+                    'position'           => 2,
+                    'name'               => [
                         'en' => 'Description',
                     ],
-                    'handle' => 'description',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => true,
+                    'handle'        => 'description',
+                    'section'       => 'main',
+                    'type'          => TranslatedText::class,
+                    'required'      => true,
                     'default_value' => null,
                     'configuration' => [
                         'type' => 'richtext',
@@ -222,16 +222,16 @@ class InstallGetCandy extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Collection::class,
+                    'attribute_type'     => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position' => 2,
-                    'name' => [
+                    'position'           => 2,
+                    'name'               => [
                         'en' => 'Description',
                     ],
-                    'handle' => 'description',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => true,
+                    'handle'        => 'description',
+                    'section'       => 'main',
+                    'type'          => TranslatedText::class,
+                    'required'      => true,
                     'default_value' => null,
                     'configuration' => [
                         'type' => 'richtext',
@@ -240,7 +240,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (! ProductType::count()) {
+            if (!ProductType::count()) {
                 $this->info('Adding a product type.');
 
                 $type = ProductType::create([
@@ -267,15 +267,17 @@ class InstallGetCandy extends Command
     /**
      * Checks if config exists given a filename.
      *
-     * @param  string  $fileName
+     * @param string $fileName
+     *
      * @return bool
      */
     private function configExists($fileName): bool
     {
-        if (! File::isDirectory(config_path($fileName))) {
+        if (!File::isDirectory(config_path($fileName))) {
             return false;
         }
-        return ! empty(File::allFiles(config_path($fileName)));
+
+        return !empty(File::allFiles(config_path($fileName)));
     }
 
     /**
@@ -294,14 +296,15 @@ class InstallGetCandy extends Command
     /**
      * Publishes configuration for the Service Provider.
      *
-     * @param  bool  $forcePublish
+     * @param bool $forcePublish
+     *
      * @return void
      */
     private function publishConfiguration($forcePublish = false): void
     {
         $params = [
             '--provider' => "GetCandy\GetCandyServiceProvider",
-            '--tag' => 'getcandy',
+            '--tag'      => 'getcandy',
         ];
 
         if ($forcePublish === true) {

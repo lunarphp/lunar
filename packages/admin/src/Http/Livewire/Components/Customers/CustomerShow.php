@@ -31,12 +31,12 @@ class CustomerShow extends Component
     public function rules()
     {
         return [
-            'syncedGroups' => 'array',
-            'customer.title' => 'string',
-            'customer.first_name' => 'string',
-            'customer.last_name' => 'string',
+            'syncedGroups'          => 'array',
+            'customer.title'        => 'string',
+            'customer.first_name'   => 'string',
+            'customer.last_name'    => 'string',
             'customer.company_name' => 'nullable|string',
-            'customer.vat_no' => 'nullable|string',
+            'customer.vat_no'       => 'nullable|string',
         ];
     }
 
@@ -47,7 +47,7 @@ class CustomerShow extends Component
      */
     public function mount()
     {
-        $this->syncedGroups = $this->customer->customerGroups->pluck('id')->map(fn($id) => (string) $id)->toArray();
+        $this->syncedGroups = $this->customer->customerGroups->pluck('id')->map(fn ($id) => (string) $id)->toArray();
     }
 
     /**

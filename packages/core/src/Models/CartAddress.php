@@ -13,7 +13,8 @@ use Illuminate\Support\Collection;
 
 class CartAddress extends BaseModel implements Addressable
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
+    use LogsActivity;
 
     /**
      * The applied shipping option.

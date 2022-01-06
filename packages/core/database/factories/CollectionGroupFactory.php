@@ -3,7 +3,6 @@
 namespace GetCandy\Database\Factories;
 
 use GetCandy\Models\CollectionGroup;
-use GetCandy\Models\CustomerGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -16,7 +15,7 @@ class CollectionGroupFactory extends Factory
         $name = $this->faker->unique()->word;
 
         return [
-            'name' => $name,
+            'name'   => $name,
             'handle' => Str::slug($name),
         ];
     }

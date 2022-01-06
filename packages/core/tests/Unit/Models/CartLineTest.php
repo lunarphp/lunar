@@ -6,7 +6,6 @@ use GetCandy\Exceptions\NonPurchasableItemException;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Tests\Stubs\User;
 use GetCandy\Tests\TestCase;
@@ -27,15 +26,15 @@ class CartLineTest extends TestCase
         ]);
 
         $data = [
-            'cart_id' => $cart->id,
-            'quantity' => 1,
+            'cart_id'          => $cart->id,
+            'quantity'         => 1,
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => ProductVariant::factory()->create()->id,
+            'purchasable_id'   => ProductVariant::factory()->create()->id,
         ];
 
         CartLine::create($data);
 
-        $this->assertDatabaseHas((new CartLine)->getTable(), $data);
+        $this->assertDatabaseHas((new CartLine())->getTable(), $data);
     }
 
     /** @test */
@@ -46,16 +45,16 @@ class CartLineTest extends TestCase
         ]);
 
         $data = [
-            'cart_id' => $cart->id,
-            'quantity' => 1,
+            'cart_id'          => $cart->id,
+            'quantity'         => 1,
             'purchasable_type' => Channel::class,
-            'purchasable_id' => Channel::factory()->create()->id,
+            'purchasable_id'   => Channel::factory()->create()->id,
         ];
 
         $this->expectException(NonPurchasableItemException::class);
 
         CartLine::create($data);
 
-        $this->assertDatabaseMissing((new CartLine)->getTable(), $data);
+        $this->assertDatabaseMissing((new CartLine())->getTable(), $data);
     }
 }

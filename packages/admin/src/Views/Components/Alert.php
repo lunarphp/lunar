@@ -16,7 +16,7 @@ class Alert extends Component
     /**
      * Initialise the component.
      *
-     * @param  string  $level
+     * @param string $level
      */
     public function __construct($level = null)
     {

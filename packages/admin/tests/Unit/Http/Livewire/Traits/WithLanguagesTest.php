@@ -2,10 +2,8 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Traits;
 
-use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductShow;
 use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\Stubs\User;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
@@ -28,12 +26,12 @@ class WithLanguagesTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code' => 'en',
+            'code'    => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code' => 'fr',
+            'code'    => 'fr',
         ]);
 
         Currency::factory()->create([
@@ -58,7 +56,7 @@ class WithLanguagesTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -68,9 +66,9 @@ class WithLanguagesTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 

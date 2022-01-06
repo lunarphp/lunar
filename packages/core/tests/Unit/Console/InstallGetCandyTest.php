@@ -2,7 +2,6 @@
 
 namespace GetCandy\Tests\Unit\Console;
 
-use GetCandy\GetCandyServiceProvider;
 use GetCandy\Tests\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;

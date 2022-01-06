@@ -4,7 +4,6 @@ namespace GetCandy\Actions\Carts;
 
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
 
 class MergeCart
@@ -12,8 +11,9 @@ class MergeCart
     /**
      * Execute the action.
      *
-     * @param  CartLine  $cartLine
-     * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
+     * @param CartLine                                 $cartLine
+     * @param \Illuminate\Database\Eloquent\Collection $customerGroups
+     *
      * @return void
      */
     public function execute(Cart $target, Cart $source)
@@ -35,10 +35,10 @@ class MergeCart
                 // If no target, we are creating...
                 if (empty($lines['target'])) {
                     $target->lines()->create([
-                        'purchasable_id' => $lines['source']->purchasable_id,
+                        'purchasable_id'   => $lines['source']->purchasable_id,
                         'purchasable_type' => $lines['source']->purchasable_type,
-                        'quantity' => $lines['source']->quantity,
-                        'meta' => $lines['source']->meta,
+                        'quantity'         => $lines['source']->quantity,
+                        'meta'             => $lines['source']->meta,
                     ]);
 
                     return;
@@ -50,7 +50,7 @@ class MergeCart
 
                 $lines['target']->update([
                     'quantity' => $lines['target']->quantity + $lines['source']->quantity,
-                    'meta' => $newMeta,
+                    'meta'     => $newMeta,
                 ]);
             });
 

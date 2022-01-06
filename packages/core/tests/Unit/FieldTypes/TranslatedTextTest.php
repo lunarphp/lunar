@@ -14,7 +14,7 @@ class TranslatedTextTest extends TestCase
     /** @test */
     public function can_set_value()
     {
-        $field = new TranslatedText;
+        $field = new TranslatedText();
         $field->setValue(collect([
             'en' => new Text('Blue'),
             'fr' => new Text('Bleu'),

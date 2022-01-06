@@ -15,7 +15,7 @@ class TaxZoneCustomerGroupFactory extends Factory
     {
         return [
             'customer_group_id' => CustomerGroup::factory(),
-            'tax_zone_id' => TaxZone::factory(),
+            'tax_zone_id'       => TaxZone::factory(),
         ];
     }
 }

@@ -4,7 +4,6 @@ namespace GetCandy\Database\Factories;
 
 use GetCandy\Models\ProductType;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class ProductTypeFactory extends Factory
 {

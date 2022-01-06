@@ -19,7 +19,7 @@ class GetCandyHub
 
         $iconPath = __DIR__."/../resources/icons/{$style}/$icon.svg";
 
-        if (! File::exists($iconPath)) {
+        if (!File::exists($iconPath)) {
             return;
         }
 

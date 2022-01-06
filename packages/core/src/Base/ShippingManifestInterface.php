@@ -11,7 +11,8 @@ interface ShippingManifestInterface
     /**
      * Add a shipping option to the manifest.
      *
-     * @param  \GetCandy\DataTypes\ShippingOption  $option
+     * @param \GetCandy\DataTypes\ShippingOption $option
+     *
      * @return self
      */
     public function addOption(ShippingOption $shippingOption);
@@ -19,7 +20,8 @@ interface ShippingManifestInterface
     /**
      * Return available options for a given cart.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param \GetCandy\Models\Cart $cart
+     *
      * @return \Illuminate\Support\Collection
      */
     public function getOptions(Cart $cart): Collection;

@@ -11,7 +11,8 @@ use Illuminate\Support\Collection;
 
 class CartLine extends BaseModel
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
+    use LogsActivity;
 
     /**
      * The cart line total.
@@ -80,7 +81,7 @@ class CartLine extends BaseModel
      */
     protected $casts = [
         'quantity' => 'integer',
-        'meta' => 'object',
+        'meta'     => 'object',
     ];
 
     /**

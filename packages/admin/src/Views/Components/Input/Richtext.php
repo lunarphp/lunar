@@ -16,7 +16,7 @@ class Richtext extends Component
     /**
      * Instantiate the component.
      *
-     * @param  string  $initialValue
+     * @param string $initialValue
      */
     public function __construct($initialValue = null)
     {

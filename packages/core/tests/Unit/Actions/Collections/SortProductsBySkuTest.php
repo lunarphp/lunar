@@ -2,12 +2,8 @@
 
 namespace GetCandy\Tests\Unit\Actions\Collections;
 
-use GetCandy\Actions\Collections\SortProductsByPrice;
 use GetCandy\Actions\Collections\SortProductsBySku;
-use GetCandy\Jobs\Collections\UpdateProductPositions;
 use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Tests\TestCase;
@@ -33,7 +29,7 @@ class SortProductsBySkuTest extends TestCase
         foreach ($products as $index => $product) {
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku' => $skus[$index],
+                'sku'        => $skus[$index],
             ]);
         }
 
@@ -71,12 +67,12 @@ class SortProductsBySkuTest extends TestCase
         foreach ($products as $index => $product) {
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku' => $skus[$index][0],
+                'sku'        => $skus[$index][0],
             ]);
 
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku' => $skus[$index][1],
+                'sku'        => $skus[$index][1],
             ]);
         }
 

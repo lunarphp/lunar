@@ -3,7 +3,6 @@
 namespace GetCandy\Jobs\Collections;
 
 use GetCandy\Models\Collection;
-use GetCandy\Models\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,7 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class RebuildCollectionTree implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $tries = 1;
 
@@ -41,9 +43,9 @@ class RebuildCollectionTree implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  array  $newTree
-     * @param  array  $currentTree
-     * @param  string|int|null  $parent
+     * @param array           $newTree
+     * @param array           $currentTree
+     * @param string|int|null $parent
      */
     public function __construct(array $newTree, array $currentTree, Collection $parent = null)
     {

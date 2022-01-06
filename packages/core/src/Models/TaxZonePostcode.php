@@ -4,8 +4,6 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Database\Factories\TaxZonePostcodeFactory;
-use GetCandy\Models\Country;
-use GetCandy\Models\TaxZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxZonePostcode extends BaseModel

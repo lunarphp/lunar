@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Authentication;
 
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -18,7 +17,7 @@ class LoginForm extends Component
     public $password;
 
     protected $rules = [
-        'email' => 'required|email',
+        'email'    => 'required|email',
         'password' => 'required',
     ];
 
@@ -29,7 +28,7 @@ class LoginForm extends Component
         $this->loggingIn = true;
 
         $authCheck = Auth::guard('staff')->attempt([
-            'email' => $this->email,
+            'email'    => $this->email,
             'password' => $this->password,
         ]);
 

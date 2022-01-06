@@ -5,7 +5,6 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price as CastsPrice;
 use GetCandy\Database\Factories\PriceFactory;
-use GetCandy\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Price extends BaseModel
@@ -31,7 +30,7 @@ class Price extends BaseModel
     protected $guarded = [];
 
     protected $casts = [
-        'price' => CastsPrice::class,
+        'price'         => CastsPrice::class,
         'compare_price' => CastsPrice::class,
     ];
 

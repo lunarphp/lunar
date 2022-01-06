@@ -20,12 +20,12 @@ class TaxZonePostcodeTest extends TestCase
     {
         $data = [
             'tax_zone_id' => TaxZone::factory()->create()->id,
-            'country_id' => Country::factory()->create()->id,
-            'postcode' => 123456,
+            'country_id'  => Country::factory()->create()->id,
+            'postcode'    => 123456,
         ];
 
         TaxZonePostcode::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZonePostcode)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxZonePostcode())->getTable(), $data);
     }
 }

@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Languages;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Language;
 use Livewire\Component;
 
@@ -25,7 +24,7 @@ class LanguageCreate extends Component
      */
     public function mount()
     {
-        $this->language = new Language;
+        $this->language = new Language();
     }
 
     /**
@@ -36,8 +35,8 @@ class LanguageCreate extends Component
     protected function rules()
     {
         return [
-            'language.name' => 'required|string|max:255',
-            'language.code' => 'required|string|max:255',
+            'language.name'    => 'required|string|max:255',
+            'language.code'    => 'required|string|max:255',
             'language.default' => 'nullable|boolean',
         ];
     }
@@ -68,7 +67,7 @@ class LanguageCreate extends Component
      */
     public function toggleDefault()
     {
-        $this->language->default = ! $this->language->default;
+        $this->language->default = !$this->language->default;
     }
 
     /**

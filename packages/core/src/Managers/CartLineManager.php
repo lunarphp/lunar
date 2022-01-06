@@ -3,9 +3,7 @@
 namespace GetCandy\Managers;
 
 use GetCandy\Actions\Carts\CalculateLine;
-use GetCandy\Actions\Taxes\GetTaxZone;
 use GetCandy\Base\CartLineModifiers;
-use GetCandy\DataTypes\Price;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
 use Illuminate\Pipeline\Pipeline;
@@ -15,7 +13,7 @@ class CartLineManager
     /**
      * Initialize the cart manager.
      *
-     * @param  Cart  $cart
+     * @param Cart $cart
      */
     public function __construct(
         protected CartLine $cartLine

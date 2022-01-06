@@ -3,7 +3,6 @@
 use GetCandy\Hub\Http\Livewire\Pages\Products\ProductCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Products\ProductShow;
 use GetCandy\Hub\Http\Livewire\Pages\Products\ProductsIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Products\ProductTypes\ProductTypeIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Products\Variants\VariantShow;
 use Illuminate\Support\Facades\Route;
 

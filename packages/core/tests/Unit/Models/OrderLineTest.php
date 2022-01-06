@@ -3,14 +3,12 @@
 namespace GetCandy\Tests\Unit\Models;
 
 use GetCandy\Exceptions\NonPurchasableItemException;
-use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\Stubs\User;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -31,16 +29,16 @@ class OrderLineTest extends TestCase
         ]);
 
         $data = [
-            'order_id' => $order->id,
-            'quantity' => 1,
+            'order_id'         => $order->id,
+            'quantity'         => 1,
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => ProductVariant::factory()->create()->id,
+            'purchasable_id'   => ProductVariant::factory()->create()->id,
         ];
 
         OrderLine::factory()->create($data);
 
         $this->assertDatabaseHas(
-            (new OrderLine)->getTable(),
+            (new OrderLine())->getTable(),
             $data
         );
     }
@@ -53,14 +51,14 @@ class OrderLineTest extends TestCase
         $this->expectException(NonPurchasableItemException::class);
 
         $data = [
-            'order_id' => $order->id,
-            'quantity' => 1,
+            'order_id'         => $order->id,
+            'quantity'         => 1,
             'purchasable_type' => Channel::class,
-            'purchasable_id' => Channel::factory()->create()->id,
+            'purchasable_id'   => Channel::factory()->create()->id,
         ];
 
         OrderLine::factory()->create($data);
 
-        $this->assertDatabaseMissing((new CartLine)->getTable(), $data);
+        $this->assertDatabaseMissing((new CartLine())->getTable(), $data);
     }
 }

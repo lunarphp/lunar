@@ -11,12 +11,13 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "creating" event.
      *
-     * @param  \App\Models\OrderLine  $orderLine
+     * @param \App\Models\OrderLine $orderLine
+     *
      * @return void
      */
     public function creating(OrderLine $orderLine)
     {
-        if ($orderLine->type != 'shipping' && ! $orderLine->purchasable instanceof Purchasable) {
+        if ($orderLine->type != 'shipping' && !$orderLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($orderLine->purchasable_type);
         }
     }
@@ -24,12 +25,13 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "updated" event.
      *
-     * @param  \App\Models\OrderLine  $orderLine
+     * @param \App\Models\OrderLine $orderLine
+     *
      * @return void
      */
     public function updating(OrderLine $orderLine)
     {
-        if (! $orderLine->purchasable instanceof Purchasable) {
+        if (!$orderLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($orderLine->purchasable_type);
         }
     }

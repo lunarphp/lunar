@@ -25,8 +25,6 @@ use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\OrderLine;
-use GetCandy\Models\Price;
-use GetCandy\Models\ProductType;
 use GetCandy\Models\Url;
 use GetCandy\Observers\CartLineObserver;
 use GetCandy\Observers\ChannelObserver;
@@ -165,7 +163,7 @@ class GetCandyServiceProvider extends ServiceProvider
     protected function registerAddonManifest()
     {
         $this->app->instance(Manifest::class, new Manifest(
-            new Filesystem,
+            new Filesystem(),
             $this->app->basePath(),
             $this->app->bootstrapPath().'/cache/getcandy_addons.php'
         ));

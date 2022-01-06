@@ -5,8 +5,6 @@ namespace GetCandy\Base\Traits;
 use DateTime;
 use GetCandy\Models\Channel;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 trait HasChannels
@@ -18,7 +16,7 @@ trait HasChannels
             $channels = Channel::get()->mapWithKeys(function ($channel) {
                 return [
                     $channel->id => [
-                        'enabled' => false,
+                        'enabled'      => false,
                         'published_at' => null,
                     ],
                 ];
@@ -56,7 +54,7 @@ trait HasChannels
                 $channel->mapWithKeys(function ($channel) use ($date) {
                     return [
                         $channel->id => [
-                            'enabled' => true,
+                            'enabled'      => true,
                             'published_at' => $date,
                         ],
                     ];

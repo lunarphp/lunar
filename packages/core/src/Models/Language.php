@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Language extends BaseModel
 {
-    use HasFactory, HasDefaultRecord;
+    use HasFactory;
+    use HasDefaultRecord;
 
     /**
      * Return a new factory instance for the model.

@@ -19,7 +19,7 @@ class CurrencyCreate extends Component
 
     public function mount()
     {
-        $this->currency = new Currency;
+        $this->currency = new Currency();
     }
 
     /**
@@ -30,15 +30,15 @@ class CurrencyCreate extends Component
     protected function rules()
     {
         return [
-            'currency.code' => 'required|max:255|unique:'.$this->currency->getTable().',code',
-            'currency.name' => 'required|max:255',
-            'currency.exchange_rate' => 'required|numeric|min:0.1|max:255',
-            'currency.format' => 'required|max:255|regex:/{value}/i',
-            'currency.decimal_point' => 'required|max:255',
+            'currency.code'           => 'required|max:255|unique:'.$this->currency->getTable().',code',
+            'currency.name'           => 'required|max:255',
+            'currency.exchange_rate'  => 'required|numeric|min:0.1|max:255',
+            'currency.format'         => 'required|max:255|regex:/{value}/i',
+            'currency.decimal_point'  => 'required|max:255',
             'currency.thousand_point' => 'required|max:255',
             'currency.decimal_places' => 'required|integer|max:4',
-            'currency.enabled' => 'nullable',
-            'currency.default' => 'nullable',
+            'currency.enabled'        => 'nullable',
+            'currency.default'        => 'nullable',
         ];
     }
 
@@ -49,7 +49,7 @@ class CurrencyCreate extends Component
      */
     public function toggleDefault()
     {
-        $this->currency->default = ! $this->currency->default;
+        $this->currency->default = !$this->currency->default;
 
         // If we're setting the currency to default, force it to be enabled.
         if ($this->currency->default) {
@@ -64,7 +64,7 @@ class CurrencyCreate extends Component
      */
     public function toggleEnabled()
     {
-        $this->currency->enabled = ! $this->currency->enabled;
+        $this->currency->enabled = !$this->currency->enabled;
     }
 
     /**

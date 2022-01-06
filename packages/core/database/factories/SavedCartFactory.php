@@ -14,7 +14,7 @@ class SavedCartFactory extends Factory
     {
         return [
             'cart_id' => Cart::factory(),
-            'name' => $this->faker->name,
+            'name'    => $this->faker->name,
         ];
     }
 }

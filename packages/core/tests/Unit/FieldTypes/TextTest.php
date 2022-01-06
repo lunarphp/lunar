@@ -11,7 +11,7 @@ class TextTest extends TestCase
     /** @test */
     public function can_set_value()
     {
-        $field = new Text;
+        $field = new Text();
         $field->setValue('I like cake');
 
         $this->assertEquals('I like cake', $field->getValue());
@@ -20,7 +20,7 @@ class TextTest extends TestCase
     /** @test */
     public function can_set_null_value()
     {
-        $field = new Text;
+        $field = new Text();
         $field->setValue(null);
 
         $this->assertEquals(null, $field->getValue());

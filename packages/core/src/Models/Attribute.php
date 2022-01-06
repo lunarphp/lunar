@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\DB;
 
 class Attribute extends BaseModel
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
+    use HasTranslations;
 
     public static function boot()
     {
@@ -51,7 +52,7 @@ class Attribute extends BaseModel
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
+        'name'          => AsCollection::class,
         'configuration' => AsCollection::class,
     ];
 
@@ -78,8 +79,9 @@ class Attribute extends BaseModel
     /**
      * Apply the system scope to the query builder.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $type
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string                                $type
+     *
      * @return void
      */
     public function scopeSystem(Builder $query, $type)

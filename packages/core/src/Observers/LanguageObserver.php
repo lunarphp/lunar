@@ -9,7 +9,8 @@ class LanguageObserver
     /**
      * Handle the Language "created" event.
      *
-     * @param  \GetCandy\Models\Language  $language
+     * @param \GetCandy\Models\Language $language
+     *
      * @return void
      */
     public function created(Language $language)
@@ -20,7 +21,8 @@ class LanguageObserver
     /**
      * Handle the Language "updated" event.
      *
-     * @param  \GetCandy\Models\Language  $language
+     * @param \GetCandy\Models\Language $language
+     *
      * @return void
      */
     public function updated(Language $language)
@@ -31,7 +33,8 @@ class LanguageObserver
     /**
      * Handle the Language "deleted" event.
      *
-     * @param  \GetCandy\Models\Language  $language
+     * @param \GetCandy\Models\Language $language
+     *
      * @return void
      */
     public function deleted(Language $language)
@@ -42,7 +45,8 @@ class LanguageObserver
     /**
      * Handle the Language "forceDeleted" event.
      *
-     * @param  \GetCandy\Models\Language  $language
+     * @param \GetCandy\Models\Language $language
+     *
      * @return void
      */
     public function forceDeleted(Language $language)
@@ -53,7 +57,8 @@ class LanguageObserver
     /**
      * Ensures that only one default language exists.
      *
-     * @param  \GetCandy\Models\Language  $savedLanguage  The language that was just saved.
+     * @param \GetCandy\Models\Language $savedLanguage The language that was just saved.
+     *
      * @return void
      */
     protected function ensureOnlyOneDefault(Language $savedLanguage): void

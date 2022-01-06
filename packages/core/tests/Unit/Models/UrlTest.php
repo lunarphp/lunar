@@ -2,9 +2,6 @@
 
 namespace GetCandy\Tests\Unit\Models;
 
-use GetCandy\Models\Address;
-use GetCandy\Models\Country;
-use GetCandy\Models\Customer;
 use GetCandy\Models\Language;
 use GetCandy\Models\Product;
 use GetCandy\Models\Url;
@@ -27,11 +24,11 @@ class UrlTest extends TestCase
         $language = Language::factory()->create();
 
         $data = [
-            'language_id' => $language->id,
-            'element_id' => $product->id,
+            'language_id'  => $language->id,
+            'element_id'   => $product->id,
             'element_type' => Product::class,
-            'slug' => Str::slug($product->translateAttribute('name')),
-            'default' => true,
+            'slug'         => Str::slug($product->translateAttribute('name')),
+            'default'      => true,
         ];
 
         Url::create($data);
@@ -46,11 +43,11 @@ class UrlTest extends TestCase
         $language = Language::factory()->create();
 
         $data = [
-            'language_id' => $language->id,
-            'element_id' => $product->id,
+            'language_id'  => $language->id,
+            'element_id'   => $product->id,
             'element_type' => Product::class,
-            'slug' => Str::slug($product->translateAttribute('name')),
-            'default' => true,
+            'slug'         => Str::slug($product->translateAttribute('name')),
+            'default'      => true,
         ];
 
         $url = Url::create($data);

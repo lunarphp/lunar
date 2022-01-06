@@ -13,7 +13,7 @@ class SettingsMenu
      */
     public static function make()
     {
-        (new static)
+        (new static())
             ->makeTopLevel();
     }
 

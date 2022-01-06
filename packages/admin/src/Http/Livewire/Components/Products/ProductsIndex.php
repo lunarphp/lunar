@@ -9,7 +9,8 @@ use Livewire\WithPagination;
 
 class ProductsIndex extends Component
 {
-    use WithPagination, SearchesProducts;
+    use WithPagination;
+    use SearchesProducts;
 
     public $selectPage = false;
     public $selectAll = false;

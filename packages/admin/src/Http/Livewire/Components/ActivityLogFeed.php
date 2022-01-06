@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components;
 
-use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Activitylog\Models\Activity;

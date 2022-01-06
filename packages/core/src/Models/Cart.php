@@ -2,7 +2,6 @@
 
 namespace GetCandy\Models;
 
-use GetCandy\Actions\Carts\CreateOrder;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Address;
 use GetCandy\Base\Traits\LogsActivity;
@@ -14,7 +13,8 @@ use Illuminate\Support\Collection;
 
 class Cart extends BaseModel
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
+    use LogsActivity;
 
     /**
      * The cart total.
@@ -83,7 +83,7 @@ class Cart extends BaseModel
      */
     protected $casts = [
         'completed_at' => 'datetime',
-        'meta' => 'object',
+        'meta'         => 'object',
     ];
 
     /**

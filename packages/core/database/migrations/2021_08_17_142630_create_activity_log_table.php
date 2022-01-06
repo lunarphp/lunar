@@ -10,7 +10,7 @@ class CreateActivityLogTable extends Migration
     {
         $tableName = config('activitylog.table_name');
 
-        if (! Schema::hasTable($tableName)) {
+        if (!Schema::hasTable($tableName)) {
             Schema::create($tableName, function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('log_name')->nullable();

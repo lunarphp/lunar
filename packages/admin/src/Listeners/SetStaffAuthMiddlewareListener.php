@@ -9,7 +9,8 @@ class SetStaffAuthMiddlewareListener
     /**
      * Handle the event.
      *
-     * @param  \Illuminate\Routing\Events\RouteMatched  $event
+     * @param \Illuminate\Routing\Events\RouteMatched $event
+     *
      * @return void
      */
     public function handle(RouteMatched $event)
@@ -20,7 +21,7 @@ class SetStaffAuthMiddlewareListener
         $isModal = strpos($event->route->name, 'livewire-ui-modal') !== false;
         $isLoginComponent = strpos($event->route->name, 'login') !== false;
 
-        if ($isLivewire && ($isHubComponent || $isModal) && ! $isLoginComponent) {
+        if ($isLivewire && ($isHubComponent || $isModal) && !$isLoginComponent) {
             $event->route->middleware(
                 array_merge($event->route->middleware(), ['auth:staff'])
             );

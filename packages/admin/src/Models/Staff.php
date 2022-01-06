@@ -2,11 +2,7 @@
 
 namespace GetCandy\Hub\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasTablePrefix;
 use GetCandy\Hub\Database\Factories\StaffFactory;
-use GetCandy\Hub\Models\StaffPermission;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,7 +11,9 @@ use Illuminate\Notifications\Notifiable;
 
 class Staff extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
 
     /**
      * Return a new factory instance for the model.
@@ -62,7 +60,7 @@ class Staff extends Authenticatable
     /**
      * Create a new instance of the Model.
      *
-     * @param  array  $attributes
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -77,8 +75,9 @@ class Staff extends Authenticatable
      * Currently Livewire doesn't support route bindings for
      * soft deleted models so we need to rewire it here.
      *
-     * @param  mixed  $value
-     * @param  string|null  $field
+     * @param mixed       $value
+     * @param string|null $field
+     *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function resolveRouteBinding($value, $field = null)
@@ -99,12 +98,13 @@ class Staff extends Authenticatable
     /**
      * Authorize an action via permissions.
      *
-     * @param  string  $permission
+     * @param string $permission
+     *
      * @return bool
      */
     public function authorize($permission): bool
     {
-        if (! is_array($permission)) {
+        if (!is_array($permission)) {
             $permission = [$permission];
         }
 
@@ -114,8 +114,9 @@ class Staff extends Authenticatable
     /**
      * Apply the basic search scope to a given Eloquent query builder.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $term
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string                                $term
+     *
      * @return void
      */
     public function scopeSearch($query, $term)

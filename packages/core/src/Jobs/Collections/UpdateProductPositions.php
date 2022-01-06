@@ -3,11 +3,7 @@
 namespace GetCandy\Jobs\Collections;
 
 use GetCandy\Actions\Collections\SortProducts;
-use GetCandy\Actions\Collections\SortProductsByPrice;
-use GetCandy\Actions\Collections\SortProductsBySku;
 use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,7 +13,10 @@ use Illuminate\Support\Facades\DB;
 
 class UpdateProductPositions implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $tries = 1;
 
@@ -31,8 +30,8 @@ class UpdateProductPositions implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  Collection  $collection
-     * @param  string  $sortType
+     * @param Collection $collection
+     * @param string     $sortType
      */
     public function __construct(Collection $collection)
     {

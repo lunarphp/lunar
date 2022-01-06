@@ -15,7 +15,10 @@ use Illuminate\Support\Str;
 
 class SyncTags implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $tries = 1;
 
@@ -36,8 +39,9 @@ class SyncTags implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  \Illuminate\Support\Collection  $tags
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param \Illuminate\Support\Collection      $tags
+     *
      * @return void
      */
     public function __construct(Model $model, Collection $tags)

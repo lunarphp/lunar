@@ -3,7 +3,6 @@
 namespace GetCandy\Tests\Unit\Actions\Collections;
 
 use GetCandy\Actions\Collections\SortProductsByPrice;
-use GetCandy\Jobs\Collections\UpdateProductPositions;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Price;
@@ -41,10 +40,10 @@ class SortProductsByPriceTest extends TestCase
             foreach (Currency::get() as $currency) {
                 Price::factory()->create([
                     'priceable_type' => ProductVariant::class,
-                    'priceable_id' => $variant->id,
-                    'currency_id' => $currency->id,
-                    'tier' => 1,
-                    'price' => $prices[$index],
+                    'priceable_id'   => $variant->id,
+                    'currency_id'    => $currency->id,
+                    'tier'           => 1,
+                    'price'          => $prices[$index],
                 ]);
             }
         }

@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OrderAddress extends BaseModel implements Addressable
 {
-    use HasFactory, LogsActivity, HasPersonalDetails;
+    use HasFactory;
+    use LogsActivity;
+    use HasPersonalDetails;
 
     /**
      * Return a new factory instance for the model.

@@ -14,9 +14,9 @@ class TaxRateAmountFactory extends Factory
     public function definition(): array
     {
         return [
-            'tax_rate_id' => TaxRate::factory(),
+            'tax_rate_id'  => TaxRate::factory(),
             'tax_class_id' => TaxClass::factory(),
-            'percentage' => 20,
+            'percentage'   => 20,
         ];
     }
 }

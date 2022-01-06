@@ -10,7 +10,8 @@ use GetCandy\Models\ProductType;
 
 class AttributeCreate extends AbstractAttribute
 {
-    use Notifies, WithLanguages;
+    use Notifies;
+    use WithLanguages;
 
     /**
      * The empty attribute model.
@@ -22,15 +23,15 @@ class AttributeCreate extends AbstractAttribute
     public function mount()
     {
         $this->attribute = new Attribute([
-            'name' => [],
-            'attribute_type' => ProductType::class,
-            'type' => Text::class,
-            'configuration' => [],
+            'name'               => [],
+            'attribute_type'     => ProductType::class,
+            'type'               => Text::class,
+            'configuration'      => [],
             'attribute_group_id' => null,
-            'section' => 'main',
-            'position' => 1,
-            'system' => false,
-            'required' => false,
+            'section'            => 'main',
+            'position'           => 1,
+            'system'             => false,
+            'required'           => false,
         ]);
     }
 
@@ -53,13 +54,13 @@ class AttributeCreate extends AbstractAttribute
                     }
                 },
             ],
-            'attribute.position' => 'numeric',
-            'attribute.section' => 'string',
-            'attribute.system' => 'boolean',
-            'attribute.required' => 'boolean',
-            'attribute.attribute_type' => 'required',
-            'attribute.type' => 'required',
-            'attribute.configuration' => 'array',
+            'attribute.position'           => 'numeric',
+            'attribute.section'            => 'string',
+            'attribute.system'             => 'boolean',
+            'attribute.required'           => 'boolean',
+            'attribute.attribute_type'     => 'required',
+            'attribute.type'               => 'required',
+            'attribute.configuration'      => 'array',
             'attribute.attribute_group_id' => 'required',
             'attribute.configuration.type' => 'nullable|string',
         ];

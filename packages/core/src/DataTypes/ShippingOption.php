@@ -3,7 +3,6 @@
 namespace GetCandy\DataTypes;
 
 use GetCandy\Base\Purchasable;
-use GetCandy\DataTypes\Price;
 use GetCandy\Models\Currency;
 use GetCandy\Models\TaxClass;
 use Illuminate\Support\Collection;
@@ -24,8 +23,9 @@ class ShippingOption implements Purchasable
     /**
      * Get the price for the purchasable item.
      *
-     * @param  int  $quantity
-     * @param  Collection  $customerGroups
+     * @param int        $quantity
+     * @param Collection $customerGroups
+     *
      * @return int
      */
     public function getPrice(int $quantity, Currency $currency, Collection $customerGroups): int

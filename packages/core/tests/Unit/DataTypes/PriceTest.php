@@ -3,9 +3,7 @@
 namespace GetCandy\Tests\Unit\DataTypes;
 
 use GetCandy\DataTypes\Price;
-use GetCandy\Exceptions\FieldTypeException;
 use GetCandy\Exceptions\InvalidDataTypeValueException;
-use GetCandy\FieldTypes\Number;
 use GetCandy\Models\Currency;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +19,7 @@ class PriceTest extends TestCase
     public function can_initiate_the_datatype()
     {
         $currency = Currency::factory()->create([
-            'format' => '£{value}',
+            'format'         => '£{value}',
             'decimal_places' => 2,
         ]);
 
@@ -38,7 +36,7 @@ class PriceTest extends TestCase
     public function can_handle_multiple_decimal_places()
     {
         $currency = Currency::factory()->create([
-            'format' => '£{value}',
+            'format'         => '£{value}',
             'decimal_places' => 3,
         ]);
 
@@ -59,7 +57,7 @@ class PriceTest extends TestCase
     public function can_handle_decimals_being_passed()
     {
         $currency = Currency::factory()->create([
-            'format' => '£{value}',
+            'format'         => '£{value}',
             'decimal_places' => 2,
         ]);
 

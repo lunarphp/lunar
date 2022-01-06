@@ -13,25 +13,25 @@ class AsAttributeData implements Castable
     /**
      * Get the caster class to use when casting from / to this cast target.
      *
-     * @param  array  $arguments
+     * @param array $arguments
+     *
      * @return object|string
      */
     public static function castUsing(array $arguments)
     {
-        return new class implements CastsAttributes
-        {
+        return new class() implements CastsAttributes {
             public function get($model, $key, $value, $attributes)
             {
-                if (! isset($attributes[$key])) {
+                if (!isset($attributes[$key])) {
                     return null;
                 }
 
                 $data = json_decode($attributes[$key], true);
 
-                $returnData = new Collection;
+                $returnData = new Collection();
 
                 foreach ($data as $key => $item) {
-                    if (! in_array(FieldType::class, class_implements($item['field_type']))) {
+                    if (!in_array(FieldType::class, class_implements($item['field_type']))) {
                         throw new FieldTypeException('This field type is not supported.');
                     }
                     $returnData->put($key, new $item['field_type']($item['value']));
@@ -47,7 +47,7 @@ class AsAttributeData implements Castable
                 foreach ($value ?? [] as $handle => $item) {
                     $data[$handle] = [
                         'field_type' => get_class($item),
-                        'value' => $item->getValue(),
+                        'value'      => $item->getValue(),
                     ];
                 }
 

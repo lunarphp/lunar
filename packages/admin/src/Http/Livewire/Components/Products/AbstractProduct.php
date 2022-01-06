@@ -26,17 +26,17 @@ use Livewire\WithFileUploads;
 
 abstract class AbstractProduct extends Component
 {
-    use Notifies,
-        WithFileUploads,
-        HasImages,
-        HasAvailability,
-        SearchesProducts,
-        WithAttributes,
-        WithLanguages,
-        HasPrices,
-        HasDimensions,
-        HasUrls,
-        HasTags;
+    use Notifies;
+    use WithFileUploads;
+    use HasImages;
+    use HasAvailability;
+    use SearchesProducts;
+    use WithAttributes;
+    use WithLanguages;
+    use HasPrices;
+    use HasDimensions;
+    use HasUrls;
+    use HasTags;
 
     /**
      * The current product we are editing.
@@ -104,10 +104,10 @@ abstract class AbstractProduct extends Component
     protected function getListeners()
     {
         return array_merge([
-            'useProductOptions' => 'setOptions',
-            'productOptionCreated' => 'resetOptionView',
+            'useProductOptions'             => 'setOptions',
+            'productOptionCreated'          => 'resetOptionView',
             'option-manager.selectedValues' => 'setOptionValues',
-            'urlSaved' => 'refreshUrls',
+            'urlSaved'                      => 'refreshUrls',
         ], $this->getHasImagesListeners());
     }
 
@@ -133,11 +133,11 @@ abstract class AbstractProduct extends Component
     protected function rules()
     {
         $baseRules = [
-            'product.status' => 'required|string',
-            'product.brand' => 'nullable|string|max:255',
+            'product.status'          => 'required|string',
+            'product.brand'           => 'nullable|string|max:255',
             'product.product_type_id' => 'required',
-            'urls' => 'array',
-            'variant.sku' => get_validation('products', 'sku', [
+            'urls'                    => 'array',
+            'variant.sku'             => get_validation('products', 'sku', [
                 'alpha_dash',
                 'max:255',
             ], $this->variant),
@@ -160,21 +160,21 @@ abstract class AbstractProduct extends Component
                 $baseRules,
                 $this->hasPriceValidationRules(),
                 [
-                    'variant.stock' => 'numeric|max:10000000',
-                    'variant.backorder' => 'numeric|max:10000000',
-                    'variant.purchasable' => 'string|required',
-                    'variant.length_value' => 'numeric|nullable',
-                    'variant.length_unit' => 'string|nullable',
-                    'variant.tax_class_id' => 'required',
-                    'variant.width_value' => 'numeric|nullable',
-                    'variant.width_unit' => 'string|nullable',
-                    'variant.height_value' => 'numeric|nullable',
-                    'variant.height_unit' => 'string|nullable',
-                    'variant.weight_value' => 'numeric|nullable',
-                    'variant.weight_unit' => 'string|nullable',
-                    'variant.volume_value' => 'numeric|nullable',
-                    'variant.volume_unit' => 'string|nullable',
-                    'variant.shippable' => 'boolean|nullable',
+                    'variant.stock'         => 'numeric|max:10000000',
+                    'variant.backorder'     => 'numeric|max:10000000',
+                    'variant.purchasable'   => 'string|required',
+                    'variant.length_value'  => 'numeric|nullable',
+                    'variant.length_unit'   => 'string|nullable',
+                    'variant.tax_class_id'  => 'required',
+                    'variant.width_value'   => 'numeric|nullable',
+                    'variant.width_unit'    => 'string|nullable',
+                    'variant.height_value'  => 'numeric|nullable',
+                    'variant.height_unit'   => 'string|nullable',
+                    'variant.weight_value'  => 'numeric|nullable',
+                    'variant.weight_unit'   => 'string|nullable',
+                    'variant.volume_value'  => 'numeric|nullable',
+                    'variant.volume_unit'   => 'string|nullable',
+                    'variant.shippable'     => 'boolean|nullable',
                     'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
                 ]
             );
@@ -190,7 +190,8 @@ abstract class AbstractProduct extends Component
     /**
      * Set the options to be whatever we pass through.
      *
-     * @param  array  $options
+     * @param array $options
+     *
      * @return void
      */
     public function setOptions($optionIds)
@@ -203,7 +204,8 @@ abstract class AbstractProduct extends Component
     /**
      * Set option values.
      *
-     * @param  array  $values
+     * @param array $values
+     *
      * @return void
      */
     public function setOptionValues($values)
@@ -214,7 +216,8 @@ abstract class AbstractProduct extends Component
     /**
      * Remove an option by it's given position in the collection.
      *
-     * @param  int  $key
+     * @param int $key
+     *
      * @return void
      */
     public function removeOption($key)
@@ -251,16 +254,16 @@ abstract class AbstractProduct extends Component
 
         $this->product->attribute_data = $data;
 
-        $isNew = ! $this->product->id;
+        $isNew = !$this->product->id;
 
         $this->product->save();
 
         if (($this->getVariantsCount() <= 1) || $isNew) {
-            if (! $this->variant->product_id) {
+            if (!$this->variant->product_id) {
                 $this->variant->product_id = $this->product->id;
             }
 
-            if (! $this->manualVolume) {
+            if (!$this->manualVolume) {
                 $this->variant->volume_unit = null;
                 $this->variant->volume_value = null;
             }
@@ -279,7 +282,7 @@ abstract class AbstractProduct extends Component
             GenerateVariants::dispatch($this->product, $this->optionValues);
         }
 
-        if (! $generateVariants && $this->product->variants->count() <= 1) {
+        if (!$generateVariants && $this->product->variants->count() <= 1) {
             // Only save pricing if we're not generating new variants.
             $this->savePricing();
         }
@@ -295,8 +298,8 @@ abstract class AbstractProduct extends Component
         $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
             return [
                 $channel['channel_id'] => [
-                    'published_at' => ! $channel['enabled'] ? null : $channel['published_at'],
-                    'enabled' => $channel['enabled'],
+                    'published_at' => !$channel['enabled'] ? null : $channel['published_at'],
+                    'enabled'      => $channel['enabled'],
                 ],
             ];
         });
@@ -351,7 +354,8 @@ abstract class AbstractProduct extends Component
     /**
      * Remove a variant.
      *
-     * @param  int  $variantId
+     * @param int $variantId
+     *
      * @return void
      */
     public function deleteVariant($variantId)
@@ -383,15 +387,15 @@ abstract class AbstractProduct extends Component
     protected function syncAvailability()
     {
         $this->availability = [
-            'channels' => $this->channels->mapWithKeys(function ($channel) {
+            'channels'                                                        => $this->channels->mapWithKeys(function ($channel) {
                 $productChannel = $this->product->channels->first(fn ($assoc) => $assoc->id == $channel->id);
 
                 return [
                     $channel->id => [
-                        'channel_id' => $channel->id,
+                        'channel_id'   => $channel->id,
                         'published_at' => $productChannel ? $productChannel->pivot->published_at : null,
-                        'enabled' => $productChannel ? $productChannel->pivot->enabled : false,
-                        'scheduling' => $productChannel ? (bool) $productChannel->pivot->published_at : false,
+                        'enabled'      => $productChannel ? $productChannel->pivot->enabled : false,
+                        'scheduling'   => $productChannel ? (bool) $productChannel->pivot->published_at : false,
                     ],
                 ];
             }),
@@ -405,7 +409,7 @@ abstract class AbstractProduct extends Component
                 if ($pivot) {
                     if ($pivot->purchasable) {
                         $status = 'purchasable';
-                    } elseif (! $pivot->visible && ! $pivot->enabled) {
+                    } elseif (!$pivot->visible && !$pivot->enabled) {
                         $status = 'hidden';
                     } elseif ($pivot->visible) {
                         $status = 'visible';
@@ -415,10 +419,10 @@ abstract class AbstractProduct extends Component
                 return [
                     $group->id => [
                         'customer_group_id' => $group->id,
-                        'scheduling' => false,
-                        'status' => $status,
-                        'starts_at' => $pivot->starts_at ?? null,
-                        'ends_at' => $pivot->ends_at ?? null,
+                        'scheduling'        => false,
+                        'status'            => $status,
+                        'starts_at'         => $pivot->starts_at ?? null,
+                        'ends_at'           => $pivot->ends_at ?? null,
                     ],
                 ];
             }),
@@ -466,42 +470,42 @@ abstract class AbstractProduct extends Component
     {
         return collect([
             [
-                'title' => __('adminhub::menu.product.basic-information'),
-                'id' => 'basic-information',
+                'title'      => __('adminhub::menu.product.basic-information'),
+                'id'         => 'basic-information',
                 'has_errors' => $this->errorBag->hasAny([
                     'product.brand',
                     'product.product_type_id',
                 ]),
             ],
             [
-                'title' => __('adminhub::menu.product.attributes'),
-                'id' => 'attributes',
+                'title'      => __('adminhub::menu.product.attributes'),
+                'id'         => 'attributes',
                 'has_errors' => $this->errorBag->hasAny([
                     'attributeMapping.*',
                 ]),
             ],
             [
-                'title' => __('adminhub::menu.product.images'),
-                'id' => 'images',
+                'title'      => __('adminhub::menu.product.images'),
+                'id'         => 'images',
                 'has_errors' => $this->errorBag->hasAny([
                     'newImages.*',
                 ]),
             ],
             [
-                'title' => __('adminhub::menu.product.availability'),
-                'id' => 'availability',
+                'title'      => __('adminhub::menu.product.availability'),
+                'id'         => 'availability',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title' => __('adminhub::menu.product.variants'),
-                'id' => 'variants',
+                'title'      => __('adminhub::menu.product.variants'),
+                'id'         => 'variants',
                 'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
-                'title' => __('adminhub::menu.product.pricing'),
-                'id' => 'pricing',
-                'hidden' => $this->getVariantsCount() > 1,
+                'title'      => __('adminhub::menu.product.pricing'),
+                'id'         => 'pricing',
+                'hidden'     => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
                     'variant.min_quantity',
                     'basePrices.*',
@@ -510,9 +514,9 @@ abstract class AbstractProduct extends Component
                 ]),
             ],
             [
-                'title' => __('adminhub::menu.product.identifiers'),
-                'id' => 'identifiers',
-                'hidden' => $this->getVariantsCount() > 1,
+                'title'      => __('adminhub::menu.product.identifiers'),
+                'id'         => 'identifiers',
+                'hidden'     => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
                     'variant.sku',
                     'variant.gtin',
@@ -521,23 +525,23 @@ abstract class AbstractProduct extends Component
                 ]),
             ],
             [
-                'title' => __('adminhub::menu.product.inventory'),
-                'id' => 'inventory',
+                'title'       => __('adminhub::menu.product.inventory'),
+                'id'          => 'inventory',
                 'error_check' => [],
+                'has_errors'  => $this->errorBag->hasAny([
+                ]),
+            ],
+            [
+                'title'      => __('adminhub::menu.product.shipping'),
+                'id'         => 'shipping',
+                'hidden'     => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title' => __('adminhub::menu.product.shipping'),
-                'id' => 'shipping',
-                'hidden' => $this->getVariantsCount() > 1,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
-            ],
-            [
-                'title' => __('adminhub::menu.product.urls'),
-                'id' => 'urls',
-                'hidden' => $this->getVariantsCount() > 1,
+                'title'      => __('adminhub::menu.product.urls'),
+                'id'         => 'urls',
+                'hidden'     => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],

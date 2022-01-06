@@ -3,20 +3,7 @@
 namespace GetCandy\Tests\Unit\Base;
 
 use GetCandy\Base\OrderReferenceGenerator;
-use GetCandy\DataTypes\Price;
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Facades\ShippingManifest;
-use GetCandy\FieldTypes\Text;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
 use GetCandy\Models\Order;
-use GetCandy\Models\Price as PriceModel;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\TaxRateAmount;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

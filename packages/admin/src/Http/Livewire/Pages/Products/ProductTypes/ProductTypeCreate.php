@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\Products\ProductTypes;
 
-use GetCandy\Models\ProductType;
 use Livewire\Component;
 
 class ProductTypeCreate extends Component

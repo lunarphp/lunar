@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends BaseModel
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
+    use LogsActivity;
 
     /**
      * {@inheritDoc}
@@ -23,7 +24,7 @@ class Transaction extends BaseModel
     protected $casts = [
         'refund' => 'bool',
         'amount' => Price::class,
-        'meta' => 'object',
+        'meta'   => 'object',
     ];
 
     /**

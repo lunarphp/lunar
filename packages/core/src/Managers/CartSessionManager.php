@@ -3,7 +3,6 @@
 namespace GetCandy\Managers;
 
 use GetCandy\Base\CartSessionInterface;
-use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Facades\ShippingManifest;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Channel;
@@ -49,7 +48,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function manager()
     {
-        if (! $this->cart) {
+        if (!$this->cart) {
             $this->fetchOrCreate(create:true);
         }
 
@@ -82,7 +81,8 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Fetches a cart and optionally creates one if it doesn't exist.
      *
-     * @param  bool  $create
+     * @param bool $create
+     *
      * @return \GetCandy\Models\Cart|null
      */
     private function fetchOrCreate($create = false)
@@ -91,7 +91,7 @@ class CartSessionManager implements CartSessionInterface
             $this->getSessionKey()
         );
 
-        if (! $cartId) {
+        if (!$cartId) {
             return $create ? $this->cart = $this->createNewCart() : null;
         }
 
@@ -99,8 +99,8 @@ class CartSessionManager implements CartSessionInterface
             config('getcandy.cart.eager_load', [])
         )->find($cartId);
 
-        if (! $this->cart) {
-            if (! $create) {
+        if (!$this->cart) {
+            if (!$create) {
                 return null;
             }
 
@@ -187,8 +187,8 @@ class CartSessionManager implements CartSessionInterface
     {
         $cart = Cart::create([
             'currency_id' => $this->getCurrency()->id,
-            'channel_id' => $this->getChannel()->id,
-            'user_id' => $this->authManager->user()?->id,
+            'channel_id'  => $this->getChannel()->id,
+            'user_id'     => $this->authManager->user()?->id,
         ]);
 
         return $this->use($cart);

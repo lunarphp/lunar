@@ -16,7 +16,8 @@ class ValidateCartForOrder
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param \GetCandy\Models\Cart $cart
+     *
      * @return bool
      */
     public function execute(
@@ -31,7 +32,7 @@ class ValidateCartForOrder
         }
 
         // Do we have a billing address?
-        if (! $cart->billingAddress) {
+        if (!$cart->billingAddress) {
             throw new BillingAddressMissingException(
                 __('getcandy::exceptions.carts.billing_missing')
             );
@@ -48,7 +49,7 @@ class ValidateCartForOrder
 
         // Is this cart shippable and if so, does it have a shipping address.
         if ($cart->getManager()->isShippable()) {
-            if (! $cart->shippingAddress) {
+            if (!$cart->shippingAddress) {
                 throw new ShippingAddressMissingException(
                     __('getcandy::exceptions.carts.shipping_missing')
                 );
@@ -60,12 +61,12 @@ class ValidateCartForOrder
             );
 
             if ($shippingValidator->fails()) {
-                throw new ShippingAddressIncompleteException;
+                throw new ShippingAddressIncompleteException();
             }
 
             // Do we have a shipping option applied?
-            if (! $cart->getManager()->getShippingOption()) {
-                throw new ShippingOptionMissingException;
+            if (!$cart->getManager()->getShippingOption()) {
+                throw new ShippingOptionMissingException();
             }
         }
     }
@@ -80,9 +81,9 @@ class ValidateCartForOrder
         return [
             'country_id' => 'required',
             'first_name' => 'required',
-            'line_one' => 'required',
-            'city' => 'required',
-            'postcode' => 'required',
+            'line_one'   => 'required',
+            'city'       => 'required',
+            'postcode'   => 'required',
         ];
     }
 }

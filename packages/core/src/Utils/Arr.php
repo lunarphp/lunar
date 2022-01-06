@@ -17,7 +17,7 @@ class Arr
         }
 
         foreach ($setTuples as $tuple) {
-            if (! is_array($tuple)) {
+            if (!is_array($tuple)) {
                 throw new \InvalidArgumentException('The set builder requires a single array of one or more array sets.');
             }
         }

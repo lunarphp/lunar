@@ -13,8 +13,9 @@ class UpdateTieredPricing
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  Collection  $tieredPrices
+     * @param Model      $owner
+     * @param Collection $tieredPrices
+     *
      * @return void
      */
     public function execute(Model $owner, Collection $tieredPrices)
@@ -51,28 +52,29 @@ class UpdateTieredPricing
     /**
      * Create or update a price.
      *
-     * @param  Model  $owner
-     * @param  int  $tier
-     * @param  int|null  $groupId
-     * @param  float  $price
-     * @param  int  $currencyId
-     * @param  int|null  $id
+     * @param Model    $owner
+     * @param int      $tier
+     * @param int|null $groupId
+     * @param float    $price
+     * @param int      $currencyId
+     * @param int|null $id
+     *
      * @return \GetCandy\Models\Price
      */
     private function createOrUpdatePrice(Model $owner, $tier, $price, $currencyId, $groupId = null, $id = null)
     {
-        $priceModel = $id ? Price::find($id) : new Price;
+        $priceModel = $id ? Price::find($id) : new Price();
 
         // If the decimals weren't provided we need to add them in.
         $currency = Currency::find($currencyId);
 
         $priceModel->fill([
-            'price' => (int) ($price * $currency->factor),
-            'currency_id' => $currencyId,
+            'price'             => (int) ($price * $currency->factor),
+            'currency_id'       => $currencyId,
             'customer_group_id' => $groupId,
-            'tier' => $tier,
-            'priceable_id' => $owner->id,
-            'priceable_type' => get_class($owner),
+            'tier'              => $tier,
+            'priceable_id'      => $owner->id,
+            'priceable_type'    => get_class($owner),
         ]);
 
         $priceModel->save();

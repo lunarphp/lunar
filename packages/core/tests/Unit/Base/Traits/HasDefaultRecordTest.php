@@ -2,12 +2,7 @@
 
 namespace GetCandy\Tests\Unit\Console;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Channel;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

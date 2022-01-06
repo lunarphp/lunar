@@ -31,7 +31,7 @@ class Images extends Component
         return view('adminhub::components.activity-log.images', [
             'images' => $this->batch->map(function ($log) use ($media) {
                 return [
-                    'log' => $log,
+                    'log'   => $log,
                     'media' => $media->first(fn ($image) => $image->id == ($log->properties['media']['id'] ?? null)),
                 ];
             }),

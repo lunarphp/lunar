@@ -4,7 +4,6 @@ namespace GetCandy\Database\Factories;
 
 use GetCandy\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class CurrencyFactory extends Factory
 {
@@ -13,15 +12,15 @@ class CurrencyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'code' => $this->faker->unique()->currencyCode,
-            'enabled' => true,
-            'format' => $this->faker->word,
-            'exchange_rate' => $this->faker->randomFloat(2, 0.1, 5),
-            'decimal_point' => '.',
+            'name'           => $this->faker->name(),
+            'code'           => $this->faker->unique()->currencyCode,
+            'enabled'        => true,
+            'format'         => $this->faker->word,
+            'exchange_rate'  => $this->faker->randomFloat(2, 0.1, 5),
+            'decimal_point'  => '.',
             'thousand_point' => ',',
             'decimal_places' => 2,
-            'default' => true,
+            'default'        => true,
         ];
     }
 }

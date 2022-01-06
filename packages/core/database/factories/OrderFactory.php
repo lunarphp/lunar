@@ -2,14 +2,9 @@
 
 namespace GetCandy\Database\Factories;
 
-use App\Models\User;
-use GetCandy\Models\Cart;
 use GetCandy\Models\Channel;
-use GetCandy\Models\Country;
-use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class OrderFactory extends Factory
 {
@@ -21,27 +16,27 @@ class OrderFactory extends Factory
         $taxTotal = ($total - 100) * .2;
 
         return [
-            'channel_id' => Channel::factory(),
-            'user_id' => null,
-            'status' => 'pending_payment',
-            'reference' => $this->faker->unique()->regexify('[A-Z]{8}'),
-            'sub_total' => $total - $taxTotal,
+            'channel_id'     => Channel::factory(),
+            'user_id'        => null,
+            'status'         => 'pending_payment',
+            'reference'      => $this->faker->unique()->regexify('[A-Z]{8}'),
+            'sub_total'      => $total - $taxTotal,
             'discount_total' => 0,
             'shipping_total' => 0,
-            'tax_breakdown' => [
+            'tax_breakdown'  => [
                 [
-                    'name' => 'VAT',
-                    'total' => 200,
+                    'name'       => 'VAT',
+                    'total'      => 200,
                     'percentage' => 20,
                 ],
             ],
-            'tax_total' => $taxTotal,
-            'total' => $total,
-            'notes' => null,
-            'currency_code' => 'GBP',
+            'tax_total'             => $taxTotal,
+            'total'                 => $total,
+            'notes'                 => null,
+            'currency_code'         => 'GBP',
             'compare_currency_code' => 'GBP',
-            'exchange_rate' => 1,
-            'meta' => ['foo' => 'bar'],
+            'exchange_rate'         => 1,
+            'meta'                  => ['foo' => 'bar'],
         ];
     }
 }

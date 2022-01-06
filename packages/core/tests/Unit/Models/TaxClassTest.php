@@ -2,7 +2,6 @@
 
 namespace GetCandy\Tests\Unit\Models;
 
-use GetCandy\Models\Language;
 use GetCandy\Models\TaxClass;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +20,7 @@ class TaxClassTest extends TestCase
             'name' => 'Clothing',
         ]);
 
-        $this->assertDatabaseHas((new TaxClass)->getTable(), [
+        $this->assertDatabaseHas((new TaxClass())->getTable(), [
             'name' => 'Clothing',
         ]);
     }

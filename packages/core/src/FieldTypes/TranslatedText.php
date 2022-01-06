@@ -16,14 +16,14 @@ class TranslatedText implements FieldType
     /**
      * Create a new instance of TranslatedText field type.
      *
-     * @param  Illuminate\Database\Eloquent\Collection  $value
+     * @param Illuminate\Database\Eloquent\Collection $value
      */
     public function __construct($value = null)
     {
         if ($value) {
             $this->setValue($value);
         } else {
-            $this->value = new Collection;
+            $this->value = new Collection();
         }
     }
 
@@ -40,7 +40,7 @@ class TranslatedText implements FieldType
     /**
      * Set the value of this field.
      *
-     * @param  Illuminate\Database\Eloquent\Collection  $value
+     * @param Illuminate\Database\Eloquent\Collection $value
      */
     public function setValue($value)
     {
@@ -48,7 +48,7 @@ class TranslatedText implements FieldType
             $value = collect($value);
         }
 
-        if (! $value instanceof \Illuminate\Support\Collection) {
+        if (!$value instanceof \Illuminate\Support\Collection) {
             throw new FieldTypeException(self::class.' value must be a collection.');
         }
 

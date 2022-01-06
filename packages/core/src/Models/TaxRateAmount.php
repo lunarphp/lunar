@@ -4,7 +4,6 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Database\Factories\TaxRateAmountFactory;
-use GetCandy\Models\TaxClass;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxRateAmount extends BaseModel

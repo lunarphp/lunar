@@ -6,7 +6,6 @@ use GetCandy\Managers\CartManager;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,22 +25,22 @@ class CartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => ['foo' => 'bar'],
+            'channel_id'  => $channel->id,
+            'meta'        => ['foo' => 'bar'],
         ]);
 
-        $this->assertDatabaseHas((new Cart)->getTable(), [
+        $this->assertDatabaseHas((new Cart())->getTable(), [
             'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => json_encode(['foo' => 'bar']),
+            'channel_id'  => $channel->id,
+            'meta'        => json_encode(['foo' => 'bar']),
         ]);
 
         $variant = ProductVariant::factory()->create();
 
         $cart->lines()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => $variant->id,
-            'quantity' => 1,
+            'purchasable_id'   => $variant->id,
+            'quantity'         => 1,
         ]);
 
         $this->assertCount(1, $cart->lines()->get());
@@ -55,7 +54,7 @@ class CartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
+            'channel_id'  => $channel->id,
         ]);
 
         // dd(CartManager::class);

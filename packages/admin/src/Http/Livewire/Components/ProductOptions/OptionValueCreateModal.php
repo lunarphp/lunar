@@ -9,7 +9,8 @@ use Livewire\Component;
 
 class OptionValueCreateModal extends Component
 {
-    use WithLanguages, Notifies;
+    use WithLanguages;
+    use Notifies;
 
     /**
      * The parent product option for this new value.
@@ -46,7 +47,7 @@ class OptionValueCreateModal extends Component
      */
     protected $listeners = [
         'option-manager.selected-option' => 'setOption',
-        'variant-show.selected-option' => 'setOption',
+        'variant-show.selected-option'   => 'setOption',
     ];
 
     /**
@@ -67,7 +68,8 @@ class OptionValueCreateModal extends Component
     /**
      * Set our option by a given id.
      *
-     * @param  string  $optionId
+     * @param string $optionId
+     *
      * @return void
      */
     public function setOption($optionId)
@@ -89,7 +91,8 @@ class OptionValueCreateModal extends Component
     /**
      * Save our new value to the database.
      *
-     * @param  bool  $persist
+     * @param bool $persist
+     *
      * @return void
      */
     public function addNewValue($persist = false)
@@ -106,7 +109,7 @@ class OptionValueCreateModal extends Component
             'name' => $this->name,
         ]);
 
-        if (! $persist) {
+        if (!$persist) {
             $this->formVisible = false;
         }
 
@@ -118,7 +121,7 @@ class OptionValueCreateModal extends Component
 
         $this->emit('option-value-create-modal.value-created', [
             'option' => $this->option->id,
-            'value' => (string) $value->id,
+            'value'  => (string) $value->id,
         ]);
     }
 

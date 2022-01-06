@@ -6,7 +6,6 @@ use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -186,7 +185,7 @@ class HasTranslationsTest extends TestCase
 
         $product = Product::factory()->create([
             'attribute_data' => [
-                'name' => new Text('English Name'),
+                'name'        => new Text('English Name'),
                 'description' => new Text(null),
             ],
         ]);

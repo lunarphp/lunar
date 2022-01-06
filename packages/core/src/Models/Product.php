@@ -18,22 +18,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Product extends BaseModel implements SpatieHasMedia
 {
-    use HasFactory,
-        HasMedia,
-        LogsActivity,
-        HasChannels,
-        HasTranslations,
-        HasTags,
-        HasCustomerGroups,
-        HasUrls,
-        Searchable,
-        SoftDeletes;
+    use HasFactory;
+    use HasMedia;
+    use LogsActivity;
+    use HasChannels;
+    use HasTranslations;
+    use HasTags;
+    use HasCustomerGroups;
+    use HasUrls;
+    use Searchable;
+    use SoftDeletes;
 
     /**
      * Get the name of the index associated with the model.
@@ -121,8 +120,9 @@ class Product extends BaseModel implements SpatieHasMedia
     /**
      * Associate a product to another with a type.
      *
-     * @param  mixed  $product
-     * @param  string  $type
+     * @param mixed  $product
+     * @param string $type
+     *
      * @return void
      */
     public function associate($product, $type)
@@ -133,8 +133,9 @@ class Product extends BaseModel implements SpatieHasMedia
     /**
      * Dissociate a product to another with a type.
      *
-     * @param  mixed  $product
-     * @param  string  $type
+     * @param mixed  $product
+     * @param string $type
+     *
      * @return void
      */
     public function dissociate($product, $type = null)

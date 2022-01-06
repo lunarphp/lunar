@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CustomerGroup extends BaseModel
 {
-    use HasFactory, HasMedia, HasDefaultRecord;
+    use HasFactory;
+    use HasMedia;
+    use HasDefaultRecord;
 
     /**
      * {@inheritDoc}

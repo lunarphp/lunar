@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Currency extends BaseModel
 {
-    use HasFactory, LogsActivity, HasDefaultRecord;
+    use HasFactory;
+    use LogsActivity;
+    use HasDefaultRecord;
     /**
      * Define which attributes should be
      * protected from mass assignment.

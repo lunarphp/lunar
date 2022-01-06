@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductOptionValue extends BaseModel
 {
-    use HasFactory, HasMedia, HasTranslations;
+    use HasFactory;
+    use HasMedia;
+    use HasTranslations;
 
     /**
      * Return a new factory instance for the model.

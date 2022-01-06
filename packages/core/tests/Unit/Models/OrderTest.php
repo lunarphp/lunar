@@ -31,7 +31,7 @@ class OrderTest extends TestCase
 
         $data = $order->getRawOriginal();
 
-        $this->assertDatabaseHas((new Order)->getTable(), $data);
+        $this->assertDatabaseHas((new Order())->getTable(), $data);
     }
 
     /** @test */
@@ -42,9 +42,9 @@ class OrderTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id' => null,
+            'user_id'   => null,
             'placed_at' => now(),
-            'meta' => [
+            'meta'      => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -65,9 +65,9 @@ class OrderTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id' => null,
+            'user_id'   => null,
             'placed_at' => now(),
-            'meta' => [
+            'meta'      => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -79,7 +79,7 @@ class OrderTest extends TestCase
 
         $data = OrderLine::factory()->make([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => ProductVariant::factory()->create()->id,
+            'purchasable_id'   => ProductVariant::factory()->create()->id,
         ])->toArray();
         unset($data['currency']);
 
@@ -93,7 +93,7 @@ class OrderTest extends TestCase
     {
         $order = Order::factory()->create([
             'user_id' => null,
-            'status' => 'status_a',
+            'status'  => 'status_a',
         ]);
 
         $this->assertEquals('status_a', $order->status);
@@ -114,7 +114,7 @@ class OrderTest extends TestCase
 
         $order = Order::factory()->create([
             'user_id' => null,
-            'status' => 'status_a',
+            'status'  => 'status_a',
         ]);
 
         $this->assertCount(0, $order->transactions);
@@ -136,20 +136,20 @@ class OrderTest extends TestCase
 
         $order = Order::factory()->create([
             'user_id' => null,
-            'status' => 'status_a',
+            'status'  => 'status_a',
         ]);
 
         $this->assertCount(0, $order->transactions);
 
         $charge = Transaction::factory()->create([
             'order_id' => $order->id,
-            'amount' => 200,
-            'refund' => false,
+            'amount'   => 200,
+            'refund'   => false,
         ]);
 
         $refund = Transaction::factory()->create([
             'order_id' => $order->id,
-            'refund' => true,
+            'refund'   => true,
         ]);
 
         $order = $order->refresh();

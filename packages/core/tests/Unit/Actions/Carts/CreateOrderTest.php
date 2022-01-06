@@ -2,20 +2,15 @@
 
 namespace GetCandy\Tests\Unit\Actions\Carts;
 
-use GetCandy\Actions\Carts\CalculateLine;
-use GetCandy\DataTypes\Price as DataTypesPrice;
 use GetCandy\DataTypes\Price as PriceDataType;
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
 use GetCandy\Exceptions\Carts\BillingAddressMissingException;
-use GetCandy\Exceptions\Carts\CartException;
 use GetCandy\Facades\ShippingManifest;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartAddress;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Country;
 use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
 use GetCandy\Models\OrderLine;
@@ -25,7 +20,6 @@ use GetCandy\Models\TaxClass;
 use GetCandy\Models\TaxRateAmount;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 /**
  * @group getcandy.actions
@@ -55,28 +49,28 @@ class CreateOrderTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage' => 20,
+                'percentage'   => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id' => $taxClass->id,
+            'tax_class_id'  => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
+            'priceable_id'   => $purchasable->id,
         ]);
 
         $this->cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 1,
+            'purchasable_id'   => $purchasable->id,
+            'quantity'         => 1,
         ]);
     }
 
@@ -84,21 +78,21 @@ class CreateOrderTest extends TestCase
     public function can_create_order()
     {
         $billing = CartAddress::factory()->make([
-            'type' => 'billing',
+            'type'       => 'billing',
             'country_id' => Country::factory(),
             'first_name' => 'Santa',
-            'line_one' => '123 Elf Road',
-            'city' => 'Lapland',
-            'postcode' => 'BILL',
+            'line_one'   => '123 Elf Road',
+            'city'       => 'Lapland',
+            'postcode'   => 'BILL',
         ]);
 
         $shipping = CartAddress::factory()->make([
-            'type' => 'shipping',
+            'type'       => 'shipping',
             'country_id' => Country::factory(),
             'first_name' => 'Santa',
-            'line_one' => '123 Elf Road',
-            'city' => 'Lapland',
-            'postcode' => 'SHIPP',
+            'line_one'   => '123 Elf Road',
+            'city'       => 'Lapland',
+            'postcode'   => 'SHIPP',
         ]);
 
         $taxClass = TaxClass::factory()->create();
@@ -127,22 +121,22 @@ class CreateOrderTest extends TestCase
 
         $breakdown = $this->cart->taxBreakdown->map(function ($tax) {
             return [
-                'name' => $tax['rate']->name,
+                'name'       => $tax['rate']->name,
                 'percentage' => $tax['amounts']->sum('percentage'),
-                'total' => $tax['total']->value,
+                'total'      => $tax['total']->value,
             ];
         })->values();
 
         $datacheck = [
-            'user_id' => $this->cart->user_id,
-            'channel_id' => $this->cart->channel_id,
-            'status' => config('getcandy.orders.draft_status'),
+            'user_id'            => $this->cart->user_id,
+            'channel_id'         => $this->cart->channel_id,
+            'status'             => config('getcandy.orders.draft_status'),
             'customer_reference' => null,
-            'sub_total' => $this->cart->subTotal->value,
-            'total' => $this->cart->total->value,
-            'discount_total' => $this->cart->discountTotal?->value,
-            'shipping_total' => $this->cart->shippingTotal?->value ?: 0,
-            'tax_breakdown' => json_encode($breakdown),
+            'sub_total'          => $this->cart->subTotal->value,
+            'total'              => $this->cart->total->value,
+            'discount_total'     => $this->cart->discountTotal?->value,
+            'shipping_total'     => $this->cart->shippingTotal?->value ?: 0,
+            'tax_breakdown'      => json_encode($breakdown),
         ];
 
         $cart = $this->cart->refresh();
@@ -156,8 +150,8 @@ class CreateOrderTest extends TestCase
         $this->assertInstanceOf(OrderAddress::class, $order->shippingAddress);
         $this->assertInstanceOf(OrderAddress::class, $order->billingAddress);
 
-        $this->assertDatabaseHas((new Order)->getTable(), $datacheck);
-        $this->assertDatabaseHas((new OrderLine)->getTable(), [
+        $this->assertDatabaseHas((new Order())->getTable(), $datacheck);
+        $this->assertDatabaseHas((new OrderLine())->getTable(), [
             'identifier' => $shippingOption->getIdentifier(),
         ]);
     }
@@ -177,7 +171,7 @@ class CreateOrderTest extends TestCase
     public function cannot_create_order_with_incomplete_billing_address()
     {
         $this->cart->addresses()->create([
-            'type' => 'billing',
+            'type'     => 'billing',
             'postcode' => 'H0H 0H0',
         ]);
 

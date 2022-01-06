@@ -12,7 +12,10 @@ use Illuminate\Support\Str;
 
 class Channel extends BaseModel
 {
-    use HasFactory, SoftDeletes, LogsActivity, HasDefaultRecord;
+    use HasFactory;
+    use SoftDeletes;
+    use LogsActivity;
+    use HasDefaultRecord;
 
     /**
      * Return a new factory instance for the model.
@@ -35,7 +38,8 @@ class Channel extends BaseModel
     /**
      * Mutator for formatting the handle to a slug.
      *
-     * @param  string  $val
+     * @param string $val
+     *
      * @return void
      */
     public function setHandleAttribute($val)

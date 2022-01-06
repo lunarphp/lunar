@@ -21,23 +21,23 @@ class UrlObserverTest extends TestCase
         $langB = Language::factory()->create();
 
         $default = Url::factory()->create([
-            'slug' => 'foo-bar',
+            'slug'        => 'foo-bar',
             'language_id' => $langA->id,
-            'default' => true,
+            'default'     => true,
         ]);
 
         $this->assertTrue($default->default);
 
         $newDefault = Url::factory()->create([
-            'slug' => 'foo-bar-new',
+            'slug'        => 'foo-bar-new',
             'language_id' => $langA->id,
-            'default' => true,
+            'default'     => true,
         ]);
 
         $diffLang = Url::factory()->create([
-            'slug' => 'foo-bar-lang-ex',
+            'slug'        => 'foo-bar-lang-ex',
             'language_id' => $langB->id,
-            'default' => true,
+            'default'     => true,
         ]);
 
         $this->assertFalse($default->refresh()->default);
@@ -52,21 +52,21 @@ class UrlObserverTest extends TestCase
         $langB = Language::factory()->create();
 
         $default = Url::factory()->create([
-            'slug' => 'foo-bar',
+            'slug'        => 'foo-bar',
             'language_id' => $langA->id,
-            'default' => true,
+            'default'     => true,
         ]);
 
         $newDefault = Url::factory()->create([
-            'slug' => 'foo-bar-new',
+            'slug'        => 'foo-bar-new',
             'language_id' => $langA->id,
-            'default' => false,
+            'default'     => false,
         ]);
 
         $diffLang = Url::factory()->create([
-            'slug' => 'foo-bar-lang-ex',
+            'slug'        => 'foo-bar-lang-ex',
             'language_id' => $langB->id,
-            'default' => false,
+            'default'     => false,
         ]);
 
         $default->delete();

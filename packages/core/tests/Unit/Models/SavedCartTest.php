@@ -2,12 +2,9 @@
 
 namespace GetCandy\Tests\Unit\Models;
 
-use GetCandy\Managers\CartManager;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
-use GetCandy\Models\ProductVariant;
 use GetCandy\Models\SavedCart;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,17 +24,17 @@ class SavedCartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => ['foo' => 'bar'],
+            'channel_id'  => $channel->id,
+            'meta'        => ['foo' => 'bar'],
         ]);
 
         SavedCart::create([
-            'name' => 'Foo',
+            'name'    => 'Foo',
             'cart_id' => $cart->id,
         ]);
 
-        $this->assertDatabaseHas((new SavedCart)->getTable(), [
-            'name' => 'Foo',
+        $this->assertDatabaseHas((new SavedCart())->getTable(), [
+            'name'    => 'Foo',
             'cart_id' => $cart->id,
         ]);
     }
@@ -50,12 +47,12 @@ class SavedCartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => ['foo' => 'bar'],
+            'channel_id'  => $channel->id,
+            'meta'        => ['foo' => 'bar'],
         ]);
 
         $savedCart = SavedCart::create([
-            'name' => 'Foo',
+            'name'    => 'Foo',
             'cart_id' => $cart->id,
         ]);
 

@@ -12,7 +12,8 @@ trait CanScheduleAvailability
     /**
      * Return whether or not the models provided are suitable for scheduling.
      *
-     * @param  \Illuminate\Support\Collection  $models
+     * @param \Illuminate\Support\Collection $models
+     *
      * @return void
      */
     abstract protected function validateScheduling(Collection $models);
@@ -20,11 +21,12 @@ trait CanScheduleAvailability
     /**
      * Schedule models for a given relation.
      *
-     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $relation
-     * @param  mixed  $models
-     * @param  DateTime|null  $starts
-     * @param  DateTime|null  $ends
-     * @param  array  $pivotData
+     * @param \Illuminate\Database\Eloquent\Relations\Relation $relation
+     * @param mixed                                            $models
+     * @param DateTime|null                                    $starts
+     * @param DateTime|null                                    $ends
+     * @param array                                            $pivotData
+     *
      * @return void
      */
     protected function schedule(
@@ -37,13 +39,13 @@ trait CanScheduleAvailability
         // Convert to collection if it's an array
         $models = is_array($models) ? collect($models) : $models;
 
-        if (! is_iterable($models)) {
+        if (!is_iterable($models)) {
             $models = collect([$models]);
         }
 
         $error = $this->validateScheduling($models);
 
-        if (! is_null($error)) {
+        if (!is_null($error)) {
             throw new SchedulingException($error);
         }
 
@@ -52,8 +54,8 @@ trait CanScheduleAvailability
         $relation->syncWithoutDetaching(
             $this->getScheduleMapping($models, array_merge([
                 'starts_at' => $starts,
-                'ends_at' => $ends,
-                'enabled' => true,
+                'ends_at'   => $ends,
+                'enabled'   => true,
             ], $pivotData))
         );
     }
@@ -61,9 +63,10 @@ trait CanScheduleAvailability
     /**
      * Unschedule models for a relation.
      *
-     * @param  Relation  $relation
-     * @param  mixed  $models
-     * @param  array  $pivotData
+     * @param Relation $relation
+     * @param mixed    $models
+     * @param array    $pivotData
+     *
      * @return void
      */
     protected function unschedule(Relation $relation, $models, array $pivotData = [])
@@ -71,21 +74,21 @@ trait CanScheduleAvailability
         // Convert to collection if it's an array
         $models = is_array($models) ? collect($models) : $models;
 
-        if (! is_iterable($models)) {
+        if (!is_iterable($models)) {
             $models = collect([$models]);
         }
 
         $error = $this->validateScheduling($models);
 
-        if (! is_null($error)) {
+        if (!is_null($error)) {
             throw new SchedulingException($error);
         }
 
         $relation->syncWithoutDetaching(
             $this->getScheduleMapping($models, array_merge([
                 'starts_at' => null,
-                'ends_at' => null,
-                'enabled' => false,
+                'ends_at'   => null,
+                'enabled'   => false,
             ], $pivotData))
         );
     }
@@ -93,8 +96,9 @@ trait CanScheduleAvailability
     /**
      * Returns the data for the sync update.
      *
-     * @param  \Illuminate\Support\Collection  $models
-     * @param  array|null  $pivotData
+     * @param \Illuminate\Support\Collection $models
+     * @param array|null                     $pivotData
+     *
      * @return void
      */
     private function getScheduleMapping($models, array $pivotData = null)

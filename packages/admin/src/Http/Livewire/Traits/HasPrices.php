@@ -6,7 +6,6 @@ use GetCandy\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
 use GetCandy\Hub\Actions\Pricing\UpdatePrices;
 use GetCandy\Hub\Actions\Pricing\UpdateTieredPricing;
 use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Price;
 use GetCandy\Models\TaxClass;
 use GetCandy\Rules\MaxDecimalPlaces;
@@ -107,7 +106,7 @@ trait HasPrices
 
         DB::transaction(function () use ($model) {
             // Save customer group pricing.
-            if (! $this->customerPricingEnabled) {
+            if (!$this->customerPricingEnabled) {
                 // If customer group pricing isn't enabled, we need to remove the prices for customer groups.
                 $model->prices()->whereNotNull('customer_group_id')->whereTier(1)->delete();
                 $this->customerGroupPrices = collect();
@@ -129,10 +128,10 @@ trait HasPrices
     {
         $this->tieredPrices[] = [
             'customer_group_id' => '*',
-            'tier' => null,
-            'prices' => collect($this->basePrices)->map(function ($price) {
+            'tier'              => null,
+            'prices'            => collect($this->basePrices)->map(function ($price) {
                 return [
-                    'price' => null,
+                    'price'       => null,
                     'currency_id' => $price['currency_id'],
                 ];
             })->toArray(),
@@ -142,7 +141,8 @@ trait HasPrices
     /**
      * Method to remove a tier from the stack.
      *
-     * @param  int  $index
+     * @param int $index
+     *
      * @return void
      */
     public function removeTier($index)
@@ -153,7 +153,8 @@ trait HasPrices
     /**
      * Set the currency using the provided id.
      *
-     * @param  int|string  $currencyId
+     * @param int|string $currencyId
+     *
      * @return void
      */
     public function setCurrency($currencyId)
@@ -164,22 +165,23 @@ trait HasPrices
     /**
      * Listener method when customer group pricing is toggled.
      *
-     * @param  bool  $value
+     * @param bool $value
+     *
      * @return void
      */
     public function updatedCustomerPricingEnabled($value)
     {
-        if (! $value || $this->customerGroupPrices->count()) {
+        if (!$value || $this->customerGroupPrices->count()) {
             return;
         }
         $groups = $this->customerGroupPrices->toArray();
 
         foreach ($this->customerGroups as $group) {
-            if (! ($groups[$group->id] ?? false)) {
+            if (!($groups[$group->id] ?? false)) {
                 $groups[$group->id] = collect($this->basePrices)->map(function ($price) use ($group) {
                     return [
-                        'price' => $price['price'],
-                        'currency_id' => $price['currency_id'],
+                        'price'             => $price['price'],
+                        'currency_id'       => $price['currency_id'],
                         'customer_group_id' => $group->id,
                     ];
                 })->toArray();
@@ -229,18 +231,19 @@ trait HasPrices
     /**
      * Return mapped base prices.
      *
-     * @param  \Illuminate\Support\Collection  $prices
+     * @param \Illuminate\Support\Collection $prices
+     *
      * @return \Illuminate\Support\Collection
      */
     private function mapBasePrices(Collection $prices)
     {
-        $prices = $prices->filter(fn ($price) => ! $price->customer_group_id)
+        $prices = $prices->filter(fn ($price) => !$price->customer_group_id)
             ->mapWithKeys(function ($price) {
                 return [
                     $price->currency->code => [
-                        'id' => $price->id,
-                        'currency_id' => $price->currency_id,
-                        'price' => $price->price->decimal,
+                        'id'            => $price->id,
+                        'currency_id'   => $price->currency_id,
+                        'price'         => $price->price->decimal,
                         'compare_price' => $price->compare_price->value ? $price->compare_price->decimal : null,
                     ],
                 ];
@@ -251,9 +254,9 @@ trait HasPrices
         foreach ($this->currencies as $currency) {
             if (empty($prices[$currency->code])) {
                 $prices[$currency->code] = [
-                    'price' => null,
+                    'price'         => null,
                     'compare_price' => null,
-                    'currency_id' => $currency->id,
+                    'currency_id'   => $currency->id,
                 ];
             }
         }
@@ -264,7 +267,8 @@ trait HasPrices
     /**
      * Return mapped customer group prices.
      *
-     * @param  \Illuminate\Support\Collection  $prices
+     * @param \Illuminate\Support\Collection $prices
+     *
      * @return \Illuminate\Support\Collection
      */
     private function mapCustomerGroupPrices(Collection $prices)
@@ -273,10 +277,10 @@ trait HasPrices
             ->groupBy('customer_group_id')
             ->mapWithKeys(function ($prices, $groupId) {
                 foreach ($this->currencies as $currency) {
-                    if (! $prices->first(fn ($price) => $price->currency_id == $currency->id)) {
+                    if (!$prices->first(fn ($price) => $price->currency_id == $currency->id)) {
                         $prices->push(new Price([
                             'customer_group_id' => $groupId,
-                            'currency_id' => $currency->id,
+                            'currency_id'       => $currency->id,
                         ]));
                     }
                 }
@@ -285,11 +289,11 @@ trait HasPrices
                     $groupId => $prices->mapWithKeys(function ($price) {
                         return [
                             $price->currency->code => [
-                                'id' => $price->id,
-                                'currency_id' => $price->currency_id,
+                                'id'                => $price->id,
+                                'currency_id'       => $price->currency_id,
                                 'customer_group_id' => $price->customer_group_id,
-                                'price' => $price->price->decimal,
-                                'compare_price' => $price->compare_price->decimal,
+                                'price'             => $price->price->decimal,
+                                'compare_price'     => $price->compare_price->decimal,
                             ],
                         ];
                     }),
@@ -300,7 +304,8 @@ trait HasPrices
     /**
      * Return mapped tiered pricing.
      *
-     * @param  \Illuminate\Support\Collection  $prices
+     * @param \Illuminate\Support\Collection $prices
+     *
      * @return \Illuminate\Support\Collection
      */
     private function mapTieredPrices(Collection $prices)
@@ -315,11 +320,11 @@ trait HasPrices
                     $prices = $prices->mapWithKeys(function ($price) {
                         return [
                             $price->currency->code => [
-                                'id' => $price->id,
-                                'currency_id' => $price->currency_id,
+                                'id'                => $price->id,
+                                'currency_id'       => $price->currency_id,
                                 'customer_group_id' => $price->customer_group_id,
-                                'price' => $price->price->decimal,
-                                'compare_price' => $price->compare_price->decimal,
+                                'price'             => $price->price->decimal,
+                                'compare_price'     => $price->compare_price->decimal,
                             ],
                         ];
                     });
@@ -327,7 +332,7 @@ trait HasPrices
                     foreach ($this->currencies as $currency) {
                         if (empty($prices[$currency->code])) {
                             $prices[$currency->code] = [
-                                'price' => null,
+                                'price'       => null,
                                 'currency_id' => $currency->id,
                             ];
                         }
@@ -335,8 +340,8 @@ trait HasPrices
 
                     return [
                         'customer_group_id' => $default->customer_group_id ?: '*',
-                        'tier' => $default->tier,
-                        'prices' => $prices,
+                        'tier'              => $default->tier,
+                        'prices'            => $prices,
                     ];
                 })->values()
             );
@@ -353,9 +358,9 @@ trait HasPrices
     protected function hasPriceValidationRules()
     {
         $rules = [
-            'customerPricingEnabled' => 'boolean',
-            'customerGroupPrices' => 'nullable|array',
-            'tieredPrices.*.tier' => 'required|numeric|min:2',
+            'customerPricingEnabled'           => 'boolean',
+            'customerGroupPrices'              => 'nullable|array',
+            'tieredPrices.*.tier'              => 'required|numeric|min:2',
             'tieredPrices.*.customer_group_id' => 'required',
         ];
 
@@ -412,7 +417,7 @@ trait HasPrices
                 return strpos($attribute, $currency->code) !== false;
             });
 
-            if (! $currency) {
+            if (!$currency) {
                 return $message;
             }
 

@@ -19,19 +19,19 @@ class MaxDecimalPlacesRuleTest extends TestCase
     {
         $validator = Validator::make([
             'decimal' => 0.1,
-        ], ['decimal' => new MaxDecimalPlaces]);
+        ], ['decimal' => new MaxDecimalPlaces()]);
 
         $this->assertTrue($validator->passes());
 
         $validator = Validator::make([
             'decimal' => 0.12,
-        ], ['decimal' => new MaxDecimalPlaces]);
+        ], ['decimal' => new MaxDecimalPlaces()]);
 
         $this->assertTrue($validator->passes());
 
         $validator = Validator::make([
             'decimal' => 0.123,
-        ], ['decimal' => new MaxDecimalPlaces]);
+        ], ['decimal' => new MaxDecimalPlaces()]);
 
         $this->assertTrue($validator->fails());
     }
@@ -89,7 +89,7 @@ class MaxDecimalPlacesRuleTest extends TestCase
     {
         $validator = Validator::make([
             'decimal' => 1,
-        ], ['decimal' => new MaxDecimalPlaces]);
+        ], ['decimal' => new MaxDecimalPlaces()]);
 
         $this->assertTrue($validator->passes());
 

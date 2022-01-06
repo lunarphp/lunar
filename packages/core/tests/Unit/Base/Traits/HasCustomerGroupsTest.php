@@ -29,9 +29,9 @@ class HasCustomerGroupsTest extends TestCase
             'getcandy_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'visible' => 1,
-                'purchasable' => 1,
+                'enabled'           => 1,
+                'visible'           => 1,
+                'purchasable'       => 1,
             ],
         );
     }
@@ -50,9 +50,9 @@ class HasCustomerGroupsTest extends TestCase
                 'getcandy_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
+                    'enabled'           => 1,
+                    'visible'           => 1,
+                    'purchasable'       => 1,
                 ]
             );
         }
@@ -72,9 +72,9 @@ class HasCustomerGroupsTest extends TestCase
                 'getcandy_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
+                    'enabled'           => 1,
+                    'visible'           => 1,
+                    'purchasable'       => 1,
                 ]
             );
         }
@@ -111,9 +111,9 @@ class HasCustomerGroupsTest extends TestCase
                 'getcandy_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
+                    'enabled'           => 1,
+                    'visible'           => 1,
+                    'purchasable'       => 1,
                 ]
             );
         }
@@ -133,9 +133,9 @@ class HasCustomerGroupsTest extends TestCase
                 'getcandy_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
+                    'enabled'           => 1,
+                    'visible'           => 1,
+                    'purchasable'       => 1,
                 ]
             );
         }

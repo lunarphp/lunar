@@ -20,11 +20,11 @@ class TaxZoneCountryTest extends TestCase
     {
         $data = [
             'tax_zone_id' => TaxZone::factory()->create()->id,
-            'country_id' => Country::factory()->create()->id,
+            'country_id'  => Country::factory()->create()->id,
         ];
 
         TaxZoneCountry::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZoneCountry)->getTable(), $data);
+        $this->assertDatabaseHas((new TaxZoneCountry())->getTable(), $data);
     }
 }

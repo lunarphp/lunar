@@ -3,10 +3,7 @@
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
 
 use GetCandy\FieldTypes\Text;
-use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
 use GetCandy\Hub\Http\Livewire\Components\ProductSearch;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\Stubs\User;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;

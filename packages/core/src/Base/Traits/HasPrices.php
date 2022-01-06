@@ -2,9 +2,7 @@
 
 namespace GetCandy\Base\Traits;
 
-use GetCandy\Models\Attribute;
 use GetCandy\Models\Price;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait HasPrices
 {
