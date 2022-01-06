@@ -1,5 +1,60 @@
 {
+    "name": "getcandy/getcandy",
+    "description": "GetCandy Monorepo",
+    "private": true,
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "GetCandy",
+            "homepage": "https://getcandy.io/"
+        }
+    ],
+    "require": {
+        "cartalyst/converter": "^6.1",
+        "getcandy/licensing": "dev-main",
+        "kalnoy/nestedset": "^6.0",
+        "laravel/scout": "^9.3",
+        "livewire-ui/modal": "^1.0",
+        "livewire/livewire": "^2.0",
+        "php": "^8.0",
+        "spatie/laravel-activitylog": "^4.1",
+        "spatie/laravel-medialibrary": "^9.0.0",
+        "yab/laravel-scout-mysql-driver": "^5.0"
+    },
     "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.5",
         "symplify/monorepo-builder": "^10.0"
-    }
+    },
+    "autoload": {
+        "files": [
+            "packages/admin/src/helpers.php"
+        ],
+        "psr-4": {
+            "GetCandy\\": "packages/core/src",
+            "GetCandy\\Database\\Factories\\": "packages/core/database/factories",
+            "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
+            "GetCandy\\Hub\\": "packages/admin/src",
+            "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GetCandy\\Hub\\Tests\\": "packages/admin/tests",
+            "GetCandy\\Tests\\": "packages/core/tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GetCandy\\Hub\\AdminHubServiceProvider",
+                "GetCandy\\GetCandyServiceProvider"
+            ]
+        }
+    },
+    "replace": {
+        "getcandy/admin": "self.version",
+        "getcandy/core": "self.version"
+    },
+    "minimum-stability": "beta"
 }
