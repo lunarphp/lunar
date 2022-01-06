@@ -1,46 +1,5 @@
 {
-    "name": "getcandy/getcandy",
-    "description": "GetCandy Admin Hub",
-    "type": "library",
-    "license": "MIT",
-    "minimum-stability": "beta",
-    "authors": [
-        {
-          "name": "GetCandy",
-          "homepage": "https://getcandy.io/"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "GetCandy\\Hub\\": "src",
-            "GetCandy\\Hub\\Database\\Factories\\": "database/factories",
-            "GetCandy\\Hub\\Database\\Seeders\\": "database/seeders"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "GetCandy\\Hub\\Tests\\": "tests"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "GetCandy\\Hub\\AdminHubServiceProvider"
-            ]
-        }
-    },
-    "require": {
-        "php": "^8.0",
-        "getcandy/core": "^2.0",
-        "livewire/livewire": "^2.0",
-        "getcandy/licensing": "dev-main",
-        "livewire-ui/modal": "^1.0"
-    },
     "require-dev": {
-        "orchestra/testbench": "^6.0",
-        "phpunit/phpunit": "^9.5"
+        "symplify/monorepo-builder": "^10.0"
     }
 }

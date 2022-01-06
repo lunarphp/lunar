@@ -1,0 +1,155 @@
+<?php
+
+namespace GetCandy\Hub\Models;
+
+use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasTablePrefix;
+use GetCandy\Hub\Database\Factories\StaffFactory;
+use GetCandy\Hub\Models\StaffPermission;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class Staff extends Authenticatable
+{
+    use HasFactory, Notifiable, SoftDeletes;
+
+    /**
+     * Return a new factory instance for the model.
+     *
+     * @return \GetCandy\Hub\Database\Factories\StaffFactory
+     */
+    protected static function newFactory(): StaffFactory
+    {
+        return StaffFactory::new();
+    }
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'firstname',
+        'lastname',
+        'admin',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * Create a new instance of the Model.
+     *
+     * @param  array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setTable(config('getcandy.database.table_prefix').$this->getTable());
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * Currently Livewire doesn't support route bindings for
+     * soft deleted models so we need to rewire it here.
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->resolveSoftDeletableRouteBinding($value, $field);
+    }
+
+    /**
+     * Return the user permissions relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions(): HasMany
+    {
+        return $this->hasMany(StaffPermission::class);
+    }
+
+    /**
+     * Authorize an action via permissions.
+     *
+     * @param  string  $permission
+     * @return bool
+     */
+    public function authorize($permission): bool
+    {
+        if (! is_array($permission)) {
+            $permission = [$permission];
+        }
+
+        return $this->permissions()->whereIn('handle', $permission)->exists();
+    }
+
+    /**
+     * Apply the basic search scope to a given Eloquent query builder.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $term
+     * @return void
+     */
+    public function scopeSearch($query, $term)
+    {
+        if ($term) {
+            $parts = explode(' ', $term);
+
+            foreach ($parts as $part) {
+                $query->where('email', 'LIKE', "%$part%")
+                        ->orWhere('firstname', 'LIKE', "%$part%")
+                        ->orWhere('lastname', 'LIKE', "%$part%");
+            }
+        }
+    }
+
+    /**
+     * Get staff member's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->firstname.' '.$this->lastname;
+    }
+
+    /**
+     * Get staff member's Gravatar URLs.
+     *
+     * @return string
+     */
+    public function getGravatarAttribute()
+    {
+        $hash = md5(strtolower(trim($this->attributes['email'])));
+
+        return "https://www.gravatar.com/avatar/$hash";
+    }
+}

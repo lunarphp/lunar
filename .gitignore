@@ -1,9 +1,1 @@
-composer.lock
-/vendor
-.phpunit.result.cache
-/.idea
-/.vscode
-node_modules/
-yarn.lock
-mix-manifest.json
-package-lock.json
+/vendor/
