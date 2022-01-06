@@ -1,0 +1,19 @@
+{
+  "name": "GetCandy",
+  "version": "0.0.1",
+  "description": "Laravel E-Commerce Package.",
+  "main": "index.js",
+  "authors": {
+    "name": "",
+    "email": ""
+  },
+  "repository": "getcandy/docs/GetCandy",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}
