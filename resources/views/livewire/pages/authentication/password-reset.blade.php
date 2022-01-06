@@ -4,11 +4,11 @@
       @include('adminhub::partials.getcandy-stamp')
 
       <h2 class="mt-6 text-3xl font-extrabold text-center text-gray-900">
-        Welcome to the Hub.
+        Reset your password
       </h2>
     </div>
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        @livewire('hub.components.login-form')
+        @livewire('hub.components.password-reset')
     </div>
   </div>
 </div>
