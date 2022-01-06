@@ -101,7 +101,9 @@ class PasswordReset extends Component
                 encrypt($staff->id.'|'.$token)
             ));
 
-            $this->notify('Password reset sent.');
+            $this->notify(
+                __('adminhub::notifications.password-reset.email_sent')
+            );
         }
     }
 
@@ -124,12 +126,18 @@ class PasswordReset extends Component
 
             $staff = Staff::findOrFail($staffId);
         } catch (Throwable $e) {
-            $this->notify('Reset token is invalid', level: 'error');
+            $this->notify(
+                __('adminhub::notifications.password-reset.invalid_token'),
+                level: 'error'
+            );
             return;
         }
 
         if (cache('hub.password.reset.'.$staffId) != $token) {
-            $this->notify('Reset token is invalid', level: 'error');
+            $this->notify(
+                __('adminhub::notifications.password-reset.invalid_token'),
+                level: 'error'
+            );
             return;
         }
 
@@ -140,7 +148,9 @@ class PasswordReset extends Component
 
         Auth::guard('staff')->loginUsingId($staffId);
 
-        $this->notify('Password updated');
+        $this->notify(
+            __('adminhub::notifications.password-reset.password_updated')
+        );
 
         $this->redirectRoute('hub.index');
     }
