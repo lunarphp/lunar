@@ -29,7 +29,8 @@ class ProductTypesIndex extends Component
     /**
      * Handle when search is updated.
      *
-     * @param  string  $value
+     * @param string $value
+     *
      * @return void
      */
     public function updatedSearch($value)

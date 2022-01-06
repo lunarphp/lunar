@@ -10,10 +10,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Initial customer editing screen
 
 ### Fixed
-- Fixed [Issue 19](https://github.com/getcandy/getcandy/issues/19)
-- Fixed [Issue 18](https://github.com/getcandy/getcandy/issues/18), wrong name on Activity Log
-- Fixed [Issue 4](https://github.com/getcandy/getcandy/issues/4)
-- Fixed [Issue 23](https://github.com/getcandy/getcandy/issues/23)
+
+- Product SKU(s) will now be displayed on listing page ([#19](https://github.com/getcandy/getcandy/issues/19))
+- Product stock will now show correct value ([#19](https://github.com/getcandy/getcandy/issues/19))
+- Incoming stock on product variants will show correct values on product edit page ([#19](https://github.com/getcandy/getcandy/issues/19))
+- The name displayed on the activity log should now be accurate ([#18](https://github.com/getcandy/getcandy/issues/18))
+- Move collection button is now disabled if no target collection is selected ([#23](https://github.com/getcandy/getcandy/issues/23))
+- Tweaked the way attributes are mapped to Livewire to prevent issue with `@entangle` updating attributes listed ([#4](https://github.com/getcandy/getcandy/issues/4))
 
 ### Changed
 - Removed requirement to specify `staff` guard in `config/auth.php`. This can be safely removed.

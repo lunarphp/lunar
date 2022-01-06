@@ -24,7 +24,7 @@ class ChannelCreate extends Component
      */
     public function mount()
     {
-        $this->channel = new Channel;
+        $this->channel = new Channel();
         $this->channel->default = false;
     }
 
@@ -38,9 +38,9 @@ class ChannelCreate extends Component
         $table = $this->channel->getTable();
 
         return [
-            'channel.name' => 'required|string|max:255',
-            'channel.handle' => "required|string|unique:$table,handle|max:255",
-            'channel.url' => 'nullable|url|max:255',
+            'channel.name'    => 'required|string|max:255',
+            'channel.handle'  => "required|string|unique:$table,handle|max:255",
+            'channel.url'     => 'nullable|url|max:255',
             'channel.default' => 'boolean',
         ];
     }
@@ -69,7 +69,7 @@ class ChannelCreate extends Component
      */
     public function toggleDefault()
     {
-        $this->channel->default = ! $this->channel->default;
+        $this->channel->default = !$this->channel->default;
     }
 
     /**

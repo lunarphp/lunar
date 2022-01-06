@@ -2,15 +2,11 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Settings\Currencies;
 
-use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
 use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\Stubs\User;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 use Livewire\Livewire;
 
 /**
@@ -34,14 +30,14 @@ class CurrencyShowTest extends TestCase
         $this->actingAs($staff, 'staff');
 
         $properties = [
-            'name' => 'Some currency name',
-            'code' => 'TST',
-            'default' => true,
-            'exchange_rate' => 0.5,
-            'format' => '£{value}',
-            'decimal_point' => ':',
+            'name'           => 'Some currency name',
+            'code'           => 'TST',
+            'default'        => true,
+            'exchange_rate'  => 0.5,
+            'format'         => '£{value}',
+            'decimal_point'  => ':',
             'thousand_point' => ';',
-            'enabled' => 0,
+            'enabled'        => 0,
         ];
 
         $component = Livewire::test(CurrencyShow::class, [
@@ -72,7 +68,7 @@ class CurrencyShowTest extends TestCase
 
         Currency::factory()->create([
             'default' => false,
-            'code' => 'FOO',
+            'code'    => 'FOO',
         ]);
 
         $currency = Currency::factory()->create([
@@ -97,7 +93,7 @@ class CurrencyShowTest extends TestCase
 
         $currency = Currency::factory()->create([
             'default' => false,
-            'code' => 'FOO',
+            'code'    => 'FOO',
         ]);
 
         $this->actingAs($staff, 'staff');
@@ -119,7 +115,7 @@ class CurrencyShowTest extends TestCase
 
         $currency = Currency::factory()->create([
             'default' => false,
-            'code' => 'FOO',
+            'code'    => 'FOO',
         ]);
 
         $this->actingAs($staff, 'staff');

@@ -50,16 +50,16 @@ trait WithAttributes
             }
 
             return [$attribute->id => [
-                'name' => $attribute->translate('name'),
-                'group' => $attribute->attributeGroup->translate('name'),
-                'group_handle' => $attribute->attributeGroup->handle,
-                'id' => $attribute->handle,
-                'signature' => 'attributeMapping.'.$attribute->id.'.data',
-                'type' => $attribute->type,
-                'handle' => $attribute->handle,
+                'name'          => $attribute->translate('name'),
+                'group'         => $attribute->attributeGroup->translate('name'),
+                'group_handle'  => $attribute->attributeGroup->handle,
+                'id'            => $attribute->handle,
+                'signature'     => 'attributeMapping.'.$attribute->id.'.data',
+                'type'          => $attribute->type,
+                'handle'        => $attribute->handle,
                 'configuration' => $attribute->configuration,
-                'required' => $attribute->required,
-                'component' => Str::kebab(class_basename(
+                'required'      => $attribute->required,
+                'component'     => Str::kebab(class_basename(
                     $attribute->type
                 )),
                 'data' => $value,
@@ -95,7 +95,8 @@ trait WithAttributes
     /**
      * Map translated values into field types.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return \GetCandy\FieldTypes\TranslatedText
      */
     protected function mapTranslatedText($data)
@@ -111,7 +112,8 @@ trait WithAttributes
     /**
      * Prepare translated text field for Livewire modeling.
      *
-     * @param  string|array  $value
+     * @param string|array $value
+     *
      * @return array
      */
     protected function prepareTranslatedText($value)

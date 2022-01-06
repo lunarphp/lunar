@@ -17,19 +17,19 @@ class ProductCreate extends AbstractProduct
     public function mount()
     {
         $this->product = new Product([
-            'status' => 'draft',
+            'status'          => 'draft',
             'product_type_id' => ProductType::first()->id,
         ]);
 
         $this->options = collect();
         $this->variantsEnabled = $this->getVariantsCount() > 1;
         $this->variant = new ProductVariant([
-            'purchasable' => 'always',
-            'tax_class_id' => TaxClass::first()->id,
-            'shippable' => true,
-            'stock' => 0,
+            'purchasable'   => 'always',
+            'tax_class_id'  => TaxClass::first()->id,
+            'shippable'     => true,
+            'stock'         => 0,
             'unit_quantity' => 1,
-            'backorder' => 0,
+            'backorder'     => 0,
         ]);
 
         $this->syncAvailability();

@@ -6,6 +6,7 @@ use GetCandy\Hub\Auth\Manifest;
 use GetCandy\Hub\Console\Commands\InstallHub;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
+use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -127,14 +128,14 @@ class AdminHubServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
-            return new \GetCandy\Hub\Editing\ProductSection;
+            return new \GetCandy\Hub\Editing\ProductSection();
         });
     }
 
     protected function registerMenuBuilder()
     {
         $this->app->singleton(MenuRegistry::class, function () {
-            return new MenuRegistry;
+            return new MenuRegistry();
         });
 
         SidebarMenu::make();
@@ -182,6 +183,7 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerAuthenticationComponents()
     {
+        Livewire::component('hub.components.password-reset', PasswordReset::class);
         Livewire::component('hub.components.login-form', LoginForm::class);
     }
 
@@ -322,7 +324,7 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        $manifest = new Manifest;
+        $manifest = new Manifest();
         $this->app->instance(Manifest::class, $manifest);
 
         Gate::after(function ($user, $ability) use ($manifest) {

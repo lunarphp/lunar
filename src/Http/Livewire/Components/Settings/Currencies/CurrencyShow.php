@@ -4,13 +4,13 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\Currencies;
 
 use GetCandy\Hub\Http\Livewire\Traits\ConfirmsDelete;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
 use Livewire\Component;
 
 class CurrencyShow extends Component
 {
-    use ConfirmsDelete, Notifies;
+    use ConfirmsDelete;
+    use Notifies;
 
     /**
      * The instance of the currency we're viewing.
@@ -27,15 +27,15 @@ class CurrencyShow extends Component
     protected function rules()
     {
         return [
-            'currency.code' => 'required|max:255|unique:'.$this->currency->getTable().',code,'.$this->currency->id,
-            'currency.name' => 'required|max:255',
-            'currency.exchange_rate' => 'required|numeric|min:0.1',
-            'currency.format' => 'required|max:255|regex:/{value}/i',
-            'currency.decimal_point' => 'required|max:1',
+            'currency.code'           => 'required|max:255|unique:'.$this->currency->getTable().',code,'.$this->currency->id,
+            'currency.name'           => 'required|max:255',
+            'currency.exchange_rate'  => 'required|numeric|min:0.1',
+            'currency.format'         => 'required|max:255|regex:/{value}/i',
+            'currency.decimal_point'  => 'required|max:1',
             'currency.thousand_point' => 'required|max:1',
             'currency.decimal_places' => 'required|integer|max:4',
-            'currency.enabled' => 'nullable',
-            'currency.default' => 'nullable',
+            'currency.enabled'        => 'nullable',
+            'currency.default'        => 'nullable',
         ];
     }
 
@@ -69,7 +69,7 @@ class CurrencyShow extends Component
      */
     public function toggleDefault()
     {
-        $this->currency->default = ! $this->currency->default;
+        $this->currency->default = !$this->currency->default;
 
         // If we're setting the currency to default, force it to be enabled.
         if ($this->currency->default) {
@@ -84,7 +84,7 @@ class CurrencyShow extends Component
      */
     public function toggleEnabled()
     {
-        $this->currency->enabled = ! $this->currency->enabled;
+        $this->currency->enabled = !$this->currency->enabled;
     }
 
     /**

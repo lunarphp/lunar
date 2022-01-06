@@ -15,7 +15,7 @@ class StaffCreate extends AbstractStaff
      */
     public function mount()
     {
-        $this->staff = new Staff;
+        $this->staff = new Staff();
         $this->staffPermissions = $this->staff->permissions->pluck('handle');
     }
 
@@ -27,12 +27,12 @@ class StaffCreate extends AbstractStaff
     protected function rules()
     {
         return [
-            'staffPermissions' => 'array',
-            'staff.email' => 'required|email|unique:'.$this->staff->getTable().',email',
-            'staff.firstname' => 'string|max:255',
-            'staff.lastname' => 'string|max:255',
-            'staff.admin' => 'nullable|boolean',
-            'password' => 'required|min:8|max:255|confirmed',
+            'staffPermissions'      => 'array',
+            'staff.email'           => 'required|email|unique:'.$this->staff->getTable().',email',
+            'staff.firstname'       => 'string|max:255',
+            'staff.lastname'        => 'string|max:255',
+            'staff.admin'           => 'nullable|boolean',
+            'password'              => 'required|min:8|max:255|confirmed',
             'password_confirmation' => 'string',
         ];
     }

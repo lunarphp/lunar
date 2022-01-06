@@ -2,13 +2,14 @@
 
 use GetCandy\Hub\Http\Livewire\Hub;
 use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
+use GetCandy\Hub\Http\Livewire\Pages\Authentication\PasswordReset;
 use GetCandy\Hub\Http\Middleware\Authenticate;
 use GetCandy\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => 'hub',
+    'prefix'     => 'hub',
     'middleware' => ['web'],
 ], function () {
     Route::post('logout', function () {
@@ -21,6 +22,7 @@ Route::group([
         'middleware' => RedirectIfAuthenticated::class,
     ], function ($router) {
         $router->get('login', Login::class)->name('hub.login');
+        $router->get('password-reset/{hash?}', PasswordReset::class)->name('hub.password-reset');
     });
 
     Route::group([

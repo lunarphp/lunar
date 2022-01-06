@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Tests\Unit\Menu;
 
 use GetCandy\Hub\Auth\Manifest;
-use GetCandy\Hub\Menu\MenuLink;
 use GetCandy\Hub\Menu\MenuSlot;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;

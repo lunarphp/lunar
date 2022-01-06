@@ -18,7 +18,10 @@ use Illuminate\Support\Facades\Validator;
 
 class GenerateVariants implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $tries = 1;
 
@@ -41,8 +44,9 @@ class GenerateVariants implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \GetCandy\Models\Product  $product
-     * @param  iterable  $optionValues
+     * @param \GetCandy\Models\Product $product
+     * @param iterable                 $optionValues
+     *
      * @return void
      */
     public function __construct(Product $product, iterable $optionValues, $additional = false)
@@ -60,7 +64,8 @@ class GenerateVariants implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param  App\Services\AudioProcessor  $processor
+     * @param App\Services\AudioProcessor $processor
+     *
      * @return void
      */
     public function handle()
@@ -68,7 +73,7 @@ class GenerateVariants implements ShouldQueue
         Validator::make([
             'optionValues' => $this->optionValues,
         ], [
-            'optionValues' => 'array',
+            'optionValues'   => 'array',
             'optionValues.*' => 'numeric',
         ])->validate();
 
@@ -89,7 +94,7 @@ class GenerateVariants implements ShouldQueue
             $rules = config('getcandy-hub.products', []);
 
             foreach ($permutations as $key => $optionsToCreate) {
-                $variant = new ProductVariant;
+                $variant = new ProductVariant();
 
                 $uoms = ['length', 'width', 'height', 'weight', 'volume'];
 
@@ -132,7 +137,7 @@ class GenerateVariants implements ShouldQueue
                 $variant->prices()->createMany($pricing->toArray());
             }
 
-            if ($baseVariant && ! $this->isAdditional) {
+            if ($baseVariant && !$this->isAdditional) {
                 $baseVariant->values()->detach();
                 $baseVariant->prices()->delete();
                 $baseVariant->delete();

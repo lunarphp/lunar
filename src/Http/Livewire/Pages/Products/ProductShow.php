@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\Products;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\Product;
 use Livewire\Component;
 

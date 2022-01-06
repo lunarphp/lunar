@@ -10,7 +10,6 @@ use GetCandy\Hub\Jobs\Products\GenerateVariants;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -20,7 +19,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class VariantShow extends Component
 {
-    use WithFileUploads, Notifies, HasPrices, WithLanguages, HasDimensions;
+    use WithFileUploads;
+    use Notifies;
+    use HasPrices;
+    use WithLanguages;
+    use HasDimensions;
 
     /**
      * Instance of the parent product.
@@ -131,25 +134,25 @@ class VariantShow extends Component
     {
         return array_merge([
             // 'images.*' => 'image',
-            'newValues' => 'array',
-            'image' => 'nullable|image',
-            'variant.stock' => 'numeric|max:10000000',
-            'variant.tax_class_id' => 'required',
-            'variant.length_value' => 'numeric|nullable',
-            'variant.length_unit' => 'string|nullable',
-            'variant.width_value' => 'numeric|nullable',
-            'variant.width_unit' => 'string|nullable',
-            'variant.height_value' => 'numeric|nullable',
-            'variant.height_unit' => 'string|nullable',
-            'variant.weight_value' => 'numeric|nullable',
-            'variant.weight_unit' => 'string|nullable',
-            'variant.volume_value' => 'numeric|nullable',
-            'variant.volume_unit' => 'string|nullable',
-            'variant.shippable' => 'boolean|nullable',
-            'variant.backorder' => 'numeric|max:10000000',
-            'variant.purchasable' => 'string|required',
+            'newValues'             => 'array',
+            'image'                 => 'nullable|image',
+            'variant.stock'         => 'numeric|max:10000000',
+            'variant.tax_class_id'  => 'required',
+            'variant.length_value'  => 'numeric|nullable',
+            'variant.length_unit'   => 'string|nullable',
+            'variant.width_value'   => 'numeric|nullable',
+            'variant.width_unit'    => 'string|nullable',
+            'variant.height_value'  => 'numeric|nullable',
+            'variant.height_unit'   => 'string|nullable',
+            'variant.weight_value'  => 'numeric|nullable',
+            'variant.weight_unit'   => 'string|nullable',
+            'variant.volume_value'  => 'numeric|nullable',
+            'variant.volume_unit'   => 'string|nullable',
+            'variant.shippable'     => 'boolean|nullable',
+            'variant.backorder'     => 'numeric|max:10000000',
+            'variant.purchasable'   => 'string|required',
             'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
-            'variant.sku' => get_validation('products', 'sku', [
+            'variant.sku'           => get_validation('products', 'sku', [
                 'alpha_dash',
                 'max:255',
             ], $this->variant),
@@ -176,7 +179,7 @@ class VariantShow extends Component
     public function getExistingThumbnailProperty()
     {
         $image = $this->variant->media()->first();
-        if (! $image) {
+        if (!$image) {
             return;
         }
 
@@ -227,7 +230,7 @@ class VariantShow extends Component
             }
         }
 
-        if (! $this->manualVolume) {
+        if (!$this->manualVolume) {
             $this->variant->volume_unit = null;
             $this->variant->volume_value = null;
         }
@@ -275,7 +278,8 @@ class VariantShow extends Component
     /**
      * Refresh and select option.
      *
-     * @param  array  $event
+     * @param array $event
+     *
      * @return void
      */
     public function refreshAndSelectOption($event)

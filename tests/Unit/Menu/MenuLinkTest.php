@@ -13,7 +13,7 @@ class MenuLinkTest extends TestCase
     /** @test */
     public function can_initialise_an_empty_menu_link()
     {
-        $menuLink = new MenuLink;
+        $menuLink = new MenuLink();
 
         $properties = ['name', 'handle', 'gate', 'icon', 'route'];
 
@@ -25,14 +25,14 @@ class MenuLinkTest extends TestCase
     /** @test */
     public function can_set_properties_on_menu_link()
     {
-        $menuLink = new MenuLink;
+        $menuLink = new MenuLink();
 
         $properties = [
-            'name' => 'Foo',
+            'name'   => 'Foo',
             'handle' => 'foo',
-            'gate' => 'foo.gate',
-            'icon' => 'cog',
-            'route' => 'some.route',
+            'gate'   => 'foo.gate',
+            'icon'   => 'cog',
+            'route'  => 'some.route',
         ];
 
         foreach ($properties as $property => $value) {
@@ -44,7 +44,7 @@ class MenuLinkTest extends TestCase
     /** @test */
     public function can_render_icon_svg()
     {
-        $menuLink = new MenuLink;
+        $menuLink = new MenuLink();
 
         $menuLink->icon('archive');
 
@@ -56,7 +56,7 @@ class MenuLinkTest extends TestCase
     /** @test */
     public function can_render_custom_svg()
     {
-        $menuLink = new MenuLink;
+        $menuLink = new MenuLink();
 
         $menuLink->icon('<svg></svg>');
 
@@ -68,7 +68,7 @@ class MenuLinkTest extends TestCase
     /** @test */
     public function active_state_is_correct_based_on_given_path()
     {
-        $menuLink = new MenuLink;
+        $menuLink = new MenuLink();
 
         $menuLink->handle('foo');
 

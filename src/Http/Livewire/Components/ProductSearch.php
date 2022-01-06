@@ -3,12 +3,7 @@
 namespace GetCandy\Hub\Http\Livewire\Components;
 
 use GetCandy\Models\Product;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use Livewire\Component;
-use Livewire\WithPagination;
-use Spatie\Activitylog\Models\Activity;
 
 class ProductSearch extends Component
 {
@@ -64,7 +59,7 @@ class ProductSearch extends Component
      */
     public function getResultsProperty()
     {
-        if (! $this->searchTerm) {
+        if (!$this->searchTerm) {
             return;
         }
 

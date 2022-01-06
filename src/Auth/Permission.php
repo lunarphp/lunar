@@ -44,10 +44,10 @@ class Permission
     /**
      * Initialise the permission.
      *
-     * @param  string  $name
-     * @param  string  $handle
-     * @param  string  $description
-     * @param  bool  $firstParty
+     * @param string $name
+     * @param string $handle
+     * @param string $description
+     * @param bool   $firstParty
      */
     public function __construct($name = null, $handle = null, $description = null, $firstParty = true)
     {
@@ -61,8 +61,9 @@ class Permission
     /**
      * Magic method used for setting properties via methods.
      *
-     * @param  string  $name
-     * @param  array  $params
+     * @param string $name
+     * @param array  $params
+     *
      * @return void
      */
     public function __call($name, $params)

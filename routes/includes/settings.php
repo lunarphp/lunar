@@ -101,7 +101,7 @@ Route::group([
  */
 Route::group([
     'middleware' => 'can:settings:core',
-    'prefix' => 'tags',
+    'prefix'     => 'tags',
 ], function () {
     Route::get('/', TagsIndex::class)->name('hub.tags.index');
     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
