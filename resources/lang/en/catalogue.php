@@ -79,12 +79,12 @@ return [
     'product-types.show.delete.message'             => 'Are you sure you want to permenantly delete this product type?',
     'product-types.show.delete.disabled_message'    => 'You cannot remove a product type that has products attached.',
     'product-types.show.delete.delete_notification' => 'Product type removed',
-    'product-types.show.delete.confirm_text' => 'Confirm Deletion',
+    'product-types.show.delete.confirm_text'        => 'Confirm Deletion',
     /**
-     * Customers
+     * Customers.
      */
-    'customers.index.title' => 'Customers',
-    'customers.index.placeholder' => 'Search customers',
-    'customers.show.save_btn' => 'Save Customer',
+    'customers.index.title'                  => 'Customers',
+    'customers.index.placeholder'            => 'Search customers',
+    'customers.show.save_btn'                => 'Save Customer',
     'customers.show.customer_groups_updated' => 'Customer groups updated',
 ];

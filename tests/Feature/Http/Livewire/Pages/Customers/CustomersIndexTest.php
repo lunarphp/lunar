@@ -4,12 +4,6 @@ namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Products;
 
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\CollectionGroup;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
