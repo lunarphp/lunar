@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Initial customer listing screen
+- Initial customer editing screen
+
 ### Fixed
 
 - Product SKU(s) will now be displayed on listing page ([#19](https://github.com/getcandy/getcandy/issues/19))

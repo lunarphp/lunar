@@ -13,7 +13,7 @@ class CustomersIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::under-construction')
+        return view('adminhub::livewire.pages.customers.index')
             ->layout('adminhub::layouts.app', [
                 'title' => 'Customers',
             ]);

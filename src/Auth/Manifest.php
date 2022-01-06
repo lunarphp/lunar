@@ -136,6 +136,11 @@ class Manifest
                 'catalogue:manage-orders',
                 __('adminhub::auth.permissions.catalogue.orders.description')
             ),
+            new Permission(
+                __('adminhub::auth.permissions.catalogue.customers.name'),
+                'catalogue:manage-customers',
+                __('adminhub::auth.permissions.catalogue.customers.description')
+            ),
         ];
     }
 }

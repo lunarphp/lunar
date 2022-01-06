@@ -52,4 +52,8 @@ return [
     'deleting'            => 'Deleting',
     'new_password'        => 'New Password',
     'confirm_password'    => 'Confirm Password',
+    'company_name'        => 'Company Name',
+    'vat_no'              => 'VAT No.',
+    'view'                => 'View',
+    'save'                => 'Save',
 ];
