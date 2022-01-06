@@ -43,16 +43,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'phpunit/phpunit' => '^9.5',
             'symplify/monorepo-builder' => '^10.0',
         ],
-        ComposerJsonSection::REPOSITORIES => [
-            [
-                'type' => 'path',
-                'url' => './packages/package-a',
-            ],
-            [
-                'type' => 'path',
-                'url' => './packages/package-b',
-            ]
-        ],
     ]);
-    // $parameters->set(Option::PACKAGE_ALIAS_FORMAT, '<major>.<minor>');
 };
