@@ -34,7 +34,7 @@ class Translatable extends Component
         $languages = Language::get();
 
         return view('adminhub::components.translatable', [
-            'default'   => $languages->first(fn ($lang)   => $lang->default),
+            'default'   => $languages->first(fn ($lang) => $lang->default),
             'languages' => $languages->filter(fn ($lang) => !$lang->default),
         ]);
     }
