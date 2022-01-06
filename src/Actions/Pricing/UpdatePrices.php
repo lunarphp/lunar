@@ -6,15 +6,15 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Price;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class UpdatePrices
 {
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $prices
+     * @param Model                          $owner
+     * @param \Illuminate\Support\Collection $prices
+     *
      * @return void
      */
     public function execute(Model $owner, Collection $prices)
@@ -27,7 +27,7 @@ class UpdatePrices
                 $price['tier'] ?? 1,
                 $price['currency_id'],
                 $price['price'],
-                ! empty($price['compare_price']) ? $price['compare_price'] : null,
+                !empty($price['compare_price']) ? $price['compare_price'] : null,
                 $price['customer_group_id'] ?? null,
                 $price['id'] ?? null
             );
@@ -40,28 +40,29 @@ class UpdatePrices
     /**
      * Create or update a price.
      *
-     * @param  Model  $owner
-     * @param  int  $tier
-     * @param  int|null  $groupId
-     * @param  float  $price
-     * @param  int  $currencyId
-     * @param  int|null  $id
+     * @param Model    $owner
+     * @param int      $tier
+     * @param int|null $groupId
+     * @param float    $price
+     * @param int      $currencyId
+     * @param int|null $id
+     *
      * @return \GetCandy\Models\Price
      */
     private function updateOrCreatePrice(Model $owner, $tier, $currencyId, $price, $comparePrice = null, $groupId = null, $id = null)
     {
-        $priceModel = $id ? Price::find($id) : new Price;
+        $priceModel = $id ? Price::find($id) : new Price();
 
         $currency = Currency::find($currencyId);
 
         $priceModel->fill([
-            'price' => (int) ($price * $currency->factor),
-            'compare_price' => $comparePrice ? (int) ($comparePrice * $currency->factor) : null,
-            'currency_id' => $currencyId,
+            'price'             => (int) ($price * $currency->factor),
+            'compare_price'     => $comparePrice ? (int) ($comparePrice * $currency->factor) : null,
+            'currency_id'       => $currencyId,
             'customer_group_id' => $groupId,
-            'tier' => $tier,
-            'priceable_id' => $owner->id,
-            'priceable_type' => get_class($owner),
+            'tier'              => $tier,
+            'priceable_id'      => $owner->id,
+            'priceable_type'    => get_class($owner),
         ]);
 
         $priceModel->save();

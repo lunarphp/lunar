@@ -27,15 +27,15 @@ class CurrencyCreateTest extends TestCase
         $this->actingAs($staff, 'staff');
 
         $properties = [
-            'name' => 'Some currency name',
-            'code' => 'TST',
-            'default' => true,
-            'exchange_rate' => 0.5,
-            'format' => '£{value}',
-            'decimal_point' => ':',
+            'name'           => 'Some currency name',
+            'code'           => 'TST',
+            'default'        => true,
+            'exchange_rate'  => 0.5,
+            'format'         => '£{value}',
+            'decimal_point'  => ':',
             'thousand_point' => ';',
             'decimal_places' => 2,
-            'enabled' => 0,
+            'enabled'        => 0,
         ];
 
         $component = Livewire::test(CurrencyCreate::class);
@@ -46,7 +46,7 @@ class CurrencyCreateTest extends TestCase
 
         $component->call('create')->assertHasNoErrors();
 
-        $this->assertDatabaseHas((new Currency)->getTable(), $properties);
+        $this->assertDatabaseHas((new Currency())->getTable(), $properties);
     }
 
     /** @test */
@@ -60,11 +60,11 @@ class CurrencyCreateTest extends TestCase
 
         Livewire::test(CurrencyCreate::class)->call('create')
         ->assertHasErrors([
-            'currency.name' => 'required',
-            'currency.code' => 'required',
-            'currency.exchange_rate' => 'required',
-            'currency.format' => 'required',
-            'currency.decimal_point' => 'required',
+            'currency.name'           => 'required',
+            'currency.code'           => 'required',
+            'currency.exchange_rate'  => 'required',
+            'currency.format'         => 'required',
+            'currency.decimal_point'  => 'required',
             'currency.thousand_point' => 'required',
         ]);
 
@@ -77,11 +77,11 @@ class CurrencyCreateTest extends TestCase
             ->set('currency.thousand_point', Str::random(260))
             ->call('create')
             ->assertHasErrors([
-                'currency.code' => 'max',
-                'currency.name' => 'max',
-                'currency.exchange_rate' => 'max',
-                'currency.format' => 'max',
-                'currency.decimal_point' => 'max',
+                'currency.code'           => 'max',
+                'currency.name'           => 'max',
+                'currency.exchange_rate'  => 'max',
+                'currency.format'         => 'max',
+                'currency.decimal_point'  => 'max',
                 'currency.thousand_point' => 'max',
             ]);
 

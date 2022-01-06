@@ -3,12 +3,10 @@
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use GetCandy\Models\Url;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 
 trait HasUrls
 {
@@ -29,8 +27,8 @@ trait HasUrls
     public function addUrl()
     {
         $this->urls[] = [
-            'slug' => null,
-            'default' => ! collect($this->urls)->count(),
+            'slug'        => null,
+            'default'     => !collect($this->urls)->count(),
             'language_id' => $this->defaultLanguage->id,
         ];
     }
@@ -43,7 +41,8 @@ trait HasUrls
     /**
      * Listener for when the slug is updated.
      *
-     * @param  string  $value
+     * @param string $value
+     *
      * @return void
      */
     public function updatedUrls($value, $key)
@@ -98,7 +97,7 @@ trait HasUrls
             ];
         }
 
-        if (! empty($rules)) {
+        if (!empty($rules)) {
             $this->validate($rules, [
                 'urls.*.slug.unique' => __('adminhub::validation.url_slug_unique'),
             ]);
@@ -113,7 +112,7 @@ trait HasUrls
             })->each(fn ($url) => $url->delete());
 
             foreach ($this->urls as $index => $url) {
-                $urlModel = ($url['id'] ?? false) ? Url::find($url['id']) : new Url;
+                $urlModel = ($url['id'] ?? false) ? Url::find($url['id']) : new Url();
                 $urlModel->fill($url);
                 $urlModel->element_type = get_class($model);
                 $urlModel->element_id = $model->id;

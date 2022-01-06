@@ -71,7 +71,7 @@ class PasswordResetTest extends TestCase
             ->set('password_confirmation', 'bar')
             ->call('process')
             ->assertHasErrors([
-                'password' => 'confirmed'
+                'password' => 'confirmed',
             ])
             ->set('password_confirmation', 'foobarfoo')
             ->call('process')

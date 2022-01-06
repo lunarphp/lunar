@@ -14,7 +14,7 @@ class ProductTypeCreate extends AbstractProductType
      */
     public function mount()
     {
-        $this->productType = new ProductType;
+        $this->productType = new ProductType();
 
         // Start off by adding all system attributes.
         $this->selectedAttributes = Attribute::system(ProductType::class)->get();

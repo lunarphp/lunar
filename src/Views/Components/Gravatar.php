@@ -16,7 +16,7 @@ class Gravatar extends Component
     /**
      * Initialise the component.
      *
-     * @param  string  $email
+     * @param string $email
      */
     public function __construct($email)
     {

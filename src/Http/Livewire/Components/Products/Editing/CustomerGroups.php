@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products\Editing;
 
-use GetCandy\Models\Channel;
 use Livewire\Component;
 
 class CustomerGroups extends Component

@@ -126,14 +126,14 @@ class AdminHubServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
-            return new \GetCandy\Hub\Editing\ProductSection;
+            return new \GetCandy\Hub\Editing\ProductSection();
         });
     }
 
     protected function registerMenuBuilder()
     {
         $this->app->singleton(MenuRegistry::class, function () {
-            return new MenuRegistry;
+            return new MenuRegistry();
         });
 
         SidebarMenu::make();
@@ -315,7 +315,7 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        $manifest = new Manifest;
+        $manifest = new Manifest();
         $this->app->instance(Manifest::class, $manifest);
 
         Gate::after(function ($user, $ability) use ($manifest) {

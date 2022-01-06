@@ -34,9 +34,9 @@ class ChannelShow extends Component
         $table = $this->channel->getTable();
 
         return [
-            'channel.name' => 'required|string|max:255',
-            'channel.handle' => "required|string|unique:$table,handle,{$this->channel->id}|max:255",
-            'channel.url' => 'nullable|url|max:255',
+            'channel.name'    => 'required|string|max:255',
+            'channel.handle'  => "required|string|unique:$table,handle,{$this->channel->id}|max:255",
+            'channel.url'     => 'nullable|url|max:255',
             'channel.default' => 'nullable',
         ];
     }
@@ -65,7 +65,7 @@ class ChannelShow extends Component
      */
     public function toggleDefault()
     {
-        $this->channel->default = ! $this->channel->default;
+        $this->channel->default = !$this->channel->default;
     }
 
     /**
@@ -75,7 +75,7 @@ class ChannelShow extends Component
      */
     public function delete()
     {
-        if (! $this->canDelete) {
+        if (!$this->canDelete) {
             return;
         }
 

@@ -9,7 +9,8 @@ class SetStaffAuthMiddlewareListener
     /**
      * Handle the event.
      *
-     * @param  \Illuminate\Routing\Events\RouteMatched  $event
+     * @param \Illuminate\Routing\Events\RouteMatched $event
+     *
      * @return void
      */
     public function handle(RouteMatched $event)
@@ -21,7 +22,7 @@ class SetStaffAuthMiddlewareListener
         $isLoginComponent = strpos($event->route->name, 'login') !== false;
         $isPasswordReset = strpos($event->route->name, 'password-reset') !== false;
 
-        if ($isLivewire && ($isHubComponent || $isModal) && ! $isLoginComponent && ! $isPasswordReset) {
+        if ($isLivewire && ($isHubComponent || $isModal) && !$isLoginComponent && !$isPasswordReset) {
             $event->route->middleware(
                 array_merge($event->route->middleware(), ['auth:staff'])
             );

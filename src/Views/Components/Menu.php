@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Views\Components;
 
 use GetCandy\Hub\Facades\Menu as MenuFacade;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
 class Menu extends Component

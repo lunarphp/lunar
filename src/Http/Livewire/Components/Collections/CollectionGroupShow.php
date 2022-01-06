@@ -90,7 +90,7 @@ class CollectionGroupShow extends Component
     public function rules()
     {
         return [
-            'group.name' => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
+            'group.name'      => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
             'collection.name' => 'required|string|max:255',
         ];
     }
@@ -121,7 +121,8 @@ class CollectionGroupShow extends Component
     /**
      * Add a collection ready for saving.
      *
-     * @param  string  $parent
+     * @param string $parent
+     *
      * @return void
      */
     public function addCollection($parent = null)
@@ -154,7 +155,8 @@ class CollectionGroupShow extends Component
     /**
      * Move a collection to the root of the tree.
      *
-     * @param  string|int  $id
+     * @param string|int $id
+     *
      * @return void
      */
     public function moveToRoot($id)
@@ -207,7 +209,8 @@ class CollectionGroupShow extends Component
     /**
      * Set the target collection to move.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return void
      */
     public function setMoveTarget($id)
@@ -223,12 +226,12 @@ class CollectionGroupShow extends Component
      */
     public function getSearchedCollectionsProperty()
     {
-        if (! $this->searchTerm) {
+        if (!$this->searchTerm) {
             return [];
         }
 
         return Collection::search($this->searchTerm)
-            ->get()->filter(fn($collection) => $collection->id != $this->collectionMove['source']);
+            ->get()->filter(fn ($collection) => $collection->id != $this->collectionMove['source']);
     }
 
     /**
@@ -238,7 +241,7 @@ class CollectionGroupShow extends Component
      */
     public function getTargetCollectionProperty()
     {
-        if (! $this->collectionMove['target']) {
+        if (!$this->collectionMove['target']) {
             return null;
         }
 
@@ -252,7 +255,7 @@ class CollectionGroupShow extends Component
      */
     public function getSourceCollectionProperty()
     {
-        if (! $this->collectionMove['source']) {
+        if (!$this->collectionMove['source']) {
             return null;
         }
 
@@ -289,7 +292,7 @@ class CollectionGroupShow extends Component
 
         Collection::create([
             'collection_group_id' => $this->group->id,
-            'attribute_data' => collect([
+            'attribute_data'      => collect([
                 'name' => new TranslatedText([
                     $this->defaultLanguage => $this->collection['name'],
                 ]),
@@ -317,7 +320,8 @@ class CollectionGroupShow extends Component
     /**
      * Sort the collections.
      *
-     * @param  array  $payload
+     * @param array $payload
+     *
      * @return void
      */
     public function sort($payload)

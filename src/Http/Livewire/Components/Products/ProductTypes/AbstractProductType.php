@@ -11,7 +11,8 @@ use Livewire\WithPagination;
 
 abstract class AbstractProductType extends Component
 {
-    use Notifies, WithPagination;
+    use Notifies;
+    use WithPagination;
 
     /**
      * Instance of the parent product.

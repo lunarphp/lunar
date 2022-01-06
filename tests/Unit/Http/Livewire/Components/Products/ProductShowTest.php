@@ -4,8 +4,6 @@ namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products;
 
 use GetCandy\FieldTypes\Text;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductShow;
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Attribute;
@@ -19,8 +17,6 @@ use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Livewire\Livewire;
-use Livewire\WithFileUploads;
-use ReflectionClass;
 
 /**
  * @group hub.products
@@ -35,16 +31,16 @@ class ProductShowTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code' => 'en',
+            'code'    => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code' => 'fr',
+            'code'    => 'fr',
         ]);
 
         Currency::factory()->create([
-            'default' => true,
+            'default'        => true,
             'decimal_places' => 2,
         ]);
     }
@@ -58,7 +54,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -68,9 +64,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -91,7 +87,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -101,9 +97,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -122,7 +118,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -132,9 +128,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -158,7 +154,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -168,10 +164,10 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'price' => 1.99,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'price'          => 1.99,
+                'tier'           => 1,
             ]);
         }
 
@@ -211,7 +207,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -221,10 +217,10 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'price' => 1.99,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'price'          => 1.99,
+                'tier'           => 1,
             ]);
         }
 
@@ -261,7 +257,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -271,9 +267,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -308,7 +304,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -318,9 +314,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -348,9 +344,9 @@ class ProductShowTest extends TestCase
 
         foreach ($product->variants as $variant) {
             Price::factory()->create([
-                'currency_id' => $currency->id,
+                'currency_id'    => $currency->id,
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
+                'priceable_id'   => $variant->id,
             ]);
         }
 
@@ -369,7 +365,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -379,9 +375,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -404,7 +400,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -414,9 +410,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -449,7 +445,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -459,9 +455,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 
@@ -484,7 +480,7 @@ class ProductShowTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand' => 'BAR',
+            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -494,9 +490,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id' => $variant->id,
-                'currency_id' => $currency->id,
-                'tier' => 1,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
             ]);
         }
 

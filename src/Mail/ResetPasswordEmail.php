@@ -17,7 +17,8 @@ class ResetPasswordEmail extends Mailable
     /**
      * New instance.
      *
-     * @param  string  $token
+     * @param string $token
+     *
      * @return void
      */
     public function __construct($token)

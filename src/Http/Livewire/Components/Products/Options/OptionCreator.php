@@ -48,10 +48,10 @@ class OptionCreator extends Component
      */
     public function mount()
     {
-        $this->option = new ProductOption;
+        $this->option = new ProductOption();
         $this->values = collect([
-            new ProductOptionValue,
-            new ProductOptionValue,
+            new ProductOptionValue(),
+            new ProductOptionValue(),
         ]);
         $this->languages = Language::get();
     }
@@ -75,8 +75,8 @@ class OptionCreator extends Component
     {
         $this->validate([
             "name.{$this->defaultLanguage->code}" => 'string|required|max:255',
-            'values' => 'array|min:1',
-            'values.*.name.en' => 'required|string|max:255',
+            'values'                              => 'array|min:1',
+            'values.*.name.en'                    => 'required|string|max:255',
         ]);
 
         $this->option->name = $this->name;
@@ -93,7 +93,7 @@ class OptionCreator extends Component
             __('adminhub::notifications.product-options.created')
         );
 
-        $this->option = new ProductOption;
+        $this->option = new ProductOption();
         $this->name = [];
         $this->values = collect();
     }
@@ -105,13 +105,14 @@ class OptionCreator extends Component
      */
     public function addValue()
     {
-        $this->values->push(new ProductOptionValue);
+        $this->values->push(new ProductOptionValue());
     }
 
     /**
      * Removes a value from the value collection.
      *
-     * @param  int  $index
+     * @param int $index
+     *
      * @return void
      */
     public function removeValue($index)

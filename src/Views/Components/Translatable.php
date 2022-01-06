@@ -17,7 +17,7 @@ class Translatable extends Component
     /**
      * Create a new instance of the component.
      *
-     * @param  bool  $expanded
+     * @param bool $expanded
      */
     public function __construct($expanded = false)
     {
@@ -34,8 +34,8 @@ class Translatable extends Component
         $languages = Language::get();
 
         return view('adminhub::components.translatable', [
-            'default' => $languages->first(fn ($lang) => $lang->default),
-            'languages' => $languages->filter(fn ($lang) => ! $lang->default),
+            'default'   => $languages->first(fn ($lang)   => $lang->default),
+            'languages' => $languages->filter(fn ($lang) => !$lang->default),
         ]);
     }
 }

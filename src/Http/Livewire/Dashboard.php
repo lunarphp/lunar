@@ -2,10 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire;
 
-use Asantibanez\LivewireCharts\Facades\LivewireCharts;
-use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use DateTime;
 use GetCandy\DataTypes\Price;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
@@ -26,7 +23,7 @@ class Dashboard extends Component
      */
     public array $range = [
         'from' => null,
-        'to' => null
+        'to'   => null,
     ];
 
     /**
@@ -44,9 +41,10 @@ class Dashboard extends Component
     {
         return [
             'range.from' => 'date',
-            'range.to' => 'date,after:range.from',
+            'range.to'   => 'date,after:range.from',
         ];
     }
+
     /**
      * Get the computed property for new products count.
      *
@@ -67,11 +65,11 @@ class Dashboard extends Component
      */
     public function getReturningCustomersPercentProperty()
     {
-        $table = (new OrderAddress)->getTable();
+        $table = (new OrderAddress())->getTable();
 
         $query = DB::table($table)->where("{$table}.type", '=', 'billing')
             ->select(
-                DB::RAW("COUNT(*) as count"),
+                DB::RAW('COUNT(*) as count'),
                 "{$table}.contact_email"
             )
             ->whereBetween("{$table}.created_at", [
@@ -79,15 +77,15 @@ class Dashboard extends Component
                 now()->parse($this->range['to']),
             ])->whereNotNull("{$table}.contact_email")
             ->leftJoin(
-                DB::raw((new OrderAddress)->getTable().' address_join'),
+                DB::raw((new OrderAddress())->getTable().' address_join'),
                 'address_join.contact_email',
                 '=',
                 "{$table}.contact_email"
-            )->groupBy("{$table}.id","{$table}.contact_email"); 
+            )->groupBy("{$table}.id", "{$table}.contact_email");
 
         $total = $query->clone()->get()->count();
 
-        $returning = $query->clone()->having(DB::RAW("COUNT(*)"), '<=', 1)->count();
+        $returning = $query->clone()->having(DB::RAW('COUNT(*)'), '<=', 1)->count();
 
         if (!$returning) {
             return 0;
@@ -173,12 +171,12 @@ class Dashboard extends Component
         foreach ($period as $datetime) {
             $months->push($datetime->toDateTimeString());
             // Do we have some totals for this month?
-            if ($totals = $thisPeriod->first(fn($p) => $p->format_date == $datetime->format('Y-m'))) {
+            if ($totals = $thisPeriod->first(fn ($p) => $p->format_date == $datetime->format('Y-m'))) {
                 $thisPeriodMonths->push($totals->sub_total->decimal);
             } else {
                 $thisPeriodMonths->push(0);
             }
-            if ($prevTotals = $previousPeriod->first(fn($p) => $p->format_date == $datetime->format('Y-m'))) {
+            if ($prevTotals = $previousPeriod->first(fn ($p) => $p->format_date == $datetime->format('Y-m'))) {
                 $previousPeriodMonths->push($prevTotals->sub_total->decimal);
             } else {
                 $previousPeriodMonths->push(0);
@@ -187,7 +185,7 @@ class Dashboard extends Component
 
         return collect([
             'chart' => [
-                'type' => 'area',
+                'type'    => 'area',
                 'toolbar' => [
                     'show' => false,
                 ],
@@ -197,12 +195,12 @@ class Dashboard extends Component
                 'enabled' => false,
             ],
             'fill' => [
-                'type' => 'gradient',
+                'type'     => 'gradient',
                 'gradient' => [
                     'shadeIntensity' => 1,
-                    'opacityFrom' => 0.45,
-                    'opacityTo' => 0.05,
-                    'stops' => [50, 100, 100, 100],
+                    'opacityFrom'    => 0.45,
+                    'opacityTo'      => 0.05,
+                    'stops'          => [50, 100, 100, 100],
                 ],
             ],
             'series' => [
@@ -216,7 +214,7 @@ class Dashboard extends Component
                 ],
             ],
             'xaxis' => [
-                'type' => 'datetime',
+                'type'       => 'datetime',
                 'categories' => $months->toArray(),
             ],
             'yaxis' => [
@@ -252,12 +250,12 @@ class Dashboard extends Component
      */
     public function getTopSellingProductsProperty()
     {
-        $orderTable = (new Order)->getTable();
+        $orderTable = (new Order())->getTable();
 
         return OrderLine::with(['purchasable'])->select([
-            "purchasable_type",
+            'purchasable_type',
             'purchasable_id',
-            DB::RAW('COUNT(*) as count')
+            DB::RAW('COUNT(*) as count'),
         ])->join(
             $orderTable,
             'order_id',
@@ -281,18 +279,18 @@ class Dashboard extends Component
     {
         $userModel = config('auth.providers.users.model');
 
-        $ordersTable = (new Order)->getTable();
-        $usersTable = (new $userModel)->getTable();
-        $customer = (new Customer);
+        $ordersTable = (new Order())->getTable();
+        $usersTable = (new $userModel())->getTable();
+        $customer = (new Customer());
         $customersTable = $customer->getTable();
         $customerUserTable = $customer->users()->getTable();
         $customerCustomerGroupTable = $customer->customerGroups()->getTable();
 
         $orders = DB::table($ordersTable, 'o')
-            ->selectRaw("
+            ->selectRaw('
                 ccg.customer_group_id,
                 count(o.id) as order_count
-            ")->leftJoin(
+            ')->leftJoin(
                 DB::raw("{$usersTable} u"),
                 'o.user_id',
                 '=',
@@ -330,6 +328,7 @@ class Dashboard extends Component
                 if ($group->default && !$row->customer_group_id) {
                     return true;
                 }
+
                 return $group->id == $row->customer_group_id;
             });
 
@@ -338,7 +337,7 @@ class Dashboard extends Component
 
         return collect([
             'chart' => [
-                'type' => 'donut',
+                'type'    => 'donut',
                 'toolbar' => [
                     'show' => false,
                 ],

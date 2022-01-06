@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 class AttributeShow extends AbstractAttribute
 {
-    use Notifies, WithLanguages, ConfirmsDelete;
+    use Notifies;
+    use WithLanguages;
+    use ConfirmsDelete;
 
     public bool $manualHandle = true;
 
@@ -41,13 +43,13 @@ class AttributeShow extends AbstractAttribute
                     }
                 },
             ],
-            'attribute.position' => 'numeric',
-            'attribute.section' => 'string',
-            'attribute.system' => 'boolean',
-            'attribute.required' => 'boolean',
-            'attribute.attribute_type' => 'required',
-            'attribute.type' => 'required',
-            'attribute.configuration' => 'array',
+            'attribute.position'           => 'numeric',
+            'attribute.section'            => 'string',
+            'attribute.system'             => 'boolean',
+            'attribute.required'           => 'boolean',
+            'attribute.attribute_type'     => 'required',
+            'attribute.type'               => 'required',
+            'attribute.configuration'      => 'array',
             'attribute.attribute_group_id' => 'required',
             'attribute.configuration.type' => 'nullable|string',
         ];
@@ -83,7 +85,7 @@ class AttributeShow extends AbstractAttribute
      */
     public function delete()
     {
-        if (! $this->canDelete) {
+        if (!$this->canDelete) {
             return;
         }
 

@@ -41,7 +41,7 @@ trait HasImages
     {
         return [
             'imageUploadQueue.*' => 'image|max:'.max_upload_filesize(),
-            'images.*.caption' => 'nullable|string',
+            'images.*.caption'   => 'nullable|string',
         ];
     }
 
@@ -56,14 +56,14 @@ trait HasImages
 
         $this->images = $owner->media->map(function ($media) {
             return [
-                'id' => $media->id,
-                'sort_key' => Str::random(),
+                'id'        => $media->id,
+                'sort_key'  => Str::random(),
                 'thumbnail' => $media->getFullUrl('medium'),
-                'original' => $media->getFullUrl(),
-                'preview' => false,
-                'caption' => $media->getCustomProperty('caption'),
-                'primary' => $media->getCustomProperty('primary'),
-                'position' => $media->getCustomProperty('position', 1),
+                'original'  => $media->getFullUrl(),
+                'preview'   => false,
+                'caption'   => $media->getCustomProperty('caption'),
+                'primary'   => $media->getCustomProperty('primary'),
+                'position'  => $media->getCustomProperty('position', 1),
             ];
         })->sortBy('position')->values()->toArray();
     }
@@ -88,8 +88,9 @@ trait HasImages
     /**
      * Method to handle when Livewire uploads a product image.
      *
-     * @param  string  $name
-     * @param  array  $filenames
+     * @param string $name
+     * @param array  $filenames
+     *
      * @return void
      */
     public function handleUploadFinished($name, array $filenames = [])
@@ -104,13 +105,13 @@ trait HasImages
 
             $this->images[] = [
                 'thumbnail' => $file->temporaryUrl(),
-                'sort_key' => Str::random(),
-                'filename' => $filename,
-                'original' => $file->temporaryUrl(),
-                'caption' => null,
-                'position' => count($this->images) + 1,
-                'preview' => false,
-                'primary' => ! count($this->images),
+                'sort_key'  => Str::random(),
+                'filename'  => $filename,
+                'original'  => $file->temporaryUrl(),
+                'caption'   => null,
+                'position'  => count($this->images) + 1,
+                'preview'   => false,
+                'primary'   => !count($this->images),
             ];
 
             unset($this->imageUploadQueue[$key]);
@@ -120,7 +121,8 @@ trait HasImages
     /**
      * Method to handle reordering.
      *
-     * @param  array  $sort
+     * @param array $sort
+     *
      * @return void
      */
     public function sort($sort)
@@ -192,7 +194,8 @@ trait HasImages
      * Sets an image to be primary and if one already exists will
      * remove it's primary state.
      *
-     * @param  int|string  $imageId
+     * @param int|string $imageId
+     *
      * @return void
      */
     public function setPrimary($imageKey)
@@ -205,7 +208,8 @@ trait HasImages
     /**
      * Method to handle firing of command to generate media conversions.
      *
-     * @param  string  $id
+     * @param string $id
+     *
      * @return void
      */
     public function regenerateConversions($id)
@@ -219,7 +223,8 @@ trait HasImages
     /**
      * Removes an image from the array using it's sort key.
      *
-     * @param  string  $sortKey
+     * @param string $sortKey
+     *
      * @return void
      */
     public function removeImage($sortKey)

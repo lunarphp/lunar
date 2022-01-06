@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Menu;
 
-use GetCandy\Hub\Menu\MenuSlot;
 use Illuminate\Support\Str;
 
 class MenuRegistry
@@ -28,7 +27,8 @@ class MenuRegistry
      * Getter/Setter for the requested slot. If the slot does not exist
      * then a new one will be added to the slots property and returned.
      *
-     * @param  string  $handle
+     * @param string $handle
+     *
      * @return \GetCandy\Hub\Menu\MenuSlot
      */
     public function slot($handle): MenuSlot

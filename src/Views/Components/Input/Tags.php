@@ -18,7 +18,7 @@ class Tags extends Component
     /**
      * Initialise the component.
      *
-     * @param  bool  $error
+     * @param bool $error
      */
     public function __construct($error = false, $tags = [])
     {

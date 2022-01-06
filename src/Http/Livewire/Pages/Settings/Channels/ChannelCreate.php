@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Channels;
 
-use GetCandy\Models\Channel;
 use Livewire\Component;
 
 class ChannelCreate extends Component

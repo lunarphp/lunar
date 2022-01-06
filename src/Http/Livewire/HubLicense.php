@@ -14,9 +14,9 @@ class HubLicense extends Component
         // $status = $license->getStatus();
 
         return view('adminhub::livewire.hub-license', [
-            'unlicensed' => false,
+            'unlicensed'  => false,
             'development' => true,
-            'invalid' => true,
+            'invalid'     => true,
         ])->layout('adminhub::layouts.app');
     }
 }

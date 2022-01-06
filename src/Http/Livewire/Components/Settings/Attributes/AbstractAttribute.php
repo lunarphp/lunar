@@ -23,12 +23,13 @@ abstract class AbstractAttribute extends Component
     /**
      * Generate the handle based on a value.
      *
-     * @param  string  $value
+     * @param string $value
+     *
      * @return void
      */
     public function generateHandle($value)
     {
-        if ($value && ! $this->manualHandle) {
+        if ($value && !$this->manualHandle) {
             $this->attribute->handle = Str::slug($value);
         }
     }
@@ -46,7 +47,8 @@ abstract class AbstractAttribute extends Component
     /**
      * Watches attribute type and resets group id if it doesn't exist.
      *
-     * @param  string  $value
+     * @param string $value
+     *
      * @return void
      */
     public function updatedAttributeAttributeType($value)
@@ -54,7 +56,7 @@ abstract class AbstractAttribute extends Component
         $groupStillExists = $this->attributeGroups->first(function ($group) {
             return $group->id == $this->attribute->attribute_group_id;
         });
-        if ($value && ! $groupStillExists) {
+        if ($value && !$groupStillExists) {
             $this->attribute->attribute_group_id = null;
         }
     }
@@ -67,9 +69,9 @@ abstract class AbstractAttribute extends Component
     public function getAttributeTypesProperty()
     {
         return [
-            ProductType::class => class_basename(ProductType::class),
+            ProductType::class      => class_basename(ProductType::class),
             'GetCandy\Models\Order' => 'Order',
-            Collection::class => class_basename(Collection::class),
+            Collection::class       => class_basename(Collection::class),
         ];
     }
 
@@ -81,7 +83,7 @@ abstract class AbstractAttribute extends Component
     public function getTypesProperty()
     {
         return [
-            Text::class => class_basename(Text::class),
+            Text::class           => class_basename(Text::class),
             TranslatedText::class => class_basename(TranslatedText::class),
         ];
     }

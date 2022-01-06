@@ -9,7 +9,8 @@ use Livewire\ComponentConcerns\PerformsRedirects;
 
 class LoginForm extends Component
 {
-    use AuthorizesRequests, PerformsRedirects;
+    use AuthorizesRequests;
+    use PerformsRedirects;
 
     /**
      * The current state of the view.
@@ -35,7 +36,7 @@ class LoginForm extends Component
     /**
      * Whether to set the remember token.
      *
-     * @var boolean
+     * @var bool
      */
     public $remember = false;
 
@@ -43,13 +44,13 @@ class LoginForm extends Component
      * {@inheritDoc}
      */
     protected $rules = [
-        'email' => 'required|email',
+        'email'    => 'required|email',
         'remember' => 'nullable',
         'password' => 'required',
     ];
 
     /**
-     * Perform the login
+     * Perform the login.
      *
      * @return void
      */
@@ -58,7 +59,7 @@ class LoginForm extends Component
         $this->validate();
 
         $authCheck = Auth::guard('staff')->attempt([
-            'email' => $this->email,
+            'email'    => $this->email,
             'password' => $this->password,
         ], $this->remember);
 

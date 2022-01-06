@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
@@ -27,12 +26,12 @@ class ProductTypeShowTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code' => 'en',
+            'code'    => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code' => 'fr',
+            'code'    => 'fr',
         ]);
 
         Currency::factory()->create([
@@ -64,12 +63,12 @@ class ProductTypeShowTest extends TestCase
 
         Attribute::factory(2)->create([
             'attribute_type' => ProductType::class,
-            'system' => true,
+            'system'         => true,
         ]);
 
         Attribute::factory(2)->create([
             'attribute_type' => Product::class,
-            'system' => true,
+            'system'         => true,
         ]);
 
         Attribute::factory(2)->create([
@@ -111,9 +110,9 @@ class ProductTypeShowTest extends TestCase
         $tablePrefix = config('getcandy.database.table_prefix');
 
         $this->assertDatabaseHas("{$tablePrefix}attributables", [
-            'attributable_id' => $productType->id,
+            'attributable_id'   => $productType->id,
             'attributable_type' => ProductType::class,
-            'attribute_id' => $attribute->id,
+            'attribute_id'      => $attribute->id,
         ]);
     }
 }

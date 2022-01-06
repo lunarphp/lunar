@@ -32,8 +32,8 @@ class LanguageShow extends Component
     protected function rules()
     {
         return [
-            'language.name' => 'required|string|max:255',
-            'language.code' => 'required|string|max:255',
+            'language.name'    => 'required|string|max:255',
+            'language.code'    => 'required|string|max:255',
             'language.default' => 'nullable|boolean',
         ];
     }
@@ -62,7 +62,7 @@ class LanguageShow extends Component
      */
     public function toggleDefault()
     {
-        $this->language->default = ! $this->language->default;
+        $this->language->default = !$this->language->default;
     }
 
     /**
@@ -72,7 +72,7 @@ class LanguageShow extends Component
      */
     public function delete()
     {
-        if (! $this->canDelete) {
+        if (!$this->canDelete) {
             return;
         }
 
