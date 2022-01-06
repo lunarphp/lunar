@@ -28,11 +28,13 @@
           </label>
         </div>
 
-        {{-- <div class="text-sm">
-          <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+        <div class="text-sm">
+          <a href="{{ route('hub.password-reset', [
+            'email' => $email,
+          ]) }}" class="font-medium text-indigo-600 hover:text-indigo-500">
             Forgot your password?
           </a>
-        </div> --}}
+        </div>
       </div>
 
       <div>

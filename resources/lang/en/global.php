@@ -50,4 +50,6 @@ return [
     'deselect' => 'Deselect',
     'select' => 'Select',
     'deleting' => 'Deleting',
+    'new_password' => 'New Password',
+    'confirm_password' => 'Confirm Password',
 ];
