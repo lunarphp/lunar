@@ -6,6 +6,7 @@ use GetCandy\Hub\Auth\Manifest;
 use GetCandy\Hub\Console\Commands\InstallHub;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
+use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -182,6 +183,7 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerAuthenticationComponents()
     {
+        Livewire::component('hub.components.password-reset', PasswordReset::class);
         Livewire::component('hub.components.login-form', LoginForm::class);
     }
 

@@ -54,4 +54,6 @@ return [
     'vat_no'              => 'VAT No.',
     'view'                => 'View',
     'save'                => 'Save',
+    'new_password'        => 'New Password',
+    'confirm_password'    => 'Confirm Password',
 ];
