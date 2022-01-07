@@ -4,6 +4,7 @@ namespace GetCandy\Hub;
 
 use GetCandy\Hub\Auth\Manifest;
 use GetCandy\Hub\Console\Commands\InstallHub;
+use GetCandy\Hub\Http\Livewire\Components\Account;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
@@ -173,6 +174,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
+        Livewire::component('hub.components.account', Account::class);
     }
 
     /**
