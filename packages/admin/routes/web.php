@@ -3,6 +3,7 @@
 use GetCandy\Hub\Http\Livewire\Hub;
 use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
 use GetCandy\Hub\Http\Middleware\Authenticate;
+use GetCandy\Hub\Http\Livewire\Pages\Authentication\PasswordReset;
 use GetCandy\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::group([
         'middleware' => RedirectIfAuthenticated::class,
     ], function ($router) {
         $router->get('login', Login::class)->name('hub.login');
+        $router->get('password-reset', PasswordReset::class)->name('hub.password-reset');
     });
 
     Route::group([
