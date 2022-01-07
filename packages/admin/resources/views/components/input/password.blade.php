@@ -10,10 +10,10 @@
   maxlength="255"
   :type="type"
 >
-  <button class="ml-2 text-red-400" x-on:click="type = 'password'" x-show="type == 'text'">
+  <button type="button" class="ml-2 text-red-400" x-on:click="type = 'password'" x-show="type == 'text'">
     <x-hub::icon  ref="eye-off" style="solid" class="w-6" />
   </button>
-  <button class="ml-2 text-gray-300 hover:text-gray-400" x-on:click="type = 'text'" x-show="type == 'password'">
+  <button type="button" class="ml-2 text-gray-300 hover:text-gray-400" x-on:click="type = 'text'" x-show="type == 'password'">
     <x-hub::icon  ref="eye" style="solid" class="w-6" />
   </button>
 </div>
