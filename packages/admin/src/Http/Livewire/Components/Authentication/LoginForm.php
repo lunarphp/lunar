@@ -9,7 +9,8 @@ use Livewire\ComponentConcerns\PerformsRedirects;
 
 class LoginForm extends Component
 {
-    use AuthorizesRequests, PerformsRedirects;
+    use AuthorizesRequests;
+    use PerformsRedirects;
 
     /**
      * The staff members email address.
@@ -28,7 +29,7 @@ class LoginForm extends Component
     /**
      * Whether to set the remember token.
      *
-     * @var boolean
+     * @var bool
      */
     public $remember = false;
 
@@ -42,7 +43,7 @@ class LoginForm extends Component
     ];
 
     /**
-     * Perform the login
+     * Perform the login.
      *
      * @return void
      */
