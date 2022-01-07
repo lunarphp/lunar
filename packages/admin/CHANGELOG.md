@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## 2.0-beta5 - 2022-01-07
+
 ### Added
 - Initial customer listing screen
 - Initial customer editing screen
@@ -17,7 +19,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Removed requirement to specify `staff` guard in `config/auth.php`. This can be safely removed.
-
 
 ## 2.0-beta4 - 2021-12-24
 ### Fixed
