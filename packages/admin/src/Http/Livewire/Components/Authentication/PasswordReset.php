@@ -16,7 +16,9 @@ use Throwable;
 
 class PasswordReset extends Component
 {
-    use AuthorizesRequests, PerformsRedirects, Notifies;
+    use AuthorizesRequests;
+    use PerformsRedirects;
+    use Notifies;
 
     /**
      * The staff members email address.
@@ -54,8 +56,8 @@ class PasswordReset extends Component
      * {@inheritDoc}
      */
     protected $rules = [
-        'email' => 'required|email',
-        'password' => 'nullable|confirmed',
+        'email'                 => 'required|email',
+        'password'              => 'nullable|confirmed',
         'password_confirmation' => 'nullable',
     ];
 
@@ -84,7 +86,7 @@ class PasswordReset extends Component
     }
 
     /**
-     * Send the reset email
+     * Send the reset email.
      *
      * @return void
      */
@@ -93,7 +95,8 @@ class PasswordReset extends Component
         $this->validate();
 
         if ($staff = Staff::whereEmail($this->email)->first()) {
-            cache(['hub.password.reset.'.$staff->id => $token = Str::random()],
+            cache(
+                ['hub.password.reset.'.$staff->id => $token = Str::random()],
                 now()->addMinutes(30)
             );
 
@@ -115,7 +118,7 @@ class PasswordReset extends Component
     public function updatePasswordAndLogin()
     {
         $this->validate([
-            'password' => 'min:8|required|confirmed',
+            'password'              => 'min:8|required|confirmed',
             'password_confirmation' => 'required',
         ]);
 
@@ -130,6 +133,7 @@ class PasswordReset extends Component
                 __('adminhub::notifications.password-reset.invalid_token'),
                 level: 'error'
             );
+
             return;
         }
 
@@ -138,6 +142,7 @@ class PasswordReset extends Component
                 __('adminhub::notifications.password-reset.invalid_token'),
                 level: 'error'
             );
+
             return;
         }
 
