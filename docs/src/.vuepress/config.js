@@ -47,7 +47,7 @@ module.exports = {
     logo: '/getcandy_icon.svg',
     repo: 'getcandy/getcandy',
     editLinks: false,
-    docsDir: 'doc/src',
+    docsDir: 'docs/src',
     docsRepo: 'getcandy/getcandy',
     docsBranch: 'main',
     editLinks: true,
