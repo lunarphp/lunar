@@ -20,4 +20,12 @@ return [
     'permissions.catalogue.orders.description'      => 'Allow the staff member to manage orders.',
     'permissions.catalogue.customers.name'          => 'Manage Customers',
     'permissions.catalogue.customers.description'   => 'Allow the staff member to manage customers.',
+    /**
+     * Reset password.
+     */
+    'reset-password.title'      => 'Reset Password',
+    'reset-password.invalid'    => 'This page is no longer valid.',
+    'reset-password.back_link'  => 'Back to login',
+    'reset-password.send_btn'   => 'Send reset email',
+    'reset-password.update_btn' => 'Update password and login',
 ];

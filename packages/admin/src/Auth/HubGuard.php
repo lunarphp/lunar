@@ -26,5 +26,7 @@ class HubGuard extends SessionGuard
         $this->session = $session;
         $this->request = $request;
         $this->provider = $provider;
+
+        $this->setCookieJar(app('cookie'));
     }
 }
