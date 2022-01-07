@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- Added account section for the current staff member update their details.
+
 ## 2.0-beta5 - 2022-01-07
 
 ### Added
