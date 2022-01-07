@@ -1,4 +1,4 @@
-name: Admin Hub Tests
+name: GetCandy Tests
 on:
   pull_request:
 defaults:

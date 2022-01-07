@@ -20,11 +20,11 @@
   </coverage>
   <testsuites>
     <testsuite name="Unit">
-      <directory suffix="Test.php">./tests/Unit</directory>
+      <directory suffix="Test.php">packages/**/tests</directory>
     </testsuite>
-    <testsuite name="Feature">
+    <!-- <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
-    </testsuite>
+    </testsuite> -->
   </testsuites>
   <php>
     <env name="DB_CONNECTION" value="testing"/>
