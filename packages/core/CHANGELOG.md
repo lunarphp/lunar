@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## 2.0-beta4 - 2022-01-07
+
 ### Added
 - Made customers searchable via Scout
 - Added Addresses relationship to the customer model
@@ -15,6 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixes
 - Fixes [Issue 24](https://github.com/getcandy/getcandy/issues/24) where URL relationship is `elements` when it should be `element`
 - Fixed an issue where `now()->year` would return an int on single digit months, but we need to have a leading zero.
+
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta3...2.0-beta4)
 
 ## 2.0-beta3 - 2021-12-24
 
