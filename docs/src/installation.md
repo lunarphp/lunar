@@ -40,6 +40,8 @@ Publish the Scout config.
 php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
 ```
 
+By default, scout has the setting `soft_delete` set to false. You need to make sure this is set to true otherwise you will see soft deleted models appear in your search results.
+
 ### Going with Meilisearch
 
 ::: tip Recommended
