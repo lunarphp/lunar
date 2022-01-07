@@ -1,8 +1,8 @@
 <?php
 
 use GetCandy\Hub\Http\Livewire\Hub;
-use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
 use GetCandy\Hub\Http\Livewire\Pages\Account;
+use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
 use GetCandy\Hub\Http\Middleware\Authenticate;
 use GetCandy\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Auth;
