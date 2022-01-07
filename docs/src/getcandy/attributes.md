@@ -38,18 +38,13 @@ GetCandy\Models\Attribute
 
 |Type|Config|
 |:-|:-|
-|`GetCandy\FieldTypes\Color`| |
-|`GetCandy\FieldTypes\Datetime`|Date or Datetime|
-|`GetCandy\FieldTypes\File`|Images or all files|
-|`GetCandy\FieldTypes\JSON`| |
-|`GetCandy\FieldTypes\Measurement`|Weight, volume or dimensions (with UOM)|
 |`GetCandy\FieldTypes\Number`|Integer or Decimal|
-|`GetCandy\FieldTypes\Reference`|Links to a product, page, etc|
-|`GetCandy\FieldTypes\Select`|Multi-select|
 |`GetCandy\FieldTypes\Text`|Single-line, Multi-line, Rich Text|
-|`GetCandy\FieldTypes\Toggle`| |
-|`GetCandy\FieldTypes\URL`| |
+|`GetCandy\FieldTypes\TranslatedText`|Single-line, Multi-line, Rich Text|
 
+::: tip INFO
+More field types will be coming soon.
+:::
 
 ### Models that use Attributes
 
