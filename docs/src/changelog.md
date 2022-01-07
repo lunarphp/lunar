@@ -2,6 +2,11 @@
 
 [[toc]]
 
+## v2.0-beta5
+
+The composer package to install has now changed to `getcandy/admin`. This is to support our new monorepo [getcandy/getcandy](https://github.com/getcandy/getcandy)
+
+
 ## v2.0-beta
 
 GetCandy 2 is a complete re-write of our e-commerce page. It is not currently possible to upgrade from v0.12.* to GetCandy 2.
