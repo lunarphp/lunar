@@ -72,8 +72,7 @@ module.exports = {
           ['/', 'Overview'],
           '/installation',
           '/configuration',
-          '/upgrading',
-          '/changelog'
+          ['/upgrading', 'Upgrade Guide'],
         ]
       },
       {
