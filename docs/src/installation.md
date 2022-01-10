@@ -102,21 +102,6 @@ Then finally, add this to your `scout.php` config file.
 
 ## Admin Hub
 
-### Authentication
-
-We use our own authentication guard for the hub, nothing crazy, it just piggy backs off Laravel's own but allows us to use the `staff` table instead of users.
-
-Add this to your `auth.php` config file:
-
-```php
-'guards' => [
-    // ...
-    'staff' => [
-        'driver' => 'getcandyhub',
-    ],
-]
-```
-
 ### Publish Assets
 
 The admin hub requires some assets to work. Run the following command to publish them to your public directory.
