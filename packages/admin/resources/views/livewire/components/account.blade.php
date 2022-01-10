@@ -4,7 +4,7 @@
     <form method="POST" wire:submit.prevent="save" class="space-y-4 ">
       <div class="flex items-center">
         <div><img class="inline-block w-10 h-10 rounded-full" src="{{ $staff->gravatar }}" alt=""></div>
-        <div class="w-full ml-4">
+        <div class="grow ml-4">
           <x-hub::alert>
             {{ __('adminhub::account.avatar_notice') }}
           </x-hub::alert>
