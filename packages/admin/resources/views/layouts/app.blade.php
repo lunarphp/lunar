@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ $title ?? 'Hub' }} | {{ config('app.name') }}</title>
 
-    <link data-n-head="ssr" rel="icon" type="image/png" sizes="16x16" href="https://getcandy.io/favicon-16x16.png">
-    <link data-n-head="ssr" rel="icon" type="image/png" sizes="32x32" href="https://getcandy.io/favicon-32x32.png">
+    <link data-n-head="ssr" rel="icon" type="image/png"  href="https://cdn.getcandy.io/hub/favicon.svg">
     <link rel="stylesheet" href="https://unpkg.com/trix@1.2.3/dist/trix.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
