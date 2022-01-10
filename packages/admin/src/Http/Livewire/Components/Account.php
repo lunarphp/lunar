@@ -54,6 +54,10 @@ class Account extends Component
             $this->emit('hub.staff.avatar.updated', $this->staff->gravatar);
         }
 
+        if ($this->staff->isDirty(['firstname', 'lastname'])) {
+            $this->emit('hub.staff.name.updated', $this->staff->fullName);
+        }
+
         if ($this->password) {
             $this->staff->password = Hash::make($this->password);
 

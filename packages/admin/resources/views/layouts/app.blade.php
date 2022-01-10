@@ -141,12 +141,11 @@
               <div class="flex items-center">
                 <div>
                     @livewire('hub.components.avatar')
-                  {{-- <img class="inline-block w-10 h-10 rounded-full" src="{{ Auth::user()->gravatar }}" alt=""> --}}
                 </div>
                 <div class="ml-3">
-                  <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                    {{ Auth::guard('staff')->user()->fullName }}
-                  </p>
+                  @livewire('hub.components.current-staff-name', [
+                    'class' => 'text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate w-32'
+                  ])
                   <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">
                     View profile
                   </p>
@@ -194,9 +193,9 @@
                   @livewire('hub.components.avatar')
                 </div>
                 <div class="ml-3">
-                  <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                    {{ Auth::guard('staff')->user()->full_name }}
-                  </p>
+                  @livewire('hub.components.current-staff-name', [
+                    'class' => 'text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate w-32'
+                  ])
                   <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">
                     View profile
                   </p>
