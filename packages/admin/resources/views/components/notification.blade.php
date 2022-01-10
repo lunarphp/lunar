@@ -7,7 +7,7 @@
         },
     }"
     x-init="messages.length ? setTimeout(() => { remove('{{ $messages[0] ?? null }}') }, 2500) : null"
-    @notify.window="let message = $event.detail.message; level = $event.detail.level; messages.push(message); setTimeout(() => { remove(message) }, 2500)"
+    x-on:notify.window="let message = $event.detail.message; level = $event.detail.level; messages.push(message); setTimeout(() => { remove(message) }, 2500)"
     class="fixed inset-0 z-20 flex flex-col items-end justify-center px-4 py-6 space-y-4 pointer-events-none sm:p-6 sm:justify-start"
 >
     <template x-for="(message, messageIndex) in messages" :key="messageIndex" hidden>
