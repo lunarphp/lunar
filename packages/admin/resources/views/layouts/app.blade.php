@@ -136,16 +136,16 @@
 
             </nav>
           </div>
-          <div class="flex-shrink-0 flex border-t border-gray-200 bg-white p-4">
-            <a href="#" class="flex-shrink-0 group block">
+          <div class="flex flex-shrink-0 p-4 bg-white border-t border-gray-200">
+            <a href="{{ route('hub.account') }}" class="flex-shrink-0 block group">
               <div class="flex items-center">
                 <div>
-                  <img class="inline-block h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80" alt="">
+                    @livewire('hub.components.avatar')
                 </div>
                 <div class="ml-3">
-                  <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                    Whitney Francis
-                  </p>
+                  @livewire('hub.components.current-staff-name', [
+                    'class' => 'text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate w-32'
+                  ])
                   <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">
                     View profile
                   </p>
@@ -174,11 +174,11 @@
       <div class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-50">
           <!-- Sidebar component, swap this element with another sidebar if you like -->
-          <div class="flex flex-col grow pt-5 pb-4 overflow-y-auto bg-white">
+          <div class="flex flex-col pt-5 pb-4 overflow-y-auto bg-white grow">
             <div class="flex items-center flex-shrink-0 px-4 mx-4 my-2">
               <img class="w-auto" src="https://getcandy.io/hub/getcandy_logo.svg" alt="GetCandy">
             </div>
-            <div class="flex flex-col grow mt-5">
+            <div class="flex flex-col mt-5 grow">
               <nav class="flex-1 px-2 space-y-1 bg-white">
 
                 @livewire('sidebar')
@@ -186,16 +186,16 @@
               </nav>
             </div>
           </div>
-          <div class="flex-shrink-0 flex border-t border-gray-200 bg-white p-4">
-            <a href="#" class="flex-shrink-0 group block">
+          <div class="flex flex-shrink-0 p-4 bg-white border-t border-gray-200">
+            <a href="{{ route('hub.account') }}" class="flex-shrink-0 block group">
               <div class="flex items-center">
                 <div>
-                  <img class="inline-block h-10 w-10 rounded-full" src="{{ Auth::user()->gravatar }}" alt="">
+                  @livewire('hub.components.avatar')
                 </div>
                 <div class="ml-3">
-                  <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                    {{ Auth::user()->full_name }}
-                  </p>
+                  @livewire('hub.components.current-staff-name', [
+                    'class' => 'text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate w-32'
+                  ])
                   <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">
                     View profile
                   </p>
@@ -241,7 +241,7 @@
                 </div>
               </form>
             </div>
-            <div class="flex flex-1 items-center ml-4 md:ml-6">
+            <div class="flex items-center flex-1 ml-4 md:ml-6">
               <button class="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span class="sr-only">View notifications</span>
                 <!-- Heroicon name: outline/bell -->

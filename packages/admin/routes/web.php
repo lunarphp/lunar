@@ -1,6 +1,7 @@
 <?php
 
 use GetCandy\Hub\Http\Livewire\Hub;
+use GetCandy\Hub\Http\Livewire\Pages\Account;
 use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
 use GetCandy\Hub\Http\Livewire\Pages\Authentication\PasswordReset;
 use GetCandy\Hub\Http\Middleware\Authenticate;
@@ -31,6 +32,8 @@ Route::group([
         ],
     ], function ($router) {
         $router->get('/', Hub::class)->name('hub.index');
+
+        Route::get('account', Account::class)->name('hub.account');
 
         Route::group([
             'prefix' => 'products',

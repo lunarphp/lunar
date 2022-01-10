@@ -4,13 +4,16 @@ namespace GetCandy\Hub;
 
 use GetCandy\Hub\Auth\Manifest;
 use GetCandy\Hub\Console\Commands\InstallHub;
+use GetCandy\Hub\Http\Livewire\Components\Account;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
+use GetCandy\Hub\Http\Livewire\Components\Avatar;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
+use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
@@ -174,6 +177,9 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
+        Livewire::component('hub.components.account', Account::class);
+        Livewire::component('hub.components.avatar', Avatar::class);
+        Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
     }
 
     /**
