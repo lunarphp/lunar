@@ -151,6 +151,6 @@ class Staff extends Authenticatable
     {
         $hash = md5(strtolower(trim($this->attributes['email'])));
 
-        return "https://www.gravatar.com/avatar/$hash";
+        return "https://www.gravatar.com/avatar/$hash?d=mp";
     }
 }

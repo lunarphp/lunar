@@ -21,4 +21,5 @@ return [
     'password-reset.invalid_token'    => 'Reset token is invalid',
     'password-reset.password_updated' => 'Password updated',
     'password-reset.email_sent'       => 'Password reset sent',
+    'account.updated'                 => 'Account updated',
 ];

@@ -34,7 +34,11 @@ class AddressData extends Command
 
         $existing = Country::pluck('iso3');
 
-        $countries = Http::get('https://cdn.getcandy.io/data/countries+states.json')
+        /**
+         * Here we are using Http over Https due to some environments not having
+         * the latest CA Authorities installed, causing an SSL exception to be thrown.
+         */
+        $countries = Http::get('http://cdn.getcandy.io/data/countries+states.json')
                         ->object();
 
         $newCountries = collect($countries)->filter(function ($country) use ($existing) {
