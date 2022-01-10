@@ -45,6 +45,10 @@ class Customer extends BaseModel
      */
     public function toSearchableArray()
     {
+        if (config('scout.driver') == 'mysql') {
+            return $this->only(array_keys($this->getAttributes()));
+        }
+
         $metaFields = config('getcandy-hub.customers.searchable_meta', []);
 
         $data = [
