@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Added account section for the current staff member update their details.
+- Added password reset and remember me functionality.
 
 ## 2.0-beta5 - 2022-01-07
 
