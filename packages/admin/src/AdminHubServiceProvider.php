@@ -8,6 +8,7 @@ use GetCandy\Hub\Http\Livewire\Components\Account;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
+use GetCandy\Hub\Http\Livewire\Components\Avatar;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -176,6 +177,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
         Livewire::component('hub.components.account', Account::class);
+        Livewire::component('hub.components.avatar', Avatar::class);
     }
 
     /**

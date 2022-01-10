@@ -140,7 +140,8 @@
             <a href="{{ route('hub.account') }}" class="flex-shrink-0 block group">
               <div class="flex items-center">
                 <div>
-                  <img class="inline-block w-10 h-10 rounded-full" src="{{ Auth::user()->gravatar }}" alt="">
+                    @livewire('hub.components.avatar')
+                  {{-- <img class="inline-block w-10 h-10 rounded-full" src="{{ Auth::user()->gravatar }}" alt=""> --}}
                 </div>
                 <div class="ml-3">
                   <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
@@ -190,7 +191,7 @@
             <a href="{{ route('hub.account') }}" class="flex-shrink-0 block group">
               <div class="flex items-center">
                 <div>
-                  <img class="inline-block w-10 h-10 rounded-full" src="{{ Auth::user()->gravatar }}" alt="">
+                  @livewire('hub.components.avatar')
                 </div>
                 <div class="ml-3">
                   <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">

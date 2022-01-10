@@ -50,6 +50,10 @@ class Account extends Component
     {
         $this->validate();
 
+        if ($this->staff->isDirty(['email'])) {
+            $this->emit('hub.staff.avatar.updated', $this->staff->gravatar);
+        }
+
         if ($this->password) {
             $this->staff->password = Hash::make($this->password);
 
