@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## 2.0-beta6 - 2022-01-10
+
+### Fixed
+
+- Use Alpinejs `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) [#41](https://github.com/getcandy/getcandy/issues/41)
+
+### Added
+
 - Added account section for the current staff member update their details.
 
 ## 2.0-beta5 - 2022-01-07
