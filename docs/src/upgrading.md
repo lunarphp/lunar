@@ -3,6 +3,33 @@
 [[toc]]
 
 
+## General Upgrade Instructions
+
+Update the package
+
+```sh
+composer update getcandy/admin
+```
+
+Run any migrations
+
+```sh
+php artisan migrate
+```
+
+
+Re-publish the admin hub assets
+
+```sh
+php artisan getcandy:hub:install
+```
+
+If you're using Meilisearch, run the following
+
+```sh
+php artisan getcandy:meilisearch:setup
+```
+
 ## v2.0-beta5
 
 The composer package to install has now changed to `getcandy/admin`. This is to support our new monorepo [getcandy/getcandy](https://github.com/getcandy/getcandy)
