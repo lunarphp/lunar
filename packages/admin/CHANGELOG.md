@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- Use Alpinejs `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) [#41](https://github.com/getcandy/getcandy/issues/41)
+- Use Alpinejs `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) ([#41])(https://github.com/getcandy/getcandy/issues/41)
 
 ### Added
 
