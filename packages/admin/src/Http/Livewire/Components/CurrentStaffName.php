@@ -18,11 +18,12 @@ class CurrentStaffName extends Component
      * {@inheritDoc}
      */
     protected $listeners = [
-        'hub.staff.name.updated' => 'updateFullName'
+        'hub.staff.name.updated' => 'updateFullName',
     ];
 
     /**
      * Specify additional classes.
+     *
      * @var null|string
      */
     public $class;
@@ -39,6 +40,7 @@ class CurrentStaffName extends Component
      * Update the staff members full name for display.
      *
      * @param string $fullName
+     *
      * @return void
      */
     public function updateFullName($fullName)

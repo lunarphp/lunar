@@ -18,7 +18,7 @@ class Avatar extends Component
      * {@inheritDoc}
      */
     protected $listeners = [
-        'hub.staff.avatar.updated' => 'updateAvatar'
+        'hub.staff.avatar.updated' => 'updateAvatar',
     ];
 
     /**
