@@ -22,7 +22,7 @@ class CurrencyShow extends Component
     /**
      * Determine whether to show format info text.
      *
-     * @var boolean
+     * @var bool
      */
     public $showFormatInfo = false;
 
