@@ -55,4 +55,5 @@ return [
     'language.label'                         => 'Language',
     'slug.label'                             => 'Slug',
     'tax_class.label'                        => 'Tax Class',
+    'value'                                  => 'Value',
 ];
