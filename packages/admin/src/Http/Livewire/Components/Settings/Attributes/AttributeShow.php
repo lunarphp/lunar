@@ -2,63 +2,83 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
 
+use GetCandy\Facades\AttributeManifest;
 use GetCandy\Hub\Http\Livewire\Traits\ConfirmsDelete;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
+use GetCandy\Models\AttributeGroup;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AttributeShow extends AbstractAttribute
 {
-    use Notifies;
-    use WithLanguages;
-    use ConfirmsDelete;
-
-    public bool $manualHandle = true;
+    use Notifies, WithLanguages;
 
     /**
-     * The current channel we're showing.
+     * The type property.
      *
-     * @var \GetCandy\Models\Attribute
+     * @var string
      */
-    public Attribute $attribute;
+    public $type;
 
     /**
-     * Returns validation rules.
+     * The sorted attribute groups
      *
-     * @return array
+     * @var Collection
      */
-    protected function rules()
+    public Collection $sortedAttributeGroups;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mount()
     {
-        $rules = [
-            'attribute.handle' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    $exists = Attribute::whereHandle($value)
-                        ->whereAttributeType($this->attribute->attribute_type)
-                        ->where('id', '!=', $this->attribute->id)
-                        ->exists();
-                    if ($exists) {
-                        $fail('The '.$attribute.' is invalid.');
-                    }
-                },
-            ],
-            'attribute.position'           => 'numeric',
-            'attribute.section'            => 'string',
-            'attribute.system'             => 'boolean',
-            'attribute.required'           => 'boolean',
-            'attribute.attribute_type'     => 'required',
-            'attribute.type'               => 'required',
-            'attribute.configuration'      => 'array',
-            'attribute.attribute_group_id' => 'required',
-            'attribute.configuration.type' => 'nullable|string',
-        ];
+        $this->sortedAttributeGroups = $this->attributeGroups;
+    }
 
-        foreach ($this->languages as $language) {
-            $rules["attribute.name.{$language->code}"] = $language->default ? 'required|string' : 'nullable|string';
-        }
+    /**
+     * Get the current attribute type class.
+     *
+     * @return string
+     */
+    public function getTypeClassProperty()
+    {
+        return AttributeManifest::getType($this->type);
+    }
 
-        return $rules;
+    /**
+     * Return the attribute groups for this type class.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAttributeGroupsProperty()
+    {
+        return AttributeGroup::whereAttributableType($this->typeClass)
+            ->orderBy('position')->get();
+    }
+
+    /**
+     * Sort the attribute groups.
+     *
+     * @param array $groups
+     * @return void
+     */
+    public function sortGroups($groups)
+    {
+        DB::transaction(function () use ($groups) {
+            $this->sortedAttributeGroups = $this->attributeGroups->map(function ($group) use ($groups) {
+                $updatedOrder = collect($groups['items'])->first(function ($updated) use ($group) {
+                    return $updated['id'] == $group->id;
+                });
+                $group->position = $updatedOrder['order'];
+                $group->save();
+                return $group;
+            })->sortBy('position');
+        });
+        $this->notify(
+            __('adminhub::notifications.attribute-groups.position-updated')
+        );
     }
 
     /**

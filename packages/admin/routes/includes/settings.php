@@ -38,7 +38,7 @@ Route::group([
 ], function () {
     Route::get('attributes', AttributesIndex::class)->name('hub.attributes.index');
     Route::get('attributes/create', AttributeCreate::class)->name('hub.attributes.create');
-    Route::get('attributes/{attribute}', AttributeShow::class)->name('hub.attributes.show');
+    Route::get('attributes/{type}', AttributeShow::class)->name('hub.attributes.show');
 });
 
 /**

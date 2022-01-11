@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    <link href="{{ asset('vendor/getcandy/admin-hub/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}" rel="stylesheet">
 
     <style>
     .filepond--credits {

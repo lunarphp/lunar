@@ -2,17 +2,24 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Attributes;
 
-use GetCandy\Models\Attribute;
 use Livewire\Component;
 
 class AttributeShow extends Component
 {
     /**
-     * The instance of the attribute model.
-     *
-     * @var \GetCandy\Models\Attribute
+     * The type
      */
-    public Attribute $attribute;
+    public $type;
+
+    /**
+     * Mount the component
+     *
+     * @return void
+     */
+    public function mount()
+    {
+        $this->type = $this->type;
+    }
 
     /**
      * Render the livewire component.
