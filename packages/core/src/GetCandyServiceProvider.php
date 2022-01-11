@@ -4,6 +4,8 @@ namespace GetCandy;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use GetCandy\Addons\Manifest;
+use GetCandy\Base\AttributeManifest;
+use GetCandy\Base\AttributeManifestInterface;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
 use GetCandy\Base\CartSessionInterface;
@@ -147,6 +149,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->app->singleton(OrderReferenceGeneratorInterface::class, function ($app) {
             return $app->make(OrderReferenceGenerator::class);
+        });
+
+        $this->app->singleton(AttributeManifestInterface::class, function ($app) {
+            return $app->make(AttributeManifest::class);
         });
 
         Event::listen(
