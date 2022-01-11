@@ -23,11 +23,12 @@
             @foreach($group->attributes as $attribute)
               <div class="flex items-center">
                 <x-hub::icon ref="selector" style="solid"  />
+
                 <div class="flex items-center px-3 py-2 text-sm border border-blue-600 rounded grow">
                   <span class="grow">{{ $attribute->translate('name') }}</span>
+
                   <x-hub::icon ref="cog" style="solid" class="w-4" />
                 </div>
-
               </div>
             @endforeach
           </div>
