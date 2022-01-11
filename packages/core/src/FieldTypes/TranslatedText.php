@@ -5,8 +5,9 @@ namespace GetCandy\FieldTypes;
 use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
 use Illuminate\Database\Eloquent\Collection;
+use JsonSerializable;
 
-class TranslatedText implements FieldType
+class TranslatedText implements FieldType, JsonSerializable
 {
     /**
      * @var Illuminate\Database\Eloquent\Collection
@@ -25,6 +26,16 @@ class TranslatedText implements FieldType
         } else {
             $this->value = new Collection();
         }
+    }
+
+    /**
+     * Serialize the class.
+     *
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->value;
     }
 
     /**
