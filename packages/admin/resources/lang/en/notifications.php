@@ -27,4 +27,6 @@ return [
     'attribute-groups.created' => 'Attribute group created',
     'attribute-groups.updated' => 'Attribute group updated',
     'attribute-groups.deleted' => 'Attribute group deleted',
+    'attribute-edit.created' => 'Attribute created',
+    'attribute-edit.updated' => 'Attribute updated',
 ];

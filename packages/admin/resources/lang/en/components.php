@@ -57,6 +57,8 @@ return [
     /**
      * Attribute edit
      */
+    'attribute-edit.create_title' => 'Create attribute',
+    'attribute-edit.update_title' => 'Update attribute',
     'attribute-edit.name.placeholder' => 'e.g. Name',
     'attribute-edit.required.instructions' => 'Is this attribute required when editing/creating?',
     'attribute-edit.searchable.instructions' => 'Should users be able to search via this attribute?',
