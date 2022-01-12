@@ -22,6 +22,20 @@ class AttributeEdit extends Component
     public AttributeGroup $group;
 
     /**
+     * The attribute instance.
+     *
+     * @var \GetCandy\Models\Attribute
+     */
+    public Attribute $attribute;
+
+    public function mount()
+    {
+        $this->attribute = new Attribute([
+            'type' => get_class($this->fieldTypes->first()),
+        ]);
+    }
+
+    /**
      * Render the livewire component.
      *
      * @return \Illuminate\View\View
