@@ -1,6 +1,8 @@
 <div>
   <div class="text-right">
-    <x-hub::button wire:click.prevent="$set('showGroupCreate', true)">Create Attribute Group</x-hub::button>
+    <x-hub::button wire:click.prevent="$set('showGroupCreate', true)">
+      {{ __('adminhub::components.attributes.show.create_group_btn') }}
+    </x-hub::button>
   </div>
   <div
     wire:sort
@@ -31,13 +33,24 @@
               <div class="flex items-center justify-between expand">
                 {{ $group->translate('name') }}
               </div>
-              <button @click="expanded = !expanded">
-                <div class="transition-transform" :class="{
-                  '-rotate-90 ': expanded
-                }">
-                  <x-hub::icon ref="chevron-left" style="solid"  />
-                </div>
-              </button>
+              <div class="flex">
+                @if($group->attributes->count())
+                  <button @click="expanded = !expanded">
+                    <div class="transition-transform" :class="{
+                      '-rotate-90 ': expanded
+                    }">
+                      <x-hub::icon ref="chevron-left" style="solid"  />
+                    </div>
+                  </button>
+                @endif
+                <x-hub::dropdown minimal>
+                  <x-slot name="options">
+                    <x-hub::dropdown.button class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
+                      {{ __('adminhub::components.attributes.show.edit_group_btn') }}
+                    </x-hub::dropdown.button>
+                  </x-slot>
+                </x-hub::dropdown>
+              </div>
           </div>
         </div>
         @if($group->attributes->count())
@@ -64,7 +77,7 @@
                   <x-hub::dropdown minimal>
                     <x-slot name="options">
                       <x-hub::dropdown.link href="" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
-                        {{ __('adminhub::catalogue.collections.groups.node.edit') }}
+                        {{ __('adminhub::components.attributes.show.edit_attribute_btn') }}
                         <x-hub::icon ref="pencil" style="solid" class="w-4" />
                       </x-hub::dropdown.link>
                     </x-slot>
@@ -77,10 +90,14 @@
     @endforeach
   </div>
 
-  <x-hub::slideover wire:model="showGroupCreate">
+  <x-hub::modal.dialog wire:model="showGroupCreate" title="hello">
+    <x-slot name="title">{{ __('adminhub::catalogue.collections.sidemenu.modal.title') }}</x-slot>
+    <x-slot name="content">
     @livewire('hub.components.settings.attributes.attribute-group-create', [
       'typeHandle' => $type,
       'attributableType' => $this->typeClass,
     ])
-  </x-hub::sliderover>
+    </x-slot>
+    <x-slot name="footer"></x-slot>
+  </x-hub::modal.dialog>
 </div>

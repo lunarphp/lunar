@@ -39,4 +39,10 @@ return [
      * Attribute group create
      */
     'attribute-groups.create.name.placeholder' => 'e.g. Additional Details',
+    /**
+     * Attribute show
+     */
+    'attributes.show.create_group_btn' => 'Create Attribute Group',
+    'attributes.show.edit_group_btn' => 'Edit Attribute Group',
+    'attributes.show.edit_attribute_btn' => 'Edit Attribute',
 ];
