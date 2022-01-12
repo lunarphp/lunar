@@ -26,11 +26,11 @@ class AttributeEdit extends Component
      *
      * @var \GetCandy\Models\Attribute
      */
-    public Attribute $attribute;
+    public ?Attribute $attribute = null;
 
     public function mount()
     {
-        $this->attribute = new Attribute([
+        $this->attribute = $this->attribute ?: new Attribute([
             'type' => get_class($this->fieldTypes->first()),
         ]);
     }
