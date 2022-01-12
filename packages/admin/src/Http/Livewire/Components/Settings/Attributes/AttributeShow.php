@@ -41,7 +41,7 @@ class AttributeShow extends AbstractAttribute
      *
      * @var int|null
      */
-    public $attributeCreateGroupId = 2;
+    public $attributeCreateGroupId = null;
 
     /**
      * The id of the attribute group to edit
@@ -62,7 +62,7 @@ class AttributeShow extends AbstractAttribute
      *
      * @var int|null
      */
-    public $editAttributeId;
+    public $editAttributeId = null;
 
     /**
      * {@inheritDoc}
@@ -72,6 +72,7 @@ class AttributeShow extends AbstractAttribute
         'attribute-group-edit.updated' => 'resetGroupEdit',
         'attribute-edit.created' => 'resetAttributeEdit',
         'attribute-edit.updated' => 'resetAttributeEdit',
+        'attribute-edit.closed' => 'resetAttributeEdit',
     ];
 
     /**
@@ -144,10 +145,12 @@ class AttributeShow extends AbstractAttribute
      */
     public function sortAttributes($attributes)
     {
+
         DB::transaction(function () use ($attributes) {
             foreach ($attributes['items'] as $attribute) {
                 Attribute::whereId($attribute['id'])->update([
                     'position' => $attribute['order'],
+                    'attribute_group_id' => $attributes['owner'],
                 ]);
             }
         });
@@ -234,6 +237,7 @@ class AttributeShow extends AbstractAttribute
     public function resetAttributeEdit()
     {
         $this->attributeCreateGroupId = null;
+        $this->editAttributeId = null;
         $this->refreshGroups();
     }
 

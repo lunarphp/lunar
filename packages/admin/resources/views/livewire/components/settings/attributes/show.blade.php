@@ -61,11 +61,11 @@
               </div>
           </div>
         </div>
-        @if($group->attributes->count())
+        <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7">
           <div
-            class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
+            class="space-y-2"
             wire:sort
-            sort.options='{group: "attributes", method: "sortAttributes"}'
+            sort.options='{group: "attributes", method: "sortAttributes", owner: {{ $group->id }}}'
             x-show="expanded"
           >
             @foreach($group->attributes as $attribute)
@@ -95,7 +95,12 @@
               </div>
             @endforeach
           </div>
-        @endif
+          @if(!$group->attributes->count())
+            <span class="mx-4 text-sm">
+              {{ __('adminhub::components.attributes.show.no_attributes_text') }}
+            </span>
+          @endif
+        </div>
       </div>
     @endforeach
   </div>
@@ -155,6 +160,11 @@
   @if($this->attributeCreateGroup)
     @livewire('hub.components.settings.attributes.attribute-edit', [
       'group' => $this->attributeCreateGroup,
+    ])
+  @endif
+  @if($this->attributeToEdit)
+    @livewire('hub.components.settings.attributes.attribute-edit', [
+      'attribute' => $this->attributeToEdit,
     ])
   @endif
 </div>
