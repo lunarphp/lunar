@@ -149,7 +149,11 @@ class AttributeShow extends AbstractAttribute
         return AttributeGroup::find($this->editGroupId);
     }
 
-
+    /**
+     * Reset the group edting state.
+     *
+     * @return void
+     */
     public function resetGroupEdit()
     {
         $this->editGroupId = null;
