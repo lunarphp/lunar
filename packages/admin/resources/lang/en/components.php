@@ -54,6 +54,7 @@ return [
     'attributes.show.delete_title' => 'Delete attribute group',
     'attributes.show.delete_warning' => 'Removing this customer group will also remove all attributes associated to it. This action cannot be reversed.',
     'attributes.show.group_protected' => 'This group contains attributes required by the system so cannot be removed.',
+    'attributes.show.no_attributes_text' => 'No attributes exist, either drag existing attributes or add new ones here.',
     /**
      * Attribute edit
      */
@@ -64,4 +65,5 @@ return [
     'attribute-edit.searchable.instructions' => 'Should users be able to search via this attribute?',
     'attribute-edit.filterable.instructions' => 'Should users be able to filter results based on this attribute?',
     'attribute-edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
+
 ];
