@@ -38,7 +38,9 @@ return [
     /**
      * Attribute group create
      */
-    'attribute-groups.create.name.placeholder' => 'e.g. Additional Details',
+    'attribute-group-edit.name.placeholder' => 'e.g. Additional Details',
+    'attribute-group-edit.create_btn' => 'Create attribute group',
+    'attribute-group-edit.update_btn' => 'Update attribute group',
     /**
      * Attribute show
      */
@@ -46,4 +48,6 @@ return [
     'attributes.show.edit_group_btn' => 'Edit attribute group',
     'attributes.show.edit_attribute_btn' => 'Edit attribute',
     'attributes.show.delete_group_btn' => 'Delete attribute group',
+    'attributes.show.edit_title' => 'Edit attribute group',
+    'attributes.show.create_title' => 'Create attribute group',
 ];

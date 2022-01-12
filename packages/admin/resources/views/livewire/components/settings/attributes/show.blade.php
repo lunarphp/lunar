@@ -94,8 +94,8 @@
     @endforeach
   </div>
 
-  <x-hub::modal.dialog wire:model="showGroupCreate" title="hello">
-    <x-slot name="title">{{ __('adminhub::catalogue.collections.sidemenu.modal.title') }}</x-slot>
+  <x-hub::modal.dialog wire:model="showGroupCreate">
+    <x-slot name="title">{{ __('adminhub::components.attributes.show.create_title') }}</x-slot>
     <x-slot name="content">
       @livewire('hub.components.settings.attributes.attribute-group-edit', [
         'typeHandle' => $type,
@@ -106,8 +106,8 @@
   </x-hub::modal.dialog>
 
   @if($this->attributeGroupToEdit)
-    <x-hub::modal.dialog wire:model="editGroupId" title="hello">
-      <x-slot name="title">{{ __('adminhub::catalogue.collections.sidemenu.modal.title') }}</x-slot>
+    <x-hub::modal.dialog wire:model="editGroupId">
+      <x-slot name="title">{{ __('adminhub::components.attributes.show.edit_title') }}</x-slot>
       <x-slot name="content">
         @livewire('hub.components.settings.attributes.attribute-group-edit', [
           'typeHandle' => $type,

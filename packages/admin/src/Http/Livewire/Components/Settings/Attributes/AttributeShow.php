@@ -44,6 +44,13 @@ class AttributeShow extends AbstractAttribute
     public $editGroupId;
 
     /**
+     * The id of the attribute group to delete.
+     *
+     * @var int|null
+     */
+    public $deleteGroupId;
+
+    /**
      * {@inheritDoc}
      */
     protected $listeners = [
@@ -147,6 +154,16 @@ class AttributeShow extends AbstractAttribute
     public function getAttributeGroupToEditProperty()
     {
         return AttributeGroup::find($this->editGroupId);
+    }
+
+    /**
+     * Return the attribute marked for deletion.
+     *
+     * @return void
+     */
+    public function getAttributeGroupToDeleteProperty()
+    {
+        return AttributeGroup::find($this->deleteGroupId);
     }
 
     /**
