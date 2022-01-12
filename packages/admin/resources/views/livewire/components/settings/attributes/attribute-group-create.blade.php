@@ -1,5 +1,4 @@
 <form wire:submit.prevent="create">
-  {{ json_encode($errors->all()) }}
   <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('attributeGroup.name.' . $this->defaultLanguage->code)">
     <x-hub::translatable>
       <x-hub::input.text
