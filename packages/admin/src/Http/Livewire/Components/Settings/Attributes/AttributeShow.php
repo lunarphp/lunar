@@ -37,10 +37,18 @@ class AttributeShow extends AbstractAttribute
     public $showGroupCreate = false;
 
     /**
+     * The id of the attribute group to edit
+     *
+     * @var int|null
+     */
+    public $editGroupId;
+
+    /**
      * {@inheritDoc}
      */
     protected $listeners = [
-        'attribute-group-create.created' => 'refreshGroups',
+        'attribute-group-edit.created' => 'refreshGroups',
+        'attribute-group-edit.updated' => 'resetGroupEdit',
     ];
 
     /**
@@ -129,6 +137,22 @@ class AttributeShow extends AbstractAttribute
         ->orderBy('position')->get();
 
         $this->showGroupCreate = false;
+    }
+
+    /**
+     * Return the computed property for the group to edit.
+     *
+     * @return \GetCandy\Models\AttributeGroup|null
+     */
+    public function getAttributeGroupToEditProperty()
+    {
+        return AttributeGroup::find($this->editGroupId);
+    }
+
+
+    public function resetGroupEdit()
+    {
+        $this->editGroupId = null;
     }
 
     /**

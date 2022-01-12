@@ -8,7 +8,7 @@ use GetCandy\Models\AttributeGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class AttributeGroupCreate extends Component
+class AttributeGroupEdit extends Component
 {
     use WithLanguages, Notifies;
 
@@ -31,7 +31,7 @@ class AttributeGroupCreate extends Component
      *
      * @var AttributeGroup
      */
-    public AttributeGroup $attributeGroup;
+    public ?AttributeGroup $attributeGroup = null;
 
     /**
      * {@inheritDoc}
@@ -48,12 +48,22 @@ class AttributeGroupCreate extends Component
      */
     public function mount()
     {
-        $this->attributeGroup = new AttributeGroup;
+        $this->attributeGroup = $this->attributeGroup ?: new AttributeGroup;
     }
 
     public function create()
     {
         $this->validate();
+
+        if ($this->attributeGroup->id) {
+            $this->attributeGroup->save();
+            $this->emit('attribute-group-edit.updated', $this->attributeGroup->id);
+            $this->notify(
+                __('adminhub::notifications.attribute-groups.updated')
+            );
+            return;
+        }
+
         $this->attributeGroup->attributable_type = $this->attributableType;
         $this->attributeGroup->position = AttributeGroup::whereAttributableType(
             $this->attributableType
@@ -61,10 +71,11 @@ class AttributeGroupCreate extends Component
 
         $this->attributeGroup->handle = Str::snake("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
         $this->attributeGroup->save();
+        $this->emit('attribute-group-edit.created', $this->attributeGroup->id);
 
-        $this->emit('attribute-group-create.created', $this->attributeGroup->id);
-
-        $this->notify('Attribute group created');
+        $this->notify(
+            __('adminhub::notifications.attribute-groups.created')
+        );
     }
 
     /**
@@ -74,7 +85,7 @@ class AttributeGroupCreate extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.attributes.attribute-group-create')
+        return view('adminhub::livewire.components.settings.attributes.attribute-group-edit')
             ->layout('adminhub::layouts.base');
     }
 }

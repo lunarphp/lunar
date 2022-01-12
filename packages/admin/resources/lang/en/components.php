@@ -42,7 +42,8 @@ return [
     /**
      * Attribute show
      */
-    'attributes.show.create_group_btn' => 'Create Attribute Group',
-    'attributes.show.edit_group_btn' => 'Edit Attribute Group',
-    'attributes.show.edit_attribute_btn' => 'Edit Attribute',
+    'attributes.show.create_group_btn' => 'Create attribute group',
+    'attributes.show.edit_group_btn' => 'Edit attribute group',
+    'attributes.show.edit_attribute_btn' => 'Edit attribute',
+    'attributes.show.delete_group_btn' => 'Delete attribute group',
 ];

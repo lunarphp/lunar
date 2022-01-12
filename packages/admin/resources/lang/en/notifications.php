@@ -24,4 +24,6 @@ return [
     'account.updated'                 => 'Account updated',
     'attribute-groups.reordered' => 'Attribute Groups reordered',
     'attributes.reordered' => 'Attributes reordered',
+    'attribute-groups.created' => 'Attribute group created',
+    'attribute-groups.updated' => 'Attribute group updated',
 ];

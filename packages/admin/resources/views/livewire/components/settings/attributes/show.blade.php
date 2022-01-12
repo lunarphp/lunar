@@ -45,8 +45,12 @@
                 @endif
                 <x-hub::dropdown minimal>
                   <x-slot name="options">
-                    <x-hub::dropdown.button class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
+                    <x-hub::dropdown.button wire:click="$set('editGroupId', {{ $group->id }})" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
                       {{ __('adminhub::components.attributes.show.edit_group_btn') }}
+                    </x-hub::dropdown.button>
+
+                    <x-hub::dropdown.button wire:click="$set('editGroupId', {{ $group->id }})" class="flex items-center justify-between px-4 py-2 text-sm text-red-500 border-b hover:bg-gray-50">
+                      {{ __('adminhub::components.attributes.show.delete_group_btn') }}
                     </x-hub::dropdown.button>
                   </x-slot>
                 </x-hub::dropdown>
@@ -93,11 +97,25 @@
   <x-hub::modal.dialog wire:model="showGroupCreate" title="hello">
     <x-slot name="title">{{ __('adminhub::catalogue.collections.sidemenu.modal.title') }}</x-slot>
     <x-slot name="content">
-    @livewire('hub.components.settings.attributes.attribute-group-create', [
-      'typeHandle' => $type,
-      'attributableType' => $this->typeClass,
-    ])
+      @livewire('hub.components.settings.attributes.attribute-group-edit', [
+        'typeHandle' => $type,
+        'attributableType' => $this->typeClass,
+      ])
     </x-slot>
     <x-slot name="footer"></x-slot>
   </x-hub::modal.dialog>
+
+  @if($this->attributeGroupToEdit)
+    <x-hub::modal.dialog wire:model="editGroupId" title="hello">
+      <x-slot name="title">{{ __('adminhub::catalogue.collections.sidemenu.modal.title') }}</x-slot>
+      <x-slot name="content">
+        @livewire('hub.components.settings.attributes.attribute-group-edit', [
+          'typeHandle' => $type,
+          'attributableType' => $this->typeClass,
+          'attributeGroup' => $this->attributeGroupToEdit,
+        ])
+      </x-slot>
+      <x-slot name="footer"></x-slot>
+    </x-hub::modal.dialog>
+  @endif
 </div>
