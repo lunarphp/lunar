@@ -2,6 +2,7 @@
   :title="__(
     $attribute->id ? 'adminhub::components.attribute-edit.update_title' : 'adminhub::components.attribute-edit.create_title'
   )"
+  wire:model="panelVisible"
 >
   <div class="space-y-4">
     <x-hub::input.group

@@ -19,7 +19,7 @@ class AttributeEdit extends Component
      *
      * @var string
      */
-    public AttributeGroup $group;
+    public ?AttributeGroup $group = null;
 
     /**
      * The attribute instance.
@@ -29,10 +29,18 @@ class AttributeEdit extends Component
     public ?Attribute $attribute = null;
 
     /**
+     * Whether the panel should be visible.
+     *
+     * @var boolean
+     */
+    public bool $panelVisible = true;
+
+    /**
      * {@inheritDoc}
      */
     public function mount()
     {
+
         $this->attribute = $this->attribute ?: new Attribute([
             'searchable' => true,
             'filterable' => false,
@@ -41,6 +49,16 @@ class AttributeEdit extends Component
             'system' => false,
             'type' => get_class($this->fieldTypes->first()),
         ]);
+
+
+        if ($this->attribute->id) {
+            $this->group = $this->attribute->attributeGroup;
+        }
+    }
+
+    public function updatedPanelVisible($val)
+    {
+        $this->emit('attribute-edit.closed');
     }
 
     /**
