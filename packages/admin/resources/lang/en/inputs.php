@@ -59,4 +59,6 @@ return [
     'required.label' => 'Required',
     'filterable.label' => 'Filterable',
     'validation_rules.label' => 'Validation Rules',
+    'min.label' => 'Min.',
+    'max.label' => 'Max.'
 ];
