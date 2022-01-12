@@ -9,6 +9,8 @@ use GetCandy\Base\AttributeManifestInterface;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
 use GetCandy\Base\CartSessionInterface;
+use GetCandy\Base\FieldTypeManifest;
+use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
 use GetCandy\Base\OrderReferenceGenerator;
 use GetCandy\Base\OrderReferenceGeneratorInterface;
@@ -153,6 +155,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->app->singleton(AttributeManifestInterface::class, function ($app) {
             return $app->make(AttributeManifest::class);
+        });
+
+        $this->app->singleton(FieldTypeManifestInterface::class, function ($app) {
+            return $app->make(FieldTypeManifest::class);
         });
 
         Event::listen(
