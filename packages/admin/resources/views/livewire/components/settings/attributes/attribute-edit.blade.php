@@ -59,5 +59,28 @@
     >
       <x-hub::input.text id="validation_rules" wire:model="attribute.handle" />
     </x-hub::input.group>
+
+    <x-hub::input.group
+      :label="__('adminhub::inputs.type.label')"
+      for="handle"
+      :error="$errors->first('attribute.type')"
+    >
+      <x-hub::input.select wire:model="attribute.type">
+        @foreach($this->fieldTypes as $fieldType)
+          <option value="{{ get_class($fieldType) }}">{{ $fieldType->getLabel() }}</option>
+        @endforeach
+      </x-hub::input.select>
+    </x-hub::input.group>
+
+    @if($this->getFieldType()->getSettingsView())
+      @include($this->getFieldType()->getSettingsView())
+    @endif
   </div>
+
+  <x-slot name="footer">
+    <div class="flex justify-between">
+      <x-hub::button theme="gray">Cancel</x-hub::button>
+      <x-hub::button>Save Attribute</x-hub::button>
+    </div>
+  </x-slot>
 </x-hub::slideover>

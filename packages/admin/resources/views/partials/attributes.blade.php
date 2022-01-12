@@ -19,7 +19,7 @@
                   $errors->first('attributeMapping.'.$attIndex.'.data.'.$this->defaultLanguage->code)
                 "
               >
-                @include("adminhub::partials.forms.fieldtypes.{$field['component']}", [
+                @include($field['view'], [
                   'field' => $field,
                 ])
               </x-hub::input.group>

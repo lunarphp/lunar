@@ -59,9 +59,7 @@ trait WithAttributes
                 'handle'        => $attribute->handle,
                 'configuration' => $attribute->configuration,
                 'required'      => $attribute->required,
-                'component'     => Str::kebab(class_basename(
-                    $attribute->type
-                )),
+                'view'          => app()->make($attribute->type)->getView(),
                 'data' => $value,
             ]];
         });
