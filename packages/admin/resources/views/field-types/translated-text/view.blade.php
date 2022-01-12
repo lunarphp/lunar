@@ -1,5 +1,5 @@
 <x-hub::translatable>
-  @include("adminhub::partials.forms.fieldtypes.text", [
+  @include("adminhub::field-types.text.view", [
     'language' => $this->defaultLanguage->code,
     'field' => $field,
   ])
