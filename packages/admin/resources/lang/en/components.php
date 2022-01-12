@@ -55,6 +55,10 @@ return [
     'attributes.show.delete_warning' => 'Removing this customer group will also remove all attributes associated to it. This action cannot be reversed.',
     'attributes.show.group_protected' => 'This group contains attributes required by the system so cannot be removed.',
     'attributes.show.no_attributes_text' => 'No attributes exist, either drag existing attributes or add new ones here.',
+    'attributes.show.delete_attribute_btn' => 'Delete attribute',
+    'attributes.show.delete_attribute_title' => 'Delete Attribute',
+    'attributes.show.delete_attribute_warning' => 'Are you sure you want to remove this attribute?',
+    'attributes.show.delete_attribute_protected' => 'You cannot delete a system attribute.',
     /**
      * Attribute edit
      */

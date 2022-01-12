@@ -90,6 +90,12 @@
                       {{ __('adminhub::components.attributes.show.edit_attribute_btn') }}
                       <x-hub::icon ref="pencil" style="solid" class="w-4" />
                     </x-hub::dropdown.button>
+
+                    @if(!$attribute->system)
+                    <x-hub::dropdown.button wire:click="$set('deleteAttributeId', {{ $attribute->id }})" class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                      <span class="text-red-500">{{ __('adminhub::components.attributes.show.delete_attribute_btn') }}</span>
+                    </x-hub::dropdown.button>
+                    @endif
                   </x-slot>
                 </x-hub::dropdown>
               </div>
@@ -149,6 +155,33 @@
           </x-hub::button>
           @if(!$this->groupProtected)
           <x-hub::button theme="danger" type="button" wire:click="deleteGroup">
+            {{ __('adminhub::global.delete') }}
+          </x-hub::button>
+          @endif
+        </div>
+      </x-slot>
+    </x-hub::modal.dialog>
+  @endif
+
+  @if($this->attributeToDelete)
+    <x-hub::modal.dialog wire:model="deleteAttributeId">
+      <x-slot name="title">{{ __('adminhub::components.attributes.show.delete_attribute_title') }}</x-slot>
+      <x-slot name="content">
+        <x-hub::alert level="danger">
+          @if(!$this->attributeToDelete->system)
+            {{ __('adminhub::components.attributes.show.delete_attribute_warning') }}
+          @else
+            {{ __('adminhub::components.attributes.show.delete_attribute_protected') }}
+          @endif
+        </x-hub::alert>
+      </x-slot>
+      <x-slot name="footer">
+        <div class="flex justify-between">
+          <x-hub::button theme="gray" wire:click="$set('deleteAttributeId', null)" type="button">
+            {{ __('adminhub::global.cancel') }}
+          </x-hub::button>
+          @if(!$this->attributeToDelete->system)
+          <x-hub::button theme="danger" type="button" wire:click="deleteAttribute">
             {{ __('adminhub::global.delete') }}
           </x-hub::button>
           @endif

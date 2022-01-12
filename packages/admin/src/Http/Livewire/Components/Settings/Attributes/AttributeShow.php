@@ -65,6 +65,13 @@ class AttributeShow extends AbstractAttribute
     public $editAttributeId = null;
 
     /**
+     * The ID of the attribute we want to delete.
+     *
+     * @var int|null
+     */
+    public $deleteAttributeId = null;
+
+    /**
      * {@inheritDoc}
      */
     protected $listeners = [
@@ -206,6 +213,16 @@ class AttributeShow extends AbstractAttribute
     }
 
     /**
+     * Return the attribute to delete.
+     *
+     * @return void
+     */
+    public function getAttributeToDeleteProperty()
+    {
+        return Attribute::find($this->deleteAttributeId);
+    }
+
+    /**
      * Returns whether the group to delete has system attributes
      * associated to it and therefore protected.
      *
@@ -258,6 +275,18 @@ class AttributeShow extends AbstractAttribute
         $this->notify(
             __('adminhub::notifications.attribute-groups.deleted')
         );
+    }
+
+    public function deleteAttribute()
+    {
+        $this->attributeToDelete->delete();
+
+        $this->notify(
+            __('adminhub::notifications.attributes.deleted')
+        );
+
+        $this->deleteAttributeId = null;
+        $this->refreshGroups();
     }
 
     /**
