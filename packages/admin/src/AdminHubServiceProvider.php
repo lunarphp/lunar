@@ -37,6 +37,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeCreate;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelCreate;
@@ -269,6 +270,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.attributes.index', AttributesIndex::class);
         Livewire::component('hub.components.settings.attributes.create', AttributeCreate::class);
         Livewire::component('hub.components.settings.attributes.show', AttributeShow::class);
+        Livewire::component('hub.components.settings.attributes.attribute-group-create', AttributeGroupCreate::class);
 
         // Channels
         Livewire::component('hub.components.settings.channels.index', ChannelsIndex::class);

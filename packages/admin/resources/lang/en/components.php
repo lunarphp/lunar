@@ -35,4 +35,8 @@ return [
      * Option Value Create Modal.
      */
     'ovcm.title' => 'Add new option to :name',
+    /**
+     * Attribute group create
+     */
+    'attribute-groups.create.name.placeholder' => 'e.g. Additional Details',
 ];

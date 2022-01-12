@@ -30,6 +30,20 @@ class AttributeShow extends AbstractAttribute
     public Collection $sortedAttributeGroups;
 
     /**
+     * Whether we should show the panel to create a new group.
+     *
+     * @var boolean
+     */
+    public $showGroupCreate = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $listeners = [
+        'attribute-group-create.created' => 'refreshGroups',
+    ];
+
+    /**
      * {@inheritDoc}
      */
     public function mount()
@@ -82,46 +96,39 @@ class AttributeShow extends AbstractAttribute
     }
 
     /**
-     * Validates the LiveWire request, updates the model and dispatches and event.
+     * Sort the attributes.
      *
+     * @param array $attributes
      * @return void
      */
-    public function update()
+    public function sortAttributes($attributes)
     {
-        $this->validate();
+        DB::transaction(function () use ($attributes) {
+            foreach ($attributes['items'] as $attribute) {
+                Attribute::whereId($attribute['id'])->update([
+                    'position' => $attribute['order'],
+                ]);
+            }
+        });
 
-        $this->attribute->save();
+        $this->refreshGroups();
 
         $this->notify(
-            'Attribute successfully updated.',
-            'hub.attributes.index'
+            __('adminhub::notifications.attributes.reordered')
         );
     }
 
     /**
-     * Soft deletes a channel.
+     * Refresh the attribute groups.
      *
      * @return void
      */
-    public function delete()
+    public function refreshGroups()
     {
-        if (!$this->canDelete) {
-            return;
-        }
+        $this->sortedAttributeGroups = AttributeGroup::whereAttributableType($this->typeClass)
+        ->orderBy('position')->get();
 
-        DB::transaction(function () {
-            $this->attribute->delete();
-        });
-
-        $this->notify(
-            'Attribute successfully deleted.',
-            'hub.attributes.index'
-        );
-    }
-
-    public function getCanDeleteProperty()
-    {
-        return $this->deleteConfirm === $this->attribute->handle;
+        $this->showGroupCreate = false;
     }
 
     /**
