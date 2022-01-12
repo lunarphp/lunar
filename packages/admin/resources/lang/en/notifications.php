@@ -26,4 +26,5 @@ return [
     'attributes.reordered' => 'Attributes reordered',
     'attribute-groups.created' => 'Attribute group created',
     'attribute-groups.updated' => 'Attribute group updated',
+    'attribute-groups.deleted' => 'Attribute group deleted',
 ];

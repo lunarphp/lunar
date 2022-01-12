@@ -49,8 +49,8 @@
                       {{ __('adminhub::components.attributes.show.edit_group_btn') }}
                     </x-hub::dropdown.button>
 
-                    <x-hub::dropdown.button wire:click="$set('editGroupId', {{ $group->id }})" class="flex items-center justify-between px-4 py-2 text-sm text-red-500 border-b hover:bg-gray-50">
-                      {{ __('adminhub::components.attributes.show.delete_group_btn') }}
+                    <x-hub::dropdown.button wire:click="$set('deleteGroupId', {{ $group->id }})" class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                      <span class="text-red-500">{{ __('adminhub::components.attributes.show.delete_group_btn') }}</span>
                     </x-hub::dropdown.button>
                   </x-slot>
                 </x-hub::dropdown>
@@ -116,6 +116,33 @@
         ])
       </x-slot>
       <x-slot name="footer"></x-slot>
+    </x-hub::modal.dialog>
+  @endif
+
+  @if($this->attributeGroupToDelete)
+    <x-hub::modal.dialog wire:model="deleteGroupId">
+      <x-slot name="title">{{ __('adminhub::components.attributes.show.delete_title') }}</x-slot>
+      <x-slot name="content">
+        <x-hub::alert level="danger">
+          @if(!$this->groupProtected)
+            {{ __('adminhub::components.attributes.show.delete_warning') }}
+          @else
+            {{ __('adminhub::components.attributes.show.group_protected') }}
+          @endif
+        </x-hub::alert>
+      </x-slot>
+      <x-slot name="footer">
+        <div class="flex justify-between">
+          <x-hub::button theme="gray" wire:click="$set('deleteGroupId', null)" type="button">
+            {{ __('adminhub::global.cancel') }}
+          </x-hub::button>
+          @if(!$this->groupProtected)
+          <x-hub::button theme="danger" type="button" wire:click="deleteGroup">
+            {{ __('adminhub::global.delete') }}
+          </x-hub::button>
+          @endif
+        </div>
+      </x-slot>
     </x-hub::modal.dialog>
   @endif
 </div>

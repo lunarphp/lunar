@@ -167,6 +167,20 @@ class AttributeShow extends AbstractAttribute
     }
 
     /**
+     * Returns whether the group to delete has system attributes
+     * associated to it and therefore protected.
+     *
+     * @return boolean
+     */
+    public function getGroupProtectedProperty()
+    {
+        return $this->attributeGroupToDelete ?
+            $this->attributeGroupToDelete->attributes->filter(
+                fn($attribute) => !!$attribute->system
+            )->count() : false;
+    }
+
+    /**
      * Reset the group edting state.
      *
      * @return void
@@ -174,6 +188,25 @@ class AttributeShow extends AbstractAttribute
     public function resetGroupEdit()
     {
         $this->editGroupId = null;
+    }
+
+    /**
+     * Delete the attribute group.
+     *
+     * @return void
+     */
+    public function deleteGroup()
+    {
+        DB::transaction(function () {
+            $this->attributeGroupToDelete->attributes()->delete();
+            $this->attributeGroupToDelete->delete();
+        });
+        $this->deleteGroupId = null;
+        $this->refreshGroups();
+
+        $this->notify(
+            __('adminhub::notifications.attribute-groups.deleted')
+        );
     }
 
     /**

@@ -50,4 +50,7 @@ return [
     'attributes.show.delete_group_btn' => 'Delete attribute group',
     'attributes.show.edit_title' => 'Edit attribute group',
     'attributes.show.create_title' => 'Create attribute group',
+    'attributes.show.delete_title' => 'Delete attribute group',
+    'attributes.show.delete_warning' => 'Removing this customer group will also remove all attributes associated to it. This action cannot be reversed.',
+    'attributes.show.group_protected' => 'This group contains attributes required by the system so cannot be removed.',
 ];
