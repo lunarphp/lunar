@@ -28,6 +28,9 @@ class AttributeEdit extends Component
      */
     public ?Attribute $attribute = null;
 
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
         $this->attribute = $this->attribute ?: new Attribute([
@@ -38,7 +41,6 @@ class AttributeEdit extends Component
             'system' => false,
             'type' => get_class($this->fieldTypes->first()),
         ]);
-
     }
 
     /**
@@ -99,6 +101,11 @@ class AttributeEdit extends Component
         return $this->getFieldType()?->getConfig() ?: null;
     }
 
+    /**
+     * Save the attribute.
+     *
+     * @return void
+     */
     public function save()
     {
         $this->validate();
