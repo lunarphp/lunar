@@ -2,8 +2,10 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
 
+use GetCandy\Facades\FieldTypeManifest;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
+use GetCandy\Models\Attribute;
 use GetCandy\Models\AttributeGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
