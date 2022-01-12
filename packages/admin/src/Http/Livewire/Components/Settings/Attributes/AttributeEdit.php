@@ -36,6 +36,36 @@ class AttributeEdit extends Component
     }
 
     /**
+     * Return the available field types.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getFieldTypesProperty()
+    {
+        return FieldTypeManifest::getTypes();
+    }
+
+    /**
+     * Return the selected field type.
+     *
+     * @return
+     */
+    public function getFieldType()
+    {
+        return app()->make($this->attribute->type);
+    }
+
+    /**
+     * Return the config for the field type.
+     *
+     * @return void
+     */
+    public function getFieldTypeConfig()
+    {
+        return $this->getFieldType()?->getConfig() ?: null;
+    }
+
+    /**
      * Render the livewire component.
      *
      * @return \Illuminate\View\View
