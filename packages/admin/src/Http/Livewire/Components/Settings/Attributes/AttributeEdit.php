@@ -36,6 +36,32 @@ class AttributeEdit extends Component
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function rules()
+    {
+        $rules = [
+            "attribute.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
+            'attribute.handle' => 'required',
+            'attribute.required' => 'nullable|boolean',
+            'attribute.searchable' => 'nullable|boolean',
+            'attribute.filterable' => 'nullable|boolean',
+            'attribute.configuration' => 'nullable|array',
+            'attribute.type' => 'required',
+        ];
+
+        if ($this->getFieldType()) {
+            $fieldTypeOptions = $this->getFieldTypeConfig()['options'] ?? [];
+
+            foreach ($fieldTypeOptions as $field => $validation) {
+                $rules["attribute.configuration.{$field}"] = $validation;
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
      * Return the available field types.
      *
      * @return \Illuminate\Support\Collection
