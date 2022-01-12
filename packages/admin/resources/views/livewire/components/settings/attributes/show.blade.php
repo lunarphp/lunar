@@ -12,7 +12,7 @@
     @foreach($sortedAttributeGroups as $group)
       <div
         wire:key="group_{{ $group->id }}"
-        x-data="{ expanded: false }"
+        x-data="{ expanded: {{ $sortedAttributeGroups->count() <= 2 ? 'true' : 'false' }} }"
         sort.item="groups"
         sort.id="{{ $group->id }}"
       >
@@ -153,7 +153,6 @@
   @endif
 
   @if($this->attributeCreateGroup)
-    {{ $this->attributeCreateGroup->id }}
     @livewire('hub.components.settings.attributes.attribute-edit', [
       'group' => $this->attributeCreateGroup,
     ])
