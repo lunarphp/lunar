@@ -49,6 +49,10 @@
                       {{ __('adminhub::components.attributes.show.edit_group_btn') }}
                     </x-hub::dropdown.button>
 
+                    <x-hub::dropdown.button wire:click="$set('attributeCreateGroupId', {{ $group->id }})" class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                      {{ __('adminhub::components.attributes.show.create_attribute') }}
+                    </x-hub::dropdown.button>
+
                     <x-hub::dropdown.button wire:click="$set('deleteGroupId', {{ $group->id }})" class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
                       <span class="text-red-500">{{ __('adminhub::components.attributes.show.delete_group_btn') }}</span>
                     </x-hub::dropdown.button>
@@ -75,17 +79,19 @@
                 <div sort.handle class="cursor-grab">
                   <x-hub::icon ref="selector" style="solid" class="mr-2 text-gray-400 hover:text-gray-700" />
                 </div>
-                  <span class="grow">{{ $attribute->translate('name') }}</span>
-                  <x-hub::icon ref="cog" style="solid" class="w-4" />
-
-                  <x-hub::dropdown minimal>
-                    <x-slot name="options">
-                      <x-hub::dropdown.link href="" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
-                        {{ __('adminhub::components.attributes.show.edit_attribute_btn') }}
-                        <x-hub::icon ref="pencil" style="solid" class="w-4" />
-                      </x-hub::dropdown.link>
-                    </x-slot>
-                  </x-hub::dropdown>
+                <span class="grow">{{ $attribute->translate('name') }}</span>
+                <x-hub::dropdown minimal>
+                  <x-slot name="options">
+                    <x-hub::dropdown.button
+                      type="button"
+                      wire:click="$set('editAttributeId', {{ $attribute->id }})"
+                      class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50"
+                    >
+                      {{ __('adminhub::components.attributes.show.edit_attribute_btn') }}
+                      <x-hub::icon ref="pencil" style="solid" class="w-4" />
+                    </x-hub::dropdown.button>
+                  </x-slot>
+                </x-hub::dropdown>
               </div>
             @endforeach
           </div>
@@ -144,5 +150,12 @@
         </div>
       </x-slot>
     </x-hub::modal.dialog>
+  @endif
+
+  @if($this->attributeCreateGroup)
+    {{ $this->attributeCreateGroup->id }}
+    @livewire('hub.components.settings.attributes.attribute-edit', [
+      'group' => $this->attributeCreateGroup,
+    ])
   @endif
 </div>

@@ -37,6 +37,13 @@ class AttributeShow extends AbstractAttribute
     public $showGroupCreate = false;
 
     /**
+     * The attribute group id to use for creating an attribute.
+     *
+     * @var int|null
+     */
+    public $attributeCreateGroupId = 2;
+
+    /**
      * The id of the attribute group to edit
      *
      * @var int|null
@@ -49,6 +56,13 @@ class AttributeShow extends AbstractAttribute
      * @var int|null
      */
     public $deleteGroupId;
+
+    /**
+     * The id of the attribute to edit.
+     *
+     * @var int|null
+     */
+    public $editAttributeId;
 
     /**
      * {@inheritDoc}
@@ -85,6 +99,16 @@ class AttributeShow extends AbstractAttribute
     {
         return AttributeGroup::whereAttributableType($this->typeClass)
             ->orderBy('position')->get();
+    }
+
+    /**
+     * Return the group to be used when creating an attribute.
+     *
+     * @return \GetCandy\Models\AttributeGroup
+     */
+    public function getAttributeCreateGroupProperty()
+    {
+        return AttributeGroup::find($this->attributeCreateGroupId);
     }
 
     /**
@@ -164,6 +188,16 @@ class AttributeShow extends AbstractAttribute
     public function getAttributeGroupToDeleteProperty()
     {
         return AttributeGroup::find($this->deleteGroupId);
+    }
+
+    /**
+     * Return the attribute to edit.
+     *
+     * @return \GetCandy\Models\Attribute
+     */
+    public function getAttributeToEditProperty()
+    {
+        return Attribute::find($this->editAttributeId);
     }
 
     /**

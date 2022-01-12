@@ -45,6 +45,7 @@ return [
      * Attribute show
      */
     'attributes.show.create_group_btn' => 'Create attribute group',
+    'attributes.show.create_attribute' => 'Create attribute',
     'attributes.show.edit_group_btn' => 'Edit attribute group',
     'attributes.show.edit_attribute_btn' => 'Edit attribute',
     'attributes.show.delete_group_btn' => 'Delete attribute group',
@@ -53,4 +54,12 @@ return [
     'attributes.show.delete_title' => 'Delete attribute group',
     'attributes.show.delete_warning' => 'Removing this customer group will also remove all attributes associated to it. This action cannot be reversed.',
     'attributes.show.group_protected' => 'This group contains attributes required by the system so cannot be removed.',
+    /**
+     * Attribute edit
+     */
+    'attribute-edit.name.placeholder' => 'e.g. Name',
+    'attribute-edit.required.instructions' => 'Is this attribute required when editing/creating?',
+    'attribute-edit.searchable.instructions' => 'Should users be able to search via this attribute?',
+    'attribute-edit.filterable.instructions' => 'Should users be able to filter results based on this attribute?',
+    'attribute-edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
 ];
