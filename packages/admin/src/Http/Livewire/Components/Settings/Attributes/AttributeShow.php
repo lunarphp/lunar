@@ -77,7 +77,7 @@ class AttributeShow extends AbstractAttribute
             })->sortBy('position');
         });
         $this->notify(
-            __('adminhub::notifications.attribute-groups.position-updated')
+            __('adminhub::notifications.attribute-groups.reordered')
         );
     }
 
