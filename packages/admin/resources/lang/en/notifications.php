@@ -22,5 +22,6 @@ return [
     'password-reset.password_updated' => 'Password updated',
     'password-reset.email_sent'       => 'Password reset sent',
     'account.updated'                 => 'Account updated',
-    'attribute-groups.position-updated' => 'Attribute group positions updated',
+    'attribute-groups.reordered' => 'Attribute Groups reordered',
+    'attributes.reordered' => 'Attributes reordered',
 ];
