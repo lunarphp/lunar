@@ -41,6 +41,7 @@ window.livewire.directive('sort', (el, directive, component) => {
             });
 
             component.call(options.method, {
+                owner: options.owner,
                 group: options.group,
                 items,
             });
