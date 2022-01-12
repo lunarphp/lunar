@@ -70,6 +70,8 @@ class AttributeShow extends AbstractAttribute
     protected $listeners = [
         'attribute-group-edit.created' => 'refreshGroups',
         'attribute-group-edit.updated' => 'resetGroupEdit',
+        'attribute-edit.created' => 'resetAttributeEdit',
+        'attribute-edit.updated' => 'resetAttributeEdit',
     ];
 
     /**
@@ -222,6 +224,17 @@ class AttributeShow extends AbstractAttribute
     public function resetGroupEdit()
     {
         $this->editGroupId = null;
+    }
+
+    /**
+     * Reset the attribute edit state.
+     *
+     * @return void
+     */
+    public function resetAttributeEdit()
+    {
+        $this->attributeCreateGroupId = null;
+        $this->refreshGroups();
     }
 
     /**

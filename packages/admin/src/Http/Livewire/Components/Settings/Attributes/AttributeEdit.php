@@ -31,8 +31,14 @@ class AttributeEdit extends Component
     public function mount()
     {
         $this->attribute = $this->attribute ?: new Attribute([
+            'searchable' => true,
+            'filterable' => false,
+            'required' => false,
+            'section' => 'main',
+            'system' => false,
             'type' => get_class($this->fieldTypes->first()),
         ]);
+
     }
 
     /**
@@ -47,6 +53,8 @@ class AttributeEdit extends Component
             'attribute.searchable' => 'nullable|boolean',
             'attribute.filterable' => 'nullable|boolean',
             'attribute.configuration' => 'nullable|array',
+            'attribute.section' => 'string',
+            'attribute.system' => 'boolean',
             'attribute.type' => 'required',
         ];
 
@@ -89,6 +97,32 @@ class AttributeEdit extends Component
     public function getFieldTypeConfig()
     {
         return $this->getFieldType()?->getConfig() ?: null;
+    }
+
+    public function save()
+    {
+        $this->validate();
+
+        if (!$this->attribute->id) {
+            $this->attribute->attribute_type = $this->group->attributable_type;
+            $this->attribute->attribute_group_id = $this->group->id;
+            $this->attribute->position = Attribute::whereAttributeGroupId(
+                $this->group->id
+            )->count() + 1;
+            $this->attribute->save();
+            $this->notify(
+                __('adminhub::notifications.attribute-edit.created')
+            );
+            $this->emit('attribute-edit.created', $this->attribute->id);
+            return;
+        }
+
+        $this->attribute->save();
+
+        $this->notify(
+            __('adminhub::notifications.attribute-edit.updated')
+        );
+        $this->emit('attribute-edit.updated', $this->attribute->id);
     }
 
     /**

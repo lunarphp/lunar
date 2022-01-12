@@ -1,6 +1,14 @@
-<x-hub::slideover title="Create Attribute">
+<x-hub::slideover
+  :title="__(
+    $attribute->id ? 'adminhub::components.attribute-edit.update_title' : 'adminhub::components.attribute-edit.create_title'
+  )"
+>
   <div class="space-y-4">
-    <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('attributeGroup.name.' . $this->defaultLanguage->code)">
+    <x-hub::input.group
+      :label="__('adminhub::inputs.name')"
+      for="name"
+      :error="$errors->first('attribute.name.' . $this->defaultLanguage->code)"
+    >
       <x-hub::translatable>
         <x-hub::input.text
           wire:model="attribute.name.{{ $this->defaultLanguage->code }}"
@@ -18,8 +26,12 @@
       </x-hub::translatable>
     </x-hub::input.group>
 
-    <x-hub::input.group :label="__('adminhub::inputs.handle')" for="handle" :error="$errors->first('attributeGroup.handle')">
-      <x-hub::input.text id="handle" wire:model="attribute.handle" />
+    <x-hub::input.group
+      :label="__('adminhub::inputs.handle')"
+      for="handle"
+      :error="$errors->first('attribute.handle')"
+    >
+      <x-hub::input.text id="handle" wire:model="attribute.handle" :error="$errors->first('attribute.handle')" />
     </x-hub::input.group>
 
     <div class="grid grid-cols-3">
@@ -57,7 +69,7 @@
       :error="$errors->first('attribute.validation_rules')"
       :instructions="__('adminhub::components.attribute-edit.validation.instructions')"
     >
-      <x-hub::input.text id="validation_rules" wire:model="attribute.handle" />
+      <x-hub::input.text id="validation_rules" wire:model="attribute.validation_rules" />
     </x-hub::input.group>
 
     <x-hub::input.group
@@ -80,7 +92,7 @@
   <x-slot name="footer">
     <div class="flex justify-between">
       <x-hub::button theme="gray">Cancel</x-hub::button>
-      <x-hub::button>Save Attribute</x-hub::button>
+      <x-hub::button wire:click="save">Save Attribute</x-hub::button>
     </div>
   </x-slot>
 </x-hub::slideover>
