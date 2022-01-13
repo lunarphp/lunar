@@ -1,14 +1,14 @@
 <div class="space-y-4">
-  @foreach($attributeMapping->groupBy('group_handle') as $groupIndex => $fields)
+  @foreach($this->attributeGroups as $groupIndex => $group)
     <div class="shadow sm:rounded-md" wire:key="attribute-group-{{ $groupIndex }}">
       <div class="flex-col px-4 py-5 space-y-4 bg-white rounded sm:p-6">
         <header>
           <h3 class="text-lg font-medium leading-6 text-gray-900">
-            {{ $fields->first()['group'] }}
+            {{ $group['model']->translate('name') }}
           </h3>
         </header>
         <div class="space-y-4">
-          @foreach($fields as $attIndex => $field)
+          @foreach($group['fields'] as $attIndex => $field)
             <div wire:key="{{ $field['handle'] }}">
               <x-hub::input.group
                 :label="$field['name']"

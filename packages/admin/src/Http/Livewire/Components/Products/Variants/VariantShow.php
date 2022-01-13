@@ -5,11 +5,13 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants;
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
 use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
+use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -23,6 +25,7 @@ class VariantShow extends Component
     use Notifies;
     use HasPrices;
     use WithLanguages;
+    use WithAttributes;
     use HasDimensions;
 
     /**
@@ -235,6 +238,9 @@ class VariantShow extends Component
             $this->variant->volume_value = null;
         }
 
+        $data = $this->prepareAttributeData($this->variant);
+        $this->variant->attribute_data = $data;
+
         $this->variant->save();
         $this->savePricing();
         $this->image = null;
@@ -379,6 +385,18 @@ class VariantShow extends Component
         $this->newValues = [];
 
         $this->product = $this->variant->product->refresh();
+    }
+
+    public function getAttributeDataProperty()
+    {
+        return $this->variant->attribute_data;
+    }
+
+    public function getAvailableAttributesProperty()
+    {
+        return ProductType::find(
+            $this->variant->product->product_type_id
+        )->variantAttributes->sortBy('position')->values();
     }
 
     /**
