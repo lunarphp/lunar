@@ -3,16 +3,26 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
+use GetCandy\Models\AttributeGroup;
+use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
+use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 abstract class AbstractProductType extends Component
 {
-    use Notifies;
-    use WithPagination;
+    use Notifies, WithPagination, WithLanguages;
+
+    /**
+     * The current view of attributes we're assigning.
+     *
+     * @var string
+     */
+    public $view = 'products';
 
     /**
      * Instance of the parent product.
@@ -26,7 +36,14 @@ abstract class AbstractProductType extends Component
      *
      * @var \Illuminate\Support\Collection
      */
-    public Collection $selectedAttributes;
+    public Collection $selectedProductAttributes;
+
+    /**
+     * Attributes which are ready to be synced.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    public Collection $selectedVariantAttributes;
 
     /**
      * The attribute search term.
@@ -35,18 +52,30 @@ abstract class AbstractProductType extends Component
      */
     public $attributeSearch = '';
 
-    public function addAttribute($id)
+    public function addAttribute($id, $type)
     {
-        $this->selectedAttributes = $this->selectedAttributes->push(
-            $this->availableAttributes()->first(fn ($att) => $att->id == $id)
+        $attributeReference = 'selectedProductAttributes';
+
+        if ($type == 'variants') {
+            $attributeReference = 'selectedVariantAttributes';
+        }
+
+        $this->{$attributeReference} = $this->{$attributeReference}->push(
+            $this->getAvailableAttributes($type)->first(fn ($att) => $att->id == $id)
         );
     }
 
-    public function removeAttribute($id)
+    public function removeAttribute($id, $type)
     {
-        $index = $this->selectedAttributes->search(fn ($att) => $att->id == $id);
+        $attributeReference = 'selectedProductAttributes';
 
-        $this->selectedAttributes->forget($index);
+        if ($type == 'variants') {
+            $attributeReference = 'selectedVariantAttributes';
+        }
+
+        $index = $this->{$attributeReference}->search(fn ($att) => $att->id == $id);
+
+        $this->{$attributeReference}->forget($index);
     }
 
     public function updatedAttributeSearch()
@@ -54,13 +83,83 @@ abstract class AbstractProductType extends Component
         $this->resetPage();
     }
 
-    public function availableAttributes()
+    /**
+     * Return attributes for a group
+     *
+     * @param string|int $groupId
+     * @param string $type
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAttributesForGroup($groupId, $type = 'products')
     {
-        // \Log::debug($this->selectedAttributes->pluck('id'));
-        return Attribute::whereAttributeType(ProductType::class)
-            ->when($this->attributeSearch, fn ($query, $search) => $query->where('name->en', 'LIKE', '%'.$search.'%'))
-            ->whereSystem(false)
-            ->whereNotIn('id', $this->selectedAttributes->pluck('id'))
+        return $this->getAvailableAttributes($type)->filter(fn($att) => $att->attribute_group_id == $groupId);
+    }
+
+    /**
+     * Return the selected attributes from a given type and group
+     *
+     * @param string|int $groupId
+     * @param string $type
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSelectedAttributes($groupId, $type)
+    {
+        if ($type == 'products') {
+            return $this->selectedProductAttributes->filter(
+                fn($att) => $att->attribute_group_id == $groupId
+            );
+        }
+
+        return $this->selectedVariantAttributes->filter(
+            fn($att) => $att->attribute_group_id == $groupId
+        );
+    }
+
+    /**
+     * Get attribute groups for a given type.
+     *
+     * @param string $type
+     * @return void
+     */
+    public function getGroups($type)
+    {
+        if ($type == 'products') {
+            $type = Product::class;
+        }
+
+        if ($type == 'variants') {
+            $type = ProductVariant::class;
+        }
+
+        return AttributeGroup::whereAttributableType($type)->with([
+            'attributes',
+        ])->get();
+    }
+
+    /**
+     * Return available attributes given a type.
+     *
+     * @param string $type
+     * @return \Illuminate\Contracts\Pagination\Paginator
+     */
+    public function getAvailableAttributes($type)
+    {
+        if ($type == 'products') {
+            $type = Product::class;
+            $existing = $this->selectedProductAttributes;
+        }
+
+        if ($type == 'variants') {
+            $type = ProductVariant::class;
+            $existing = $this->selectedVariantAttributes;
+        }
+
+        return Attribute::whereAttributeType($type)
+            ->when(
+                $this->attributeSearch,
+                fn ($query, $search) => $query->where("name->{$this->defaultLanguage->code}", 'LIKE', '%'.$search.'%')
+            )->whereSystem(false)
+            ->whereNotIn('id', $existing->pluck('id')->toArray())
             ->paginate(25);
     }
 }
