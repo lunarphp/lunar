@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\FieldTypes\ListField;
 use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
@@ -21,6 +22,7 @@ class FieldTypeManifest
             Text::class,
             TranslatedText::class,
             Number::class,
+            ListField::class,
         ]);
     }
 

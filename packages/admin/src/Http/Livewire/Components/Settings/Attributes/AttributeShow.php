@@ -62,7 +62,7 @@ class AttributeShow extends AbstractAttribute
      *
      * @var int|null
      */
-    public $editAttributeId = null;
+    public $editAttributeId = 7;
 
     /**
      * The ID of the attribute we want to delete.

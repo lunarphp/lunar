@@ -40,7 +40,6 @@ class AttributeEdit extends Component
      */
     public function mount()
     {
-
         $this->attribute = $this->attribute ?: new Attribute([
             'searchable' => true,
             'filterable' => false,
@@ -49,7 +48,6 @@ class AttributeEdit extends Component
             'system' => false,
             'type' => get_class($this->fieldTypes->first()),
         ]);
-
 
         if ($this->attribute->id) {
             $this->group = $this->attribute->attributeGroup;
