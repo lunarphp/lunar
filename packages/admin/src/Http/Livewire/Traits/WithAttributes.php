@@ -4,6 +4,7 @@ namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
+use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Language;
 use Illuminate\Support\Str;
 
@@ -38,6 +39,7 @@ trait WithAttributes
 
     protected function mapAttributes()
     {
+
         $this->attributeMapping = $this->availableAttributes->mapWithKeys(function ($attribute, $index) {
             $data = $this->attributeData ?
                 $this->attributeData->first(fn ($value, $handle) => $handle == $attribute->handle)
@@ -49,12 +51,16 @@ trait WithAttributes
                 $value = $this->prepareTranslatedText($value);
             }
 
-            return [$attribute->id => [
+            $reference = Str::random();
+
+            return [$reference => [
                 'name'          => $attribute->translate('name'),
                 'group'         => $attribute->attributeGroup->translate('name'),
+                'group_id'      => $attribute->attributeGroup->id,
                 'group_handle'  => $attribute->attributeGroup->handle,
+                'group_position' => $attribute->attributeGroup->position,
                 'id'            => $attribute->handle,
-                'signature'     => 'attributeMapping.'.$attribute->id.'.data',
+                'signature'     => 'attributeMapping.'.$reference.'.data',
                 'type'          => $attribute->type,
                 'handle'        => $attribute->handle,
                 'configuration' => $attribute->configuration,
@@ -62,6 +68,23 @@ trait WithAttributes
                 'view'          => app()->make($attribute->type)->getView(),
                 'data' => $value,
             ]];
+        });
+
+        // dd($this->attributeMapping);
+    }
+
+
+    public function getAttributeGroupsProperty()
+    {
+        $groupIds = $this->attributeMapping->pluck('group_id')->unique();
+
+        return AttributeGroup::whereIn('id', $groupIds)
+            ->orderBy('position')
+            ->get()->map(function ($group) {
+            return [
+                'model' => $group,
+                'fields' => $this->attributeMapping->filter(fn($att) => $att['group_id'] == $group->id),
+            ];
         });
     }
 

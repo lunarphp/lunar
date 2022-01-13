@@ -97,7 +97,9 @@
     </div>
     <div class="space-y-6 lg:col-span-9">
 
-
+      <div id="attributes">
+        @include('adminhub::partials.attributes')
+      </div>
       @include('adminhub::partials.pricing')
       @include('adminhub::partials.products.variants.image')
       @include('adminhub::partials.products.variants.identifiers')

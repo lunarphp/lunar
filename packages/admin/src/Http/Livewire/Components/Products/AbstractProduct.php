@@ -458,7 +458,7 @@ abstract class AbstractProduct extends Component
     {
         return ProductType::find(
             $this->product->product_type_id
-        )->mappedAttributes->sortBy('position')->values();
+        )->productAttributes->sortBy('position')->values();
     }
 
     /**
