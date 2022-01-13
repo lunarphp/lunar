@@ -39,7 +39,6 @@ trait WithAttributes
 
     protected function mapAttributes()
     {
-
         $this->attributeMapping = $this->availableAttributes->mapWithKeys(function ($attribute, $index) {
             $data = $this->attributeData ?
                 $this->attributeData->first(fn ($value, $handle) => $handle == $attribute->handle)
@@ -54,25 +53,24 @@ trait WithAttributes
             $reference = Str::random();
 
             return [$reference => [
-                'name'          => $attribute->translate('name'),
-                'group'         => $attribute->attributeGroup->translate('name'),
-                'group_id'      => $attribute->attributeGroup->id,
-                'group_handle'  => $attribute->attributeGroup->handle,
+                'name'           => $attribute->translate('name'),
+                'group'          => $attribute->attributeGroup->translate('name'),
+                'group_id'       => $attribute->attributeGroup->id,
+                'group_handle'   => $attribute->attributeGroup->handle,
                 'group_position' => $attribute->attributeGroup->position,
-                'id'            => $attribute->handle,
-                'signature'     => 'attributeMapping.'.$reference.'.data',
-                'type'          => $attribute->type,
-                'handle'        => $attribute->handle,
-                'configuration' => $attribute->configuration,
-                'required'      => $attribute->required,
-                'view'          => app()->make($attribute->type)->getView(),
-                'data' => $value,
+                'id'             => $attribute->handle,
+                'signature'      => 'attributeMapping.'.$reference.'.data',
+                'type'           => $attribute->type,
+                'handle'         => $attribute->handle,
+                'configuration'  => $attribute->configuration,
+                'required'       => $attribute->required,
+                'view'           => app()->make($attribute->type)->getView(),
+                'data'           => $value,
             ]];
         });
 
         // dd($this->attributeMapping);
     }
-
 
     public function getAttributeGroupsProperty()
     {
@@ -81,11 +79,11 @@ trait WithAttributes
         return AttributeGroup::whereIn('id', $groupIds)
             ->orderBy('position')
             ->get()->map(function ($group) {
-            return [
-                'model' => $group,
-                'fields' => $this->attributeMapping->filter(fn($att) => $att['group_id'] == $group->id),
-            ];
-        });
+                return [
+                    'model'  => $group,
+                    'fields' => $this->attributeMapping->filter(fn ($att) => $att['group_id'] == $group->id),
+                ];
+            });
     }
 
     /**

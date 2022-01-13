@@ -33,7 +33,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
      */
     protected $casts = [
         'requires_shipping' => 'bool',
-        'attribute_data' => AsAttributeData::class,
+        'attribute_data'    => AsAttributeData::class,
     ];
 
     /**

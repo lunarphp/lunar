@@ -15,6 +15,7 @@ interface FieldType
      * Set the value for the field type.
      *
      * @param mixed $value
+     *
      * @return void
      */
     public function setValue($value);

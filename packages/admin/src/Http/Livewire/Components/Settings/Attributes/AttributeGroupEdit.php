@@ -10,7 +10,8 @@ use Livewire\Component;
 
 class AttributeGroupEdit extends Component
 {
-    use WithLanguages, Notifies;
+    use WithLanguages;
+    use Notifies;
 
     /**
      * The type of attributable this is.
@@ -48,7 +49,7 @@ class AttributeGroupEdit extends Component
      */
     public function mount()
     {
-        $this->attributeGroup = $this->attributeGroup ?: new AttributeGroup;
+        $this->attributeGroup = $this->attributeGroup ?: new AttributeGroup();
     }
 
     public function create()
@@ -61,6 +62,7 @@ class AttributeGroupEdit extends Component
             $this->notify(
                 __('adminhub::notifications.attribute-groups.updated')
             );
+
             return;
         }
 

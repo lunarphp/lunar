@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
 
 use GetCandy\Facades\AttributeManifest;
-use GetCandy\Hub\Http\Livewire\Traits\ConfirmsDelete;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
@@ -13,7 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class AttributeShow extends AbstractAttribute
 {
-    use Notifies, WithLanguages;
+    use Notifies;
+    use WithLanguages;
 
     /**
      * The type property.
@@ -23,7 +23,7 @@ class AttributeShow extends AbstractAttribute
     public $type;
 
     /**
-     * The sorted attribute groups
+     * The sorted attribute groups.
      *
      * @var Collection
      */
@@ -32,7 +32,7 @@ class AttributeShow extends AbstractAttribute
     /**
      * Whether we should show the panel to create a new group.
      *
-     * @var boolean
+     * @var bool
      */
     public $showGroupCreate = false;
 
@@ -44,7 +44,7 @@ class AttributeShow extends AbstractAttribute
     public $attributeCreateGroupId = null;
 
     /**
-     * The id of the attribute group to edit
+     * The id of the attribute group to edit.
      *
      * @var int|null
      */
@@ -77,9 +77,9 @@ class AttributeShow extends AbstractAttribute
     protected $listeners = [
         'attribute-group-edit.created' => 'refreshGroups',
         'attribute-group-edit.updated' => 'resetGroupEdit',
-        'attribute-edit.created' => 'resetAttributeEdit',
-        'attribute-edit.updated' => 'resetAttributeEdit',
-        'attribute-edit.closed' => 'resetAttributeEdit',
+        'attribute-edit.created'       => 'resetAttributeEdit',
+        'attribute-edit.updated'       => 'resetAttributeEdit',
+        'attribute-edit.closed'        => 'resetAttributeEdit',
     ];
 
     /**
@@ -125,6 +125,7 @@ class AttributeShow extends AbstractAttribute
      * Sort the attribute groups.
      *
      * @param array $groups
+     *
      * @return void
      */
     public function sortGroups($groups)
@@ -136,6 +137,7 @@ class AttributeShow extends AbstractAttribute
                 });
                 $group->position = $updatedOrder['order'];
                 $group->save();
+
                 return $group;
             })->sortBy('position');
         });
@@ -148,15 +150,15 @@ class AttributeShow extends AbstractAttribute
      * Sort the attributes.
      *
      * @param array $attributes
+     *
      * @return void
      */
     public function sortAttributes($attributes)
     {
-
         DB::transaction(function () use ($attributes) {
             foreach ($attributes['items'] as $attribute) {
                 Attribute::whereId($attribute['id'])->update([
-                    'position' => $attribute['order'],
+                    'position'           => $attribute['order'],
                     'attribute_group_id' => $attributes['owner'],
                 ]);
             }
@@ -226,13 +228,13 @@ class AttributeShow extends AbstractAttribute
      * Returns whether the group to delete has system attributes
      * associated to it and therefore protected.
      *
-     * @return boolean
+     * @return bool
      */
     public function getGroupProtectedProperty()
     {
         return $this->attributeGroupToDelete ?
             $this->attributeGroupToDelete->attributes->filter(
-                fn($attribute) => !!$attribute->system
+                fn ($attribute) => (bool) $attribute->system
             )->count() : false;
     }
 

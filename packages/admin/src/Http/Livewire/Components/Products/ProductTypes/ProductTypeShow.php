@@ -4,7 +4,6 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
 
 use GetCandy\Models\Attribute;
 use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 
@@ -24,11 +23,11 @@ class ProductTypeShow extends AbstractProductType
         $systemProductAttributes = Attribute::system(Product::class)->get();
         $systemVariantAttribues = Attribute::system(ProductVariant::class)->get();
         $this->selectedProductAttributes = $this->productType->mappedAttributes
-            ->filter(fn($att) => $att->attribute_type == Product::class)
+            ->filter(fn ($att) => $att->attribute_type == Product::class)
             ->merge($systemProductAttributes);
 
         $this->selectedVariantAttributes = $this->productType->mappedAttributes
-            ->filter(fn($att) => $att->attribute_type == ProductVariant::class)
+            ->filter(fn ($att) => $att->attribute_type == ProductVariant::class)
             ->merge($systemVariantAttribues);
     }
 

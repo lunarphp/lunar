@@ -6,11 +6,11 @@ use Illuminate\Support\Collection;
 
 interface AttributeManifestInterface
 {
-
     /**
      * Add an attribute type.
      *
      * @param string $classname
+     *
      * @return void
      */
     public function addType($classname);
@@ -23,9 +23,10 @@ interface AttributeManifestInterface
     public function getTypes(): Collection;
 
     /**
-     * Return an attribute type by it's key
+     * Return an attribute type by it's key.
      *
      * @param string $handle
+     *
      * @return string|null
      */
     public function getType($handle);

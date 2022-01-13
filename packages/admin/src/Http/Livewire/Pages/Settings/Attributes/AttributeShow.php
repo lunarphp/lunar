@@ -7,12 +7,12 @@ use Livewire\Component;
 class AttributeShow extends Component
 {
     /**
-     * The type
+     * The type.
      */
     public $type;
 
     /**
-     * Mount the component
+     * Mount the component.
      *
      * @return void
      */

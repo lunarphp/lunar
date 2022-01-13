@@ -26,8 +26,8 @@ class AttributeManifest
     ];
 
     /**
-    * Initialise the class.
-    */
+     * Initialise the class.
+     */
     public function __construct()
     {
         $this->types = collect();
@@ -37,9 +37,6 @@ class AttributeManifest
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function addType($type, $key = null)
     {
         $this->types->prepend(
@@ -50,17 +47,11 @@ class AttributeManifest
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getTypes(): Collection
     {
         return $this->types;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType($key)
     {
         return $this->types[$key] ?? null;

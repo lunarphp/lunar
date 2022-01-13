@@ -26,14 +26,15 @@ class AttributesIndex extends Component
      * Returns stats for an attribute type.
      *
      * @param string $attributeType
-     * @return integer
+     *
+     * @return int
      */
     public function getStats($attributeType)
     {
-        $groups =  AttributeGroup::whereAttributableType($attributeType)->get();
+        $groups = AttributeGroup::whereAttributableType($attributeType)->get();
 
         return [
-            'group_count' => $groups->count(),
+            'group_count'     => $groups->count(),
             'attribute_count' => Attribute::whereIn(
                 'attribute_group_id',
                 $groups->pluck('id')->toArray()

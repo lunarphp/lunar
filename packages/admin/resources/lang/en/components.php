@@ -36,36 +36,36 @@ return [
      */
     'ovcm.title' => 'Add new option to :name',
     /**
-     * Attribute group create
+     * Attribute group create.
      */
     'attribute-group-edit.name.placeholder' => 'e.g. Additional Details',
-    'attribute-group-edit.create_btn' => 'Create attribute group',
-    'attribute-group-edit.update_btn' => 'Update attribute group',
+    'attribute-group-edit.create_btn'       => 'Create attribute group',
+    'attribute-group-edit.update_btn'       => 'Update attribute group',
     /**
-     * Attribute show
+     * Attribute show.
      */
-    'attributes.show.create_group_btn' => 'Create attribute group',
-    'attributes.show.create_attribute' => 'Create attribute',
-    'attributes.show.edit_group_btn' => 'Edit attribute group',
-    'attributes.show.edit_attribute_btn' => 'Edit attribute',
-    'attributes.show.delete_group_btn' => 'Delete attribute group',
-    'attributes.show.edit_title' => 'Edit attribute group',
-    'attributes.show.create_title' => 'Create attribute group',
-    'attributes.show.delete_title' => 'Delete attribute group',
-    'attributes.show.delete_warning' => 'Removing this customer group will also remove all attributes associated to it. This action cannot be reversed.',
-    'attributes.show.group_protected' => 'This group contains attributes required by the system so cannot be removed.',
-    'attributes.show.no_attributes_text' => 'No attributes exist, either drag existing attributes or add new ones here.',
-    'attributes.show.delete_attribute_btn' => 'Delete attribute',
-    'attributes.show.delete_attribute_title' => 'Delete Attribute',
-    'attributes.show.delete_attribute_warning' => 'Are you sure you want to remove this attribute?',
+    'attributes.show.create_group_btn'           => 'Create attribute group',
+    'attributes.show.create_attribute'           => 'Create attribute',
+    'attributes.show.edit_group_btn'             => 'Edit attribute group',
+    'attributes.show.edit_attribute_btn'         => 'Edit attribute',
+    'attributes.show.delete_group_btn'           => 'Delete attribute group',
+    'attributes.show.edit_title'                 => 'Edit attribute group',
+    'attributes.show.create_title'               => 'Create attribute group',
+    'attributes.show.delete_title'               => 'Delete attribute group',
+    'attributes.show.delete_warning'             => 'Removing this customer group will also remove all attributes associated to it. This action cannot be reversed.',
+    'attributes.show.group_protected'            => 'This group contains attributes required by the system so cannot be removed.',
+    'attributes.show.no_attributes_text'         => 'No attributes exist, either drag existing attributes or add new ones here.',
+    'attributes.show.delete_attribute_btn'       => 'Delete attribute',
+    'attributes.show.delete_attribute_title'     => 'Delete Attribute',
+    'attributes.show.delete_attribute_warning'   => 'Are you sure you want to remove this attribute?',
     'attributes.show.delete_attribute_protected' => 'You cannot delete a system attribute.',
     /**
-     * Attribute edit
+     * Attribute edit.
      */
-    'attribute-edit.create_title' => 'Create attribute',
-    'attribute-edit.update_title' => 'Update attribute',
-    'attribute-edit.name.placeholder' => 'e.g. Name',
-    'attribute-edit.required.instructions' => 'Is this attribute required when editing/creating?',
+    'attribute-edit.create_title'            => 'Create attribute',
+    'attribute-edit.update_title'            => 'Update attribute',
+    'attribute-edit.name.placeholder'        => 'e.g. Name',
+    'attribute-edit.required.instructions'   => 'Is this attribute required when editing/creating?',
     'attribute-edit.searchable.instructions' => 'Should users be able to search via this attribute?',
     'attribute-edit.filterable.instructions' => 'Should users be able to filter results based on this attribute?',
     'attribute-edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',

@@ -30,6 +30,7 @@ class FieldTypeManifest
      * Add a FieldType into GetCandy.
      *
      * @param string $classname
+     *
      * @return void
      */
     public function add($classname)
@@ -47,6 +48,6 @@ class FieldTypeManifest
 
     public function getTypes()
     {
-        return $this->fieldTypes->map(fn($type) => app()->make($type));
+        return $this->fieldTypes->map(fn ($type) => app()->make($type));
     }
 }

@@ -15,7 +15,9 @@ use Livewire\WithPagination;
 
 abstract class AbstractProductType extends Component
 {
-    use Notifies, WithPagination, WithLanguages;
+    use Notifies;
+    use WithPagination;
+    use WithLanguages;
 
     /**
      * The current view of attributes we're assigning.
@@ -84,34 +86,36 @@ abstract class AbstractProductType extends Component
     }
 
     /**
-     * Return attributes for a group
+     * Return attributes for a group.
      *
      * @param string|int $groupId
-     * @param string $type
+     * @param string     $type
+     *
      * @return \Illuminate\Support\Collection
      */
     public function getAttributesForGroup($groupId, $type = 'products')
     {
-        return $this->getAvailableAttributes($type)->filter(fn($att) => $att->attribute_group_id == $groupId);
+        return $this->getAvailableAttributes($type)->filter(fn ($att) => $att->attribute_group_id == $groupId);
     }
 
     /**
-     * Return the selected attributes from a given type and group
+     * Return the selected attributes from a given type and group.
      *
      * @param string|int $groupId
-     * @param string $type
+     * @param string     $type
+     *
      * @return \Illuminate\Support\Collection
      */
     public function getSelectedAttributes($groupId, $type)
     {
         if ($type == 'products') {
             return $this->selectedProductAttributes->filter(
-                fn($att) => $att->attribute_group_id == $groupId
+                fn ($att) => $att->attribute_group_id == $groupId
             );
         }
 
         return $this->selectedVariantAttributes->filter(
-            fn($att) => $att->attribute_group_id == $groupId
+            fn ($att) => $att->attribute_group_id == $groupId
         );
     }
 
@@ -119,6 +123,7 @@ abstract class AbstractProductType extends Component
      * Get attribute groups for a given type.
      *
      * @param string $type
+     *
      * @return void
      */
     public function getGroups($type)
@@ -140,6 +145,7 @@ abstract class AbstractProductType extends Component
      * Return available attributes given a type.
      *
      * @param string $type
+     *
      * @return \Illuminate\Contracts\Pagination\Paginator
      */
     public function getAvailableAttributes($type)

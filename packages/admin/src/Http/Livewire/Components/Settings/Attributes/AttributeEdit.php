@@ -7,12 +7,12 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
 use GetCandy\Models\AttributeGroup;
-use Illuminate\Support\Str;
 use Livewire\Component;
 
 class AttributeEdit extends Component
 {
-    use WithLanguages, Notifies;
+    use WithLanguages;
+    use Notifies;
 
     /**
      * The attribute group.
@@ -31,7 +31,7 @@ class AttributeEdit extends Component
     /**
      * Whether the panel should be visible.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $panelVisible = true;
 
@@ -43,10 +43,10 @@ class AttributeEdit extends Component
         $this->attribute = $this->attribute ?: new Attribute([
             'searchable' => true,
             'filterable' => false,
-            'required' => false,
-            'section' => 'main',
-            'system' => false,
-            'type' => get_class($this->fieldTypes->first()),
+            'required'   => false,
+            'section'    => 'main',
+            'system'     => false,
+            'type'       => get_class($this->fieldTypes->first()),
         ]);
 
         if ($this->attribute->id) {
@@ -66,14 +66,14 @@ class AttributeEdit extends Component
     {
         $rules = [
             "attribute.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
-            'attribute.handle' => 'required',
-            'attribute.required' => 'nullable|boolean',
-            'attribute.searchable' => 'nullable|boolean',
-            'attribute.filterable' => 'nullable|boolean',
-            'attribute.configuration' => 'nullable|array',
-            'attribute.section' => 'string',
-            'attribute.system' => 'boolean',
-            'attribute.type' => 'required',
+            'attribute.handle'                              => 'required',
+            'attribute.required'                            => 'nullable|boolean',
+            'attribute.searchable'                          => 'nullable|boolean',
+            'attribute.filterable'                          => 'nullable|boolean',
+            'attribute.configuration'                       => 'nullable|array',
+            'attribute.section'                             => 'string',
+            'attribute.system'                              => 'boolean',
+            'attribute.type'                                => 'required',
         ];
 
         if ($this->getFieldType()) {
@@ -137,6 +137,7 @@ class AttributeEdit extends Component
                 __('adminhub::notifications.attribute-edit.created')
             );
             $this->emit('attribute-edit.created', $this->attribute->id);
+
             return;
         }
 
