@@ -103,7 +103,7 @@ trait WithAttributes
                     break;
 
                 default:
-                    $value = new Text($attribute['data']);
+                    $value = new $attribute['type']($attribute['data']);
                     break;
             }
 
