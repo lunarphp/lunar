@@ -36,7 +36,6 @@ use GetCandy\Hub\Http\Livewire\Components\Reporting\ApexChart;
 use GetCandy\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeEdit;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupEdit;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeShow;
@@ -269,7 +268,6 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Attributes
         Livewire::component('hub.components.settings.attributes.index', AttributesIndex::class);
-        Livewire::component('hub.components.settings.attributes.create', AttributeCreate::class);
         Livewire::component('hub.components.settings.attributes.show', AttributeShow::class);
         Livewire::component('hub.components.settings.attributes.attribute-group-edit', AttributeGroupEdit::class);
         Livewire::component('hub.components.settings.attributes.attribute-edit', AttributeEdit::class);

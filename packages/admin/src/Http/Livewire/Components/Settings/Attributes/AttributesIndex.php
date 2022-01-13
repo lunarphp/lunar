@@ -48,8 +48,7 @@ class AttributesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.attributes.index', [
-            'attributes' => Attribute::paginate(5),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.attributes.index')
+            ->layout('adminhub::layouts.base');
     }
 }

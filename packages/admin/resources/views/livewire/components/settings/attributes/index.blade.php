@@ -1,7 +1,4 @@
 <div class="flex-col space-y-4">
-  <div class="text-right">
-    <x-hub::button tag="a" href="{{ route('hub.attributes.create') }}">Create Attribute</x-hub::button>
-  </div>
   <x-hub::table>
     <x-slot name="head">
       <x-hub::table.heading>
@@ -40,7 +37,4 @@
       @endforelse
     </x-slot>
   </x-hub::table>
-  <div>
-    {{ $attributes->links() }}
-  </div>
 </div>
