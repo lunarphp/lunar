@@ -10,6 +10,7 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
+use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -59,11 +60,6 @@ class ProductTypeCreateTest extends TestCase
         ]);
 
         Attribute::factory(2)->create([
-            'attribute_type' => ProductType::class,
-            'system'         => true,
-        ]);
-
-        Attribute::factory(2)->create([
             'attribute_type' => Product::class,
             'system'         => true,
         ]);
@@ -74,10 +70,13 @@ class ProductTypeCreateTest extends TestCase
 
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductTypeCreate::class)
-            ->assertCount('selectedAttributes', Attribute::system(ProductType::class)->count());
+            ->assertCount('selectedProductAttributes', Attribute::system(Product::class)->count());
     }
 
-    /** @test  */
+    /**
+     * @test
+     * @group foo
+     * */
     public function can_populate_product_type_data_and_attributes()
     {
         $staff = Staff::factory()->create([
@@ -88,11 +87,19 @@ class ProductTypeCreateTest extends TestCase
             'handle' => 'new-attribute',
         ]);
 
+        $variantAttribute = Attribute::factory()->create([
+            'handle' => 'variant-attribute',
+            'attribute_type' => ProductVariant::class,
+        ]);
+
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductTypeCreate::class)
-            ->assertCount('selectedAttributes', 0)
-            ->call('addAttribute', $attribute->id)
-            ->assertCount('selectedAttributes', 1)
+            ->assertCount('selectedProductAttributes', 0)
+            ->call('addAttribute', $attribute->id, 'products')
+            ->assertCount('selectedProductAttributes', 1)
+            ->assertCount('selectedVariantAttributes', 0)
+            ->call('addAttribute', $variantAttribute->id, 'variants')
+            ->assertCount('selectedVariantAttributes', 1)
             ->set('productType.name', 'Foobar')
             ->call('create');
 
