@@ -80,6 +80,7 @@ trait WithAttributes
                 'configuration'  => $attribute->configuration,
                 'required'       => $attribute->required,
                 'view'           => app()->make($attribute->type)->getView(),
+                'validation'     => $attribute->validation_rules,
                 'data'           => $value,
             ]];
         });
@@ -174,15 +175,20 @@ trait WithAttributes
     {
         $rules = [];
         foreach ($this->attributeMapping as $index => $attribute) {
+            $validation = $attribute['validation'] ? explode(',', $attribute['validation']) : [];
+
+            $field = $attribute['signature'];
+
             if (($attribute['required'] ?? false) || ($attribute['system'] ?? false)) {
                 if ($attribute['type'] == TranslatedText::class) {
                     // Get the default language and make that the only one required.
-                    $rules["{$attribute['signature']}.{$this->defaultLanguage->code}"] = 'required';
-                    continue;
+                    $field = "{$attribute['signature']}.{$this->defaultLanguage->code}";
                 }
 
-                $rules[$attribute['signature']] = 'required';
+                $validation = array_merge($validation, ['required']);
             }
+
+            $rules[$field] = implode(',', $validation);
         }
 
         return $rules;
