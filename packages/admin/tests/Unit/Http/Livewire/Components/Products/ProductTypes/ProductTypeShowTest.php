@@ -91,7 +91,7 @@ class ProductTypeShowTest extends TestCase
         ]);
 
         $variantAttribute = Attribute::factory()->create([
-            'handle' => 'variant-attribute',
+            'handle'         => 'variant-attribute',
             'attribute_type' => ProductVariant::class,
         ]);
 

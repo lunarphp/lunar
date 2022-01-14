@@ -6,7 +6,6 @@ use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Language;
-use Illuminate\Support\Str;
 
 trait WithAttributes
 {
@@ -169,6 +168,7 @@ trait WithAttributes
                 $rules[$attribute['signature']] = 'required';
             }
         }
+
         return $rules;
     }
 

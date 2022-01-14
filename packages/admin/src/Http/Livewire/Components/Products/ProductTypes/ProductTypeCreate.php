@@ -18,7 +18,7 @@ class ProductTypeCreate extends AbstractProductType
     {
         $this->productType = new ProductType();
 
-        $this->selectedProductAttributes =  Attribute::system(Product::class)->get();
+        $this->selectedProductAttributes = Attribute::system(Product::class)->get();
         $this->selectedVariantAttributes = Attribute::system(ProductVariant::class)->get();
     }
 
