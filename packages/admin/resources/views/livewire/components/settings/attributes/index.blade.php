@@ -16,7 +16,7 @@
       @forelse($this->attributeTypes as $handle => $attributeType)
         <x-hub::table.row>
           <x-hub::table.cell>
-            {{ $attributeType }}
+            {{ class_basename($attributeType) }}
           </x-hub::table.cell>
           <x-hub::table.cell>
             {{ $this->getStats($attributeType)['group_count'] }}
