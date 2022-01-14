@@ -162,14 +162,13 @@ trait WithAttributes
             if (($attribute['required'] ?? false) || ($attribute['system'] ?? false)) {
                 if ($attribute['type'] == TranslatedText::class) {
                     // Get the default language and make that the only one required.
-                    $rules["attributeMapping.a_{$attribute['id']}.data.{$this->defaultLanguage->code}"] = 'required';
+                    $rules["{$attribute['signature']}.{$this->defaultLanguage->code}"] = 'required';
                     continue;
                 }
 
-                $rules["attributeMapping.a_{$attribute['id']}.data"] = 'required';
+                $rules[$attribute['signature']] = 'required';
             }
         }
-
         return $rules;
     }
 
