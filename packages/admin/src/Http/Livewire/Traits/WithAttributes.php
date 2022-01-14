@@ -6,6 +6,7 @@ use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Language;
+use Illuminate\Support\Collection;
 
 trait WithAttributes
 {
@@ -38,9 +39,23 @@ trait WithAttributes
 
     protected function mapAttributes()
     {
-        $this->attributeMapping = $this->availableAttributes->mapWithKeys(function ($attribute, $index) {
-            $data = $this->attributeData ?
-                $this->attributeData->first(fn ($value, $handle) => $handle == $attribute->handle)
+        $this->attributeMapping = $this->parseAttributes(
+            $this->availableAttributes,
+            $this->attributeData
+        );
+    }
+
+    /**
+     * Parse the attributes into the correct collection format.
+     *
+     * @param \Illuminate\Support\Collection $attributes
+     * @return void
+     */
+    protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
+    {
+        return $attributes->mapWithKeys(function ($attribute) use ($key, $existingData) {
+            $data = $existingData ?
+                $existingData->first(fn ($value, $handle) => $handle == $attribute->handle)
                 : null;
 
             $value = $data ? $data->getValue() : null;
@@ -58,7 +73,7 @@ trait WithAttributes
                 'group_handle'   => $attribute->attributeGroup->handle,
                 'group_position' => $attribute->attributeGroup->position,
                 'id'             => $attribute->handle,
-                'signature'      => 'attributeMapping.'.$reference.'.data',
+                'signature'      => "{$key}.{$reference}.data",
                 'type'           => $attribute->type,
                 'handle'         => $attribute->handle,
                 'configuration'  => $attribute->configuration,
@@ -88,9 +103,9 @@ trait WithAttributes
      *
      * @return array
      */
-    public function prepareAttributeData()
+    public function prepareAttributeData($attributes = null)
     {
-        return collect($this->attributeMapping)->mapWithKeys(function ($attribute) {
+        return collect(($attributes ?? $this->attributeMapping))->mapWithKeys(function ($attribute) {
             $value = null;
             switch ($attribute['type']) {
                 case TranslatedText::class:

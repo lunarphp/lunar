@@ -13,6 +13,7 @@ use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
 use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
+use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductType;
@@ -100,6 +101,13 @@ abstract class AbstractProduct extends Component
      * @var array
      */
     public $availability = [];
+
+    /**
+     * The product variant attributes.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    public $variantAttributes;
 
     protected function getListeners()
     {
@@ -253,7 +261,8 @@ abstract class AbstractProduct extends Component
         $isNew = !$this->product->id;
 
         DB::transaction(function () use ($isNew) {
-            $data = $this->prepareAttributeData($this->product);
+            $data = $this->prepareAttributeData();
+            $variantData = $this->prepareAttributeData($this->variantAttributes);
 
             $this->product->attribute_data = $data;
 
@@ -268,6 +277,8 @@ abstract class AbstractProduct extends Component
                     $this->variant->volume_unit = null;
                     $this->variant->volume_value = null;
                 }
+
+                $this->variant->attribute_data = $variantData;
 
                 $this->variant->save();
 
@@ -459,6 +470,37 @@ abstract class AbstractProduct extends Component
         return ProductType::find(
             $this->product->product_type_id
         )->productAttributes->sortBy('position')->values();
+    }
+
+    /**
+     * Returns all available variant attributes.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAvailableVariantAttributesProperty()
+    {
+        return ProductType::find(
+            $this->product->product_type_id
+        )->variantAttributes->sortBy('position')->values();
+    }
+
+    /**
+     * Return attribute groups available for variants.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getVariantAttributeGroupsProperty()
+    {
+        $groupIds = $this->variantAttributes->pluck('group_id')->unique();
+
+        return AttributeGroup::whereIn('id', $groupIds)
+            ->orderBy('position')
+            ->get()->map(function ($group) {
+                return [
+                    'model'  => $group,
+                    'fields' => $this->variantAttributes->filter(fn ($att) => $att['group_id'] == $group->id),
+                ];
+            });
     }
 
     /**

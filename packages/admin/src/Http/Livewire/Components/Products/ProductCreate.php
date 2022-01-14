@@ -32,6 +32,12 @@ class ProductCreate extends AbstractProduct
             'backorder'     => 0,
         ]);
 
+        $this->variantAttributes = $this->parseAttributes(
+            $this->availableVariantAttributes,
+            $this->variant->attribute_data,
+            'variantAttributes',
+        );
+
         $this->syncAvailability();
     }
 
