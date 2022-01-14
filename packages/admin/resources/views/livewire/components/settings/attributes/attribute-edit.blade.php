@@ -5,6 +5,11 @@
   wire:model="panelVisible"
 >
   <div class="space-y-4">
+    @if($attribute->system)
+      <x-hub::alert level="danger">
+        {{ __('adminhub::components.attribute-edit.system_locked') }}
+      </x-hub::alert>
+    @endif
     <x-hub::input.group
       :label="__('adminhub::inputs.name')"
       for="name"
@@ -38,6 +43,7 @@
         wire:model.lazy="attribute.handle"
         wire:change="$set('manualHandle', true)"
         :error="$errors->first('attribute.handle')"
+        :disabled="$attribute->system"
       />
     </x-hub::input.group>
 
@@ -48,7 +54,7 @@
         :error="$errors->first('attributeGroup.required')"
         :instructions="__('adminhub::components.attribute-edit.required.instructions')"
       >
-        <x-hub::input.toggle id="required" wire:model="attribute.required" value="1" />
+        <x-hub::input.toggle :disabled="$attribute->system" id="required" wire:model="attribute.required" value="1" />
       </x-hub::input.group>
 
       <x-hub::input.group
@@ -66,7 +72,7 @@
         :error="$errors->first('attributeGroup.filterable')"
         :instructions="__('adminhub::components.attribute-edit.filterable.instructions')"
       >
-        <x-hub::input.toggle id="required" wire:model="attribute.filterable" />
+        <x-hub::input.toggle :disabled="$attribute->system" id="required" wire:model="attribute.filterable" />
       </x-hub::input.group>
     </div>
 
@@ -76,7 +82,7 @@
       :error="$errors->first('attribute.validation_rules')"
       :instructions="__('adminhub::components.attribute-edit.validation.instructions')"
     >
-      <x-hub::input.text id="validation_rules" wire:model="attribute.validation_rules" />
+      <x-hub::input.text :disabled="$attribute->system" id="validation_rules" wire:model="attribute.validation_rules" />
     </x-hub::input.group>
 
     <x-hub::input.group
@@ -84,7 +90,7 @@
       for="handle"
       :error="$errors->first('attribute.type')"
     >
-      <x-hub::input.select wire:model="attribute.type">
+      <x-hub::input.select wire:model="attribute.type" :disabled="$attribute->system">
         @foreach($this->fieldTypes as $fieldType)
           <option value="{{ get_class($fieldType) }}">{{ $fieldType->getLabel() }}</option>
         @endforeach

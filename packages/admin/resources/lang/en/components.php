@@ -64,6 +64,7 @@ return [
      */
     'attribute-edit.create_title'            => 'Create attribute',
     'attribute-edit.update_title'            => 'Update attribute',
+    'attribute-edit.system_locked'           => 'This attribute is required by the system so some fields are disabled.',
     'attribute-edit.name.placeholder'        => 'e.g. Name',
     'attribute-edit.required.instructions'   => 'Is this attribute required when editing/creating?',
     'attribute-edit.searchable.instructions' => 'Should users be able to search via this attribute?',
