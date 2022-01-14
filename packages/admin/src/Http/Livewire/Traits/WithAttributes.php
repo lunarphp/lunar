@@ -50,7 +50,7 @@ trait WithAttributes
                 $value = $this->prepareTranslatedText($value);
             }
 
-            $reference = Str::random();
+            $reference = 'a_'.$attribute->id;
 
             return [$reference => [
                 'name'           => $attribute->translate('name'),
@@ -68,8 +68,6 @@ trait WithAttributes
                 'data'           => $value,
             ]];
         });
-
-        // dd($this->attributeMapping);
     }
 
     public function getAttributeGroupsProperty()
@@ -164,11 +162,11 @@ trait WithAttributes
             if (($attribute['required'] ?? false) || ($attribute['system'] ?? false)) {
                 if ($attribute['type'] == TranslatedText::class) {
                     // Get the default language and make that the only one required.
-                    $rules["attributeMapping.{$index}.data.{$this->defaultLanguage->code}"] = 'required';
+                    $rules["attributeMapping.a_{$attribute['id']}.data.{$this->defaultLanguage->code}"] = 'required';
                     continue;
                 }
 
-                $rules["attributeMapping.{$index}.data"] = 'required';
+                $rules["attributeMapping.a_{$attribute['id']}.data"] = 'required';
             }
         }
 
