@@ -18,6 +18,10 @@
   x-init="
     items = Array.isArray(items) ? items : []
 
+    getKey = () => {
+      return btoa(Math.random().toString()).substr(10, 5)
+    }
+
      new Sortable($refs.list, {
       animation: 150,
       handle: '.handle',
@@ -38,7 +42,7 @@
     });
   ">
   <ul class="border divide-y rounded" x-ref="list">
-    <template x-for="(item, index) in items" :key="index">
+    <template x-for="(item, index) in items" :key="getKey()">
         <li class="flex px-3 py-2 text-sm bg-white">
           <x-hub::icon ref="selector" style="solid" class="mr-2 text-gray-400 hover:text-gray-700 handle cursor-grab" />
           <div class="flex justify-between grow">
