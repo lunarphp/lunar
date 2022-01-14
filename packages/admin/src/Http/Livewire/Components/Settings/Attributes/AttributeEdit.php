@@ -73,7 +73,7 @@ class AttributeEdit extends Component
     public function rules()
     {
         $rules = [
-            'attribute.name' => 'required',
+            'attribute.name'                                => 'required',
             "attribute.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
             'attribute.handle'                              => 'required',
             'attribute.required'                            => 'nullable|boolean',
@@ -127,7 +127,7 @@ class AttributeEdit extends Component
     }
 
     /**
-     * Format the handle on update to a slug
+     * Format the handle on update to a slug.
      *
      * @return void
      */
