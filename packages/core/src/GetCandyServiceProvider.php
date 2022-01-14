@@ -21,6 +21,7 @@ use GetCandy\Console\Commands\AddonsDiscover;
 use GetCandy\Console\Commands\Import\AddressData;
 use GetCandy\Console\Commands\MeilisearchSetup;
 use GetCandy\Console\InstallGetCandy;
+use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Models\CartLine;
@@ -40,6 +41,7 @@ use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -89,6 +91,7 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerAddonManifest();
+        $this->registerStateListeners();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -179,6 +182,14 @@ class GetCandyServiceProvider extends ServiceProvider
             $this->app->basePath(),
             $this->app->bootstrapPath().'/cache/getcandy_addons.php'
         ));
+    }
+
+    protected function registerStateListeners()
+    {
+        Event::listen(
+            MigrationsEnded::class,
+            [ConvertProductTypeAttributesToProducts::class, 'run']
+        );
     }
 
     /**
