@@ -1,5 +1,5 @@
 <div>
-  @if(($field['configuration']['type'] ?? null) == 'richtext')
+  @if(($field['configuration']['richtext'] ?? false))
     <x-hub::input.richtext
       id="{{ $field['id'] }}"
       wire:model.defer="{{ $field['signature'] }}{{ isset($language) ? '.' . $language : null }}"

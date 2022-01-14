@@ -96,7 +96,7 @@ class TranslatedText implements FieldType
     {
         return [
             'options' => [
-                'type' => 'string',
+                'richtext' => 'nullable',
             ],
         ];
     }

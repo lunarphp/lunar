@@ -99,7 +99,7 @@ class Text implements FieldType, JsonSerializable
         return [
             'view'    => 'adminhub::field-types.text',
             'options' => [
-                'type' => 'string',
+                'richtext' => 'nullable',
             ],
         ];
     }
