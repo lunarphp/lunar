@@ -9,7 +9,7 @@
     sort.options='{group: "groups", method: "sortGroups"}'
     class="mt-8 space-y-2"
   >
-    @foreach($sortedAttributeGroups as $group)
+    @forelse($sortedAttributeGroups as $group)
       <div
         wire:key="group_{{ $group->id }}"
         x-data="{ expanded: {{ $sortedAttributeGroups->count() <= 2 ? 'true' : 'false' }} }"
@@ -108,7 +108,11 @@
           @endif
         </div>
       </div>
-    @endforeach
+    @empty
+      <div class="w-full text-center text-gray-500">
+        {{ __('adminhub::components.attributes.show.no_groups') }}
+      </div>
+    @endforelse
   </div>
 
   <x-hub::modal.dialog wire:model="showGroupCreate">
