@@ -91,7 +91,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerAddonManifest();
-        $this->registerStateListeners();
+
+        if (!$this->app->environment('testing')) {
+            $this->registerStateListeners();
+        }
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
