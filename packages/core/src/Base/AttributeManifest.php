@@ -22,7 +22,7 @@ class AttributeManifest
         Product::class,
         ProductVariant::class,
         ModelsCollection::class,
-        Order::class,
+        // Order::class,
     ];
 
     /**
