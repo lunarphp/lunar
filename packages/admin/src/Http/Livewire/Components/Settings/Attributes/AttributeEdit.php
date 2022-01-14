@@ -83,6 +83,7 @@ class AttributeEdit extends Component
             'attribute.section'                             => 'string',
             'attribute.system'                              => 'boolean',
             'attribute.type'                                => 'required',
+            'attribute.validation_rules'                    => 'nullable|string',
         ];
 
         if ($this->getFieldType()) {
