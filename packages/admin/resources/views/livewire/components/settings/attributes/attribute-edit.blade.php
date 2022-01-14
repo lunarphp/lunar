@@ -92,7 +92,7 @@
 
   <x-slot name="footer">
     <div class="flex justify-between">
-      <x-hub::button theme="gray">Cancel</x-hub::button>
+      <x-hub::button theme="gray" type="button" wire:click="$set('panelVisible', false)">Cancel</x-hub::button>
       <x-hub::button wire:click="save">Save Attribute</x-hub::button>
     </div>
   </x-slot>
