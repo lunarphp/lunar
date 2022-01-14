@@ -267,6 +267,13 @@ class AttributeShow extends AbstractAttribute
      */
     public function deleteGroup()
     {
+        // If the group has system attributes, we can't delete it.
+        if ($this->groupProtected) {
+            $this->notify(
+                __('adminhub::notifications.attribute-groups.delete_protected')
+            );
+            return;
+        }
         DB::transaction(function () {
             $this->attributeGroupToDelete->attributes()->delete();
             $this->attributeGroupToDelete->delete();

@@ -27,6 +27,7 @@ return [
     'attribute-groups.created'        => 'Attribute group created',
     'attribute-groups.updated'        => 'Attribute group updated',
     'attribute-groups.deleted'        => 'Attribute group deleted',
+    'attribute-groups.delete_protected' => 'You cannot delete a group with system attributes',
     'attribute-edit.created'          => 'Attribute created',
     'attribute-edit.updated'          => 'Attribute updated',
     'attributes.deleted'              => 'Attribute Deleted',
