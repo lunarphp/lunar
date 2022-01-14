@@ -272,6 +272,7 @@ class AttributeShow extends AbstractAttribute
             $this->notify(
                 __('adminhub::notifications.attribute-groups.delete_protected')
             );
+
             return;
         }
         DB::transaction(function () {
