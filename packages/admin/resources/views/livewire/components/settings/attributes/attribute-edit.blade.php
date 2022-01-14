@@ -15,6 +15,7 @@
           wire:model="attribute.name.{{ $this->defaultLanguage->code }}"
           :error="$errors->first('attribute.name.' . $this->defaultLanguage->code)"
           :placeholder="__('adminhub::components.attribute-edit.name.placeholder')"
+          wire:change="formatHandle"
         />
         @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
           <x-slot :name="$language->code">
@@ -32,7 +33,12 @@
       for="handle"
       :error="$errors->first('attribute.handle')"
     >
-      <x-hub::input.text id="handle" wire:model="attribute.handle" :error="$errors->first('attribute.handle')" />
+      <x-hub::input.text
+        id="handle"
+        wire:model.lazy="attribute.handle"
+        wire:change="$set('manualHandle', true)"
+        :error="$errors->first('attribute.handle')"
+      />
     </x-hub::input.group>
 
     <div class="grid grid-cols-3">

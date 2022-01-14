@@ -7,6 +7,7 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
 use GetCandy\Models\AttributeGroup;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class AttributeEdit extends Component
@@ -34,6 +35,13 @@ class AttributeEdit extends Component
      * @var bool
      */
     public bool $panelVisible = true;
+
+    /**
+     * Whether the user has input a handle manually.
+     *
+     * @var bool
+     */
+    public bool $manualHandle = false;
 
     /**
      * {@inheritDoc}
@@ -65,6 +73,7 @@ class AttributeEdit extends Component
     public function rules()
     {
         $rules = [
+            'attribute.name' => 'required',
             "attribute.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
             'attribute.handle'                              => 'required',
             'attribute.required'                            => 'nullable|boolean',
@@ -115,6 +124,25 @@ class AttributeEdit extends Component
     public function getFieldTypeConfig()
     {
         return $this->getFieldType()?->getConfig() ?: null;
+    }
+
+    /**
+     * Format the handle on update to a slug
+     *
+     * @return void
+     */
+    public function updatedAttributeHandle()
+    {
+        $this->attribute->handle = Str::slug($this->attribute->handle);
+    }
+
+    public function formatHandle()
+    {
+        if (!$this->manualHandle) {
+            $this->attribute->handle = Str::slug(
+                $this->attribute->name[$this->defaultLanguage->code] ?? null
+            );
+        }
     }
 
     /**
