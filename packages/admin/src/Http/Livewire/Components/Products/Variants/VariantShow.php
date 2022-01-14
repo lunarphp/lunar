@@ -238,7 +238,7 @@ class VariantShow extends Component
             $this->variant->volume_value = null;
         }
 
-        $data = $this->prepareAttributeData($this->variant);
+        $data = $this->prepareAttributeData();
         $this->variant->attribute_data = $data;
 
         $this->variant->save();
