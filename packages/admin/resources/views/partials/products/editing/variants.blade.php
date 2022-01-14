@@ -12,11 +12,13 @@
       </div>
     </header>
       @if($this->getVariantsCount() <= 1)
-      @include('adminhub::partials.attributes', [
-        'attributeGroups' => $this->variantAttributeGroups,
-        'mapping' => 'variantAttributes',
-        'inline' => true,
-      ])
+        <div>
+          @include('adminhub::partials.attributes', [
+            'attributeGroups' => $this->variantAttributeGroups,
+            'mapping' => 'variantAttributes',
+            'inline' => true,
+          ])
+        </div>
       @endif
       @if($variantsEnabled)
         @if($this->getVariantsCount() <= 1)
