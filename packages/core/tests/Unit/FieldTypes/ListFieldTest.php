@@ -16,7 +16,7 @@ class ListFieldTest extends TestCase
     {
         $field = new ListField();
         $field->setValue([
-            'Foo'
+            'Foo',
         ]);
 
         $this->assertEquals(['Foo'], $field->getValue());
@@ -26,7 +26,7 @@ class ListFieldTest extends TestCase
     public function can_set_value_in_constructor()
     {
         $field = new ListField([
-            'Foo'
+            'Foo',
         ]);
 
         $this->assertEquals(['Foo'], $field->getValue());

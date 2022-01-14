@@ -8,6 +8,6 @@ return [
     'carts.billing_incomplete'   => 'The billing address is incomplete',
     'carts.order_exists'         => 'An order for this cart already exists',
     'missing_currency_price'     => 'No price for currency ":currency" exists',
-    'fieldtype_missing' => 'FieldType ":class" does not exist',
-    'invalid_fieldtype' => 'Class ":class" does not implement the FieldType interface.',
+    'fieldtype_missing'          => 'FieldType ":class" does not exist',
+    'invalid_fieldtype'          => 'Class ":class" does not implement the FieldType interface.',
 ];
