@@ -276,6 +276,11 @@ class AttributeShow extends AbstractAttribute
             return;
         }
         DB::transaction(function () {
+            DB::table(config('getcandy.database.table_prefix').'attributables')
+                ->whereIn(
+                    'attribute_id',
+                    $this->attributeGroupToDelete->attributes()->pluck('id')->toArray()
+                )->delete();
             $this->attributeGroupToDelete->attributes()->delete();
             $this->attributeGroupToDelete->delete();
         });
@@ -289,7 +294,15 @@ class AttributeShow extends AbstractAttribute
 
     public function deleteAttribute()
     {
-        $this->attributeToDelete->delete();
+        DB::transaction(function () {
+            DB::table(config('getcandy.database.table_prefix').'attributables')
+                ->where(
+                    'attribute_id',
+                    $this->attributeToDelete
+                )->delete();
+
+            $this->attributeToDelete->delete();
+        });
 
         $this->notify(
             __('adminhub::notifications.attributes.deleted')
