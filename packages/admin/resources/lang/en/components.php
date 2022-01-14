@@ -59,7 +59,7 @@ return [
     'attributes.show.delete_attribute_title'     => 'Delete Attribute',
     'attributes.show.delete_attribute_warning'   => 'Are you sure you want to remove this attribute?',
     'attributes.show.delete_attribute_protected' => 'You cannot delete a system attribute.',
-    'attributes.show.no_groups' => 'No attribute groups found, add your first one before you can add attributes to it.',
+    'attributes.show.no_groups'                  => 'No attribute groups found, add your first one before you can add attributes to it.',
     /**
      * Attribute edit.
      */
