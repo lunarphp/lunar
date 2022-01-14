@@ -2,6 +2,8 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\Exceptions\FieldTypes\FieldTypeMissingException;
+use GetCandy\Exceptions\FieldTypes\InvalidFieldTypeException;
 use GetCandy\FieldTypes\ListField;
 use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
@@ -36,16 +38,21 @@ class FieldTypeManifest
     public function add($classname)
     {
         if (!class_exists($classname)) {
-            //
+            throw new FieldTypeMissingException($classname);
         }
 
         if (!(app()->make($classname) instanceof FieldType)) {
-            //
+            throw new InvalidFieldTypeException($classname);
         }
 
         $this->fieldTypes->push($classname);
     }
 
+    /**
+     * Return the fieldtypes.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getTypes()
     {
         return $this->fieldTypes->map(fn ($type) => app()->make($type));
