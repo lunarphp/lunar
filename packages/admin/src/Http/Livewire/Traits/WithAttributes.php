@@ -49,6 +49,7 @@ trait WithAttributes
      * Parse the attributes into the correct collection format.
      *
      * @param \Illuminate\Support\Collection $attributes
+     *
      * @return void
      */
     protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
