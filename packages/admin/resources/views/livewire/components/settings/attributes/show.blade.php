@@ -61,7 +61,7 @@
               </div>
           </div>
         </div>
-        <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7">
+        <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7" @if($group->attributes->count()) x-show="expanded" @endif>
           <div
             class="space-y-2"
             wire:sort
@@ -107,7 +107,7 @@
             @endforeach
           </div>
           @if(!$group->attributes->count())
-            <span class="mx-4 text-sm">
+            <span class="mx-4 text-sm text-gray-500">
               {{ __('adminhub::components.attributes.show.no_attributes_text') }}
             </span>
           @endif
