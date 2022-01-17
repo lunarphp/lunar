@@ -5,4 +5,5 @@ return [
     'translated-text.label' => 'Translated Text',
     'number.label'          => 'Number',
     'list.label'            => 'List',
+    'dropdown.label'        => 'Dropdown',
 ];

@@ -100,6 +100,7 @@
     @if($this->getFieldType()->getSettingsView())
       @include($this->getFieldType()->getSettingsView())
     @endif
+
   </div>
 
   <x-slot name="footer">

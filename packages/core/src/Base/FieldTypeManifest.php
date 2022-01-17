@@ -8,6 +8,7 @@ use GetCandy\FieldTypes\ListField;
 use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
+use GetCandy\FieldTypes\Dropdown;
 
 class FieldTypeManifest
 {
@@ -25,6 +26,7 @@ class FieldTypeManifest
             TranslatedText::class,
             Number::class,
             ListField::class,
+            Dropdown::class,
         ]);
     }
 
