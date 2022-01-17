@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- Removed dependency on `livewire-ui/modal` package since it was only used in one place. ([#47](https://github.com/getcandy/getcandy/issues/47))
+- Removed `Basket` model since it's completely redundant.
 - Complete rework on how attributes are edited/created in the hub
 - When saving a product it will now be wrapped in a transaction to prevent data corruption on error.
 
