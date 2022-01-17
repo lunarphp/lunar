@@ -12,7 +12,7 @@
     @forelse($sortedAttributeGroups as $group)
       <div
         wire:key="group_{{ $group->id }}"
-        x-data="{ expanded: {{ $sortedAttributeGroups->count() <= 2 ? 'true' : 'false' }} }"
+        x-data="{ expanded: {{ $group->attributes->count() <= 4 ? 'true' : 'false' }} }"
         sort.item="groups"
         sort.id="{{ $group->id }}"
       >
