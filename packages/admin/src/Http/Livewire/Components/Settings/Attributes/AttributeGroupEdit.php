@@ -64,7 +64,7 @@ class AttributeGroupEdit extends Component
         $this->attributeGroup->handle = $handle;
 
         $this->validate([
-            'attributeGroup.handle' => 'unique:'.$this->attributeGroup->getTable().',handle'
+            'attributeGroup.handle' => 'unique:'.$this->attributeGroup->getTable().',handle',
         ]);
 
         if ($this->attributeGroup->id) {
