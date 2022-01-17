@@ -40,7 +40,11 @@ class AttributeGroupEdit extends Component
     public function rules()
     {
         return [
-            "attributeGroup.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
+            "attributeGroup.name.{$this->defaultLanguage->code}" => [
+                'required',
+                'string',
+                'max:255',
+            ],
         ];
     }
 
@@ -55,6 +59,13 @@ class AttributeGroupEdit extends Component
     public function create()
     {
         $this->validate();
+
+        $handle = Str::snake("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
+        $this->attributeGroup->handle = $handle;
+
+        $this->validate([
+            'attributeGroup.handle' => 'unique:'.$this->attributeGroup->getTable().',handle'
+        ]);
 
         if ($this->attributeGroup->id) {
             $this->attributeGroup->save();
@@ -71,8 +82,11 @@ class AttributeGroupEdit extends Component
             $this->attributableType
         )->count() + 1;
 
-        $this->attributeGroup->handle = Str::snake("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
+        $this->attributeGroup->handle = $handle;
         $this->attributeGroup->save();
+
+        $this->attributeGroup = new AttributeGroup();
+
         $this->emit('attribute-group-edit.created', $this->attributeGroup->id);
 
         $this->notify(

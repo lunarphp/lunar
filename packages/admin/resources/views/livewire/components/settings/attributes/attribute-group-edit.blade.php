@@ -17,6 +17,14 @@
     </x-hub::translatable>
   </x-hub::input.group>
 
+  @if($errors->has('attributeGroup.handle'))
+    <div class="mt-4">
+      <x-hub::alert level="danger">
+        {{ __('adminhub::components.attribute-group-edit.non_unique_handle') }}
+      </x-hub::alert>
+    </div>
+  @endif
+
   <div class="mt-6">
     <x-hub::button>
       {{ __($attributeGroup->id ? 'adminhub::components.attribute-group-edit.update_btn' : 'adminhub::components.attribute-group-edit.create_btn') }}
