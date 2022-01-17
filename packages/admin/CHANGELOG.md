@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Removed dependency on `livewire-ui/modal` package since it was only used in one place. ([#47](https://github.com/getcandy/getcandy/issues/47))
+- Removed `Basket` model since it's completely redundant.
+
 ## 2.0-beta6 - 2022-01-10
 
 ### Fixed

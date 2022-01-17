@@ -20,6 +20,13 @@ class CurrencyShow extends Component
     public Currency $currency;
 
     /**
+     * Determine whether to show format info text.
+     *
+     * @var bool
+     */
+    public $showFormatInfo = false;
+
+    /**
      * Define the validation rules.
      *
      * @return array

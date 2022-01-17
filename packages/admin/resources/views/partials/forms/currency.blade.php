@@ -23,10 +23,18 @@
           :has-info="true"
         >
           <x-slot name="instructions">
-            <button type="button" onclick="Livewire.emit('openModal', 'hub.components.settings.currencies.format-info')" class="text-indigo-500 hover:underline">
+            <button type="button" wire:click.prevent="$set('showFormatInfo', true)" class="text-indigo-500 hover:underline">
               {{ __('adminhub::global.info_link') }}
             </button>
           </x-slot>
+
+          <x-hub::modal wire:model="showFormatInfo">
+            <div class="px-6 py-4">
+              @foreach(__('adminhub::settings.currencies.form.format_help_text') as $value)
+                <p>{!! $value !!}</p>
+              @endforeach
+            </div>
+          </x-hub::modal>
           <x-hub::input.text wire:model="currency.format" name="format" id="format" :error="$errors->first('currency.format')" />
         </x-hub::input.group>
 

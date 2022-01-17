@@ -45,7 +45,6 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrenciesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\FormatInfo;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
@@ -292,7 +291,6 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.currencies.index', CurrenciesIndex::class);
         Livewire::component('hub.components.settings.currencies.show', CurrencyShow::class);
         Livewire::component('hub.components.settings.currencies.create', CurrencyCreate::class);
-        Livewire::component('hub.components.settings.currencies.format-info', FormatInfo::class);
 
         // Addons
         Livewire::component('hub.components.settings.addons.index', AddonsIndex::class);
