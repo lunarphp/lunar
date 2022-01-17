@@ -196,11 +196,13 @@ class GetCandyServiceProvider extends ServiceProvider
         Blueprint::macro('userForeignKey', function ($field_name = 'user_id') {
             $userModel = config('auth.providers.users.model');
 
-            if (config('getcandy.database.users_id_type') == 'uuid') {
+            $type = config('getcandy.database.users_id_type', 'bigint');
+
+            if ($type == 'uuid') {
                 $this->foreignUuId($field_name)->constrained(
                     (new $userModel())->getTable()
                 );
-            } elseif (config('getcandy.database.users_id_type') == 'int') {
+            } elseif ($type == 'int') {
                 $this->unsignedInteger($field_name);
                 $this->foreign($field_name)->references('id')->on('users');
             } else {
