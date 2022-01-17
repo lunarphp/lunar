@@ -4,6 +4,7 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
 
 use GetCandy\Models\Attribute;
 use GetCandy\Models\Product;
+use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 
@@ -73,7 +74,17 @@ class ProductTypeShow extends AbstractProductType
 
     public function getCanDeleteProperty()
     {
-        return !$this->productType->products()->count();
+        return !$this->isTheOnlyProductType && !$this->productType->products()->count();
+    }
+
+    /**
+     * Returns whether this is the only Product type in the system.
+     *
+     * @return bool
+     */
+    public function getIsTheOnlyProductTypeProperty()
+    {
+        return ProductType::count() == 1;
     }
 
     /**
