@@ -50,7 +50,8 @@
             <button
               type="button"
               class="text-gray-500 hover:text-red-500"
-              x-on:click="deleteItem(index)"
+              x-on:click.debounce.100ms="deleteItem(index)"
+              wire:loading.attr="disabled"
             >
               <x-hub::icon ref="x" style="solid" class="w-3" />
             </button>
