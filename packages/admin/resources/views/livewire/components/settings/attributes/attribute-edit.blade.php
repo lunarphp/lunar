@@ -1,6 +1,6 @@
 <x-hub::slideover
   :title="__(
-    $attribute->id ? 'adminhub::components.attribute-edit.update_title' : 'adminhub::components.attribute-edit.create_title'
+    $attribute->id ? 'adminhub::components.attribute-edit.update_title' : 'adminhub::components.attribute-edit.create_title',
   )"
   wire:model="panelVisible"
 >
