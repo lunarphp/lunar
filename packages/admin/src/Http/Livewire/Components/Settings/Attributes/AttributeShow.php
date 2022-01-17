@@ -298,7 +298,7 @@ class AttributeShow extends AbstractAttribute
             DB::table(config('getcandy.database.table_prefix').'attributables')
                 ->where(
                     'attribute_id',
-                    $this->attributeToDelete
+                    $this->attributeToDelete->id
                 )->delete();
 
             $this->attributeToDelete->delete();
