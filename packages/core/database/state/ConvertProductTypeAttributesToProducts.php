@@ -19,7 +19,7 @@ class ConvertProductTypeAttributesToProducts
             ]);
 
         DB::table("{$prefix}attribute_groups")
-            ->whereAttributeType(Product::class)
+            ->whereAttributableType(ProductType::class)
             ->update([
                 'attributable_type' => Product::class,
             ]);
