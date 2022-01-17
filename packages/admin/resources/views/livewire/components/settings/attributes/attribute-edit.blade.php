@@ -90,7 +90,7 @@
       for="handle"
       :error="$errors->first('attribute.type')"
     >
-      <x-hub::input.select wire:model="attribute.type" :disabled="$attribute->system">
+      <x-hub::input.select wire:model="attribute.type" :disabled="!!$attribute->system">
         @foreach($this->fieldTypes as $fieldType)
           <option value="{{ get_class($fieldType) }}">{{ $fieldType->getLabel() }}</option>
         @endforeach
