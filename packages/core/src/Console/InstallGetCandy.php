@@ -249,7 +249,7 @@ class InstallGetCandy extends Command
                 ]);
 
                 $type->mappedAttributes()->attach(
-                    Attribute::whereAttributeType(ProductType::class)->get()->pluck('id')
+                    Attribute::whereAttributeType(Product::class)->get()->pluck('id')
                 );
             }
 
