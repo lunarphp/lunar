@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- When translating an attribute, if we can't find a translation we default to whatever the FieldType gives back instead of erroring.
+
+### Added
+
+- Created the `AttributeManifest` class so dev's can add their own attributable classes.
+- Created the `FieldTypeManifest` class so dev's can add custom FieldTypes to the store.
+
 ## 2.0-beta5 - 2022-01-10
 
 ### Fixes
