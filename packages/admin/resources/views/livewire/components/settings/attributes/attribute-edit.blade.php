@@ -54,7 +54,7 @@
         :error="$errors->first('attributeGroup.required')"
         :instructions="__('adminhub::components.attribute-edit.required.instructions')"
       >
-        <x-hub::input.toggle :disabled="$attribute->system" id="required" wire:model="attribute.required" value="1" />
+        <x-hub::input.toggle :disabled="!!$attribute->system" id="required" wire:model="attribute.required" value="1" />
       </x-hub::input.group>
 
       <x-hub::input.group
@@ -63,16 +63,16 @@
         :error="$errors->first('attributeGroup.searchable')"
         :instructions="__('adminhub::components.attribute-edit.searchable.instructions')"
       >
-        <x-hub::input.toggle id="required" wire:model="attribute.searchable" />
+        <x-hub::input.toggle id="searchable" wire:model="attribute.searchable" />
       </x-hub::input.group>
 
       <x-hub::input.group
         :label="__('adminhub::inputs.filterable.label')"
-        for="searchable"
+        for="filterable"
         :error="$errors->first('attributeGroup.filterable')"
         :instructions="__('adminhub::components.attribute-edit.filterable.instructions')"
       >
-        <x-hub::input.toggle :disabled="$attribute->system" id="required" wire:model="attribute.filterable" />
+        <x-hub::input.toggle :disabled="!!$attribute->system" id="filterable" wire:model="attribute.filterable" />
       </x-hub::input.group>
     </div>
 
@@ -82,7 +82,7 @@
       :error="$errors->first('attribute.validation_rules')"
       :instructions="__('adminhub::components.attribute-edit.validation.instructions')"
     >
-      <x-hub::input.text :disabled="$attribute->system" id="validation_rules" wire:model="attribute.validation_rules" />
+      <x-hub::input.text :disabled="!!$attribute->system" id="validation_rules" wire:model="attribute.validation_rules" />
     </x-hub::input.group>
 
     <x-hub::input.group
