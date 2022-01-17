@@ -15,20 +15,18 @@
         this.lookups = this.lookups.filter((item, itemIndex) => {
             return index !== itemIndex
         })
+    },
+    getKey() {
+      return btoa(Math.random().toString()).substr(10, 5)
+    },
+    update() {
+      this.lookups = JSON.parse(
+        JSON.stringify(this.lookups)
+      )
     }
   }"
   x-init="
     lookups = Array.isArray(lookups) ? lookups : []
-
-    getKey = () => {
-      return btoa(Math.random().toString()).substr(10, 5)
-    }
-
-    update = () => {
-      lookups = JSON.parse(
-        JSON.stringify(lookups)
-      )
-    }
 
     new Sortable($refs.list, {
       animation: 150,
