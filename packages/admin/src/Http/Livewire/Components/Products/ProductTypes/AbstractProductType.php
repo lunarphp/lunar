@@ -142,6 +142,47 @@ abstract class AbstractProductType extends Component
     }
 
     /**
+     * Select all attributes in a group.
+     *
+     * @param string|int $groupId
+     * @param string $type
+     * @return void
+     */
+    public function selectAll($groupId, $type = 'products')
+    {
+        $attributes = $this->getAvailableAttributes($type)
+            ->filter(fn($att) => $att->attribute_group_id == $groupId);
+
+        foreach ($attributes as $attribute) {
+            if ($type == 'products') {
+                $this->selectedProductAttributes->push($attribute);
+            } else {
+                $this->selectedVariantAttributes->push($attribute);
+            }
+        }
+    }
+
+    /**
+     * Deselect all attributes in a group.
+     *
+     * @param string|int $groupId
+     * @param string $type
+     * @return void
+     */
+    public function deselectAll($groupId, $type = 'products')
+    {
+        if ($type == 'products') {
+            $this->selectedProductAttributes = $this->selectedProductAttributes->reject(function ($att) use ($groupId) {
+                return !$att->system && $att->attribute_group_id == $groupId;
+            });
+        } else {
+            $this->selectedVariantAttributes = $this->selectedVariantAttributes->reject(function ($att) use ($groupId) {
+                return !$att->system && $att->attribute_group_id == $groupId;
+            });
+        }
+    }
+
+    /**
      * Return available attributes given a type.
      *
      * @param string $type

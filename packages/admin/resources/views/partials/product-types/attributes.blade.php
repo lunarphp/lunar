@@ -1,8 +1,14 @@
 @foreach($this->getGroups($type) as $group)
   <div>
     <div class="grid grid-cols-2 gap-6 p-3 text-xs font-bold text-gray-500 uppercase bg-gray-50">
-      <h3>{{ $group->translate('name') }}</h3>
-      <h3>{{ $group->translate('name') }}</h3>
+      <div class="flex justify-between">
+        <h3>{{ $group->translate('name') }}</h3>
+        <button type="button" wire:click="selectAll('{{ $group->id }}', '{{ $type }}')" class="hover:text-gray-600">Select all</button>
+      </div>
+      <div class="flex justify-between">
+        <h3>{{ $group->translate('name') }}</h3>
+        <button type="button" wire:click="deselectAll('{{ $group->id }}', '{{ $type }}')" class="hover:text-gray-600">Deselect all</button>
+      </div>
     </div>
     <div class="grid grid-cols-2 gap-6">
       <div class="py-3 space-y-2">
