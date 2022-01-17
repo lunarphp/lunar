@@ -1,4 +1,5 @@
 <div
+  class="space-y-4"
   x-data="{
     lookups: @entangle('attribute.configuration.lookups'),
     addRow() {
@@ -54,10 +55,10 @@
       <x-slot name="head">
           <x-hub::table.heading></x-hub::table.heading>
           <x-hub::table.heading>
-            Label
+            {{ __('adminhub::fieldtypes.dropdown.label_heading') }}
           </x-hub::table.heading>
           <x-hub::table.heading>
-            Value
+            {{ __('adminhub::fieldtypes.dropdown.value_heading') }}
           </x-hub::table.heading>
           <x-hub::table.heading></x-hub::table.heading>
       </x-slot>
@@ -71,7 +72,7 @@
               <x-hub::input.text type="text" @change="update()" x-model.lazy="lookup.label" />
             </x-hub::table.cell>
             <x-hub::table.cell>
-              <x-hub::input.text type="text" @change="update()" x-model.lazy="lookup.value" placeholder="Leave blank to use label" />
+              <x-hub::input.text type="text" @change="update()" x-model.lazy="lookup.value" placeholder="{{ __('adminhub::fieldtypes.dropdown.value_placeholder') }}" />
             </x-hub::table.cell>
             <x-hub::table.cell>
             <button
@@ -88,11 +89,18 @@
       </x-slot>
     </x-hub::table>
   </div>
+
   <button
     type="button"
     class="block w-full py-2 mt-2 text-xs font-bold text-gray-400 uppercase bg-gray-100 rounded hover:bg-gray-200"
     x-on:click="addRow"
   >
-    Add row
+    {{ __('adminhub::fieldtypes.dropdown.add_row_btn') }}
   </button>
+
+  @if($errors->has('attribute.configuration.lookups.*.label'))
+    <x-hub::alert level="danger">
+      {{ __('adminhub::fieldtypes.dropdown.missing_labels') }}
+    </x-hub::alert>
+  @endif
 </div>
