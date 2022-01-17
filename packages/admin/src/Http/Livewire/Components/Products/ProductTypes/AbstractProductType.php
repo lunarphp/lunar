@@ -145,13 +145,14 @@ abstract class AbstractProductType extends Component
      * Select all attributes in a group.
      *
      * @param string|int $groupId
-     * @param string $type
+     * @param string     $type
+     *
      * @return void
      */
     public function selectAll($groupId, $type = 'products')
     {
         $attributes = $this->getAvailableAttributes($type)
-            ->filter(fn($att) => $att->attribute_group_id == $groupId);
+            ->filter(fn ($att) => $att->attribute_group_id == $groupId);
 
         foreach ($attributes as $attribute) {
             if ($type == 'products') {
@@ -166,7 +167,8 @@ abstract class AbstractProductType extends Component
      * Deselect all attributes in a group.
      *
      * @param string|int $groupId
-     * @param string $type
+     * @param string     $type
+     *
      * @return void
      */
     public function deselectAll($groupId, $type = 'products')
