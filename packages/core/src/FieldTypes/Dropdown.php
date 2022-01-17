@@ -77,7 +77,7 @@ class Dropdown implements FieldType
     {
         return [
             'options' => [
-                'lookups' => 'array',
+                'lookups'         => 'array',
                 'lookups.*.label' => 'string|required',
                 'lookups.*.value' => 'nullable|string',
             ],

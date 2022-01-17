@@ -4,11 +4,11 @@ namespace GetCandy\Base;
 
 use GetCandy\Exceptions\FieldTypes\FieldTypeMissingException;
 use GetCandy\Exceptions\FieldTypes\InvalidFieldTypeException;
+use GetCandy\FieldTypes\Dropdown;
 use GetCandy\FieldTypes\ListField;
 use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\FieldTypes\Dropdown;
 
 class FieldTypeManifest
 {
