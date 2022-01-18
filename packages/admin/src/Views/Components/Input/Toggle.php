@@ -21,15 +21,31 @@ class Toggle extends Component
     public $disabled = false;
 
     /**
+     * The Off value
+     *
+     * @var integer
+     */
+    public $offValue = 0;
+
+    /**
+     * The on value
+     *
+     * @var integer
+     */
+    public $onValue = 1;
+
+    /**
      * Create the component instance.
      *
      * @param bool $on
      * @param bool $disabled
      */
-    public function __construct($on = false, $disabled = false)
+    public function __construct($on = false, $disabled = false, $onValue = 1, $offValue = 0)
     {
         $this->on = $on;
         $this->disabled = $disabled;
+        $this->onValue = $onValue;
+        $this->offValue = $offValue;
     }
 
     /**
