@@ -143,7 +143,7 @@ class InstallGetCandy extends Command
                 $this->info('Adding a default tax class.');
 
                 TaxClass::create([
-                    'name' => 'Default Tax Class',
+                    'name'    => 'Default Tax Class',
                     'default' => true,
                 ]);
             }
