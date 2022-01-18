@@ -21,16 +21,16 @@ class Toggle extends Component
     public $disabled = false;
 
     /**
-     * The Off value
+     * The Off value.
      *
-     * @var integer
+     * @var int
      */
     public $offValue = 0;
 
     /**
-     * The on value
+     * The on value.
      *
-     * @var integer
+     * @var int
      */
     public $onValue = 1;
 

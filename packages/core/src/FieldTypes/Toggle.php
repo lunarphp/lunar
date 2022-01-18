@@ -100,7 +100,7 @@ class Toggle implements FieldType, JsonSerializable
     {
         return [
             'options' => [
-                'on_value' => 'nullable|string',
+                'on_value'  => 'nullable|string',
                 'off_value' => 'nullable|string',
             ],
         ];
