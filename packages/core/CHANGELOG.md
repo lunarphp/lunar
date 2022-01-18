@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- Channels now implement `start_at` and `end_at` columns. This replaces the previous `published_at` column.
+- Models that have channels now implement `start_at` and `end_at` columns. This replaces the previous `published_at` column.
 
 ## 2.0-beta5 - 2022-01-10
 
