@@ -18,7 +18,7 @@ class TagShow extends Component
     {
         return view('adminhub::livewire.pages.settings.tags.show')
             ->layout('adminhub::layouts.settings', [
-                'title' => 'Edit Tag',
+                'title' => __('adminhub::settings.tags.show.title'),
             ]);
     }
 }

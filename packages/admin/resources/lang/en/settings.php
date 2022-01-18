@@ -99,6 +99,7 @@ return [
     /**
      * Tags.
      */
+    'tags.show.title'                  => 'Edit Tag',
     'tags.index.title'                 => 'Tags',
     'tags.index.table_row_action_text' => 'Edit',
     'tags.form.update_btn'             => 'Update Tag',
