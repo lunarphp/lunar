@@ -289,7 +289,6 @@
       </div>
     </div>
     <x-hub::notification />
-    @livewire('livewire-ui-modal')
     @livewire('hub-license')
     @livewireScripts
     <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>
