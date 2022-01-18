@@ -88,7 +88,7 @@ class ProductTest extends TestCase
                 'channelable_type' => Product::class,
                 'channelable_id'   => $product->id,
                 'enabled'          => '1',
-                'published_at'     => $publishDate->toDateTimeString(),
+                'starts_at'     => $publishDate->toDateTimeString(),
             ],
         );
 
