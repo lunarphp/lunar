@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - `TranslatedText` fieldtype now implements `JsonSerializable` interface ([#50](https://github.com/getcandy/getcandy/issues/50))
 
+### Changed
+
+- Channels now implement `start_at` and `end_at` columns. This replaces the previous `published_at` column.
+
 ## 2.0-beta5 - 2022-01-10
 
 ### Fixes
