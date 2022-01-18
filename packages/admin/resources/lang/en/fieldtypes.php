@@ -12,4 +12,8 @@ return [
     'dropdown.value_heading'     => 'Value',
     'dropdown.add_row_btn'       => 'Add Row',
     'dropdown.empty_selection'   => 'Select a value',
+    'toggle.label'               => 'Toggle',
+    'toggle.empty_notice'        => 'Leave blank to use the default boolean values',
+    'toggle.on_label'            => 'On Value',
+    'toggle.off_label'           => 'Off Value',
 ];

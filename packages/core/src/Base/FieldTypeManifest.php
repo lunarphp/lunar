@@ -8,6 +8,7 @@ use GetCandy\FieldTypes\Dropdown;
 use GetCandy\FieldTypes\ListField;
 use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
+use GetCandy\FieldTypes\Toggle;
 use GetCandy\FieldTypes\TranslatedText;
 
 class FieldTypeManifest
@@ -22,11 +23,12 @@ class FieldTypeManifest
     public function __construct()
     {
         $this->fieldTypes = collect([
-            Text::class,
-            TranslatedText::class,
-            Number::class,
-            ListField::class,
             Dropdown::class,
+            ListField::class,
+            Number::class,
+            Text::class,
+            Toggle::class,
+            TranslatedText::class,
         ]);
     }
 
