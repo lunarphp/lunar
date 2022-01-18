@@ -22,6 +22,7 @@ use GetCandy\Console\Commands\Import\AddressData;
 use GetCandy\Console\Commands\MeilisearchSetup;
 use GetCandy\Console\InstallGetCandy;
 use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
+use GetCandy\Database\State\EnsureDefaultTaxClassExists;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Models\CartLine;
@@ -189,10 +190,17 @@ class GetCandyServiceProvider extends ServiceProvider
 
     protected function registerStateListeners()
     {
-        Event::listen(
-            MigrationsEnded::class,
-            [ConvertProductTypeAttributesToProducts::class, 'run']
-        );
+        $states = [
+            ConvertProductTypeAttributesToProducts::class,
+            EnsureDefaultTaxClassExists::class,
+        ];
+
+        foreach ($states as $state) {
+            Event::listen(
+                MigrationsEnded::class,
+                [$state, 'run']
+            );
+        }
     }
 
     /**

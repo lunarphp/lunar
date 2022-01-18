@@ -144,6 +144,7 @@ class InstallGetCandy extends Command
 
                 TaxClass::create([
                     'name' => 'Default Tax Class',
+                    'default' => true,
                 ]);
             }
 

@@ -22,6 +22,24 @@ class TaxClassTest extends TestCase
 
         $this->assertDatabaseHas((new TaxClass())->getTable(), [
             'name' => 'Clothing',
+            'default' => false,
         ]);
+    }
+
+    /** @test */
+    public function can_get_default_tax_class()
+    {
+        $taxClassA = TaxClass::factory()->create([
+            'name' => 'Tax Class A',
+            'default' => false,
+        ]);
+
+        $taxClassB = TaxClass::factory()->create([
+            'name' => 'Tax Class B',
+            'default' => true,
+        ]);
+
+
+        $this->assertEquals($taxClassB->id, TaxClass::getDefault()->id);
     }
 }
