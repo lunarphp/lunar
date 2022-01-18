@@ -11,4 +11,5 @@ return [
     'dropdown.label_heading'     => 'Label',
     'dropdown.value_heading'     => 'Value',
     'dropdown.add_row_btn'       => 'Add Row',
+    'dropdown.empty_selection'   => 'Select a value',
 ];
