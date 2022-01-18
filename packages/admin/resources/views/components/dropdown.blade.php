@@ -1,5 +1,5 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
-<div class="relative inline-block text-left" x-data="{ menuOpen: false }" @click.away="menuOpen = false">
+<div class="relative inline-block text-left" x-data="{ menuOpen: false }" @click.outside="menuOpen = false">
   <div>
     @if($minimal)
       <button @click.prevent="menuOpen = !menuOpen" type="button" class="flex items-center text-gray-400 rounded-full hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="menu-button" aria-expanded="true" aria-haspopup="true">

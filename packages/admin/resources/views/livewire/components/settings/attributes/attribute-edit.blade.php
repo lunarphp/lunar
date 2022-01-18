@@ -98,7 +98,9 @@
     </x-hub::input.group>
 
     @if($this->getFieldType()->getSettingsView())
-      @include($this->getFieldType()->getSettingsView())
+      <div wire:key="{{ get_class($this->getFieldType()) }}">
+        @include($this->getFieldType()->getSettingsView())
+      </div>
     @endif
 
   </div>

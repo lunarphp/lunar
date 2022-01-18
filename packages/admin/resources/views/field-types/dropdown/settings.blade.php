@@ -1,7 +1,29 @@
 <div
   class="space-y-4"
   x-data="{
-    lookups: @entangle('attribute.configuration.lookups'),
+    lookups: @entangle('attribute.configuration.lookups').defer,
+    init() {
+      this.lookups = Array.isArray(this.lookups) ? this.lookups : []
+
+      new Sortable($refs.list, {
+        animation: 150,
+        handle: '.handle',
+        onSort: ({ newIndex, oldIndex }) => {
+
+          list = JSON.parse(
+            JSON.stringify(lookups)
+          )
+
+          const moved = list[oldIndex]
+          const node = list[newIndex]
+
+          list.splice(oldIndex, 1)
+          list.splice(newIndex, 0, moved)
+
+          lookups = list
+        }
+      });
+    },
     addRow() {
       this.lookups.push({
         label: '',
@@ -25,28 +47,6 @@
       )
     }
   }"
-  x-init="
-    lookups = Array.isArray(lookups) ? lookups : []
-
-    new Sortable($refs.list, {
-      animation: 150,
-      handle: '.handle',
-      onSort: ({ newIndex, oldIndex }) => {
-
-        list = JSON.parse(
-          JSON.stringify(lookups)
-        )
-
-        const moved = list[oldIndex]
-        const node = list[newIndex]
-
-        list.splice(oldIndex, 1)
-        list.splice(newIndex, 0, moved)
-
-        lookups = list
-      }
-    });
-  "
 >
   <div>
     <x-hub::table row-ref="list">
