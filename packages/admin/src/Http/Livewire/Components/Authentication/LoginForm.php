@@ -54,7 +54,7 @@ class LoginForm extends Component
         $authCheck = Auth::guard('staff')->attempt([
             'email'    => $this->email,
             'password' => $this->password,
-        ]);
+        ], $this->remember);
 
         if ($authCheck) {
             $this->redirectRoute('hub.index');
