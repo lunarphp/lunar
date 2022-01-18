@@ -247,8 +247,9 @@ class CollectionShow extends Component
         $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
             return [
                 $channel['channel_id'] => [
-                    'published_at' => !$channel['enabled'] ? null : $channel['published_at'],
-                    'enabled'      => $channel['enabled'],
+                    'starts_at' => !$channel['enabled'] ? null : $channel['starts_at'],
+                    'ends_at' => !$channel['enabled'] ? null : $channel['ends_at'],
+                    'enabled' => $channel['enabled'],
                 ],
             ];
         });
@@ -420,14 +421,15 @@ class CollectionShow extends Component
     {
         $this->availability = [
             'channels'                                                           => $this->channels->mapWithKeys(function ($channel) {
-                $productChannel = $this->collection->channels->first(fn ($assoc) => $assoc->id == $channel->id);
+                $collectionChannel = $this->collection->channels->first(fn ($assoc) => $assoc->id == $channel->id);
 
                 return [
                     $channel->id => [
                         'channel_id'   => $channel->id,
-                        'published_at' => $productChannel ? $productChannel->pivot->published_at : null,
-                        'enabled'      => $productChannel ? $productChannel->pivot->enabled : false,
-                        'scheduling'   => $productChannel ? (bool) $productChannel->pivot->published_at : false,
+                        'starts_at' => $collectionChannel ? $collectionChannel->pivot->starts_at : null,
+                        'ends_at' => $collectionChannel ? $collectionChannel->pivot->ends_at : null,
+                        'enabled'      => $collectionChannel ? $collectionChannel->pivot->enabled : false,
+                        'scheduling'   => false,
                     ],
                 ];
             }),
