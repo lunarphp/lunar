@@ -17,8 +17,8 @@ trait HasChannels
                 return [
                     $channel->id => [
                         'enabled'      => false,
-                        'starts_at' => null,
-                        'ends_at' => null,
+                        'starts_at'    => null,
+                        'ends_at'      => null,
                     ],
                 ];
             });
@@ -57,8 +57,8 @@ trait HasChannels
                     return [
                         $channel->id => [
                             'enabled'      => true,
-                            'starts_at' => $startsAt,
-                            'ends_at' => $endsAt,
+                            'starts_at'    => $startsAt,
+                            'ends_at'      => $endsAt,
                         ],
                     ];
                 })

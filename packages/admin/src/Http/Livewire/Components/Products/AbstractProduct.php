@@ -238,7 +238,6 @@ abstract class AbstractProduct extends Component
      */
     public function save()
     {
-
         $this->withValidator(function (Validator $validator) {
             $validator->after(function ($validator) {
                 if ($validator->errors()->count()) {
@@ -299,8 +298,8 @@ abstract class AbstractProduct extends Component
         $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
             return [
                 $channel['channel_id'] => [
-                    'starts_at' => !$channel['enabled'] ? null : $channel['starts_at'],
-                    'ends_at' => !$channel['enabled'] ? null : $channel['ends_at'],
+                    'starts_at'    => !$channel['enabled'] ? null : $channel['starts_at'],
+                    'ends_at'      => !$channel['enabled'] ? null : $channel['ends_at'],
                     'enabled'      => $channel['enabled'],
                 ],
             ];
@@ -395,8 +394,8 @@ abstract class AbstractProduct extends Component
                 return [
                     $channel->id => [
                         'channel_id'   => $channel->id,
-                        'starts_at' => $productChannel ? $productChannel->pivot->starts_at : null,
-                        'ends_at' => $productChannel ? $productChannel->pivot->ends_at : null,
+                        'starts_at'    => $productChannel ? $productChannel->pivot->starts_at : null,
+                        'ends_at'      => $productChannel ? $productChannel->pivot->ends_at : null,
                         'enabled'      => $productChannel ? $productChannel->pivot->enabled : false,
                         'scheduling'   => $productChannel ? (bool) $productChannel->pivot->starts_at : false,
                     ],
