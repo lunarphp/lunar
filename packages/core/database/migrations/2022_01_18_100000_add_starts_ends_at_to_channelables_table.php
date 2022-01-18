@@ -8,9 +8,15 @@ class AddStartsEndsAtToChannelablesTable extends Migration
 {
     public function up()
     {
+        /**
+         * SQLite will only allow one per transaction when modifying columns.
+         */
         Schema::table($this->prefix.'channelables', function (Blueprint $table) {
             $table->renameColumn('published_at', 'starts_at');
-            $table->dateTime('ends_at')->after('published_at')->nullable()->index();
+        });
+
+        Schema::table($this->prefix.'channelables', function (Blueprint $table) {
+            $table->dateTime('ends_at')->after('starts_at')->nullable()->index();
         });
     }
 
@@ -18,6 +24,9 @@ class AddStartsEndsAtToChannelablesTable extends Migration
     {
         Schema::table($this->prefix.'channelables', function ($table) {
             $table->renameColumn('starts_at', 'published_at');
+        });
+
+        Schema::table($this->prefix.'channelables', function ($table) {
             $table->dropColumn('ends_at');
         });
     }
