@@ -9,7 +9,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - When translating an attribute, if we can't find a translation we default to whatever the FieldType gives back instead of erroring.
 - `TranslatedText` fieldtype now implements `JsonSerializable` interface ([#50](https://github.com/getcandy/getcandy/issues/50))
-- When logging in, the remember me boolean is now passed through. by ([@DanielSpravtsev](https://github.com/DanielSpravtsev))
 
 ### Changed
 

@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Custom FieldType validation rules will now apply when editing a model with attributes.
+- When logging in, the remember me boolean is now passed through. by ([@DanielSpravtsev](https://github.com/DanielSpravtsev))
 
 ### Changed
 
