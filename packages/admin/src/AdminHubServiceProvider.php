@@ -52,6 +52,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
@@ -288,6 +289,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Tags
         Livewire::component('hub.components.settings.tags.index', TagsIndex::class);
+        Livewire::component('hub.components.settings.tags.show', TagShow::class);
 
         // Currencies
         Livewire::component('hub.components.settings.currencies.index', CurrenciesIndex::class);

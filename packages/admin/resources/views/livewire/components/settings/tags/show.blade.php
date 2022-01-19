@@ -1,3 +1,3 @@
-<div class="flex-col space-y-4">
-  SHOW THE TAG!
-</div>
+<form action="#" method="POST" wire:submit.prevent="update">
+    @include('adminhub::partials.forms.tag')
+</form>

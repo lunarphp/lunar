@@ -11,7 +11,7 @@
           {{ $tag->value }}
         </x-hub::table.cell>
         <x-hub::table.cell class="text-right">
-           <a href="{{ route('hub.languages.show', $tag->id) }}" class="text-indigo-500 hover:underline">
+           <a href="{{ route('hub.tags.show', $tag->id) }}" class="text-indigo-500 hover:underline">
               {{ __('adminhub::settings.tags.index.table_row_action_text') }}
             </a>
         </x-hub::table.cell>

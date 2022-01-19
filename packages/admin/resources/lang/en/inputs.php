@@ -55,6 +55,7 @@ return [
     'language.label'                         => 'Language',
     'slug.label'                             => 'Slug',
     'tax_class.label'                        => 'Tax Class',
+    'value'                                  => 'Value',
     'searchable.label'                       => 'Searchable',
     'required.label'                         => 'Required',
     'filterable.label'                       => 'Filterable',
