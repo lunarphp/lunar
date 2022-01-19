@@ -182,7 +182,7 @@ class OrderTest extends TestCase
 
         $order = Order::factory()->create([
             'customer_id' => $customer->id,
-            'user_id' => $user->id,
+            'user_id'     => $user->id,
         ]);
 
         $this->assertEquals($customer->id, $order->customer->id);
