@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2.0-beta7 - 2022-01-19
 
-### Fixes
+### Fixed
 
 - Custom FieldType validation rules will now apply when editing a model with attributes.
 
