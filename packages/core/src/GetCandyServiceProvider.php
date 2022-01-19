@@ -227,22 +227,26 @@ class GetCandyServiceProvider extends ServiceProvider
             }
         });
 
-        Blueprint::macro('userForeignKey', function ($field_name = 'user_id') {
+        Blueprint::macro('userForeignKey', function ($field_name = 'user_id', $nullable = false) {
             $userModel = config('auth.providers.users.model');
 
             $type = config('getcandy.database.users_id_type', 'bigint');
 
             if ($type == 'uuid') {
-                $this->foreignUuId($field_name)->constrained(
-                    (new $userModel())->getTable()
-                );
+                $this->foreignUuId($field_name)
+                    ->nullable($nullable)
+                    ->constrained(
+                        (new $userModel())->getTable()
+                    );
             } elseif ($type == 'int') {
-                $this->unsignedInteger($field_name);
+                $this->unsignedInteger($field_name)->nullable($nullable);
                 $this->foreign($field_name)->references('id')->on('users');
             } else {
-                $this->foreignId($field_name)->constrained(
-                    (new $userModel())->getTable()
-                );
+                $this->foreignId($field_name)
+                    ->nullable($nullable)
+                    ->constrained(
+                        (new $userModel())->getTable()
+                    );
             }
         });
     }

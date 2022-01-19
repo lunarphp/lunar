@@ -10,7 +10,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create($this->prefix.'orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->userForeignKey();
+            $table->userForeignKey(nullable: true);
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
             $table->string('status')->index();
             $table->string('reference')->nullable()->unique();
