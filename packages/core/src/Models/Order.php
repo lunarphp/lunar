@@ -174,6 +174,28 @@ class Order extends BaseModel
         return $this->transactions()->whereRefund(true);
     }
 
+    /**
+     * Return the customer relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * Return the user relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(
+            config('auth.providers.users.model')
+        );
+    }
+
     public function toSearchableArray()
     {
         if (config('scout.driver') == 'mysql') {
