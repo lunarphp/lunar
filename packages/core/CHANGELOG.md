@@ -9,8 +9,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - When translating an attribute, if we can't find a translation we default to whatever the FieldType gives back instead of erroring.
 - `TranslatedText` fieldtype now implements `JsonSerializable` interface ([#50](https://github.com/getcandy/getcandy/issues/50))
-- On state update for tax classes, check to make sure we have a model before we try and update the default.
-- Added `userForeignKey` helper to orders and carts migrations
 - When logging in, the remember me boolean is now passed through. by ([@DanielSpravtsev](https://github.com/DanielSpravtsev))
 
 ### Added
@@ -19,11 +17,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `customer_id` to orders so an order has a 1:1 relation to a customer. ([#73](https://github.com/getcandy/getcandy/issues/73))
 - Created the `AttributeManifest` class so dev's can add their own attributable classes.
 - Created the `FieldTypeManifest` class so dev's can add custom FieldTypes to the store.
+- Added `$table->userForeignKey()` macro for migrations that create foreign keys which reference a user id
 
 ### Changed
 
 - Models that have channels now implement `start_at` and `end_at` columns. This replaces the previous `published_at` column.
-- `userForeignKey` helper now accepts a `$nullable` parameter.
 - Laravel ui modal components removed
 
 ## 2.0-beta5 - 2022-01-10
