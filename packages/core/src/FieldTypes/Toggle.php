@@ -60,11 +60,9 @@ class Toggle implements FieldType, JsonSerializable
      */
     public function setValue($value)
     {
-        // dd($value);
-        // if ($value && !is_string($value)) {
-        //     dd($value);
-        //     throw new FieldTypeException(self::class.' value must be a string.');
-        // }
+        if ($value && is_array($value)) {
+            throw new FieldTypeException(self::class.' value must be a string or boolean.');
+        }
 
         $this->value = $value;
     }
