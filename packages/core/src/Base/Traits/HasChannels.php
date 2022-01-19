@@ -17,7 +17,8 @@ trait HasChannels
                 return [
                     $channel->id => [
                         'enabled'      => false,
-                        'published_at' => null,
+                        'starts_at'    => null,
+                        'ends_at'      => null,
                     ],
                 ];
             });
@@ -39,23 +40,25 @@ trait HasChannels
             "{$prefix}channelables"
         )->withPivot([
             'enabled',
-            'published_at',
+            'starts_at',
+            'ends_at',
         ])->withTimestamps();
     }
 
-    public function scheduleChannel($channel, DateTime $date = null)
+    public function scheduleChannel($channel, DateTime $startsAt = null, DateTime $endsAt = null)
     {
         if ($channel instanceof Model) {
             $channel = collect([$channel]);
         }
 
-        DB::transaction(function () use ($channel, $date) {
+        DB::transaction(function () use ($channel, $startsAt, $endsAt) {
             $this->channels()->sync(
-                $channel->mapWithKeys(function ($channel) use ($date) {
+                $channel->mapWithKeys(function ($channel) use ($startsAt, $endsAt) {
                     return [
                         $channel->id => [
                             'enabled'      => true,
-                            'published_at' => $date,
+                            'starts_at'    => $startsAt,
+                            'ends_at'      => $endsAt,
                         ],
                     ];
                 })
