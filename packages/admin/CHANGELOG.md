@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2.0-beta7 - 2022-01-10
 
-### Fixed
+### Fixes
 
 - Custom FieldType validation rules will now apply when editing a model with attributes.
 
@@ -24,14 +24,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Attributes within a group can now be reordered.
 - Added an additional List FieldType
 - Tag editing screens have been added by [@briavers](https://github.com/briavers)
-
-### Added
-
-- Added functionality/UX for product variants to support attributes.
-- Product types can now associate to product variant attributes.
-- Attribute groups can be re ordered within their settings screens.
-- Attributes within a group can now be reordered.
-- Added an additional List FieldType
 
 ## 2.0-beta6 - 2022-01-10
 
