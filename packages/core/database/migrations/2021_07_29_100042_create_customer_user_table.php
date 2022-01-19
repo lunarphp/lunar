@@ -14,13 +14,9 @@ class CreateCustomerUserTable extends Migration
     public function up()
     {
         Schema::create($this->prefix.'customer_user', function (Blueprint $table) {
-            $userModel = config('auth.providers.users.model');
-
             $table->id();
             $table->foreignId('customer_id')->constrained($this->prefix.'customers');
-            $table->foreignId('user_id')->constrained(
-                (new $userModel())->getTable()
-            );
+            $table->userForeignKey();
             $table->timestamps();
         });
     }

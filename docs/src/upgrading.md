@@ -30,6 +30,25 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## [unreleased]
+
+This version adds a new config setting for User ID field types.
+
+Please add the following to your `config/getcandy/database.php` file
+
+```
+    /*
+    |--------------------------------------------------------------------------
+    | Users Table ID
+    |--------------------------------------------------------------------------
+    |
+    | GetCandy adds a relationship to your 'users' table and by default assumes
+    | a 'bigint'. You can change this to either an 'int' or 'uuid'.
+    |
+    */
+    'users_id_type' => 'bigint',
+```
+
 ## 2.0-beta7
 
 ### Channel availability - High Impact

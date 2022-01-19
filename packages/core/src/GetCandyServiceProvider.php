@@ -92,6 +92,7 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerAddonManifest();
+        $this->registerBlueprintMacros();
 
         if (!$this->app->environment('testing')) {
             $this->registerStateListeners();
@@ -113,20 +114,6 @@ class GetCandyServiceProvider extends ServiceProvider
         }
 
         Arr::macro('permutate', [\GetCandy\Utils\Arr::class, 'permutate']);
-
-        Blueprint::macro('scheduling', function () {
-            $this->boolean('enabled')->default(false)->index();
-            $this->timestamp('starts_at')->nullable()->index();
-            $this->timestamp('ends_at')->nullable()->index();
-        });
-
-        Blueprint::macro('dimensions', function () {
-            $columns = ['length', 'width', 'height', 'weight', 'volume'];
-            foreach ($columns as $column) {
-                $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
-                $this->string("{$column}_unit")->default('mm')->nullable();
-            }
-        });
 
         Converter::setMeasurements(
             config('getcandy.shipping.measurements', [])
@@ -217,5 +204,46 @@ class GetCandyServiceProvider extends ServiceProvider
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
         OrderLine::observe(OrderLineObserver::class);
+    }
+
+    /**
+     * Register the blueprint macros.
+     *
+     * @return void
+     */
+    protected function registerBlueprintMacros(): void
+    {
+        Blueprint::macro('scheduling', function () {
+            $this->boolean('enabled')->default(false)->index();
+            $this->timestamp('starts_at')->nullable()->index();
+            $this->timestamp('ends_at')->nullable()->index();
+        });
+
+        Blueprint::macro('dimensions', function () {
+            $columns = ['length', 'width', 'height', 'weight', 'volume'];
+            foreach ($columns as $column) {
+                $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
+                $this->string("{$column}_unit")->default('mm')->nullable();
+            }
+        });
+
+        Blueprint::macro('userForeignKey', function ($field_name = 'user_id') {
+            $userModel = config('auth.providers.users.model');
+
+            $type = config('getcandy.database.users_id_type', 'bigint');
+
+            if ($type == 'uuid') {
+                $this->foreignUuId($field_name)->constrained(
+                    (new $userModel())->getTable()
+                );
+            } elseif ($type == 'int') {
+                $this->unsignedInteger($field_name);
+                $this->foreign($field_name)->references('id')->on('users');
+            } else {
+                $this->foreignId($field_name)->constrained(
+                    (new $userModel())->getTable()
+                );
+            }
+        });
     }
 }
