@@ -87,6 +87,5 @@
         wire:model="availability.channels.{{ $channel->id }}.enabled"
       />
     </div>
-</div>
   </div>
 @endforeach
