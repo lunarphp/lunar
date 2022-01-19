@@ -11,6 +11,7 @@
     ],
     "require": {
         "cartalyst/converter": "^6.1",
+        "doctrine/dbal": "^3.3",
         "getcandy/licensing": "dev-main",
         "kalnoy/nestedset": "^6.0",
         "laravel/scout": "^9.3",
