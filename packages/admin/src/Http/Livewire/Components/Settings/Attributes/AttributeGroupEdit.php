@@ -85,9 +85,9 @@ class AttributeGroupEdit extends Component
         $this->attributeGroup->handle = $handle;
         $this->attributeGroup->save();
 
-        $this->attributeGroup = new AttributeGroup();
-
         $this->emit('attribute-group-edit.created', $this->attributeGroup->id);
+
+        $this->attributeGroup = new AttributeGroup();
 
         $this->notify(
             __('adminhub::notifications.attribute-groups.created')
