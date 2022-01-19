@@ -3,7 +3,6 @@
 namespace GetCandy\Database\State;
 
 use GetCandy\Models\Order;
-use GetCandy\Models\TaxClass;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
