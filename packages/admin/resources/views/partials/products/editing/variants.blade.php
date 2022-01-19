@@ -11,6 +11,15 @@
         <x-hub::input.toggle wire:model="variantsEnabled" />
       </div>
     </header>
+      @if($this->getVariantsCount() <= 1)
+        <div>
+          @include('adminhub::partials.attributes', [
+            'attributeGroups' => $this->variantAttributeGroups,
+            'mapping' => 'variantAttributes',
+            'inline' => true,
+          ])
+        </div>
+      @endif
       @if($variantsEnabled)
         @if($this->getVariantsCount() <= 1)
           @include('adminhub::partials.products.editing.options')

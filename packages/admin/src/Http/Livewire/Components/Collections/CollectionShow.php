@@ -240,7 +240,7 @@ class CollectionShow extends Component
             });
         })->validate(null, $this->getValidationMessages());
 
-        $this->collection->attribute_data = $this->prepareAttributeData($this->collection);
+        $this->collection->attribute_data = $this->prepareAttributeData();
 
         $this->collection->save();
 

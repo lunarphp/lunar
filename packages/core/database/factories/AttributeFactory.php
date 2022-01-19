@@ -4,7 +4,7 @@ namespace GetCandy\Database\Factories;
 
 use GetCandy\Models\Attribute;
 use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\ProductType;
+use GetCandy\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,7 +18,7 @@ class AttributeFactory extends Factory
     {
         return [
             'attribute_group_id' => AttributeGroup::factory(),
-            'attribute_type'     => ProductType::class,
+            'attribute_type'     => Product::class,
             'position'           => self::$position++,
             'name'               => [
                 'en' => $this->faker->name(),

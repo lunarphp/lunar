@@ -14,7 +14,8 @@
         "psr-4": {
             "GetCandy\\": "src",
             "GetCandy\\Database\\Factories\\": "database/factories",
-            "GetCandy\\Database\\Seeders\\": "database/seeders"
+            "GetCandy\\Database\\Seeders\\": "database/seeders",
+            "GetCandy\\Database\\State\\": "database/state"
         }
     },
     "autoload-dev": {

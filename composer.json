@@ -35,6 +35,7 @@
             "GetCandy\\": "packages/core/src",
             "GetCandy\\Database\\Factories\\": "packages/core/database/factories",
             "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
+            "GetCandy\\Database\\State\\": "packages/core/database/state",
             "GetCandy\\Hub\\": "packages/admin/src",
             "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
         }

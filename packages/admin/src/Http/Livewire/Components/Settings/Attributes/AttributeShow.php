@@ -2,106 +2,314 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\Hub\Http\Livewire\Traits\ConfirmsDelete;
+use GetCandy\Facades\AttributeManifest;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
+use GetCandy\Models\AttributeGroup;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AttributeShow extends AbstractAttribute
 {
     use Notifies;
     use WithLanguages;
-    use ConfirmsDelete;
-
-    public bool $manualHandle = true;
 
     /**
-     * The current channel we're showing.
+     * The type property.
      *
-     * @var \GetCandy\Models\Attribute
+     * @var string
      */
-    public Attribute $attribute;
+    public $type;
 
     /**
-     * Returns validation rules.
+     * The sorted attribute groups.
      *
-     * @return array
+     * @var Collection
      */
-    protected function rules()
+    public Collection $sortedAttributeGroups;
+
+    /**
+     * Whether we should show the panel to create a new group.
+     *
+     * @var bool
+     */
+    public $showGroupCreate = false;
+
+    /**
+     * The attribute group id to use for creating an attribute.
+     *
+     * @var int|null
+     */
+    public $attributeCreateGroupId = null;
+
+    /**
+     * The id of the attribute group to edit.
+     *
+     * @var int|null
+     */
+    public $editGroupId;
+
+    /**
+     * The id of the attribute group to delete.
+     *
+     * @var int|null
+     */
+    public $deleteGroupId;
+
+    /**
+     * The id of the attribute to edit.
+     *
+     * @var int|null
+     */
+    public $editAttributeId = null;
+
+    /**
+     * The ID of the attribute we want to delete.
+     *
+     * @var int|null
+     */
+    public $deleteAttributeId = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $listeners = [
+        'attribute-group-edit.created' => 'refreshGroups',
+        'attribute-group-edit.updated' => 'resetGroupEdit',
+        'attribute-edit.created'       => 'resetAttributeEdit',
+        'attribute-edit.updated'       => 'resetAttributeEdit',
+        'attribute-edit.closed'        => 'resetAttributeEdit',
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mount()
     {
-        $rules = [
-            'attribute.handle' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    $exists = Attribute::whereHandle($value)
-                        ->whereAttributeType($this->attribute->attribute_type)
-                        ->where('id', '!=', $this->attribute->id)
-                        ->exists();
-                    if ($exists) {
-                        $fail('The '.$attribute.' is invalid.');
-                    }
-                },
-            ],
-            'attribute.position'           => 'numeric',
-            'attribute.section'            => 'string',
-            'attribute.system'             => 'boolean',
-            'attribute.required'           => 'boolean',
-            'attribute.attribute_type'     => 'required',
-            'attribute.type'               => 'required',
-            'attribute.configuration'      => 'array',
-            'attribute.attribute_group_id' => 'required',
-            'attribute.configuration.type' => 'nullable|string',
-        ];
-
-        foreach ($this->languages as $language) {
-            $rules["attribute.name.{$language->code}"] = $language->default ? 'required|string' : 'nullable|string';
-        }
-
-        return $rules;
+        $this->sortedAttributeGroups = $this->attributeGroups;
     }
 
     /**
-     * Validates the LiveWire request, updates the model and dispatches and event.
+     * Get the current attribute type class.
+     *
+     * @return string
+     */
+    public function getTypeClassProperty()
+    {
+        return AttributeManifest::getType($this->type);
+    }
+
+    /**
+     * Return the attribute groups for this type class.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAttributeGroupsProperty()
+    {
+        return AttributeGroup::whereAttributableType($this->typeClass)
+            ->orderBy('position')->get();
+    }
+
+    /**
+     * Return the group to be used when creating an attribute.
+     *
+     * @return \GetCandy\Models\AttributeGroup
+     */
+    public function getAttributeCreateGroupProperty()
+    {
+        return AttributeGroup::find($this->attributeCreateGroupId);
+    }
+
+    /**
+     * Sort the attribute groups.
+     *
+     * @param array $groups
      *
      * @return void
      */
-    public function update()
+    public function sortGroups($groups)
     {
-        $this->validate();
+        DB::transaction(function () use ($groups) {
+            $this->sortedAttributeGroups = $this->attributeGroups->map(function ($group) use ($groups) {
+                $updatedOrder = collect($groups['items'])->first(function ($updated) use ($group) {
+                    return $updated['id'] == $group->id;
+                });
+                $group->position = $updatedOrder['order'];
+                $group->save();
 
-        $this->attribute->save();
-
+                return $group;
+            })->sortBy('position');
+        });
         $this->notify(
-            'Attribute successfully updated.',
-            'hub.attributes.index'
+            __('adminhub::notifications.attribute-groups.reordered')
         );
     }
 
     /**
-     * Soft deletes a channel.
+     * Sort the attributes.
+     *
+     * @param array $attributes
      *
      * @return void
      */
-    public function delete()
+    public function sortAttributes($attributes)
     {
-        if (!$this->canDelete) {
+        DB::transaction(function () use ($attributes) {
+            foreach ($attributes['items'] as $attribute) {
+                Attribute::whereId($attribute['id'])->update([
+                    'position'           => $attribute['order'],
+                    'attribute_group_id' => $attributes['owner'],
+                ]);
+            }
+        });
+
+        $this->refreshGroups();
+
+        $this->notify(
+            __('adminhub::notifications.attributes.reordered')
+        );
+    }
+
+    /**
+     * Refresh the attribute groups.
+     *
+     * @return void
+     */
+    public function refreshGroups()
+    {
+        $this->sortedAttributeGroups = AttributeGroup::whereAttributableType($this->typeClass)
+        ->orderBy('position')->get();
+
+        $this->showGroupCreate = false;
+    }
+
+    /**
+     * Return the computed property for the group to edit.
+     *
+     * @return \GetCandy\Models\AttributeGroup|null
+     */
+    public function getAttributeGroupToEditProperty()
+    {
+        return AttributeGroup::find($this->editGroupId);
+    }
+
+    /**
+     * Return the attribute marked for deletion.
+     *
+     * @return void
+     */
+    public function getAttributeGroupToDeleteProperty()
+    {
+        return AttributeGroup::find($this->deleteGroupId);
+    }
+
+    /**
+     * Return the attribute to edit.
+     *
+     * @return \GetCandy\Models\Attribute
+     */
+    public function getAttributeToEditProperty()
+    {
+        return Attribute::find($this->editAttributeId);
+    }
+
+    /**
+     * Return the attribute to delete.
+     *
+     * @return void
+     */
+    public function getAttributeToDeleteProperty()
+    {
+        return Attribute::find($this->deleteAttributeId);
+    }
+
+    /**
+     * Returns whether the group to delete has system attributes
+     * associated to it and therefore protected.
+     *
+     * @return bool
+     */
+    public function getGroupProtectedProperty()
+    {
+        return $this->attributeGroupToDelete ?
+            $this->attributeGroupToDelete->attributes->filter(
+                fn ($attribute) => (bool) $attribute->system
+            )->count() : false;
+    }
+
+    /**
+     * Reset the group edting state.
+     *
+     * @return void
+     */
+    public function resetGroupEdit()
+    {
+        $this->editGroupId = null;
+    }
+
+    /**
+     * Reset the attribute edit state.
+     *
+     * @return void
+     */
+    public function resetAttributeEdit()
+    {
+        $this->attributeCreateGroupId = null;
+        $this->editAttributeId = null;
+        $this->refreshGroups();
+    }
+
+    /**
+     * Delete the attribute group.
+     *
+     * @return void
+     */
+    public function deleteGroup()
+    {
+        // If the group has system attributes, we can't delete it.
+        if ($this->groupProtected) {
+            $this->notify(
+                __('adminhub::notifications.attribute-groups.delete_protected')
+            );
+
             return;
         }
-
         DB::transaction(function () {
-            $this->attribute->delete();
+            DB::table(config('getcandy.database.table_prefix').'attributables')
+                ->whereIn(
+                    'attribute_id',
+                    $this->attributeGroupToDelete->attributes()->pluck('id')->toArray()
+                )->delete();
+            $this->attributeGroupToDelete->attributes()->delete();
+            $this->attributeGroupToDelete->delete();
+        });
+        $this->deleteGroupId = null;
+        $this->refreshGroups();
+
+        $this->notify(
+            __('adminhub::notifications.attribute-groups.deleted')
+        );
+    }
+
+    public function deleteAttribute()
+    {
+        DB::transaction(function () {
+            DB::table(config('getcandy.database.table_prefix').'attributables')
+                ->where(
+                    'attribute_id',
+                    $this->attributeToDelete->id
+                )->delete();
+
+            $this->attributeToDelete->delete();
         });
 
         $this->notify(
-            'Attribute successfully deleted.',
-            'hub.attributes.index'
+            __('adminhub::notifications.attributes.deleted')
         );
-    }
 
-    public function getCanDeleteProperty()
-    {
-        return $this->deleteConfirm === $this->attribute->handle;
+        $this->deleteAttributeId = null;
+        $this->refreshGroups();
     }
 
     /**

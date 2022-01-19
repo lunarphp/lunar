@@ -79,6 +79,8 @@ You can associate attributes to a product type like so (it's just a straight for
 $productType->mappedAttributes()->associate([ /* attribute ids ... */ ]);
 ```
 
+You can associate both `Product` and `ProductVariant` attributes to a product type which will then display on either the product or product variant when editing.
+
 ::: warning
 If you decide to delete an attribute, this will cause the association to be dropped and you could lose data.
 :::

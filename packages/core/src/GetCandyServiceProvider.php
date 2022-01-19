@@ -4,9 +4,13 @@ namespace GetCandy;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use GetCandy\Addons\Manifest;
+use GetCandy\Base\AttributeManifest;
+use GetCandy\Base\AttributeManifestInterface;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
 use GetCandy\Base\CartSessionInterface;
+use GetCandy\Base\FieldTypeManifest;
+use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
 use GetCandy\Base\OrderReferenceGenerator;
 use GetCandy\Base\OrderReferenceGeneratorInterface;
@@ -17,6 +21,8 @@ use GetCandy\Console\Commands\AddonsDiscover;
 use GetCandy\Console\Commands\Import\AddressData;
 use GetCandy\Console\Commands\MeilisearchSetup;
 use GetCandy\Console\InstallGetCandy;
+use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
+use GetCandy\Database\State\EnsureDefaultTaxClassExists;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Models\CartLine;
@@ -36,6 +42,7 @@ use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -85,6 +92,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerAddonManifest();
+
+        if (!$this->app->environment('testing')) {
+            $this->registerStateListeners();
+        }
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -149,6 +160,14 @@ class GetCandyServiceProvider extends ServiceProvider
             return $app->make(OrderReferenceGenerator::class);
         });
 
+        $this->app->singleton(AttributeManifestInterface::class, function ($app) {
+            return $app->make(AttributeManifest::class);
+        });
+
+        $this->app->singleton(FieldTypeManifestInterface::class, function ($app) {
+            return $app->make(FieldTypeManifest::class);
+        });
+
         Event::listen(
             Login::class,
             [CartSessionAuthListener::class, 'login']
@@ -167,6 +186,21 @@ class GetCandyServiceProvider extends ServiceProvider
             $this->app->basePath(),
             $this->app->bootstrapPath().'/cache/getcandy_addons.php'
         ));
+    }
+
+    protected function registerStateListeners()
+    {
+        $states = [
+            ConvertProductTypeAttributesToProducts::class,
+            EnsureDefaultTaxClassExists::class,
+        ];
+
+        foreach ($states as $state) {
+            Event::listen(
+                MigrationsEnded::class,
+                [$state, 'run']
+            );
+        }
     }
 
     /**

@@ -110,8 +110,15 @@ module.exports = {
           '/getcandy/taxation',
           '/getcandy/urls'
         ]
+      },
+      {
+        title: 'Extending GetCandy',
+        collapsable: false, // optional, defaults to true
+        children: [
+          '/extending/field-types',
+        ]
       }
-    ]
+    ],
   },
 
   /**

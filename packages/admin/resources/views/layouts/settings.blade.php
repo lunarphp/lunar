@@ -11,7 +11,7 @@
           {{ __('adminhub::settings.layout.menu_btn') }}
           <x-hub::icon ref="chevron-down" style="solid" />
         </button>
-        <nav class="absolute right-0 z-50 py-2 bg-white rounded shadow-lg md:hidden" x-show="menuVisible" @click.away="menuVisible = false">
+        <nav class="absolute right-0 z-50 py-2 bg-white rounded shadow-lg md:hidden" x-show="menuVisible" @click.outside="menuVisible = false">
           <x-hub::menu handle="settings" current="{{ request()->route()->getName() }}">
             @foreach($component->items as $item)
               <a href="{{ route($item->route) }}" class="block px-6 py-2 text-sm">

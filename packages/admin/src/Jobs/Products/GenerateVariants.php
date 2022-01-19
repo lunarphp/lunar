@@ -131,6 +131,7 @@ class GenerateVariants implements ShouldQueue
 
                 $variant->product_id = $baseVariant->product_id;
                 $variant->tax_class_id = $baseVariant->tax_class_id;
+                $variant->attribute_data = $baseVariant->attribute_data;
                 $variant->fill($attributes);
                 $variant->save();
                 $variant->values()->attach($optionsToCreate);

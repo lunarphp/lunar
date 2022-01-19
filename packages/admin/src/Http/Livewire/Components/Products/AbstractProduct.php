@@ -13,6 +13,7 @@ use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
 use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
+use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductType;
@@ -100,6 +101,13 @@ abstract class AbstractProduct extends Component
      * @var array
      */
     public $availability = [];
+
+    /**
+     * The product variant attributes.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    public $variantAttributes;
 
     protected function getListeners()
     {
@@ -250,62 +258,65 @@ abstract class AbstractProduct extends Component
             });
         })->validate(null, $this->getValidationMessages());
 
-        $data = $this->prepareAttributeData($this->product);
-
-        $this->product->attribute_data = $data;
-
         $isNew = !$this->product->id;
 
-        $this->product->save();
+        DB::transaction(function () use ($isNew) {
+            $data = $this->prepareAttributeData();
+            $variantData = $this->prepareAttributeData($this->variantAttributes);
 
-        if (($this->getVariantsCount() <= 1) || $isNew) {
-            if (!$this->variant->product_id) {
-                $this->variant->product_id = $this->product->id;
+            $this->product->attribute_data = $data;
+
+            $this->product->save();
+
+            if (($this->getVariantsCount() <= 1) || $isNew) {
+                if (!$this->variant->product_id) {
+                    $this->variant->product_id = $this->product->id;
+                }
+
+                if (!$this->manualVolume) {
+                    $this->variant->volume_unit = null;
+                    $this->variant->volume_value = null;
+                }
+
+                $this->variant->attribute_data = $variantData;
+
+                $this->variant->save();
+
+                if ($isNew) {
+                    $this->savePricing();
+                }
             }
 
-            if (!$this->manualVolume) {
-                $this->variant->volume_unit = null;
-                $this->variant->volume_value = null;
+            // We generating variants?
+            $generateVariants = (bool) count($this->optionValues);
+
+            if ($generateVariants) {
+                GenerateVariants::dispatch($this->product, $this->optionValues);
             }
 
-            $this->variant->save();
-
-            if ($isNew) {
+            if (!$generateVariants && $this->product->variants->count() <= 1) {
+                // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
-        }
 
-        // We generating variants?
-        $generateVariants = (bool) count($this->optionValues);
+            $this->saveUrls();
 
-        if ($generateVariants) {
-            GenerateVariants::dispatch($this->product, $this->optionValues);
-        }
+            $this->product->syncTags(
+                collect($this->tags)
+            );
 
-        if (!$generateVariants && $this->product->variants->count() <= 1) {
-            // Only save pricing if we're not generating new variants.
-            $this->savePricing();
-        }
+            $this->updateImages($this->product);
 
-        $this->saveUrls();
+            $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
+                return [
+                    $channel['channel_id'] => [
+                        'starts_at'    => !$channel['enabled'] ? null : $channel['starts_at'],
+                        'ends_at'      => !$channel['enabled'] ? null : $channel['ends_at'],
+                        'enabled'      => $channel['enabled'],
+                    ],
+                ];
+            });
 
-        $this->product->syncTags(
-            collect($this->tags)
-        );
-
-        $this->updateImages($this->product);
-
-        $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
-            return [
-                $channel['channel_id'] => [
-                    'starts_at'    => !$channel['enabled'] ? null : $channel['starts_at'],
-                    'ends_at'      => !$channel['enabled'] ? null : $channel['ends_at'],
-                    'enabled'      => $channel['enabled'],
-                ],
-            ];
-        });
-
-        DB::transaction(function () {
             $gcAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
                 $data = Arr::only($group, ['starts_at', 'ends_at']);
 
@@ -319,21 +330,21 @@ abstract class AbstractProduct extends Component
             });
 
             $this->product->customerGroups()->sync($gcAvailability);
+
+            $this->product->channels()->sync($channels);
+
+            $this->product->refresh();
+
+            $this->variantsEnabled = $this->getVariantsCount() > 1;
+
+            $this->syncAvailability();
+
+            $this->dispatchBrowserEvent('remove-images');
+
+            $this->variant = $this->product->variants->first();
+
+            $this->notify('Product Saved');
         });
-
-        $this->product->channels()->sync($channels);
-
-        $this->product->refresh();
-
-        $this->variantsEnabled = $this->getVariantsCount() > 1;
-
-        $this->syncAvailability();
-
-        $this->dispatchBrowserEvent('remove-images');
-
-        $this->variant = $this->product->variants->first();
-
-        $this->notify('Product Saved');
 
         if ($isNew) {
             return redirect()->route('hub.products.show', [
@@ -460,7 +471,38 @@ abstract class AbstractProduct extends Component
     {
         return ProductType::find(
             $this->product->product_type_id
-        )->mappedAttributes->sortBy('position')->values();
+        )->productAttributes->sortBy('position')->values();
+    }
+
+    /**
+     * Returns all available variant attributes.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAvailableVariantAttributesProperty()
+    {
+        return ProductType::find(
+            $this->product->product_type_id
+        )->variantAttributes->sortBy('position')->values();
+    }
+
+    /**
+     * Return attribute groups available for variants.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getVariantAttributeGroupsProperty()
+    {
+        $groupIds = $this->variantAttributes->pluck('group_id')->unique();
+
+        return AttributeGroup::whereIn('id', $groupIds)
+            ->orderBy('position')
+            ->get()->map(function ($group) {
+                return [
+                    'model'  => $group,
+                    'fields' => $this->variantAttributes->filter(fn ($att) => $att['group_id'] == $group->id),
+                ];
+            });
     }
 
     /**

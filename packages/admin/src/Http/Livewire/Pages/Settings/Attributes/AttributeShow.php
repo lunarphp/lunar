@@ -2,17 +2,24 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Attributes;
 
-use GetCandy\Models\Attribute;
 use Livewire\Component;
 
 class AttributeShow extends Component
 {
     /**
-     * The instance of the attribute model.
-     *
-     * @var \GetCandy\Models\Attribute
+     * The type.
      */
-    public Attribute $attribute;
+    public $type;
+
+    /**
+     * Mount the component.
+     *
+     * @return void
+     */
+    public function mount()
+    {
+        $this->type = $this->type;
+    }
 
     /**
      * Render the livewire component.
@@ -23,7 +30,9 @@ class AttributeShow extends Component
     {
         return view('adminhub::livewire.pages.settings.attributes.show')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.attributes.show.title'),
+                'title' => __('adminhub::settings.attributes.show.title', [
+                    'type' => $this->type,
+                ]),
             ]);
     }
 }
