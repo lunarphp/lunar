@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Attribute groups can be re ordered within their settings screens.
 - Attributes within a group can now be reordered.
 - Added an additional List FieldType
+- Tag editing screens have been added by [@briavers](https://github.com/briavers)
 
 ### Added
 
