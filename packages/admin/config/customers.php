@@ -12,5 +12,5 @@ return [
     | "customers.listing.{key}"
     |
     */
-    'searchable_meta' => ['account_no'],
+    'searchable_meta' => [],
 ];
