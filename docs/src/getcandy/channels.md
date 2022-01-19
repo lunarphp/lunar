@@ -30,7 +30,8 @@ When add this trait, you will have access to the `scheduleChannel` method:
 $channel = App\Models\Channel::first();
 
 // Will schedule for this product to be enabled in 14 days for this channel.
-$product->scheduleChannel($channel, now()->addDays(14));
+// and will be disabled after 24 days
+$product->scheduleChannel($channel, now()->addDays(14), now()->addDays(24));
 
 // Schedule the product to be enabled straight away
 $product->scheduleChannel($channel);

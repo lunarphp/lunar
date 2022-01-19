@@ -25,12 +25,18 @@ class ProductCreate extends AbstractProduct
         $this->variantsEnabled = $this->getVariantsCount() > 1;
         $this->variant = new ProductVariant([
             'purchasable'   => 'always',
-            'tax_class_id'  => TaxClass::first()->id,
+            'tax_class_id'  => TaxClass::getDefault()?->id,
             'shippable'     => true,
             'stock'         => 0,
             'unit_quantity' => 1,
             'backorder'     => 0,
         ]);
+
+        $this->variantAttributes = $this->parseAttributes(
+            $this->availableVariantAttributes,
+            $this->variant->attribute_data,
+            'variantAttributes',
+        );
 
         $this->syncAvailability();
     }

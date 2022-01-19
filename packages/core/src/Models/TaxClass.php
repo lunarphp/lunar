@@ -3,12 +3,14 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasDefaultRecord;
 use GetCandy\Database\Factories\TaxClassFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxClass extends BaseModel
 {
     use HasFactory;
+    use HasDefaultRecord;
 
     /**
      * Return a new factory instance for the model.

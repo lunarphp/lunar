@@ -278,8 +278,8 @@ class ProductShowTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product->refresh(),
-            ])->set('attributeMapping.'.$name->id.'.data', 'nouseforaname')
-            ->set('attributeMapping.'.$description->id.'.data', 'nouseforadescription');
+            ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
+            ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription');
 
         $component->call('save')->assertHasNoErrors();
 

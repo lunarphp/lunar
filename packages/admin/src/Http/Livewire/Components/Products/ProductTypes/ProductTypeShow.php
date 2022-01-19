@@ -3,7 +3,9 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
 
 use GetCandy\Models\Attribute;
+use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
+use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 
 class ProductTypeShow extends AbstractProductType
@@ -19,8 +21,15 @@ class ProductTypeShow extends AbstractProductType
 
     public function mount()
     {
-        $systemAttributes = Attribute::system(ProductType::class)->get();
-        $this->selectedAttributes = $this->productType->mappedAttributes->merge($systemAttributes);
+        $systemProductAttributes = Attribute::system(Product::class)->get();
+        $systemVariantAttribues = Attribute::system(ProductVariant::class)->get();
+        $this->selectedProductAttributes = $this->productType->mappedAttributes
+            ->filter(fn ($att) => $att->attribute_type == Product::class)
+            ->merge($systemProductAttributes);
+
+        $this->selectedVariantAttributes = $this->productType->mappedAttributes
+            ->filter(fn ($att) => $att->attribute_type == ProductVariant::class)
+            ->merge($systemVariantAttribues);
     }
 
     /**
@@ -51,7 +60,10 @@ class ProductTypeShow extends AbstractProductType
         $this->productType->save();
 
         $this->productType->mappedAttributes()->sync(
-            $this->selectedAttributes->pluck('id')
+            array_merge(
+                $this->selectedProductAttributes->pluck('id')->toArray(),
+                $this->selectedVariantAttributes->pluck('id')->toArray()
+            )
         );
 
         $this->notify(
@@ -62,7 +74,17 @@ class ProductTypeShow extends AbstractProductType
 
     public function getCanDeleteProperty()
     {
-        return !$this->productType->products()->count();
+        return !$this->isTheOnlyProductType && !$this->productType->products()->count();
+    }
+
+    /**
+     * Returns whether this is the only Product type in the system.
+     *
+     * @return bool
+     */
+    public function getIsTheOnlyProductTypeProperty()
+    {
+        return ProductType::count() == 1;
     }
 
     /**

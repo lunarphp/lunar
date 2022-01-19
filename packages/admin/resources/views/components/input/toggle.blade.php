@@ -2,7 +2,12 @@
 <!-- Enabled: "bg-indigo-600", Not Enabled: "bg-gray-200" -->
 <div
   x-data="{
-    checked: @if($attributes->wire('model')->value()) @entangle($attributes->wire('model')) @else {{ $on ? 'true' : 'false' }} @endif
+    checked: @if($attributes->wire('model')->value()) @entangle($attributes->wire('model')) @else {{ $on ? 'true' : 'false' }} @endif,
+    onValue: @if(is_bool($onValue)) true @else '{{ $onValue }}' @endif,
+    offValue: @if(is_bool($offValue)) false @else '{{ $offValue }}' @endif,
+    toggle() {
+      this.checked = this.checked == this.onValue ? this.offValue : this.onValue
+    }
   }"
 >
   <button
@@ -12,18 +17,18 @@
     role="switch"
     aria-checked="false"
     @if($disabled ?? true) disabled @endif
-    x-on:click="checked = !checked"
+    x-on:click="toggle"
     :class="{
-        'bg-green-500': checked,
+        'bg-green-500': checked == onValue,
     }"
   >
     @if($attributes->wire('model')->value())
-      <input type="checkbox" x-model="checked" class="hidden" value="1" />
+      <input type="checkbox" x-model="checked" class="hidden" value="{{ $onValue }}" />
     @endif
     <span
       aria-hidden="true"
       :class="{
-        'translate-x-5': checked,
+        'translate-x-5': checked == onValue,
       }"
       class="{{ $on ? 'translate-x-5' : 'translate-x-0' }} pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition ease-in-out duration-200"
     ></span>

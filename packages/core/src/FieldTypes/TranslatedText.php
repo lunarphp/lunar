@@ -5,8 +5,9 @@ namespace GetCandy\FieldTypes;
 use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
 use Illuminate\Database\Eloquent\Collection;
+use JsonSerializable;
 
-class TranslatedText implements FieldType
+class TranslatedText implements FieldType, JsonSerializable
 {
     /**
      * @var Illuminate\Database\Eloquent\Collection
@@ -25,6 +26,16 @@ class TranslatedText implements FieldType
         } else {
             $this->value = new Collection();
         }
+    }
+
+    /**
+     * Serialize the class.
+     *
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->value;
     }
 
     /**
@@ -63,5 +74,41 @@ class TranslatedText implements FieldType
         }
 
         $this->value = $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return __('adminhub::fieldtypes.translated-text.label');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSettingsView(): string
+    {
+        return 'adminhub::field-types.text.settings';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getView(): string
+    {
+        return 'adminhub::field-types.translated-text.view';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfig(): array
+    {
+        return [
+            'options' => [
+                'richtext' => 'nullable',
+            ],
+        ];
     }
 }

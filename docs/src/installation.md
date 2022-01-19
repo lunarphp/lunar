@@ -116,6 +116,10 @@ php artisan getcandy:hub:install
 GetCandy uses table prefixes to avoid conflicts with your app's tables. You can change this in the [configuration](/configuration.html).
 :::
 
+::: warning
+GetCandy assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/getcandy/database.php` to set the correct field type before running the migrations.
+:::
+
 As you'd expect, there's quite a few tables GetCandy needs to function, so run the migrations now.
 
 ```sh

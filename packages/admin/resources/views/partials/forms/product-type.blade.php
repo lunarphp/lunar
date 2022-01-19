@@ -5,7 +5,38 @@
       </x-hub::input.group>
     </div>
 
-    <div x-data="{ view: 'available' }">
+    <div x-data="{ view: 'products' }">
+      <nav class="flex space-x-4" aria-label="Tabs">
+        <!-- Current: "bg-gray-100 text-gray-700", Default: "text-gray-500 hover:text-gray-700" -->
+        <button type="button" wire:click="$set('view', 'products')" class="px-3 py-3 text-sm font-medium @if($view == 'products') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t">
+          Product Attributes
+        </button>
+
+        <button
+          type="button"
+          wire:click="$set('view', 'variants')"
+          class="px-3 py-3 text-sm font-medium @if($view == 'variants') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t"
+        >
+          Variant Attributes
+        </button>
+      </nav>
+
+      <div class="p-6 bg-white rounded-b shadow">
+        @if($view == 'products')
+          @include('adminhub::partials.product-types.attributes', [
+            'type' => 'products',
+          ])
+        @endif
+
+        @if($view == 'variants')
+          @include('adminhub::partials.product-types.attributes', [
+            'type' => 'variants',
+          ])
+        @endif
+      </div>
+    </div>
+
+    {{-- <div x-data="{ view: 'available' }">
       <div class="grid grid-cols-2 gap-6 lg:hidden">
         <button
           class="px-3 py-2 text-sm rounded"
@@ -38,7 +69,7 @@
             {{ __('adminhub::partials.product-type.available_title') }}
           </h3>
 
-          <div  class="space-y-2" :class="view == 'available' ? 'block' : 'hidden lg:block'">
+          <div class="space-y-2" :class="view == 'available' ? 'block' : 'hidden lg:block'">
             <x-hub::input.text :placeholder="__('adminhub::partials.product-type.attribute_search_placeholder')" wire:model="attributeSearch" />
 
             <div class="space-y-2">
@@ -100,5 +131,5 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>

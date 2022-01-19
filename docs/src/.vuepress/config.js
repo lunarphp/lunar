@@ -54,6 +54,11 @@ module.exports = {
     editLinkText: 'Help us improve this page!',
     smoothScroll: true,
     lastUpdated: false,
+    algolia: {
+      apiKey: '5b837c3914609051127d86be919e1724',
+      indexName: 'getcandy',
+      appId: 'LRDQ9JSQEG'
+    },
     nav: [
       {
         text: 'Roadmap',
@@ -105,8 +110,15 @@ module.exports = {
           '/getcandy/taxation',
           '/getcandy/urls'
         ]
+      },
+      {
+        title: 'Extending GetCandy',
+        collapsable: false, // optional, defaults to true
+        children: [
+          '/extending/field-types',
+        ]
       }
-    ]
+    ],
   },
 
   /**

@@ -4,9 +4,13 @@ namespace GetCandy;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use GetCandy\Addons\Manifest;
+use GetCandy\Base\AttributeManifest;
+use GetCandy\Base\AttributeManifestInterface;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
 use GetCandy\Base\CartSessionInterface;
+use GetCandy\Base\FieldTypeManifest;
+use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
 use GetCandy\Base\OrderReferenceGenerator;
 use GetCandy\Base\OrderReferenceGeneratorInterface;
@@ -17,6 +21,8 @@ use GetCandy\Console\Commands\AddonsDiscover;
 use GetCandy\Console\Commands\Import\AddressData;
 use GetCandy\Console\Commands\MeilisearchSetup;
 use GetCandy\Console\InstallGetCandy;
+use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
+use GetCandy\Database\State\EnsureDefaultTaxClassExists;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Models\CartLine;
@@ -36,6 +42,7 @@ use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -85,6 +92,11 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerAddonManifest();
+        $this->registerBlueprintMacros();
+
+        if (!$this->app->environment('testing')) {
+            $this->registerStateListeners();
+        }
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -102,20 +114,6 @@ class GetCandyServiceProvider extends ServiceProvider
         }
 
         Arr::macro('permutate', [\GetCandy\Utils\Arr::class, 'permutate']);
-
-        Blueprint::macro('scheduling', function () {
-            $this->boolean('enabled')->default(false)->index();
-            $this->timestamp('starts_at')->nullable()->index();
-            $this->timestamp('ends_at')->nullable()->index();
-        });
-
-        Blueprint::macro('dimensions', function () {
-            $columns = ['length', 'width', 'height', 'weight', 'volume'];
-            foreach ($columns as $column) {
-                $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
-                $this->string("{$column}_unit")->default('mm')->nullable();
-            }
-        });
 
         Converter::setMeasurements(
             config('getcandy.shipping.measurements', [])
@@ -149,6 +147,14 @@ class GetCandyServiceProvider extends ServiceProvider
             return $app->make(OrderReferenceGenerator::class);
         });
 
+        $this->app->singleton(AttributeManifestInterface::class, function ($app) {
+            return $app->make(AttributeManifest::class);
+        });
+
+        $this->app->singleton(FieldTypeManifestInterface::class, function ($app) {
+            return $app->make(FieldTypeManifest::class);
+        });
+
         Event::listen(
             Login::class,
             [CartSessionAuthListener::class, 'login']
@@ -169,6 +175,21 @@ class GetCandyServiceProvider extends ServiceProvider
         ));
     }
 
+    protected function registerStateListeners()
+    {
+        $states = [
+            ConvertProductTypeAttributesToProducts::class,
+            EnsureDefaultTaxClassExists::class,
+        ];
+
+        foreach ($states as $state) {
+            Event::listen(
+                MigrationsEnded::class,
+                [$state, 'run']
+            );
+        }
+    }
+
     /**
      * Register the observers used in GetCandy.
      *
@@ -183,5 +204,46 @@ class GetCandyServiceProvider extends ServiceProvider
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
         OrderLine::observe(OrderLineObserver::class);
+    }
+
+    /**
+     * Register the blueprint macros.
+     *
+     * @return void
+     */
+    protected function registerBlueprintMacros(): void
+    {
+        Blueprint::macro('scheduling', function () {
+            $this->boolean('enabled')->default(false)->index();
+            $this->timestamp('starts_at')->nullable()->index();
+            $this->timestamp('ends_at')->nullable()->index();
+        });
+
+        Blueprint::macro('dimensions', function () {
+            $columns = ['length', 'width', 'height', 'weight', 'volume'];
+            foreach ($columns as $column) {
+                $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
+                $this->string("{$column}_unit")->default('mm')->nullable();
+            }
+        });
+
+        Blueprint::macro('userForeignKey', function ($field_name = 'user_id') {
+            $userModel = config('auth.providers.users.model');
+
+            $type = config('getcandy.database.users_id_type', 'bigint');
+
+            if ($type == 'uuid') {
+                $this->foreignUuId($field_name)->constrained(
+                    (new $userModel())->getTable()
+                );
+            } elseif ($type == 'int') {
+                $this->unsignedInteger($field_name);
+                $this->foreign($field_name)->references('id')->on('users');
+            } else {
+                $this->foreignId($field_name)->constrained(
+                    (new $userModel())->getTable()
+                );
+            }
+        });
     }
 }
