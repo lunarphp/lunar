@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Created the `AttributeManifest` class so dev's can add their own attributable classes.
 - Created the `FieldTypeManifest` class so dev's can add custom FieldTypes to the store.
+- Added a new `default` column to the `tax_classes` table.
 
 ### Added
 
