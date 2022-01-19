@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base\Traits;
 
+use GetCandy\Base\FieldType;
 use Illuminate\Support\Arr;
 
 trait HasTranslations
@@ -58,6 +59,14 @@ trait HasTranslations
         }
 
         $value = Arr::get($translations, $locale ?: app()->getLocale(), Arr::first($translations));
+
+        /**
+         * If we don't return a field type, then somethings up and it doesn't look like
+         * this is translatable, in this case, just return what the fields value is.
+         */
+        if (!$value instanceof FieldType) {
+            return $field->getValue();
+        }
 
         return $value ? $value->getValue() : null;
     }

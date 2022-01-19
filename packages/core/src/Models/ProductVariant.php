@@ -3,6 +3,7 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\Traits\HasDimensions;
 use GetCandy\Base\Traits\HasMedia;
@@ -32,6 +33,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
      */
     protected $casts = [
         'requires_shipping' => 'bool',
+        'attribute_data'    => AsAttributeData::class,
     ];
 
     /**

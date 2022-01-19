@@ -14,7 +14,8 @@
         "psr-4": {
             "GetCandy\\": "src",
             "GetCandy\\Database\\Factories\\": "database/factories",
-            "GetCandy\\Database\\Seeders\\": "database/seeders"
+            "GetCandy\\Database\\Seeders\\": "database/seeders",
+            "GetCandy\\Database\\State\\": "database/state"
         }
     },
     "autoload-dev": {
@@ -36,7 +37,8 @@
         "laravel/scout": "^9.3",
         "cartalyst/converter": "^6.1",
         "yab/laravel-scout-mysql-driver": "^5.0",
-        "kalnoy/nestedset": "^6.0"
+        "kalnoy/nestedset": "^6.0",
+        "doctrine/dbal": "^3.3"
     },
     "require-dev": {
         "orchestra/testbench": "^6.0",

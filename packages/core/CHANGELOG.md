@@ -5,6 +5,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- When translating an attribute, if we can't find a translation we default to whatever the FieldType gives back instead of erroring.
+- `TranslatedText` fieldtype now implements `JsonSerializable` interface ([#50](https://github.com/getcandy/getcandy/issues/50))
+- When translating an attribute, if we can't find a translation we default to whatever the FieldType gives back instead of erroring.
+
+### Added
+
+- Created the `AttributeManifest` class so dev's can add their own attributable classes.
+- Created the `FieldTypeManifest` class so dev's can add custom FieldTypes to the store.
+- Added a new `default` column to the `tax_classes` table.
+
+### Added
+
+- Created the `AttributeManifest` class so dev's can add their own attributable classes.
+- Created the `FieldTypeManifest` class so dev's can add custom FieldTypes to the store.
+
+### Changed
+
+- Models that have channels now implement `start_at` and `end_at` columns. This replaces the previous `published_at` column.
+
 ## 2.0-beta5 - 2022-01-10
 
 ### Fixes

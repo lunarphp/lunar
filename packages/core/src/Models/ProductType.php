@@ -47,6 +47,26 @@ class ProductType extends BaseModel
     }
 
     /**
+     * Return the product attributes relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function productAttributes()
+    {
+        return $this->mappedAttributes()->whereAttributeType(Product::class);
+    }
+
+    /**
+     * Return the variant attributes relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function variantAttributes()
+    {
+        return $this->mappedAttributes()->whereAttributeType(ProductVariant::class);
+    }
+
+    /**
      * Get the products relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

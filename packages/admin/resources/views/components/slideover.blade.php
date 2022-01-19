@@ -52,7 +52,7 @@
         <div class="flex flex-col h-full py-6 pb-20 overflow-y-scroll bg-white shadow-xl">
           <div class="px-4 sm:px-6">
             <div class="flex items-start justify-between">
-              <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">
+              <h2 class="text-lg font-medium text-gray-900">
                 {{ $title }}
               </h2>
               <div class="flex items-center ml-3 h-7">

@@ -13,6 +13,7 @@ use GetCandy\Models\Country;
 use GetCandy\Models\Currency;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Language;
+use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\TaxClass;
 use Illuminate\Console\Command;
@@ -142,7 +143,8 @@ class InstallGetCandy extends Command
                 $this->info('Adding a default tax class.');
 
                 TaxClass::create([
-                    'name' => 'Default Tax Class',
+                    'name'    => 'Default Tax Class',
+                    'default' => true,
                 ]);
             }
 
@@ -150,7 +152,7 @@ class InstallGetCandy extends Command
                 $this->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
-                    'attributable_type' => ProductType::class,
+                    'attributable_type' => Product::class,
                     'name'              => collect([
                         'en' => 'Details',
                     ]),
@@ -168,7 +170,7 @@ class InstallGetCandy extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => ProductType::class,
+                    'attribute_type'     => Product::class,
                     'attribute_group_id' => $group->id,
                     'position'           => 1,
                     'name'               => [
@@ -204,7 +206,7 @@ class InstallGetCandy extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => ProductType::class,
+                    'attribute_type'     => Product::class,
                     'attribute_group_id' => $group->id,
                     'position'           => 2,
                     'name'               => [
@@ -248,7 +250,7 @@ class InstallGetCandy extends Command
                 ]);
 
                 $type->mappedAttributes()->attach(
-                    Attribute::whereAttributeType(ProductType::class)->get()->pluck('id')
+                    Attribute::whereAttributeType(Product::class)->get()->pluck('id')
                 );
             }
 

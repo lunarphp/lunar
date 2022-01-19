@@ -11,6 +11,7 @@
     ],
     "require": {
         "cartalyst/converter": "^6.1",
+        "doctrine/dbal": "^3.3",
         "getcandy/licensing": "dev-main",
         "kalnoy/nestedset": "^6.0",
         "laravel/scout": "^9.3",
@@ -34,6 +35,7 @@
             "GetCandy\\": "packages/core/src",
             "GetCandy\\Database\\Factories\\": "packages/core/database/factories",
             "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
+            "GetCandy\\Database\\State\\": "packages/core/database/state",
             "GetCandy\\Hub\\": "packages/admin/src",
             "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
         }

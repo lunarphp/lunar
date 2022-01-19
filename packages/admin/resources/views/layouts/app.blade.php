@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    <link href="{{ asset('vendor/getcandy/admin-hub/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}" rel="stylesheet">
 
     <style>
     .filepond--credits {
@@ -23,14 +23,14 @@
     </style>
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+    <script defer src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.js" integrity="sha512-Fc8SDJVBwajCGX0A9z8lBeRPaCjR25Ek577z9PtQLB7CLBz7Mw1XhjbcD2yDWrGszL/uezKGidtGCng6Fhz3+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @livewireStyles
   </head>
   <body>
@@ -289,7 +289,6 @@
       </div>
     </div>
     <x-hub::notification />
-    @livewire('livewire-ui-modal')
     @livewire('hub-license')
     @livewireScripts
     <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>

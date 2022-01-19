@@ -1,25 +1,25 @@
 <div class="space-y-4">
-  @foreach($attributeMapping->groupBy('group_handle') as $groupIndex => $fields)
-    <div class="shadow sm:rounded-md" wire:key="attribute-group-{{ $groupIndex }}">
-      <div class="flex-col px-4 py-5 space-y-4 bg-white rounded sm:p-6">
+  @foreach(($attributeGroups ?? $this->attributeGroups) as $groupIndex => $group)
+    <div class="@if(!($inline ?? false)) shadow sm:rounded-md @endif" wire:key="attribute-group-{{ $groupIndex }}">
+      <div class="flex-col space-y-4 bg-white rounded @if(!($inline ?? false)) px-4 py-5 sm:p-6 @endif">
         <header>
           <h3 class="text-lg font-medium leading-6 text-gray-900">
-            {{ $fields->first()['group'] }}
+            {{ $group['model']->translate('name') }}
           </h3>
         </header>
         <div class="space-y-4">
-          @foreach($fields as $attIndex => $field)
+          @foreach($group['fields'] as $attIndex => $field)
             <div wire:key="{{ $field['handle'] }}">
               <x-hub::input.group
                 :label="$field['name']"
                 :for="$field['handle']"
                 :required="$field['required']"
                 :error="
-                  $errors->first('attributeMapping.'.$attIndex.'.data') ?:
-                  $errors->first('attributeMapping.'.$attIndex.'.data.'.$this->defaultLanguage->code)
+                  $errors->first(($mapping ?? 'attributeMapping').'.'.$attIndex.'.data') ?:
+                  $errors->first(($mapping ?? 'attributeMapping').'.'.$attIndex.'.data.'.$this->defaultLanguage->code)
                 "
               >
-                @include("adminhub::partials.forms.fieldtypes.{$field['component']}", [
+                @include($field['view'], [
                   'field' => $field,
                 ])
               </x-hub::input.group>
