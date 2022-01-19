@@ -30,7 +30,7 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-## 2.0-beta6
+## 2.0-beta7
 
 ### Channel availability - High Impact
 
