@@ -15,9 +15,12 @@ class EnsureDefaultTaxClassExists
 
         // Get the first tax class and make it default
         $taxClass = TaxClass::first();
-        $taxClass->update([
-            'default' => true,
-        ]);
+
+        if ($taxClass) {
+            $taxClass->update([
+                'default' => true,
+            ]);
+        }
     }
 
     protected function canRun()
