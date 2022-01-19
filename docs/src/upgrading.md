@@ -30,7 +30,7 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-## [unreleased]
+## 2.0-beta7
 
 This version adds a new config setting for User ID field types.
 
@@ -48,8 +48,6 @@ Please add the following to your `config/getcandy/database.php` file
     */
     'users_id_type' => 'bigint',
 ```
-
-## 2.0-beta7
 
 ### Channel availability - High Impact
 
