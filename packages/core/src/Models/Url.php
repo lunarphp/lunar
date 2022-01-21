@@ -56,4 +56,15 @@ class Url extends BaseModel
     {
         return $this->belongsTo(Language::class);
     }
+
+    /**
+     * Return the query scope for default.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function scopeDefault($query)
+    {
+        return $query->whereDefault(true);
+    }
 }
