@@ -16,4 +16,12 @@ trait HasUrls
             'element'
         );
     }
+
+    public function defaultUrl()
+    {
+        return $this->morphOne(
+            Url::class,
+            'element'
+        )->whereDefault(true);
+    }
 }
