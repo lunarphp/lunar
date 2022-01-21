@@ -30,7 +30,7 @@ abstract class AbstractAttribute extends Component
     public function generateHandle($value)
     {
         if ($value && !$this->manualHandle) {
-            $this->attribute->handle = Str::slug($value,'_');
+            $this->attribute->handle = Str::slug($value, '_');
         }
     }
 
