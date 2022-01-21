@@ -134,7 +134,7 @@ class AttributeEdit extends Component
      */
     public function updatedAttributeHandle()
     {
-        $this->attribute->handle = Str::slug($this->attribute->handle,'_');
+        $this->attribute->handle = Str::slug($this->attribute->handle, '_');
     }
 
     public function formatHandle()
