@@ -8,6 +8,7 @@ use GetCandy\Base\Purchasable;
 use GetCandy\Base\Traits\HasDimensions;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasPrices;
+use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\ProductVariantFactory;
 use GetCandy\Exceptions\MissingCurrencyPriceException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,6 +21,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     use HasMedia;
     use HasPrices;
     use HasDimensions;
+    use HasTranslations;
 
     /**
      * Define the guarded attributes.
