@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix'     => 'hub',
+    'prefix'     => config('getcandy-hub.system.url', 'hub'),
     'middleware' => ['web'],
 ], function () {
     Route::post('logout', function () {
