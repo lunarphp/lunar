@@ -61,6 +61,10 @@ module.exports = {
     },
     nav: [
       {
+        text: 'Main Site',
+        link: 'https://getcandy.io',
+      },
+      {
         text: 'Roadmap',
         link: 'https://portal.productboard.com/getcandy/1-getcandy',
       },
