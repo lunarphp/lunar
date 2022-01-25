@@ -33,6 +33,11 @@ class ShippingOption implements Purchasable
         return $this->price->value;
     }
 
+    public function getPrices(): Collection
+    {[
+        return collect();
+    ]}
+
     /**
      * Return the purchasable unit quantity.
      *

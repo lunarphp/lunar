@@ -19,6 +19,13 @@ interface Purchasable
     public function getPrice(int $quantity, Currency $currency, Collection $customerGroups): int;
 
     /**
+     * Get the purchasable prices.
+     *
+     * @return Collection
+     */
+    public function getPrices(): Collection;
+
+    /**
      * Return the purchasable unit quantity.
      *
      * @return int

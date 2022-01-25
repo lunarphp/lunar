@@ -123,6 +123,11 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
         return $currencyPrice->price->value;
     }
 
+    public function getPrices(): Collection
+    {
+        return $this->prices;
+    }
+
     /**
      * Return the unit quantity for the variant.
      *
