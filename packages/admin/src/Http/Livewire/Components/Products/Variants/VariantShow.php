@@ -218,11 +218,15 @@ class VariantShow extends Component
         if ($this->image) {
             if ($this->image instanceof Media) {
                 $this->image->copy($this->variant, 'variants');
+                $this->image->setCustomProperty('primary', true);
+                $this->image->save();
             }
             if ($this->image instanceof TemporaryUploadedFile) {
-                $this->variant->addMedia($this->image->getRealPath())
+                $media = $this->variant->addMedia($this->image->getRealPath())
                     ->preservingOriginal()
                     ->toMediaCollection('variants');
+                $media->setCustomProperty('primary', true);
+                $media->save();
             }
         }
 
