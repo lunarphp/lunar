@@ -632,7 +632,7 @@ First we just need to grab the values we want to use to generate the variants. S
 ```php
 $optionValueIds = $size->values->merge($colour->values)->pluck('id');
 
-$product->generateVariants($optionValueIds);
+\GetCandy\Hub\Jobs\Products\GenerateVariants::dispatch($product, $optionValueIds);
 ```
 
 ::: tip
