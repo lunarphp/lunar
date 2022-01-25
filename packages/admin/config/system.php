@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'url' => 'hub',
+    'path' => 'hub',
 ];
