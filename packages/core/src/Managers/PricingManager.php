@@ -154,7 +154,7 @@ class PricingManager implements PricingManagerInterface
         });
 
         if (!$currencyPrices->count()) {
-            throw new MissingCurrencyPriceException;
+            throw new MissingCurrencyPriceException();
         }
 
         $prices = $currencyPrices->filter(function ($price) {

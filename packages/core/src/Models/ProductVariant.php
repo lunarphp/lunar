@@ -10,7 +10,6 @@ use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasPrices;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\ProductVariantFactory;
-use GetCandy\Exceptions\MissingCurrencyPriceException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;

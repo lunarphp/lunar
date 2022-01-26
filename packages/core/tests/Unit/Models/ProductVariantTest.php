@@ -45,7 +45,7 @@ class ProductVariantTest extends TestCase
             'product_id' => $product->id,
         ]);
         $currency = Currency::factory()->create([
-            'default' => true,
+            'default'        => true,
             'decimal_places' => 2,
         ]);
 
