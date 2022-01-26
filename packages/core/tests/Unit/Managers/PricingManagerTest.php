@@ -26,17 +26,17 @@ class PricingManagerTest extends TestCase
     {
         $this->assertInstanceOf(
             PricingManager::class,
-            new PricingManager
+            new PricingManager()
         );
     }
 
     /** @test */
     public function can_set_up_available_guest_pricing()
     {
-        $manager = new PricingManager;
+        $manager = new PricingManager();
 
         $currency = Currency::factory()->create([
-            'default' => true,
+            'default'       => true,
             'exchange_rate' => 1,
         ]);
 
@@ -50,7 +50,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price' => 100,
+            'price'          => 100,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -58,7 +58,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         Price::factory()->create([
-            'price' => 50,
+            'price'          => 50,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -66,12 +66,12 @@ class PricingManagerTest extends TestCase
         ]);
 
         Price::factory()->create([
-            'price' => 50,
-            'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
-            'customer_group_id' => CustomerGroup::factory()
+            'price'             => 50,
+            'priceable_type'    => ProductVariant::class,
+            'priceable_id'      => $variant->id,
+            'currency_id'       => $currency->id,
+            'tier'              => 1,
+            'customer_group_id' => CustomerGroup::factory(),
         ]);
 
         $pricing = $manager->for($variant);
@@ -86,10 +86,10 @@ class PricingManagerTest extends TestCase
     /** @test */
     public function can_get_purchasable_price_with_defaults()
     {
-        $manager = new PricingManager;
+        $manager = new PricingManager();
 
         $currency = Currency::factory()->create([
-            'default' => true,
+            'default'       => true,
             'exchange_rate' => 1,
         ]);
 
@@ -102,9 +102,8 @@ class PricingManagerTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-
         $price = Price::factory()->create([
-            'price' => 100,
+            'price'          => 100,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -121,12 +120,12 @@ class PricingManagerTest extends TestCase
     /**  @test */
     public function can_fetch_customer_group_price()
     {
-        $manager = new PricingManager;
+        $manager = new PricingManager();
 
         $customerGroups = CustomerGroup::factory(5)->create();
 
         $currency = Currency::factory()->create([
-            'default' => true,
+            'default'       => true,
             'exchange_rate' => 1,
         ]);
 
@@ -140,7 +139,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price' => 100,
+            'price'          => 100,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -148,11 +147,11 @@ class PricingManagerTest extends TestCase
         ]);
 
         $customerGroupPrice = Price::factory()->create([
-            'price' => 150,
-            'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
+            'price'             => 150,
+            'priceable_type'    => ProductVariant::class,
+            'priceable_id'      => $variant->id,
+            'currency_id'       => $currency->id,
+            'tier'              => 1,
             'customer_group_id' => $customerGroups->first()->id,
         ]);
 
@@ -176,10 +175,10 @@ class PricingManagerTest extends TestCase
     /** @test */
     public function can_fetch_tiered_price()
     {
-        $manager = new PricingManager;
+        $manager = new PricingManager();
 
         $currency = Currency::factory()->create([
-            'default' => true,
+            'default'       => true,
             'exchange_rate' => 1,
         ]);
 
@@ -193,7 +192,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price' => 100,
+            'price'          => 100,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -201,7 +200,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $tiered10 = Price::factory()->create([
-            'price' => 90,
+            'price'          => 90,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -209,7 +208,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $tiered20 = Price::factory()->create([
-            'price' => 80,
+            'price'          => 80,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -217,7 +216,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $tiered30 = Price::factory()->create([
-            'price' => 70,
+            'price'          => 70,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $currency->id,
@@ -268,15 +267,15 @@ class PricingManagerTest extends TestCase
     /** @test */
     public function can_match_based_on_currency()
     {
-        $manager = new PricingManager;
+        $manager = new PricingManager();
 
         $defaultCurrency = Currency::factory()->create([
-            'default' => true,
+            'default'       => true,
             'exchange_rate' => 1,
         ]);
 
         $secondCurrency = Currency::factory()->create([
-            'default' => false,
+            'default'       => false,
             'exchange_rate' => 1.2,
         ]);
 
@@ -290,7 +289,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price' => 100,
+            'price'          => 100,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $defaultCurrency->id,
@@ -298,7 +297,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $additional = Price::factory()->create([
-            'price' => 120,
+            'price'          => 120,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $secondCurrency->id,
@@ -319,7 +318,7 @@ class PricingManagerTest extends TestCase
     /** @test  */
     public function can_fetch_correct_price_for_user()
     {
-        $manager = new PricingManager;
+        $manager = new PricingManager();
 
         $user = User::factory()->create();
 
@@ -328,7 +327,7 @@ class PricingManagerTest extends TestCase
         $group = CustomerGroup::factory()->create();
 
         $defaultCurrency = Currency::factory()->create([
-            'default' => true,
+            'default'       => true,
             'exchange_rate' => 1,
         ]);
 
@@ -342,7 +341,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price' => 100,
+            'price'          => 100,
             'priceable_type' => ProductVariant::class,
             'priceable_id'   => $variant->id,
             'currency_id'    => $defaultCurrency->id,
@@ -350,11 +349,11 @@ class PricingManagerTest extends TestCase
         ]);
 
         $groupPrice = Price::factory()->create([
-            'price' => 100,
-            'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $defaultCurrency->id,
-            'tier'           => 1,
+            'price'             => 100,
+            'priceable_type'    => ProductVariant::class,
+            'priceable_id'      => $variant->id,
+            'currency_id'       => $defaultCurrency->id,
+            'tier'              => 1,
             'customer_group_id' => $group->id,
         ]);
 

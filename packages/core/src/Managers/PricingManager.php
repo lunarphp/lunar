@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 class PricingManager implements PricingManagerInterface
 {
     /**
-     * The instance of the user
+     * The instance of the user.
      *
      * @var \Illuminate\Contracts\Auth\Authenticatable
      */
@@ -29,7 +29,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * The quantity value.
      *
-     * @var integer
+     * @var int
      */
     protected int $qty = 1;
 
@@ -51,11 +51,13 @@ class PricingManager implements PricingManagerInterface
      * Set the user property.
      *
      * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     *
      * @return self
      */
     public function user(Authenticatable $user)
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -63,23 +65,27 @@ class PricingManager implements PricingManagerInterface
      * Set the currency property.
      *
      * @param \GetCandy\Models\Currency $currency
+     *
      * @return self
      */
     public function currency(Currency $currency)
     {
         $this->currency = $currency;
+
         return $this;
     }
 
     /**
      * Set the quantity property.
      *
-     * @param integer $qty
+     * @param int $qty
+     *
      * @return self
      */
     public function qty(int $qty)
     {
         $this->qty = $qty;
+
         return $this;
     }
 
@@ -87,6 +93,7 @@ class PricingManager implements PricingManagerInterface
      * Set the customer groups.
      *
      * @param Collection $customerGroups
+     *
      * @return self
      */
     public function customerGroups(Collection $customerGroups)
@@ -100,6 +107,7 @@ class PricingManager implements PricingManagerInterface
      * Set the customer group.
      *
      * @param CustomerGroup $customerGroup
+     *
      * @return self
      */
     public function customerGroup(CustomerGroup $customerGroup)
@@ -115,6 +123,7 @@ class PricingManager implements PricingManagerInterface
      * Get the price for a purchasable.
      *
      * @param Purchasable $purchasable
+     *
      * @return \GetCandy\Base\DataTransferObjects\PricingResponse
      */
     public function for(Purchasable $purchasable)
@@ -149,14 +158,14 @@ class PricingManager implements PricingManagerInterface
         })->sortBy('price');
 
         // Get our base price
-        $basePrice = $prices->first(fn($price) => $price->tier == 1 && !$price->customer_group_id);
+        $basePrice = $prices->first(fn ($price) => $price->tier == 1 && !$price->customer_group_id);
 
         // To start, we'll set the matched price to the base price.
         $matched = $basePrice;
 
         // If we have customer group prices, we should find the cheapest one and send that back.
         $potentialGroupPrice = $prices->filter(function ($price) {
-            return !!$price->customer_group_id && $price->tier == 1;
+            return (bool) $price->customer_group_id && $price->tier == 1;
         })->sortBy('price');
 
         $matched = $potentialGroupPrice->first() ?: $matched;
@@ -171,9 +180,9 @@ class PricingManager implements PricingManagerInterface
 
         return new PricingResponse(
             matched: $matched,
-            base: $prices->first(fn($price) => $price->tier == 1),
-            tiered: $prices->filter(fn($price) => $price->tier > 1),
-            customerGroupPrices: $prices->filter(fn($price) => !!$price->customer_group_id)
+            base: $prices->first(fn ($price)                 => $price->tier == 1),
+            tiered: $prices->filter(fn ($price)              => $price->tier > 1),
+            customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
         );
     }
 }

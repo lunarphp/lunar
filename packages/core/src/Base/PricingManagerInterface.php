@@ -4,5 +4,4 @@ namespace GetCandy\Base;
 
 interface PricingManagerInterface
 {
-
 }
