@@ -5,10 +5,12 @@ namespace GetCandy\Tests\Unit\Managers;
 use GetCandy\Base\DataTransferObjects\PricingResponse;
 use GetCandy\Managers\PricingManager;
 use GetCandy\Models\Currency;
+use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Price;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductVariant;
+use GetCandy\Tests\Stubs\User;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -312,5 +314,68 @@ class PricingManagerTest extends TestCase
 
         $this->assertEquals($additional->id, $pricing->base->id);
         $this->assertEquals($additional->id, $pricing->matched->id);
+    }
+
+    /** @test  */
+    public function can_fetch_correct_price_for_user()
+    {
+        $manager = new PricingManager;
+
+        $user = User::factory()->create();
+
+        $customer = Customer::factory()->create();
+
+        $group = CustomerGroup::factory()->create();
+
+        $defaultCurrency = Currency::factory()->create([
+            'default' => true,
+            'exchange_rate' => 1,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        $base = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $defaultCurrency->id,
+            'tier'           => 1,
+        ]);
+
+        $groupPrice = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $defaultCurrency->id,
+            'tier'           => 1,
+            'customer_group_id' => $group->id,
+        ]);
+
+        $pricing = $manager->qty(1)->user($user)->for($variant);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertEquals($base->id, $pricing->matched->id);
+
+        $user->customers()->attach($customer);
+        $pricing = $manager->qty(1)->user($user->refresh())->for($variant);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertEquals($base->id, $pricing->matched->id);
+        $this->assertCount(0, $pricing->customerGroupPrices);
+
+        $customer->customerGroups()->attach($group);
+
+        $pricing = $manager->qty(1)->user($user->refresh())->for($variant);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertEquals($groupPrice->id, $pricing->matched->id);
+        $this->assertCount(1, $pricing->customerGroupPrices);
     }
 }

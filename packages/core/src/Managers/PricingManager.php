@@ -7,7 +7,7 @@ use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\Purchasable;
 use GetCandy\Models\Currency;
 use GetCandy\Models\CustomerGroup;
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 
 class PricingManager implements PricingManagerInterface
@@ -15,7 +15,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * The instance of the user
      *
-     * @var \Illuminate\Auth\Authenticatable
+     * @var \Illuminate\Contracts\Auth\Authenticatable
      */
     protected ?Authenticatable $user = null;
 
@@ -50,7 +50,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the user property.
      *
-     * @param \Illuminate\Auth\Authenticatable $user
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
      * @return self
      */
     public function user(Authenticatable $user)
@@ -105,7 +105,7 @@ class PricingManager implements PricingManagerInterface
     public function customerGroup(CustomerGroup $customerGroup)
     {
         $this->customerGroups(
-            collect($customerGroup)
+            collect([$customerGroup])
         );
 
         return $this;
@@ -129,12 +129,23 @@ class PricingManager implements PricingManagerInterface
             );
         }
 
+        // Do we have a user?
+        if ($this->user && $this->user->customers->count()) {
+            $customers = $this->user->customers;
+            $customerGroups = $customers->pluck('customerGroups')->flatten();
+
+            if ($customerGroups->count()) {
+                $this->customerGroups = $customerGroups;
+            }
+        }
+
         $prices = $purchasable->getPrices()->filter(function ($price) {
             return $price->currency_id == $this->currency->id;
         })->filter(function ($price) {
             // Only fetch prices which have no customer group (available to all) or belong to the customer groups
             // that we are trying to check against.
-            return !$price->customer_group_id || $this->customerGroups->contains($price->customer_group_id);
+            return !$price->customer_group_id ||
+                $this->customerGroups->pluck('id')->contains($price->customer_group_id);
         })->sortBy('price');
 
         // Get our base price
