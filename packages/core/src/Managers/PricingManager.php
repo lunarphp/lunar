@@ -5,6 +5,7 @@ namespace GetCandy\Managers;
 use GetCandy\Base\DataTransferObjects\PricingResponse;
 use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\Purchasable;
+use GetCandy\Exceptions\MissingCurrencyPriceException;
 use GetCandy\Models\Currency;
 use GetCandy\Models\CustomerGroup;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -148,9 +149,15 @@ class PricingManager implements PricingManagerInterface
             }
         }
 
-        $prices = $purchasable->getPrices()->filter(function ($price) {
+        $currencyPrices = $purchasable->getPrices()->filter(function ($price) {
             return $price->currency_id == $this->currency->id;
-        })->filter(function ($price) {
+        });
+
+        if (!$currencyPrices->count()) {
+            throw new MissingCurrencyPriceException;
+        }
+
+        $prices = $currencyPrices->filter(function ($price) {
             // Only fetch prices which have no customer group (available to all) or belong to the customer groups
             // that we are trying to check against.
             return !$price->customer_group_id ||
