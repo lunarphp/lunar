@@ -185,11 +185,27 @@ class PricingManager implements PricingManagerInterface
 
         $matched = $tieredPricing->first() ?: $matched;
 
-        return new PricingResponse(
+        $response = new PricingResponse(
             matched: $matched,
             base: $prices->first(fn ($price)                 => $price->tier == 1),
             tiered: $prices->filter(fn ($price)              => $price->tier > 1),
             customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
         );
+
+        $this->reset();
+
+        return $response;
+    }
+
+    /**
+     * Reset the manager into a base instance.
+     *
+     * @return void
+     */
+    private function reset()
+    {
+        $this->qty = 1;
+        $this->user = null;
+        $this->customerGroups = null;
     }
 }
