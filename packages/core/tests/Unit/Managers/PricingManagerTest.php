@@ -262,4 +262,55 @@ class PricingManagerTest extends TestCase
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered30->id, $pricing->matched->id);
     }
+
+    /** @test */
+    public function can_match_based_on_currency()
+    {
+        $manager = new PricingManager;
+
+        $defaultCurrency = Currency::factory()->create([
+            'default' => true,
+            'exchange_rate' => 1,
+        ]);
+
+        $secondCurrency = Currency::factory()->create([
+            'default' => false,
+            'exchange_rate' => 1.2,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        $base = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $defaultCurrency->id,
+            'tier'           => 1,
+        ]);
+
+        $additional = Price::factory()->create([
+            'price' => 120,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $secondCurrency->id,
+            'tier'           => 1,
+        ]);
+
+        $pricing = $manager->qty(1)->for($variant);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertEquals($base->id, $pricing->matched->id);
+
+        $pricing = $manager->currency($secondCurrency)->qty(1)->for($variant);
+
+        $this->assertEquals($additional->id, $pricing->base->id);
+        $this->assertEquals($additional->id, $pricing->matched->id);
+    }
 }
