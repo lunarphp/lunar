@@ -112,7 +112,7 @@
                 <td class="pt-4 text-sm"><a href="#" class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">{{ $order->reference }}</a></td>
                 <td class="pt-4 text-sm text-center">{{ $order->billingAddress->full_name }}</td>
                 <td class="pt-4 text-sm text-center">{{ $order->lines_count }}</td>
-                <td class="pt-4 text-sm text-center">{{ $order->placed_at->format('jS F Y h:ma')}}</td>
+                <td class="pt-4 text-sm text-center">{{ $order->created_at->format('jS F Y h:ma')}}</td>
                 <td class="pt-4 text-sm text-right">{{ $order->total->formatted }}</td>
               </tr>
               @endforeach
