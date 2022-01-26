@@ -82,6 +82,96 @@ class PricingManagerTest extends TestCase
     }
 
     /** @test */
+    public function can_get_purchasable_price_with_defaults()
+    {
+        $manager = new PricingManager;
+
+        $currency = Currency::factory()->create([
+            'default' => true,
+            'exchange_rate' => 1,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+
+        $price = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $currency->id,
+            'tier'           => 1,
+        ]);
+
+        $pricing = $manager->for($variant);
+
+        $this->assertInstanceOf(PricingResponse::class, $pricing);
+
+        $this->assertEquals($price->id, $pricing->matched->id);
+    }
+
+    /**  @test */
+    public function can_fetch_customer_group_price()
+    {
+        $manager = new PricingManager;
+
+        $customerGroups = CustomerGroup::factory(5)->create();
+
+        $currency = Currency::factory()->create([
+            'default' => true,
+            'exchange_rate' => 1,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        $base = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $currency->id,
+            'tier'           => 1,
+        ]);
+
+        $customerGroupPrice = Price::factory()->create([
+            'price' => 150,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $currency->id,
+            'tier'           => 1,
+            'customer_group_id' => $customerGroups->first()->id,
+        ]);
+
+        $pricing = $manager->customerGroup($customerGroups->first())
+            ->qty(4)->for($variant);
+
+        $this->assertInstanceOf(PricingResponse::class, $pricing);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertCount(1, $pricing->customerGroupPrices);
+        $this->assertEquals($customerGroupPrice->id, $pricing->matched->id);
+
+        $pricing = $manager->customerGroup($customerGroups->last())
+            ->qty(10)->for($variant);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertCount(0, $pricing->customerGroupPrices);
+        $this->assertEquals($base->id, $pricing->matched->id);
+    }
+
+    /** @test */
     public function can_fetch_tiered_price()
     {
         $manager = new PricingManager;
@@ -171,95 +261,5 @@ class PricingManagerTest extends TestCase
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered30->id, $pricing->matched->id);
-    }
-
-    /**  @test */
-    public function can_fetch_customer_group_price()
-    {
-        $manager = new PricingManager;
-
-        $customerGroups = CustomerGroup::factory(5)->create();
-
-        $currency = Currency::factory()->create([
-            'default' => true,
-            'exchange_rate' => 1,
-        ]);
-
-        $product = Product::factory()->create([
-            'status' => 'published',
-            'brand'  => 'BAR',
-        ]);
-
-        $variant = ProductVariant::factory()->create([
-            'product_id' => $product->id,
-        ]);
-
-        $base = Price::factory()->create([
-            'price' => 100,
-            'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
-        ]);
-
-        $customerGroupPrice = Price::factory()->create([
-            'price' => 150,
-            'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
-            'customer_group_id' => $customerGroups->first()->id,
-        ]);
-
-        $pricing = $manager->customerGroup($customerGroups->first())
-            ->qty(4)->for($variant);
-
-        $this->assertInstanceOf(PricingResponse::class, $pricing);
-
-        $this->assertEquals($base->id, $pricing->base->id);
-        $this->assertCount(1, $pricing->customerGroupPrices);
-        $this->assertEquals($customerGroupPrice->id, $pricing->matched->id);
-
-        $pricing = $manager->customerGroup($customerGroups->last())
-            ->qty(10)->for($variant);
-
-        $this->assertEquals($base->id, $pricing->base->id);
-        $this->assertCount(0, $pricing->customerGroupPrices);
-        $this->assertEquals($base->id, $pricing->matched->id);
-    }
-
-    /** @test */
-    public function can_get_purchasable_price_with_defaults()
-    {
-        $manager = new PricingManager;
-
-        $currency = Currency::factory()->create([
-            'default' => true,
-            'exchange_rate' => 1,
-        ]);
-
-        $product = Product::factory()->create([
-            'status' => 'published',
-            'brand'  => 'BAR',
-        ]);
-
-        $variant = ProductVariant::factory()->create([
-            'product_id' => $product->id,
-        ]);
-
-
-        $price = Price::factory()->create([
-            'price' => 100,
-            'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
-        ]);
-
-        $pricing = $manager->for($variant);
-
-        $this->assertInstanceOf(PricingResponse::class, $pricing);
-
-        $this->assertEquals($price->id, $pricing->matched->id);
     }
 }
