@@ -157,7 +157,7 @@ class GetCandyServiceProvider extends ServiceProvider
             return $app->make(FieldTypeManifest::class);
         });
 
-        $this->app->singleton(PricingManagerInterface::class, function ($app) {
+        $this->app->bind(PricingManagerInterface::class, function ($app) {
             return $app->make(PricingManager::class);
         });
 
