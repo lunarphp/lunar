@@ -6,7 +6,9 @@ use GetCandy\Base\DataTransferObjects\PricingResponse;
 use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\Purchasable;
 use GetCandy\Models\Currency;
+use GetCandy\Models\CustomerGroup;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Support\Collection;
 
 class PricingManager implements PricingManagerInterface
 {
@@ -37,6 +39,13 @@ class PricingManager implements PricingManagerInterface
      * @var \GetCandy\Base\Purchasable
      */
     protected Purchasable $purchasable;
+
+    /**
+     * The customer groups to check against.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected ?Collection $customerGroups = null;
 
     /**
      * Set the user property.
@@ -75,6 +84,19 @@ class PricingManager implements PricingManagerInterface
     }
 
     /**
+     * Set the customer groups.
+     *
+     * @param Collection $customerGroups
+     * @return self
+     */
+    public function customerGroups(Collection $customerGroups)
+    {
+        $this->customerGroups = $customerGroups;
+
+        return $this;
+    }
+
+    /**
      * Get the price for a purchasable.
      *
      * @param Purchasable $purchasable
@@ -86,21 +108,26 @@ class PricingManager implements PricingManagerInterface
             $this->currency = Currency::getDefault();
         }
 
+        if (!$this->customerGroups || !$this->customerGroups->count()) {
+            $this->customerGroups = collect(
+                CustomerGroup::getDefault()
+            );
+        }
+
         $prices = $purchasable->getPrices()->filter(function ($price) {
             return $price->currency_id == $this->currency->id;
+        })->filter(function ($price) {
+            // If we don't have a user, or customer groups passed through, only
+            // return the prices that or either null or associated to the default
+            // customer group.
+            return !$price->customer_group_id || $this->customerGroups->contains($price->customer_group_id);
         })->sortBy('price');
 
-        $price = $prices->first(fn($price) => $price->tier <= $this->qty);
-
-        $basePrice = $prices->first(fn($price) => $price->tier == 1);
-
-        $tieredPrices = $prices->filter(fn($price) => $price->tier > 1);
-
         return new PricingResponse(
-            matched: $price,
-            base: $basePrice,
-            tiered: $tieredPrices,
-            customerGroupPrices: collect()
+            matched: $prices->first(fn($price) => $price->tier <= $this->qty),
+            base: $prices->first(fn($price) => $price->tier == 1),
+            tiered: $prices->filter(fn($price) => $price->tier > 1 && $this->qty <= $price->tier),
+            customerGroupPrices: $prices->filter(fn($price) => !!$price->customer_group_id)
         );
     }
 }
