@@ -28,7 +28,10 @@ class PricingManagerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group thisone
+     * */
     public function can_set_up_available_guest_pricing()
     {
         $manager = new PricingManager;
@@ -81,10 +84,7 @@ class PricingManagerTest extends TestCase
         $this->assertEquals($base->id, $pricing->matched->id);
     }
 
-    /**
-     * @test
-     * @group thisone
-     * */
+    /** @test */
     public function can_fetch_tiered_price()
     {
         $manager = new PricingManager;
@@ -119,13 +119,67 @@ class PricingManagerTest extends TestCase
             'tier'           => 10,
         ]);
 
-
         $pricing = $manager->qty(10)->for($variant);
 
         $this->assertInstanceOf(PricingResponse::class, $pricing);
         $this->assertCount(1, $pricing->tiered);
         $this->assertEquals($base->id, $pricing->base->id);
-        $this->assertEquals($$tiered->id, $pricing->matched->id);
+        $this->assertEquals($tiered->id, $pricing->matched->id);
+    }
+
+    /**  @test */
+    public function can_fetch_customer_group_price()
+    {
+        $manager = new PricingManager;
+
+        $customerGroups = CustomerGroup::factory(5)->create();
+
+        $currency = Currency::factory()->create([
+            'default' => true,
+            'exchange_rate' => 1,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        $base = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $currency->id,
+            'tier'           => 1,
+        ]);
+
+        $customerGroupPrice = Price::factory()->create([
+            'price' => 150,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id'   => $variant->id,
+            'currency_id'    => $currency->id,
+            'tier'           => 1,
+            'customer_group_id' => $customerGroups->first()->id,
+        ]);
+
+        $pricing = $manager->customerGroup($customerGroups->first())
+            ->qty(4)->for($variant);
+
+        $this->assertInstanceOf(PricingResponse::class, $pricing);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertCount(1, $pricing->customerGroupPrices);
+        $this->assertEquals($customerGroupPrice->id, $pricing->matched->id);
+
+        $pricing = $manager->customerGroup($customerGroups->last())
+            ->qty(10)->for($variant);
+
+        $this->assertEquals($base->id, $pricing->base->id);
+        $this->assertCount(0, $pricing->customerGroupPrices);
+        $this->assertEquals($base->id, $pricing->matched->id);
     }
 
     /** @test */

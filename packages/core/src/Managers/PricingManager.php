@@ -97,6 +97,21 @@ class PricingManager implements PricingManagerInterface
     }
 
     /**
+     * Set the customer group.
+     *
+     * @param CustomerGroup $customerGroup
+     * @return self
+     */
+    public function customerGroup(CustomerGroup $customerGroup)
+    {
+        $this->customerGroups(
+            collect($customerGroup)
+        );
+
+        return $this;
+    }
+
+    /**
      * Get the price for a purchasable.
      *
      * @param Purchasable $purchasable
@@ -117,16 +132,36 @@ class PricingManager implements PricingManagerInterface
         $prices = $purchasable->getPrices()->filter(function ($price) {
             return $price->currency_id == $this->currency->id;
         })->filter(function ($price) {
-            // If we don't have a user, or customer groups passed through, only
-            // return the prices that or either null or associated to the default
-            // customer group.
+            // Only fetch prices which have no customer group (available to all) or belong to the customer groups
+            // that we are trying to check against.
             return !$price->customer_group_id || $this->customerGroups->contains($price->customer_group_id);
         })->sortBy('price');
 
+        // Get our base price
+        $basePrice = $prices->first(fn($price) => $price->tier == 1 && !$price->customer_group_id);
+
+        // To start, we'll set the matched price to the base price.
+        $matched = $basePrice;
+
+        // If we have customer group prices, we should find the cheapest one and send that back.
+        $potentialGroupPrice = $prices->filter(function ($price) {
+            return !!$price->customer_group_id && $price->tier == 1;
+        })->sortBy('price');
+
+        $matched = $potentialGroupPrice->first() ?: $matched;
+
+        // Get all tiers that match for the given quantity. These take priority over the other steps
+        // as we could be bulk purchasing.
+        $tieredPricing = $prices->filter(function ($price) {
+            return $price->tier > 1 && $this->qty >= $price->tier;
+        })->sortBy('price');
+
+        $matched = $tieredPricing->first() ?: $matched;
+
         return new PricingResponse(
-            matched: $prices->first(fn($price) => $price->tier <= $this->qty),
+            matched: $matched,
             base: $prices->first(fn($price) => $price->tier == 1),
-            tiered: $prices->filter(fn($price) => $price->tier > 1 && $this->qty <= $price->tier),
+            tiered: $prices->filter(fn($price) => $price->tier > 1),
             customerGroupPrices: $prices->filter(fn($price) => !!$price->customer_group_id)
         );
     }
