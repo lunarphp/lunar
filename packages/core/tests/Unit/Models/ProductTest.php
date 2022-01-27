@@ -450,8 +450,8 @@ class ProductTest extends TestCase
         ]);
 
         $currency = Currency::factory()->create([
-            'name' => 'Us Dollar',
-            'code' => 'USD',
+            'name'          => 'Us Dollar',
+            'code'          => 'USD',
             'exchange_rate' => 1.0,
         ]);
 
