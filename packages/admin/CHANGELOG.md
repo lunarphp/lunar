@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+### Fixed
+
+- When adding images to a variant it will now set them as the primary media model.
+- When fetching a variant thumbnail it will check itself before moving on to the product.
+
+### Changed
+
+### Added
+
+
 ## 2.0-beta7 - 2022-01-19
 
 ### Fixed

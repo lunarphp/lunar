@@ -3,6 +3,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+### Fixed
+
+- Added missing `HasTranslations` trait to `ProductVariant` model.
+
+### Changed
+
+### Added
+
+- Added `scopeDefault` to the `Url` model.
+- Added a new `defaultUrl` relationship to models using the `HasUrls` trait.
+- Added new `PricingManager` class to deal with price fetching on purchasable objects.
+
 ## 2.0-beta7 - 2022-01-19
 
 ### Fixed
