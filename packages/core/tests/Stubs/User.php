@@ -37,7 +37,7 @@ class User extends Model
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CustomerFactory
+     * @return \GetCandy\Database\Factories\UserFactory
      */
     protected static function newFactory(): UserFactory
     {
