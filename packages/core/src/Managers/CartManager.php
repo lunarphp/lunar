@@ -308,8 +308,6 @@ class CartManager
      */
     public function setShippingAddress(array|Addressable $address)
     {
-        $this->cart->shippingAddress?->delete();
-
         $this->addAddress($address, 'shipping');
 
         $this->cart->load('shippingAddress');
@@ -326,8 +324,6 @@ class CartManager
      */
     public function setBillingAddress(array|Addressable $address)
     {
-        $this->cart->billingAddress?->delete();
-
         $this->addAddress($address, 'billing');
 
         $this->cart->load('billingAddress');
@@ -417,9 +413,9 @@ class CartManager
     private function addAddress(array|Addressable $address, $type)
     {
         if ($address instanceof Addressable) {
-            $address = $address->only(
-                (new CartAddress())->getFillable()
-            );
+            $address->type = $type;
+            $this->cart->addresses()->save($address);
+            return;
         }
         $address['type'] = $type;
         $this->cart->addresses()->create($address);
