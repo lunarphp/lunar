@@ -22,7 +22,7 @@ This repository serves as a monorepo for the main packages that make up GetCandy
 
 ### Admin hub
 
-The admin hub provided to enable you to manage your store via a modern interface. You can manage all apsects of your store including products, orders, staff members etc. It's built on using Laravel livewire and can be extended to meet each of your stores requirements.
+The admin hub provided to enable you to manage your store via a modern interface. You can manage all aspects of your store including products, orders, staff members etc. It's built on using Laravel livewire and can be extended to meet each of your stores requirements.
 
 ### Core
 
