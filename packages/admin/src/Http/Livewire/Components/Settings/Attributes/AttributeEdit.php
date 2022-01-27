@@ -134,14 +134,15 @@ class AttributeEdit extends Component
      */
     public function updatedAttributeHandle()
     {
-        $this->attribute->handle = Str::slug($this->attribute->handle);
+        $this->attribute->handle = Str::slug($this->attribute->handle,'_');
     }
 
     public function formatHandle()
     {
         if (!$this->manualHandle && !$this->attribute->handle) {
             $this->attribute->handle = Str::slug(
-                $this->attribute->name[$this->defaultLanguage->code] ?? null
+                $this->attribute->name[$this->defaultLanguage->code] ?? null,
+                '_'
             );
         }
     }
