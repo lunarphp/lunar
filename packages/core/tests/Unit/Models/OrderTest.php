@@ -168,13 +168,36 @@ class OrderTest extends TestCase
     /** @test */
     public function can_have_user_and_customer_associated()
     {
-        $user = User::create([
-            'name'              => 'Test User',
-            'email'             => 'test@domain.com',
-            'email_verified_at' => now(),
-            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token'    => \Illuminate\Support\Str::random(10),
-        ]);
+        $userModel = config('auth.providers.users.model') ?? null;
+
+        if (!$userModel) {
+            $this->markTestSkipped('User model not configured');
+        }
+
+        $user = null;
+
+        try {
+            $user = $userModel::create([
+                'name'              => 'Test User',
+                'email'             => 'test@domain.com',
+                'email_verified_at' => now(),
+                'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'remember_token'    => \Illuminate\Support\Str::random(10),
+            ]);
+        } catch (\Illuminate\Database\Eloquent\MassAssignmentException $e) {
+            // can't mass assign...
+            $user = new $userModel();
+            $user->name = 'Test User';
+            $user->email = 'test@domain.com';
+            $user->email_verified_at = now();
+            $user->password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'; // password
+            $user->remember_token = \Illuminate\Support\Str::random(10);
+            $user->save();
+        }
+
+        if (!\method_exists($user, 'customers')) {
+            $this->markTestSkipped('User model does not have a customers relationship');
+        }
 
         $customer = $user->customers()->create(
             Customer::factory()->make()->toArray()
