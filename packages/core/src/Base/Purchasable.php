@@ -10,7 +10,7 @@ interface Purchasable
     /**
      * Get the purchasable prices.
      *
-     * @return Collection
+     * @return \Illuminate\Support\Collection<\GetCandy\Models\Price>
      */
     public function getPrices(): Collection;
 
