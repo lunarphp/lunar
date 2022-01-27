@@ -30,6 +30,7 @@ use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
+use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\Url;
 use GetCandy\Observers\CartLineObserver;
@@ -38,6 +39,7 @@ use GetCandy\Observers\CollectionObserver;
 use GetCandy\Observers\CurrencyObserver;
 use GetCandy\Observers\LanguageObserver;
 use GetCandy\Observers\OrderLineObserver;
+use GetCandy\Observers\OrderObserver;
 use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -203,6 +205,7 @@ class GetCandyServiceProvider extends ServiceProvider
         Url::observe(UrlObserver::class);
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
+        Order::observe(OrderObserver::class);
         OrderLine::observe(OrderLineObserver::class);
     }
 

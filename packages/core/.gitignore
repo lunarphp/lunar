@@ -4,3 +4,4 @@ composer.lock
 /.idea
 /.vscode
 .DS_Store
+.php-cs-fixer.php
