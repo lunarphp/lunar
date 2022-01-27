@@ -3,7 +3,6 @@
 namespace GetCandy\Tests\Unit\Models;
 
 use DateTime;
-use GetCandy\Hub\Tests\Stubs\User;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
