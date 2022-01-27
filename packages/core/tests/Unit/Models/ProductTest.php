@@ -3,10 +3,12 @@
 namespace GetCandy\Tests\Unit\Models;
 
 use GetCandy\Models\Channel;
+use GetCandy\Models\Currency;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductType;
+use GetCandy\Models\ProductVariant;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -436,5 +438,28 @@ class ProductTest extends TestCase
 
         $this->assertCount(1, $parent->refresh()->associations);
         $this->assertEquals('up-sell', $parent->refresh()->associations->first()->type);
+    }
+
+    /** @test */
+    public function product_has_base_price_attribute()
+    {
+        $product = Product::factory()->create();
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'name' => 'Us Dollar',
+            'code' => 'USD',
+            'exchange_rate' => 1.0,
+        ]);
+
+        $variant->prices()->create([
+            'price'       => 199,
+            'currency_id' => $currency->id,
+        ]);
+
+        $this->assertEquals(199, $product->base_price);
     }
 }

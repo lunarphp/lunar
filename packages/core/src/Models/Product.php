@@ -118,6 +118,17 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     *
+     * @return int
+     */
+    public function getBasePriceAttribute()
+    {
+        return $this->variants->first()
+            ->basePrices->first(fn($price) => $price->currency->default)
+            ->price->value;
+    }
+
+    /**
      * Associate a product to another with a type.
      *
      * @param mixed  $product
