@@ -15,7 +15,6 @@ GetCandy\Models\Product::create([
     'product_type_id' => $productTypeId,
     'status' => 'published',
     'brand' => 'Foo',
-    'sku' => 'foobar',
     'attribute_data' => [
         'name' => new TranslatedText(collect([
             'en' => new Text('FooBar'),
