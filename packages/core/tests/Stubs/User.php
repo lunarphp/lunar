@@ -12,6 +12,7 @@ class User extends Authenticatable
     use GetCandyUser;
     use HasFactory;
     use Notifiable;
+    use GetCandyUser;
 
     /**
      * The attributes that are mass assignable.
