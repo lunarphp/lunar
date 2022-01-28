@@ -62,7 +62,7 @@ class CartTest extends TestCase
         // dd(CartManager::class);
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
     }
-    
+
     /** @test */
     public function can_associate_cart_with_user_with_no_customer_attached()
     {
@@ -73,12 +73,12 @@ class CartTest extends TestCase
         $cart = Cart::create([
             'currency_id' => $currency->id,
             'channel_id'  => $channel->id,
-            'user_id' => $user->id,
+            'user_id'     => $user->id,
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
     }
-    
+
     /** @test */
     public function can_associate_cart_with_user_with_customer_attached()
     {
@@ -92,7 +92,7 @@ class CartTest extends TestCase
         $cart = Cart::create([
             'currency_id' => $currency->id,
             'channel_id'  => $channel->id,
-            'user_id' => $user->id,
+            'user_id'     => $user->id,
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());

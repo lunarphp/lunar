@@ -94,9 +94,10 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->registerObservers();
         $this->registerAddonManifest();
         $this->registerBlueprintMacros();
-        
+
         config('auth.providers.users.model')::resolveRelationUsing('customers', function ($userModel) {
             $prefix = config('getcandy.database.table_prefix');
+
             return $userModel->belongsToMany(
                 Customer::class,
                 "{$prefix}customer_user"
