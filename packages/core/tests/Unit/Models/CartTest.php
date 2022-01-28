@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Config;
 class CartTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     private function setAuthUserConfig()
     {
         Config::set('auth.providers.users.model', 'GetCandy\Tests\Stubs\User');
@@ -107,6 +107,4 @@ class CartTest extends TestCase
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
     }
-    
-    
 }
