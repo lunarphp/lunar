@@ -29,7 +29,6 @@ use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
 use GetCandy\Models\Language;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\Url;
@@ -94,15 +93,6 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->registerObservers();
         $this->registerAddonManifest();
         $this->registerBlueprintMacros();
-
-        config('auth.providers.users.model')::resolveRelationUsing('customers', function ($userModel) {
-            $prefix = config('getcandy.database.table_prefix');
-
-            return $userModel->belongsToMany(
-                Customer::class,
-                "{$prefix}customer_user"
-            )->withTimestamps();
-        });
 
         if (!$this->app->environment('testing')) {
             $this->registerStateListeners();
