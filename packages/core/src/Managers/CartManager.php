@@ -52,7 +52,7 @@ class CartManager
     public function __construct(
         protected Cart $cart,
     ) {
-        $this->customerGroups = $cart->user && $cart->user->customers ?
+        $this->customerGroups = $cart->user && $cart->user->customers->count() ?
             $cart->user->customers->map(function ($customer) {
                 return $customer->customerGroups;
             })->flatten()
