@@ -15,8 +15,7 @@ class TaxManager extends Manager
     /**
      * Build a tax provider instance.
      *
-     * @param string $provider
-     *
+     * @param  string  $provider
      * @return mixed
      */
     public function buildProvider($provider)

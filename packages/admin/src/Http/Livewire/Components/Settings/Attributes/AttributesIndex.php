@@ -25,8 +25,7 @@ class AttributesIndex extends Component
     /**
      * Returns stats for an attribute type.
      *
-     * @param string $attributeType
-     *
+     * @param  string  $attributeType
      * @return int
      */
     public function getStats($attributeType)

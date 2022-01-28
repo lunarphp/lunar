@@ -139,7 +139,7 @@ class AttributeEdit extends Component
 
     public function formatHandle()
     {
-        if (!$this->manualHandle && !$this->attribute->handle) {
+        if (! $this->manualHandle && ! $this->attribute->handle) {
             $this->attribute->handle = Str::slug(
                 $this->attribute->name[$this->defaultLanguage->code] ?? null
             );
@@ -155,7 +155,7 @@ class AttributeEdit extends Component
     {
         $this->validate();
 
-        if (!$this->attribute->id) {
+        if (! $this->attribute->id) {
             $this->attribute->attribute_type = $this->group->attributable_type;
             $this->attribute->attribute_group_id = $this->group->id;
             $this->attribute->position = Attribute::whereAttributeGroupId(

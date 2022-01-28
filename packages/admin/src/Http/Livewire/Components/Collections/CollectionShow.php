@@ -140,8 +140,7 @@ class CollectionShow extends Component
     /**
      * Add the selected products to the collection.
      *
-     * @param array $ids
-     *
+     * @param  array  $ids
      * @return void
      */
     public function addSelectedProducts($ids)
@@ -161,8 +160,7 @@ class CollectionShow extends Component
     /**
      * Remove a product from the collection by it's id.
      *
-     * @param string|int $id
-     *
+     * @param  string|int  $id
      * @return void
      */
     public function removeProduct($id)
@@ -176,8 +174,7 @@ class CollectionShow extends Component
     /**
      * Listener for when the collection sort type is updated.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return void
      */
     public function updatedCollectionSort($value)
@@ -194,8 +191,7 @@ class CollectionShow extends Component
     /**
      * Sort the products.
      *
-     * @param array $payload
-     *
+     * @param  array  $payload
      * @return void
      */
     public function sortProducts(array $payload)
@@ -247,8 +243,8 @@ class CollectionShow extends Component
         $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
             return [
                 $channel['channel_id'] => [
-                    'starts_at' => !$channel['enabled'] ? null : $channel['starts_at'],
-                    'ends_at'   => !$channel['enabled'] ? null : $channel['ends_at'],
+                    'starts_at' => ! $channel['enabled'] ? null : $channel['starts_at'],
+                    'ends_at'   => ! $channel['enabled'] ? null : $channel['ends_at'],
                     'enabled'   => $channel['enabled'],
                 ],
             ];
@@ -354,8 +350,7 @@ class CollectionShow extends Component
     /**
      * Map products ready for display/sorting.
      *
-     * @param \Illuminate\Support\Collection $products
-     *
+     * @param  \Illuminate\Support\Collection  $products
      * @return \Illuminate\Support\Collection
      */
     protected function mapProducts(\Illuminate\Support\Collection $products)
@@ -368,9 +363,8 @@ class CollectionShow extends Component
     /**
      * Refresh sorting based on column and direction.
      *
-     * @param string $column
-     * @param string $direction
-     *
+     * @param  string  $column
+     * @param  string  $direction
      * @return void
      */
     protected function refreshSorting($column, $direction)
@@ -385,9 +379,8 @@ class CollectionShow extends Component
     /**
      * Map a product into the array.
      *
-     * @param Product $product
-     * @param bool    $pendingSave
-     *
+     * @param  Product  $product
+     * @param  bool  $pendingSave
      * @return array
      */
     protected function mapProduct(Product $product, $pendingSave = false)
@@ -441,7 +434,7 @@ class CollectionShow extends Component
                 $status = 'hidden';
 
                 if ($pivot) {
-                    if (!$pivot->visible && !$pivot->enabled) {
+                    if (! $pivot->visible && ! $pivot->enabled) {
                         $status = 'hidden';
                     } elseif ($pivot->visible) {
                         $status = 'visible';

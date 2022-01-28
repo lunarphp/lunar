@@ -182,7 +182,7 @@ class VariantShow extends Component
     public function getExistingThumbnailProperty()
     {
         $image = $this->variant->media()->first();
-        if (!$image) {
+        if (! $image) {
             return;
         }
 
@@ -233,7 +233,7 @@ class VariantShow extends Component
             }
         }
 
-        if (!$this->manualVolume) {
+        if (! $this->manualVolume) {
             $this->variant->volume_unit = null;
             $this->variant->volume_value = null;
         }
@@ -284,8 +284,7 @@ class VariantShow extends Component
     /**
      * Refresh and select option.
      *
-     * @param array $event
-     *
+     * @param  array  $event
      * @return void
      */
     public function refreshAndSelectOption($event)

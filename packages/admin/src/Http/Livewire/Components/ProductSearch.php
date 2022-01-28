@@ -59,7 +59,7 @@ class ProductSearch extends Component
      */
     public function getResultsProperty()
     {
-        if (!$this->searchTerm) {
+        if (! $this->searchTerm) {
             return;
         }
 

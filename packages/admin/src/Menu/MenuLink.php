@@ -45,8 +45,7 @@ class MenuLink implements MenuItem
     /**
      * Setter for the name property.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return void
      */
     public function name($name)
@@ -59,8 +58,7 @@ class MenuLink implements MenuItem
     /**
      * Setter for the handle property.
      *
-     * @param string $handle
-     *
+     * @param  string  $handle
      * @return void
      */
     public function handle($handle)
@@ -73,8 +71,7 @@ class MenuLink implements MenuItem
     /**
      * Setter for the gate property.
      *
-     * @param string $gate
-     *
+     * @param  string  $gate
      * @return void
      */
     public function gate($gate)
@@ -87,8 +84,7 @@ class MenuLink implements MenuItem
     /**
      * Setter for the route property.
      *
-     * @param string $route
-     *
+     * @param  string  $route
      * @return void
      */
     public function route($route)
@@ -101,8 +97,7 @@ class MenuLink implements MenuItem
     /**
      * Setter for the icon property.
      *
-     * @param string $icon
-     *
+     * @param  string  $icon
      * @return void
      */
     public function icon($icon)
@@ -115,8 +110,7 @@ class MenuLink implements MenuItem
     /**
      * Render the HTML for the icon.
      *
-     * @param string $attrs
-     *
+     * @param  string  $attrs
      * @return string
      */
     public function renderIcon($attrs = null)
@@ -127,8 +121,7 @@ class MenuLink implements MenuItem
     /**
      * Determines whether this menu link is considered active.
      *
-     * @param string $path
-     *
+     * @param  string  $path
      * @return bool
      */
     public function isActive($path)

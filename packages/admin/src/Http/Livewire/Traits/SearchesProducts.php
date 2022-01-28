@@ -18,8 +18,7 @@ trait SearchesProducts
     /**
      * Get brands by a given search term.
      *
-     * @param string|null $term
-     *
+     * @param  string|null  $term
      * @return void
      */
     public function getBrands($term = null)
@@ -40,9 +39,8 @@ trait SearchesProducts
     /**
      * Method to search products by a distinct column.
      *
-     * @param string $column
-     * @param string $term
-     *
+     * @param  string  $column
+     * @param  string  $term
      * @return \Illuminate\Support\Collection
      */
     protected function searchDistinct($column, $term = null): Collection

@@ -198,8 +198,7 @@ abstract class AbstractProduct extends Component
     /**
      * Set the options to be whatever we pass through.
      *
-     * @param array $options
-     *
+     * @param  array  $options
      * @return void
      */
     public function setOptions($optionIds)
@@ -212,8 +211,7 @@ abstract class AbstractProduct extends Component
     /**
      * Set option values.
      *
-     * @param array $values
-     *
+     * @param  array  $values
      * @return void
      */
     public function setOptionValues($values)
@@ -224,8 +222,7 @@ abstract class AbstractProduct extends Component
     /**
      * Remove an option by it's given position in the collection.
      *
-     * @param int $key
-     *
+     * @param  int  $key
      * @return void
      */
     public function removeOption($key)
@@ -258,7 +255,7 @@ abstract class AbstractProduct extends Component
             });
         })->validate(null, $this->getValidationMessages());
 
-        $isNew = !$this->product->id;
+        $isNew = ! $this->product->id;
 
         DB::transaction(function () use ($isNew) {
             $data = $this->prepareAttributeData();
@@ -269,11 +266,11 @@ abstract class AbstractProduct extends Component
             $this->product->save();
 
             if (($this->getVariantsCount() <= 1) || $isNew) {
-                if (!$this->variant->product_id) {
+                if (! $this->variant->product_id) {
                     $this->variant->product_id = $this->product->id;
                 }
 
-                if (!$this->manualVolume) {
+                if (! $this->manualVolume) {
                     $this->variant->volume_unit = null;
                     $this->variant->volume_value = null;
                 }
@@ -294,7 +291,7 @@ abstract class AbstractProduct extends Component
                 GenerateVariants::dispatch($this->product, $this->optionValues);
             }
 
-            if (!$generateVariants && $this->product->variants->count() <= 1) {
+            if (! $generateVariants && $this->product->variants->count() <= 1) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
@@ -310,8 +307,8 @@ abstract class AbstractProduct extends Component
             $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
                 return [
                     $channel['channel_id'] => [
-                        'starts_at'    => !$channel['enabled'] ? null : $channel['starts_at'],
-                        'ends_at'      => !$channel['enabled'] ? null : $channel['ends_at'],
+                        'starts_at'    => ! $channel['enabled'] ? null : $channel['starts_at'],
+                        'ends_at'      => ! $channel['enabled'] ? null : $channel['ends_at'],
                         'enabled'      => $channel['enabled'],
                     ],
                 ];
@@ -366,8 +363,7 @@ abstract class AbstractProduct extends Component
     /**
      * Remove a variant.
      *
-     * @param int $variantId
-     *
+     * @param  int  $variantId
      * @return void
      */
     public function deleteVariant($variantId)
@@ -422,7 +418,7 @@ abstract class AbstractProduct extends Component
                 if ($pivot) {
                     if ($pivot->purchasable) {
                         $status = 'purchasable';
-                    } elseif (!$pivot->visible && !$pivot->enabled) {
+                    } elseif (! $pivot->visible && ! $pivot->enabled) {
                         $status = 'hidden';
                     } elseif ($pivot->visible) {
                         $status = 'visible';

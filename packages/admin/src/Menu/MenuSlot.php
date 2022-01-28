@@ -32,7 +32,7 @@ class MenuSlot
     /**
      * Initialise the class.
      *
-     * @param string $handle
+     * @param  string  $handle
      */
     public function __construct($handle)
     {
@@ -44,9 +44,8 @@ class MenuSlot
     /**
      * Add an item to the menu slot.
      *
-     * @param \Closure $callback
-     * @param string   $after
-     *
+     * @param  \Closure  $callback
+     * @param  string  $after
      * @return void
      */
     public function addItem(\Closure $callback, $after = null)
@@ -75,8 +74,7 @@ class MenuSlot
     /**
      * Add multiple items.
      *
-     * @param array $items
-     *
+     * @param  array  $items
      * @return void
      */
     public function addItems(array $items)
@@ -96,7 +94,7 @@ class MenuSlot
     public function getItems(): Collection
     {
         return $this->items->filter(function ($item) {
-            return !$item->gate || Auth::user()->can($item->gate);
+            return ! $item->gate || Auth::user()->can($item->gate);
         });
     }
 
@@ -123,8 +121,7 @@ class MenuSlot
     /**
      * Get an existing or create a new section on the slot.
      *
-     * @param string $handle
-     *
+     * @param  string  $handle
      * @return \GetCandy\Hub\Menu\MenuSection
      */
     public function section($handle)

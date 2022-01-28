@@ -30,9 +30,9 @@ class Heading extends Component
     /**
      * Create the component instance.
      *
-     * @param bool        $sortable
-     * @param null|string $direction
-     * @param null|string $multicolumn
+     * @param  bool  $sortable
+     * @param  null|string  $direction
+     * @param  null|string  $multicolumn
      */
     public function __construct(bool $sortable = false, $direction = null, $multiColumn = false)
     {

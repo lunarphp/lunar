@@ -10,7 +10,7 @@ class EnsureUserOrdersHaveACustomer
 {
     public function run()
     {
-        if (!$this->canRun()) {
+        if (! $this->canRun()) {
             return;
         }
 

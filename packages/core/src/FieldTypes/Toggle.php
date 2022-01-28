@@ -26,7 +26,7 @@ class Toggle implements FieldType, JsonSerializable
     /**
      * Create a new instance of Text field type.
      *
-     * @param string $value
+     * @param  string  $value
      */
     public function __construct($value = '')
     {
@@ -56,7 +56,7 @@ class Toggle implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param string $value
+     * @param  string  $value
      */
     public function setValue($value)
     {

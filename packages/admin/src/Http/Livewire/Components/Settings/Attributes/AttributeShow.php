@@ -124,8 +124,7 @@ class AttributeShow extends AbstractAttribute
     /**
      * Sort the attribute groups.
      *
-     * @param array $groups
-     *
+     * @param  array  $groups
      * @return void
      */
     public function sortGroups($groups)
@@ -149,8 +148,7 @@ class AttributeShow extends AbstractAttribute
     /**
      * Sort the attributes.
      *
-     * @param array $attributes
-     *
+     * @param  array  $attributes
      * @return void
      */
     public function sortAttributes($attributes)

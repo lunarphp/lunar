@@ -23,13 +23,12 @@ abstract class AbstractAttribute extends Component
     /**
      * Generate the handle based on a value.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return void
      */
     public function generateHandle($value)
     {
-        if ($value && !$this->manualHandle) {
+        if ($value && ! $this->manualHandle) {
             $this->attribute->handle = Str::slug($value);
         }
     }
@@ -47,8 +46,7 @@ abstract class AbstractAttribute extends Component
     /**
      * Watches attribute type and resets group id if it doesn't exist.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return void
      */
     public function updatedAttributeAttributeType($value)
@@ -56,7 +54,7 @@ abstract class AbstractAttribute extends Component
         $groupStillExists = $this->attributeGroups->first(function ($group) {
             return $group->id == $this->attribute->attribute_group_id;
         });
-        if ($value && !$groupStillExists) {
+        if ($value && ! $groupStillExists) {
             $this->attribute->attribute_group_id = null;
         }
     }

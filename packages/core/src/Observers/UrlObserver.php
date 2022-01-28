@@ -9,8 +9,7 @@ class UrlObserver
     /**
      * Handle the Url "created" event.
      *
-     * @param \GetCandy\Models\Url $url
-     *
+     * @param  \GetCandy\Models\Url  $url
      * @return void
      */
     public function created(Url $url)
@@ -21,8 +20,7 @@ class UrlObserver
     /**
      * Handle the User "updated" event.
      *
-     * @param \GetCandy\Models\Url $url
-     *
+     * @param  \GetCandy\Models\Url  $url
      * @return void
      */
     public function updated(Url $url)
@@ -33,8 +31,7 @@ class UrlObserver
     /**
      * Handle the Url "deleted" event.
      *
-     * @param \GetCandy\Models\Url $url
-     *
+     * @param  \GetCandy\Models\Url  $url
      * @return void
      */
     public function deleted(Url $url)
@@ -57,8 +54,7 @@ class UrlObserver
     /**
      * Ensures that only one default channel exists.
      *
-     * @param Url $savedUrl The url that was just saved.
-     *
+     * @param  Url  $savedUrl  The url that was just saved.
      * @return void
      */
     protected function ensureOnlyOneDefault(Url $savedUrl): void

@@ -25,7 +25,7 @@ class Button extends Component
     /**
      * Initialise the component.
      *
-     * @param string $tag
+     * @param  string  $tag
      */
     public function __construct($tag = 'button', $theme = 'default', $size = 'default')
     {

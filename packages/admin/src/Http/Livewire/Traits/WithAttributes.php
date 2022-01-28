@@ -48,8 +48,7 @@ trait WithAttributes
     /**
      * Parse the attributes into the correct collection format.
      *
-     * @param \Illuminate\Support\Collection $attributes
-     *
+     * @param  \Illuminate\Support\Collection  $attributes
      * @return void
      */
     protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
@@ -128,8 +127,7 @@ trait WithAttributes
     /**
      * Map translated values into field types.
      *
-     * @param array $data
-     *
+     * @param  array  $data
      * @return \GetCandy\FieldTypes\TranslatedText
      */
     protected function mapTranslatedText($data)
@@ -145,8 +143,7 @@ trait WithAttributes
     /**
      * Prepare translated text field for Livewire modeling.
      *
-     * @param string|array $value
-     *
+     * @param  string|array  $value
      * @return array
      */
     protected function prepareTranslatedText($value)
