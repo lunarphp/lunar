@@ -28,14 +28,16 @@ class ShippingOption implements Purchasable
      *
      * @return int
      */
-    public function getPrice(int $quantity, Currency $currency, Collection $customerGroups): int
+    public function getPrice()
     {
-        return $this->price->value;
+        return $this->price;
     }
 
     public function getPrices(): Collection
     {
-        return collect();
+        return collect([
+            $this->price,
+        ]);
     }
 
     /**
