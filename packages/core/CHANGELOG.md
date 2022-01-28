@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `scopeDefault` to the `Url` model.
 - Added a new `defaultUrl` relationship to models using the `HasUrls` trait.
 - Added new `PricingManager` class to deal with price fetching on purchasable objects.
+- Allow hub path to be configurable in `system` config. By ([@ryanmitchell](https://github.com/ryanmitchell))
 
 ## 2.0-beta7 - 2022-01-19
 
