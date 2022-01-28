@@ -414,7 +414,14 @@ class CartManager
     {
         if ($address instanceof Addressable) {
             $address->type = $type;
-            $this->cart->addresses()->save($address);
+            if ($address->id) {
+                $this->cart->addresses()->save($address);
+            } else {
+                $this->cart->addresses()->create(
+                    $address->toArray()
+                );
+            }
+
             return;
         }
         $address['type'] = $type;
