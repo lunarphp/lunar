@@ -86,7 +86,7 @@ class CartTest extends TestCase
         $channel = Channel::factory()->create();
         $user = User::factory()->create();
         $customer = Customer::factory()->create();
-            
+
         $customer->users()->attach($user);
 
         $cart = Cart::create([
