@@ -32,6 +32,21 @@ composer require getcandy/admin
 php artisan vendor:publish --tag=getcandy
 ```
 
+## Add the `GetCandyUser` trait.
+
+Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
+
+```php
+use GetCandy\Base\Traits\GetCandyUser;
+// ...
+
+class User extends Authenticatable
+{
+    use GetCandyUser;
+    // ...
+}
+```
+
 ## Search Configuration
 
 GetCandy uses Laravel Scout for search. We have had good success using Meilisearch, although it's entirely up to you which driver you use, as long as it's compatible.
