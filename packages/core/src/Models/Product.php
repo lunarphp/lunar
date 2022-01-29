@@ -61,7 +61,6 @@ class Product extends BaseModel implements SpatieHasMedia
      * @var array
      */
     protected $fillable = [
-        'sku',
         'brand',
         'attribute_data',
         'product_type_id',
