@@ -139,7 +139,7 @@ class AttributeEdit extends Component
 
     public function formatHandle()
     {
-        if (!$this->manualHandle && ! $this->attribute->handle) {
+        if (! $this->manualHandle && ! $this->attribute->handle) {
             $this->attribute->handle = Str::handle(
                 $this->attribute->name[$this->defaultLanguage->code] ?? null
             );

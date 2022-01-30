@@ -133,7 +133,7 @@ class AdminHubServiceProvider extends ServiceProvider
         );
 
         // Handle generator
-        Str::macro('handle', function ($string){
+        Str::macro('handle', function ($string) {
             return Str::slug($string, '_');
         });
 
