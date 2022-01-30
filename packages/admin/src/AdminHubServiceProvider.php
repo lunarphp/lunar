@@ -132,11 +132,6 @@ class AdminHubServiceProvider extends ServiceProvider
             [SetStaffAuthMiddlewareListener::class, 'handle']
         );
 
-        // Handle generator
-        Str::macro('handle', function ($string) {
-            return Str::slug($string, '_');
-        });
-
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
             return new \GetCandy\Hub\Editing\ProductSection();
         });

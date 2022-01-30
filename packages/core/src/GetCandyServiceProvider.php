@@ -114,6 +114,11 @@ class GetCandyServiceProvider extends ServiceProvider
         }
 
         Arr::macro('permutate', [\GetCandy\Utils\Arr::class, 'permutate']);
+        
+        // Handle generator
+        Str::macro('handle', function ($string) {
+            return Str::slug($string, '_');
+        });
 
         Converter::setMeasurements(
             config('getcandy.shipping.measurements', [])
