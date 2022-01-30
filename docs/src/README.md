@@ -8,7 +8,7 @@ GetCandy is a package which brings functionality akin to Shopify and other e-com
 
 ## Tech Stack
 
-GetCandy 2 is comprised of two packages; `getcandy/core` which provides the e-commerce functionality and `getcandy/getcandy` (the one you install) which provides an admin hub built upon Laravel Livewire.
+GetCandy 2 is comprised of two packages; `getcandy/core` which provides the e-commerce functionality and `getcandy/admin` (the one you install) which provides an admin hub built upon Laravel Livewire.
 
 Although the admin hub uses Laravel Livewire, there is no requirement for your app to use Livewire itself.
 
