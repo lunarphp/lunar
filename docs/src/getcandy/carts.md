@@ -316,22 +316,26 @@ As outlined above, you can add shipping / billing addresses to the cart using th
 
 ```php
 $cart->getManager()->setShippingAddress([
+    'first_name' => null,
+    'last_name' => null,
     'line_one' => null,
     'line_two' => null,
     'line_three' => null,
     'city' => null,
     'state' => null,
     'postcode' => null,
-    'country' => null,
+    'country_id' => null,
 ]);
 $cart->getManager()->setBillingAddress([
+    'first_name' => null,
+    'last_name' => null,
     'line_one' => null,
     'line_two' => null,
     'line_three' => null,
     'city' => null,
     'state' => null,
     'postcode' => null,
-    'country' => null,
+    'country_id' => null,
 ]);
 ```
 

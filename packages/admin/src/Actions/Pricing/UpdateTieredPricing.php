@@ -13,9 +13,8 @@ class UpdateTieredPricing
     /**
      * Execute the action.
      *
-     * @param Model      $owner
-     * @param Collection $tieredPrices
-     *
+     * @param  Model  $owner
+     * @param  Collection  $tieredPrices
      * @return void
      */
     public function execute(Model $owner, Collection $tieredPrices)
@@ -52,13 +51,12 @@ class UpdateTieredPricing
     /**
      * Create or update a price.
      *
-     * @param Model    $owner
-     * @param int      $tier
-     * @param int|null $groupId
-     * @param float    $price
-     * @param int      $currencyId
-     * @param int|null $id
-     *
+     * @param  Model  $owner
+     * @param  int  $tier
+     * @param  int|null  $groupId
+     * @param  float  $price
+     * @param  int  $currencyId
+     * @param  int|null  $id
      * @return \GetCandy\Models\Price
      */
     private function createOrUpdatePrice(Model $owner, $tier, $price, $currencyId, $groupId = null, $id = null)

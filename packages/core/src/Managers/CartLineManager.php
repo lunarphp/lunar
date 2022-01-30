@@ -13,7 +13,7 @@ class CartLineManager
     /**
      * Initialize the cart manager.
      *
-     * @param Cart $cart
+     * @param  Cart  $cart
      */
     public function __construct(
         protected CartLine $cartLine

@@ -74,7 +74,7 @@ class ProductTypeShow extends AbstractProductType
 
     public function getCanDeleteProperty()
     {
-        return !$this->isTheOnlyProductType && !$this->productType->products()->count();
+        return ! $this->isTheOnlyProductType && ! $this->productType->products()->count();
     }
 
     /**
@@ -94,7 +94,7 @@ class ProductTypeShow extends AbstractProductType
      */
     public function delete()
     {
-        if (!$this->canDelete) {
+        if (! $this->canDelete) {
             $this->notify(
                 __('adminhub::catalogue.product-types.show.delete.disabled_message')
             );

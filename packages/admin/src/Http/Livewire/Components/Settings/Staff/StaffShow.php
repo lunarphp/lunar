@@ -80,7 +80,7 @@ class StaffShow extends AbstractStaff
         $this->validate();
 
         // If we only have one admin, we can't remove it.
-        if (!$this->staff->admin && !Staff::where('id', '!=', $this->staff->id)->whereAdmin(true)->exists()) {
+        if (! $this->staff->admin && ! Staff::where('id', '!=', $this->staff->id)->whereAdmin(true)->exists()) {
             $this->notify('You must have at least one admin');
 
             return;

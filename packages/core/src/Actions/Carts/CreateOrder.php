@@ -23,8 +23,7 @@ class CreateOrder
     /**
      * Execute the action.
      *
-     * @param \GetCandy\Models\Cart $cart
-     *
+     * @param  \GetCandy\Models\Cart  $cart
      * @return void
      */
     public function execute(

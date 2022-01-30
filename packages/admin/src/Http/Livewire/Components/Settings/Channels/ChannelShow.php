@@ -65,7 +65,7 @@ class ChannelShow extends Component
      */
     public function toggleDefault()
     {
-        $this->channel->default = !$this->channel->default;
+        $this->channel->default = ! $this->channel->default;
     }
 
     /**
@@ -75,7 +75,7 @@ class ChannelShow extends Component
      */
     public function delete()
     {
-        if (!$this->canDelete) {
+        if (! $this->canDelete) {
             return;
         }
 

@@ -9,7 +9,7 @@ class EnsureDefaultTaxClassExists
 {
     public function run()
     {
-        if (!$this->canRun() || !$this->shouldRun()) {
+        if (! $this->canRun() || ! $this->shouldRun()) {
             return;
         }
 
@@ -32,6 +32,6 @@ class EnsureDefaultTaxClassExists
 
     protected function shouldRun()
     {
-        return !TaxClass::whereDefault(true)->count();
+        return ! TaxClass::whereDefault(true)->count();
     }
 }

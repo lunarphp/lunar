@@ -111,8 +111,7 @@ class OptionCreator extends Component
     /**
      * Removes a value from the value collection.
      *
-     * @param int $index
-     *
+     * @param  int  $index
      * @return void
      */
     public function removeValue($index)

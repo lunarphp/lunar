@@ -21,11 +21,10 @@ trait HasCustomerGroups
     /**
      * Schedule models against customer groups.
      *
-     * @param mixed         $models
-     * @param DateTime|null $starts
-     * @param DateTime|null $ends
-     * @param array         $pivotData
-     *
+     * @param  mixed  $models
+     * @param  DateTime|null  $starts
+     * @param  DateTime|null  $ends
+     * @param  array  $pivotData
      * @return void
      */
     public function scheduleCustomerGroup(
@@ -46,9 +45,8 @@ trait HasCustomerGroups
     /**
      * Unschedule models against a customer group.
      *
-     * @param mixed $models
-     * @param array $pivotData
-     *
+     * @param  mixed  $models
+     * @param  array  $pivotData
      * @return void
      */
     public function unscheduleCustomerGroup(
@@ -65,7 +63,7 @@ trait HasCustomerGroups
     protected function validateScheduling(Collection $models)
     {
         foreach ($models as $model) {
-            if (is_object($model) && !($model instanceof CustomerGroup)) {
+            if (is_object($model) && ! ($model instanceof CustomerGroup)) {
                 return false;
             }
         }

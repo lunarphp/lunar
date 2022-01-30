@@ -10,8 +10,7 @@ class CollectionObserver
     /**
      * Handle the Collection "updated" event.
      *
-     * @param \App\Models\Collection $collection
-     *
+     * @param  \App\Models\Collection  $collection
      * @return void
      */
     public function updated(Collection $collection)

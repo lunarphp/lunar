@@ -48,7 +48,7 @@ class InstallGetCandy extends Command
 
             $this->info('Publishing configuration...');
 
-            if (!$this->configExists('getcandy')) {
+            if (! $this->configExists('getcandy')) {
                 $this->publishConfiguration();
             } else {
                 if ($this->shouldOverwriteConfig()) {
@@ -61,12 +61,12 @@ class InstallGetCandy extends Command
 
             $this->info('Publishing hub assets');
 
-            if (!Country::count()) {
+            if (! Country::count()) {
                 $this->info('Importing countries');
                 $this->call('getcandy:import:address-data');
             }
 
-            if (!Channel::whereDefault(true)->exists()) {
+            if (! Channel::whereDefault(true)->exists()) {
                 $this->info('Setting up default channel');
 
                 Channel::create([
@@ -77,7 +77,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!Staff::whereAdmin(true)->exists()) {
+            if (! Staff::whereAdmin(true)->exists()) {
                 $this->info('Create an admin user');
 
                 $firstname = $this->ask('Whats your first name?');
@@ -94,7 +94,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!Language::count()) {
+            if (! Language::count()) {
                 $this->info('Adding default language');
 
                 Language::create([
@@ -104,7 +104,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!Currency::whereDefault(true)->exists()) {
+            if (! Currency::whereDefault(true)->exists()) {
                 $this->info('Adding a default currency (USD)');
 
                 Currency::create([
@@ -120,7 +120,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!CustomerGroup::whereDefault(true)->exists()) {
+            if (! CustomerGroup::whereDefault(true)->exists()) {
                 $this->info('Adding a default customer group.');
 
                 CustomerGroup::create([
@@ -130,7 +130,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!CollectionGroup::count()) {
+            if (! CollectionGroup::count()) {
                 $this->info('Adding an initial collection group');
 
                 CollectionGroup::create([
@@ -139,7 +139,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!TaxClass::count()) {
+            if (! TaxClass::count()) {
                 $this->info('Adding a default tax class.');
 
                 TaxClass::create([
@@ -148,7 +148,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!Attribute::count()) {
+            if (! Attribute::count()) {
                 $this->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
@@ -242,7 +242,7 @@ class InstallGetCandy extends Command
                 ]);
             }
 
-            if (!ProductType::count()) {
+            if (! ProductType::count()) {
                 $this->info('Adding a product type.');
 
                 $type = ProductType::create([
@@ -269,17 +269,16 @@ class InstallGetCandy extends Command
     /**
      * Checks if config exists given a filename.
      *
-     * @param string $fileName
-     *
+     * @param  string  $fileName
      * @return bool
      */
     private function configExists($fileName): bool
     {
-        if (!File::isDirectory(config_path($fileName))) {
+        if (! File::isDirectory(config_path($fileName))) {
             return false;
         }
 
-        return !empty(File::allFiles(config_path($fileName)));
+        return ! empty(File::allFiles(config_path($fileName)));
     }
 
     /**
@@ -298,8 +297,7 @@ class InstallGetCandy extends Command
     /**
      * Publishes configuration for the Service Provider.
      *
-     * @param bool $forcePublish
-     *
+     * @param  bool  $forcePublish
      * @return void
      */
     private function publishConfiguration($forcePublish = false): void

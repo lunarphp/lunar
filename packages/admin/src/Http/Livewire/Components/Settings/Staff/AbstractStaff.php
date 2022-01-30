@@ -67,7 +67,7 @@ abstract class AbstractStaff extends Component
      */
     public function toggleAdmin()
     {
-        $this->staff->admin = !$this->staff->admin;
+        $this->staff->admin = ! $this->staff->admin;
     }
 
     /**
@@ -97,9 +97,8 @@ abstract class AbstractStaff extends Component
     /**
      * Toggle a permission for a staff member.
      *
-     * @param string $handle
-     * @param array  $children
-     *
+     * @param  string  $handle
+     * @param  array  $children
      * @return void
      */
     public function togglePermission($handle, $children = [])
@@ -121,8 +120,7 @@ abstract class AbstractStaff extends Component
     /**
      * Add a permission to the staff member.
      *
-     * @param string $handle
-     *
+     * @param  string  $handle
      * @return void
      */
     public function addPermission($handle)
@@ -136,8 +134,7 @@ abstract class AbstractStaff extends Component
     /**
      * Remove a permission from a staff member.
      *
-     * @param string $handle
-     *
+     * @param  string  $handle
      * @return void
      */
     public function removePermission($handle)

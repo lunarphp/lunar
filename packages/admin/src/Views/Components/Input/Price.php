@@ -20,7 +20,7 @@ class Price extends Component
     /**
      * Initialise the component.
      *
-     * @param bool $error
+     * @param  bool  $error
      */
     public function __construct($symbol, $currencyCode, $error = false)
     {

@@ -7,9 +7,8 @@ trait Notifies
     /**
      * Queues up a notification in either the browser or via a redirect.
      *
-     * @param string $message
-     * @param string $route
-     *
+     * @param  string  $message
+     * @param  string  $route
      * @return void|\Illuminate\Support\Facades\Redirect
      */
     public function notify($message, $route = null, $routeParams = [], $level = 'success')

@@ -68,8 +68,7 @@ class OptionValueCreateModal extends Component
     /**
      * Set our option by a given id.
      *
-     * @param string $optionId
-     *
+     * @param  string  $optionId
      * @return void
      */
     public function setOption($optionId)
@@ -91,8 +90,7 @@ class OptionValueCreateModal extends Component
     /**
      * Save our new value to the database.
      *
-     * @param bool $persist
-     *
+     * @param  bool  $persist
      * @return void
      */
     public function addNewValue($persist = false)
@@ -109,7 +107,7 @@ class OptionValueCreateModal extends Component
             'name' => $this->name,
         ]);
 
-        if (!$persist) {
+        if (! $persist) {
             $this->formVisible = false;
         }
 

@@ -88,9 +88,8 @@ abstract class AbstractProductType extends Component
     /**
      * Return attributes for a group.
      *
-     * @param string|int $groupId
-     * @param string     $type
-     *
+     * @param  string|int  $groupId
+     * @param  string  $type
      * @return \Illuminate\Support\Collection
      */
     public function getAttributesForGroup($groupId, $type = 'products')
@@ -101,9 +100,8 @@ abstract class AbstractProductType extends Component
     /**
      * Return the selected attributes from a given type and group.
      *
-     * @param string|int $groupId
-     * @param string     $type
-     *
+     * @param  string|int  $groupId
+     * @param  string  $type
      * @return \Illuminate\Support\Collection
      */
     public function getSelectedAttributes($groupId, $type)
@@ -122,8 +120,7 @@ abstract class AbstractProductType extends Component
     /**
      * Get attribute groups for a given type.
      *
-     * @param string $type
-     *
+     * @param  string  $type
      * @return void
      */
     public function getGroups($type)
@@ -144,9 +141,8 @@ abstract class AbstractProductType extends Component
     /**
      * Select all attributes in a group.
      *
-     * @param string|int $groupId
-     * @param string     $type
-     *
+     * @param  string|int  $groupId
+     * @param  string  $type
      * @return void
      */
     public function selectAll($groupId, $type = 'products')
@@ -166,20 +162,19 @@ abstract class AbstractProductType extends Component
     /**
      * Deselect all attributes in a group.
      *
-     * @param string|int $groupId
-     * @param string     $type
-     *
+     * @param  string|int  $groupId
+     * @param  string  $type
      * @return void
      */
     public function deselectAll($groupId, $type = 'products')
     {
         if ($type == 'products') {
             $this->selectedProductAttributes = $this->selectedProductAttributes->reject(function ($att) use ($groupId) {
-                return !$att->system && $att->attribute_group_id == $groupId;
+                return ! $att->system && $att->attribute_group_id == $groupId;
             });
         } else {
             $this->selectedVariantAttributes = $this->selectedVariantAttributes->reject(function ($att) use ($groupId) {
-                return !$att->system && $att->attribute_group_id == $groupId;
+                return ! $att->system && $att->attribute_group_id == $groupId;
             });
         }
     }
@@ -187,8 +182,7 @@ abstract class AbstractProductType extends Component
     /**
      * Return available attributes given a type.
      *
-     * @param string $type
-     *
+     * @param  string  $type
      * @return \Illuminate\Contracts\Pagination\Paginator
      */
     public function getAvailableAttributes($type)

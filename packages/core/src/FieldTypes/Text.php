@@ -26,7 +26,7 @@ class Text implements FieldType, JsonSerializable
     /**
      * Create a new instance of Text field type.
      *
-     * @param string $value
+     * @param  string  $value
      */
     public function __construct($value = '')
     {
@@ -56,11 +56,11 @@ class Text implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param string $value
+     * @param  string  $value
      */
     public function setValue($value)
     {
-        if ($value && !is_string($value)) {
+        if ($value && ! is_string($value)) {
             throw new FieldTypeException(self::class.' value must be a string.');
         }
 

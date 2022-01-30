@@ -35,7 +35,7 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
             ->where('id', '!=', $order->id)
             ->first();
 
-        if (!$latest || !$latest->reference) {
+        if (! $latest || ! $latest->reference) {
             $increment = 1;
         } else {
             $segments = explode('-', $latest->reference);
@@ -53,8 +53,7 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
     /**
      * Override the current method of generating a reference.
      *
-     * @param Closure $callback
-     *
+     * @param  Closure  $callback
      * @return self
      */
     public function override(Closure $callback)

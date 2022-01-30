@@ -11,10 +11,9 @@ class HubGuard extends SessionGuard
     /**
      * Create a new authentication guard.
      *
-     * @param \GetCandy\Hub\Auth\StaffProvider               $provider
-     * @param \Illuminate\Contracts\Session\Session          $session
-     * @param \Symfony\Component\HttpFoundation\Request|null $request
-     *
+     * @param  \GetCandy\Hub\Auth\StaffProvider  $provider
+     * @param  \Illuminate\Contracts\Session\Session  $session
+     * @param  \Symfony\Component\HttpFoundation\Request|null  $request
      * @return void
      */
     public function __construct(

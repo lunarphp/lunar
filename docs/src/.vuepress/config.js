@@ -46,7 +46,6 @@ module.exports = {
   themeConfig: {
     logo: '/getcandy_icon.svg',
     repo: 'getcandy/getcandy',
-    editLinks: false,
     docsDir: 'docs/src',
     docsRepo: 'getcandy/getcandy',
     docsBranch: 'main',

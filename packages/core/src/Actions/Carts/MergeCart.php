@@ -11,9 +11,8 @@ class MergeCart
     /**
      * Execute the action.
      *
-     * @param CartLine                                 $cartLine
-     * @param \Illuminate\Database\Eloquent\Collection $customerGroups
-     *
+     * @param  CartLine  $cartLine
+     * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
      * @return void
      */
     public function execute(Cart $target, Cart $source)

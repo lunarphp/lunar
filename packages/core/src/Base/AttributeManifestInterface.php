@@ -9,8 +9,7 @@ interface AttributeManifestInterface
     /**
      * Add an attribute type.
      *
-     * @param string $classname
-     *
+     * @param  string  $classname
      * @return void
      */
     public function addType($classname);
@@ -25,8 +24,7 @@ interface AttributeManifestInterface
     /**
      * Return an attribute type by it's key.
      *
-     * @param string $handle
-     *
+     * @param  string  $handle
      * @return string|null
      */
     public function getType($handle);

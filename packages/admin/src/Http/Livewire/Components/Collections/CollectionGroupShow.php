@@ -121,8 +121,7 @@ class CollectionGroupShow extends Component
     /**
      * Add a collection ready for saving.
      *
-     * @param string $parent
-     *
+     * @param  string  $parent
      * @return void
      */
     public function addCollection($parent = null)
@@ -155,8 +154,7 @@ class CollectionGroupShow extends Component
     /**
      * Move a collection to the root of the tree.
      *
-     * @param string|int $id
-     *
+     * @param  string|int  $id
      * @return void
      */
     public function moveToRoot($id)
@@ -209,8 +207,7 @@ class CollectionGroupShow extends Component
     /**
      * Set the target collection to move.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return void
      */
     public function setMoveTarget($id)
@@ -226,7 +223,7 @@ class CollectionGroupShow extends Component
      */
     public function getSearchedCollectionsProperty()
     {
-        if (!$this->searchTerm) {
+        if (! $this->searchTerm) {
             return [];
         }
 
@@ -241,7 +238,7 @@ class CollectionGroupShow extends Component
      */
     public function getTargetCollectionProperty()
     {
-        if (!$this->collectionMove['target']) {
+        if (! $this->collectionMove['target']) {
             return null;
         }
 
@@ -255,7 +252,7 @@ class CollectionGroupShow extends Component
      */
     public function getSourceCollectionProperty()
     {
-        if (!$this->collectionMove['source']) {
+        if (! $this->collectionMove['source']) {
             return null;
         }
 
@@ -320,8 +317,7 @@ class CollectionGroupShow extends Component
     /**
      * Sort the collections.
      *
-     * @param array $payload
-     *
+     * @param  array  $payload
      * @return void
      */
     public function sort($payload)
