@@ -60,7 +60,7 @@ class AttributeGroupEdit extends Component
     {
         $this->validate();
 
-        $handle = Str::snake("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
+        $handle = Str::handle("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
         $this->attributeGroup->handle = $handle;
 
         $this->validate([

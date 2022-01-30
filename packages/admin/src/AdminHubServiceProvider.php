@@ -68,6 +68,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Illuminate\Support\Str;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
@@ -130,6 +131,11 @@ class AdminHubServiceProvider extends ServiceProvider
             RouteMatched::class,
             [SetStaffAuthMiddlewareListener::class, 'handle']
         );
+
+        // Handle generator
+        Str::macro('handle',function($string){
+            return Str::slug($string, '_');
+        });
 
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
             return new \GetCandy\Hub\Editing\ProductSection();
