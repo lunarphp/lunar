@@ -10,6 +10,7 @@ use GetCandy\Exceptions\InvalidCartLineQuantityException;
 use GetCandy\Exceptions\MaximumCartLineQuantityException;
 use GetCandy\Managers\CartManager;
 use GetCandy\Models\Cart;
+use GetCandy\Models\CartAddress;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
@@ -475,5 +476,105 @@ class CartManagerTest extends TestCase
         $cart->getManager()->removeLine($anotherLine->id);
 
         $this->assertCount(2, $cart->refresh()->lines);
+    }
+
+    /** @test */
+    public function can_add_addresses_from_addressable_objects()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $shipping = new CartAddress();
+        $shipping->postcode = 'SHI P12';
+
+        $billing = new CartAddress();
+        $billing->postcode = 'BIL L12';
+
+        $cart->getManager()->setShippingAddress($shipping);
+        $cart->getManager()->setBillingAddress($billing);
+
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
+            'postcode' => $shipping->postcode,
+            'cart_id'  => $cart->id,
+            'type'     => 'shipping',
+        ]);
+
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
+            'postcode' => $billing->postcode,
+            'cart_id'  => $cart->id,
+            'type'     => 'billing',
+        ]);
+    }
+
+    /** @test */
+    public function can_update_shipping_address()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $shipping = new CartAddress();
+        $shipping->postcode = 'SHI P12';
+
+        $billing = new CartAddress();
+        $billing->postcode = 'BIL L12';
+
+        $cart->getManager()->setShippingAddress($shipping);
+        $cart->getManager()->setBillingAddress($billing);
+
+        $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
+        $this->assertEquals(1, $cart->addresses()->whereType('billing')->count());
+
+        $shipping->postcode = 'TES T34';
+
+        $cart->getManager()->setShippingAddress($shipping);
+
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
+            'postcode' => $shipping->postcode,
+            'cart_id'  => $cart->id,
+            'type'     => 'shipping',
+        ]);
+
+        $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
+        $this->assertEquals(1, $cart->addresses()->whereType('billing')->count());
+    }
+
+    /** @test */
+    public function can_handle_different_address_type_reuse()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $shipping = new CartAddress();
+        $shipping->postcode = 'SHI P12';
+
+        $cart->getManager()->setShippingAddress($shipping);
+
+        $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
+        $this->assertEquals(0, $cart->addresses()->whereType('billing')->count());
+
+        $shipping = $cart->addresses()->whereType('shipping')->first();
+
+        $this->assertNotNull($shipping->id);
+        $this->assertEquals('shipping', $shipping->type);
+
+        $cart->getManager()->setBillingAddress($shipping);
+
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
+            'postcode' => $shipping->postcode,
+            'cart_id'  => $cart->id,
+            'type'     => 'billing',
+        ]);
+
+        $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
+        $this->assertEquals(1, $cart->addresses()->whereType('billing')->count());
     }
 }
