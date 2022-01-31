@@ -6,9 +6,12 @@ use GetCandy\Managers\CartManager;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
+use GetCandy\Models\Customer;
 use GetCandy\Models\ProductVariant;
+use GetCandy\Tests\Stubs\User as StubUser;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @group getcandy.carts
@@ -16,6 +19,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CartTest extends TestCase
 {
     use RefreshDatabase;
+
+    private function setAuthUserConfig()
+    {
+        Config::set('auth.providers.users.model', 'GetCandy\Tests\Stubs\User');
+    }
 
     /** @test */
     public function can_make_a_cart()
@@ -58,6 +66,45 @@ class CartTest extends TestCase
         ]);
 
         // dd(CartManager::class);
+        $this->assertInstanceOf(CartManager::class, $cart->getManager());
+    }
+
+    /** @test */
+    public function can_associate_cart_with_user_with_no_customer_attached()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $user = StubUser::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id'  => $channel->id,
+            'user_id'     => $user->id,
+        ]);
+
+        $this->assertInstanceOf(CartManager::class, $cart->getManager());
+    }
+
+    /** @test */
+    public function can_associate_cart_with_user_with_customer_attached()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $user = StubUser::factory()->create();
+        $customer = Customer::factory()->create();
+
+        $customer->users()->attach($user);
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id'  => $channel->id,
+            'user_id'     => $user->id,
+        ]);
+
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
     }
 }
