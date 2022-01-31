@@ -3,7 +3,6 @@
 namespace GetCandy\DataTypes;
 
 use GetCandy\Base\Purchasable;
-use GetCandy\Models\Currency;
 use GetCandy\Models\TaxClass;
 use Illuminate\Support\Collection;
 
