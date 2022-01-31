@@ -30,6 +30,12 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## 2.0-beta8
+
+### Handles now use `Str::handle` helper - Medium Impact
+
+When creating new attributes, a design decision has been made to force `snake_case`. Existing attributes shouldn't affected, however if you want to bring your store inline with this change, will need to update each attribute handle and then also update any `attribute_data` to use the know formatting.
+
 ## 2.0-beta7
 
 This version adds a new config setting for User ID field types.
