@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- When adding addresses via the `CartManager` we update any existing addresses rather than removing and re adding.
+
 ### Added
 
 - Added `scopeDefault` to the `Url` model.

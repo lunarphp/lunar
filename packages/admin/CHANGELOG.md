@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - When adding images to a variant it will now set them as the primary media model.
 - When fetching a variant thumbnail it will check itself before moving on to the product.
 - Wrapped `placed_at` with `optional` function on dashboard to prevent error on orders without a `placed_at` value. By [@ryanmitchell](https://github.com/ryanmitchell)
+- Validation on the option creator now uses the correct language code when validating. By [@green-mike](https://github.com/green-mike)
 
 ### Changed
 
