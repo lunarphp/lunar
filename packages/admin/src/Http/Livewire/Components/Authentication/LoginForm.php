@@ -57,7 +57,7 @@ class LoginForm extends Component
         ], $this->remember);
 
         if ($authCheck) {
-            $this->redirectRoute('hub.index');
+            return redirect()->intended(route('hub.index'));
         }
 
         session()->flash('error', 'The provided credentials do not match our records.');
