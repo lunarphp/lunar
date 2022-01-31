@@ -14,8 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-### Added
+- The login form now makes use of `wire:model.defer` and `redirect()->intended(...)` for performance and usability. By [@DanielSpravtsev](https://github.com/DanielSpravtsev)
 
+### Added
 
 ## 2.0-beta7 - 2022-01-19
 

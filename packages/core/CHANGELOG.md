@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - When adding addresses via the `CartManager` we update any existing addresses rather than removing and re adding.
+- When generating handles for models, we have moved to a forced `snake` case. i.e. `some_handle`. By [@itcyborg](https://github.com/itcyborg)
 
 ### Added
 
