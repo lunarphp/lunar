@@ -96,7 +96,7 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->registerAddonManifest();
         $this->registerBlueprintMacros();
 
-        if (!$this->app->environment('testing')) {
+        if (! $this->app->environment('testing')) {
             $this->registerStateListeners();
         }
 

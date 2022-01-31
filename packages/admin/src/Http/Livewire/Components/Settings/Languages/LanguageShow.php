@@ -62,7 +62,7 @@ class LanguageShow extends Component
      */
     public function toggleDefault()
     {
-        $this->language->default = !$this->language->default;
+        $this->language->default = ! $this->language->default;
     }
 
     /**
@@ -72,7 +72,7 @@ class LanguageShow extends Component
      */
     public function delete()
     {
-        if (!$this->canDelete) {
+        if (! $this->canDelete) {
             return;
         }
 

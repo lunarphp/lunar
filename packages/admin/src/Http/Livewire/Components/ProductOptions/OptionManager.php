@@ -42,8 +42,7 @@ class OptionManager extends Component
     /**
      * Watch when selected values update.
      *
-     * @param array $val
-     *
+     * @param  array  $val
      * @return void
      */
     public function updatedSelectedValues($val)
@@ -54,8 +53,7 @@ class OptionManager extends Component
     /**
      * Toggle all values within a product option.
      *
-     * @param string $optionId
-     *
+     * @param  string  $optionId
      * @return void
      */
     public function toggle($optionId)
@@ -82,8 +80,7 @@ class OptionManager extends Component
     /**
      * Resync options with the ui.
      *
-     * @param array $ids
-     *
+     * @param  array  $ids
      * @return void
      */
     public function syncOptions($ids)
@@ -94,8 +91,7 @@ class OptionManager extends Component
     /**
      * Refresh our options and emit any changes.
      *
-     * @param array $event
-     *
+     * @param  array  $event
      * @return void
      */
     public function refreshOptions($event)
@@ -108,8 +104,7 @@ class OptionManager extends Component
     /**
      * Method for when the selected option changes.
      *
-     * @param string $val
-     *
+     * @param  string  $val
      * @return void
      */
     public function updatedSelectedOption($val)

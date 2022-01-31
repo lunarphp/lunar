@@ -23,8 +23,8 @@ class Checkbox extends Component
     /**
      * Create the component instance.
      *
-     * @param bool $on
-     * @param bool $disabled
+     * @param  bool  $on
+     * @param  bool  $disabled
      */
     public function __construct($on = false, $disabled = false)
     {

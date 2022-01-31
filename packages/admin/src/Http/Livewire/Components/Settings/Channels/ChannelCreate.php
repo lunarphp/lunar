@@ -69,7 +69,7 @@ class ChannelCreate extends Component
      */
     public function toggleDefault()
     {
-        $this->channel->default = !$this->channel->default;
+        $this->channel->default = ! $this->channel->default;
     }
 
     /**

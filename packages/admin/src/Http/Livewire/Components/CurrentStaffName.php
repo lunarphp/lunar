@@ -39,8 +39,7 @@ class CurrentStaffName extends Component
     /**
      * Update the staff members full name for display.
      *
-     * @param string $fullName
-     *
+     * @param  string  $fullName
      * @return void
      */
     public function updateFullName($fullName)

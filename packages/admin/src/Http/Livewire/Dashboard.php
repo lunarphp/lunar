@@ -87,7 +87,7 @@ class Dashboard extends Component
 
         $returning = $query->clone()->having(DB::RAW('COUNT(*)'), '<=', 1)->count();
 
-        if (!$returning) {
+        if (! $returning) {
             return 0;
         }
 
@@ -325,7 +325,7 @@ class Dashboard extends Component
         foreach ($customerGroups as $group) {
             // Find our counts...
             $data = $orders->filter(function ($row) use ($group) {
-                if ($group->default && !$row->customer_group_id) {
+                if ($group->default && ! $row->customer_group_id) {
                     return true;
                 }
 

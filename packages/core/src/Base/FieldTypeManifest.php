@@ -35,17 +35,16 @@ class FieldTypeManifest
     /**
      * Add a FieldType into GetCandy.
      *
-     * @param string $classname
-     *
+     * @param  string  $classname
      * @return void
      */
     public function add($classname)
     {
-        if (!class_exists($classname)) {
+        if (! class_exists($classname)) {
             throw new FieldTypeMissingException($classname);
         }
 
-        if (!(app()->make($classname) instanceof FieldType)) {
+        if (! (app()->make($classname) instanceof FieldType)) {
             throw new InvalidFieldTypeException($classname);
         }
 

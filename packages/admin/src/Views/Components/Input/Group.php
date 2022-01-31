@@ -51,10 +51,10 @@ class Group extends Component
     /**
      * Create the component instance.
      *
-     * @param string $label
-     * @param string $for
-     * @param string $error
-     * @param string $instructions
+     * @param  string  $label
+     * @param  string  $for
+     * @param  string  $error
+     * @param  string  $instructions
      */
     public function __construct($label, $for, $error = null, $instructions = null, $required = false, $errors = [])
     {

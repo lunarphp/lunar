@@ -76,7 +76,7 @@ class CurrencyShow extends Component
      */
     public function toggleDefault()
     {
-        $this->currency->default = !$this->currency->default;
+        $this->currency->default = ! $this->currency->default;
 
         // If we're setting the currency to default, force it to be enabled.
         if ($this->currency->default) {
@@ -91,7 +91,7 @@ class CurrencyShow extends Component
      */
     public function toggleEnabled()
     {
-        $this->currency->enabled = !$this->currency->enabled;
+        $this->currency->enabled = ! $this->currency->enabled;
     }
 
     /**

@@ -56,8 +56,7 @@ class Manifest
     /**
      * Returns the parent permission based on handle naming.
      *
-     * @param Permission $permission
-     *
+     * @param  Permission  $permission
      * @return null|\GetCandy\Hub\Acl\Permission
      */
     protected function getParentPermission(Permission $permission)
@@ -74,8 +73,7 @@ class Manifest
     /**
      * Adds a permission to the manifest if it doesn't already exist.
      *
-     * @param \Closure $callback
-     *
+     * @param  \Closure  $callback
      * @return void
      */
     public function addPermission(\Closure $callback)
@@ -88,7 +86,7 @@ class Manifest
         // Do we already have a permission with this handle?
         $existing = $this->permissions->first(fn ($p) => $p->handle == $permission->handle);
 
-        if (!$existing) {
+        if (! $existing) {
             $this->permissions->push($permission);
         }
     }

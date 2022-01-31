@@ -15,7 +15,7 @@ class ListField implements FieldType
     /**
      * Create a new instance of List field type.
      *
-     * @param int|float $value
+     * @param  int|float  $value
      */
     public function __construct($value = [])
     {
@@ -35,11 +35,11 @@ class ListField implements FieldType
     /**
      * Set the value of this field.
      *
-     * @param int|float $value
+     * @param  int|float  $value
      */
     public function setValue($value)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             throw new FieldTypeException(self::class.' value must be an array.');
         }
 

@@ -79,8 +79,7 @@ trait HasDimensions
     /**
      * Format measurements ready for select inputs.
      *
-     * @param array $measurements
-     *
+     * @param  array  $measurements
      * @return \Illuminate\Support\Collection
      */
     protected function formatMeasurements($measurements)

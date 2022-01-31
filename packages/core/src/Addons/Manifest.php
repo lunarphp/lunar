@@ -43,13 +43,12 @@ class Manifest extends PackageManifest
     /**
      * Format a given composer package into our addon format.
      *
-     * @param array $package
-     *
+     * @param  array  $package
      * @return array
      */
     protected function formatPackage($package)
     {
-        if (!$provider = $package['extra']['laravel']['providers'][0] ?? null) {
+        if (! $provider = $package['extra']['laravel']['providers'][0] ?? null) {
             return;
         }
 

@@ -13,7 +13,7 @@ class ConvertProductTypeAttributesToProducts
     {
         $prefix = config('getcandy.database.table_prefix');
 
-        if (!$this->canRun()) {
+        if (! $this->canRun()) {
             return;
         }
 
