@@ -487,25 +487,25 @@ class CartManagerTest extends TestCase
             'currency_id' => $currency->id,
         ]);
 
-        $shipping = new CartAddress;
+        $shipping = new CartAddress();
         $shipping->postcode = 'SHI P12';
 
-        $billing = new CartAddress;
+        $billing = new CartAddress();
         $billing->postcode = 'BIL L12';
 
         $cart->getManager()->setShippingAddress($shipping);
         $cart->getManager()->setBillingAddress($billing);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), [
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
             'postcode' => $shipping->postcode,
-            'cart_id' => $cart->id,
-            'type' => 'shipping',
+            'cart_id'  => $cart->id,
+            'type'     => 'shipping',
         ]);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), [
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
             'postcode' => $billing->postcode,
-            'cart_id' => $cart->id,
-            'type' => 'billing',
+            'cart_id'  => $cart->id,
+            'type'     => 'billing',
         ]);
     }
 
@@ -518,10 +518,10 @@ class CartManagerTest extends TestCase
             'currency_id' => $currency->id,
         ]);
 
-        $shipping = new CartAddress;
+        $shipping = new CartAddress();
         $shipping->postcode = 'SHI P12';
 
-        $billing = new CartAddress;
+        $billing = new CartAddress();
         $billing->postcode = 'BIL L12';
 
         $cart->getManager()->setShippingAddress($shipping);
@@ -534,10 +534,10 @@ class CartManagerTest extends TestCase
 
         $cart->getManager()->setShippingAddress($shipping);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), [
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
             'postcode' => $shipping->postcode,
-            'cart_id' => $cart->id,
-            'type' => 'shipping',
+            'cart_id'  => $cart->id,
+            'type'     => 'shipping',
         ]);
 
         $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
@@ -553,7 +553,7 @@ class CartManagerTest extends TestCase
             'currency_id' => $currency->id,
         ]);
 
-        $shipping = new CartAddress;
+        $shipping = new CartAddress();
         $shipping->postcode = 'SHI P12';
 
         $cart->getManager()->setShippingAddress($shipping);
@@ -568,10 +568,10 @@ class CartManagerTest extends TestCase
 
         $cart->getManager()->setBillingAddress($shipping);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), [
+        $this->assertDatabaseHas((new CartAddress())->getTable(), [
             'postcode' => $shipping->postcode,
-            'cart_id' => $cart->id,
-            'type' => 'billing',
+            'cart_id'  => $cart->id,
+            'type'     => 'billing',
         ]);
 
         $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
