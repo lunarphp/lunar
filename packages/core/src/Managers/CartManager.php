@@ -412,20 +412,35 @@ class CartManager
      */
     private function addAddress(array|Addressable $address, $type)
     {
-        if ($address instanceof Addressable) {
-            $address->type = $type;
-            if ($address->id) {
-                $this->cart->addresses()->save($address);
-            } else {
-                $this->cart->addresses()->create(
-                    $address->toArray()
-                );
-            }
+        // Do we already have an address for this type?
+        $existing = $this->cart->addresses()->whereType($type)->first();
 
-            return;
+        if (is_array($address)) {
+            $address = new CartAddress($address);
         }
-        $address['type'] = $type;
-        $this->cart->addresses()->create($address);
+
+        if ($existing) {
+            $address = $existing->fill(
+                $address->getAttributes()
+            );
+        }
+
+        // If we have an id but the types don't match. We need to treat
+        // it as a new address being added using an existing as the base.
+        if ($address->type != $type && $address->id) {
+            $address->id = null;
+        }
+
+        // Force the type.
+        $address->type = $type;
+
+        if ($address->id) {
+            $this->cart->addresses()->save($address);
+        } else {
+            $this->cart->addresses()->create(
+                $address->toArray()
+            );
+        }
     }
 
     /**
