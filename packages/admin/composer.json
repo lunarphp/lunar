@@ -34,7 +34,7 @@
     },
     "require": {
         "php": "^8.0",
-        "getcandy/core": "^2.0",
+        "getcandy/core": "self.version",
         "livewire/livewire": "^2.0",
         "getcandy/licensing": "dev-main"
     },
