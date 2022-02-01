@@ -323,7 +323,7 @@ class CartManagerTest extends TestCase
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'purchasable_id' => $purchasable->id,
             'quantity' => 1,
-            'meta' => "[]",
+            'meta' => '[]',
         ]);
 
         $this->assertDatabaseCount((new CartLine)->getTable(), 1);
@@ -333,7 +333,7 @@ class CartManagerTest extends TestCase
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'purchasable_id' => $purchasable->id,
             'quantity' => 2,
-            'meta' => "[]",
+            'meta' => '[]',
         ]);
 
         $cart->getManager()->add($purchasable, 1, []);
@@ -341,7 +341,7 @@ class CartManagerTest extends TestCase
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'purchasable_id' => $purchasable->id,
             'quantity' => 3,
-            'meta' => "[]",
+            'meta' => '[]',
         ]);
 
         $this->assertDatabaseCount((new CartLine)->getTable(), 1);
@@ -353,7 +353,7 @@ class CartManagerTest extends TestCase
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'purchasable_id' => $purchasable->id,
             'quantity' => 4,
-            'meta' => "[]",
+            'meta' => '[]',
         ]);
 
         $this->assertDatabaseCount((new CartLine)->getTable(), 1);
@@ -363,7 +363,7 @@ class CartManagerTest extends TestCase
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'purchasable_id' => $purchasable->id,
             'quantity' => 4,
-            'meta' => "[]",
+            'meta' => '[]',
         ]);
 
         $this->assertDatabaseHas((new CartLine)->getTable(), [
