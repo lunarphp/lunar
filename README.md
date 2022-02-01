@@ -16,7 +16,7 @@ This repository serves as a monorepo for the main packages that make up GetCandy
 ## Community
 
 - [Join our discord server](https://discord.gg/v6qVWaf) and chat to the developers and people using GetCandy.
-- [We have a roadmap](https://portal.productboard.com/getcandy/1-getcandy) where we will be detailing which features are next.
+- [We have a roadmap](https://github.com/orgs/getcandy/projects/5) where we will be detailing which features are next.
 
 ## Packages in this monorepo
 
