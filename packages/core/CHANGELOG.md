@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - When translating an attribute, if we can't find a translation, we default to whatever the FieldType gives back instead of erroring.
 - `TranslatedText` fieldtype now implements `JsonSerializable` interface ([#50](https://github.com/getcandy/getcandy/issues/50)).
 - Core tests now use the correct `User` model stub when running. By [@joelwmale](https://github.com/joelwmale)
+- When creating a product, prices were being added twice. This should be resolved.
 
 ### Changed
 
