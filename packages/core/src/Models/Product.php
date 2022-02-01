@@ -107,6 +107,16 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Return the product collections relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function collections()
+    {
+        return $this->belongsToMany(Collection::class, 'getcandy_collection_product');
+    }
+
+    /**
      * Return the associations relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
