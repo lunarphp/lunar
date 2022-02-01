@@ -291,7 +291,7 @@ abstract class AbstractProduct extends Component
                 GenerateVariants::dispatch($this->product, $this->optionValues);
             }
 
-            if (! $generateVariants && $this->product->variants->count() <= 1) {
+            if (! $generateVariants && $this->product->variants->count() <= 1 && !$isNew) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
