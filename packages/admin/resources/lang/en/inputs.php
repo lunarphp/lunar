@@ -63,5 +63,5 @@ return [
     'min.label'                              => 'Min.',
     'max.label'                              => 'Max.',
     'tax_ref.label' => 'Tax Reference',
-    'tax_ref.instructions' => 'Add the third party tax reference, if required.'
+    'tax_ref.instructions' => 'Add the third party tax reference, if required.',
 ];
