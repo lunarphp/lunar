@@ -89,7 +89,7 @@ class Product extends BaseModel implements SpatieHasMedia
     /**
      * Return the product type relation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function productType()
     {

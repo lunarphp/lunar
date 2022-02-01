@@ -354,7 +354,7 @@ class ProductTest extends TestCase
         $target = Product::factory()->create();
 
         $parent->associations()->create([
-            'product_target_id' => $parent->id,
+            'product_parent_id' => $parent->id,
             'product_target_id' => $target->id,
             'type'              => 'custom-type',
         ]);

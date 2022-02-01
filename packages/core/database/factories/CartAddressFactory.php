@@ -3,6 +3,7 @@
 namespace GetCandy\Database\Factories;
 
 use GetCandy\Models\Address;
+use GetCandy\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CartAddressFactory extends Factory
@@ -27,6 +28,7 @@ class CartAddressFactory extends Factory
             'contact_phone'         => $this->faker->boolean ? $this->faker->phoneNumber : null,
             'type'                  => 'shipping',
             'meta'                  => $this->faker->boolean ? ['has_dog' => 'yes'] : null,
+            'country_id'            => Country::factory(),
         ];
     }
 }

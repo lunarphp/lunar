@@ -8,8 +8,8 @@ use GetCandy\Base\Purchasable;
 use GetCandy\Base\Traits\HasDimensions;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasPrices;
+use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\ProductVariantFactory;
-use GetCandy\Exceptions\MissingCurrencyPriceException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
@@ -20,6 +20,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     use HasMedia;
     use HasPrices;
     use HasDimensions;
+    use HasTranslations;
 
     /**
      * Define the guarded attributes.
@@ -83,41 +84,9 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
         )->withTimestamps();
     }
 
-    /**
-     * Get the price based on quantity and customer groups.
-     *
-     * @param  int  $quantity
-     * @param  \Illuminate\Support\Collection  $customerGroups
-     * @return int
-     */
-    public function getPrice(
-        $quantity,
-        Currency $currency,
-        Collection $customerGroups = null
-    ): int {
-        if (! $customerGroups) {
-            $customerGroups = collect();
-        }
-
-        $prices = $this->prices->filter(function ($price) use ($quantity, $customerGroups) {
-            return ($price->tier <= $quantity) && (
-                ! $price->customer_group_id || $customerGroups->pluck('id')->contains($price->customer_group_id)
-            );
-        })->sortBy('price');
-
-        $currencyPrice = $prices->first(function ($price) use ($currency) {
-            return $price->currency_id == $currency->id;
-        });
-
-        if (! $currencyPrice) {
-            throw new MissingCurrencyPriceException(
-                __('getcandy::exceptions.missing_currency_price', [
-                    'currency' => $currency->code,
-                ])
-            );
-        }
-
-        return $currencyPrice->price->value;
+    public function getPrices(): Collection
+    {
+        return $this->prices;
     }
 
     /**
@@ -190,6 +159,10 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
      */
     public function getThumbnail()
     {
+        if ($variantThumbnail = $this->thumbnail) {
+            return $variantThumbnail->getUrl('small');
+        }
+
         if ($thumbnail = $this->product->thumbnail) {
             return $thumbnail->getUrl('small');
         }

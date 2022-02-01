@@ -145,6 +145,7 @@ abstract class AbstractProduct extends Component
             'product.brand'           => 'nullable|string|max:255',
             'product.product_type_id' => 'required',
             'urls'                    => 'array',
+            'variant.tax_ref'         => 'nullable|string|max:255',
             'variant.sku'             => get_validation('products', 'sku', [
                 'alpha_dash',
                 'max:255',
@@ -183,6 +184,7 @@ abstract class AbstractProduct extends Component
                     'variant.volume_value'  => 'numeric|nullable',
                     'variant.volume_unit'   => 'string|nullable',
                     'variant.shippable'     => 'boolean|nullable',
+                    'variant.tax_ref'         => 'nullable|string|max:255',
                     'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
                 ]
             );
@@ -291,7 +293,7 @@ abstract class AbstractProduct extends Component
                 GenerateVariants::dispatch($this->product, $this->optionValues);
             }
 
-            if (! $generateVariants && $this->product->variants->count() <= 1) {
+            if (! $generateVariants && $this->product->variants->count() <= 1 && ! $isNew) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }

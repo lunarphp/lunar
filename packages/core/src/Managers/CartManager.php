@@ -52,7 +52,7 @@ class CartManager
     public function __construct(
         protected Cart $cart,
     ) {
-        $this->customerGroups = $cart->user ?
+        $this->customerGroups = $cart->user && $cart->user->customers->count() ?
             $cart->user->customers->map(function ($customer) {
                 return $customer->customerGroups;
             })->flatten()
@@ -164,10 +164,10 @@ class CartManager
         }
 
         // Do we already have this line?
-        $existing = $this->cart->lines->first(function ($line) use ($purchasable, $meta) {
+        $existing = $this->cart->load('lines')->lines->first(function ($line) use ($purchasable, $meta) {
             return $line->purchasable_id == $purchasable->id &&
             $line->purchasable_type == get_class($purchasable) &&
-            json_encode($line->meta) == json_encode($meta);
+            json_encode($line->meta ?: []) == json_encode($meta ?: []);
         });
 
         if ($existing) {
@@ -302,8 +302,6 @@ class CartManager
      */
     public function setShippingAddress(array|Addressable $address)
     {
-        $this->cart->shippingAddress?->delete();
-
         $this->addAddress($address, 'shipping');
 
         $this->cart->load('shippingAddress');
@@ -319,8 +317,6 @@ class CartManager
      */
     public function setBillingAddress(array|Addressable $address)
     {
-        $this->cart->billingAddress?->delete();
-
         $this->addAddress($address, 'billing');
 
         $this->cart->load('billingAddress');
@@ -407,13 +403,35 @@ class CartManager
      */
     private function addAddress(array|Addressable $address, $type)
     {
-        if ($address instanceof Addressable) {
-            $address = $address->only(
-                (new CartAddress())->getFillable()
+        // Do we already have an address for this type?
+        $existing = $this->cart->addresses()->whereType($type)->first();
+
+        if (is_array($address)) {
+            $address = new CartAddress($address);
+        }
+
+        if ($existing) {
+            $address = $existing->fill(
+                $address->getAttributes()
             );
         }
-        $address['type'] = $type;
-        $this->cart->addresses()->create($address);
+
+        // If we have an id but the types don't match. We need to treat
+        // it as a new address being added using an existing as the base.
+        if ($address->type != $type && $address->id) {
+            $address->id = null;
+        }
+
+        // Force the type.
+        $address->type = $type;
+
+        if ($address->id) {
+            $this->cart->addresses()->save($address);
+        } else {
+            $this->cart->addresses()->create(
+                $address->toArray()
+            );
+        }
     }
 
     /**

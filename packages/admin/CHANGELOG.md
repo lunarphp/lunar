@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.0-beta8 - 2022-02-01
+
+### Fixed
+
+- When adding images to a variant it will now set them as the primary media model.
+- When fetching a variant thumbnail it will check itself before moving on to the product.
+- Wrapped `placed_at` with `optional` function on dashboard to prevent error on orders without a `placed_at` value. By [@ryanmitchell](https://github.com/ryanmitchell)
+- Validation on the option creator now uses the correct language code when validating. By [@green-mike](https://github.com/green-mike)
+
+### Changed
+
+- The login form now makes use of `wire:model.defer` and `redirect()->intended(...)` for performance and usability. By [@DanielSpravtsev](https://github.com/DanielSpravtsev)
+
+### Added
+
+- Added editable `tax_ref` field under pricing for products and variants.
+
+[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta7...2.0-beta8)
+
 ## 2.0-beta7 - 2022-01-19
 
 ### Fixed

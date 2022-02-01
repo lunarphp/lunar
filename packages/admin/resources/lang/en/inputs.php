@@ -62,4 +62,6 @@ return [
     'validation_rules.label'                 => 'Validation Rules',
     'min.label'                              => 'Min.',
     'max.label'                              => 'Max.',
+    'tax_ref.label' => 'Tax Reference',
+    'tax_ref.instructions' => 'Add the third party tax reference, if required.',
 ];

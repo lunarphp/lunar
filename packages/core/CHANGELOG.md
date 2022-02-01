@@ -3,17 +3,41 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.0-beta8 - 2022-02-01
+
+### Fixed
+
+- Added missing `HasTranslations` trait to `ProductVariant` model.
+
+### Changed
+
+- When adding addresses via the `CartManager` we update any existing addresses rather than removing and re adding.
+- When generating handles for models, we have moved to a forced `snake` case. i.e. `some_handle`. By [@itcyborg](https://github.com/itcyborg)
+
+### Added
+
+- Added `scopeDefault` to the `Url` model.
+- Added a new `defaultUrl` relationship to models using the `HasUrls` trait.
+- Added new `PricingManager` class to deal with price fetching on purchasable objects.
+- Allow hub path to be configurable in `system` config. By ([@ryanmitchell](https://github.com/ryanmitchell))
+
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta7...2.0-beta8)
+
 ## 2.0-beta7 - 2022-01-19
 
 ### Fixed
 
 - When translating an attribute, if we can't find a translation, we default to whatever the FieldType gives back instead of erroring.
 - `TranslatedText` fieldtype now implements `JsonSerializable` interface ([#50](https://github.com/getcandy/getcandy/issues/50)).
+- Core tests now use the correct `User` model stub when running. By [@joelwmale](https://github.com/joelwmale)
+- When creating a product, prices were being added twice. This should be resolved.
+- When adding a cart line, meta fields were causing lines to be duplicated, this should be resolved.
 
 ### Changed
 
 - Models that have channels now implement `start_at` and `end_at` columns. This replaces the previous `published_at` column.
 - Laravel UI modal components removed.
+- Description attribute is no longer `required` or a `system` attribute on install.
 
 ### Added
 

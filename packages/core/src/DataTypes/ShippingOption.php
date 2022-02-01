@@ -3,7 +3,6 @@
 namespace GetCandy\DataTypes;
 
 use GetCandy\Base\Purchasable;
-use GetCandy\Models\Currency;
 use GetCandy\Models\TaxClass;
 use Illuminate\Support\Collection;
 
@@ -27,9 +26,16 @@ class ShippingOption implements Purchasable
      * @param  Collection  $customerGroups
      * @return int
      */
-    public function getPrice(int $quantity, Currency $currency, Collection $customerGroups): int
+    public function getPrice()
     {
-        return $this->price->value;
+        return $this->price;
+    }
+
+    public function getPrices(): Collection
+    {
+        return collect([
+            $this->price,
+        ]);
     }
 
     /**

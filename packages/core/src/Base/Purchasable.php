@@ -2,20 +2,17 @@
 
 namespace GetCandy\Base;
 
-use GetCandy\Models\Currency;
 use GetCandy\Models\TaxClass;
 use Illuminate\Support\Collection;
 
 interface Purchasable
 {
     /**
-     * Get the price for the purchasable item.
+     * Get the purchasable prices.
      *
-     * @param  int  $quantity
-     * @param  Collection  $customerGroups
-     * @return int
+     * @return \Illuminate\Support\Collection<\GetCandy\Models\Price>
      */
-    public function getPrice(int $quantity, Currency $currency, Collection $customerGroups): int;
+    public function getPrices(): Collection;
 
     /**
      * Return the purchasable unit quantity.

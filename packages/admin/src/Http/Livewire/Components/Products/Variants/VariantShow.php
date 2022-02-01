@@ -153,6 +153,7 @@ class VariantShow extends Component
             'variant.volume_unit'   => 'string|nullable',
             'variant.shippable'     => 'boolean|nullable',
             'variant.backorder'     => 'numeric|max:10000000',
+            'variant.tax_ref'         => 'nullable|string|max:255',
             'variant.purchasable'   => 'string|required',
             'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
             'variant.sku'           => get_validation('products', 'sku', [
@@ -218,11 +219,15 @@ class VariantShow extends Component
         if ($this->image) {
             if ($this->image instanceof Media) {
                 $this->image->copy($this->variant, 'variants');
+                $this->image->setCustomProperty('primary', true);
+                $this->image->save();
             }
             if ($this->image instanceof TemporaryUploadedFile) {
-                $this->variant->addMedia($this->image->getRealPath())
+                $media = $this->variant->addMedia($this->image->getRealPath())
                     ->preservingOriginal()
                     ->toMediaCollection('variants');
+                $media->setCustomProperty('primary', true);
+                $media->save();
             }
         }
 
