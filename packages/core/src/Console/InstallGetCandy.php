@@ -215,7 +215,7 @@ class InstallGetCandy extends Command
                     'handle'        => 'description',
                     'section'       => 'main',
                     'type'          => TranslatedText::class,
-                    'required'      => true,
+                    'required'      => false,
                     'default_value' => null,
                     'configuration' => [
                         'type' => 'richtext',
@@ -233,7 +233,7 @@ class InstallGetCandy extends Command
                     'handle'        => 'description',
                     'section'       => 'main',
                     'type'          => TranslatedText::class,
-                    'required'      => true,
+                    'required'      => false,
                     'default_value' => null,
                     'configuration' => [
                         'type' => 'richtext',
