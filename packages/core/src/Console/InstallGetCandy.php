@@ -220,7 +220,7 @@ class InstallGetCandy extends Command
                     'configuration' => [
                         'type' => 'richtext',
                     ],
-                    'system' => true,
+                    'system' => false,
                 ]);
 
                 Attribute::create([
@@ -238,7 +238,7 @@ class InstallGetCandy extends Command
                     'configuration' => [
                         'type' => 'richtext',
                     ],
-                    'system' => true,
+                    'system' => false,
                 ]);
             }
 
