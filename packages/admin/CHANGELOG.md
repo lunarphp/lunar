@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## Unreleased
+## 2.0-beta8 - 2022-02-01
 
 ### Fixed
 
@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Added editable `tax_ref` field under pricing for products and variants.
+
+[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta7...2.0-beta8)
 
 ## 2.0-beta7 - 2022-01-19
 
