@@ -153,6 +153,7 @@ class VariantShow extends Component
             'variant.volume_unit'   => 'string|nullable',
             'variant.shippable'     => 'boolean|nullable',
             'variant.backorder'     => 'numeric|max:10000000',
+            'variant.tax_ref'         => 'nullable|string|max:255',
             'variant.purchasable'   => 'string|required',
             'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
             'variant.sku'           => get_validation('products', 'sku', [

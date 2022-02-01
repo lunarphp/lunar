@@ -70,12 +70,14 @@ class ProductCreateTest extends TestCase
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductCreate::class)
             ->set('variant.sku', '1234')
+            ->set('variant.tax_ref', 'CUSTOMTAX')
             ->set("basePrices.{$currency->code}.price", 1234)
             ->call('save')
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas((new ProductVariant)->getTable(), [
             'sku' => '1234',
+            'tax_ref' => 'CUSTOMTAX',
         ]);
 
         $this->assertDatabaseHas((new Price)->getTable(), [
