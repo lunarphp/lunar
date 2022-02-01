@@ -115,7 +115,7 @@ class Product extends BaseModel implements SpatieHasMedia
     {
         return $this->belongsToMany(
             Collection::class,
-            config('getcandy.database.table_prefix') . 'collection_product'
+            config('getcandy.database.table_prefix').'collection_product'
         );
     }
 
