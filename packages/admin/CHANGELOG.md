@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - The login form now makes use of `wire:model.defer` and `redirect()->intended(...)` for performance and usability. By [@DanielSpravtsev](https://github.com/DanielSpravtsev)
 
+### Added
+
+- Added editable `tax_ref` field under pricing for products and variants.
+
 ## 2.0-beta7 - 2022-01-19
 
 ### Fixed

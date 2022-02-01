@@ -29,11 +29,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `TranslatedText` fieldtype now implements `JsonSerializable` interface ([#50](https://github.com/getcandy/getcandy/issues/50)).
 - Core tests now use the correct `User` model stub when running. By [@joelwmale](https://github.com/joelwmale)
 - When creating a product, prices were being added twice. This should be resolved.
+- When adding a cart line, meta fields were causing lines to be duplicated, this should be resolved.
 
 ### Changed
 
 - Models that have channels now implement `start_at` and `end_at` columns. This replaces the previous `published_at` column.
 - Laravel UI modal components removed.
+- Description attribute is no longer `required` or a `system` attribute on install.
 
 ### Added
 
