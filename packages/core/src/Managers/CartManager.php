@@ -164,10 +164,10 @@ class CartManager
         }
 
         // Do we already have this line?
-        $existing = $this->cart->lines->first(function ($line) use ($purchasable, $meta) {
+        $existing = $this->cart->load('lines')->lines->first(function ($line) use ($purchasable, $meta) {
             return $line->purchasable_id == $purchasable->id &&
             $line->purchasable_type == get_class($purchasable) &&
-            json_encode($line->meta) == json_encode($meta);
+            json_encode($line->meta ?: []) == json_encode($meta ?: []);
         });
 
         if ($existing) {

@@ -282,6 +282,100 @@ class CartManagerTest extends TestCase
     }
 
     /** @test */
+    public function can_update_cart_line_when_purchasable_exists()
+    {
+        $cart = Cart::factory()->create();
+
+        $purchasable = ProductVariant::factory()->create();
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->getManager()->add($purchasable, 1, null);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+            'meta' => null,
+        ]);
+
+        $this->assertCount(1, $cart->refresh()->lines);
+
+        $cart->getManager()->add($purchasable, 1, null);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 2,
+            'meta' => null,
+        ]);
+    }
+
+    /** @test */
+    public function can_update_cart_line_when_purchasable_exists_with_meta()
+    {
+        $cart = Cart::factory()->create();
+
+        $purchasable = ProductVariant::factory()->create();
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->getManager()->add($purchasable, 1, []);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+            'meta' => '[]',
+        ]);
+
+        $this->assertDatabaseCount((new CartLine)->getTable(), 1);
+
+        $cart->getManager()->add($purchasable, 1);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 2,
+            'meta' => '[]',
+        ]);
+
+        $cart->getManager()->add($purchasable, 1, []);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 3,
+            'meta' => '[]',
+        ]);
+
+        $this->assertDatabaseCount((new CartLine)->getTable(), 1);
+
+        $this->assertDatabaseCount((new CartLine)->getTable(), 1);
+
+        $cart->getManager()->add($purchasable, 1, null);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 4,
+            'meta' => '[]',
+        ]);
+
+        $this->assertDatabaseCount((new CartLine)->getTable(), 1);
+
+        $cart->getManager()->add($purchasable, 1, ['foo' => 'bar']);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 4,
+            'meta' => '[]',
+        ]);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+            'meta' => '{"foo":"bar"}',
+        ]);
+
+        $this->assertDatabaseCount((new CartLine)->getTable(), 2);
+    }
+
+    /** @test */
     public function can_add_same_purchasable_with_different_meta()
     {
         $cart = Cart::factory()->create();
