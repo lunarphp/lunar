@@ -79,7 +79,7 @@ class ProductCreateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas((new Price)->getTable(), [
-            'price' => "123400",
+            'price' => '123400',
         ]);
 
         $this->assertDatabaseCount((new Price)->getTable(), 1);
