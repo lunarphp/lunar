@@ -30,6 +30,18 @@
         </div>
         <div>
           <x-hub::input.group
+            :label="__('adminhub::inputs.tax_ref.label')"
+            :instructions="__('adminhub::inputs.tax_ref.instructions')"
+            :errors="$errors->get('variant.tax_ref')"
+            for="unit_quantity"
+          >
+            <x-hub::input.text wire:model="variant.tax_ref" id="tax_ref" />
+          </x-hub::input.group>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="grid grid-cols-3 gap-4">
+          <x-hub::input.group
             :label="__('adminhub::inputs.unit_quantity.label')"
             :instructions="__('adminhub::inputs.unit_quantity.instructions')"
             :errors="$errors->get('variant.unit_quantity')"
@@ -37,10 +49,7 @@
           >
             <x-hub::input.text type="number" wire:model="variant.unit_quantity" id="unit_quantity" />
           </x-hub::input.group>
-        </div>
-      </div>
-      <div class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
+
           <x-hub::input.group
             :label="__('adminhub::inputs.base_price_excl_tax.label')"
             :instructions="__('adminhub::inputs.base_price_excl_tax.instructions')"
