@@ -450,7 +450,7 @@ class ProductTest extends TestCase
         $this->assertInstanceOf(EloquentCollection::class, $product->collections);
         $this->assertCount(1, $product->collections);
         $this->assertInstanceOf(Collection::class, $product->collections->first());
-        $this->assertArrayHasKey('pivot', $product->collections->toArray()[0]);
-        $this->assertArrayHasKey('position', $product->collections->toArray()[0]['pivot']);
+        $this->assertNotNull($product->collections->first()->pivot);
+        $this->assertNotNull($product->collections->first()->pivot->position);
     }
 }
