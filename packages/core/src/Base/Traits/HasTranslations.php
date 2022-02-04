@@ -58,6 +58,11 @@ trait HasTranslations
 
         $value = Arr::get($translations, $locale ?: app()->getLocale(), Arr::first($translations));
 
+        // We we don't have a value, we just return null as it may not have a value.
+        if (!$value) {
+            return;
+        }
+
         /**
          * If we don't return a field type, then somethings up and it doesn't look like
          * this is translatable, in this case, just return what the fields value is.
