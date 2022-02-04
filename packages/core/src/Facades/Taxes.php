@@ -2,8 +2,8 @@
 
 namespace GetCandy\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use GetCandy\Base\TaxManagerInterface;
+use Illuminate\Support\Facades\Facade;
 
 class Taxes extends Facade
 {

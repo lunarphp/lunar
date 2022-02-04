@@ -2,11 +2,9 @@
 
 namespace GetCandy\Tests\Stubs;
 
-use GetCandy\Actions\Taxes\GetTaxZone;
 use GetCandy\Base\Addressable;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\TaxDriver;
-use GetCandy\DataTypes\Price;
 use GetCandy\Models\Currency;
 use GetCandy\Models\TaxRateAmount;
 
@@ -86,7 +84,7 @@ class TestTaxDriver implements TaxDriver
     public function getBreakdown($subTotal)
     {
         return collect([
-           TaxRateAmount::factory()->create()
+            TaxRateAmount::factory()->create(),
         ]);
     }
 }

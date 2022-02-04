@@ -3,10 +3,10 @@
 namespace GetCandy\Tests\Unit\Facades;
 
 use GetCandy\Base\TaxManagerInterface;
-use GetCandy\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use GetCandy\Facades\Taxes;
 use GetCandy\Tests\Stubs\TestTaxDriver;
+use GetCandy\Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group getcandy.taxes

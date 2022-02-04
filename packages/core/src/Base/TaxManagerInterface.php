@@ -7,7 +7,7 @@ use GetCandy\Drivers\SystemTaxDriver;
 interface TaxManagerInterface
 {
     /**
-     * Create the system driver
+     * Create the system driver.
      *
      * @return SystemTaxDriver
      */
