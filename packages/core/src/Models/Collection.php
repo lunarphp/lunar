@@ -79,6 +79,20 @@ class Collection extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Returns all products from this collection and any children collections
+     */
+    public function allProducts(): Collection
+    {
+        $collectionIds = $this->descendantsAndSelf($this->id)->pluck('id');
+
+        $productIds = CollectionProduct::whereIn('collection_id', $collectionIds)->pluck('product_id');
+
+        return Product::whereIn('id', $productIds)->withPivot([
+            'position',
+        ])->withTimestamps()->orderByPivot('position');
+    }
+
+    /**
      * Returns the indexable data for the collection.
      *
      * @return array
