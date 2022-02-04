@@ -59,7 +59,7 @@ trait HasTranslations
         $value = Arr::get($translations, $locale ?: app()->getLocale(), Arr::first($translations));
 
         // We we don't have a value, we just return null as it may not have a value.
-        if (!$value) {
+        if (! $value) {
             return;
         }
 
