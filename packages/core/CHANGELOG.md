@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]
 
+### Fixed
+
+- If an attribute value is null it will be returned instead of the `{"en": null}` encoded string. ([#130](https://github.com/getcandy/getcandy/issues/130))
+
 ### Added
 
 - Added `Taxes` facade to ensure the `TaxManager` can be easily extended. ([#129](https://github.com/getcandy/getcandy/issues/129))

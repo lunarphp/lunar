@@ -78,6 +78,33 @@ class HasTranslationsTest extends TestCase
     }
 
     /** @test */
+    public function can_handle_null_values()
+    {
+        $attributeGroup = AttributeGroup::factory()->create([
+            'name' => [
+                'en' => 'English',
+                'fr' => 'French',
+            ],
+        ]);
+
+        $this->assertEquals('English', $attributeGroup->translate('name', 'dk'));
+
+        $product = Product::factory()->create([
+            'attribute_data' => [
+                'name' => new TranslatedText(collect([
+                    'en' => null,
+                ])),
+                'description' => new TranslatedText(collect([
+                    'en' => null,
+                ])),
+            ],
+        ]);
+
+        $this->assertNull($product->translateAttribute('name'));
+        $this->assertNull($product->translateAttribute('description'));
+    }
+
+    /** @test */
     public function will_translate_based_on_locale_by_default()
     {
         $attributeGroup = AttributeGroup::factory()->create([
