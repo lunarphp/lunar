@@ -18,6 +18,7 @@ use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\ShippingManifest;
 use GetCandy\Base\ShippingManifestInterface;
 use GetCandy\Base\ShippingModifiers;
+use GetCandy\Base\TaxManagerInterface;
 use GetCandy\Console\Commands\AddonsDiscover;
 use GetCandy\Console\Commands\Import\AddressData;
 use GetCandy\Console\Commands\MeilisearchSetup;
@@ -27,6 +28,7 @@ use GetCandy\Database\State\EnsureDefaultTaxClassExists;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Managers\PricingManager;
+use GetCandy\Managers\TaxManager;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
@@ -165,6 +167,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->app->bind(PricingManagerInterface::class, function ($app) {
             return $app->make(PricingManager::class);
+        });
+
+        $this->app->bind(TaxManagerInterface::class, function ($app) {
+            return $app->make(TaxManager::class);
         });
 
         Event::listen(
