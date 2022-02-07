@@ -3,11 +3,13 @@
 namespace GetCandy\Tests\Unit\Models;
 
 use GetCandy\Models\Channel;
+use GetCandy\Models\Collection;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductType;
 use GetCandy\Tests\TestCase;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -436,5 +438,19 @@ class ProductTest extends TestCase
 
         $this->assertCount(1, $parent->refresh()->associations);
         $this->assertEquals('up-sell', $parent->refresh()->associations->first()->type);
+    }
+
+    /** @test */
+    public function can_have_collections_relationship()
+    {
+        $collection = Collection::factory()->create();
+        $product = Product::factory()->create();
+        $product->collections()->sync($collection);
+
+        $this->assertInstanceOf(EloquentCollection::class, $product->collections);
+        $this->assertCount(1, $product->collections);
+        $this->assertInstanceOf(Collection::class, $product->collections->first());
+        $this->assertNotNull($product->collections->first()->pivot);
+        $this->assertNotNull($product->collections->first()->pivot->position);
     }
 }
