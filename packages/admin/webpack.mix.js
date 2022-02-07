@@ -1,5 +1,6 @@
 const mix = require("laravel-mix");
 
+mix.setPublicPath("public");
 mix.options({
   terser: {
     extractComments: false,
