@@ -406,7 +406,7 @@ abstract class AbstractProduct extends Component
                         'starts_at'    => $productChannel ? $productChannel->pivot->starts_at : null,
                         'ends_at'      => $productChannel ? $productChannel->pivot->ends_at : null,
                         'enabled'      => $productChannel ? $productChannel->pivot->enabled : false,
-                        'scheduling'   => $productChannel ? (bool) $productChannel->pivot->starts_at : false,
+                        'scheduling'   => false,
                     ],
                 ];
             }),
