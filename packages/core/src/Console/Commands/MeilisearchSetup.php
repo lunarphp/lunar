@@ -55,15 +55,14 @@ class MeilisearchSetup extends Command
             $indexName = (new $searchable())->searchableAs();
 
             try {
-                $this->engine->getIndex($indexName);
+                $index = $this->engine->getIndex($indexName);
             } catch (ApiException $e) {
                 $this->info("Creating index for {$searchable}");
                 $this->engine->createIndex($indexName);
-            }
-        }
 
-        foreach ($this->engine->getAllIndexes() as $index) {
-            // Set up soft deletes.
+                $index = $this->engine->getIndex($indexName);
+            }
+
             $index->updateFilterableAttributes([
                 '__soft_deleted',
             ]);
