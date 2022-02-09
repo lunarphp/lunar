@@ -23,7 +23,7 @@ class ProductOption extends BaseModel
      */
     public function searchableAs()
     {
-        return 'product_options_'.app()->getLocale();
+        return config('scout.prefix').'product_options_'.app()->getLocale();
     }
 
     /**

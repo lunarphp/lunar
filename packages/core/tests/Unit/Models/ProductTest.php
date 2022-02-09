@@ -41,6 +41,16 @@ class ProductTest extends TestCase
         $this->assertEquals($attribute_data, $product->attribute_data);
     }
 
+    /**
+     * @test
+     * */
+    public function takes_scout_prefix_into_account()
+    {
+        $expected = config('scout.prefix').'products_en';
+
+        $this->assertEquals($expected, (new Product)->searchableAs());
+    }
+
     /** @test */
     public function has_image_transformations_loaded_from_config()
     {
