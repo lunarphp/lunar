@@ -52,7 +52,7 @@ trait HasTranslations
 
         $translations = $field->getValue();
 
-        if (is_string($translations) || ! $translations) {
+        if (! is_iterable($translations) || ! $translations) {
             return $translations;
         }
 

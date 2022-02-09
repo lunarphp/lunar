@@ -2,6 +2,8 @@
 
 namespace GetCandy\Tests\Unit\Console;
 
+use GetCandy\FieldTypes\Dropdown;
+use GetCandy\FieldTypes\ListField;
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
@@ -218,5 +220,34 @@ class HasTranslationsTest extends TestCase
         ]);
 
         $this->assertNull($product->translateAttribute('description'));
+    }
+
+    /**
+     * @test
+     * */
+    public function handle_if_we_try_and_translate_a_non_translatable_attribute()
+    {
+        AttributeGroup::factory()->create([
+            'name' => [
+                'en' => 'English',
+                'fr' => 'French',
+            ],
+        ]);
+
+        $product = Product::factory()->create([
+            'attribute_data' => [
+                'name'        => new Text('Test Name'),
+                'list'        => new ListField([
+                    'One',
+                    'Two',
+                    'Three',
+                ]),
+                'dropdown'        => new Dropdown('Foobar'),
+            ],
+        ]);
+
+        $this->assertEquals('Test Name', $product->translateAttribute('name'));
+        $this->assertEquals('Foobar', $product->translateAttribute('dropdown'));
+        $this->assertEquals(['One', 'Two', 'Three'], $product->translateAttribute('list'));
     }
 }
