@@ -10,14 +10,14 @@ use JsonSerializable;
 class TranslatedText implements FieldType, JsonSerializable
 {
     /**
-     * @var Illuminate\Database\Eloquent\Collection
+     * @var \Illuminate\Database\Eloquent\Collection
      */
     protected $value;
 
     /**
      * Create a new instance of TranslatedText field type.
      *
-     * @param  Illuminate\Database\Eloquent\Collection  $value
+     * @param  \Illuminate\Database\Eloquent\Collection  $value
      */
     public function __construct($value = null)
     {
@@ -31,7 +31,7 @@ class TranslatedText implements FieldType, JsonSerializable
     /**
      * Serialize the class.
      *
-     * @return string
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function jsonSerialize()
     {
@@ -41,7 +41,7 @@ class TranslatedText implements FieldType, JsonSerializable
     /**
      * Return the value of this field.
      *
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getValue()
     {
@@ -51,7 +51,7 @@ class TranslatedText implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param  Illuminate\Database\Eloquent\Collection  $value
+     * @param  \Illuminate\Database\Eloquent\Collection  $value
      */
     public function setValue($value)
     {

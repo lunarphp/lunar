@@ -122,7 +122,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns any custom validation messages.
      *
-     * @return void
+     * @return array
      */
     protected function getValidationMessages()
     {
@@ -136,7 +136,7 @@ abstract class AbstractProduct extends Component
     /**
      * Define the validation rules.
      *
-     * @return void
+     * @return array
      */
     protected function rules()
     {
@@ -200,7 +200,7 @@ abstract class AbstractProduct extends Component
     /**
      * Set the options to be whatever we pass through.
      *
-     * @param  array  $options
+     * @param  array  $optionIds
      * @return void
      */
     public function setOptions($optionIds)
@@ -241,7 +241,7 @@ abstract class AbstractProduct extends Component
     /**
      * Universal method to handle saving the product.
      *
-     * @return void
+     * @return void|\Symfony\Component\HttpFoundation\Response
      */
     public function save()
     {
@@ -593,7 +593,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model with pricing.
      *
-     * @return void
+     * @return \GetCandy\Models\ProductVariant
      */
     protected function getPricedModel()
     {
@@ -613,7 +613,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model which has media associated.
      *
-     * @return void
+     * @return \GetCandy\Models\Product
      */
     protected function getMediaModel()
     {

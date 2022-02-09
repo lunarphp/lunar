@@ -32,7 +32,7 @@ class Heading extends Component
      *
      * @param  bool  $sortable
      * @param  null|string  $direction
-     * @param  null|string  $multicolumn
+     * @param  null|string  $multiColumn
      */
     public function __construct(bool $sortable = false, $direction = null, $multiColumn = false)
     {

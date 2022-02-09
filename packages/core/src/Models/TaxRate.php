@@ -41,7 +41,7 @@ class TaxRate extends BaseModel
     /**
      * Return the tax rate amounts relation.
      *
-     * @return void
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function taxRateAmounts()
     {

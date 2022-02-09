@@ -9,7 +9,7 @@ class ChannelObserver
     /**
      * Handle the User "created" event.
      *
-     * @param  \App\Models\User  $user
+     * @param  \GetCandy\Models\Channel  $channel
      * @return void
      */
     public function created(Channel $channel)
@@ -20,7 +20,7 @@ class ChannelObserver
     /**
      * Handle the User "updated" event.
      *
-     * @param  \App\Models\User  $user
+     * @param  \GetCandy\Models\Channel  $channel
      * @return void
      */
     public function updated(Channel $channel)
@@ -31,7 +31,7 @@ class ChannelObserver
     /**
      * Handle the User "deleted" event.
      *
-     * @param  \App\Models\User  $user
+     * @param  \GetCandy\Models\Channel  $channel
      * @return void
      */
     public function deleted(Channel $channel)
@@ -42,7 +42,7 @@ class ChannelObserver
     /**
      * Handle the User "forceDeleted" event.
      *
-     * @param  \App\Models\User  $user
+     * @param  \GetCandy\Models\Channel  $channel
      * @return void
      */
     public function forceDeleted(Channel $channel)

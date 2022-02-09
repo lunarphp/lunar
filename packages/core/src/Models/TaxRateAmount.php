@@ -20,7 +20,7 @@ class TaxRateAmount extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\TaxRateFactory
+     * @return \GetCandy\Database\Factories\TaxRateAmountFactory
      */
     protected static function newFactory(): TaxRateAmountFactory
     {

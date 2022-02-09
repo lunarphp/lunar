@@ -11,7 +11,7 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "creating" event.
      *
-     * @param  \App\Models\OrderLine  $orderLine
+     * @param  \GetCandy\Models\OrderLine  $orderLine
      * @return void
      */
     public function creating(OrderLine $orderLine)
@@ -24,7 +24,7 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "updated" event.
      *
-     * @param  \App\Models\OrderLine  $orderLine
+     * @param  \GetCandy\Models\OrderLine  $orderLine
      * @return void
      */
     public function updating(OrderLine $orderLine)

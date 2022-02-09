@@ -63,7 +63,6 @@ class GenerateVariants implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param  App\Services\AudioProcessor  $processor
      * @return void
      */
     public function handle()

@@ -337,7 +337,7 @@ class CollectionShow extends Component
     /**
      * Returns any custom validation messages.
      *
-     * @return void
+     * @return array
      */
     protected function getValidationMessages()
     {

@@ -95,7 +95,7 @@ trait CanScheduleAvailability
      *
      * @param  \Illuminate\Support\Collection  $models
      * @param  array|null  $pivotData
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     private function getScheduleMapping($models, array $pivotData = null)
     {

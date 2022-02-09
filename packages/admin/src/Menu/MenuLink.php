@@ -46,7 +46,7 @@ class MenuLink implements MenuItem
      * Setter for the name property.
      *
      * @param  string  $name
-     * @return void
+     * @return static
      */
     public function name($name)
     {
@@ -59,7 +59,7 @@ class MenuLink implements MenuItem
      * Setter for the handle property.
      *
      * @param  string  $handle
-     * @return void
+     * @return static
      */
     public function handle($handle)
     {
@@ -72,7 +72,7 @@ class MenuLink implements MenuItem
      * Setter for the gate property.
      *
      * @param  string  $gate
-     * @return void
+     * @return static
      */
     public function gate($gate)
     {
@@ -85,7 +85,7 @@ class MenuLink implements MenuItem
      * Setter for the route property.
      *
      * @param  string  $route
-     * @return void
+     * @return static
      */
     public function route($route)
     {
@@ -98,7 +98,7 @@ class MenuLink implements MenuItem
      * Setter for the icon property.
      *
      * @param  string  $icon
-     * @return void
+     * @return static
      */
     public function icon($icon)
     {

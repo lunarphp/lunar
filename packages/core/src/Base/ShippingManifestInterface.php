@@ -11,7 +11,7 @@ interface ShippingManifestInterface
     /**
      * Add a shipping option to the manifest.
      *
-     * @param  \GetCandy\DataTypes\ShippingOption  $option
+     * @param  \GetCandy\DataTypes\ShippingOption  $shippingOption
      * @return self
      */
     public function addOption(ShippingOption $shippingOption);

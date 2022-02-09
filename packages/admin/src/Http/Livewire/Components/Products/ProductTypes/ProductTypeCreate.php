@@ -25,7 +25,7 @@ class ProductTypeCreate extends AbstractProductType
     /**
      * Register the validation rules.
      *
-     * @return void
+     * @return array
      */
     protected function rules()
     {

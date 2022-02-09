@@ -30,7 +30,7 @@ class MenuSection extends MenuSlot
      * Setter for the name property.
      *
      * @param  string  $name
-     * @return void
+     * @return static
      */
     public function name($name)
     {

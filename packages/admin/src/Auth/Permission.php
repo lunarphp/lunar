@@ -63,7 +63,7 @@ class Permission
      *
      * @param  string  $name
      * @param  array  $params
-     * @return void
+     * @return static
      */
     public function __call($name, $params)
     {

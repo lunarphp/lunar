@@ -22,15 +22,18 @@ class ShippingOption implements Purchasable
     /**
      * Get the price for the purchasable item.
      *
-     * @param  int  $quantity
-     * @param  Collection  $customerGroups
-     * @return int
+     * @return \GetCandy\DataTypes\Price
      */
     public function getPrice()
     {
         return $this->price;
     }
 
+    /**
+     * Get prices for the purchasable item.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getPrices(): Collection
     {
         return collect([

@@ -14,8 +14,8 @@ class UpdateTieredPricing
      * Execute the action.
      *
      * @param  Model  $owner
-     * @param  Collection  $tieredPrices
-     * @return void
+     * @param  \Illuminate\Support\Collection  $tieredPrices
+     * @return \Illuminate\Support\Collection
      */
     public function execute(Model $owner, Collection $tieredPrices)
     {

@@ -18,7 +18,7 @@ trait HasDefaultRecord
     /**
      * Get the default record.
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return self
      */
     public static function getDefault()
     {

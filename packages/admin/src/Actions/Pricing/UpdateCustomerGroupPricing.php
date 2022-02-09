@@ -12,7 +12,7 @@ class UpdateCustomerGroupPricing
      *
      * @param  Model  $owner
      * @param  \Illuminate\Support\Collection  $groups
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     public function execute(Model $owner, Collection $groups)
     {

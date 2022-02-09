@@ -49,7 +49,7 @@ trait WithAttributes
      * Parse the attributes into the correct collection format.
      *
      * @param  \Illuminate\Support\Collection  $attributes
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
     {
@@ -102,7 +102,7 @@ trait WithAttributes
     /**
      * Prepares attribute data to be ready for saving.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public function prepareAttributeData($attributes = null)
     {

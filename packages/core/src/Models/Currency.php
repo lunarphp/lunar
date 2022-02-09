@@ -35,7 +35,7 @@ class Currency extends BaseModel
      * Returns the amount we need to multiply or divide the price
      * for the cents/pence.
      *
-     * @return void
+     * @return string
      */
     public function getFactorAttribute()
     {

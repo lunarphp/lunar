@@ -46,7 +46,7 @@ class MenuSlot
      *
      * @param  \Closure  $callback
      * @param  string  $after
-     * @return void
+     * @return static
      */
     public function addItem(\Closure $callback, $after = null)
     {
@@ -75,7 +75,7 @@ class MenuSlot
      * Add multiple items.
      *
      * @param  array  $items
-     * @return void
+     * @return static
      */
     public function addItems(array $items)
     {

@@ -17,7 +17,7 @@ class ValidateCartForOrder
      * Execute the action.
      *
      * @param  \GetCandy\Models\Cart  $cart
-     * @return bool
+     * @return void
      */
     public function execute(
         Cart $cart

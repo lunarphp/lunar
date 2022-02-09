@@ -14,7 +14,7 @@ class UpdatePrices
      *
      * @param  Model  $owner
      * @param  \Illuminate\Support\Collection  $prices
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     public function execute(Model $owner, Collection $prices)
     {
