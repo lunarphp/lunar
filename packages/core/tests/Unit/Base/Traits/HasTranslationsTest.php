@@ -242,7 +242,7 @@ class HasTranslationsTest extends TestCase
                     'Two',
                     'Three',
                 ]),
-                'dropdown'        => new Dropdown('Foobar')
+                'dropdown'        => new Dropdown('Foobar'),
             ],
         ]);
 
