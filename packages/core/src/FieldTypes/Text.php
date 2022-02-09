@@ -60,7 +60,7 @@ class Text implements FieldType, JsonSerializable
      */
     public function setValue($value)
     {
-        if ($value && (!is_string($value) && !is_numeric($value) && !is_bool($value))) {
+        if ($value && (! is_string($value) && ! is_numeric($value) && ! is_bool($value))) {
             throw new FieldTypeException(self::class.' value must be a string.');
         }
 

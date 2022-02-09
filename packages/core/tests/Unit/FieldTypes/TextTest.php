@@ -30,7 +30,6 @@ class TextTest extends TestCase
         $this->assertEquals(true, $field->getValue());
     }
 
-
     /** @test */
     public function can_set_null_value()
     {
