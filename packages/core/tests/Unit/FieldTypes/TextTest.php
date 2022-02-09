@@ -6,6 +6,9 @@ use GetCandy\Exceptions\FieldTypeException;
 use GetCandy\FieldTypes\Text;
 use GetCandy\Tests\TestCase;
 
+/**
+ * @group fieldtypes
+ */
 class TextTest extends TestCase
 {
     /** @test */
@@ -15,6 +18,16 @@ class TextTest extends TestCase
         $field->setValue('I like cake');
 
         $this->assertEquals('I like cake', $field->getValue());
+
+        $field = new Text();
+        $field->setValue(12345);
+
+        $this->assertEquals(12345, $field->getValue());
+
+        $field = new Text();
+        $field->setValue(true);
+
+        $this->assertEquals(true, $field->getValue());
     }
 
     /** @test */
