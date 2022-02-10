@@ -3,7 +3,6 @@
 namespace GetCandy\Actions\Carts;
 
 use GetCandy\Models\Cart;
-use GetCandy\Models\CartLine;
 use Illuminate\Support\Facades\DB;
 
 class MergeCart
