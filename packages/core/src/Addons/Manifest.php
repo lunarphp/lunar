@@ -44,7 +44,7 @@ class Manifest extends PackageManifest
      * Format a given composer package into our addon format.
      *
      * @param  array  $package
-     * @return array
+     * @return void|array
      */
     protected function formatPackage($package)
     {

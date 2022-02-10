@@ -103,7 +103,7 @@ class VariantShow extends Component
     /**
      * Returns any custom validation messages.
      *
-     * @return void
+     * @return array
      */
     protected function getValidationMessages()
     {
@@ -131,7 +131,7 @@ class VariantShow extends Component
     /**
      * Register the validation rules.
      *
-     * @return void
+     * @return array
      */
     protected function rules()
     {

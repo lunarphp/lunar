@@ -32,7 +32,7 @@ class CustomersIndex extends Component
     /**
      * Computed method to return customers.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getCustomersProperty()
     {

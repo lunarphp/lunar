@@ -45,7 +45,7 @@ class RebuildCollectionTree implements ShouldQueue
      *
      * @param  array  $newTree
      * @param  array  $currentTree
-     * @param  string|int|null  $parent
+     * @param  \GetCandy\Models\Collection|null  $parent
      */
     public function __construct(array $newTree, array $currentTree, Collection $parent = null)
     {

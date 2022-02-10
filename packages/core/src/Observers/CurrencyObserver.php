@@ -9,7 +9,7 @@ class CurrencyObserver
     /**
      * Handle the Currency "created" event.
      *
-     * @param  \App\Models\Currency  $currency
+     * @param  \GetCandy\Models\Currency  $currency
      * @return void
      */
     public function created(Currency $currency)
@@ -20,7 +20,7 @@ class CurrencyObserver
     /**
      * Handle the Currency "updated" event.
      *
-     * @param  \App\Models\Currency  $currency
+     * @param  \GetCandy\Models\Currency  $currency
      * @return void
      */
     public function updated(Currency $currency)
@@ -31,7 +31,7 @@ class CurrencyObserver
     /**
      * Handle the Currency "deleted" event.
      *
-     * @param  \App\Models\Currency  $currency
+     * @param  \GetCandy\Models\Currency  $currency
      * @return void
      */
     public function deleted(Currency $currency)
@@ -42,7 +42,7 @@ class CurrencyObserver
     /**
      * Handle the Currency "forceDeleted" event.
      *
-     * @param  \App\Models\Currency  $currency
+     * @param  \GetCandy\Models\Currency  $currency
      * @return void
      */
     public function forceDeleted(Currency $currency)

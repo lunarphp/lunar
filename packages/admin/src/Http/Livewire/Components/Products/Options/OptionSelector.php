@@ -48,7 +48,7 @@ class OptionSelector extends Component
     /**
      * Returns the options based on search terms.
      *
-     * @return void
+     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getOptionsProperty()
     {

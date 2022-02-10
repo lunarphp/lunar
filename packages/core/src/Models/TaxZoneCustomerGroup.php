@@ -13,7 +13,7 @@ class TaxZoneCustomerGroup extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\TaxZoneStateFactory
+     * @return \GetCandy\Database\Factories\TaxZoneCustomerGroupFactory
      */
     protected static function newFactory(): TaxZoneCustomerGroupFactory
     {

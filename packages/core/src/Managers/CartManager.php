@@ -147,7 +147,7 @@ class CartManager
      * @param  Purchasable  $purchasable
      * @param  int  $quantity
      * @param  array  $meta
-     * @return void
+     * @return bool
      */
     public function add(Purchasable $purchasable, int $quantity = 1, $meta = [])
     {
@@ -298,7 +298,7 @@ class CartManager
      * Set the shipping address.
      *
      * @param  \GetCandy\Base\Addressable|array  $address
-     * @return self
+     * @return \GetCandy\Models\Cart
      */
     public function setShippingAddress(array|Addressable $address)
     {

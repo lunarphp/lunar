@@ -85,7 +85,7 @@ class CollectionGroupShow extends Component
     /**
      * Return the validation rules.
      *
-     * @return void
+     * @return array
      */
     public function rules()
     {
@@ -219,12 +219,12 @@ class CollectionGroupShow extends Component
     /**
      * Get the collection search results.
      *
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     public function getSearchedCollectionsProperty()
     {
         if (! $this->searchTerm) {
-            return [];
+            return new \Illuminate\Support\Collection();
         }
 
         return Collection::search($this->searchTerm)

@@ -33,7 +33,7 @@ interface TaxDriver
     /**
      * Set the purchasable item.
      *
-     * @param  \GetCandy\Base\Purchasable|null  $address
+     * @param  \GetCandy\Base\Purchasable  $purchasable
      * @return self
      */
     public function setPurchasable(Purchasable $purchasable);

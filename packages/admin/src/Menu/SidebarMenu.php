@@ -21,7 +21,7 @@ class SidebarMenu
     /**
      * Make top level navigation.
      *
-     * @return void
+     * @return static
      */
     protected function makeTopLevel()
     {
@@ -41,7 +41,7 @@ class SidebarMenu
     /**
      * Add our menu sections.
      *
-     * @return void
+     * @return static
      */
     protected function addSections()
     {

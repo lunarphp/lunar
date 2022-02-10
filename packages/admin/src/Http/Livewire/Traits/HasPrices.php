@@ -208,7 +208,7 @@ trait HasPrices
     /**
      * Return the computed default currency.
      *
-     * @return void
+     * @return \GetCandy\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {
@@ -347,7 +347,7 @@ trait HasPrices
     /**
      * Define validation rules for images.
      *
-     * @return bool
+     * @return array
      */
     protected function hasPriceValidationRules()
     {

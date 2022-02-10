@@ -35,7 +35,7 @@ trait HasImages
     /**
      * Define validation rules for images.
      *
-     * @return bool
+     * @return array
      */
     protected function hasImagesValidationRules()
     {
@@ -192,7 +192,7 @@ trait HasImages
      * Sets an image to be primary and if one already exists will
      * remove it's primary state.
      *
-     * @param  int|string  $imageId
+     * @param  int|string  $imageKey
      * @return void
      */
     public function setPrimary($imageKey)

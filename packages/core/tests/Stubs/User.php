@@ -47,7 +47,7 @@ class User extends Authenticatable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CustomerFactory
+     * @return \GetCandy\Tests\Stubs\UserFactory
      */
     protected static function newFactory(): UserFactory
     {

@@ -137,7 +137,7 @@ class Dashboard extends Component
     /**
      * Return the computed sales performance property.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public function getSalesPerformanceProperty()
     {
@@ -273,7 +273,7 @@ class Dashboard extends Component
     /**
      * Return computed property for customer group orders.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public function getCustomerGroupOrdersProperty()
     {

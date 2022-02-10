@@ -9,9 +9,9 @@ class SortProductsBySku
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $groups
-     * @return void
+     * @param  \Illuminate\Support\Collection  $products
+     * @param  string  $direction
+     * @return \Illuminate\Support\Collection
      */
     public function execute(Collection $products, $direction = 'asc')
     {
