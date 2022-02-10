@@ -42,7 +42,7 @@ class UpdateTieredPricing
                 }
             }
 
-            $owner->prices()->whereNotIn('id', $pricesToKeep)->where('tier', '>', 1)->delete();
+            $owner->prices()->whereNotIn('id', $pricesToKeep)->where('tier', '>', $owner->unit_quantity)->delete();
         });
 
         return collect($tiers)->sortBy('tier')->values();
