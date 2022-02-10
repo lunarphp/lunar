@@ -182,7 +182,7 @@ class InstallGetCandy extends Command
                     'required'      => true,
                     'default_value' => null,
                     'configuration' => [
-                        'type' => 'text',
+                        'richtext' => false,
                     ],
                     'system' => true,
                 ]);
@@ -200,7 +200,7 @@ class InstallGetCandy extends Command
                     'required'      => true,
                     'default_value' => null,
                     'configuration' => [
-                        'type' => 'text',
+                        'richtext' => false,
                     ],
                     'system' => true,
                 ]);
@@ -218,7 +218,7 @@ class InstallGetCandy extends Command
                     'required'      => false,
                     'default_value' => null,
                     'configuration' => [
-                        'type' => 'richtext',
+                        'richtext' => true,
                     ],
                     'system' => false,
                 ]);
@@ -236,7 +236,7 @@ class InstallGetCandy extends Command
                     'required'      => false,
                     'default_value' => null,
                     'configuration' => [
-                        'type' => 'richtext',
+                        'richtext' => true,
                     ],
                     'system' => false,
                 ]);
