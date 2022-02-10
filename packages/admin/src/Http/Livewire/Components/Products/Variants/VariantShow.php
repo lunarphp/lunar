@@ -138,7 +138,7 @@ class VariantShow extends Component
         return array_merge([
             // 'images.*' => 'image',
             'newValues'             => 'array',
-            'image'                 => 'nullable|image',
+            'image'                 => 'nullable',
             'variant.stock'         => 'numeric|max:10000000',
             'variant.tax_class_id'  => 'required',
             'variant.length_value'  => 'numeric|nullable',
@@ -223,6 +223,7 @@ class VariantShow extends Component
                 $this->image->save();
             }
             if ($this->image instanceof TemporaryUploadedFile) {
+                $this->validateOnly('image', ['image' => 'image']);
                 $media = $this->variant->addMedia($this->image->getRealPath())
                     ->preservingOriginal()
                     ->toMediaCollection('variants');
