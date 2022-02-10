@@ -81,7 +81,7 @@ class CartTest extends TestCase
         $cart = Cart::create([
             'currency_id' => $currency->id,
             'channel_id'  => $channel->id,
-            'user_id'     => $user->id,
+            'user_id'     => $user->getKey(),
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
@@ -102,7 +102,7 @@ class CartTest extends TestCase
         $cart = Cart::create([
             'currency_id' => $currency->id,
             'channel_id'  => $channel->id,
-            'user_id'     => $user->id,
+            'user_id'     => $user->getKey(),
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
