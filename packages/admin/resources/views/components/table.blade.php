@@ -7,7 +7,7 @@
       </tr>
     </thead>
 
-    <tbody {{ $attributes->wire('sortable') }} class="relative">
+    <tbody {{ $attributes->wire('sortable') }} @if($attributes->get('row-ref')) x-ref="{{ $attributes->get('row-ref') }}" @endif class="relative">
       {{ $body }}
     </tbody>
   </table>

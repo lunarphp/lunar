@@ -55,12 +55,12 @@ class ProductSearch extends Component
     /**
      * Returns the computed search results.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getResultsProperty()
     {
-        if (!$this->searchTerm) {
-            return;
+        if (! $this->searchTerm) {
+            return null;
         }
 
         return Product::search($this->searchTerm)->paginate($this->maxResults);

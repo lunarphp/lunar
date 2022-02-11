@@ -1,9 +1,16 @@
 <div class="px-4 pb-24 space-y-6 md:px-12">
   <div class="flex items-center justify-between">
     <h1 class="text-xl font-bold md:text-xl">{{ __('adminhub::catalogue.product-types.show.title') }}</h1>
-    <x-hub::button theme="danger" type="button" wire:click="$set('deleteDialogVisible', true)">
-      {{ __('adminhub::catalogue.product-types.show.delete.btn_text') }}
-    </x-hub::button>
+    @if($this->canDelete)
+      <x-hub::button theme="danger" type="button" wire:click="$set('deleteDialogVisible', true)">
+        {{ __('adminhub::catalogue.product-types.show.delete.btn_text') }}
+      </x-hub::button>
+    @endif
+    @if($this->isTheOnlyProductType)
+      <div class="text-sm text-gray-500">
+        {{ __('adminhub::catalogue.product-types.show.delete.minimum_required') }}
+      </div>
+    @endif
   </div>
 
   <x-hub::modal.dialog wire:model="deleteDialogVisible">

@@ -16,7 +16,7 @@ class MenuSection extends MenuSlot
     /**
      * Initialise the class.
      *
-     * @param string $name
+     * @param  string  $name
      */
     public function __construct($name)
     {
@@ -29,9 +29,8 @@ class MenuSection extends MenuSlot
     /**
      * Setter for the name property.
      *
-     * @param string $name
-     *
-     * @return void
+     * @param  string  $name
+     * @return static
      */
     public function name($name)
     {

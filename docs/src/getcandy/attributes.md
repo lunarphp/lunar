@@ -41,6 +41,7 @@ GetCandy\Models\Attribute
 |`GetCandy\FieldTypes\Number`|Integer or Decimal|
 |`GetCandy\FieldTypes\Text`|Single-line, Multi-line, Rich Text|
 |`GetCandy\FieldTypes\TranslatedText`|Single-line, Multi-line, Rich Text|
+|`GetCandy\FieldTypes\ListField`|An re-orderable list of text values|
 
 ::: tip INFO
 More field types will be coming soon.
@@ -195,6 +196,7 @@ class ProductVariant extends Model
 }
 
 ```
+
 
 ## Attribute Groups
 

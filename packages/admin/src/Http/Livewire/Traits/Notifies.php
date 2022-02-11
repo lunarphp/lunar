@@ -7,10 +7,9 @@ trait Notifies
     /**
      * Queues up a notification in either the browser or via a redirect.
      *
-     * @param string $message
-     * @param string $route
-     *
-     * @return void|\Illuminate\Support\Facades\Redirect
+     * @param  string  $message
+     * @param  string  $route
+     * @return void|\Symfony\Component\HttpFoundation\Response
      */
     public function notify($message, $route = null, $routeParams = [], $level = 'success')
     {

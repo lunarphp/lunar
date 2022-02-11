@@ -16,13 +16,13 @@ This repository serves as a monorepo for the main packages that make up GetCandy
 ## Community
 
 - [Join our discord server](https://discord.gg/v6qVWaf) and chat to the developers and people using GetCandy.
-- [We have a roadmap](https://portal.productboard.com/getcandy/1-getcandy) where we will be detailing which features are next.
+- [We have a roadmap](https://github.com/orgs/getcandy/projects/5) where we will be detailing which features are next.
 
 ## Packages in this monorepo
 
 ### Admin hub
 
-The admin hub provided to enable you to manage your store via a modern interface. You can manage all apsects of your store including products, orders, staff members etc. It's built on using Laravel livewire and can be extended to meet each of your stores requirements.
+The admin hub provided to enable you to manage your store via a modern interface. You can manage all aspects of your store including products, orders, staff members etc. It's built on using Laravel livewire and can be extended to meet each of your stores requirements.
 
 ### Core
 

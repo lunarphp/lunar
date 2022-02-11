@@ -39,4 +39,14 @@ class AttributeGroup extends BaseModel
     protected $casts = [
         'name' => AsCollection::class,
     ];
+
+    /**
+     * Return the attributes relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class)->orderBy('position');
+    }
 }

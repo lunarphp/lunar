@@ -36,7 +36,8 @@ use GetCandy\Hub\Http\Livewire\Components\Reporting\ApexChart;
 use GetCandy\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeCreate;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeEdit;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupEdit;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelCreate;
@@ -51,6 +52,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
@@ -69,7 +71,7 @@ use Livewire\Livewire;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
-    protected $configFiles = ['products', 'customers'];
+    protected $configFiles = ['products', 'customers', 'system'];
 
     protected $root = __DIR__.'/..';
 
@@ -266,8 +268,9 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Attributes
         Livewire::component('hub.components.settings.attributes.index', AttributesIndex::class);
-        Livewire::component('hub.components.settings.attributes.create', AttributeCreate::class);
         Livewire::component('hub.components.settings.attributes.show', AttributeShow::class);
+        Livewire::component('hub.components.settings.attributes.attribute-group-edit', AttributeGroupEdit::class);
+        Livewire::component('hub.components.settings.attributes.attribute-edit', AttributeEdit::class);
 
         // Channels
         Livewire::component('hub.components.settings.channels.index', ChannelsIndex::class);
@@ -286,6 +289,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Tags
         Livewire::component('hub.components.settings.tags.index', TagsIndex::class);
+        Livewire::component('hub.components.settings.tags.show', TagShow::class);
 
         // Currencies
         Livewire::component('hub.components.settings.currencies.index', CurrenciesIndex::class);

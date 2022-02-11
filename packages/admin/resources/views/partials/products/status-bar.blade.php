@@ -49,7 +49,7 @@
         From: "opacity-100"
         To: "opacity-0"
     -->
-    <ul x-cloak x-show="showStatusPicker" @click.away="showStatusPicker = false" class="absolute right-0 z-10 -mt-24 overflow-hidden origin-bottom-right bg-white divide-y divide-gray-200 rounded-md shadow-lg bottom-12 w-72 ring-1 ring-black ring-opacity-5 focus:outline-none" tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-0">
+    <ul x-cloak x-show="showStatusPicker" @click.outside="showStatusPicker = false" class="absolute right-0 z-10 -mt-24 overflow-hidden origin-bottom-right bg-white divide-y divide-gray-200 rounded-md shadow-lg bottom-12 w-72 ring-1 ring-black ring-opacity-5 focus:outline-none" tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-0">
       <!--
         Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
 

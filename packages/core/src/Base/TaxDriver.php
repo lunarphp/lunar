@@ -9,8 +9,7 @@ interface TaxDriver
     /**
      * Set the shipping address.
      *
-     * @param \GetCandy\Base\Addressable|null $address
-     *
+     * @param  \GetCandy\Base\Addressable|null  $address
      * @return self
      */
     public function setShippingAddress(Addressable $address = null);
@@ -18,8 +17,7 @@ interface TaxDriver
     /**
      * Set the currency.
      *
-     * @param \GetCandy\Models\Currency $currency
-     *
+     * @param  \GetCandy\Models\Currency  $currency
      * @return self
      */
     public function setCurrency(Currency $currency);
@@ -27,8 +25,7 @@ interface TaxDriver
     /**
      * Set the billing address.
      *
-     * @param \GetCandy\Base\Addressable|null $address
-     *
+     * @param  \GetCandy\Base\Addressable|null  $address
      * @return self
      */
     public function setBillingAddress(Addressable $address = null);
@@ -36,8 +33,7 @@ interface TaxDriver
     /**
      * Set the purchasable item.
      *
-     * @param \GetCandy\Base\Purchasable|null $address
-     *
+     * @param  \GetCandy\Base\Purchasable  $purchasable
      * @return self
      */
     public function setPurchasable(Purchasable $purchasable);
@@ -45,7 +41,7 @@ interface TaxDriver
     /**
      * Return the tax breakdown from a given sub total.
      *
-     * @param int $subTotal
+     * @param  int  $subTotal
      */
     public function getBreakdown($subTotal);
 }

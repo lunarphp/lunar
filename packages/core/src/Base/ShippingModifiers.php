@@ -24,7 +24,7 @@ class ShippingModifiers
     /**
      * Return the shipping modifiers.
      *
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     public function getModifiers()
     {
@@ -35,7 +35,6 @@ class ShippingModifiers
      * Add a shipping modifier.
      *
      * @param $modifier Class reference to the modifier.
-     *
      * @return void
      */
     public function add($modifier)

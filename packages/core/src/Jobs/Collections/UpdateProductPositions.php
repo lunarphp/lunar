@@ -30,8 +30,7 @@ class UpdateProductPositions implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Collection $collection
-     * @param string     $sortType
+     * @param  Collection  $collection
      */
     public function __construct(Collection $collection)
     {

@@ -23,7 +23,8 @@ class Icon extends Component
     /**
      * Initialise the component.
      *
-     * @param string $tag
+     * @param  string  $ref
+     * @param  string  $style
      */
     public function __construct($ref, $style = 'outline')
     {

@@ -28,7 +28,7 @@ trait HasUrls
     {
         $this->urls[] = [
             'slug'        => null,
-            'default'     => !collect($this->urls)->count(),
+            'default'     => ! collect($this->urls)->count(),
             'language_id' => $this->defaultLanguage->id,
         ];
     }
@@ -41,8 +41,7 @@ trait HasUrls
     /**
      * Listener for when the slug is updated.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return void
      */
     public function updatedUrls($value, $key)
@@ -97,7 +96,7 @@ trait HasUrls
             ];
         }
 
-        if (!empty($rules)) {
+        if (! empty($rules)) {
             $this->validate($rules, [
                 'urls.*.slug.unique' => __('adminhub::validation.url_slug_unique'),
             ]);

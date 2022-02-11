@@ -20,7 +20,7 @@ class SettingsMenu
     /**
      * Create our top level menu.
      *
-     * @return void
+     * @return static
      */
     protected function makeTopLevel()
     {

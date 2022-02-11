@@ -4,10 +4,12 @@ namespace GetCandy\Tests\Unit\Models;
 
 use DateTime;
 use GetCandy\Models\Currency;
+use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Models\Transaction;
+use GetCandy\Tests\Stubs\User;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -161,5 +163,29 @@ class OrderTest extends TestCase
 
         $this->assertEquals($charge->id, $order->charges->first()->id);
         $this->assertEquals($refund->id, $order->refunds->first()->id);
+    }
+
+    /** @test */
+    public function can_have_user_and_customer_associated()
+    {
+        $user = User::create([
+            'name'              => 'Test User',
+            'email'             => 'test@domain.com',
+            'email_verified_at' => now(),
+            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token'    => \Illuminate\Support\Str::random(10),
+        ]);
+
+        $customer = $user->customers()->create(
+            Customer::factory()->make()->toArray()
+        );
+
+        $order = Order::factory()->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $user->getKey(),
+        ]);
+
+        $this->assertEquals($customer->id, $order->customer->id);
+        $this->assertEquals($user->getKey(), $order->user->getKey());
     }
 }

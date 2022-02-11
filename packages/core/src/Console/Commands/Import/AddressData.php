@@ -26,7 +26,7 @@ class AddressData extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
     public function handle()
     {
@@ -42,10 +42,10 @@ class AddressData extends Command
                         ->object();
 
         $newCountries = collect($countries)->filter(function ($country) use ($existing) {
-            return !$existing->contains($country->iso3);
+            return ! $existing->contains($country->iso3);
         });
 
-        if (!$newCountries->count()) {
+        if (! $newCountries->count()) {
             $this->info('There are no new countries to import');
 
             return Command::SUCCESS;

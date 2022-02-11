@@ -67,7 +67,7 @@ class LanguageCreate extends Component
      */
     public function toggleDefault()
     {
-        $this->language->default = !$this->language->default;
+        $this->language->default = ! $this->language->default;
     }
 
     /**

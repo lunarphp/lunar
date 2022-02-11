@@ -3,11 +3,13 @@
 namespace GetCandy\Tests\Unit\Models;
 
 use GetCandy\Models\Channel;
+use GetCandy\Models\Collection;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductType;
 use GetCandy\Tests\TestCase;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -37,6 +39,16 @@ class ProductTest extends TestCase
             ]);
 
         $this->assertEquals($attribute_data, $product->attribute_data);
+    }
+
+    /**
+     * @test
+     * */
+    public function takes_scout_prefix_into_account()
+    {
+        $expected = config('scout.prefix').'products_en';
+
+        $this->assertEquals($expected, (new Product)->searchableAs());
     }
 
     /** @test */
@@ -88,7 +100,7 @@ class ProductTest extends TestCase
                 'channelable_type' => Product::class,
                 'channelable_id'   => $product->id,
                 'enabled'          => '1',
-                'published_at'     => $publishDate->toDateTimeString(),
+                'starts_at'        => $publishDate->toDateTimeString(),
             ],
         );
 
@@ -354,7 +366,7 @@ class ProductTest extends TestCase
         $target = Product::factory()->create();
 
         $parent->associations()->create([
-            'product_target_id' => $parent->id,
+            'product_parent_id' => $parent->id,
             'product_target_id' => $target->id,
             'type'              => 'custom-type',
         ]);
@@ -436,5 +448,19 @@ class ProductTest extends TestCase
 
         $this->assertCount(1, $parent->refresh()->associations);
         $this->assertEquals('up-sell', $parent->refresh()->associations->first()->type);
+    }
+
+    /** @test */
+    public function can_have_collections_relationship()
+    {
+        $collection = Collection::factory()->create();
+        $product = Product::factory()->create();
+        $product->collections()->sync($collection);
+
+        $this->assertInstanceOf(EloquentCollection::class, $product->collections);
+        $this->assertCount(1, $product->collections);
+        $this->assertInstanceOf(Collection::class, $product->collections->first());
+        $this->assertNotNull($product->collections->first()->pivot);
+        $this->assertNotNull($product->collections->first()->pivot->position);
     }
 }

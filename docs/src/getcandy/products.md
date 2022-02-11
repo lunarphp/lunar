@@ -15,7 +15,6 @@ GetCandy\Models\Product::create([
     'product_type_id' => $productTypeId,
     'status' => 'published',
     'brand' => 'Foo',
-    'sku' => 'foobar',
     'attribute_data' => [
         'name' => new TranslatedText(collect([
             'en' => new Text('FooBar'),
@@ -78,6 +77,8 @@ You can associate attributes to a product type like so (it's just a straight for
 ```php
 $productType->mappedAttributes()->associate([ /* attribute ids ... */ ]);
 ```
+
+You can associate both `Product` and `ProductVariant` attributes to a product type which will then display on either the product or product variant when editing.
 
 ::: warning
 If you decide to delete an attribute, this will cause the association to be dropped and you could lose data.
@@ -448,6 +449,79 @@ Price::create([
 
 In the above example if you order between 1 and 9 items you will pay `1.99` per item. But if you order at least 10 you will pay `1.50` per item.
 
+### Fetching the price
+
+Once you've got your pricing all set up, you're likely going to want to display it on your storefront. We've created a `PricingManager` which is available via a facade to make this process as painless as possible.
+
+To get the pricing for a product you can simple use the following helpers:
+
+#### Minimum example
+
+A quantity of 1 is implied when not passed.
+
+```php
+$pricing = \GetCandy\Facades\Pricing::for($variant);
+```
+
+#### With Quantities
+```php
+$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant);
+```
+
+#### With Customer Groups
+
+If you don't pass in a customer group, GetCandy will use the default, including any pricing that isn't specific to a customer group.
+
+```php
+$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant);
+
+// Or a single customer group
+$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant);
+```
+
+#### Specific to a user
+```php
+$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant);
+```
+
+#### With a specific currency
+
+If you don't pass in a currency, the default is implied.
+
+```php
+$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant);
+```
+
+::: danger Be aware
+If you try and fetch a price for a currency that doesn't exist, a ` GetCandy\Exceptions\MissingCurrencyPriceException` exception will be thrown.
+:::
+
+---
+
+This will return a `PricingResponse` object which you can interact with to display the correct prices. Unless it's a collection, each property will return a `GetCandy\Models\Price` object.
+
+```php
+/**
+ * The price that was matched given the criteria.
+ */
+$pricing->matched;
+
+/**
+ * The base price associated to the variant.
+ */
+$pricing->base;
+
+/**
+ * A collection of all the price tiers available for the given criteria.
+ */
+$pricing->tiers;
+
+/**
+ * All customer group pricing available for the given criteria.
+ */
+$pricing->customerGroupPrices;
+```
+
 ## Full Example
 
 For this example, we're going to be creating some Dr. Martens boots. Below is a screenshot of what we're aiming for:
@@ -557,7 +631,7 @@ First we just need to grab the values we want to use to generate the variants. S
 ```php
 $optionValueIds = $size->values->merge($colour->values)->pluck('id');
 
-$product->generateVariants($optionValueIds);
+\GetCandy\Hub\Jobs\Products\GenerateVariants::dispatch($product, $optionValueIds);
 ```
 
 ::: tip

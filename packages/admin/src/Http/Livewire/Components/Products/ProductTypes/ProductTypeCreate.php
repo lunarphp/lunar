@@ -3,7 +3,9 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
 
 use GetCandy\Models\Attribute;
+use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
+use GetCandy\Models\ProductVariant;
 
 class ProductTypeCreate extends AbstractProductType
 {
@@ -16,14 +18,14 @@ class ProductTypeCreate extends AbstractProductType
     {
         $this->productType = new ProductType();
 
-        // Start off by adding all system attributes.
-        $this->selectedAttributes = Attribute::system(ProductType::class)->get();
+        $this->selectedProductAttributes = Attribute::system(Product::class)->get();
+        $this->selectedVariantAttributes = Attribute::system(ProductVariant::class)->get();
     }
 
     /**
      * Register the validation rules.
      *
-     * @return void
+     * @return array
      */
     protected function rules()
     {
@@ -44,7 +46,10 @@ class ProductTypeCreate extends AbstractProductType
         $this->productType->save();
 
         $this->productType->mappedAttributes()->sync(
-            $this->selectedAttributes->pluck('id')
+            array_merge(
+                $this->selectedProductAttributes->pluck('id')->toArray(),
+                $this->selectedVariantAttributes->pluck('id')->toArray()
+            )
         );
 
         $this->notify(

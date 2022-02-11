@@ -47,12 +47,12 @@ class CartManager
     /**
      * Initialize the cart manager.
      *
-     * @param Cart $cart
+     * @param  Cart  $cart
      */
     public function __construct(
         protected Cart $cart,
     ) {
-        $this->customerGroups = $cart->user ?
+        $this->customerGroups = $cart->user && $cart->user->customers->count() ?
             $cart->user->customers->map(function ($customer) {
                 return $customer->customerGroups;
             })->flatten()
@@ -144,11 +144,10 @@ class CartManager
     /**
      * Add a line to the cart.
      *
-     * @param Purchasable $purchasable
-     * @param int         $quantity
-     * @param array       $meta
-     *
-     * @return void
+     * @param  Purchasable  $purchasable
+     * @param  int  $quantity
+     * @param  array  $meta
+     * @return bool
      */
     public function add(Purchasable $purchasable, int $quantity = 1, $meta = [])
     {
@@ -165,10 +164,10 @@ class CartManager
         }
 
         // Do we already have this line?
-        $existing = $this->cart->lines->first(function ($line) use ($purchasable, $meta) {
+        $existing = $this->cart->load('lines')->lines->first(function ($line) use ($purchasable, $meta) {
             return $line->purchasable_id == $purchasable->id &&
             $line->purchasable_type == get_class($purchasable) &&
-            json_encode($line->meta) == json_encode($meta);
+            json_encode($line->meta ?: []) == json_encode($meta ?: []);
         });
 
         if ($existing) {
@@ -192,11 +191,10 @@ class CartManager
     /**
      * Remove a cart line from the cart.
      *
-     * @param int|string $cartLineId
+     * @param  int|string  $cartLineId
+     * @return \GetCandy\Models\Cart
      *
      * @throws \GetCandy\Exceptions\CartLineIdMismatchException
-     *
-     * @return \GetCandy\Models\Cart
      */
     public function removeLine($cartLineId)
     {
@@ -204,7 +202,7 @@ class CartManager
         // belong to this cart, throw an exception.
         $line = $this->cart->lines()->whereId($cartLineId)->first();
 
-        if (!$line) {
+        if (! $line) {
             throw new CartLineIdMismatchException(
                 __('getcandy::exceptions.cart_line_id_mismatch')
             );
@@ -218,8 +216,7 @@ class CartManager
     /**
      * Update cart lines.
      *
-     * @param Collection $lines
-     *
+     * @param  Collection  $lines
      * @return \GetCandy\Models\Cart
      */
     public function updateLines(Collection $lines)
@@ -240,10 +237,9 @@ class CartManager
     /**
      * Update a cart line.
      *
-     * @param string|int $id
-     * @param int        $quantity
-     * @param array|null $meta
-     *
+     * @param  string|int  $id
+     * @param  int  $quantity
+     * @param  array|null  $meta
      * @return void
      */
     public function updateLine($id, int $quantity, $meta = null)
@@ -269,22 +265,21 @@ class CartManager
     /**
      * Associate a user to the cart.
      *
-     * @param User   $user
-     * @param string $policy
-     *
+     * @param  User  $user
+     * @param  string  $policy
      * @return \GetCandy\Models\Cart
      */
     public function associate(User $user, $policy = 'merge')
     {
         if ($policy == 'merge') {
-            $userCart = Cart::whereUserId($user->id)->unMerged()->latest()->first();
+            $userCart = Cart::whereUserId($user->getKey())->unMerged()->latest()->first();
             if ($userCart) {
                 $this->cart = app(MergeCart::class)->execute($userCart, $this->cart);
             }
         }
 
         if ($policy == 'override') {
-            $userCart = Cart::whereUserId($user->id)->unMerged()->latest()->first();
+            $userCart = Cart::whereUserId($user->getKey())->unMerged()->latest()->first();
             if ($userCart && $userCart->id != $this->cart->id) {
                 $userCart->update([
                     'merged_id' => $userCart->id,
@@ -293,7 +288,7 @@ class CartManager
         }
 
         $this->cart->update([
-            'user_id' => $user->id,
+            'user_id' => $user->getKey(),
         ]);
 
         return $this->cart;
@@ -302,14 +297,11 @@ class CartManager
     /**
      * Set the shipping address.
      *
-     * @param \GetCandy\Base\Addressable|array $address
-     *
-     * @return self
+     * @param  \GetCandy\Base\Addressable|array  $address
+     * @return \GetCandy\Models\Cart
      */
     public function setShippingAddress(array|Addressable $address)
     {
-        $this->cart->shippingAddress?->delete();
-
         $this->addAddress($address, 'shipping');
 
         $this->cart->load('shippingAddress');
@@ -320,14 +312,11 @@ class CartManager
     /**
      * Set the billing address.
      *
-     * @param array|Addressable $address
-     *
+     * @param  array|Addressable  $address
      * @return self
      */
     public function setBillingAddress(array|Addressable $address)
     {
-        $this->cart->billingAddress?->delete();
-
         $this->addAddress($address, 'billing');
 
         $this->cart->load('billingAddress');
@@ -338,15 +327,14 @@ class CartManager
     /**
      * Set the shipping option to the shipping address.
      *
-     * @param ShippingOption $option
+     * @param  ShippingOption  $option
+     * @return self
      *
      * @throws \GetCandy\Exceptions\Carts\ShippingAddressMissingException
-     *
-     * @return self
      */
     public function setShippingOption(ShippingOption $option)
     {
-        if (!$this->cart->shippingAddress) {
+        if (! $this->cart->shippingAddress) {
             throw new ShippingAddressMissingException();
         }
         $this->cart->shippingAddress->shippingOption = $option;
@@ -362,7 +350,7 @@ class CartManager
 
     public function getShippingOption()
     {
-        if (!$this->cart->shippingAddress) {
+        if (! $this->cart->shippingAddress) {
             return null;
         }
 
@@ -409,20 +397,41 @@ class CartManager
     /**
      * Add an address to the.
      *
-     * @param array|Addressable $address
+     * @param  array|Addressable  $address
      * @param [type] $type
-     *
      * @return void
      */
     private function addAddress(array|Addressable $address, $type)
     {
-        if ($address instanceof Addressable) {
-            $address = $address->only(
-                (new CartAddress())->getFillable()
+        // Do we already have an address for this type?
+        $existing = $this->cart->addresses()->whereType($type)->first();
+
+        if (is_array($address)) {
+            $address = new CartAddress($address);
+        }
+
+        if ($existing) {
+            $address = $existing->fill(
+                $address->getAttributes()
             );
         }
-        $address['type'] = $type;
-        $this->cart->addresses()->create($address);
+
+        // If we have an id but the types don't match. We need to treat
+        // it as a new address being added using an existing as the base.
+        if ($address->type != $type && $address->id) {
+            $address->id = null;
+        }
+
+        // Force the type.
+        $address->type = $type;
+
+        if ($address->id) {
+            $this->cart->addresses()->save($address);
+        } else {
+            $this->cart->addresses()->create(
+                $address->toArray()
+            );
+        }
     }
 
     /**

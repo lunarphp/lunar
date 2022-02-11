@@ -4,6 +4,7 @@ namespace GetCandy\Actions\Carts;
 
 use GetCandy\Base\Addressable;
 use GetCandy\DataTypes\Price;
+use GetCandy\Facades\Pricing;
 use GetCandy\Managers\TaxManager;
 use GetCandy\Models\CartLine;
 use Illuminate\Support\Collection;
@@ -19,10 +20,9 @@ class CalculateLine
     /**
      * Execute the action.
      *
-     * @param CartLine                                 $cartLine
-     * @param \Illuminate\Database\Eloquent\Collection $customerGroups
-     *
-     * @return void
+     * @param  \GetCandy\Models\CartLine  $cartLine
+     * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
+     * @return \GetCandy\Models\CartLine
      */
     public function execute(
         CartLine $cartLine,
@@ -34,8 +34,14 @@ class CalculateLine
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();
 
+        $priceResponse = Pricing::currency($cart->currency)
+            ->qty($cartLine->quantity)
+            ->currency($cart->currency)
+            ->customerGroups($customerGroups)
+            ->for($purchasable);
+
         $price = new Price(
-            $purchasable->getPrice($cartLine->quantity, $cart->currency, $customerGroups),
+            $priceResponse->matched->price->value,
             $cart->currency,
             $purchasable->getUnitQuantity()
         );

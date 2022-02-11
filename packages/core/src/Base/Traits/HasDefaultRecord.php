@@ -7,8 +7,7 @@ trait HasDefaultRecord
     /**
      * Return the default scope.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
     public function scopeDefault($query, $default = true)
@@ -19,7 +18,7 @@ trait HasDefaultRecord
     /**
      * Get the default record.
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return self
      */
     public static function getDefault()
     {

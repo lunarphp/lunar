@@ -5,10 +5,14 @@
 ## Requirements
 
 - PHP ^8.0
-- Laravel 8+
+- Laravel 8
 - MySQL 5.7+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - GD PHP extension (used for image manipulation)
+
+::: tip Laravel 9
+Support for Laravel 9 will be coming as soon as our dependencies are updated.
+:::
 
 ## Install GetCandy
 
@@ -26,6 +30,21 @@ composer require getcandy/admin
 
 ```sh
 php artisan vendor:publish --tag=getcandy
+```
+
+## Add the `GetCandyUser` Trait
+
+Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
+
+```php
+use GetCandy\Base\Traits\GetCandyUser;
+// ...
+
+class User extends Authenticatable
+{
+    use GetCandyUser;
+    // ...
+}
 ```
 
 ## Search Configuration
@@ -114,6 +133,10 @@ php artisan getcandy:hub:install
 
 ::: tip
 GetCandy uses table prefixes to avoid conflicts with your app's tables. You can change this in the [configuration](/configuration.html).
+:::
+
+::: warning
+GetCandy assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/getcandy/database.php` to set the correct field type before running the migrations.
 :::
 
 As you'd expect, there's quite a few tables GetCandy needs to function, so run the migrations now.

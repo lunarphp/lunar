@@ -46,7 +46,6 @@ module.exports = {
   themeConfig: {
     logo: '/getcandy_icon.svg',
     repo: 'getcandy/getcandy',
-    editLinks: false,
     docsDir: 'docs/src',
     docsRepo: 'getcandy/getcandy',
     docsBranch: 'main',
@@ -62,7 +61,7 @@ module.exports = {
     nav: [
       {
         text: 'Roadmap',
-        link: 'https://portal.productboard.com/getcandy/1-getcandy',
+        link: 'https://github.com/orgs/getcandy/projects/5',
       },
       {
         text: 'Discord',
@@ -110,8 +109,15 @@ module.exports = {
           '/getcandy/taxation',
           '/getcandy/urls'
         ]
+      },
+      {
+        title: 'Extending GetCandy',
+        collapsable: false, // optional, defaults to true
+        children: [
+          '/extending/field-types',
+        ]
       }
-    ]
+    ],
   },
 
   /**

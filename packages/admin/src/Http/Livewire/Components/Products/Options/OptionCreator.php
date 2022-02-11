@@ -74,9 +74,9 @@ class OptionCreator extends Component
     public function create()
     {
         $this->validate([
-            "name.{$this->defaultLanguage->code}" => 'string|required|max:255',
-            'values'                              => 'array|min:1',
-            'values.*.name.en'                    => 'required|string|max:255',
+            "name.{$this->defaultLanguage->code}"          => 'string|required|max:255',
+            'values'                                       => 'array|min:1',
+            "values.*.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
         ]);
 
         $this->option->name = $this->name;
@@ -111,8 +111,7 @@ class OptionCreator extends Component
     /**
      * Removes a value from the value collection.
      *
-     * @param int $index
-     *
+     * @param  int  $index
      * @return void
      */
     public function removeValue($index)

@@ -10,9 +10,7 @@ class SortProducts
     /**
      * Execute the action.
      *
-     * @param Model                          $owner
-     * @param \Illuminate\Support\Collection $groups
-     *
+     * @param  \GetCandy\Models\Collection  $collection
      * @return void
      */
     public function execute(Collection $collection)

@@ -3,6 +3,7 @@
 namespace GetCandy\Tests\Unit\Models;
 
 use GetCandy\Exceptions\MissingCurrencyPriceException;
+use GetCandy\Facades\Pricing;
 use GetCandy\Models\Currency;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
@@ -44,6 +45,7 @@ class ProductVariantTest extends TestCase
             'product_id' => $product->id,
         ]);
         $currency = Currency::factory()->create([
+            'default'        => true,
             'decimal_places' => 2,
         ]);
 
@@ -90,11 +92,11 @@ class ProductVariantTest extends TestCase
 
         $variant = $variant->load('prices');
 
-        $this->assertEquals(100, $variant->getPrice(1, $currency));
-        $this->assertEquals(60, $variant->getPrice(5, $currency));
-        $this->assertEquals(30, $variant->getPrice(5, $currency, collect([$groupB])));
-        $this->assertEquals(80, $variant->getPrice(1, $currency, collect([$groupB])));
-        $this->assertEquals(90, $variant->getPrice(1, $currency, collect([$groupA])));
+        $this->assertEquals(Pricing::for($variant)->matched->price->value, 100);
+        $this->assertEquals(Pricing::qty(5)->for($variant)->matched->price->value, 60);
+        $this->assertEquals(Pricing::qty(5)->customerGroup($groupB)->for($variant)->matched->price->value, 30);
+        $this->assertEquals(Pricing::customerGroup($groupB)->for($variant)->matched->price->value, 80);
+        $this->assertEquals(Pricing::customerGroup($groupA)->for($variant)->matched->price->value, 90);
     }
 
     /** @test */
@@ -135,10 +137,10 @@ class ProductVariantTest extends TestCase
 
         $variant = $variant->load('prices');
 
-        $this->assertEquals(100, $variant->getPrice(1, $currencyA));
-        $this->assertEquals(200, $variant->getPrice(1, $currencyB));
+        $this->assertEquals(Pricing::currency($currencyA)->for($variant)->matched->price->value, 100);
+        $this->assertEquals(Pricing::currency($currencyB)->for($variant)->matched->price->value, 200);
 
         $this->expectException(MissingCurrencyPriceException::class);
-        $variant->getPrice(1, $currencyC);
+        $this->assertEquals(Pricing::currency($currencyC)->for($variant)->matched->price->value, 200);
     }
 }

@@ -244,7 +244,7 @@ Once you have that, just extend the tax manager in your service provider.
 
 public function register()
 {
-    \GetCandy\Managers\TaxManager::extend('taxjar', function ($app) {
+    \GetCandy\Facades\Taxes::extend('taxjar', function ($app) {
         return $app->make(TaxJar::class);
     })
 }

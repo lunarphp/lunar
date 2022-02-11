@@ -15,6 +15,12 @@ class ProductShow extends AbstractProduct
         $this->variantsEnabled = $this->getVariantsCount() > 1;
         $this->variant = $this->product->variants->first();
 
+        $this->variantAttributes = $this->parseAttributes(
+            $this->availableVariantAttributes,
+            $this->variant->attribute_data,
+            'variantAttributes',
+        );
+
         $this->syncAvailability();
     }
 

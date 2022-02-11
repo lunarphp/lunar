@@ -2,14 +2,17 @@
 
 namespace GetCandy\Tests\Stubs;
 
+use GetCandy\Base\Traits\GetCandyUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use GetCandyUser;
     use HasFactory;
     use Notifiable;
+    use GetCandyUser;
 
     /**
      * The attributes that are mass assignable.
@@ -44,7 +47,7 @@ class User extends Authenticatable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CustomerFactory
+     * @return \GetCandy\Tests\Stubs\UserFactory
      */
     protected static function newFactory(): UserFactory
     {

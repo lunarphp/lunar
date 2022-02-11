@@ -22,15 +22,14 @@ class CartSessionAuthListener
     /**
      * Handle the login event.
      *
-     * @param \App\Events\OrderShipped $event
-     *
+     * @param  \Illuminate\Auth\Events\Login  $event
      * @return void
      */
     public function login(Login $event)
     {
         $currentCart = CartSession::current();
 
-        if ($currentCart && !$currentCart->user_id) {
+        if ($currentCart && ! $currentCart->user_id) {
             CartSession::associate(
                 $currentCart,
                 $event->user,
@@ -38,9 +37,9 @@ class CartSessionAuthListener
             );
         }
 
-        if (!$currentCart) {
+        if (! $currentCart) {
             // Does this user have a cart?
-            $userCart = Cart::whereUserId($event->user->id)->latest()->first();
+            $userCart = Cart::whereUserId($event->user->getKey())->latest()->first();
 
             if ($userCart) {
                 CartSession::use($userCart);
@@ -51,8 +50,7 @@ class CartSessionAuthListener
     /**
      * Handle the logout event.
      *
-     * @param \App\Events\OrderShipped $event
-     *
+     * @param  \Illuminate\Auth\Events\Logout  $event
      * @return void
      */
     public function logout(Logout $event)

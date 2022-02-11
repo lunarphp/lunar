@@ -22,7 +22,7 @@
         @endif
       </div>
       <div class="space-y-4">
-        <x-hub::input.fileupload wire:model="image" />
+        <x-hub::input.fileupload wire:model="image" :filetypes="['image/*']" />
 
         <div>
           <div class="flex space-x-4">
@@ -46,7 +46,7 @@
               Select an existing product image
             </x-slot>
             <x-slot name="content">
-              <div class="grid grid-cols-3 gap-4">
+              <div class="grid grid-cols-4 gap-4 overflow-y-auto max-h-96">
                 @forelse($product->media as $productImage)
                   <label class="cursor-pointer">
                     <input wire:model="imageToSelect" name="imageToSelect" value="{{ $productImage->id }}" class="sr-only peer" type="radio">

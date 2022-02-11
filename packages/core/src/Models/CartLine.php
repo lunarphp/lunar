@@ -59,7 +59,7 @@ class CartLine extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CartFactory
+     * @return \GetCandy\Database\Factories\CartLineFactory
      */
     protected static function newFactory(): CartLineFactory
     {

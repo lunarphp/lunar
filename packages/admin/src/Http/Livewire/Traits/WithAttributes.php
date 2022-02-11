@@ -4,8 +4,9 @@ namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
+use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Language;
-use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 trait WithAttributes
 {
@@ -38,9 +39,23 @@ trait WithAttributes
 
     protected function mapAttributes()
     {
-        $this->attributeMapping = $this->availableAttributes->mapWithKeys(function ($attribute, $index) {
-            $data = $this->attributeData ?
-                $this->attributeData->first(fn ($value, $handle) => $handle == $attribute->handle)
+        $this->attributeMapping = $this->parseAttributes(
+            $this->availableAttributes,
+            $this->attributeData
+        );
+    }
+
+    /**
+     * Parse the attributes into the correct collection format.
+     *
+     * @param  \Illuminate\Support\Collection  $attributes
+     * @return \Illuminate\Support\Collection
+     */
+    protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
+    {
+        return $attributes->mapWithKeys(function ($attribute) use ($key, $existingData) {
+            $data = $existingData ?
+                $existingData->first(fn ($value, $handle) => $handle == $attribute->handle)
                 : null;
 
             $value = $data ? $data->getValue() : null;
@@ -49,32 +64,49 @@ trait WithAttributes
                 $value = $this->prepareTranslatedText($value);
             }
 
-            return [$attribute->id => [
-                'name'          => $attribute->translate('name'),
-                'group'         => $attribute->attributeGroup->translate('name'),
-                'group_handle'  => $attribute->attributeGroup->handle,
-                'id'            => $attribute->handle,
-                'signature'     => 'attributeMapping.'.$attribute->id.'.data',
-                'type'          => $attribute->type,
-                'handle'        => $attribute->handle,
-                'configuration' => $attribute->configuration,
-                'required'      => $attribute->required,
-                'component'     => Str::kebab(class_basename(
-                    $attribute->type
-                )),
-                'data' => $value,
+            $reference = 'a_'.$attribute->id;
+
+            return [$reference => [
+                'name'           => $attribute->translate('name'),
+                'group'          => $attribute->attributeGroup->translate('name'),
+                'group_id'       => $attribute->attributeGroup->id,
+                'group_handle'   => $attribute->attributeGroup->handle,
+                'group_position' => $attribute->attributeGroup->position,
+                'id'             => $attribute->handle,
+                'signature'      => "{$key}.{$reference}.data",
+                'type'           => $attribute->type,
+                'handle'         => $attribute->handle,
+                'configuration'  => $attribute->configuration,
+                'required'       => $attribute->required,
+                'view'           => app()->make($attribute->type)->getView(),
+                'validation'     => $attribute->validation_rules,
+                'data'           => $value,
             ]];
         });
+    }
+
+    public function getAttributeGroupsProperty()
+    {
+        $groupIds = $this->attributeMapping->pluck('group_id')->unique();
+
+        return AttributeGroup::whereIn('id', $groupIds)
+            ->orderBy('position')
+            ->get()->map(function ($group) {
+                return [
+                    'model'  => $group,
+                    'fields' => $this->attributeMapping->filter(fn ($att) => $att['group_id'] == $group->id),
+                ];
+            });
     }
 
     /**
      * Prepares attribute data to be ready for saving.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
-    public function prepareAttributeData()
+    public function prepareAttributeData($attributes = null)
     {
-        return collect($this->attributeMapping)->mapWithKeys(function ($attribute) {
+        return collect(($attributes ?? $this->attributeMapping))->mapWithKeys(function ($attribute) {
             $value = null;
             switch ($attribute['type']) {
                 case TranslatedText::class:
@@ -82,7 +114,7 @@ trait WithAttributes
                     break;
 
                 default:
-                    $value = new Text($attribute['data']);
+                    $value = new $attribute['type']($attribute['data']);
                     break;
             }
 
@@ -95,8 +127,7 @@ trait WithAttributes
     /**
      * Map translated values into field types.
      *
-     * @param array $data
-     *
+     * @param  array  $data
      * @return \GetCandy\FieldTypes\TranslatedText
      */
     protected function mapTranslatedText($data)
@@ -112,8 +143,7 @@ trait WithAttributes
     /**
      * Prepare translated text field for Livewire modeling.
      *
-     * @param string|array $value
-     *
+     * @param  string|array  $value
      * @return array
      */
     protected function prepareTranslatedText($value)
@@ -142,15 +172,20 @@ trait WithAttributes
     {
         $rules = [];
         foreach ($this->attributeMapping as $index => $attribute) {
+            $validation = $attribute['validation'] ? explode(',', $attribute['validation']) : [];
+
+            $field = $attribute['signature'];
+
             if (($attribute['required'] ?? false) || ($attribute['system'] ?? false)) {
                 if ($attribute['type'] == TranslatedText::class) {
                     // Get the default language and make that the only one required.
-                    $rules["attributeMapping.{$index}.data.{$this->defaultLanguage->code}"] = 'required';
-                    continue;
+                    $field = "{$attribute['signature']}.{$this->defaultLanguage->code}";
                 }
 
-                $rules["attributeMapping.{$index}.data"] = 'required';
+                $validation = array_merge($validation, ['required']);
             }
+
+            $rules[$field] = implode(',', $validation);
         }
 
         return $rules;

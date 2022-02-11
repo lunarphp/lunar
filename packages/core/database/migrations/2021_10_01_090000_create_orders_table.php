@@ -9,11 +9,8 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create($this->prefix.'orders', function (Blueprint $table) {
-            $userModel = config('auth.providers.users.model');
             $table->bigIncrements('id');
-            $table->foreignId('user_id')->nullable()->constrained(
-                (new $userModel())->getTable()
-            );
+            $table->userForeignKey(nullable: true);
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
             $table->string('status')->index();
             $table->string('reference')->nullable()->unique();

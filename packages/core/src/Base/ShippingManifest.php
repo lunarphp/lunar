@@ -34,7 +34,7 @@ class ShippingManifest implements ShippingManifestInterface
         });
 
         // Does this option already exist?
-        if (!$exists) {
+        if (! $exists) {
             $this->options->push($option);
         }
 

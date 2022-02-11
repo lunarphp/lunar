@@ -11,13 +11,12 @@ class CartLineObserver
     /**
      * Handle the CartLine "creating" event.
      *
-     * @param \App\Models\CartLine $user
-     *
+     * @param  \GetCandy\Models\CartLine  $cartLine
      * @return void
      */
     public function creating(CartLine $cartLine)
     {
-        if (!$cartLine->purchasable instanceof Purchasable) {
+        if (! $cartLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($cartLine->purchasable_type);
         }
     }
@@ -25,13 +24,12 @@ class CartLineObserver
     /**
      * Handle the CartLine "updated" event.
      *
-     * @param \App\Models\CartLine $user
-     *
+     * @param  \GetCandy\Models\CartLine  $cartLine
      * @return void
      */
     public function updating(CartLine $cartLine)
     {
-        if (!$cartLine->purchasable instanceof Purchasable) {
+        if (! $cartLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($cartLine->purchasable_type);
         }
     }

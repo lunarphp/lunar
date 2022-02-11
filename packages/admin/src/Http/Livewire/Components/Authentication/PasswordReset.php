@@ -66,7 +66,7 @@ class PasswordReset extends Component
      */
     public function mount()
     {
-        if ($this->token && !request()->hasValidSignature()) {
+        if ($this->token && ! request()->hasValidSignature()) {
             $this->invalid = true;
         }
     }
@@ -78,7 +78,7 @@ class PasswordReset extends Component
      */
     public function process()
     {
-        if (!$this->token) {
+        if (! $this->token) {
             return $this->sendResetEmail();
         }
 

@@ -181,14 +181,17 @@ class ProductShowTest extends TestCase
             ->assertSet('variant.ean', $variant->ean)
             ->assertSet('variant.gtin', $variant->gtin)
             ->assertSet('variant.mpn', $variant->mpn)
+            ->assertSet('vartian.tax_ref', $variant->tax_ref)
             ->set('variant.sku', 'FOOBAR')
             ->set('variant.ean', 'NEWEAN')
             ->set('variant.gtin', 'NEWGTIN')
             ->set('variant.mpn', 'NEWMPN')
+            ->set('variant.tax_ref', 'CUSTOMTAXREF')
             ->assertSet('variant.ean', 'NEWEAN')
             ->assertSet('variant.gtin', 'NEWGTIN')
             ->assertSet('variant.mpn', 'NEWMPN')
             ->assertSet('variant.sku', 'FOOBAR')
+            ->assertSet('variant.tax_ref', 'CUSTOMTAXREF')
             ->call('save')
             ->assertHasNoErrors([
                 'variant.sku',
@@ -278,8 +281,8 @@ class ProductShowTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product->refresh(),
-            ])->set('attributeMapping.'.$name->id.'.data', 'nouseforaname')
-            ->set('attributeMapping.'.$description->id.'.data', 'nouseforadescription');
+            ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
+            ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription');
 
         $component->call('save')->assertHasNoErrors();
 

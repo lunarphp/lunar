@@ -79,9 +79,8 @@ class Attribute extends BaseModel
     /**
      * Apply the system scope to the query builder.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string                                $type
-     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $type
      * @return void
      */
     public function scopeSystem(Builder $query, $type)

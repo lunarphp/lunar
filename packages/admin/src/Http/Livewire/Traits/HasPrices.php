@@ -106,7 +106,7 @@ trait HasPrices
 
         DB::transaction(function () use ($model) {
             // Save customer group pricing.
-            if (!$this->customerPricingEnabled) {
+            if (! $this->customerPricingEnabled) {
                 // If customer group pricing isn't enabled, we need to remove the prices for customer groups.
                 $model->prices()->whereNotNull('customer_group_id')->whereTier(1)->delete();
                 $this->customerGroupPrices = collect();
@@ -141,8 +141,7 @@ trait HasPrices
     /**
      * Method to remove a tier from the stack.
      *
-     * @param int $index
-     *
+     * @param  int  $index
      * @return void
      */
     public function removeTier($index)
@@ -153,8 +152,7 @@ trait HasPrices
     /**
      * Set the currency using the provided id.
      *
-     * @param int|string $currencyId
-     *
+     * @param  int|string  $currencyId
      * @return void
      */
     public function setCurrency($currencyId)
@@ -165,19 +163,18 @@ trait HasPrices
     /**
      * Listener method when customer group pricing is toggled.
      *
-     * @param bool $value
-     *
+     * @param  bool  $value
      * @return void
      */
     public function updatedCustomerPricingEnabled($value)
     {
-        if (!$value || $this->customerGroupPrices->count()) {
+        if (! $value || $this->customerGroupPrices->count()) {
             return;
         }
         $groups = $this->customerGroupPrices->toArray();
 
         foreach ($this->customerGroups as $group) {
-            if (!($groups[$group->id] ?? false)) {
+            if (! ($groups[$group->id] ?? false)) {
                 $groups[$group->id] = collect($this->basePrices)->map(function ($price) use ($group) {
                     return [
                         'price'             => $price['price'],
@@ -211,7 +208,7 @@ trait HasPrices
     /**
      * Return the computed default currency.
      *
-     * @return void
+     * @return \GetCandy\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {
@@ -231,13 +228,12 @@ trait HasPrices
     /**
      * Return mapped base prices.
      *
-     * @param \Illuminate\Support\Collection $prices
-     *
+     * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
     private function mapBasePrices(Collection $prices)
     {
-        $prices = $prices->filter(fn ($price) => !$price->customer_group_id)
+        $prices = $prices->filter(fn ($price) => ! $price->customer_group_id)
             ->mapWithKeys(function ($price) {
                 return [
                     $price->currency->code => [
@@ -267,8 +263,7 @@ trait HasPrices
     /**
      * Return mapped customer group prices.
      *
-     * @param \Illuminate\Support\Collection $prices
-     *
+     * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
     private function mapCustomerGroupPrices(Collection $prices)
@@ -277,7 +272,7 @@ trait HasPrices
             ->groupBy('customer_group_id')
             ->mapWithKeys(function ($prices, $groupId) {
                 foreach ($this->currencies as $currency) {
-                    if (!$prices->first(fn ($price) => $price->currency_id == $currency->id)) {
+                    if (! $prices->first(fn ($price) => $price->currency_id == $currency->id)) {
                         $prices->push(new Price([
                             'customer_group_id' => $groupId,
                             'currency_id'       => $currency->id,
@@ -304,8 +299,7 @@ trait HasPrices
     /**
      * Return mapped tiered pricing.
      *
-     * @param \Illuminate\Support\Collection $prices
-     *
+     * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
     private function mapTieredPrices(Collection $prices)
@@ -353,7 +347,7 @@ trait HasPrices
     /**
      * Define validation rules for images.
      *
-     * @return bool
+     * @return array
      */
     protected function hasPriceValidationRules()
     {
@@ -417,7 +411,7 @@ trait HasPrices
                 return strpos($attribute, $currency->code) !== false;
             });
 
-            if (!$currency) {
+            if (! $currency) {
                 return $message;
             }
 

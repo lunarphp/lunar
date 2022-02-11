@@ -45,7 +45,7 @@ class LoginForm extends Component
     /**
      * Perform the login.
      *
-     * @return void
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function login()
     {
@@ -54,10 +54,10 @@ class LoginForm extends Component
         $authCheck = Auth::guard('staff')->attempt([
             'email'    => $this->email,
             'password' => $this->password,
-        ]);
+        ], $this->remember);
 
         if ($authCheck) {
-            $this->redirectRoute('hub.index');
+            return redirect()->intended(route('hub.index'));
         }
 
         session()->flash('error', 'The provided credentials do not match our records.');

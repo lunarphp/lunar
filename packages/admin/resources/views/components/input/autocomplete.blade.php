@@ -1,4 +1,4 @@
-<div x-data="{ showResults: false }" @click.away="showResults = false">
+<div x-data="{ showResults: false }" @click.outside="showResults = false">
   <div class="relative">
     <x-hub::input.text @focus="showResults = true" {{ $attributes->only(['value', 'wire:model', 'wire:keydown'])}} />
     <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">

@@ -10,7 +10,7 @@ class Menu extends Facade
     /**
      * Return the facade class reference.
      *
-     * @return void
+     * @return string
      */
     protected static function getFacadeAccessor()
     {

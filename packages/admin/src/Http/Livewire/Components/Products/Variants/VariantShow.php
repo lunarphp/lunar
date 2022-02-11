@@ -5,11 +5,13 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants;
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
 use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
+use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -23,6 +25,7 @@ class VariantShow extends Component
     use Notifies;
     use HasPrices;
     use WithLanguages;
+    use WithAttributes;
     use HasDimensions;
 
     /**
@@ -100,7 +103,7 @@ class VariantShow extends Component
     /**
      * Returns any custom validation messages.
      *
-     * @return void
+     * @return array
      */
     protected function getValidationMessages()
     {
@@ -128,14 +131,14 @@ class VariantShow extends Component
     /**
      * Register the validation rules.
      *
-     * @return void
+     * @return array
      */
     protected function rules()
     {
         return array_merge([
             // 'images.*' => 'image',
             'newValues'             => 'array',
-            'image'                 => 'nullable|image',
+            'image'                 => 'nullable',
             'variant.stock'         => 'numeric|max:10000000',
             'variant.tax_class_id'  => 'required',
             'variant.length_value'  => 'numeric|nullable',
@@ -150,6 +153,7 @@ class VariantShow extends Component
             'variant.volume_unit'   => 'string|nullable',
             'variant.shippable'     => 'boolean|nullable',
             'variant.backorder'     => 'numeric|max:10000000',
+            'variant.tax_ref'         => 'nullable|string|max:255',
             'variant.purchasable'   => 'string|required',
             'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
             'variant.sku'           => get_validation('products', 'sku', [
@@ -179,7 +183,7 @@ class VariantShow extends Component
     public function getExistingThumbnailProperty()
     {
         $image = $this->variant->media()->first();
-        if (!$image) {
+        if (! $image) {
             return;
         }
 
@@ -215,11 +219,16 @@ class VariantShow extends Component
         if ($this->image) {
             if ($this->image instanceof Media) {
                 $this->image->copy($this->variant, 'variants');
+                $this->image->setCustomProperty('primary', true);
+                $this->image->save();
             }
             if ($this->image instanceof TemporaryUploadedFile) {
-                $this->variant->addMedia($this->image->getRealPath())
+                $this->validateOnly('image', ['image' => 'image']);
+                $media = $this->variant->addMedia($this->image->getRealPath())
                     ->preservingOriginal()
                     ->toMediaCollection('variants');
+                $media->setCustomProperty('primary', true);
+                $media->save();
             }
         }
 
@@ -230,10 +239,13 @@ class VariantShow extends Component
             }
         }
 
-        if (!$this->manualVolume) {
+        if (! $this->manualVolume) {
             $this->variant->volume_unit = null;
             $this->variant->volume_value = null;
         }
+
+        $data = $this->prepareAttributeData();
+        $this->variant->attribute_data = $data;
 
         $this->variant->save();
         $this->savePricing();
@@ -278,8 +290,7 @@ class VariantShow extends Component
     /**
      * Refresh and select option.
      *
-     * @param array $event
-     *
+     * @param  array  $event
      * @return void
      */
     public function refreshAndSelectOption($event)
@@ -379,6 +390,18 @@ class VariantShow extends Component
         $this->newValues = [];
 
         $this->product = $this->variant->product->refresh();
+    }
+
+    public function getAttributeDataProperty()
+    {
+        return $this->variant->attribute_data;
+    }
+
+    public function getAvailableAttributesProperty()
+    {
+        return ProductType::find(
+            $this->variant->product->product_type_id
+        )->variantAttributes->sortBy('position')->values();
     }
 
     /**

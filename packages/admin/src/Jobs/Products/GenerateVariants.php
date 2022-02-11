@@ -44,9 +44,8 @@ class GenerateVariants implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param \GetCandy\Models\Product $product
-     * @param iterable                 $optionValues
-     *
+     * @param  \GetCandy\Models\Product  $product
+     * @param  iterable  $optionValues
      * @return void
      */
     public function __construct(Product $product, iterable $optionValues, $additional = false)
@@ -63,8 +62,6 @@ class GenerateVariants implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @param App\Services\AudioProcessor $processor
      *
      * @return void
      */
@@ -131,13 +128,14 @@ class GenerateVariants implements ShouldQueue
 
                 $variant->product_id = $baseVariant->product_id;
                 $variant->tax_class_id = $baseVariant->tax_class_id;
+                $variant->attribute_data = $baseVariant->attribute_data;
                 $variant->fill($attributes);
                 $variant->save();
                 $variant->values()->attach($optionsToCreate);
                 $variant->prices()->createMany($pricing->toArray());
             }
 
-            if ($baseVariant && !$this->isAdditional) {
+            if ($baseVariant && ! $this->isAdditional) {
                 $baseVariant->values()->detach();
                 $baseVariant->prices()->delete();
                 $baseVariant->delete();

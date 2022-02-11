@@ -48,11 +48,11 @@ class OptionSelector extends Component
     /**
      * Returns the options based on search terms.
      *
-     * @return void
+     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getOptionsProperty()
     {
-        if (!$this->searchTerm) {
+        if (! $this->searchTerm) {
             return ProductOption::latest()->limit(25)->get();
         }
 
@@ -62,8 +62,7 @@ class OptionSelector extends Component
     /**
      * Select an option by it's given id.
      *
-     * @param string $optionId
-     *
+     * @param  string  $optionId
      * @return void
      */
     public function selectNewOption($optionId)
@@ -75,8 +74,7 @@ class OptionSelector extends Component
     /**
      * Add an option into the selected array.
      *
-     * @param string $optionId
-     *
+     * @param  string  $optionId
      * @return void
      */
     public function select($optionId)
@@ -87,8 +85,7 @@ class OptionSelector extends Component
     /**
      * Remove an option from the selected array.
      *
-     * @param string $optionId
-     *
+     * @param  string  $optionId
      * @return void
      */
     public function deselect($optionId)

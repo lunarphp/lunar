@@ -3,7 +3,6 @@
 use GetCandy\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Attributes\AttributeCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Attributes\AttributeShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Attributes\AttributesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Channels\ChannelCreate;
@@ -18,6 +17,7 @@ use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagsIndex;
 use Illuminate\Support\Facades\Route;
 
@@ -37,8 +37,7 @@ Route::group([
     'middleware' => 'can:settings:manage-attributes',
 ], function () {
     Route::get('attributes', AttributesIndex::class)->name('hub.attributes.index');
-    Route::get('attributes/create', AttributeCreate::class)->name('hub.attributes.create');
-    Route::get('attributes/{attribute}', AttributeShow::class)->name('hub.attributes.show');
+    Route::get('attributes/{type}', AttributeShow::class)->name('hub.attributes.show');
 });
 
 /**
@@ -105,5 +104,5 @@ Route::group([
 ], function () {
     Route::get('/', TagsIndex::class)->name('hub.tags.index');
     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
-    // Route::get('channels/{channel}', ChannelShow::class)->name('hub.channels.show');
+    Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
 });

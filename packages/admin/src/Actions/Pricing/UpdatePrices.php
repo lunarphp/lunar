@@ -12,10 +12,9 @@ class UpdatePrices
     /**
      * Execute the action.
      *
-     * @param Model                          $owner
-     * @param \Illuminate\Support\Collection $prices
-     *
-     * @return void
+     * @param  Model  $owner
+     * @param  \Illuminate\Support\Collection  $prices
+     * @return \Illuminate\Support\Collection
      */
     public function execute(Model $owner, Collection $prices)
     {
@@ -27,7 +26,7 @@ class UpdatePrices
                 $price['tier'] ?? 1,
                 $price['currency_id'],
                 $price['price'],
-                !empty($price['compare_price']) ? $price['compare_price'] : null,
+                ! empty($price['compare_price']) ? $price['compare_price'] : null,
                 $price['customer_group_id'] ?? null,
                 $price['id'] ?? null
             );
@@ -40,13 +39,12 @@ class UpdatePrices
     /**
      * Create or update a price.
      *
-     * @param Model    $owner
-     * @param int      $tier
-     * @param int|null $groupId
-     * @param float    $price
-     * @param int      $currencyId
-     * @param int|null $id
-     *
+     * @param  Model  $owner
+     * @param  int  $tier
+     * @param  int|null  $groupId
+     * @param  float  $price
+     * @param  int  $currencyId
+     * @param  int|null  $id
      * @return \GetCandy\Models\Price
      */
     private function updateOrCreatePrice(Model $owner, $tier, $currencyId, $price, $comparePrice = null, $groupId = null, $id = null)
