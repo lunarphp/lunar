@@ -21,7 +21,7 @@ GetCandy\Models\Order
 |sub_total|The sub total minus any discounts, excl. tax
 |discount_total| Any discount amount excl. tax
 |shipping_total| The shipping total excl. tax
-|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": 'VAT': "rate": '20', "amount": 100}]`
+|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`
 |tax_total| The total amount of tax applied
 |total|The grand total with tax
 |notes|Any additional order notes
@@ -162,7 +162,7 @@ GetCandy\Models\OrderLine
 |quantity|The amount of this item purchased
 |sub_total|The sub total minus any discounts, excl. tax
 |discount_total| Any discount amount excl. tax
-|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": 'VAT': "rate": '20', "amount": 100}]`
+|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`
 |tax_total| The total amount of tax applied
 |total|The grand total with tax
 |notes|Any additional order notes
@@ -291,11 +291,10 @@ public function boot(\GetCandy\Base\ShippingModifiers $shippingModifiers)
 Then in your checkout, or where ever you want, you can fetch these options:
 
 ```php
-\GetCandy\Facades\ShippingManifest::getItems();
+\GetCandy\Facades\ShippingManifest::getOptions(\GetCandy\Models\Cart $cart);
 ```
 
 This will return a collection of `GetCandy\DataTypes\ShippingOption` objects.
-
 
 ### Adding the shipping option to the cart
 
