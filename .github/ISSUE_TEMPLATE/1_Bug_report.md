@@ -11,7 +11,8 @@ about: "Report something that's broken."
 - PHP Version: #.#.#
 - Database Driver & Version:
 
-### Description:
+### Expected Behaviour:
 
+### Actual Behaviour:
 
 ### Steps To Reproduce:
