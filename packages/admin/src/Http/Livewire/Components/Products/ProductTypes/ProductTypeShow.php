@@ -10,13 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class ProductTypeShow extends AbstractProductType
 {
-    /**
-     * Attributes which are ready to be synced.
-     *
-     * @var array
-     */
-    public array $attributes = [];
-
     public bool $deleteDialogVisible = false;
 
     public function mount()
