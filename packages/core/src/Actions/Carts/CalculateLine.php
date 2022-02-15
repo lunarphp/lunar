@@ -24,7 +24,6 @@ class CalculateLine
         Addressable $shippingAddress = null,
         Addressable $billingAddress = null
     ) {
-
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();
