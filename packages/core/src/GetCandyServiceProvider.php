@@ -169,7 +169,7 @@ class GetCandyServiceProvider extends ServiceProvider
             return $app->make(PricingManager::class);
         });
 
-        $this->app->bind(TaxManagerInterface::class, function ($app) {
+        $this->app->singleton(TaxManagerInterface::class, function ($app) {
             return $app->make(TaxManager::class);
         });
 
