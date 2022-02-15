@@ -30,6 +30,10 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## 2.0-beta9
+
+There shouldn't be any additional steps to take for this release.
+
 ## 2.0-beta8
 
 ### Handles now use `Str::handle` helper - Medium Impact

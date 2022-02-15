@@ -3,15 +3,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-[Unreleased]
+## 2.0-beta9 - 2022-02-11
 
 ### Fixed
 
 - If an attribute value is null it will be returned instead of the `{"en": null}` encoded string. ([#130](https://github.com/getcandy/getcandy/issues/130))
+- When loading an exiting product with channel availabilty, the scheduling modal should no longer display without prompt.
+- `Product` and `ProductOption` models will now take the Scout prefix config setting on the indexes.
+- The `Text` fieldtype tolerance now accepts numeric values instead of just forcing strings.
+- Translating an attribute via `->translateAttribute('name')` will now handle non translatable fields for consistency.
+- When using the `getcandy:meilisearch:setup` only indexes available within the app should be affected.
+- When installing GetCandy the correct configuration or rich text fields should now be applied. By ([@KKSzymanowski](https://github.com/KKSzymanowski))
 
 ### Added
 
 - Added `Taxes` facade to ensure the `TaxManager` can be easily extended. ([#129](https://github.com/getcandy/getcandy/issues/129))
+- `collections` relationship has been added to the `Product` model. By ([@poppabear8883](https://github.com/poppabear8883))
+- GetCandy's models now support have added macro support. By ([@edcoreweb](https://github.com/edcoreweb))
+
+### Changed
+
+- Instead of assuming `$user->id` we know use `$user->getKey()`. By ([@ryanmitchell](https://github.com/ryanmitchell))
+- Big maintainence update to the Docblocks across the codebase to help with IDE support. By ([@KKSzymanowski](https://github.com/KKSzymanowski))
+
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta8...2.0-beta9)
 
 ## 2.0-beta8 - 2022-02-01
 

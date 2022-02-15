@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.0-beta9 - 2022-02-11
+
+### Fixed
+
+- When editing a product variant, you should now be able to select an image and save.
+- Image browser on variants is now scrollable to fix an issue with it going off screen.
+
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta8...2.0-beta9)
+
 ## 2.0-beta8 - 2022-02-01
 
 ### Fixed
