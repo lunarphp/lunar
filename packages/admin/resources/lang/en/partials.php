@@ -6,6 +6,10 @@ return [
      */
     'activity-log.added_images.description' => 'Added :count images',
     /**
+     * Associations
+     */
+    'products.associations.heading' => 'Associations',
+    /**
      * Availability.
      */
     'availability.heading'                                               => 'Availability',

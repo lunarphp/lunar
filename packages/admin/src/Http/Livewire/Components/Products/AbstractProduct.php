@@ -109,6 +109,8 @@ abstract class AbstractProduct extends Component
      */
     public $variantAttributes;
 
+    public $showAssociationAttach = true;
+
     protected function getListeners()
     {
         return array_merge([
@@ -577,6 +579,13 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.shipping'),
                 'id'         => 'shipping',
                 'hidden'     => $this->getVariantsCount() > 1,
+                'has_errors' => $this->errorBag->hasAny([
+                ]),
+            ],
+            [
+                'title'      => __('adminhub::menu.product.associations'),
+                'id'         => 'associations',
+                'hidden'     => false,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],

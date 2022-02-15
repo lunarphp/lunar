@@ -22,6 +22,7 @@ return [
     'product.shipping'          => 'Shipping',
     'product.associations'      => 'Associations',
     'product.urls'              => 'URLs',
+    'product.associations'      => 'Associations',
     'product.identifiers'       => 'Identifiers',
     /**
      * Generic menu items.

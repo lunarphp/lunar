@@ -39,6 +39,13 @@
       </div>
 
       {{--
+        Associations
+       --}}
+      <div id="associations">
+        @include('adminhub::partials.products.editing.associations')
+      </div>
+
+      {{--
         Basic Information
        --}}
       <div id="basic-information">
@@ -101,6 +108,8 @@
       <div id="urls">
         @include('adminhub::partials.urls')
       </div>
+
+
 
       {{--
         Delete area
