@@ -22,6 +22,7 @@ class ProductShow extends AbstractProduct
         );
 
         $this->syncAvailability();
+        $this->syncAssociations();
     }
 
     /**

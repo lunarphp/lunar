@@ -130,6 +130,17 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Return the associations relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inverseAssociations()
+    {
+        return $this->hasMany(ProductAssociation::class, 'product_target_id');
+    }
+
+
+    /**
      * Associate a product to another with a type.
      *
      * @param  mixed  $product

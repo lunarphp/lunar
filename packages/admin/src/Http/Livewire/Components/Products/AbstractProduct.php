@@ -109,7 +109,14 @@ abstract class AbstractProduct extends Component
      */
     public $variantAttributes;
 
-    public $showAssociationAttach = true;
+    public $showInverseAssociations = false;
+
+    /**
+     * The current product associations
+     *
+     * @var Collection
+     */
+    public Collection $associations;
 
     protected function getListeners()
     {
@@ -440,6 +447,26 @@ abstract class AbstractProduct extends Component
                 ];
             }),
         ];
+    }
+
+    public function syncAssociations()
+    {
+        $this->associations = $this->product->associations
+            ->merge($this->product->inverseAssociations)
+            ->map(function ($assoc) {
+
+                $inverse = $assoc->target->id == $this->product->id;
+
+                $product = $inverse ? $assoc->parent : $assoc->target;
+
+                return [
+                    'inverse' => $inverse,
+                    'target_id' => $assoc->target->id,
+                    'thumbnail' => optional($product->thumbnail)->getUrl('small'),
+                    'name' => $product->translateAttribute('name'),
+                    'type' => $assoc->type,
+                ];
+            });
     }
 
     /**

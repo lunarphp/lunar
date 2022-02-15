@@ -6,8 +6,8 @@
       </h3>
       <div class="flex items-center space-x-6">
         <div class="flex items-center space-x-2 text-xs">
-          <span class="text-green-500">Show inverse</span>
-          <x-hub::input.toggle :on="true" />
+          <span class="@if($showInverseAssociations)text-green-500 @endif">Show inverse</span>
+          <x-hub::input.toggle wire:model="showInverseAssociations" />
         </div>
         @livewire('hub.components.product-search', [
           'existing' => collect([]),
@@ -30,33 +30,26 @@
             <x-hub::table.heading></x-hub::table.heading>
         </x-slot>
         <x-slot name="body">
+          @foreach($associations->filter(fn($product) => $showInverseAssociations ? true : !$product['inverse']) as $product)
           <x-hub::table.row>
             <x-hub::table.cell>
-              <img src="http://demo-store.test/storage/products/2022/02/10/conversions/black_jeans-small.jpg" class="w-12 rounded">
+              <img src="{{ $product['thumbnail']}}" class="w-12 rounded">
             </x-hub::table.cell>
-            <x-hub::table.cell>Product A</x-hub::table.cell>
+            <x-hub::table.cell>{{ $product['name'] }}</x-hub::table.cell>
             <x-hub::table.cell>
+              @if(!$product['inverse'])
               <x-hub::input.select>
-                <option>Cross Sell</option>
+                <option>{{ $product['type']}}</option>
               </x-hub::input.select>
+              @else
+                <span class="text-gray-500">Inverse: {{ $product['type'] }}</span>
+              @endif
             </x-hub::table.cell>
             <x-hub::table.cell>
               <a href="#" class="text-red-500 hover:underline">Remove</a>
             </x-hub::table.cell>
           </x-hub::table.row>
-
-          <x-hub::table.row>
-            <x-hub::table.cell>
-              <img src="http://demo-store.test/storage/products/2022/02/10/conversions/nike_orange_white-small.jpg" class="w-12 rounded">
-            </x-hub::table.cell>
-            <x-hub::table.cell>Product B</x-hub::table.cell>
-            <x-hub::table.cell>
-              <span class="text-gray-500">Inverse: Cross Sell</span>
-            </x-hub::table.cell>
-            <x-hub::table.cell>
-              <a href="#" class="text-red-500 hover:underline">Remove</a>
-            </x-hub::table.cell>
-          </x-hub::table.row>
+          @endforeach
         </x-slot>
       </x-hub::table>
     </div>
