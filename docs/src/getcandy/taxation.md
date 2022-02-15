@@ -179,6 +179,7 @@ To write your own driver you need to add a class which implements the `GetCandy\
 namespace App\Drivers;
 
 use GetCandy\Base\TaxDriver;
+use Illuminate\Support\Collection;
 
 class TaxJar implements TaxDriver
 {
@@ -190,7 +191,8 @@ class TaxJar implements TaxDriver
      */
     public function setShippingAddress(Address $address = null)
     {
-        //
+        // ...
+        return $this;
     }
 
     /**
@@ -201,7 +203,8 @@ class TaxJar implements TaxDriver
      */
     public function setCurrency(Currency $currency)
     {
-        //
+        // ...
+        return $this;
     }
 
     /**
@@ -212,7 +215,8 @@ class TaxJar implements TaxDriver
      */
     public function setBillingAddress(Address $address = null)
     {
-        //
+        // ...
+        return $this;
     }
 
     /**
@@ -223,7 +227,8 @@ class TaxJar implements TaxDriver
      */
     public function setPurchasable(Purchasable $purchasable)
     {
-        //
+        // ...
+        return $this;
     }
 
     /**
@@ -231,9 +236,9 @@ class TaxJar implements TaxDriver
      *
      * @param  int  $subTotal
      */
-    public function getBreakdown($subTotal)
+    public function getBreakdown($subTotal): Collection
     {
-        //
+        return collect([ /* ... */ ]);
     }
 }
 ```
@@ -242,7 +247,7 @@ Once you have that, just extend the tax manager in your service provider.
 
 ```php
 
-public function register()
+public function boot()
 {
     \GetCandy\Facades\Taxes::extend('taxjar', function ($app) {
         return $app->make(TaxJar::class);
