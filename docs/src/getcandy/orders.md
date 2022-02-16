@@ -83,63 +83,11 @@ $cart->getManager()->canCreateOrder();
 
 This essentially does the same as above, except we already catch the exceptions for you and just return false if any are caught.
 
-### Registering an Order modifier
+## Modifying Orders
 
-Much like Carts, we just need to register these in our service provider.
+If you need to programatically change the Order values or add in new behaviour, you will want to extend the Order system. 
 
-```php
-public function boot(OrderModifiers $orderModifiers)
-{
-    $orderModifiers->add(
-        \App\Modifiers\CustomOrderModifier::class
-    )
-}
-```
-
-```php
-namespace App\Modifiers;
-
-use GetCandy\Base\OrderModifier;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Order;
-
-class CustomOrderModifier extends OrderModifier
-{
-    public function creating(Cart $cart)
-    {
-        //
-    }
-
-    public function created(Order $order)
-    {
-        //
-    }
-}
-
-```
-
-when using your own `OrderModifier` things can go wrong or for whatever reason you may need to abort the process and take the customer back to the checkout.
-For this you can throw a `CartException` (or your own exception that extends this) at any point in the flow and it'll stop.
-
-The process is wrapped in a transaction so no need to worry about incomplete data making it's way in to the database.
-
-```php
-namespace App\Exceptions;
-
-class MyCustomException extends \GetCandy\Exceptions\CartException
-{
-
-}
-```
-
-```php
-public function creating(Cart $cart)
-{
-    if ($somethingWentTerriblyWrong) {
-        throw new MyCustomException;
-    }
-}
-```
+You can find out more in the Extending GetCandy section for [Order Modifiers](/extending/order-modifiers).
 
 ## Order Lines
 
