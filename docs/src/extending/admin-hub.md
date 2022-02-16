@@ -44,6 +44,6 @@ GetCandy comes with a collection of icons you can use in the Resources folder. I
 </svg>');
 ```
 
-## Customising to Editing Screens
+## Customising Edit Screens
 
 Currently there is no way to add additional fields or components to editing screens. However, we intend to look into adding a "slots" feature to enable just that. 
