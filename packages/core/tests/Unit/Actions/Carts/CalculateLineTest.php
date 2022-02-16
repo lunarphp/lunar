@@ -3,6 +3,7 @@
 namespace GetCandy\Tests\Unit\Actions\Carts;
 
 use GetCandy\Actions\Carts\CalculateLine;
+use GetCandy\Base\CartLineModifiers;
 use GetCandy\DataTypes\Price as DataTypesPrice;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Currency;
@@ -11,6 +12,7 @@ use GetCandy\Models\Price;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Models\TaxClass;
 use GetCandy\Models\TaxRateAmount;
+use GetCandy\Tests\Stubs\TestCartLineModifier;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
