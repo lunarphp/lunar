@@ -17,6 +17,15 @@ class ProductSearch extends Component
 
     public $selected = [];
 
+    public $ref = null;
+
+    public $showBtn = true;
+
+    protected $listeners = [
+        'updatedExistingProductAssociations',
+        'showBrowser'
+    ];
+
     public function rules()
     {
         return [
@@ -40,6 +49,15 @@ class ProductSearch extends Component
         $this->searchTerm = null;
     }
 
+    public function showBrowser($reference = null)
+    {
+        if ($reference && $reference == $this->ref) {
+            $this->showBrowser = true;
+            $this->selected = [];
+            $this->searchTerm = null;
+        }
+    }
+
     public function selectProduct($id)
     {
         $this->selected[] = $id;
@@ -50,6 +68,11 @@ class ProductSearch extends Component
         $index = collect($this->selected)->search($id);
         unset($this->selected[$index]);
         $this->selected = collect($this->selected)->values();
+    }
+
+    public function updatedExistingProductAssociations($selected)
+    {
+        $this->existing = collect($selected);
     }
 
     /**
