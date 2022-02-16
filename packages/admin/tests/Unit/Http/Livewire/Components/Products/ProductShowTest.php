@@ -563,7 +563,7 @@ class ProductShowTest extends TestCase
                     'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
                     'name' => $productB->translateAttribute('name'),
                     'type' => 'cross-sell',
-                ]
+                ],
             ]))->call('save')->assertHasNoErrors();
 
         $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
@@ -624,7 +624,7 @@ class ProductShowTest extends TestCase
                     'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
                     'name' => $productB->translateAttribute('name'),
                     'type' => 'cross-sell',
-                ]
+                ],
             ]))->call('save')->assertHasNoErrors();
 
         $this->assertDatabaseHas((new ProductAssociation)->getTable(), [

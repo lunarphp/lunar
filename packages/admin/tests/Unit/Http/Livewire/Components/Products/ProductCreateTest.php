@@ -101,7 +101,7 @@ class ProductCreateTest extends TestCase
                     'thumbnail' => optional($productC->thumbnail)->getUrl('small'),
                     'name' => $productC->translateAttribute('name'),
                     'type' => 'cross-sell',
-                ]
+                ],
             ]))
             ->call('save')
             ->assertHasNoErrors();
