@@ -1,7 +1,13 @@
 <div>
+  @if($showBtn)
   <x-hub::button type="button" wire:click.prevent="$set('showBrowser', true)">
-    {{ __('adminhub::components.product-search.btn') }}
+    @if(!empty($label))
+      {{ $label }}
+    @else
+      {{ __('adminhub::components.product-search.btn') }}
+    @endif
   </x-hub::button>
+  @endif
 
   <x-hub::slideover :title="__('adminhub::components.product-search.title')" wire:model="showBrowser">
     <div
