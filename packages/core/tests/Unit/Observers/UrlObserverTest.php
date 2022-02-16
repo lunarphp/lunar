@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Rules;
+namespace GetCandy\Tests\Unit\Observers;
 
 use GetCandy\Models\Language;
 use GetCandy\Models\Url;
