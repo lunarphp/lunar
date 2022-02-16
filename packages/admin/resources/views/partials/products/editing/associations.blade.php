@@ -4,14 +4,13 @@
       <h3 class="text-lg font-medium leading-6 text-gray-900">
         {{ __('adminhub::partials.products.associations.heading') }}
       </h3>
-      <div class="flex items-center space-x-6">
-        <div class="flex items-center space-x-2 text-xs">
+      <div class="flex items-center space-x-2">
+        {{-- <div class="flex items-center space-x-2 text-xs">
           <span class="@if($showInverseAssociations)text-green-500 @endif">Show inverse</span>
           <x-hub::input.toggle wire:model="showInverseAssociations" />
-        </div>
-        @livewire('hub.components.product-search', [
-          'existing' => collect([]),
-        ])
+        </div> --}}
+        <x-hub::button size="sm">Add associations</x-hub::button>
+        <x-hub::button size="sm" theme="gray">Add inverse associations</x-hub::button>
       </div>
     </header>
 
