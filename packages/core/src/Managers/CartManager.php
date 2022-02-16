@@ -16,6 +16,7 @@ use GetCandy\Exceptions\Carts\ShippingAddressMissingException;
 use GetCandy\Exceptions\InvalidCartLineQuantityException;
 use GetCandy\Exceptions\MaximumCartLineQuantityException;
 use GetCandy\Facades\ShippingManifest;
+use GetCandy\Facades\Taxes;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartAddress;
 use GetCandy\Models\CartLine;
@@ -87,8 +88,7 @@ class CartManager
         $this->cart->discountTotal = new Price($discountTotal, $this->cart->currency, 1);
 
         if ($shippingOption = $this->getShippingOption()) {
-            $shippingTax = app(TaxManager::class)
-                            ->setShippingAddress($this->cart->shippingAddress)
+            $shippingTax = Taxes::setShippingAddress($this->cart->shippingAddress)
                             ->setCurrency($this->cart->currency)
                             ->setPurchasable($shippingOption)
                             ->getBreakdown($shippingOption->price->value);

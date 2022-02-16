@@ -21,7 +21,7 @@ GetCandy\Models\Order
 |sub_total|The sub total minus any discounts, excl. tax
 |discount_total| Any discount amount excl. tax
 |shipping_total| The shipping total excl. tax
-|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": 'VAT': "rate": '20', "amount": 100}]`
+|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`
 |tax_total| The total amount of tax applied
 |total|The grand total with tax
 |notes|Any additional order notes
@@ -83,63 +83,11 @@ $cart->getManager()->canCreateOrder();
 
 This essentially does the same as above, except we already catch the exceptions for you and just return false if any are caught.
 
-### Registering an Order modifier
+## Modifying Orders
 
-Much like Carts, we just need to register these in our service provider.
+If you need to programatically change the Order values or add in new behaviour, you will want to extend the Order system. 
 
-```php
-public function boot(OrderModifiers $orderModifiers)
-{
-    $orderModifiers->add(
-        \App\Modifiers\CustomOrderModifier::class
-    )
-}
-```
-
-```php
-namespace App\Modifiers;
-
-use GetCandy\Base\OrderModifier;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Order;
-
-class CustomOrderModifier extends OrderModifier
-{
-    public function creating(Cart $cart)
-    {
-        //
-    }
-
-    public function created(Order $order)
-    {
-        //
-    }
-}
-
-```
-
-when using your own `OrderModifier` things can go wrong or for whatever reason you may need to abort the process and take the customer back to the checkout.
-For this you can throw a `CartException` (or your own exception that extends this) at any point in the flow and it'll stop.
-
-The process is wrapped in a transaction so no need to worry about incomplete data making it's way in to the database.
-
-```php
-namespace App\Exceptions;
-
-class MyCustomException extends \GetCandy\Exceptions\CartException
-{
-
-}
-```
-
-```php
-public function creating(Cart $cart)
-{
-    if ($somethingWentTerriblyWrong) {
-        throw new MyCustomException;
-    }
-}
-```
+You can find out more in the Extending GetCandy section for [Order Modifiers](/extending/order-modifiers).
 
 ## Order Lines
 
@@ -162,7 +110,7 @@ GetCandy\Models\OrderLine
 |quantity|The amount of this item purchased
 |sub_total|The sub total minus any discounts, excl. tax
 |discount_total| Any discount amount excl. tax
-|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": 'VAT': "rate": '20', "amount": 100}]`
+|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`
 |tax_total| The total amount of tax applied
 |total|The grand total with tax
 |notes|Any additional order notes
@@ -237,65 +185,18 @@ $order->billingAddress;
 ## Shipping Options
 
 ::: tip
-This section is under active development and this part of the docs may be extended or changed at any time.
+A Shipping Tables addon is planned to make setting up shipping in the admin hub easy for most scenarios.
 :::
 
-On your checkout, if your customer has added an item that needs shipping, you're likely going to want to display some shipping options. Currently the best way to do this is to implement your own by adding a `ShippingModifier` and adding using that to determine what shipping options you want to make available and add them to the `ShippingManifest` class.
-
-### Adding a shipping modifier
-
-Create your own custom shipping provider:
-
-```php
-namespace App\Modifiers;
-
-use GetCandy\Base\ShippingModifier;
-use GetCandy\DataTypes\Price;
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Facades\ShippingManifest;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
-use GetCandy\Models\TaxClass;
-
-class CustomShippingModifier extends ShippingModifier
-{
-    public function handle(Cart $cart)
-    {
-        // Get the tax class
-        $taxClass = TaxClass::first();
-
-        ShippingManifest::addOption(
-            new ShippingOption(
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
-    }
-}
-
-```
-
-In your service provder:
-
-```php
-public function boot(\GetCandy\Base\ShippingModifiers $shippingModifiers)
-{
-    $shippingModifiers->add(
-        CustomShippingModifier::class
-    );
-}
-```
+To add Shipping Options you will need to [extend GetCandy](/extending/shipping) to add in your own logic. 
 
 Then in your checkout, or where ever you want, you can fetch these options:
 
 ```php
-\GetCandy\Facades\ShippingManifest::getItems();
+\GetCandy\Facades\ShippingManifest::getOptions(\GetCandy\Models\Cart $cart);
 ```
 
 This will return a collection of `GetCandy\DataTypes\ShippingOption` objects.
-
 
 ### Adding the shipping option to the cart
 

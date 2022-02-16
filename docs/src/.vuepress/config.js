@@ -74,6 +74,7 @@ module.exports = {
         collapsable: false, // optional, defaults to true
         children: [
           ['/', 'Overview'],
+          ['/quickstart', 'Quick Start'],
           '/installation',
           '/configuration',
           ['/upgrading', 'Upgrade Guide'],
@@ -114,7 +115,13 @@ module.exports = {
         title: 'Extending GetCandy',
         collapsable: false, // optional, defaults to true
         children: [
+          '/extending/admin-hub',
+          '/extending/cart-modifiers',
           '/extending/field-types',
+          '/extending/models',
+          '/extending/order-modifiers',
+          '/extending/shipping',
+          '/extending/taxation',
         ]
       }
     ],
