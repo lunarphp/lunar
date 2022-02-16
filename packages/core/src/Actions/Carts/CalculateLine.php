@@ -34,6 +34,7 @@ class CalculateLine
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();
 
+        // we check if any cart line modifiers have already specified a unit price in their calculating() method
         if (! ($unitPrice = $cartLine->unitPrice) instanceof Price) {
             $priceResponse = Pricing::currency($cart->currency)
                 ->qty($cartLine->quantity)
