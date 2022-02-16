@@ -33,7 +33,7 @@ class CalculateLine
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();
-                
+
         if (! ($unitPrice = $cartLine->unitPrice) instanceof Price) {
 
             $priceResponse = Pricing::currency($cart->currency)
@@ -41,18 +41,18 @@ class CalculateLine
                 ->currency($cart->currency)
                 ->customerGroups($customerGroups)
                 ->for($purchasable);
-    
+
             $price = new Price(
                 $priceResponse->matched->price->value,
                 $cart->currency,
                 $purchasable->getUnitQuantity()
             );
-    
+
             $unitPrice = (int) (round(
                 $price->decimal / $purchasable->getUnitQuantity(),
                 $cart->currency->decimal_places
             ) * $cart->currency->factor);
-            
+
         }
 
         $subTotal = $unitPrice * $cartLine->quantity;
