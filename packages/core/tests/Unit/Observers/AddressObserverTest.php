@@ -4,8 +4,6 @@ namespace GetCandy\Tests\Unit\Observers;
 
 use GetCandy\Models\Address;
 use GetCandy\Models\Customer;
-use GetCandy\Models\Language;
-use GetCandy\Models\Url;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
