@@ -33,7 +33,7 @@ class AddressObserver
     /**
      * Ensures that only one default shipping address exists.
      *
-     * @param Address $address
+     * @param  Address $address
      */
     protected function ensureOnlyOneDefaultShipping(Address $address): void
     {
@@ -53,7 +53,7 @@ class AddressObserver
     /**
      * Ensures that only one default billing address exists.
      *
-     * @param Address $address
+     * @param  Address $address
      */
     protected function ensureOnlyOneDefaultBilling(Address $address): void
     {
