@@ -60,10 +60,7 @@ class ProductCreateTest extends TestCase
             ->test(ProductCreate::class);
     }
 
-    /**
-     * @test
-     * @group assoc
-     * */
+    /** @test */
     public function can_create_product()
     {
         $staff = Staff::factory()->create([
