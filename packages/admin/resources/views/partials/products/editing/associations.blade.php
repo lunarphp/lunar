@@ -13,8 +13,6 @@
         </div>
       </div>
       <div class="flex items-center space-x-2">
-        {{-- <button wire:click="$emit('showBrowser', 'product-associations')">Show it!</button> --}}
-
           <x-hub::dropdown>
               <x-slot name="value">
                 {{ __(
@@ -86,15 +84,5 @@
         </x-slot>
       </x-hub::table>
     </div>
-
-
-
-    {{-- <x-hub::modal.dialog wire:model="showAssociationAttach" >
-      <x-slot name="title">Add association</x-slot>
-      <x-slot name="content">
-        Test
-      </x-slot>
-      <x-slot name="footer"></x-slot>
-    </x-hub::modal.dialog> --}}
   </div>
 </div>

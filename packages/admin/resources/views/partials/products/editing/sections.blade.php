@@ -39,13 +39,6 @@
       </div>
 
       {{--
-        Associations
-       --}}
-      <div id="associations">
-        @include('adminhub::partials.products.editing.associations')
-      </div>
-
-      {{--
         Basic Information
        --}}
       <div id="basic-information">
@@ -109,6 +102,12 @@
         @include('adminhub::partials.urls')
       </div>
 
+      {{--
+        Associations
+       --}}
+      <div id="associations">
+        @include('adminhub::partials.products.editing.associations')
+      </div>
 
 
       {{--

@@ -8,6 +8,8 @@ use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Price;
+use GetCandy\Models\Product;
+use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Models\TaxClass;
@@ -58,7 +60,10 @@ class ProductCreateTest extends TestCase
             ->test(ProductCreate::class);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group assoc
+     * */
     public function can_create_product()
     {
         $staff = Staff::factory()->create([
@@ -67,13 +72,51 @@ class ProductCreateTest extends TestCase
 
         $currency = Currency::getDefault();
 
-        LiveWire::actingAs($staff, 'staff')
+        $productB = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'PROB',
+        ]);
+
+        $productC = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'PROC',
+        ]);
+
+        $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductCreate::class)
             ->set('variant.sku', '1234')
             ->set('variant.tax_ref', 'CUSTOMTAX')
             ->set("basePrices.{$currency->code}.price", 1234)
+            ->set('associations', collect([
+                [
+                    'inverse' => false,
+                    'target_id' => $productB->id,
+                    'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
+                    'name' => $productB->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+                [
+                    'inverse' => true,
+                    'target_id' => $productC->id,
+                    'thumbnail' => optional($productC->thumbnail)->getUrl('small'),
+                    'name' => $productC->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ]
+            ]))
             ->call('save')
             ->assertHasNoErrors();
+
+        $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
+            'product_target_id' => $productB->id,
+            'product_parent_id' => $component->get('product.id'),
+            'type' => 'cross-sell',
+        ]);
+
+        $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
+            'product_parent_id' => $productC->id,
+            'product_target_id' => $component->get('product.id'),
+            'type' => 'cross-sell',
+        ]);
 
         $this->assertDatabaseHas((new ProductVariant)->getTable(), [
             'sku' => '1234',
