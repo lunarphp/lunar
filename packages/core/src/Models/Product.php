@@ -139,7 +139,6 @@ class Product extends BaseModel implements SpatieHasMedia
         return $this->hasMany(ProductAssociation::class, 'product_target_id');
     }
 
-
     /**
      * Associate a product to another with a type.
      *

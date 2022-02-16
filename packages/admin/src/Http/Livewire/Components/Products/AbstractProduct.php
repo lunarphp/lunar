@@ -111,9 +111,9 @@ abstract class AbstractProduct extends Component
     public $variantAttributes;
 
     /**
-     * Whether to show inverse associations
+     * Whether to show inverse associations.
      *
-     * @var boolean
+     * @var bool
      */
     public $showInverseAssociations = false;
 
@@ -125,7 +125,7 @@ abstract class AbstractProduct extends Component
     public $associationType = 'cross-sell';
 
     /**
-     * The current product associations
+     * The current product associations.
      *
      * @var Collection
      */
@@ -356,12 +356,12 @@ abstract class AbstractProduct extends Component
 
             $this->product->channels()->sync($channels);
 
-            $this->associations->filter(fn($assoc) => !$assoc['inverse'])->each(function ($assoc) {
-
-                if (!empty($assoc['id'])) {
+            $this->associations->filter(fn ($assoc) => ! $assoc['inverse'])->each(function ($assoc) {
+                if (! empty($assoc['id'])) {
                     ProductAssociation::find($assoc['id'])->update([
-                        'type' => $assoc['type']
+                        'type' => $assoc['type'],
                     ]);
+
                     return;
                 }
                 ProductAssociation::create([
@@ -371,11 +371,12 @@ abstract class AbstractProduct extends Component
                 ]);
             });
 
-            $this->associations->filter(fn($assoc) => $assoc['inverse'])->each(function ($assoc) {
-                if (!empty($assoc['id'])) {
+            $this->associations->filter(fn ($assoc) => $assoc['inverse'])->each(function ($assoc) {
+                if (! empty($assoc['id'])) {
                     ProductAssociation::find($assoc['id'])->update([
-                        'type' => $assoc['type']
+                        'type' => $assoc['type'],
                     ]);
+
                     return;
                 }
 
@@ -385,8 +386,6 @@ abstract class AbstractProduct extends Component
                     'type' => $assoc['type'],
                 ]);
             });
-
-
 
             $this->product->refresh();
 
@@ -497,7 +496,7 @@ abstract class AbstractProduct extends Component
     }
 
     /**
-     * Sync initial product associations
+     * Sync initial product associations.
      *
      * @return void
      */
@@ -506,7 +505,6 @@ abstract class AbstractProduct extends Component
         $this->associations = $this->product->associations
             ->merge($this->product->inverseAssociations)
             ->map(function ($assoc) {
-
                 $inverse = $assoc->target->id == $this->product->id;
 
                 $product = $inverse ? $assoc->parent : $assoc->target;
@@ -523,9 +521,9 @@ abstract class AbstractProduct extends Component
     }
 
     /**
-     * Update the associations
+     * Update the associations.
      *
-     * @param array $selectedIds
+     * @param  array  $selectedIds
      * @return void
      */
     public function updateAssociations($selectedIds)
@@ -547,7 +545,7 @@ abstract class AbstractProduct extends Component
     /**
      * Open the association browser with a given type.
      *
-     * @param string $type
+     * @param  string  $type
      * @return void
      */
     public function openAssociationBrowser($type)
@@ -564,7 +562,7 @@ abstract class AbstractProduct extends Component
     public function getAssociatedProductIdsProperty()
     {
         return collect(
-            $this->associations->map(fn($assoc) => ['id' => $assoc['target_id']])
+            $this->associations->map(fn ($assoc) => ['id' => $assoc['target_id']])
         );
     }
 
