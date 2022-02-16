@@ -35,7 +35,6 @@ class CalculateLine
         $unitQuantity = $purchasable->getUnitQuantity();
 
         if (! ($unitPrice = $cartLine->unitPrice) instanceof Price) {
-
             $priceResponse = Pricing::currency($cart->currency)
                 ->qty($cartLine->quantity)
                 ->currency($cart->currency)
@@ -52,7 +51,6 @@ class CalculateLine
                 $price->decimal / $purchasable->getUnitQuantity(),
                 $cart->currency->decimal_places
             ) * $cart->currency->factor);
-
         }
 
         $subTotal = $unitPrice * $cartLine->quantity;
