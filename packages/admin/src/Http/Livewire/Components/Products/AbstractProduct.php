@@ -553,7 +553,7 @@ abstract class AbstractProduct extends Component
     /**
      * Remove an association.
      *
-     * @param int $index
+     * @param  int  $index
      * @return void
      */
     public function removeAssociation($index)
