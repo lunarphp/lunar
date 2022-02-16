@@ -75,9 +75,9 @@
               </x-hub::input.select>
             </x-hub::table.cell>
             <x-hub::table.cell>
-              <a href="#" class="text-red-500 hover:underline">
+              <button type="button" wire:click.prevent="removeAssociation({{ $index }})" class="text-red-500 hover:underline">
                 {{ __('adminhub::global.remove') }}
-              </a>
+              </button>
             </x-hub::table.cell>
           </x-hub::table.row>
           @endforeach

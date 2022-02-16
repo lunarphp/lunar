@@ -131,6 +131,13 @@ abstract class AbstractProduct extends Component
      */
     public Collection $associations;
 
+    /**
+     * Associations that need removing.
+     *
+     * @var array
+     */
+    public array $associationsToRemove = [];
+
     protected function getListeners()
     {
         return array_merge([
@@ -356,22 +363,11 @@ abstract class AbstractProduct extends Component
 
             $this->product->channels()->sync($channels);
 
-            $this->associations->filter(fn ($assoc) => ! $assoc['inverse'])->each(function ($assoc) {
-                if (! empty($assoc['id'])) {
-                    ProductAssociation::find($assoc['id'])->update([
-                        'type' => $assoc['type'],
-                    ]);
+            if (count($this->associationsToRemove)) {
+                ProductAssociation::whereIn('id', $this->associationsToRemove)->delete();
+            }
 
-                    return;
-                }
-                ProductAssociation::create([
-                    'product_target_id' => $assoc['target_id'],
-                    'product_parent_id' => $this->product->id,
-                    'type' => $assoc['type'],
-                ]);
-            });
-
-            $this->associations->filter(fn ($assoc) => $assoc['inverse'])->each(function ($assoc) {
+            $this->associations->each(function ($assoc) {
                 if (! empty($assoc['id'])) {
                     ProductAssociation::find($assoc['id'])->update([
                         'type' => $assoc['type'],
@@ -381,8 +377,8 @@ abstract class AbstractProduct extends Component
                 }
 
                 ProductAssociation::create([
-                    'product_target_id' => $this->product->id,
-                    'product_parent_id' => $assoc['target_id'],
+                    'product_target_id' => $assoc['inverse'] ? $this->product->id : $assoc['target_id'],
+                    'product_parent_id' => $assoc['inverse'] ? $assoc['target_id'] : $this->product->id,
                     'type' => $assoc['type'],
                 ]);
             });
@@ -552,6 +548,19 @@ abstract class AbstractProduct extends Component
     {
         $this->associationType = $type;
         $this->emit('showBrowser', 'product-associations');
+    }
+
+    /**
+     * Remove an association.
+     *
+     * @param int $index
+     * @return void
+     */
+    public function removeAssociation($index)
+    {
+        $this->associationsToRemove[] = $this->associations[$index]['id'];
+
+        $this->associations->forget($index);
     }
 
     /**
