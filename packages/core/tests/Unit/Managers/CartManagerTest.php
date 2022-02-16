@@ -677,7 +677,7 @@ class CartManagerTest extends TestCase
         $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
         $this->assertEquals(1, $cart->addresses()->whereType('billing')->count());
     }
-    
+
     /** @test */
     public function can_have_unit_price_changed_by_a_cart_line_modifier()
     {
@@ -719,14 +719,14 @@ class CartManagerTest extends TestCase
             'purchasable_id'   => $purchasable->id,
             'quantity'         => 1,
         ]);
-        
+
         // Modifier will set unit price to 1000
         app(CartLineModifiers::class)->add(TestCartLineModifier::class);
 
         (new CartManager($cart))->getCart();
-        
+
         $this->assertEquals(1200, $cart->total->value);
-        
+
         $line = $cart->lines->first();
 
         $this->assertInstanceOf(Price::class, $line->unitPrice);
@@ -745,6 +745,6 @@ class CartManagerTest extends TestCase
         $this->assertEquals(0, $line->discountTotal->value);
 
         $this->assertInstanceOf(Collection::class, $line->taxBreakdown);
-        $this->assertCount(1, $line->taxBreakdown);    
+        $this->assertCount(1, $line->taxBreakdown);
     }
 }
