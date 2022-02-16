@@ -9,6 +9,12 @@ return [
      * Associations
      */
     'products.associations.heading' => 'Associations',
+    'products.associations.cross-sell' => 'Cross Sell',
+    'products.associations.up-sell' => 'Up Sell',
+    'products.associations.alternate' => 'Alternate',
+    'products.associations.show_inverse' => 'Show inverse',
+    'products.associations.add_inverse' => 'Add inverse association',
+    'products.associations.add_association' => 'Add association',
     /**
      * Availability.
      */
