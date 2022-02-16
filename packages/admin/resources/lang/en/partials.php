@@ -6,7 +6,7 @@ return [
      */
     'activity-log.added_images.description' => 'Added :count images',
     /**
-     * Associations
+     * Associations.
      */
     'products.associations.heading' => 'Associations',
     'products.associations.cross-sell' => 'Cross Sell',

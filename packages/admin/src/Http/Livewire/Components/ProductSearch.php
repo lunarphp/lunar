@@ -23,7 +23,7 @@ class ProductSearch extends Component
 
     protected $listeners = [
         'updatedExistingProductAssociations',
-        'showBrowser'
+        'showBrowser',
     ];
 
     public function rules()
