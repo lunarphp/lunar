@@ -74,7 +74,7 @@ Now you have a basic Cart up and running, it's time to show you how you would us
 
 We've also tried to make Carts extendable as much as possible so, depending on what your stores requirements are, you are free to chop and change things as much as you need to.
 
-## The cart manager
+## The Cart Manager
 
 ```php
 $cart = $cart->getManager()->getCart();
@@ -346,7 +346,7 @@ $cart->shippingAddress;
 $cart->billingAddress;
 ```
 
-## Handling user login in
+## Handling User Login
 When a user logs in, you will likely want to check if they have a cart associated to their account and use that, or if they have started a cart as a guest and logged in, you will likely want to be able to handle this. GetCandy takes the pain out of this by listening to the authentication events and responding automatically by associating any previous guest cart they may have had and, depending on your `auth_policy` merge or override the basket on their account.
 
 ## Saved Carts
