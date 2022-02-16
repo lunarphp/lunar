@@ -6,7 +6,7 @@
 
 On your checkout, if your customer has added an item that needs shipping, you're likely going to want to display some shipping options. Currently the best way to do this is to implement your own by adding a `ShippingModifier` and adding using that to determine what shipping options you want to make available and add them to the `ShippingManifest` class.
 
-## Adding a shipping modifier
+## Adding a Shipping Modifier
 
 Create your own custom shipping provider:
 

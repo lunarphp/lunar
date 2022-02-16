@@ -16,7 +16,7 @@ return [
 ];
 ```
 
-## Writing your own driver
+## Writing Your Own Driver
 
 To write your own driver you need to add a class which implements the `GetCandy\Base\TaxManager` interface and has the following methods:
 

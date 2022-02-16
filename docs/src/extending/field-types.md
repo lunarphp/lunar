@@ -9,7 +9,7 @@ There will likely come a point where you need more field types than what GetCand
 
 GetCandy will load up available field types via the `AttributeManifest`. This is a singleton which houses all the field types you can use. We currently have a handleful in the core, with more being added in the future. If you need a field type that's not here, speak with us first in case it's in the pipeline.
 
-## Create your field type class
+## Create Your Field Type Class
 
 Each FieldType is it's own class which implements the `FieldType` interface. So start by creating this class:
 
@@ -126,7 +126,7 @@ Using the above we might have a view that looks like this:
 
 You will also have access to the `$language` variable, which is generally used on translated attributes. This will be the language code such as `en`
 
-## Registering your FieldType
+## Registering Your FieldType
 
 Once you've made the FieldType, you need to register it. Typically this could done in a service provider:
 
