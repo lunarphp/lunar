@@ -74,6 +74,7 @@ module.exports = {
         collapsable: false, // optional, defaults to true
         children: [
           ['/', 'Overview'],
+          ['/quickstart', 'Quick Start'],
           '/installation',
           '/configuration',
           ['/upgrading', 'Upgrade Guide'],
