@@ -184,7 +184,7 @@ class Product extends BaseModel implements SpatieHasMedia
     /**
      * Return the customer groups relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {
