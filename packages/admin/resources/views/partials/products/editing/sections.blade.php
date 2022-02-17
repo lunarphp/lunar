@@ -39,13 +39,6 @@
       </div>
 
       {{--
-        Collections
-       --}}
-       <div id="collections">
-        @include('adminhub::partials.products.editing.collections')
-       </div>
-
-      {{--
         Basic Information
        --}}
       <div id="basic-information">
@@ -108,6 +101,13 @@
       <div id="urls">
         @include('adminhub::partials.urls')
       </div>
+
+      {{--
+        Collections
+       --}}
+       <div id="collections">
+        @include('adminhub::partials.products.editing.collections')
+       </div>
 
       {{--
         Delete area

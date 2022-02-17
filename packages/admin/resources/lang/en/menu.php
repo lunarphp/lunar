@@ -23,6 +23,7 @@ return [
     'product.associations'      => 'Associations',
     'product.urls'              => 'URLs',
     'product.identifiers'       => 'Identifiers',
+    'product.collections'       => 'Collections',
     /**
      * Generic menu items.
      */

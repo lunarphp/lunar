@@ -161,6 +161,7 @@ abstract class AbstractProduct extends Component
             'product.brand'           => 'nullable|string|max:255',
             'product.product_type_id' => 'required',
             'urls'                    => 'array',
+            'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
             'variant.sku'             => get_validation('products', 'sku', [
                 'alpha_dash',
@@ -486,6 +487,12 @@ abstract class AbstractProduct extends Component
         $this->collectionsToDetach = collect();
     }
 
+    /**
+     * Remove the collection by it's index
+     *
+     * @param int|string $index
+     * @return void
+     */
     public function removeCollection($index)
     {
         $this->collectionsToDetach->push(
@@ -494,6 +501,12 @@ abstract class AbstractProduct extends Component
         $this->collections->forget($index);
     }
 
+    /**
+     * Map and add the selected collections.
+     *
+     * @param array $collectionIds
+     * @return void
+     */
     public function selectCollections($collectionIds)
     {
         $selectedCollections = ModelsCollection::findMany($collectionIds)->map(function ($collection) {
@@ -508,7 +521,10 @@ abstract class AbstractProduct extends Component
                 })->join(' > ')
             ];
         });
-        $this->collections = $this->collections->merge($selectedCollections);
+
+        $this->collections = $this->collections->count() ?
+            $this->collections->merge($selectedCollections) :
+            $selectedCollections;
     }
 
     /**
@@ -655,6 +671,13 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.urls'),
                 'id'         => 'urls',
                 'hidden'     => $this->getVariantsCount() > 1,
+                'has_errors' => $this->errorBag->hasAny([
+                ]),
+            ],
+            [
+                'title'      => __('adminhub::menu.product.collections'),
+                'id'         => 'collections',
+                'hidden'     => false,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
