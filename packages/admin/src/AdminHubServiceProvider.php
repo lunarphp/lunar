@@ -86,7 +86,9 @@ class AdminHubServiceProvider extends ServiceProvider
             $this->mergeConfigFrom("{$this->root}/config/$config.php", "getcandy-hub.$config");
         });
 
-        $this->app->instance(Manifest::class, new Manifest());
+        $this->app->singleton(Manifest::class, function () {
+            return new Manifest();
+        });
 
         $this->app->singleton(MenuRegistry::class, function () {
             return new MenuRegistry();
