@@ -153,6 +153,11 @@ class Product extends BaseModel implements SpatieHasMedia
         Dissociate::dispatch($this, $product, $type);
     }
 
+    /**
+     * Returns the indexable data for the collection.
+     *
+     * @return array
+     */
     public function toSearchableArray()
     {
         if (config('scout.driver') == 'mysql') {
@@ -176,6 +181,11 @@ class Product extends BaseModel implements SpatieHasMedia
         return $data;
     }
 
+    /**
+     * Return the customer groups relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('getcandy.database.table_prefix');

@@ -196,6 +196,11 @@ class Order extends BaseModel
         );
     }
 
+    /**
+     * Returns the indexable data for the collection.
+     *
+     * @return array
+     */
     public function toSearchableArray()
     {
         if (config('scout.driver') == 'mysql') {
