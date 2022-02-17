@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Components;
 
 use GetCandy\Models\Collection as ModelsCollection;
-use GetCandy\Models\Product;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
@@ -12,7 +11,7 @@ class CollectionSearch extends Component
     /**
      * Should the browser be visible?
      *
-     * @var boolean
+     * @var bool
      */
     public bool $showBrowser = false;
 
@@ -26,7 +25,7 @@ class CollectionSearch extends Component
     /**
      * Max results we want to show.
      *
-     * @var integer
+     * @var int
      */
     public $maxResults = 50;
 
@@ -65,6 +64,7 @@ class CollectionSearch extends Component
             $collection->breadcrumb = $collection->ancestors->map(function ($ancestor) {
                 return $ancestor->translateAttribute('name');
             })->join(' > ');
+
             return $collection;
         });
     }
@@ -93,7 +93,7 @@ class CollectionSearch extends Component
     /**
      * Add the collection to the selected array.
      *
-     * @param string|int $id
+     * @param  string|int  $id
      * @return void
      */
     public function selectCollection($id)
@@ -104,7 +104,7 @@ class CollectionSearch extends Component
     /**
      * Remove a collection from the selected collections.
      *
-     * @param string|int $id
+     * @param  string|int  $id
      * @return void
      */
     public function removeCollection($id)
@@ -131,6 +131,7 @@ class CollectionSearch extends Component
             $collection->breadcrumb = $collection->ancestors->map(function ($ancestor) {
                 return $ancestor->translateAttribute('name');
             })->join(' > ');
+
             return $collection;
         });
 

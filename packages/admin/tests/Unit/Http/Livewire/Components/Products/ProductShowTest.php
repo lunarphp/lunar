@@ -560,7 +560,7 @@ class ProductShowTest extends TestCase
 
         $this->assertDatabaseHas((new Product)->collections()->getTable(), [
             'collection_id' => $collection->id,
-            'product_id' => $component->get('product.id')
+            'product_id' => $component->get('product.id'),
         ]);
     }
 }

@@ -74,7 +74,7 @@ return [
     'attribute-edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
 
     /**
-     * Collection search
+     * Collection search.
      */
     'collection-search.btn'                         => 'Add Collections',
     'collection-search.first_tab'                   => 'Search collections',
