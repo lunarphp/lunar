@@ -1,9 +1,12 @@
 <div class="shadow sm:rounded-md">
   <div class="flex-col px-4 py-5 space-y-4 bg-white rounded-md sm:p-6">
-    <header>
+    <header class="flex items-center justify-between">
       <h3 class="text-lg font-medium leading-6 text-gray-900">
-        Collections
+        {{ __('adminhub::partials.products.collections.heading') }}
       </h3>
+      @livewire('hub.components.collection-search', [
+        'existing' => $product->collections,
+      ])
     </header>
 
     <div class="space-y-2">
@@ -30,12 +33,12 @@
                         'collection' => $collection['id'],
                       ])"
                     >
-                      View collection
+                      {{ __('adminhub::partials.products.collections.view_collection') }}
                     </x-hub::dropdown.link>
                     <x-hub::dropdown.button
                       wire:click.prevent="removeCollection({{ $index }})"
                       class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 text-red-600 hover:bg-gray-50">
-                      Remove
+                      {{ __('adminhub::global.remove') }}
                     </x-hub::dropdown.button>
                   </x-slot>
                 </x-hub::dropdown>

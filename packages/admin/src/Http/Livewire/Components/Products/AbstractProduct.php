@@ -14,6 +14,7 @@ use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
 use GetCandy\Models\AttributeGroup;
+use GetCandy\Models\Collection as ModelsCollection;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductType;
@@ -130,6 +131,7 @@ abstract class AbstractProduct extends Component
             'productOptionCreated'          => 'resetOptionView',
             'option-manager.selectedValues' => 'setOptionValues',
             'urlSaved'                      => 'refreshUrls',
+            'collectionSearch.selected'     => 'selectCollections',
         ], $this->getHasImagesListeners());
     }
 
@@ -490,6 +492,23 @@ abstract class AbstractProduct extends Component
             $this->collections[$index]
         );
         $this->collections->forget($index);
+    }
+
+    public function selectCollections($collectionIds)
+    {
+        $selectedCollections = ModelsCollection::findMany($collectionIds)->map(function ($collection) {
+            return [
+                'id' => $collection->id,
+                'group_id' => $collection->collection_group_id,
+                'name' => $collection->translateAttribute('name'),
+                'thumbnail' => optional($collection->thumbnail)->getUrl(),
+                'position' => optional($collection->pivot)->position,
+                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
+                    return $ancestor->translateAttribute('name');
+                })->join(' > ')
+            ];
+        });
+        $this->collections = $this->collections->merge($selectedCollections);
     }
 
     /**

@@ -13,6 +13,7 @@ use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
+use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
@@ -178,6 +179,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
+        Livewire::component('hub.components.collection-search', CollectionSearch::class);
         Livewire::component('hub.components.account', Account::class);
         Livewire::component('hub.components.avatar', Avatar::class);
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
