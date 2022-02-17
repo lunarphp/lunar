@@ -14,6 +14,7 @@ use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
 use GetCandy\Models\AttributeGroup;
+use GetCandy\Models\Collection as ModelsCollection;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductType;
@@ -103,6 +104,20 @@ abstract class AbstractProduct extends Component
     public $availability = [];
 
     /**
+     * The associated product collections.
+     *
+     * @var array
+     */
+    public Collection $collections;
+
+    /**
+     * An array of collections to detach from the product.
+     *
+     * @var array
+     */
+    public Collection $collectionsToDetach;
+
+    /**
      * The product variant attributes.
      *
      * @var \Illuminate\Support\Collection
@@ -116,6 +131,7 @@ abstract class AbstractProduct extends Component
             'productOptionCreated'          => 'resetOptionView',
             'option-manager.selectedValues' => 'setOptionValues',
             'urlSaved'                      => 'refreshUrls',
+            'collectionSearch.selected'     => 'selectCollections',
         ], $this->getHasImagesListeners());
     }
 
@@ -145,6 +161,7 @@ abstract class AbstractProduct extends Component
             'product.brand'           => 'nullable|string|max:255',
             'product.product_type_id' => 'required',
             'urls'                    => 'array',
+            'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
             'variant.sku'             => get_validation('products', 'sku', [
                 'alpha_dash',
@@ -332,6 +349,18 @@ abstract class AbstractProduct extends Component
 
             $this->product->channels()->sync($channels);
 
+            $this->product->collections()->detach(
+                $this->collectionsToDetach->pluck('id')
+            );
+
+            $this->collections->each(function ($collection) {
+                $this->product->collections()
+                    ->syncWithoutDetaching(
+                        $collection['id'],
+                        ['position' => $collection['position']]
+                    );
+            });
+
             $this->product->refresh();
 
             $this->variantsEnabled = $this->getVariantsCount() > 1;
@@ -438,6 +467,64 @@ abstract class AbstractProduct extends Component
                 ];
             }),
         ];
+    }
+
+    protected function syncCollections()
+    {
+        $this->collections = $this->product->collections->map(function ($collection) {
+            return [
+                'id' => $collection->id,
+                'group_id' => $collection->collection_group_id,
+                'name' => $collection->translateAttribute('name'),
+                'thumbnail' => optional($collection->thumbnail)->getUrl(),
+                'position' => $collection->pivot->position,
+                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
+                    return $ancestor->translateAttribute('name');
+                })->join(' > '),
+            ];
+        });
+
+        $this->collectionsToDetach = collect();
+    }
+
+    /**
+     * Remove the collection by it's index.
+     *
+     * @param  int|string  $index
+     * @return void
+     */
+    public function removeCollection($index)
+    {
+        $this->collectionsToDetach->push(
+            $this->collections[$index]
+        );
+        $this->collections->forget($index);
+    }
+
+    /**
+     * Map and add the selected collections.
+     *
+     * @param  array  $collectionIds
+     * @return void
+     */
+    public function selectCollections($collectionIds)
+    {
+        $selectedCollections = ModelsCollection::findMany($collectionIds)->map(function ($collection) {
+            return [
+                'id' => $collection->id,
+                'group_id' => $collection->collection_group_id,
+                'name' => $collection->translateAttribute('name'),
+                'thumbnail' => optional($collection->thumbnail)->getUrl(),
+                'position' => optional($collection->pivot)->position,
+                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
+                    return $ancestor->translateAttribute('name');
+                })->join(' > '),
+            ];
+        });
+
+        $this->collections = $this->collections->count() ?
+            $this->collections->merge($selectedCollections) :
+            $selectedCollections;
     }
 
     /**
@@ -584,6 +671,13 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.urls'),
                 'id'         => 'urls',
                 'hidden'     => $this->getVariantsCount() > 1,
+                'has_errors' => $this->errorBag->hasAny([
+                ]),
+            ],
+            [
+                'title'      => __('adminhub::menu.product.collections'),
+                'id'         => 'collections',
+                'hidden'     => false,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
