@@ -39,6 +39,13 @@
       </div>
 
       {{--
+        Collections
+       --}}
+       <div id="collections">
+        @include('adminhub::partials.products.editing.collections')
+       </div>
+
+      {{--
         Basic Information
        --}}
       <div id="basic-information">

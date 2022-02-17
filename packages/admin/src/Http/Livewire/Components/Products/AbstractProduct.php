@@ -103,6 +103,20 @@ abstract class AbstractProduct extends Component
     public $availability = [];
 
     /**
+     * The associated product collections.
+     *
+     * @var array
+     */
+    public Collection $collections;
+
+    /**
+     * An array of collections to detach from the product.
+     *
+     * @var array
+     */
+    public Collection $collectionsToDetach;
+
+    /**
      * The product variant attributes.
      *
      * @var \Illuminate\Support\Collection
@@ -332,6 +346,18 @@ abstract class AbstractProduct extends Component
 
             $this->product->channels()->sync($channels);
 
+            $this->product->collections()->detach(
+                $this->collectionsToDetach->pluck('id')
+            );
+
+            $this->collections->each(function ($collection) {
+                $this->product->collections()
+                    ->syncWithoutDetaching(
+                        $collection['id'],
+                        ['position' => $collection['position']]
+                    );
+            });
+
             $this->product->refresh();
 
             $this->variantsEnabled = $this->getVariantsCount() > 1;
@@ -438,6 +464,32 @@ abstract class AbstractProduct extends Component
                 ];
             }),
         ];
+    }
+
+    protected function syncCollections()
+    {
+        $this->collections = $this->product->collections->map(function ($collection) {
+            return [
+                'id' => $collection->id,
+                'group_id' => $collection->collection_group_id,
+                'name' => $collection->translateAttribute('name'),
+                'thumbnail' => optional($collection->thumbnail)->getUrl(),
+                'position' => $collection->pivot->position,
+                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
+                    return $ancestor->translateAttribute('name');
+                })->join(' > ')
+            ];
+        });
+
+        $this->collectionsToDetach = collect();
+    }
+
+    public function removeCollection($index)
+    {
+        $this->collectionsToDetach->push(
+            $this->collections[$index]
+        );
+        $this->collections->forget($index);
     }
 
     /**
