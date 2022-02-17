@@ -17,82 +17,56 @@ class AddressObserverTest extends TestCase
     /** @test */
     public function can_only_have_one_shipping_default_per_customer()
     {
-        $customerA = Customer::factory()->create();
+        $customer = Customer::factory()->create();
 
-        $addressADefault = Address::factory()->create([
-            'customer_id' => $customerA->id,
+        $addressA = Address::factory()->create([
+            'customer_id' => $customer->id,
             'shipping_default' => true,
         ]);
 
-        $this->assertTrue($addressADefault->shipping_default);
+        $this->assertTrue($addressA->shipping_default);
 
-        $addressANewDefault = Address::factory()->create([
-            'customer_id' => $customerA->id,
+        $addressB = Address::factory()->create([
+            'customer_id' => $customer->id,
             'shipping_default' => true,
         ]);
 
-        $this->assertFalse($addressADefault->refresh()->shipping_default);
-        $this->assertTrue($addressANewDefault->shipping_default);
+        $this->assertFalse($addressA->refresh()->shipping_default);
+        $this->assertTrue($addressB->shipping_default);
 
-        $customerB = Customer::factory()->create();
-
-        $addressBDefault = Address::factory()->create([
-            'customer_id' => $customerB->id,
+        $addressA->update([
             'shipping_default' => true,
         ]);
 
-        $this->assertTrue($addressBDefault->shipping_default);
-
-        $addressBNewDefault = Address::factory()->create([
-            'customer_id' => $customerB->id,
-            'shipping_default' => true,
-        ]);
-
-        $this->assertFalse($addressBDefault->refresh()->shipping_default);
-        $this->assertTrue($addressBNewDefault->shipping_default);
-
-        $this->assertFalse($addressADefault->refresh()->shipping_default);
-        $this->assertTrue($addressANewDefault->refresh()->shipping_default);
+        $this->assertTrue($addressA->shipping_default);
+        $this->assertFalse($addressB->refresh()->shipping_default);
     }
 
     /** @test */
     public function can_only_have_one_billing_default_per_customer()
     {
-        $customerA = Customer::factory()->create();
+        $customer = Customer::factory()->create();
 
-        $addressADefault = Address::factory()->create([
-            'customer_id' => $customerA->id,
+        $addressA = Address::factory()->create([
+            'customer_id' => $customer->id,
             'billing_default' => true,
         ]);
 
-        $this->assertTrue($addressADefault->billing_default);
+        $this->assertTrue($addressA->billing_default);
 
-        $addressANewDefault = Address::factory()->create([
-            'customer_id' => $customerA->id,
+        $addressB = Address::factory()->create([
+            'customer_id' => $customer->id,
             'billing_default' => true,
         ]);
 
-        $this->assertFalse($addressADefault->refresh()->billing_default);
-        $this->assertTrue($addressANewDefault->billing_default);
+        $this->assertFalse($addressA->refresh()->billing_default);
+        $this->assertTrue($addressB->billing_default);
 
-        $customerB = Customer::factory()->create();
-
-        $addressBDefault = Address::factory()->create([
-            'customer_id' => $customerB->id,
+        $addressA->update([
             'billing_default' => true,
         ]);
 
-        $this->assertTrue($addressBDefault->billing_default);
-
-        $addressBNewDefault = Address::factory()->create([
-            'customer_id' => $customerB->id,
-            'billing_default' => true,
-        ]);
-
-        $this->assertFalse($addressBDefault->refresh()->billing_default);
-        $this->assertTrue($addressBNewDefault->billing_default);
-
-        $this->assertFalse($addressADefault->refresh()->billing_default);
-        $this->assertTrue($addressANewDefault->refresh()->billing_default);
+        $this->assertTrue($addressA->billing_default);
+        $this->assertFalse($addressB->refresh()->billing_default);
     }
 }
