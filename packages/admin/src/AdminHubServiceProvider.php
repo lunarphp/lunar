@@ -85,6 +85,16 @@ class AdminHubServiceProvider extends ServiceProvider
         collect($this->configFiles)->each(function ($config) {
             $this->mergeConfigFrom("{$this->root}/config/$config.php", "getcandy-hub.$config");
         });
+
+        $this->app->instance(Manifest::class, new Manifest());
+
+        $this->app->singleton(MenuRegistry::class, function () {
+            return new MenuRegistry();
+        });
+
+        $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
+            return new \GetCandy\Hub\Editing\ProductSection();
+        });
     }
 
     /**
@@ -130,18 +140,10 @@ class AdminHubServiceProvider extends ServiceProvider
             RouteMatched::class,
             [SetStaffAuthMiddlewareListener::class, 'handle']
         );
-
-        $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
-            return new \GetCandy\Hub\Editing\ProductSection();
-        });
     }
 
     protected function registerMenuBuilder()
     {
-        $this->app->singleton(MenuRegistry::class, function () {
-            return new MenuRegistry();
-        });
-
         SidebarMenu::make();
         SettingsMenu::make();
     }
@@ -332,12 +334,9 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        $manifest = new Manifest();
-        $this->app->instance(Manifest::class, $manifest);
-
-        Gate::after(function ($user, $ability) use ($manifest) {
+        Gate::after(function ($user, $ability) {
             // Are we trying to authorize something within the hub?
-            $permission = $manifest->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
+            $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
                 return $user->admin || $user->authorize($ability);
             }
