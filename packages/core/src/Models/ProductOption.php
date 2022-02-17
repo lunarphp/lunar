@@ -60,7 +60,7 @@ class ProductOption extends BaseModel
     }
 
     /**
-     * Returns the indexable data for the collection.
+     * Returns the indexable data for the product option.
      *
      * @return array
      */

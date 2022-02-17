@@ -154,7 +154,7 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
-     * Returns the indexable data for the collection.
+     * Returns the indexable data for the product.
      *
      * @return array
      */
