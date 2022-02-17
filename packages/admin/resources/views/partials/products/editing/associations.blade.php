@@ -36,6 +36,7 @@
             'existing' => $this->associatedProductIds,
             'ref' => 'product-associations',
             'showBtn' => false,
+            'exclude' => [$product->id]
           ])
       </div>
     </header>

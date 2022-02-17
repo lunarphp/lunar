@@ -17,6 +17,8 @@ class ProductSearch extends Component
 
     public $selected = [];
 
+    public $exclude = [];
+
     public $ref = null;
 
     public $showBtn = true;

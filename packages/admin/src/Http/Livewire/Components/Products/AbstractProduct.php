@@ -533,7 +533,10 @@ abstract class AbstractProduct extends Component
                 'type' => $this->associationType,
             ];
         });
-        $this->associations = $this->associations->merge($selectedProducts);
+
+        $this->associations = $this->associations->count() ?
+            $this->associations->merge($selectedProducts) :
+            $selectedProducts;
 
         $this->emit('updatedExistingProductAssociations', $this->associatedProductIds);
     }
