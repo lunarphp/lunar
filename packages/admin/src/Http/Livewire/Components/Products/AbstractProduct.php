@@ -480,7 +480,7 @@ abstract class AbstractProduct extends Component
                 'position' => $collection->pivot->position,
                 'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
                     return $ancestor->translateAttribute('name');
-                })->join(' > ')
+                })->join(' > '),
             ];
         });
 
@@ -488,9 +488,9 @@ abstract class AbstractProduct extends Component
     }
 
     /**
-     * Remove the collection by it's index
+     * Remove the collection by it's index.
      *
-     * @param int|string $index
+     * @param  int|string  $index
      * @return void
      */
     public function removeCollection($index)
@@ -504,7 +504,7 @@ abstract class AbstractProduct extends Component
     /**
      * Map and add the selected collections.
      *
-     * @param array $collectionIds
+     * @param  array  $collectionIds
      * @return void
      */
     public function selectCollections($collectionIds)
@@ -518,7 +518,7 @@ abstract class AbstractProduct extends Component
                 'position' => optional($collection->pivot)->position,
                 'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
                     return $ancestor->translateAttribute('name');
-                })->join(' > ')
+                })->join(' > '),
             ];
         });
 
