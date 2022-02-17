@@ -2,7 +2,9 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\Models\CartLine;
 use GetCandy\Models\Currency;
+use Illuminate\Support\Collection;
 
 interface TaxDriver
 {
@@ -12,7 +14,7 @@ interface TaxDriver
      * @param  \GetCandy\Base\Addressable|null  $address
      * @return self
      */
-    public function setShippingAddress(Addressable $address = null);
+    public function setShippingAddress(Addressable $address = null): self;
 
     /**
      * Set the currency.
@@ -20,7 +22,7 @@ interface TaxDriver
      * @param  \GetCandy\Models\Currency  $currency
      * @return self
      */
-    public function setCurrency(Currency $currency);
+    public function setCurrency(Currency $currency): self;
 
     /**
      * Set the billing address.
@@ -28,7 +30,7 @@ interface TaxDriver
      * @param  \GetCandy\Base\Addressable|null  $address
      * @return self
      */
-    public function setBillingAddress(Addressable $address = null);
+    public function setBillingAddress(Addressable $address = null): self;
 
     /**
      * Set the purchasable item.
@@ -36,12 +38,22 @@ interface TaxDriver
      * @param  \GetCandy\Base\Purchasable  $purchasable
      * @return self
      */
-    public function setPurchasable(Purchasable $purchasable);
+    public function setPurchasable(Purchasable $purchasable): self;
+
+    /**
+     * Set the cart line.
+     *
+     * @param \GetCandy\Models\CartLine $cartLine
+     * @return self
+     */
+    public function setCartLine(CartLine $cartLine): self;
 
     /**
      * Return the tax breakdown from a given sub total.
      *
      * @param  int  $subTotal
+     *
+     * @return \Illuminate\Support\Collection<\GetCandy\Models\TaxRateAmount>
      */
-    public function getBreakdown($subTotal);
+    public function getBreakdown($subTotal): Collection;
 }

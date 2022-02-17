@@ -4,10 +4,13 @@ namespace GetCandy\Drivers;
 
 use GetCandy\Actions\Taxes\GetTaxZone;
 use GetCandy\Base\Addressable;
+use GetCandy\Base\DataTransferObjects\TaxBreakdownAmount;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\TaxDriver;
 use GetCandy\DataTypes\Price;
+use GetCandy\Models\CartLine;
 use GetCandy\Models\Currency;
+use Illuminate\Support\Collection;
 
 class SystemTaxDriver implements TaxDriver
 {
@@ -42,7 +45,7 @@ class SystemTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setShippingAddress(Addressable $address = null)
+    public function setShippingAddress(Addressable $address = null): self
     {
         $this->shippingAddress = $address;
 
@@ -52,7 +55,7 @@ class SystemTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setCurrency(Currency $currency)
+    public function setCurrency(Currency $currency): self
     {
         $this->currency = $currency;
 
@@ -62,7 +65,7 @@ class SystemTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setBillingAddress(Addressable $address = null)
+    public function setBillingAddress(Addressable $address = null): self
     {
         $this->billingAddress = $address;
 
@@ -72,7 +75,7 @@ class SystemTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setPurchasable(Purchasable $purchasable)
+    public function setPurchasable(Purchasable $purchasable): self
     {
         $this->purchasable = $purchasable;
 
@@ -80,9 +83,22 @@ class SystemTaxDriver implements TaxDriver
     }
 
     /**
+     * Set the cart line.
+     *
+     * @param CartLine $cartLine
+     * @return self
+     */
+    public function setCartLine(CartLine $cartLine): self
+    {
+        $this->cartLine = $cartLine;
+
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      */
-    public function getBreakdown($subTotal)
+    public function getBreakdown($subTotal): Collection
     {
         $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
@@ -92,6 +108,12 @@ class SystemTaxDriver implements TaxDriver
 
         foreach ($taxAmounts as $amount) {
             $result = round($subTotal * ($amount->percentage / 100));
+            $amount = new TaxBreakdownAmount(
+                price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
+                description: $amount->taxRate->name,
+                identifier: "tax_rate_{$amount->taxRate->id}"
+            );
+            dd($amount);
             $amount->total = new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity());
             $amounts->push($amount);
         }
