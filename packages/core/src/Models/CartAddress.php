@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\Addressable;
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartAddressFactory;
 use GetCandy\DataTypes\Price;
@@ -47,9 +48,9 @@ class CartAddress extends BaseModel implements Addressable
     /**
      * The tax breakdown.
      *
-     * @var \Illuminate\Support\Collection
+     * @var \GetCandy\Base\DataTransferObjects\TaxBreakdown
      */
-    public Collection $taxBreakdown;
+    public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.

@@ -82,7 +82,7 @@ class CartManager
         $discountTotal = $lines->sum('discountTotal.value');
         $taxTotal = $lines->sum('taxAmount.value');
         $total = $lines->sum('total.value');
-        $taxBreakDown = $lines->pluck('taxBreakdown')->flatten();
+        $taxBreakDownAmounts = $lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
 
         $this->cart->subTotal = new Price($subTotal, $this->cart->currency, 1);
         $this->cart->discountTotal = new Price($discountTotal, $this->cart->currency, 1);
@@ -94,15 +94,15 @@ class CartManager
                             ->getBreakdown($shippingOption->price->value);
 
             $shippingSubTotal = $shippingOption->price->value;
-            $shippingTaxTotal = $shippingTax->sum('total.value');
+            $shippingTaxTotal = $shippingTax->amounts->sum('price.value');
             $shippingTotal = $shippingSubTotal + $shippingTaxTotal;
 
-            $taxBreakDown = $taxBreakDown->merge($shippingTax);
+            $taxBreakDownAmounts = $taxBreakDownAmounts->merge($shippingTax->amounts);
 
             $taxTotal += $shippingTaxTotal;
             $total += $shippingTotal;
 
-            $this->cart->shippingAddress->taxBreakdown = $taxBreakDown;
+            $this->cart->shippingAddress->taxBreakdown = $shippingTax;
             $this->cart->shippingAddress->shippingTotal = new Price($shippingTotal, $this->cart->currency, 1);
             $this->cart->shippingAddress->shippingTaxTotal = new Price($shippingTaxTotal, $this->cart->currency, 1);
             $this->cart->shippingAddress->shippingSubTotal = new Price($shippingOption->price->value, $this->cart->currency, 1);
@@ -114,11 +114,13 @@ class CartManager
         $this->cart->total = new Price($total, $this->cart->currency, 1);
 
         // Need to include shipping tax breakdown...
-        $this->cart->taxBreakdown = $taxBreakDown->groupBy('tax_rate_id')->map(function ($amounts) {
+        $this->cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) {
             return [
-                'rate'    => $amounts->first()->taxRate,
+                'percentage'    => $amounts->first()->percentage,
+                'description' => $amounts->first()->description,
+                'identifier' => $amounts->first()->identifier,
                 'amounts' => $amounts,
-                'total'   => new Price($amounts->sum('total.value'), $this->cart->currency, 1),
+                'total'   => new Price($amounts->sum('price.value'), $this->cart->currency, 1),
             ];
         });
 

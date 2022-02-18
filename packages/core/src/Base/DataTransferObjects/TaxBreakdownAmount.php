@@ -9,8 +9,9 @@ class TaxBreakdownAmount
 {
     public function __construct(
         public Price $price,
-        public $identifier,
-        public $description
+        public string $identifier,
+        public string $description,
+        public float $percentage,
     ) {
         //
     }

@@ -2,6 +2,7 @@
 
 namespace GetCandy\Tests\Unit\Facades;
 
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Base\TaxManagerInterface;
 use GetCandy\Facades\Taxes;
 use GetCandy\Tests\Stubs\TestTaxDriver;
@@ -32,6 +33,6 @@ class TaxesTest extends TestCase
 
         $result = Taxes::driver('testing')->getBreakdown(123);
 
-        $this->assertIsIterable($result);
+        $this->assertInstanceOf(TaxBreakdown::class, $result);
     }
 }

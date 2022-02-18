@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Currency;
 use Illuminate\Support\Collection;
@@ -53,7 +54,7 @@ interface TaxDriver
      *
      * @param  int  $subTotal
      *
-     * @return \Illuminate\Support\Collection<\GetCandy\Models\TaxRateAmount>
+     * @return \GetCandy\Base\DataTransferObjects\TaxBreakdown
      */
-    public function getBreakdown($subTotal): Collection;
+    public function getBreakdown($subTotal): TaxBreakdown;
 }

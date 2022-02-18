@@ -4,6 +4,7 @@ namespace GetCandy\Drivers;
 
 use GetCandy\Actions\Taxes\GetTaxZone;
 use GetCandy\Base\Addressable;
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Base\DataTransferObjects\TaxBreakdownAmount;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\TaxDriver;
@@ -41,6 +42,13 @@ class SystemTaxDriver implements TaxDriver
      * @var Purchasable
      */
     protected Purchasable $purchasable;
+
+    /**
+     * The cart line model.
+     *
+     * @var CartLine|null
+     */
+    protected ?CartLine $cartLine = null;
 
     /**
      * {@inheritDoc}
@@ -98,26 +106,25 @@ class SystemTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function getBreakdown($subTotal): Collection
+    public function getBreakdown($subTotal): TaxBreakdown
     {
         $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
         $taxAmounts = $taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();
 
-        $amounts = collect();
+        $breakdown = new TaxBreakdown;
 
         foreach ($taxAmounts as $amount) {
             $result = round($subTotal * ($amount->percentage / 100));
             $amount = new TaxBreakdownAmount(
                 price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
                 description: $amount->taxRate->name,
-                identifier: "tax_rate_{$amount->taxRate->id}"
+                identifier: "tax_rate_{$amount->taxRate->id}",
+                percentage: $amount->percentage
             );
-            dd($amount);
-            $amount->total = new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity());
-            $amounts->push($amount);
+            $breakdown->addAmount($amount);
         }
 
-        return $amounts;
+        return $breakdown;
     }
 }

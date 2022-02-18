@@ -55,7 +55,8 @@ class CreateOrder
                 'shipping_total'     => $cart->shippingTotal?->value ?: 0,
                 'tax_breakdown'      => $cart->taxBreakdown->map(function ($tax) {
                     return [
-                        'name'       => $tax['rate']->name,
+                        'description'       => $tax['description'],
+                        'identifier'   => $tax['identifier'],
                         'percentage' => $tax['amounts']->sum('percentage'),
                         'total'      => $tax['total']->value,
                     ];
@@ -83,11 +84,12 @@ class CreateOrder
                     'quantity'         => $line->quantity,
                     'sub_total'        => $line->subTotal->value,
                     'discount_total'   => $line->discountTotal?->value,
-                    'tax_breakdown'    => $line->taxBreakdown->map(function ($amount) {
+                    'tax_breakdown'    => $line->taxBreakdown->amounts->map(function ($amount) {
                         return [
-                            'name'       => $amount->taxRate->name,
+                            'description' => $amount->description,
+                            'identifier' => $amount->identifier,
                             'percentage' => $amount->percentage,
-                            'total'      => $amount->total->value,
+                            'total'      => $amount->price->value,
                         ];
                     })->values(),
                     'tax_total' => $line->taxAmount->value,
@@ -122,11 +124,12 @@ class CreateOrder
                     'quantity'         => 1,
                     'sub_total'        => $shippingAddress->shippingSubTotal->value,
                     'discount_total'   => $shippingAddress->shippingSubTotal->discountTotal?->value ?: 0,
-                    'tax_breakdown'    => $shippingAddress->taxBreakdown->map(function ($amount) {
+                    'tax_breakdown'    => $shippingAddress->taxBreakdown->amounts->map(function ($amount) {
                         return [
-                            'name'       => $amount->taxRate->name,
+                            'description' => $amount->description,
+                            'identifier' => $amount->identifier,
                             'percentage' => $amount->percentage,
-                            'total'      => $amount->total->value,
+                            'total'      => $amount->price->value,
                         ];
                     })->values(),
                     'tax_total' => $shippingAddress->shippingTaxTotal->value,

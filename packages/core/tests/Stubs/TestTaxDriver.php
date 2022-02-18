@@ -3,9 +3,14 @@
 namespace GetCandy\Tests\Stubs;
 
 use GetCandy\Base\Addressable;
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
+use GetCandy\Base\DataTransferObjects\TaxBreakdownAmount;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\TaxDriver;
+use GetCandy\DataTypes\Price;
+use GetCandy\Models\CartLine;
 use GetCandy\Models\Currency;
+use GetCandy\Models\ProductVariant;
 use GetCandy\Models\TaxRateAmount;
 
 class TestTaxDriver implements TaxDriver
@@ -41,7 +46,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setShippingAddress(Addressable $address = null)
+    public function setShippingAddress(Addressable $address = null): self
     {
         $this->shippingAddress = $address;
 
@@ -51,7 +56,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setCurrency(Currency $currency)
+    public function setCurrency(Currency $currency): self
     {
         $this->currency = $currency;
 
@@ -61,7 +66,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setBillingAddress(Addressable $address = null)
+    public function setBillingAddress(Addressable $address = null): self
     {
         $this->billingAddress = $address;
 
@@ -71,7 +76,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setPurchasable(Purchasable $purchasable)
+    public function setPurchasable(Purchasable $purchasable): self
     {
         $this->purchasable = $purchasable;
 
@@ -79,12 +84,40 @@ class TestTaxDriver implements TaxDriver
     }
 
     /**
+     * Set the cart line.
+     *
+     * @param CartLine $cartLine
+     * @return self
+     */
+    public function setCartLine(CartLine $cartLine): self
+    {
+        $this->cartLine = $cartLine;
+
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      */
-    public function getBreakdown($subTotal)
+    public function getBreakdown($subTotal): TaxBreakdown
     {
-        return collect([
-            TaxRateAmount::factory()->create(),
-        ]);
+        $breakdown = new TaxBreakdown;
+
+        $taxAmount = TaxRateAmount::factory()->create();
+
+        $result = round($subTotal * ($taxAmount->percentage / 100));
+
+        $variant = ProductVariant::factory()->create();
+
+        $amount = new TaxBreakdownAmount(
+            price: new Price((int) $result, Currency::factory()->create(), $variant->getUnitQuantity()),
+            description: $taxAmount->taxRate->name,
+            identifier: "tax_rate_{$taxAmount->taxRate->id}",
+            percentage: $taxAmount->percentage
+        );
+
+        $breakdown->addAmount($amount);
+
+        return $breakdown;
     }
 }
