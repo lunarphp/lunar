@@ -3,6 +3,7 @@
 namespace GetCandy\Tests\Unit\Actions\Carts;
 
 use GetCandy\Actions\Carts\CalculateLine;
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\DataTypes\Price as DataTypesPrice;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Currency;
@@ -13,7 +14,6 @@ use GetCandy\Models\TaxClass;
 use GetCandy\Models\TaxRateAmount;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 /**
  * @group getcandy.actions
@@ -85,8 +85,8 @@ class CalculateLineTest extends TestCase
         $this->assertInstanceOf(DataTypesPrice::class, $line->discountTotal);
         $this->assertEquals(0, $line->discountTotal->value);
 
-        $this->assertInstanceOf(Collection::class, $line->taxBreakdown);
-        $this->assertCount(1, $line->taxBreakdown);
+        $this->assertInstanceOf(TaxBreakdown::class, $line->taxBreakdown);
+        $this->assertCount(1, $line->taxBreakdown->amounts);
     }
 
     /** @test */
@@ -152,8 +152,8 @@ class CalculateLineTest extends TestCase
         $this->assertInstanceOf(DataTypesPrice::class, $line->discountTotal);
         $this->assertEquals(0, $line->discountTotal->value);
 
-        $this->assertInstanceOf(Collection::class, $line->taxBreakdown);
-        $this->assertCount(1, $line->taxBreakdown);
+        $this->assertInstanceOf(TaxBreakdown::class, $line->taxBreakdown);
+        $this->assertCount(1, $line->taxBreakdown->amounts);
     }
 
     /** @test */
@@ -219,8 +219,8 @@ class CalculateLineTest extends TestCase
         $this->assertInstanceOf(DataTypesPrice::class, $line->discountTotal);
         $this->assertEquals(0, $line->discountTotal->value);
 
-        $this->assertInstanceOf(Collection::class, $line->taxBreakdown);
-        $this->assertCount(1, $line->taxBreakdown);
+        $this->assertInstanceOf(TaxBreakdown::class, $line->taxBreakdown);
+        $this->assertCount(1, $line->taxBreakdown->amounts);
     }
 
     /** @test */
@@ -286,7 +286,7 @@ class CalculateLineTest extends TestCase
         $this->assertInstanceOf(DataTypesPrice::class, $line->discountTotal);
         $this->assertEquals(0, $line->discountTotal->value);
 
-        $this->assertInstanceOf(Collection::class, $line->taxBreakdown);
-        $this->assertCount(1, $line->taxBreakdown);
+        $this->assertInstanceOf(TaxBreakdown::class, $line->taxBreakdown);
+        $this->assertCount(1, $line->taxBreakdown->amounts);
     }
 }

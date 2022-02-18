@@ -4,6 +4,7 @@ namespace GetCandy\Tests\Unit\Managers;
 
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Base\Purchasable;
 use GetCandy\DataTypes\Price;
 use GetCandy\Exceptions\CartLineIdMismatchException;
@@ -24,7 +25,6 @@ use GetCandy\Tests\Stubs\TestCartLineModifier;
 use GetCandy\Tests\Stubs\TestCartModifier;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 use Mockery;
 use Mockery\MockInterface;
 
@@ -744,7 +744,7 @@ class CartManagerTest extends TestCase
         $this->assertInstanceOf(Price::class, $line->discountTotal);
         $this->assertEquals(0, $line->discountTotal->value);
 
-        $this->assertInstanceOf(Collection::class, $line->taxBreakdown);
-        $this->assertCount(1, $line->taxBreakdown);
+        $this->assertInstanceOf(TaxBreakdown::class, $line->taxBreakdown);
+        $this->assertCount(1, $line->taxBreakdown->amounts);
     }
 }

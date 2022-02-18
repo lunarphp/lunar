@@ -3,11 +3,11 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartLineFactory;
 use GetCandy\DataTypes\Price;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
 
 class CartLine extends BaseModel
 {
@@ -52,9 +52,9 @@ class CartLine extends BaseModel
     /**
      * All the tax breakdowns for the cart line.
      *
-     * @var Collection
+     * @var \GetCandy\Base\DataTransferObjects\TaxBreakdown
      */
-    public Collection $taxBreakdown;
+    public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
