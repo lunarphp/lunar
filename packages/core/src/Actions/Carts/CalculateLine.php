@@ -28,17 +28,20 @@ class CalculateLine
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();
 
-        $priceResponse = Pricing::currency($cart->currency)
-            ->qty($cartLine->quantity)
-            ->currency($cart->currency)
-            ->customerGroups($customerGroups)
-            ->for($purchasable);
+        // we check if any cart line modifiers have already specified a unit price in their calculating() method
+        if (! ($price = $cartLine->unitPrice) instanceof Price) {
+            $priceResponse = Pricing::currency($cart->currency)
+                ->qty($cartLine->quantity)
+                ->currency($cart->currency)
+                ->customerGroups($customerGroups)
+                ->for($purchasable);
 
-        $price = new Price(
-            $priceResponse->matched->price->value,
-            $cart->currency,
-            $purchasable->getUnitQuantity()
-        );
+            $price = new Price(
+                $priceResponse->matched->price->value,
+                $cart->currency,
+                $purchasable->getUnitQuantity()
+            );
+        }
 
         $unitPrice = (int) (round(
             $price->decimal / $purchasable->getUnitQuantity(),
