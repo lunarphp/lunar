@@ -806,16 +806,16 @@ abstract class AbstractProduct extends Component
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.product.associations'),
-                'id'         => 'associations',
-                'hidden'     => false,
+                'title'      => __('adminhub::menu.product.urls'),
+                'id'         => 'urls',
+                'hidden'     => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.product.urls'),
-                'id'         => 'urls',
-                'hidden'     => $this->getVariantsCount() > 1,
+                'title'      => __('adminhub::menu.product.associations'),
+                'id'         => 'associations',
+                'hidden'     => false,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
