@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Added support for Laravel 9
+- Added new `TaxBreakdown` and `TaxBreakdownAmount` Data Transfer Objects. ([#173](https://github.com/getcandy/getcandy/issues/173))
+- Added `setCartLine` method to the system tax driver. ([#173](https://github.com/getcandy/getcandy/issues/173))
+
+### Changed
+
+- The `taxBreakdown` method on the tax driver now uses Data Transfer Objects. ([#173](https://github.com/getcandy/getcandy/issues/173))
 
 ## 2.0-beta9 - 2022-02-11
 

@@ -30,6 +30,76 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## [Unreleased]
+
+### Changes to how Tax drivers - High Impact
+
+Previously tax drivers were required to return a collection of `GetCandy\Models\TaxRateAmount` models. This wasn't very useful for custom tax drivers that did not use them and as a result limited their use. The interface was also not very clear on what should be returned.
+
+The interface has been updated to make this clearer.
+
+All methods that set properties on the tax driver should now add the `self` return type.
+
+```php
+// Before
+public function setCurrency(Currency $currency);
+
+// After
+public function setCurrency(Currency $currency): self;
+```
+
+The return type for the `getBreakdown` method should now be as follows:
+
+```php
+public function getBreakdown($subTotal): \GetCandy\Base\DataTransferObjects\TaxBreakdown;
+```
+
+You need to update the `getBreakdown` method to use both the new Data Transfer Objects.
+
+```php
+public function getBreakdown($subTotal): TaxBreakdown
+{
+    $breakdown = new TaxBreakdown;
+
+    $amount = new TaxBreakdownAmount(
+        price: new Price(1234, $this->currency, 1),
+        description: 'VAT',
+        identifier: 'vat',
+        percentage: 20.00
+    );
+
+    $breakdown->addAmount($amount);
+
+    return $breakdown;
+}
+```
+
+A new `setCartLine` method has been added and when we calculate the tax for the cart line it is passed through and available in your own tax driver. This property is nullable so you should check it's existence before relying on it.
+
+```php
+public function getBreakdown($subTotal): TaxBreakdown
+{
+    // ...
+    $this->cartLine;
+}
+```
+
+### Demo store updates
+
+If you are using the demo store. You should update the reference to the tax description on the checkout.
+
+```
+resources/views/livewire/checkout-page.blade.php
+```
+
+```html
+<!-- Old -->
+{{ $tax['rate']->name }}
+
+<!-- New -->
+{{ $tax['description'] }}
+```
+
 ## 2.0-beta9
 
 There shouldn't be any additional steps to take for this release.
