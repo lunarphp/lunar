@@ -5,7 +5,6 @@ namespace GetCandy\Base;
 use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Currency;
-use Illuminate\Support\Collection;
 
 interface TaxDriver
 {
@@ -44,7 +43,7 @@ interface TaxDriver
     /**
      * Set the cart line.
      *
-     * @param \GetCandy\Models\CartLine $cartLine
+     * @param  \GetCandy\Models\CartLine  $cartLine
      * @return self
      */
     public function setCartLine(CartLine $cartLine): self;
@@ -53,7 +52,6 @@ interface TaxDriver
      * Return the tax breakdown from a given sub total.
      *
      * @param  int  $subTotal
-     *
      * @return \GetCandy\Base\DataTransferObjects\TaxBreakdown
      */
     public function getBreakdown($subTotal): TaxBreakdown;

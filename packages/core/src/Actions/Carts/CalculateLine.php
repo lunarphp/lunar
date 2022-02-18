@@ -56,7 +56,6 @@ class CalculateLine
             ->setPurchasable($purchasable)
             ->getBreakdown($subTotal);
 
-
         $taxTotal = $taxBreakDown->amounts->sum('price.value');
 
         $cartLine->taxBreakdown = $taxBreakDown;

@@ -13,9 +13,9 @@ class TaxBreakdown
     }
 
     /**
-     * Add a tax breakdown amount
+     * Add a tax breakdown amount.
      *
-     * @param TaxBreakdownAmount $taxBreakdownAmount
+     * @param  TaxBreakdownAmount  $taxBreakdownAmount
      * @return void
      */
     public function addAmount(TaxBreakdownAmount $taxBreakdownAmount)

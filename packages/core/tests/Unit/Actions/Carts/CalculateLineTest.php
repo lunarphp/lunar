@@ -14,7 +14,6 @@ use GetCandy\Models\TaxClass;
 use GetCandy\Models\TaxRateAmount;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 /**
  * @group getcandy.actions

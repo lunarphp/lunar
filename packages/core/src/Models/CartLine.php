@@ -8,7 +8,6 @@ use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartLineFactory;
 use GetCandy\DataTypes\Price;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
 
 class CartLine extends BaseModel
 {

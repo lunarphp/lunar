@@ -10,7 +10,6 @@ use GetCandy\Database\Factories\CartAddressFactory;
 use GetCandy\DataTypes\Price;
 use GetCandy\DataTypes\ShippingOption;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
 
 class CartAddress extends BaseModel implements Addressable
 {

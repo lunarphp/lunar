@@ -11,7 +11,6 @@ use GetCandy\Base\TaxDriver;
 use GetCandy\DataTypes\Price;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Currency;
-use Illuminate\Support\Collection;
 
 class SystemTaxDriver implements TaxDriver
 {
@@ -93,7 +92,7 @@ class SystemTaxDriver implements TaxDriver
     /**
      * Set the cart line.
      *
-     * @param CartLine $cartLine
+     * @param  CartLine  $cartLine
      * @return self
      */
     public function setCartLine(CartLine $cartLine): self
