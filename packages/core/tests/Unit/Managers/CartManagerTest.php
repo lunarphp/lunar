@@ -25,7 +25,6 @@ use GetCandy\Tests\Stubs\TestCartLineModifier;
 use GetCandy\Tests\Stubs\TestCartModifier;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 use Mockery;
 use Mockery\MockInterface;
 

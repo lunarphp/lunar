@@ -3,7 +3,6 @@
 namespace GetCandy\Base\DataTransferObjects;
 
 use GetCandy\DataTypes\Price;
-use Illuminate\Support\Collection;
 
 class TaxBreakdownAmount
 {
