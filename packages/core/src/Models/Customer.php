@@ -39,7 +39,7 @@ class Customer extends BaseModel
     }
 
     /**
-     * Get the indexable data array for the model.
+     * Returns the indexable data for the customer.
      *
      * @return array
      */
