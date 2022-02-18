@@ -3,12 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## 2.0-beta10 - 2022-02-18
 
 ### Added
 
 - Added product association component to product editing/creation pages.
 - Added collections to the product editing screen.
+
+### Fixed
+
+- GetCandy will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
 
 ## 2.0-beta9 - 2022-02-11
 
