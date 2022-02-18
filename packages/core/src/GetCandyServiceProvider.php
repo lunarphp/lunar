@@ -29,6 +29,7 @@ use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Managers\PricingManager;
 use GetCandy\Managers\TaxManager;
+use GetCandy\Models\Address;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
@@ -36,6 +37,7 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\Url;
+use GetCandy\Observers\AddressObserver;
 use GetCandy\Observers\CartLineObserver;
 use GetCandy\Observers\ChannelObserver;
 use GetCandy\Observers\CollectionObserver;
@@ -222,6 +224,7 @@ class GetCandyServiceProvider extends ServiceProvider
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
         OrderLine::observe(OrderLineObserver::class);
+        Address::observe(AddressObserver::class);
     }
 
     /**

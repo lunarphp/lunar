@@ -24,6 +24,7 @@ return [
     'product.urls'              => 'URLs',
     'product.associations'      => 'Associations',
     'product.identifiers'       => 'Identifiers',
+    'product.collections'       => 'Collections',
     /**
      * Generic menu items.
      */

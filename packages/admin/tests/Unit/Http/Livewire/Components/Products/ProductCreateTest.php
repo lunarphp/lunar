@@ -5,6 +5,7 @@ namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductCreate;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
+use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Price;
@@ -77,6 +78,11 @@ class ProductCreateTest extends TestCase
         $productC = Product::factory()->create([
             'status' => 'published',
             'brand'  => 'PROC',
+
+        $collection = Collection::factory()->create();
+
+        $this->assertDatabaseMissing((new Product)->collections()->getTable(), [
+            'collection_id' => $collection->id,
         ]);
 
         $component = LiveWire::actingAs($staff, 'staff')
@@ -113,6 +119,20 @@ class ProductCreateTest extends TestCase
             'product_parent_id' => $productC->id,
             'product_target_id' => $component->get('product.id'),
             'type' => 'cross-sell',
+            ->set('collections', collect([[
+                'id' => $collection->id,
+                'name' => $collection->translateAttribute('name'),
+                'group_id' => $collection->collection_group_id,
+                'thumbnail' => null,
+                'breadcrumb' => 'Foo > Bar',
+                'position' => 1,
+            ]]))
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas((new Product)->collections()->getTable(), [
+            'collection_id' => $collection->id,
+            'product_id' => $component->get('product.id'),
         ]);
 
         $this->assertDatabaseHas((new ProductVariant)->getTable(), [
