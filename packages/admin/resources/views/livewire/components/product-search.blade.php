@@ -1,7 +1,13 @@
 <div>
+  @if($showBtn)
   <x-hub::button type="button" wire:click.prevent="$set('showBrowser', true)">
-    {{ __('adminhub::components.product-search.btn') }}
+    @if(!empty($label))
+      {{ $label }}
+    @else
+      {{ __('adminhub::components.product-search.btn') }}
+    @endif
   </x-hub::button>
+  @endif
 
   <x-hub::slideover :title="__('adminhub::components.product-search.title')" wire:model="showBrowser">
     <div
@@ -52,13 +58,13 @@
               <div
                 class="
                   flex w-full items-center justify-between rounded shadow-sm text-left border px-2 py-2 text-sm
-                  @if($this->existingIds->contains($product->id))
+                  @if($this->existingIds->contains($product->id) || collect($this->exclude)->contains($product->id))
                     opacity-25
                   @endif
                 "
               >
                 <div class="truncate">{{ $product->translateAttribute('name') }} {{ $product->deleted_at }}</div>
-                @if(!$this->existingIds->contains($product->id))
+                @if(!$this->existingIds->contains($product->id) && !collect($this->exclude)->contains($product->id))
                   @if(collect($this->selected)->contains($product->id))
                     <button
                       class="px-2 py-1 text-xs text-red-700 border border-red-200 rounded shadow-sm hover:bg-red-50"
@@ -66,7 +72,7 @@
                     >
                       {{ __('adminhub::global.deselect') }}
                     </button>
-                  @else
+                  @elseif (!collect($this->exclude)->contains($product->id))
                     <button
                       class="px-2 py-1 text-xs text-blue-700 border border-blue-200 rounded shadow-sm hover:bg-blue-50"
                       wire:click.prevent="selectProduct('{{ $product->id }}')"
@@ -74,7 +80,10 @@
                       {{ __('adminhub::global.select') }}
                     </button>
                   @endif
-
+                @elseif(collect($this->exclude)->contains($product->id))
+                  <span class="text-xs">
+                    {{ __('adminhub::components.product-search.associate_self') }}
+                  </span>
                 @else
                   <span class="text-xs">
                     {{ __('adminhub::components.product-search.exists_in_collection') }}

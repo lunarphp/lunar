@@ -103,6 +103,13 @@
       </div>
 
       {{--
+        Associations
+       --}}
+      <div id="associations">
+        @include('adminhub::partials.products.editing.associations')
+      </div>
+
+      {{--
         Collections
        --}}
        <div id="collections">

@@ -10,6 +10,7 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Price;
 use GetCandy\Models\Product;
+use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Models\TaxClass;
@@ -60,10 +61,7 @@ class ProductCreateTest extends TestCase
             ->test(ProductCreate::class);
     }
 
-    /**
-     * @test
-     * @group moo
-     * */
+    /** @test */
     public function can_create_product()
     {
         $staff = Staff::factory()->create([
@@ -71,6 +69,16 @@ class ProductCreateTest extends TestCase
         ]);
 
         $currency = Currency::getDefault();
+
+        $productB = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'PROB',
+        ]);
+
+        $productC = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'PROC',
+        ]);
 
         $collection = Collection::factory()->create();
 
@@ -83,7 +91,22 @@ class ProductCreateTest extends TestCase
             ->set('variant.sku', '1234')
             ->set('variant.tax_ref', 'CUSTOMTAX')
             ->set("basePrices.{$currency->code}.price", 1234)
-            ->set('collections', collect([[
+            ->set('associations', collect([
+                [
+                    'inverse' => false,
+                    'target_id' => $productB->id,
+                    'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
+                    'name' => $productB->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+                [
+                    'inverse' => true,
+                    'target_id' => $productC->id,
+                    'thumbnail' => optional($productC->thumbnail)->getUrl('small'),
+                    'name' => $productC->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+            ]))->set('collections', collect([[
                 'id' => $collection->id,
                 'name' => $collection->translateAttribute('name'),
                 'group_id' => $collection->collection_group_id,
@@ -93,6 +116,18 @@ class ProductCreateTest extends TestCase
             ]]))
             ->call('save')
             ->assertHasNoErrors();
+
+        $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
+            'product_target_id' => $productB->id,
+            'product_parent_id' => $component->get('product.id'),
+            'type' => 'cross-sell',
+        ]);
+
+        $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
+            'product_parent_id' => $productC->id,
+            'product_target_id' => $component->get('product.id'),
+            'type' => 'cross-sell',
+        ]);
 
         $this->assertDatabaseHas((new Product)->collections()->getTable(), [
             'collection_id' => $collection->id,

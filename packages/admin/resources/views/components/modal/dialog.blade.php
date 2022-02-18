@@ -18,4 +18,4 @@
     @if($form)
       </form>
     @endif
-</x-hub::>
+</x-hub::modal>

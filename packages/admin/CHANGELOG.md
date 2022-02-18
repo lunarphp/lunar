@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Added product association component to product editing/creation pages.
 - Added collections to the product editing screen.
 
 ## 2.0-beta9 - 2022-02-11

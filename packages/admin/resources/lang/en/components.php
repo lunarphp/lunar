@@ -30,6 +30,7 @@ return [
     'product-search.pre_search_message'          => 'Search for products by attribute or SKU.',
     'product-search.select_empty'                => 'When you select products, they will appear here.',
     'product-search.title'                       => 'Search for products',
+    'product-search.associate_self'              => 'You cannot associate the same product',
     'product-search.commit_btn'                  => 'Select Products',
     /**
      * Option Value Create Modal.

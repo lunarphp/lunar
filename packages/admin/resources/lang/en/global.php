@@ -59,4 +59,5 @@ return [
     'confirm_password'    => 'Confirm Password',
     'attribute_groups'    => 'Attribute Groups',
     'attributes'          => 'Attributes',
+    'product'             => 'Product',
 ];
