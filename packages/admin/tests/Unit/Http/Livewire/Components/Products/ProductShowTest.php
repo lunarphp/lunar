@@ -12,6 +12,7 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Price;
 use GetCandy\Models\Product;
+use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductOptionValue;
 use GetCandy\Models\ProductVariant;
@@ -561,6 +562,128 @@ class ProductShowTest extends TestCase
         $this->assertDatabaseHas((new Product)->collections()->getTable(), [
             'collection_id' => $collection->id,
             'product_id' => $component->get('product.id'),
+        ]);
+    }
+
+    /** @test */
+    public function can_set_product_associations()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        // Need some attributes...
+        $name = Attribute::factory()->create([
+            'handle' => 'name',
+        ]);
+        $description = Attribute::factory()->create([
+            'handle' => 'description',
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $productB = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAZ',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
+            ]);
+        }
+
+        $product->productType->mappedAttributes()->attach(Attribute::get());
+
+        LiveWire::actingAs($staff, 'staff')
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->assertCount('associations', 0)
+            ->set('associations', collect([
+                [
+                    'inverse' => false,
+                    'target_id' => $productB->id,
+                    'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
+                    'name' => $productB->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+            ]))->call('save')->assertHasNoErrors();
+
+        $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
+            'product_parent_id' => $product->id,
+            'product_target_id' => $productB->id,
+            'type' => 'cross-sell',
+        ]);
+    }
+
+    /** @test */
+    public function can_set_inverse_associations()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        // Need some attributes...
+        $name = Attribute::factory()->create([
+            'handle' => 'name',
+        ]);
+        $description = Attribute::factory()->create([
+            'handle' => 'description',
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $productB = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAZ',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
+            ]);
+        }
+
+        $product->productType->mappedAttributes()->attach(Attribute::get());
+
+        LiveWire::actingAs($staff, 'staff')
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->assertCount('associations', 0)
+            ->set('associations', collect([
+                [
+                    'inverse' => true,
+                    'target_id' => $productB->id,
+                    'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
+                    'name' => $productB->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+            ]))->call('save')->assertHasNoErrors();
+
+        $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
+            'product_parent_id' => $productB->id,
+            'product_target_id' => $product->id,
+            'type' => 'cross-sell',
         ]);
     }
 }

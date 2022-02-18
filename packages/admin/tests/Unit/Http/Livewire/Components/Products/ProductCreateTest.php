@@ -78,6 +78,7 @@ class ProductCreateTest extends TestCase
         $productC = Product::factory()->create([
             'status' => 'published',
             'brand'  => 'PROC',
+        ]);
 
         $collection = Collection::factory()->create();
 
@@ -105,7 +106,14 @@ class ProductCreateTest extends TestCase
                     'name' => $productC->translateAttribute('name'),
                     'type' => 'cross-sell',
                 ],
-            ]))
+            ]))->set('collections', collect([[
+                'id' => $collection->id,
+                'name' => $collection->translateAttribute('name'),
+                'group_id' => $collection->collection_group_id,
+                'thumbnail' => null,
+                'breadcrumb' => 'Foo > Bar',
+                'position' => 1,
+            ]]))
             ->call('save')
             ->assertHasNoErrors();
 
@@ -119,16 +127,7 @@ class ProductCreateTest extends TestCase
             'product_parent_id' => $productC->id,
             'product_target_id' => $component->get('product.id'),
             'type' => 'cross-sell',
-            ->set('collections', collect([[
-                'id' => $collection->id,
-                'name' => $collection->translateAttribute('name'),
-                'group_id' => $collection->collection_group_id,
-                'thumbnail' => null,
-                'breadcrumb' => 'Foo > Bar',
-                'position' => 1,
-            ]]))
-            ->call('save')
-            ->assertHasNoErrors();
+        ]);
 
         $this->assertDatabaseHas((new Product)->collections()->getTable(), [
             'collection_id' => $collection->id,
