@@ -54,8 +54,8 @@ class CalculateLine
             ->setBillingAddress($billingAddress)
             ->setCurrency($cart->currency)
             ->setPurchasable($purchasable)
+            ->setCartLine($cartLine)
             ->getBreakdown($subTotal);
-
 
         $taxTotal = $taxBreakDown->amounts->sum('price.value');
 
