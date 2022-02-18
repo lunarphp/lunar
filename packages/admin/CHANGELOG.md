@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - GetCandy will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
 
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta9...2.0-beta10)
+
 ## 2.0-beta9 - 2022-02-11
 
 ### Fixed

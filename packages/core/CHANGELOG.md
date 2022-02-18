@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - GetCandy will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
 - The Cart actions to calculate the totals will now use the `Taxes` facade correctly.
 
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta9...2.0-beta10)
+
 ## 2.0-beta9 - 2022-02-11
 
 ### Fixed
