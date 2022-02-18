@@ -380,7 +380,6 @@ abstract class AbstractProduct extends Component
 
             $this->product->channels()->sync($channels);
 
-
             if (count($this->associationsToRemove)) {
                 ProductAssociation::whereIn('id', $this->associationsToRemove)->delete();
             }
