@@ -32,7 +32,7 @@ php artisan getcandy:meilisearch:setup
 
 ## [Unreleased]
 
-### Changes to how Tax drivers - High Impact
+### Changes to Tax drivers - High Impact
 
 Previously tax drivers were required to return a collection of `GetCandy\Models\TaxRateAmount` models. This wasn't very useful for custom tax drivers that did not use them and as a result limited their use. The interface was also not very clear on what should be returned.
 
