@@ -3,17 +3,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## 2.0-beta10 - 2022-02-18
 
 ### Added
 
 - Added support for Laravel 9
 - Added new `TaxBreakdown` and `TaxBreakdownAmount` Data Transfer Objects. ([#173](https://github.com/getcandy/getcandy/issues/173))
 - Added `setCartLine` method to the system tax driver. ([#173](https://github.com/getcandy/getcandy/issues/173))
+- GetCandy will now automatically prefer multiple default addresses for shipping and billing. By [@nicolalazzaro](https://github.com/nicolalazzaro)
 
 ### Changed
 
 - The `taxBreakdown` method on the tax driver now uses Data Transfer Objects. ([#173](https://github.com/getcandy/getcandy/issues/173))
+- The `CalculateLine` action will now take in to account whether a unit price has already been set. By [@ryanmitchell](https://github.com/ryanmitchell)
+
+### Fixed
+
+- GetCandy will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
+- The Cart actions to calculate the totals will now use the `Taxes` facade correctly.
+
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta9...2.0-beta10)
 
 ## 2.0-beta9 - 2022-02-11
 

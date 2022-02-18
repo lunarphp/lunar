@@ -30,7 +30,7 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-## [Unreleased]
+## 2.0-beta10
 
 ### Changes to Tax drivers - High Impact
 
