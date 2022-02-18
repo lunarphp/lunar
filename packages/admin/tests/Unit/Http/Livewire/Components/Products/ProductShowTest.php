@@ -7,6 +7,7 @@ use GetCandy\Hub\Http\Livewire\Components\Products\ProductShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Attribute;
+use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Price;
@@ -509,5 +510,57 @@ class ProductShowTest extends TestCase
             ->assertCount('options', $options->count())
             ->call('removeOption', 0)
             ->assertCount('options', $options->count() - 1);
+    }
+
+    /** @test */
+    public function can_set_product_collections()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $collection = Collection::factory()->create();
+
+        $this->assertDatabaseMissing((new Product)->collections()->getTable(), [
+            'collection_id' => $collection->id,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
+            ]);
+        }
+
+        $product->productType->mappedAttributes()->attach(Attribute::get());
+
+        $component = LiveWire::actingAs($staff, 'staff')
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->assertCount('collections', 0)
+            ->set('collections', collect([[
+                'id' => $collection->id,
+                'name' => $collection->translateAttribute('name'),
+                'group_id' => $collection->collection_group_id,
+                'thumbnail' => null,
+                'breadcrumb' => 'Foo > Bar',
+                'position' => 1,
+            ]]))->call('save')->assertHasNoErrors();
+
+        $this->assertDatabaseHas((new Product)->collections()->getTable(), [
+            'collection_id' => $collection->id,
+            'product_id' => $component->get('product.id'),
+        ]);
     }
 }

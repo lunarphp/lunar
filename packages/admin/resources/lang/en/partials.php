@@ -65,6 +65,11 @@ return [
     'image-manager.undo_btn'                         => 'undo',
     'image-manager.no_results'                       => 'No images exist for this product, add your first image above.',
     /**
+     * Product Collections.
+     */
+    'products.collections.heading'                  => 'Collections',
+    'products.collections.view_collection'          => 'View Collection',
+    /**
      * Product Status Bar.
      */
     'products.status-bar.published.label'       => 'Published',

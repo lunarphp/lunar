@@ -2,6 +2,7 @@
 
 namespace GetCandy\Tests\Unit\Managers;
 
+use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
 use GetCandy\Base\Purchasable;
 use GetCandy\DataTypes\Price;
@@ -14,11 +15,16 @@ use GetCandy\Models\CartAddress;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
+use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Price as PriceModel;
 use GetCandy\Models\ProductVariant;
+use GetCandy\Models\TaxClass;
+use GetCandy\Models\TaxRateAmount;
+use GetCandy\Tests\Stubs\TestCartLineModifier;
 use GetCandy\Tests\Stubs\TestCartModifier;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Mockery;
 use Mockery\MockInterface;
 
@@ -670,5 +676,75 @@ class CartManagerTest extends TestCase
 
         $this->assertEquals(1, $cart->addresses()->whereType('shipping')->count());
         $this->assertEquals(1, $cart->addresses()->whereType('billing')->count());
+    }
+
+    /** @test */
+    public function can_have_unit_price_changed_by_a_cart_line_modifier()
+    {
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+        $customerGroups = CustomerGroup::factory(2)->create();
+
+        $taxClass = TaxClass::factory()->create([
+            'name' => 'Foobar',
+        ]);
+
+        $taxClass->taxRateAmounts()->create(
+            TaxRateAmount::factory()->make([
+                'percentage'   => 20,
+                'tax_class_id' => $taxClass->id,
+            ])->toArray()
+        );
+
+        $purchasable = ProductVariant::factory()->create([
+            'tax_class_id'  => $taxClass->id,
+            'unit_quantity' => 1,
+        ]);
+
+        PriceModel::factory()->create([
+            'price'          => 100,
+            'currency_id'    => $currency->id,
+            'tier'           => 1,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id'   => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id'   => $purchasable->id,
+            'quantity'         => 1,
+        ]);
+
+        // Modifier will set unit price to 1000
+        app(CartLineModifiers::class)->add(TestCartLineModifier::class);
+
+        (new CartManager($cart))->getCart();
+
+        $this->assertEquals(1200, $cart->total->value);
+
+        $line = $cart->lines->first();
+
+        $this->assertInstanceOf(Price::class, $line->unitPrice);
+        $this->assertEquals(1000, $line->unitPrice->value);
+
+        $this->assertInstanceOf(Price::class, $line->subTotal);
+        $this->assertEquals(1000, $line->subTotal->value);
+
+        $this->assertInstanceOf(Price::class, $line->taxAmount);
+        $this->assertEquals(200, $line->taxAmount->value);
+
+        $this->assertInstanceOf(Price::class, $line->total);
+        $this->assertEquals(1200, $line->total->value);
+
+        $this->assertInstanceOf(Price::class, $line->discountTotal);
+        $this->assertEquals(0, $line->discountTotal->value);
+
+        $this->assertInstanceOf(Collection::class, $line->taxBreakdown);
+        $this->assertCount(1, $line->taxBreakdown);
     }
 }

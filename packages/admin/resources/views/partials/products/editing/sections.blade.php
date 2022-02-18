@@ -103,6 +103,13 @@
       </div>
 
       {{--
+        Collections
+       --}}
+       <div id="collections">
+        @include('adminhub::partials.products.editing.collections')
+       </div>
+
+      {{--
         Delete area
        --}}
        @if($product->id)
