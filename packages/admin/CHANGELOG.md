@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.0-beta10.1 - 2022-02-19
+
+### Fixed
+
+- Issue with unauthorised messages in the hub.
+
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta9...2.0-beta10.1)
+
 ## 2.0-beta10 - 2022-02-18
 
 ### Added
