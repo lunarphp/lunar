@@ -7,6 +7,7 @@ use GetCandy\Models\Cart;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
+use GetCandy\Models\Order;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Tests\Stubs\User as StubUser;
 use GetCandy\Tests\TestCase;
@@ -85,6 +86,48 @@ class CartTest extends TestCase
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
+    }
+
+    /** @test */
+    public function will_not_retrieve_user_cart_if_order_is_present()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $user = StubUser::factory()->create();
+
+        $cart = Cart::create([
+            'order_id' => Order::factory()->create()->id,
+            'currency_id' => $currency->id,
+            'channel_id'  => $channel->id,
+            'user_id'     => $user->getKey(),
+        ]);
+
+        $this->assertNull(
+            Cart::whereUserId($user->getKey())->active()->first()
+        );
+    }
+
+    /** @test */
+    public function can_retrieve_active_cart()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $user = StubUser::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id'  => $channel->id,
+            'user_id'     => $user->getKey(),
+        ]);
+
+        $this->assertEquals(
+            $cart->id,
+            Cart::whereUserId($user->getKey())->active()->first()->id
+        );
     }
 
     /** @test */
