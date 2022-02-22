@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- Added `createOrder($forget = true)` method to the `CartSession` facade.
 - Added `active` scope to the `Cart` model for carts that do not have an order associated.
 
 ### Fixed
