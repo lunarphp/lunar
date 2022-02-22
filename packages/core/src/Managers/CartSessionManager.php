@@ -180,7 +180,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Create an order from a cart instance.
      *
-     * @param boolean $forget
+     * @param  bool  $forget
      * @return \GetCandy\Models\Order
      */
     public function createOrder($forget = true)

@@ -82,12 +82,12 @@ class CartSessionManagerTest extends TestCase
 
         $shipping = CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'shipping'
+            'type' => 'shipping',
         ]);
 
         $billing = CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'billing'
+            'type' => 'billing',
         ]);
 
         $cart->getManager()->setShippingAddress($shipping);
@@ -127,12 +127,12 @@ class CartSessionManagerTest extends TestCase
 
         $shipping = CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'shipping'
+            'type' => 'shipping',
         ]);
 
         $billing = CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'billing'
+            'type' => 'billing',
         ]);
 
         $cart->getManager()->setShippingAddress($shipping);

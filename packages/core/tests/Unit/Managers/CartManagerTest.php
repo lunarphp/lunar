@@ -772,12 +772,12 @@ class CartManagerTest extends TestCase
 
         $shipping = CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'shipping'
+            'type' => 'shipping',
         ]);
 
         $billing = CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'billing'
+            'type' => 'billing',
         ]);
 
         $cart->getManager()->setShippingAddress($shipping);
@@ -814,7 +814,7 @@ class CartManagerTest extends TestCase
         Cart::create([
             'cart_id' => $cart->id,
             'postcode' => 'foobar',
-            'type' => 'billing'
+            'type' => 'billing',
         ]);
 
         $this->expectException(BillingAddressIncompleteException::class);
@@ -845,12 +845,12 @@ class CartManagerTest extends TestCase
 
         CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'shipping'
+            'type' => 'shipping',
         ]);
 
         CartAddress::factory()->create([
             'cart_id' => $cart->id,
-            'type' => 'billing'
+            'type' => 'billing',
         ]);
 
         $this->expectException(OrderExistsException::class);
