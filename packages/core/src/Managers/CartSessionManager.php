@@ -178,6 +178,21 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
+     * Create an order from a cart instance.
+     *
+     * @param boolean $forget
+     * @return \GetCandy\Models\Order
+     */
+    public function createOrder($forget = true)
+    {
+        if ($forget) {
+            $this->forget();
+        }
+
+        return $this->manager()->createOrder();
+    }
+
+    /**
      * Create a new cart instance.
      *
      * @return void
