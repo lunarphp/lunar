@@ -39,7 +39,7 @@ class CartSessionAuthListener
 
         if (! $currentCart) {
             // Does this user have a cart?
-            $userCart = Cart::whereUserId($event->user->getKey())->latest()->first();
+            $userCart = Cart::whereUserId($event->user->getKey())->active()->first();
 
             if ($userCart) {
                 CartSession::use($userCart);
