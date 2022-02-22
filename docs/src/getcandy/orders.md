@@ -44,13 +44,19 @@ $order = \GetCandy\Models\Order::create([/** .. */]);
 $order = Cart::first()->getManager()->createOrder();
 ```
 
-If you are using the `CartSession` you can create a cart via the facade, this will then handle removing the cart from the session if you want it to.
+If you are using the `CartSession` you can create a order via the facade, this will then handle removing the cart from the session if you want it to.
 
 ```php
-$order = CartSession::createOrder(
-    forget: true
-);
+$order = CartSession::createOrder();
 ```
+
+By default, this will create the order and remove the cart id from the session. You can, however retain the cart id if you want by passing an option `boolean` parameter to the method:
+
+```php
+$order = CartSession::createOrder(false);
+```
+
+Now when you create the order, you will still have the cart id in the session.
 
 So what's happening when we call `createOrder` on a cart, that's so different from just creating an order manually? Well there's a few steps GetCandy takes to make sure data stays consistent and valid, it also means that a lot of the columns on an order will automatically be populated based on the cart.
 
