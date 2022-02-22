@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Added
+
+- Added `createOrder($forget = true)` method to the `CartSession` facade.
+
 ## 2.0-beta10 - 2022-02-18
 
 ### Added

@@ -41,7 +41,15 @@ You can either create an order directly, or the recommended way is via a `Cart` 
 $order = \GetCandy\Models\Order::create([/** .. */]);
 
 // Recommended way
-$cart = Cart::first()->getManager()->createOrder();
+$order = Cart::first()->getManager()->createOrder();
+```
+
+If you are using the `CartSession` you can create a cart via the facade, this will then handle removing the cart from the session if you want it to.
+
+```php
+$order = CartSession::createOrder(
+    forget: true
+);
 ```
 
 So what's happening when we call `createOrder` on a cart, that's so different from just creating an order manually? Well there's a few steps GetCandy takes to make sure data stays consistent and valid, it also means that a lot of the columns on an order will automatically be populated based on the cart.
@@ -85,7 +93,7 @@ This essentially does the same as above, except we already catch the exceptions 
 
 ## Modifying Orders
 
-If you need to programatically change the Order values or add in new behaviour, you will want to extend the Order system. 
+If you need to programatically change the Order values or add in new behaviour, you will want to extend the Order system.
 
 You can find out more in the Extending GetCandy section for [Order Modifiers](/extending/order-modifiers).
 
@@ -188,7 +196,7 @@ $order->billingAddress;
 A Shipping Tables addon is planned to make setting up shipping in the admin hub easy for most scenarios.
 :::
 
-To add Shipping Options you will need to [extend GetCandy](/extending/shipping) to add in your own logic. 
+To add Shipping Options you will need to [extend GetCandy](/extending/shipping) to add in your own logic.
 
 Then in your checkout, or where ever you want, you can fetch these options:
 
