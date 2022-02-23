@@ -27,14 +27,14 @@ class OrderShow extends Component
     /**
      * Whether all lines should be visible.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $allLinesVisible = false;
 
     /**
      * The maximum lines to show on load.
      *
-     * @var integer
+     * @var int
      */
     public int $maxLines = 10;
 
