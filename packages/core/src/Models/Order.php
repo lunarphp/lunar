@@ -25,6 +25,7 @@ class Order extends BaseModel
         'discount_total' => Price::class,
         'tax_total'      => Price::class,
         'total'          => Price::class,
+        'shipping_total' => Price::class,
     ];
 
     /**

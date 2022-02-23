@@ -41,6 +41,7 @@ class OrderLine extends BaseModel
         'quantity'       => 'integer',
         'meta'           => 'object',
         'tax_breakdown'  => 'object',
+        'unit_price'     => Price::class,
         'sub_total'      => Price::class,
         'tax_total'      => Price::class,
         'discount_total' => Price::class,

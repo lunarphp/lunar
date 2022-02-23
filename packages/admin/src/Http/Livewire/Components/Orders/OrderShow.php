@@ -25,6 +25,20 @@ class OrderShow extends Component
     public bool $updatingStatus = false;
 
     /**
+     * Whether all lines should be visible.
+     *
+     * @var boolean
+     */
+    public bool $allLinesVisible = false;
+
+    /**
+     * The maximum lines to show on load.
+     *
+     * @var integer
+     */
+    public int $maxLines = 10;
+
+    /**
      * {@inheritDoc}
      */
     public function rules()
@@ -82,6 +96,18 @@ class OrderShow extends Component
     public function getShippingLinesProperty()
     {
         return $this->order->shippingLines;
+    }
+
+    public function getVisibleLinesProperty()
+    {
+        return $this->physicalLines->take($this->allLinesVisible ? null : $this->maxLines);
+    }
+
+    public function getPhysicalLinesProperty()
+    {
+        return $this->order->lines->filter(function ($line) {
+            return $line->type == 'physical';
+        });
     }
 
     public function saveStatus()
