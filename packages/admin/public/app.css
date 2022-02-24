@@ -946,6 +946,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .h-32 {
   height: 8rem;
 }
+.h-auto {
+  height: auto;
+}
 .max-h-60 {
   max-height: 15rem;
 }
@@ -2048,6 +2051,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-green-900 {
   --tw-text-opacity: 1;
   color: rgb(20 83 45 / var(--tw-text-opacity));
+}
+.text-green-800 {
+  --tw-text-opacity: 1;
+  color: rgb(22 101 52 / var(--tw-text-opacity));
 }
 .underline-offset-2 {
   text-underline-offset: 2px;
