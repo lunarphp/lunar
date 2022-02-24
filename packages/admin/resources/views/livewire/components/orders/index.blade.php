@@ -43,6 +43,11 @@
         <x-hub::table.heading>
           Total
         </x-hub::table.heading>
+        @foreach($this->columns as $column)
+          <x-hub::table.heading>
+            {{ $column->heading }}
+          </x-hub::table.heading>
+        @endforeach
         <x-hub::table.heading>
           Date
         </x-hub::table.heading>
@@ -64,8 +69,15 @@
               {{ $order->billingAddress->first_name }}
             </x-hub::table.cell>
             <x-hub::table.cell>
-              {{ $order->total }}
+              {{ $order->total->formatted() }}
             </x-hub::table.cell>
+            @foreach($this->columns as $column)
+              <x-hub::table.cell>
+                @if($column->callback)
+                  {{ $column->getValue($order) }}
+                @endif
+              </x-hub::table.cell>
+            @endforeach
             <x-hub::table.cell>
               @if($order->placed_at)
                 {{ $order->placed_at->format('jS M Y') }}

@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
+use GetCandy\Hub\Facades\OrdersTable;
 use GetCandy\Models\Order;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -43,9 +44,14 @@ class OrdersIndex extends Component
         $this->setPage(1);
     }
 
+    public function getColumnsProperty()
+    {
+        return OrdersTable::getColumns();
+    }
+
     public function getOrdersProperty()
     {
-        $query = Order::search($this->search);
+        $query = Order::search($this->search)->orderBy('created_at', 'desc')->orderBy('placed_at', 'desc');
 
         foreach ($this->appliedFilters as $attribute => $value) {
             $query->where($attribute, $value);

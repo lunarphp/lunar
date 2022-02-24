@@ -83,5 +83,13 @@ class MeilisearchSetup extends Command
             'created_at',
             'total',
         ]);
+
+        $index->updateSortableAttributes([
+            'reference',
+            'status',
+            'placed_at',
+            'created_at',
+            'total',
+        ]);
     }
 }
