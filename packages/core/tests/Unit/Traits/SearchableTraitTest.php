@@ -2,13 +2,10 @@
 
 namespace GetCandy\Tests\Unit\Traits;
 
-use GetCandy\Models\Address;
-use GetCandy\Models\Customer;
 use GetCandy\Models\Product;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
-use Mockery;
 
 /**
  * @group traits
