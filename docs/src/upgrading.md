@@ -32,7 +32,7 @@ php artisan getcandy:meilisearch:setup
 
 ## [Unreleased]
 
-If you are using the scout `Searchable` trait. Make sure to change this to GetCandy's one if you want to tap into the Model Observers.
+If you are using the scout `Searchable` trait. Make sure to change this to GetCandy's if you want to tap into the Model Observers.
 
 ```php
 // Old

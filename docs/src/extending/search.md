@@ -4,9 +4,9 @@
 
 ## Overview
 
-Good search is the backbone of any storefront so GetCandy aims to make this as extensible as possible so you can index what you need for your front end, without compromising on what we require our side in the hub.
+Good search is the backbone of any storefront so GetCandy aims to make this as extensible as possible so you can index what you need for your front-end, without compromising on what we require our side in the hub.
 
-There's three things to consider when you want to extend the search:
+There are three things to consider when you want to extend the search:
 
 - Searchable fields
 - Sortable fields
@@ -20,7 +20,7 @@ Each of these can be extended using Model Observers in Laravel. The following mo
 - `GetCandy\Models\Product`
 - `GetCandy\Models\ProductOption`
 
-## Creating and using an oberver
+## Creating and using an Observer
 
 As mentioned, you simply need to add a [Model Observer](https://laravel.com/docs/9.x/eloquent#observers) for what you want to extend.
 
