@@ -931,6 +931,24 @@ Ensure the default browser behavior of the `hidden` attribute.
 .h-32 {
   height: 8rem;
 }
+.h-\[42px\] {
+  height: 42px;
+}
+.h-\[14\] {
+  height: 14;
+}
+.h-\[\] {
+  height: ;
+}
+.h-\[50px\] {
+  height: 50px;
+}
+.h-\[64px\] {
+  height: 64px;
+}
+.h-\[58px\] {
+  height: 58px;
+}
 .max-h-60 {
   max-height: 15rem;
 }
@@ -1459,6 +1477,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-border-opacity: 1;
   border-color: rgb(22 163 74 / var(--tw-border-opacity));
 }
+.border-gray-100 {
+  --tw-border-opacity: 1;
+  border-color: rgb(243 244 246 / var(--tw-border-opacity));
+}
 .bg-blue-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(239 246 255 / var(--tw-bg-opacity));
@@ -1864,6 +1886,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .leading-10 {
   line-height: 2.5rem;
 }
+.leading-\[42px\] {
+  line-height: 42px;
+}
 .tracking-wider {
   letter-spacing: 0.05em;
 }
@@ -2245,6 +2270,21 @@ p > code {
   width: 1.5rem;
 }
 
+.before\:rounded::before {
+  content: var(--tw-content);
+  border-radius: 0.25rem;
+}
+
+.before\:rounded-lg::before {
+  content: var(--tw-content);
+  border-radius: 0.5rem;
+}
+
+.before\:rounded-full::before {
+  content: var(--tw-content);
+  border-radius: 9999px;
+}
+
 .before\:rounded-l-lg::before {
   content: var(--tw-content);
   border-top-left-radius: 0.5rem;
@@ -2303,9 +2343,23 @@ p > code {
   --tw-ring-offset-width: 2px;
 }
 
+.hover\:border:hover {
+  border-width: 1px;
+}
+
 .hover\:border-gray-300:hover {
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
+}
+
+.hover\:border-gray-200:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-border-opacity));
+}
+
+.hover\:border-gray-100:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(243 244 246 / var(--tw-border-opacity));
 }
 
 .hover\:bg-blue-700:hover {
@@ -2456,6 +2510,12 @@ p > code {
 .hover\:decoration-dashed:hover {
   -webkit-text-decoration-style: dashed;
           text-decoration-style: dashed;
+}
+
+.hover\:shadow-sm:hover {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .focus\:z-10:focus {

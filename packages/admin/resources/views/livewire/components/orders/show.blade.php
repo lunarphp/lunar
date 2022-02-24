@@ -7,8 +7,10 @@
 
   <div class="grid items-start grid-cols-3 gap-8 mt-8">
     <div class="col-span-2">
-      <div class="flex items-center space-x-2 text-sm">
-        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
+      <div class="flex items-center space-x-2 text-xs text-gray-700">
+        <button
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+        >
           <x-hub::icon
             ref="printer"
             style="solid"
@@ -18,7 +20,9 @@
           Print
         </button>
 
-        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
+        <button
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+        >
           <x-hub::icon
             ref="rewind"
             style="solid"
@@ -28,7 +32,9 @@
           Refund
         </button>
 
-        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
+        <button
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+        >
           <x-hub::icon
             ref="credit-card"
             style="solid"
@@ -38,7 +44,9 @@
           Add Payment
         </button>
 
-        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
+        <button
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+        >
           <x-hub::icon
             ref="flag"
             style="solid"
@@ -48,7 +56,9 @@
           Update Status
         </button>
 
-        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
+        <button
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+        >
           More Actions
 
           <x-hub::icon
@@ -206,7 +216,7 @@
         @if ($this->physicalLines->count() > $maxLines)
           <div class="flex justify-end">
             <button
-              class="flex-shrink-0 px-5 py-3 text-xs font-bold bg-gray-200 rounded"
+              class="flex-shrink-0 px-5 py-3 text-xs font-bold text-gray-700 bg-gray-100 border border-gray-100 rounded hover:bg-gray-50"
               wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
               type="button"
             >
@@ -221,7 +231,7 @@
 
         <ul class="space-y-4 text-sm">
           @foreach ($this->shippingLines as $shippingLine)
-            <li class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <li class="flex items-center justify-between px-4 py-2 border border-gray-200 rounded-lg">
               <div class="flex items-center">
                 <x-hub::icon
                   ref="truck"
@@ -322,7 +332,6 @@
           Timeline
         </header>
 
-
         <div class="flex items-center">
           <div class="flex-shrink-0">
             @livewire('hub.components.avatar')
@@ -330,13 +339,13 @@
 
           <form class="relative w-full ml-4">
             <input
-              class="w-full pl-4 pr-32 border border-gray-200 rounded-lg h-14 sm:text-sm form-text"
+              class="w-full pl-4 pr-32 border border-gray-200 rounded-lg h-[58px] sm:text-sm form-text"
               type="text"
               placeholder="Add a comment"
             >
 
             <button
-              class="absolute h-10 text-xs font-bold leading-10 bg-gray-200 rounded-md w-28 top-2 right-2"
+              class="absolute h-[42px] text-xs font-bold leading-[42px] text-gray-700 bg-gray-100 border border-transparent rounded-md hover:border-gray-100 hover:bg-gray-50 w-28 top-2 right-2"
               type="submit"
             >
               Add Comment
@@ -344,14 +353,14 @@
           </form>
         </div>
 
-        <ul class="pt-8 pl-8 ml-5">
+        <ul class="pl-8 ml-5">
           <li
-            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:h-full before:bg-gray-200 pb-6 pt-8"
+            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:h-full before:bg-gray-200 pb-6 before:rounded-full pt-8"
           >
             <p class="text-lg font-bold">Today</p>
 
             <div
-              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5"
+              class="mt-4 relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5 before:rounded-full"
             >
               <p>
                 Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
@@ -359,14 +368,14 @@
 
               <div class="flex gap-4 mt-2">
                 <button
-                  class="flex-shrink-0 px-5 py-3 text-sm font-bold bg-gray-200 rounded"
+                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-gray-100"
                   type="button"
                 >
                   Resend Email
                 </button>
 
                 <button
-                  class="flex-shrink-0 px-5 py-3 text-sm font-bold bg-gray-200 rounded"
+                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-gray-100"
                   type="button"
                 >
                   View Email
@@ -376,10 +385,10 @@
           </li>
 
           <li
-            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:bg-gray-200 pb-6 before:h-[calc(100%_+_0.75rem)]"
+            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:bg-gray-200 pb-6 before:h-[calc(100%_+_0.75rem)] before:rounded-full"
           >
             <div
-              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5"
+              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5 before:rounded-full"
             >
               <p>
                 A payment of $186.00 was made.
@@ -389,7 +398,7 @@
 
           <li>
             <div
-              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5"
+              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5 before:rounded-full"
             >
               <p>
                 Order was created and marked pending.
@@ -407,7 +416,7 @@
         </p>
 
         <button
-          class="flex-shrink-0 px-5 py-3 ml-4 text-sm font-bold bg-gray-200 rounded"
+          class="flex-shrink-0 px-4 py-2 ml-4 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-gray-100"
           type="button"
         >
           View User
@@ -418,75 +427,77 @@
         Payment Received
       </strong>
 
-      <dl class="space-y-2 text-sm">
-        <div class="grid grid-cols-2 gap-2">
-          <dt class="font-bold">
-            Status:
-          </dt>
+      <section class="p-4 bg-white rounded-lg shadow">
+        <dl class="space-y-2 text-sm">
+          <div class="grid grid-cols-2 gap-2">
+            <dt class="font-bold">
+              Status:
+            </dt>
 
-          <dd class="text-right">
-            {{ Str::headline($order->status) }}
-          </dd>
-        </div>
+            <dd class="text-right">
+              {{ Str::headline($order->status) }}
+            </dd>
+          </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <dt class="font-bold">
-            Reference:
-          </dt>
+          <div class="grid grid-cols-2 gap-2">
+            <dt class="font-bold">
+              Reference:
+            </dt>
 
-          <dd class="text-right">
-            {{ $order->reference }}
-          </dd>
-        </div>
+            <dd class="text-right">
+              {{ $order->reference }}
+            </dd>
+          </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <dt class="font-bold">
-            Customer Reference:
-          </dt>
+          <div class="grid grid-cols-2 gap-2">
+            <dt class="font-bold">
+              Customer Reference:
+            </dt>
 
-          <dd class="text-right">
-            {{ $order->customer_reference ?: '-' }}
-          </dd>
-        </div>
+            <dd class="text-right">
+              {{ $order->customer_reference ?: '-' }}
+            </dd>
+          </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <dt class="font-bold">
-            Channel:
-          </dt>
+          <div class="grid grid-cols-2 gap-2">
+            <dt class="font-bold">
+              Channel:
+            </dt>
 
-          <dd class="text-right">
-            {{ $this->channel }}
-          </dd>
-        </div>
+            <dd class="text-right">
+              {{ $this->channel }}
+            </dd>
+          </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <dt class="font-bold">
-            Date:
-          </dt>
+          <div class="grid grid-cols-2 gap-2">
+            <dt class="font-bold">
+              Date:
+            </dt>
 
-          <dd class="text-right">
-            @if ($order->placed_at)
-              {{ $order->placed_at->format('jS M Y') }}
-            @else
-              {{ $order->created_at->format('jS M Y') }}
-            @endif
-          </dd>
-        </div>
+            <dd class="text-right">
+              @if ($order->placed_at)
+                {{ $order->placed_at->format('jS M Y') }}
+              @else
+                {{ $order->created_at->format('jS M Y') }}
+              @endif
+            </dd>
+          </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <dt class="font-bold">
-            Time:
-          </dt>
+          <div class="grid grid-cols-2 gap-2">
+            <dt class="font-bold">
+              Time:
+            </dt>
 
-          <dd class="text-right">
-            @if ($order->placed_at)
-              {{ $order->placed_at->format('H:ma') }}
-            @else
-              {{ $order->created_at->format('H:ma') }}
-            @endif
-          </dd>
-        </div>
-      </dl>
+            <dd class="text-right">
+              @if ($order->placed_at)
+                {{ $order->placed_at->format('H:ma') }}
+              @else
+                {{ $order->created_at->format('H:ma') }}
+              @endif
+            </dd>
+          </div>
+        </dl>
+      </section>
 
       <section class="p-4 bg-white rounded-lg shadow">
         <header class="flex items-center justify-between">
@@ -495,7 +506,7 @@
           </p>
 
           <button
-            class="px-3 py-1.5 text-xs font-bold bg-gray-200 rounded"
+            class="px-4 py-2 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded hover:border-gray-100 hover:bg-gray-50"
             type="button"
           >
             Edit
