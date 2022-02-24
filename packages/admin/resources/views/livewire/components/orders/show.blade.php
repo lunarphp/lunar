@@ -346,11 +346,13 @@
 
         <ul class="pt-8 pl-8 ml-5">
           <li
-            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:h-full before:bg-gray-200 pb-6"
+            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:h-full before:bg-gray-200 pb-6 pt-8"
           >
             <p class="text-lg font-bold">Today</p>
 
-            <div class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8">
+            <div
+              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5"
+            >
               <p>
                 Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
               </p>
