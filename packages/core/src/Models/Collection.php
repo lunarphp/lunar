@@ -9,12 +9,12 @@ use GetCandy\Base\Traits\HasCustomerGroups;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\HasUrls;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\CollectionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Kalnoy\Nestedset\NodeTrait;
-use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Collection extends BaseModel implements SpatieHasMedia
@@ -29,6 +29,22 @@ class Collection extends BaseModel implements SpatieHasMedia
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
     }
+
+    /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+    ];
 
     /**
      * Define which attributes should be cast.
@@ -79,11 +95,9 @@ class Collection extends BaseModel implements SpatieHasMedia
     }
 
     /**
-     * Returns the indexable data for the collection.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    public function getSearchableAttributes()
     {
         $attributes = $this->getAttributes();
 
