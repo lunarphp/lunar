@@ -197,15 +197,17 @@
                 </div>
 
                 <div x-show="showDetails">
-                  <div class="grid grid-cols-8 mt-4 text-xs">
-                    <dl class="flex flex-wrap col-span-7 col-start-2 gap-2 pl-8">
-                      @for ($i = 0; $i < 8; $i++)
-                        <div class="flex gap-0.5">
-                          <dt>Unit Price:</dt>
-                          <dd>$150.00</dd>
-                        </div>
-                      @endfor
-                    </dl>
+                  <div class="grid grid-cols-8">
+                    <div class="col-span-7 col-start-2 pl-8">
+                      <dl class="flex flex-wrap gap-2 pt-4 mt-4 text-xs text-gray-700 border-t">
+                        @for ($i = 0; $i < 8; $i++)
+                          <div class="flex gap-0.5">
+                            <dt>Unit Price:</dt>
+                            <dd>$150.00</dd>
+                          </div>
+                        @endfor
+                      </dl>
+                    </div>
                   </div>
                 </div>
               </li>
