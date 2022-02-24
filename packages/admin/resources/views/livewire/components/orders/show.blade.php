@@ -316,6 +316,86 @@
           @endforeach
         </ul>
       </div>
+
+      <div class="mt-4">
+        <header class="sr-only">
+          Timeline
+        </header>
+
+
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            @livewire('hub.components.avatar')
+          </div>
+
+          <form class="relative w-full ml-4">
+            <input
+              class="w-full pl-4 pr-32 border border-gray-200 rounded-lg h-14 sm:text-sm form-text"
+              type="text"
+              placeholder="Add a comment"
+            >
+
+            <button
+              class="absolute h-10 text-xs font-bold leading-10 bg-gray-200 rounded-md w-28 top-2 right-2"
+              type="submit"
+            >
+              Add Comment
+            </button>
+          </form>
+        </div>
+
+        <ul class="pt-8 pl-8 ml-5">
+          <li
+            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:h-full before:bg-gray-200 pb-6"
+          >
+            <p class="text-lg font-bold">Today</p>
+
+            <div class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8">
+              <p>
+                Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
+              </p>
+
+              <div class="flex gap-4 mt-2">
+                <button
+                  class="flex-shrink-0 px-5 py-3 text-sm font-bold bg-gray-200 rounded"
+                  type="button"
+                >
+                  Resend Email
+                </button>
+
+                <button
+                  class="flex-shrink-0 px-5 py-3 text-sm font-bold bg-gray-200 rounded"
+                  type="button"
+                >
+                  View Email
+                </button>
+              </div>
+            </div>
+          </li>
+
+          <li
+            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:bg-gray-200 pb-6 before:h-[calc(100%_+_0.75rem)]"
+          >
+            <div
+              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5"
+            >
+              <p>
+                A payment of $186.00 was made.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <div
+              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5"
+            >
+              <p>
+                Order was created and marked pending.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="sticky space-y-4 top-4">

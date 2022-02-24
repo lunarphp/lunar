@@ -656,6 +656,18 @@ Ensure the default browser behavior of the `hidden` attribute.
 .right-1 {
   right: 0.25rem;
 }
+.top-1\/2 {
+  top: 50%;
+}
+.top-1 {
+  top: 0.25rem;
+}
+.top-2 {
+  top: 0.5rem;
+}
+.right-2 {
+  right: 0.5rem;
+}
 .z-50 {
   z-index: 50;
 }
@@ -862,6 +874,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .ml-auto {
   margin-left: auto;
 }
+.ml-5 {
+  margin-left: 1.25rem;
+}
 .block {
   display: block;
 }
@@ -948,6 +963,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .h-auto {
   height: auto;
+}
+.h-14 {
+  height: 3.5rem;
 }
 .max-h-60 {
   max-height: 15rem;
@@ -1041,6 +1059,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .w-72 {
   width: 18rem;
+}
+.w-28 {
+  width: 7rem;
 }
 .min-w-full {
   min-width: 100%;
@@ -1327,6 +1348,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-right: calc(0px * var(--tw-space-x-reverse));
   margin-left: calc(0px * calc(1 - var(--tw-space-x-reverse)));
 }
+.space-y-8 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+}
 .divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
@@ -1436,6 +1462,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .border-t-0 {
   border-top-width: 0px;
 }
+.border-l-2 {
+  border-left-width: 2px;
+}
 .border-dashed {
   border-style: dashed;
 }
@@ -1505,6 +1534,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .border-green-900\/25 {
   border-color: rgb(20 83 45 / 0.25);
+}
+.border-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
 .bg-blue-50 {
   --tw-bg-opacity: 1;
@@ -1845,6 +1878,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .pl-28 {
   padding-left: 7rem;
 }
+.pt-8 {
+  padding-top: 2rem;
+}
 .text-left {
   text-align: left;
 }
@@ -1920,6 +1956,12 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .leading-tight {
   line-height: 1.25;
+}
+.leading-10 {
+  line-height: 2.5rem;
+}
+.leading-8 {
+  line-height: 2rem;
 }
 .tracking-wider {
   letter-spacing: 0.05em;
@@ -2234,6 +2276,57 @@ p > code {
   border-color: rgb(147 197 253 / var(--tw-border-opacity));
 }
 
+.before\:absolute::before {
+  content: var(--tw-content);
+  position: absolute;
+}
+
+.before\:inset-y-0::before {
+  content: var(--tw-content);
+  top: 0px;
+  bottom: 0px;
+}
+
+.before\:-left-4::before {
+  content: var(--tw-content);
+  left: -1rem;
+}
+
+.before\:left-0::before {
+  content: var(--tw-content);
+  left: 0px;
+}
+
+.before\:top-2::before {
+  content: var(--tw-content);
+  top: 0.5rem;
+}
+
+.before\:top-2\.5::before {
+  content: var(--tw-content);
+  top: 0.625rem;
+}
+
+.before\:-left-8::before {
+  content: var(--tw-content);
+  left: -2rem;
+}
+
+.before\:top-5::before {
+  content: var(--tw-content);
+  top: 1.25rem;
+}
+
+.before\:-top-5::before {
+  content: var(--tw-content);
+  top: -1.25rem;
+}
+
+.before\:top-0::before {
+  content: var(--tw-content);
+  top: 0px;
+}
+
 .before\:mx-4::before {
   content: var(--tw-content);
   margin-left: 1rem;
@@ -2262,6 +2355,67 @@ p > code {
   content: var(--tw-content);
   margin-left: 0.75rem;
   margin-right: 0.75rem;
+}
+
+.before\:-ml-4::before {
+  content: var(--tw-content);
+  margin-left: -1rem;
+}
+
+.before\:h-1::before {
+  content: var(--tw-content);
+  height: 0.25rem;
+}
+
+.before\:h-0\.5::before {
+  content: var(--tw-content);
+  height: 0.125rem;
+}
+
+.before\:h-0::before {
+  content: var(--tw-content);
+  height: 0px;
+}
+
+.before\:h-full::before {
+  content: var(--tw-content);
+  height: 100%;
+}
+
+.before\:h-\[calc\(100\%_\+_1\.5rem\)\]::before {
+  content: var(--tw-content);
+  height: calc(100% + 1.5rem);
+}
+
+.before\:h-\[calc\(100\%_\+_0\.75rem\)\]::before {
+  content: var(--tw-content);
+  height: calc(100% + 0.75rem);
+}
+
+.before\:w-4::before {
+  content: var(--tw-content);
+  width: 1rem;
+}
+
+.before\:w-6::before {
+  content: var(--tw-content);
+  width: 1.5rem;
+}
+
+.before\:w-0\.5::before {
+  content: var(--tw-content);
+  width: 0.125rem;
+}
+
+.before\:w-0::before {
+  content: var(--tw-content);
+  width: 0px;
+}
+
+.before\:bg-gray-200::before {
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
 .before\:text-gray-200::before {
