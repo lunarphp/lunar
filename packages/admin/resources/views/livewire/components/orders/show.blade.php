@@ -63,11 +63,11 @@
         </button>
       </div>
 
-      <div class="p-4 mt-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-6 mt-4 space-y-4 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="flow-root">
-          <div class="-my-4 divide-y divide-gray-200">
+          <ul class="-my-4 divide-y divide-gray-200">
             @foreach ($this->visibleLines as $line)
-              <div
+              <li
                 class="py-4"
                 x-data="{ showDetails: false }"
               >
@@ -89,7 +89,7 @@
 
                   <div class="col-span-5">
                     <button
-                      class="flex gap-2"
+                      class="flex gap-2 group"
                       x-on:click="showDetails = !showDetails"
                       type="button"
                     >
@@ -113,7 +113,7 @@
                         <div class="flex mt-1 text-xs text-gray-500">
                           <p>CONV-70-1</p>
 
-                          <dl class="flex pl-3 ml-3 text-xs border-l border-gray-200">
+                          <dl class="flex text-xs before:content-['|'] before:mx-3 before:text-gray-200">
                             <div class="flex gap-0.5">
                               <dt>Size:</dt>
                               <dd>UK 5</dd>
@@ -140,7 +140,10 @@
                     </article>
                   </div>
 
-                  <div class="flex items-center justify-end col-span-2 gap-4">
+                  <div
+                    class="relative flex items-center justify-end col-span-2 gap-4"
+                    x-data="{ showMenu: false }"
+                  >
                     <p class="text-sm">
                       {{ $line->quantity }} @ {{ $line->unit_price->formatted }}
 
@@ -149,126 +152,139 @@
                       </span>
                     </p>
 
-                    <button class="text-gray-400 hover:text-gray-800">
+                    <button
+                      class="text-gray-400 hover:text-gray-800"
+                      x-on:click="showMenu = !showMenu"
+                      type="button"
+                    >
                       <x-hub::icon
                         ref="dots-vertical"
                         style="solid"
                       />
                     </button>
+
+                    <div
+                      class="absolute right-0 mt-2 text-sm bg-white border rounded-lg shadow-lg top-full"
+                      role="menu"
+                      x-on:click.away="showMenu = false"
+                      x-show="showMenu"
+                      x-transition
+                    >
+                      <div
+                        class="py-1"
+                        role="none"
+                      >
+                        <button
+                          class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                          role="menuitem"
+                          type="button"
+                        >
+                          Refund Line
+                        </button>
+
+                        <button
+                          class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                          role="menuitem"
+                          type="button"
+                        >
+                          Refund Stock
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <div x-show="showDetails">
-                  <div class="grid grid-cols-8 mt-4 text-xs text-gray-500">
+                  <div class="grid grid-cols-8 mt-4 text-xs">
                     <dl class="flex flex-wrap col-span-7 col-start-2 gap-2 pl-8">
-                      <div class="flex gap-0.5">
-                        <dt>Unit Price:</dt>
-                        <dd>$150.00</dd>
-                      </div>
-
-                      <div class="flex gap-0.5">
-                        <dt>Quantity:</dt>
-                        <dd>1</dd>
-                      </div>
-
-                      <div class="flex gap-0.5">
-                        <dt>Sub Total:</dt>
-                        <dd>$150.00</dd>
-                      </div>
-
-                      <div class="flex gap-0.5">
-                        <dt>Discount Total:</dt>
-                        <dd>$50.00</dd>
-                      </div>
-
-                      <div class="flex gap-0.5">
-                        <dt>Tax Total:</dt>
-                        <dd>$20.00</dd>
-                      </div>
-
-                      <div class="flex gap-0.5">
-                        <dt>Total:</dt>
-                        <dd>$120.00</dd>
-                      </div>
-
-                      <div class="flex gap-0.5">
-                        <dt>Total:</dt>
-                        <dd>$120.00</dd>
-                      </div>
-
-                      <div class="flex gap-0.5">
-                        <dt>Total:</dt>
-                        <dd>$120.00</dd>
-                      </div>
+                      @for ($i = 0; $i < 8; $i++)
+                        <div class="flex gap-0.5">
+                          <dt>Unit Price:</dt>
+                          <dd>$150.00</dd>
+                        </div>
+                      @endfor
                     </dl>
                   </div>
                 </div>
-              </div>
+              </li>
             @endforeach
-          </div>
+          </ul>
         </div>
 
         @if ($this->physicalLines->count() > $maxLines)
-          <button
-            type="button"
-            wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
-            class="w-full py-1 text-sm text-center text-gray-600 bg-gray-200 hover:bg-gray-300"
-          >
-            @if (!$allLinesVisible)
-              Show remaining lines
-            @else
-              Collapse lines
-            @endif
-          </button>
+          <div class="flex justify-end">
+            <button
+              class="flex-shrink-0 px-5 py-3 text-xs font-bold bg-gray-200 rounded"
+              wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
+              type="button"
+            >
+              @if (!$allLinesVisible)
+                Show Remaining Lines
+              @else
+                Collapse Lines
+              @endif
+            </button>
+          </div>
         @endif
 
-        <div class="p-3 space-y-2 text-sm">
+        <ul class="space-y-4 text-sm">
           @foreach ($this->shippingLines as $shippingLine)
-            <div class="flex justify-between w-full p-4 border rounded">
+            <li class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
               <div class="flex items-center">
-                <x-hub::icon ref="truck" />
-                <span class="block ml-2">{!! $shippingLine->description !!}</span>
-              </div>
-              <span>{{ $shippingLine->sub_total->formatted }}</span>
-            </div>
-          @endforeach
-        </div>
+                <x-hub::icon
+                  ref="truck"
+                  class="mr-2"
+                />
 
-        <div class="p-3">
-          <div class="flex p-3 bg-gray-50">
-            <div class="grow">
-              <strong class="text-sm">Notes</strong>
-              <p class="text-sm">
+                {!! $shippingLine->description !!}
+              </div>
+
+              <span>{{ $shippingLine->sub_total->formatted }}</span>
+            </li>
+          @endforeach
+        </ul>
+
+        <div class="grid grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+          <div class="col-span-2">
+            <article class="text-sm">
+              <strong>Notes:</strong>
+
+              <p class="mt-2">
                 @if ($order->notes)
                   {{ $order->notes }}
                 @else
-                  <span class="text-gray-500">No notes on this order</span>
+                  <span class="text-gray-500">
+                    No notes on this order
+                  </span>
                 @endif
               </p>
-            </div>
+            </article>
+          </div>
 
-            <div class="w-1/3 text-sm text-right">
-              <dl class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <dt>Sub Total</dt>
-                  <dd>{{ $order->sub_total->formatted }}</dd>
+          <div>
+            <dl class="space-y-2 text-sm text-right">
+              <div class="flex justify-between">
+                <dt>Sub Total</dt>
+                <dd>{{ $order->sub_total->formatted }}</dd>
+              </div>
+
+              <div class="flex justify-between">
+                <dt>Shipping Total</dt>
+                <dd>{{ $order->shipping_total->formatted }}</dd>
+              </div>
+
+              @foreach ($order->tax_breakdown as $tax)
+                <div class="flex justify-between">
+                  <dt>{{ $tax->description }}</dt>
+                  <dd>{{ $tax->total->formatted }}</dd>
                 </div>
-                <div class="flex items-center justify-between">
-                  <dt>Shipping Total</dt>
-                  <dd>{{ $order->shipping_total->formatted }}</dd>
-                </div>
-                @foreach ($order->tax_breakdown as $tax)
-                  <div class="flex items-center justify-between">
-                    <dt>{{ $tax->description }}</dt>
-                    <dd>{{ $tax->total->formatted }}</dd>
-                  </div>
-                @endforeach
-                <div class="flex items-center justify-between font-bold">
-                  <dt>Total</dt>
-                  <dd>{{ $order->total->formatted }}</dd>
-                </div>
-              </dl>
-            </div>
+              @endforeach
+
+              <div class="flex justify-between font-bold">
+                <dt>Total</dt>
+                <dd>{{ $order->total->formatted }}</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>
@@ -303,36 +319,26 @@
     </div>
 
     <div class="sticky space-y-4 top-4">
-      <div class="flex items-center justify-between">
+      <header class="flex items-center justify-between">
         <p class="font-bold truncate">
           Alec Ritson
         </p>
 
         <button
-          class="flex-shrink-0 px-5 py-3 ml-4 text-xs font-bold bg-gray-200 rounded"
+          class="flex-shrink-0 px-5 py-3 ml-4 text-sm font-bold bg-gray-200 rounded"
           type="button"
         >
           View User
         </button>
-      </div>
+      </header>
 
-      <div
-        class="flex items-center px-4 py-3 text-green-700 border border-current rounded bg-green-50"
-        role="alert"
-      >
-        <x-hub::icon
-          ref="check-circle"
-          style="outline"
-          class="w-5"
-        />
+      <strong
+        class="block px-4 py-3 text-sm font-bold text-green-900 border rounded-lg border-green-900/25 bg-green-50">
+        Payment Received
+      </strong>
 
-        <p class="ml-3 text-sm font-bold">
-          Payment Received
-        </p>
-      </div>
-
-      <dl class="space-y-4 text-sm">
-        <div class="grid grid-cols-2 gap-4">
+      <dl class="space-y-2 text-sm">
+        <div class="grid grid-cols-2 gap-2">
           <dt class="font-bold">
             Reference:
           </dt>
@@ -342,7 +348,7 @@
           </dd>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-2">
           <dt class="font-bold">
             Channel:
           </dt>
