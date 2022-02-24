@@ -35,6 +35,32 @@ class Product extends BaseModel implements SpatieHasMedia
     use SoftDeletes;
 
     /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [
+        '__soft_deleted',
+        'skus',
+        'brand',
+        'status',
+    ];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+        'created_at',
+        'updated_at',
+        'brand',
+        'skus',
+        'status',
+    ];
+
+    /**
      * Get the name of the index associated with the model.
      *
      * @return string

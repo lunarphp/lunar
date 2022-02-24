@@ -15,6 +15,29 @@ class Order extends BaseModel
     use Searchable;
 
     /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [
+        '__soft_deleted',
+        'status',
+        'created_at',
+        'placed_at',
+    ];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'created_at',
+        'placed_at',
+        'total',
+    ];
+
+    /**
      * {@inheritDoc}
      */
     protected $casts = [

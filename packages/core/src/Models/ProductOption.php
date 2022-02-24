@@ -17,6 +17,22 @@ class ProductOption extends BaseModel
     use Searchable;
 
     /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+    ];
+
+    /**
      * Get the name of the index associated with the model.
      *
      * @return string

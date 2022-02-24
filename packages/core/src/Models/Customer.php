@@ -15,6 +15,26 @@ class Customer extends BaseModel
     use Searchable;
 
     /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [
+        'name',
+        'company_name',
+    ];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+        'company_name',
+    ];
+
+    /**
      * Define the guarded attributes.
      *
      * @var array

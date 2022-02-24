@@ -31,6 +31,22 @@ class Collection extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+    ];
+
+    /**
      * Define which attributes should be cast.
      *
      * @var array

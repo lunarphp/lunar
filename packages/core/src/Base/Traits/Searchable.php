@@ -16,6 +16,20 @@ trait Searchable
     protected $additionalSearchFields = [];
 
     /**
+     * Define the additional filterable fields.
+     *
+     * @var array
+     */
+    protected $additionalFilterableFields = [];
+
+    /**
+     * Define the additional sortable fields.
+     *
+     * @var array
+     */
+    protected $additionalSortableFields = [];
+
+    /**
      * Return our base (core) attributes we want searchable.
      *
      * @return array
@@ -28,18 +42,63 @@ trait Searchable
     }
 
     /**
-     * Return out base attributes we want filterable.
+     * Return our base attributes we want filterable.
      *
      * @return array
      */
     public function getFilterableAttributes()
     {
-        return [
-            'status',
-            'placed_at',
-            'created_at',
-            'total',
-        ];
+        $this->fireModelEvent('searchSetup');
+
+        return array_merge(
+            $this->filterable ?? [],
+            $this->additionalFilterableFields,
+        );
+    }
+
+    /**
+     * Add additional fields to filter on.
+     *
+     * @param array $attributes
+     * @return void
+     */
+    public function addFilterableAttributes(array $attributes)
+    {
+        collect($attributes)->filter(function ($att) {
+            return !in_array($att, $this->filterable) && !in_array($att, $this->additionalFilterableFields);
+        })->each(function ($att) {
+            $this->additionalFilterableFields[] = $att;
+        });
+    }
+
+    /**
+     * Add additional sortable attributes.
+     *
+     * @param array $attributes
+     * @return void
+     */
+    public function addSortableAttributes(array $attributes)
+    {
+        collect($attributes)->filter(function ($att) {
+            return !in_array($att, $this->sortable) && !in_array($att, $this->additionalSortableFields);
+        })->each(function ($att) {
+            $this->additionalSortableFields[] = $att;
+        });
+    }
+
+    /**
+     * Return our base attributes we want sortable.
+     *
+     * @return array
+     */
+    public function getSortableAttributes()
+    {
+        $this->fireModelEvent('searchSetup');
+
+        return array_merge(
+            $this->sortable ?? [],
+            $this->additionalSortableFields
+        );
     }
 
     /**
@@ -49,6 +108,7 @@ trait Searchable
     {
         return array_merge(parent::getObservableEvents(), [
             'indexing',
+            'searchSetup',
         ]);
     }
 
