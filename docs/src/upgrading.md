@@ -30,6 +30,18 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## [Unreleased]
+
+If you are using the scout `Searchable` trait. Make sure to change this to GetCandy's one if you want to tap into the Model Observers.
+
+```php
+// Old
+use Laravel\Scout\Searchable;
+
+// New
+use GetCandy\Base\Traits\Searchable;
+```
+
 ## 2.0-beta10
 
 ### Changes to Tax drivers - High Impact
