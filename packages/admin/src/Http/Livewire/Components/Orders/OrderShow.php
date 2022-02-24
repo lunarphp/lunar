@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
 use Livewire\Component;
 
@@ -36,7 +37,14 @@ class OrderShow extends Component
      *
      * @var int
      */
-    public int $maxLines = 10;
+    public int $maxLines = 5;
+
+    /**
+     * Wether shipping address equals billing address.
+     *
+     * @var bool
+     */
+    public bool $shippingEqualsBilling = false;
 
     /**
      * {@inheritDoc}
@@ -46,6 +54,21 @@ class OrderShow extends Component
         return [
             'order.status' => 'string',
         ];
+    }
+
+    public function mount(Order $order)
+    {
+        $this->shippingEqualsBilling = false;
+    }
+
+    /**
+     * Return the computed channel property.
+     *
+     * @return string
+     */
+    public function getChannelProperty()
+    {
+        return Channel::findOrFail($this->order->channel_id)->name;
     }
 
     /**

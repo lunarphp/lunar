@@ -63,7 +63,7 @@
         </button>
       </div>
 
-      <div class="p-6 mt-4 space-y-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="p-6 mt-4 space-y-4 bg-white rounded-lg shadow">
         <div class="flow-root">
           <ul class="-my-4 divide-y divide-gray-200">
             @foreach ($this->visibleLines as $line)
@@ -99,18 +99,16 @@
                         class="w-6 text-gray-400 transition group-hover:text-gray-600"
                       />
 
-                      <div class="max-w-sm">
-                        <div class="flex gap-4 text-left">
-                          <p class="text-sm font-bold leading-tight">
-                            {{ $line->description }}
-                          </p>
+                      <div class="max-w-sm space-y-2 text-left">
+                        <p class="font-bold leading-tight">
+                          {{ $line->description }}
+                        </p>
 
-                          <p class="flex-shrink-0 text-xs text-gray-500">
-                            KB123450ASDB
-                          </p>
-                        </div>
+                        <p class="text-xs text-gray-700">
+                          KB123450ASDB
+                        </p>
 
-                        <div class="flex mt-1 text-xs text-gray-500">
+                        <div class="flex text-xs text-gray-700">
                           <p>CONV-70-1</p>
 
                           <dl class="flex text-xs before:content-['|'] before:mx-3 before:text-gray-200">
@@ -128,14 +126,12 @@
                       </div>
                     </button>
 
-                    <article class="pl-8 mt-4">
-                      <p class="text-sm">
+                    <article class="pl-8 mt-2">
+                      <p class="text-sm text-gray-700">
                         <strong>Notes:</strong>
 
-                        <span class="text-gray-500">
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, amet perferendis
-                          distinctio quos harum atque error odio.
-                        </span>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, amet perferendis
+                        distinctio quos harum atque error odio.
                       </p>
                     </article>
                   </div>
@@ -239,7 +235,7 @@
                 {!! $shippingLine->description !!}
               </div>
 
-              <span>{{ $shippingLine->sub_total->formatted }}</span>
+              {{ $shippingLine->sub_total->formatted }}
             </li>
           @endforeach
         </ul>
@@ -249,13 +245,11 @@
             <article class="text-sm">
               <strong>Notes:</strong>
 
-              <p class="mt-2">
+              <p class="mt-4 {{ !$order->notes ? 'text-gray-500' : '' }}">
                 @if ($order->notes)
                   {{ $order->notes }}
                 @else
-                  <span class="text-gray-500">
-                    No notes on this order
-                  </span>
+                  No notes on this order
                 @endif
               </p>
             </article>
@@ -344,7 +338,17 @@
           </dt>
 
           <dd class="text-right">
-            2022-02-0001
+            {{ $order->reference }}
+          </dd>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <dt class="font-bold">
+            Customer Reference:
+          </dt>
+
+          <dd class="text-right">
+            {{ $order->customer_reference ?: '-' }}
           </dd>
         </div>
 
@@ -354,13 +358,13 @@
           </dt>
 
           <dd class="text-right">
-            Webstore
+            {{ $this->channel }}
           </dd>
         </div>
       </dl>
 
-      <section class="p-4 bg-white border border-gray-200 rounded-lg">
-        <div class="flex items-center justify-between">
+      <section class="p-4 bg-white rounded-lg shadow">
+        <header class="flex items-center justify-between">
           <p class="font-bold">
             Shipping Address
           </p>
@@ -371,51 +375,87 @@
           >
             Edit
           </button>
-        </div>
+        </header>
 
-        <address class="mt-4 text-sm not-italic text-gray-700">
-          Alec Ritson <br>
-          16 Mons Way <br>
-          Maldon <br>
-          CM9 6FU <br>
-          United Kingdom
+        <address class="mt-4 text-sm not-italic">
+          {{ $this->shipping->fullName }} <br>
+          {{ $this->shipping->line_one }} <br>
+
+          @if ($this->shipping->line_two)
+            {{ $this->shipping->line_two }} <br>
+          @endif
+
+          @if ($this->shipping->line_three)
+            {{ $this->shipping->line_three }} <br>
+          @endif
+
+          @if ($this->shipping->city)
+            {{ $this->shipping->city }} <br>
+          @endif
+
+          @if ($this->shipping->state)
+            {{ $this->shipping->state }} <br>
+          @endif
+
+          {{ $this->shipping->postcode }}
         </address>
       </section>
 
-      <section class="p-4 bg-white border border-gray-200 rounded-lg">
-        <p class="font-bold">
-          Billing Address
-        </p>
+      <section class="p-4 bg-white rounded-lg shadow">
+        <header>
+          <p class="font-bold">
+            Billing Address
+          </p>
+        </header>
 
-        <p class="mt-4 text-sm text-gray-700">
-          Same as shipping address
+        <p class="mt-4 text-sm {{ !$this->shippingEqualsBilling ? 'text-gray-500' : '' }}">
+          @if ($this->shippingEqualsBilling)
+            <address class="not-italic">
+              {{ $this->billing->fullName }} <br>
+              {{ $this->billing->line_one }} <br>
+
+              @if ($this->billing->line_two)
+                {{ $this->billing->line_two }} <br>
+              @endif
+
+              @if ($this->billing->line_three)
+                {{ $this->billing->line_three }} <br>
+              @endif
+
+              @if ($this->billing->city)
+                {{ $this->billing->city }} <br>
+              @endif
+
+              @if ($this->billing->state)
+                {{ $this->billing->state }} <br>
+              @endif
+
+              {{ $this->billing->postcode }}
+            </address>
+          @else
+            Same as shipping address
+          @endif
         </p>
       </section>
 
-      <section class="p-4 bg-white border border-gray-200 rounded-lg">
-        <p class="font-bold">
-          Additional Details
-        </p>
+      <section class="p-4 bg-white rounded-lg shadow">
+        <header>
+          <p class="font-bold">
+            Additional Details
+          </p>
+        </header>
 
-        <dl class="mt-4 space-y-4 text-sm">
-          <div class="grid grid-cols-2 gap-4">
-            <dt class="font-bold">
-              Metafield:
-            </dt>
+        <dl class="mt-4 space-y-2 text-sm">
+          <div class="grid grid-cols-3 gap-2">
+            <dt class="font-bold">Metafield:</dt>
 
-            <dd>
-              Lorem ipsum dolor sit amet.
-            </dd>
+            <dd class="col-span-2">Lorem ipsum dolor sit amet.</dd>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <dt class="font-bold">
-              Metafield 2:
-            </dt>
+          <div class="grid grid-cols-3 gap-2">
+            <dt class="font-bold">Metafield 2:</dt>
 
-            <dd>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-            </dd>
+            <dd class="col-span-2">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</dd>
           </div>
         </dl>
       </section>
@@ -428,28 +468,6 @@
           <div>
             <span class="block text-xs">Status</span>
             <strong class="text-sm font-bold">{{ $this->status }}</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="flex items-center px-4 py-4 bg-white rounded-lg">
-        <div class="flex items-center">
-          <div>
-            <span class="block text-xs">Reference</span>
-            <strong class="text-sm font-bold">{{ $order->reference }}</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="flex items-center px-4 py-4 bg-white rounded-lg">
-        <div class="flex items-center">
-          <div>
-            <span class="block text-xs">Customer Reference</span>
-            <strong class="text-sm font-bold">{{ $order->customer_reference ?: '-' }}</strong>
           </div>
         </div>
       </div>
