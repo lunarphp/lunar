@@ -8,6 +8,7 @@ use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartFactory;
 use GetCandy\DataTypes\Price;
 use GetCandy\Managers\CartManager;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 
@@ -169,5 +170,16 @@ class Cart extends BaseModel
     public function getManager()
     {
         return new CartManager($this);
+    }
+
+    /**
+     * Apply scope to get active cart.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereDoesntHave('order');
     }
 }

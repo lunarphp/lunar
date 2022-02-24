@@ -5,9 +5,9 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductOptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
 
 class ProductOption extends BaseModel
 {
@@ -15,6 +15,22 @@ class ProductOption extends BaseModel
     use HasMedia;
     use HasTranslations;
     use Searchable;
+
+    /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+    ];
 
     /**
      * Get the name of the index associated with the model.
@@ -60,16 +76,10 @@ class ProductOption extends BaseModel
     }
 
     /**
-     * Returns the indexable data for the product option.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    public function getSearchableAttributes()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
-
         return [
             'id'      => $this->id,
             'name'    => $this->translate('name'),

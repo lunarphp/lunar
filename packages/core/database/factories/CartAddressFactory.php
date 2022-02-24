@@ -2,13 +2,13 @@
 
 namespace GetCandy\Database\Factories;
 
-use GetCandy\Models\Address;
+use GetCandy\Models\CartAddress;
 use GetCandy\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CartAddressFactory extends Factory
 {
-    protected $model = Address::class;
+    protected $model = CartAddress::class;
 
     public function definition(): array
     {

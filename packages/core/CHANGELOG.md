@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Added
+
+- Added `createOrder($forget = true)` method to the `CartSession` facade.
+- Added `active` scope to the `Cart` model for carts that do not have an order associated.
+- Added ability to tap into filterable, searchable and sortable fields in Scout.
+
+### Fixed
+
+- When a user logs in, the `CartSessionAuthListener` will now check for an active cart, rather than just grabbing the latest. ([#186](https://github.com/getcandy/getcandy/issues/186))
+
 ## 2.0-beta10 - 2022-02-18
 
 ### Added

@@ -5,14 +5,37 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
 
 class Order extends BaseModel
 {
     use HasFactory;
     use Searchable;
+
+    /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [
+        '__soft_deleted',
+        'status',
+        'created_at',
+        'placed_at',
+    ];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'created_at',
+        'placed_at',
+        'total',
+    ];
 
     /**
      * {@inheritDoc}
@@ -197,20 +220,16 @@ class Order extends BaseModel
     }
 
     /**
-     * Returns the indexable data for the order.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    protected function getSearchableAttributes()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
-
         return [
             'id'        => $this->id,
             'reference' => $this->reference,
             'status'    => $this->status,
+            'placed_at' => $this->placed_at,
+            'created_at' => $this->created_at,
             'charges'   => $this->transactions->map(function ($transaction) {
                 return [
                     'reference' => $transaction->reference,
