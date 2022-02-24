@@ -5,11 +5,12 @@
     </h1>
   </header>
 
-  <div class="grid items-start grid-cols-3 gap-8 mt-8">
-    <div class="col-span-2">
-      <div class="flex items-center space-x-2 text-xs text-gray-700">
+  <div class="grid grid-cols-1 gap-8 mt-8 lg:items-start lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <div class="flex items-center text-xs text-gray-700">
         <button
           class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+          type="button"
         >
           <x-hub::icon
             ref="printer"
@@ -22,6 +23,7 @@
 
         <button
           class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+          type="button"
         >
           <x-hub::icon
             ref="rewind"
@@ -34,18 +36,7 @@
 
         <button
           class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
-        >
-          <x-hub::icon
-            ref="credit-card"
-            style="solid"
-            class="w-4 mr-2"
-          />
-
-          Add Payment
-        </button>
-
-        <button
-          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+          type="button"
         >
           <x-hub::icon
             ref="flag"
@@ -56,17 +47,66 @@
           Update Status
         </button>
 
-        <button
-          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+        <div
+          class="relative flex justify-end flex-1"
+          x-data="{ showMenu: false }"
         >
-          More Actions
+          <button
+            class="inline-flex items-center px-4 py-2 font-bold transition border rounded hover:bg-white bg-gray-50"
+            type="button"
+            x-on:click="showMenu = !showMenu"
+          >
+            More Actions
 
-          <x-hub::icon
-            ref="chevron-down"
-            style="solid"
-            class="w-4 ml-2"
-          />
-        </button>
+            <x-hub::icon
+              ref="chevron-down"
+              style="solid"
+              class="w-4 ml-2"
+            />
+          </button>
+
+          <div
+            class="absolute right-0 z-50 w-screen max-w-[200px] mt-2 text-sm bg-white border rounded-lg shadow-lg top-full"
+            role="menu"
+            x-on:click.away="showMenu = false"
+            x-show="showMenu"
+            x-transition
+            x-cloak
+          >
+            <div
+              class="py-1"
+              role="none"
+            >
+              <button
+                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                role="menuitem"
+                type="button"
+              >
+                <x-hub::icon
+                  ref="credit-card"
+                  style="solid"
+                  class="w-4 mr-2"
+                />
+
+                Add Payment
+              </button>
+
+              <button
+                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                role="menuitem"
+                type="button"
+              >
+                <x-hub::icon
+                  ref="flag"
+                  style="solid"
+                  class="w-4 mr-2"
+                />
+
+                Update Status
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="p-6 mt-4 space-y-4 bg-white rounded-lg shadow">
@@ -77,7 +117,7 @@
                 class="py-4"
                 x-data="{ showDetails: false }"
               >
-                <div class="grid items-start grid-cols-8 gap-2">
+                <div class="flex items-start">
                   <div class="flex gap-2">
                     <input
                       class="w-5 h-5 text-blue-500 border-gray-200 rounded cursor-pointer form-checkbox"
@@ -85,52 +125,108 @@
                       type="checkbox"
                     >
 
-                    <div class="p-1 overflow-hidden border border-gray-200 rounded aspect-square">
+                    <div class="flex-shrink-0 p-1 overflow-hidden border border-gray-200 rounded">
                       <img
-                        class="object-contain w-full h-full"
+                        class="object-contain w-12 h-12"
                         src="{{ $line->purchasable->getThumbnail() }}"
                       />
                     </div>
                   </div>
 
-                  <div class="col-span-5">
-                    <button
-                      class="flex gap-2 group"
-                      x-on:click="showDetails = !showDetails"
-                      type="button"
-                    >
-                      <x-hub::icon
-                        ref="chevron-right"
-                        style="solid"
-                        class="w-6 text-gray-400 transition group-hover:text-gray-600"
-                      />
+                  <div class="flex-1">
+                    <div class="gap-8 xl:justify-between xl:items-start xl:flex">
+                      <div
+                        class="relative flex items-center justify-between gap-4 pl-8 xl:justify-end xl:pl-0 xl:order-last"
+                        x-data="{ showMenu: false }"
+                      >
+                        <p class="text-sm">
+                          {{ $line->quantity }} @ {{ $line->unit_price->formatted }}
 
-                      <div class="max-w-sm space-y-2 text-left">
-                        <p class="font-bold leading-tight">
-                          {{ $line->description }}
+                          <span class="ml-1">
+                            {{ $line->sub_total->formatted }}
+                          </span>
                         </p>
 
-                        <p class="text-xs text-gray-700">
-                          KB123450ASDB
-                        </p>
+                        <button
+                          class="text-gray-400 hover:text-gray-800"
+                          x-on:click="showMenu = !showMenu"
+                          type="button"
+                        >
+                          <x-hub::icon
+                            ref="dots-vertical"
+                            style="solid"
+                          />
+                        </button>
 
-                        <div class="flex text-xs text-gray-700">
-                          <p>CONV-70-1</p>
+                        <div
+                          class="absolute right-0 z-50 mt-2 text-sm bg-white border rounded-lg shadow-lg top-full"
+                          role="menu"
+                          x-on:click.away="showMenu = false"
+                          x-show="showMenu"
+                          x-transition
+                          x-cloak
+                        >
+                          <div
+                            class="py-1"
+                            role="none"
+                          >
+                            <button
+                              class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                              role="menuitem"
+                              type="button"
+                            >
+                              Refund Line
+                            </button>
 
-                          <dl class="flex text-xs before:content-['|'] before:mx-3 before:text-gray-200">
-                            <div class="flex gap-0.5">
-                              <dt>Size:</dt>
-                              <dd>UK 5</dd>
-                            </div>
-
-                            <div class="flex gap-0.5 before:content-['/'] before:mx-1.5 before:text-gray-200">
-                              <dt>Color:</dt>
-                              <dd>Black</dd>
-                            </div>
-                          </dl>
+                            <button
+                              class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                              role="menuitem"
+                              type="button"
+                            >
+                              Refund Stock
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </button>
+
+                      <button
+                        class="flex mt-2 group xl:mt-0"
+                        x-on:click="showDetails = !showDetails"
+                        type="button"
+                      >
+                        <x-hub::icon
+                          ref="chevron-right"
+                          style="solid"
+                          class="w-6 mx-1 text-gray-400 transition -mt-7 group-hover:text-gray-600 xl:mt-0"
+                        />
+
+                        <div class="max-w-sm space-y-2 text-left">
+                          <p class="font-bold leading-tight">
+                            {{ $line->description }}
+                          </p>
+
+                          <p class="text-xs text-gray-700">
+                            KB123450ASDB
+                          </p>
+
+                          <div class="flex text-xs text-gray-700">
+                            <p>CONV-70-1</p>
+
+                            <dl class="flex text-xs before:content-['|'] before:mx-3 before:text-gray-200">
+                              <div class="flex gap-0.5">
+                                <dt>Size:</dt>
+                                <dd>UK 5</dd>
+                              </div>
+
+                              <div class="flex gap-0.5 before:content-['/'] before:mx-1.5 before:text-gray-200">
+                                <dt>Color:</dt>
+                                <dd>Black</dd>
+                              </div>
+                            </dl>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
 
                     <article class="pl-8 mt-2">
                       <p class="text-sm text-gray-700">
@@ -141,74 +237,20 @@
                       </p>
                     </article>
                   </div>
-
-                  <div
-                    class="relative flex items-center justify-end col-span-2 gap-4"
-                    x-data="{ showMenu: false }"
-                  >
-                    <p class="text-sm">
-                      {{ $line->quantity }} @ {{ $line->unit_price->formatted }}
-
-                      <span class="ml-1">
-                        {{ $line->sub_total->formatted }}
-                      </span>
-                    </p>
-
-                    <button
-                      class="text-gray-400 hover:text-gray-800"
-                      x-on:click="showMenu = !showMenu"
-                      type="button"
-                    >
-                      <x-hub::icon
-                        ref="dots-vertical"
-                        style="solid"
-                      />
-                    </button>
-
-                    <div
-                      class="absolute right-0 mt-2 text-sm bg-white border rounded-lg shadow-lg top-full"
-                      role="menu"
-                      x-on:click.away="showMenu = false"
-                      x-show="showMenu"
-                      x-transition
-                    >
-                      <div
-                        class="py-1"
-                        role="none"
-                      >
-                        <button
-                          class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
-                          role="menuitem"
-                          type="button"
-                        >
-                          Refund Line
-                        </button>
-
-                        <button
-                          class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
-                          role="menuitem"
-                          type="button"
-                        >
-                          Refund Stock
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
-                <div x-show="showDetails">
-                  <div class="grid grid-cols-8">
-                    <div class="col-span-7 col-start-2 pl-8">
-                      <dl class="flex flex-wrap gap-2 pt-4 mt-4 text-xs text-gray-700 border-t">
-                        @for ($i = 0; $i < 8; $i++)
-                          <div class="flex gap-0.5">
-                            <dt>Unit Price:</dt>
-                            <dd>$150.00</dd>
-                          </div>
-                        @endfor
-                      </dl>
-                    </div>
-                  </div>
+                <div
+                  class="pl-[calc(8rem_-_10px)]"
+                  x-show="showDetails"
+                >
+                  <dl class="flex flex-wrap gap-2 pt-4 mt-4 text-xs text-gray-700 border-t">
+                    @for ($i = 0; $i < 8; $i++)
+                      <div class="flex gap-0.5">
+                        <dt>Unit Price:</dt>
+                        <dd>$150.00</dd>
+                      </div>
+                    @endfor
+                  </dl>
                 </div>
               </li>
             @endforeach
@@ -264,7 +306,7 @@
           </div>
 
           <div>
-            <dl class="space-y-2 text-sm text-right">
+            <dl class="space-y-2 text-xs text-right">
               <div class="flex justify-between">
                 <dt>Sub Total</dt>
                 <dd>{{ $order->sub_total->formatted }}</dd>
@@ -282,7 +324,7 @@
                 </div>
               @endforeach
 
-              <div class="flex justify-between font-bold">
+              <div class="flex justify-between text-sm font-bold">
                 <dt>Total</dt>
                 <dd>{{ $order->total->formatted }}</dd>
               </div>
@@ -370,14 +412,14 @@
 
               <div class="flex gap-4 mt-2">
                 <button
-                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-gray-100"
+                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
                   type="button"
                 >
                   Resend Email
                 </button>
 
                 <button
-                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-gray-100"
+                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
                   type="button"
                 >
                   View Email
@@ -411,21 +453,23 @@
       </div>
     </div>
 
-    <div class="sticky space-y-4 top-4">
+    <div class="space-y-4 md:sticky md:top-4">
       <header class="flex items-center justify-between">
         <p class="font-bold truncate">
           Alec Ritson
         </p>
 
         <button
-          class="flex-shrink-0 px-4 py-2 ml-4 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-gray-100"
+          class="flex-shrink-0 px-4 py-2 ml-4 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
           type="button"
         >
           View User
         </button>
       </header>
 
-      <strong class="block p-4 text-xs font-bold text-green-700 bg-green-100 border border-current rounded-lg">
+      <strong
+        class="block p-4 text-xs font-bold text-center text-green-700 border rounded-lg shadow-sm border-green-900/25 bg-green-50"
+      >
         Payment Received
       </strong>
 
