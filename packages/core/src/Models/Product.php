@@ -11,6 +11,7 @@ use GetCandy\Base\Traits\HasTags;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\HasUrls;
 use GetCandy\Base\Traits\LogsActivity;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductFactory;
 use GetCandy\Jobs\Products\Associations\Associate;
 use GetCandy\Jobs\Products\Associations\Dissociate;
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Product extends BaseModel implements SpatieHasMedia
@@ -164,16 +164,10 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
-     * Returns the indexable data for the product.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    public function getSearchableAttributes()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
-
         $attributes = $this->getAttributes();
 
         $data = Arr::except($attributes, 'attribute_data');

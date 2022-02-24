@@ -4,9 +4,9 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasPersonalDetails;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
 
 class Customer extends BaseModel
 {
@@ -39,16 +39,10 @@ class Customer extends BaseModel
     }
 
     /**
-     * Returns the indexable data for the customer.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    public function getSearchableAttributes()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
-
         $metaFields = config('getcandy-hub.customers.searchable_meta', []);
 
         $data = [
@@ -59,7 +53,7 @@ class Customer extends BaseModel
         ];
 
         foreach ($metaFields as $field) {
-            $data[$field] = $this->meta?->{$field};
+            $data[$field] = optional($this->meta)->{$field};
         }
 
         return $data;
