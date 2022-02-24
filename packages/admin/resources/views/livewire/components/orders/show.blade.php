@@ -1,26 +1,18 @@
-<div class="flex-col px-12 mx-auto max-w-7xl">
-  <div class="flex items-center">
+<section class="px-12 mx-auto max-w-7xl">
+  <header class="flex items-center">
     <h1 class="text-lg font-bold md:text-2xl">
-      <span class="text-gray-500">
-        Orders //
-      </span>
-
-      #{{ $order->id }}
+      <span class="text-gray-500">Orders //</span> #{{ $order->id }}
     </h1>
 
-    <time class="block ml-8 text-sm text-gray-500">
+    <time class="ml-8 text-sm font-medium text-gray-500">
       Today at 08:00pm GMT
     </time>
-
-    {{-- <div>
-      <x-hub::button type="button" wire:click="$set('updatingStatus', true)">Update Status</x-hub::button>
-    </div> --}}
-  </div>
+  </header>
 
   <div class="grid items-start grid-cols-3 gap-8 mt-8">
     <div class="col-span-2">
-      <div class="flex items-center text-sm text-gray-600 divide-x">
-        <button class="inline-flex items-center">
+      <div class="flex items-center space-x-2 text-sm">
+        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
           <x-hub::icon
             ref="printer"
             style="solid"
@@ -30,7 +22,7 @@
           Print
         </button>
 
-        <button class="inline-flex items-center">
+        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
           <x-hub::icon
             ref="rewind"
             style="solid"
@@ -40,7 +32,7 @@
           Refund
         </button>
 
-        <button class="inline-flex items-center">
+        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
           <x-hub::icon
             ref="credit-card"
             style="solid"
@@ -50,7 +42,7 @@
           Add Payment
         </button>
 
-        <button class="inline-flex items-center">
+        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
           <x-hub::icon
             ref="flag"
             style="solid"
@@ -60,7 +52,7 @@
           Update Status
         </button>
 
-        <button class="inline-flex items-center">
+        <button class="inline-flex items-center p-2 font-medium rounded hover:bg-gray-200">
           More Actions
 
           <x-hub::icon
@@ -71,64 +63,92 @@
         </button>
       </div>
 
-      <div class="mt-4">
-        {{-- <header>
-          <h3>Order Lines ({{ $this->physicalLines->count() }})</h3>
-        </header> --}}
-
-        <div class="p-4 bg-white border border-gray-200 rounded-lg">
-          <div class="flow-root">
-            <div class="-my-4 divide-y divide-gray-200">
-              @foreach ($this->visibleLines as $line)
-                <div class="flex items-start w-full py-4 space-x-2">
-                  {{-- <x-hub::input.checkbox /> --}}
-
-                  <div class="flex-shrink-0">
+      <div class="p-4 mt-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="flow-root">
+          <div class="-my-4 divide-y divide-gray-200">
+            @foreach ($this->visibleLines as $line)
+              <div
+                class="py-4"
+                x-data="{ showDetails: false }"
+              >
+                <div class="grid items-start grid-cols-8 gap-2">
+                  <div class="flex gap-2">
                     <input
-                      class="w-4 h-4 text-blue-500 border-gray-200 rounded form-checkbox"
+                      class="w-5 h-5 text-blue-500 border-gray-200 rounded cursor-pointer form-checkbox"
+                      aria-label="{{ $line->id }}"
                       type="checkbox"
                     >
+
+                    <div class="p-1 overflow-hidden border border-gray-200 rounded aspect-square">
+                      <img
+                        class="object-contain w-full h-full"
+                        src="{{ $line->purchasable->getThumbnail() }}"
+                      />
+                    </div>
                   </div>
 
-                  <div class="flex-shrink-0">
-                    <img
-                      src="{{ $line->purchasable->getThumbnail() }}"
-                      class="object-contain w-12 h-12 border border-gray-100 rounded"
-                    />
-                  </div>
+                  <div class="col-span-5">
+                    <button
+                      class="flex gap-2"
+                      x-on:click="showDetails = !showDetails"
+                      type="button"
+                    >
+                      <x-hub::icon
+                        ref="chevron-right"
+                        style="solid"
+                        class="w-6 text-gray-400 transition group-hover:text-gray-600"
+                      />
 
-                  <div class="flex-1">
-                    <details class="group">
-                      <summary class="grid grid-cols-3 gap-4 cursor-pointer">
-                        <div class="flex col-span-2">
-                          <x-hub::icon
-                            ref="chevron-right"
-                            style="solid"
-                            class="w-6 text-gray-400 transition group-hover:text-gray-600 group-open:rotate-90"
-                          />
-
-                          <p class="ml-2 text-sm font-bold leading-tight">
+                      <div class="max-w-sm">
+                        <div class="flex gap-4 text-left">
+                          <p class="text-sm font-bold leading-tight">
                             {{ $line->description }}
+                          </p>
+
+                          <p class="flex-shrink-0 text-xs text-gray-500">
+                            KB123450ASDB
                           </p>
                         </div>
 
-                        <p class="text-xs text-gray-500">
-                          KB123450ASDB
-                        </p>
-                      </summary>
+                        <div class="flex mt-1 text-xs text-gray-500">
+                          <p>CONV-70-1</p>
 
-                      <div class="pl-8">
-                        <p>Hello</p>
+                          <dl class="flex pl-3 ml-3 text-xs border-l border-gray-200">
+                            <div class="flex gap-0.5">
+                              <dt>Size:</dt>
+                              <dd>UK 5</dd>
+                            </div>
+
+                            <div class="flex gap-0.5 before:content-['/'] before:mx-1.5 before:text-gray-200">
+                              <dt>Color:</dt>
+                              <dd>Black</dd>
+                            </div>
+                          </dl>
+                        </div>
                       </div>
-                    </details>
+                    </button>
+
+                    <article class="pl-8 mt-4">
+                      <p class="text-sm">
+                        <strong>Notes:</strong>
+
+                        <span class="text-gray-500">
+                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, amet perferendis
+                          distinctio quos harum atque error odio.
+                        </span>
+                      </p>
+                    </article>
                   </div>
 
-                  <div class="flex-shrink-0 text-sm text-right">
-                    <span class="mr-2">{{ $line->quantity }} @ {{ $line->unit_price->formatted }}</span>
-                    {{ $line->sub_total->formatted }}
-                  </div>
+                  <div class="flex items-center justify-end col-span-2 gap-4">
+                    <p class="text-sm">
+                      {{ $line->quantity }} @ {{ $line->unit_price->formatted }}
 
-                  <div>
+                      <span class="ml-1">
+                        {{ $line->sub_total->formatted }}
+                      </span>
+                    </p>
+
                     <button class="text-gray-400 hover:text-gray-800">
                       <x-hub::icon
                         ref="dots-vertical"
@@ -137,101 +157,148 @@
                     </button>
                   </div>
                 </div>
-              @endforeach
-            </div>
-          </div>
-          @if ($this->physicalLines->count() > $maxLines)
-            <button
-              type="button"
-              wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
-              class="w-full py-1 text-sm text-center text-gray-600 bg-gray-200 hover:bg-gray-300"
-            >
-              @if (!$allLinesVisible)
-                Show remaining lines
-              @else
-                Collapse lines
-              @endif
-            </button>
-          @endif
 
-          <div class="p-3 space-y-2 text-sm">
-            @foreach ($this->shippingLines as $shippingLine)
-              <div class="flex justify-between w-full p-4 border rounded">
-                <div class="flex items-center">
-                  <x-hub::icon ref="truck" />
-                  <span class="block ml-2">{!! $shippingLine->description !!}</span>
+                <div x-show="showDetails">
+                  <div class="grid grid-cols-8 mt-4 text-xs text-gray-500">
+                    <dl class="flex flex-wrap col-span-7 col-start-2 gap-2 pl-8">
+                      <div class="flex gap-0.5">
+                        <dt>Unit Price:</dt>
+                        <dd>$150.00</dd>
+                      </div>
+
+                      <div class="flex gap-0.5">
+                        <dt>Quantity:</dt>
+                        <dd>1</dd>
+                      </div>
+
+                      <div class="flex gap-0.5">
+                        <dt>Sub Total:</dt>
+                        <dd>$150.00</dd>
+                      </div>
+
+                      <div class="flex gap-0.5">
+                        <dt>Discount Total:</dt>
+                        <dd>$50.00</dd>
+                      </div>
+
+                      <div class="flex gap-0.5">
+                        <dt>Tax Total:</dt>
+                        <dd>$20.00</dd>
+                      </div>
+
+                      <div class="flex gap-0.5">
+                        <dt>Total:</dt>
+                        <dd>$120.00</dd>
+                      </div>
+
+                      <div class="flex gap-0.5">
+                        <dt>Total:</dt>
+                        <dd>$120.00</dd>
+                      </div>
+
+                      <div class="flex gap-0.5">
+                        <dt>Total:</dt>
+                        <dd>$120.00</dd>
+                      </div>
+                    </dl>
+                  </div>
                 </div>
-                <span>{{ $shippingLine->sub_total->formatted }}</span>
               </div>
             @endforeach
           </div>
-
-          <div class="p-3">
-            <div class="flex p-3 bg-gray-50">
-              <div class="grow">
-                <strong class="text-sm">Notes</strong>
-                <p class="text-sm">
-                  @if ($order->notes)
-                    {{ $order->notes }}
-                  @else
-                    <span class="text-gray-500">No notes on this order</span>
-                  @endif
-                </p>
-              </div>
-
-              <div class="w-1/3 text-sm text-right">
-                <dl class="space-y-2">
-                  <div class="flex items-center justify-between">
-                    <dt>Sub Total</dt>
-                    <dd>{{ $order->sub_total->formatted }}</dd>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <dt>Shipping Total</dt>
-                    <dd>{{ $order->shipping_total->formatted }}</dd>
-                  </div>
-                  @foreach ($order->tax_breakdown as $tax)
-                    <div class="flex items-center justify-between">
-                      <dt>{{ $tax->description }}</dt>
-                      <dd>{{ $tax->total->formatted }}</dd>
-                    </div>
-                  @endforeach
-                  <div class="flex items-center justify-between font-bold">
-                    <dt>Total</dt>
-                    <dd>{{ $order->total->formatted }}</dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div class="mt-4">
-          <header>
-            <h3>Transactions</h3>
-          </header>
+        @if ($this->physicalLines->count() > $maxLines)
+          <button
+            type="button"
+            wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
+            class="w-full py-1 text-sm text-center text-gray-600 bg-gray-200 hover:bg-gray-300"
+          >
+            @if (!$allLinesVisible)
+              Show remaining lines
+            @else
+              Collapse lines
+            @endif
+          </button>
+        @endif
 
-          @foreach ($order->transactions as $transaction)
-            <div class="flex p-3 bg-white rounded">
-              <div>
-                {{ $transaction->status }}
+        <div class="p-3 space-y-2 text-sm">
+          @foreach ($this->shippingLines as $shippingLine)
+            <div class="flex justify-between w-full p-4 border rounded">
+              <div class="flex items-center">
+                <x-hub::icon ref="truck" />
+                <span class="block ml-2">{!! $shippingLine->description !!}</span>
               </div>
-              <div>
-                {{ $transaction->card_type }}
-              </div>
-
-              <div class="flex items-center space-x-2">
-                <span class="block">&ast;&ast;&ast;&ast;</span>
-                <span class="block">&ast;&ast;&ast;&ast;</span>
-                <span class="block">&ast;&ast;&ast;&ast;</span>
-                <span class="block">{{ $transaction->last_four }}</span>
-              </div>
-
-              <div>
-                {{ $transaction->amount->formatted }}
-              </div>
+              <span>{{ $shippingLine->sub_total->formatted }}</span>
             </div>
           @endforeach
         </div>
+
+        <div class="p-3">
+          <div class="flex p-3 bg-gray-50">
+            <div class="grow">
+              <strong class="text-sm">Notes</strong>
+              <p class="text-sm">
+                @if ($order->notes)
+                  {{ $order->notes }}
+                @else
+                  <span class="text-gray-500">No notes on this order</span>
+                @endif
+              </p>
+            </div>
+
+            <div class="w-1/3 text-sm text-right">
+              <dl class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <dt>Sub Total</dt>
+                  <dd>{{ $order->sub_total->formatted }}</dd>
+                </div>
+                <div class="flex items-center justify-between">
+                  <dt>Shipping Total</dt>
+                  <dd>{{ $order->shipping_total->formatted }}</dd>
+                </div>
+                @foreach ($order->tax_breakdown as $tax)
+                  <div class="flex items-center justify-between">
+                    <dt>{{ $tax->description }}</dt>
+                    <dd>{{ $tax->total->formatted }}</dd>
+                  </div>
+                @endforeach
+                <div class="flex items-center justify-between font-bold">
+                  <dt>Total</dt>
+                  <dd>{{ $order->total->formatted }}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <header>
+          <h3>Transactions</h3>
+        </header>
+
+        @foreach ($order->transactions as $transaction)
+          <div class="flex p-3 bg-white rounded">
+            <div>
+              {{ $transaction->status }}
+            </div>
+            <div>
+              {{ $transaction->card_type }}
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <span class="block">&ast;&ast;&ast;&ast;</span>
+              <span class="block">&ast;&ast;&ast;&ast;</span>
+              <span class="block">&ast;&ast;&ast;&ast;</span>
+              <span class="block">{{ $transaction->last_four }}</span>
+            </div>
+
+            <div>
+              {{ $transaction->amount->formatted }}
+            </div>
+          </div>
+        @endforeach
       </div>
     </div>
 
@@ -347,9 +414,8 @@
         </dl>
       </section>
     </div>
-  </div>
 
-  {{-- <div class="grid grid-cols-6 gap-4">
+    {{-- <div class="grid grid-cols-6 gap-4">
     <div>
       <div class="flex items-center px-4 py-4 bg-white rounded-lg">
         <div class="flex items-center">
@@ -579,4 +645,13 @@
       <x-hub::button type="button" wire:click="saveStatus">Save</x-hub::button>
     </x-slot>
   </x-hub::modal.dialog> --}}
-</div>
+
+    {{-- <div>
+      <x-hub::button type="button" wire:click="$set('updatingStatus', true)">Update Status</x-hub::button>
+    </div> --}}
+
+    {{-- <header>
+          <h3>Order Lines ({{ $this->physicalLines->count() }})</h3>
+        </header> --}}
+    {{-- <x-hub::input.checkbox /> --}}
+</section>
