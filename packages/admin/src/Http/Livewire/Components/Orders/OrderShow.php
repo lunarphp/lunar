@@ -72,6 +72,25 @@ class OrderShow extends Component
     }
 
     /**
+     * Return all the listed details in an array.
+     *
+     * @return array
+     */
+    public function getDetailsProperty()
+    {
+        $orderDate = $this->order->placed_at ? $this->order->placed_at : $this->order->created_at;
+
+        return [
+            'Status' => $this->order->status,
+            'Reference' => $this->order->reference,
+            'Customer Reference' => $this->order->customer_reference ?: '-',
+            'Channel' => $this->channel,
+            'Date' => $orderDate->format('jS M Y'),
+            'Time' => $orderDate->format('H:i'),
+        ];
+    }
+
+    /**
      * Return the computed status property.
      *
      * @return string

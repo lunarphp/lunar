@@ -1,6 +1,6 @@
 <section class="px-12 mx-auto max-w-7xl">
   <header class="flex items-center">
-    <h1 class="text-lg font-bold md:text-2xl">
+    <h1 class="text-lg font-bold text-gray-900 md:text-2xl">
       <span class="text-gray-500">Orders //</span> #{{ $order->id }}
     </h1>
   </header>
@@ -9,7 +9,7 @@
     <div class="lg:col-span-2">
       <div class="flex items-center text-xs text-gray-700">
         <button
-          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
           type="button"
         >
           <x-hub::icon
@@ -22,7 +22,7 @@
         </button>
 
         <button
-          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
           type="button"
         >
           <x-hub::icon
@@ -35,7 +35,7 @@
         </button>
 
         <button
-          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-gray-50 hover:border-gray-200"
+          class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
           type="button"
         >
           <x-hub::icon
@@ -78,7 +78,7 @@
               role="none"
             >
               <button
-                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-white"
                 role="menuitem"
                 type="button"
               >
@@ -92,7 +92,7 @@
               </button>
 
               <button
-                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-white"
                 role="menuitem"
                 type="button"
               >
@@ -109,23 +109,23 @@
         </div>
       </div>
 
-      <div class="p-6 mt-4 space-y-4 bg-white rounded-lg shadow">
+      <div class="p-6 mt-4 space-y-8 bg-white rounded-lg shadow">
         <div class="flow-root">
-          <ul class="-my-4 divide-y divide-gray-200">
+          <ul class="-my-6 divide-y divide-gray-100">
             @foreach ($this->visibleLines as $line)
               <li
-                class="py-4"
+                class="py-6"
                 x-data="{ showDetails: false }"
               >
                 <div class="flex items-start">
                   <div class="flex gap-2">
                     <input
-                      class="w-5 h-5 text-blue-500 border-gray-200 rounded cursor-pointer form-checkbox"
+                      class="w-5 h-5 text-blue-500 border-gray-300 rounded cursor-pointer form-checkbox"
                       aria-label="{{ $line->id }}"
                       type="checkbox"
                     >
 
-                    <div class="flex-shrink-0 p-1 overflow-hidden border border-gray-200 rounded">
+                    <div class="flex-shrink-0 p-1 overflow-hidden border border-gray-100 rounded">
                       <img
                         class="object-contain w-12 h-12"
                         src="{{ $line->purchasable->getThumbnail() }}"
@@ -139,7 +139,7 @@
                         class="relative flex items-center justify-between gap-4 pl-8 xl:justify-end xl:pl-0 xl:order-last"
                         x-data="{ showMenu: false }"
                       >
-                        <p class="text-sm font-medium">
+                        <p class="text-sm font-medium text-gray-700">
                           {{ $line->quantity }} @ {{ $line->unit_price->formatted }}
 
                           <span class="ml-1">
@@ -148,7 +148,7 @@
                         </p>
 
                         <button
-                          class="text-gray-400 hover:text-gray-800"
+                          class="text-gray-400 hover:text-gray-500"
                           x-on:click="showMenu = !showMenu"
                           type="button"
                         >
@@ -171,7 +171,7 @@
                             role="none"
                           >
                             <button
-                              class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                              class="w-full px-4 py-2 text-left transition hover:bg-white"
                               role="menuitem"
                               type="button"
                             >
@@ -179,7 +179,7 @@
                             </button>
 
                             <button
-                              class="w-full px-4 py-2 text-left transition hover:bg-gray-50"
+                              class="w-full px-4 py-2 text-left transition hover:bg-white"
                               role="menuitem"
                               type="button"
                             >
@@ -197,22 +197,22 @@
                         <x-hub::icon
                           ref="chevron-right"
                           style="solid"
-                          class="w-6 mx-1 text-gray-400 transition -mt-7 group-hover:text-gray-600 xl:mt-0"
+                          class="w-6 mx-1 text-gray-400 transition -mt-7 group-hover:text-gray-500 xl:mt-0"
                         />
 
                         <div class="max-w-sm space-y-2 text-left">
-                          <p class="font-bold leading-tight">
+                          <p class="text-sm font-bold leading-tight text-gray-800">
                             {{ $line->description }}
                           </p>
 
-                          <p class="text-xs text-gray-700">
+                          {{-- <p class="text-xs text-gray-500">
                             KB123450ASDB
-                          </p>
+                          </p> --}}
 
-                          <div class="flex text-xs text-gray-700">
+                          <div class="flex text-xs font-medium text-gray-600">
                             <p>CONV-70-1</p>
 
-                            <dl class="flex text-xs before:content-['|'] before:mx-3 before:text-gray-200">
+                            <dl class="flex before:content-['|'] before:mx-3 before:text-gray-200">
                               <div class="flex gap-0.5">
                                 <dt>Size:</dt>
                                 <dd>UK 5</dd>
@@ -231,12 +231,12 @@
                 </div>
 
                 <div
-                  class="pl-[calc(8rem_-_10px)]"
+                  class="pl-[calc(8rem_-_10px)] text-gray-700"
                   x-show="showDetails"
                 >
-                  <div class="pt-4 mt-4 space-y-4 border-t border-gray-100">
-                    <article>
-                      <p class="text-sm text-gray-700">
+                  <div class="pt-4 mt-4 space-y-4 border-t border-gray-200">
+                    <article class="text-sm">
+                      <p>
                         <strong>Notes:</strong>
 
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, amet perferendis
@@ -244,14 +244,51 @@
                       </p>
                     </article>
 
-                    <dl class="flex flex-wrap gap-2 text-xs text-gray-700">
-                      @for ($i = 0; $i < 8; $i++)
-                        <div class="flex gap-0.5">
-                          <dt>Unit Price:</dt>
-                          <dd>$150.00</dd>
-                        </div>
-                      @endfor
-                    </dl>
+                    <div class="overflow-hidden overflow-x-auto border border-gray-200 rounded">
+                      <table class="min-w-full text-xs divide-y divide-gray-200">
+                        <tbody class="divide-y divide-gray-200">
+                          <tr class="divide-x divide-gray-200">
+                            <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
+                              Unit Price
+                            </td>
+
+                            <td class="p-2 text-gray-700 whitespace-nowrap">
+                              $150.00
+                            </td>
+                          </tr>
+
+                          <tr class="divide-x divide-gray-200">
+                            <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
+                              Unit Price
+                            </td>
+
+                            <td class="p-2 text-gray-700 whitespace-nowrap">
+                              $150.00
+                            </td>
+                          </tr>
+
+                          <tr class="divide-x divide-gray-200">
+                            <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
+                              Unit Price
+                            </td>
+
+                            <td class="p-2 text-gray-700 whitespace-nowrap">
+                              $150.00
+                            </td>
+                          </tr>
+
+                          <tr class="divide-x divide-gray-200">
+                            <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
+                              Unit Price
+                            </td>
+
+                            <td class="p-2 text-gray-700 whitespace-nowrap">
+                              $150.00
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </li>
@@ -262,7 +299,7 @@
         @if ($this->physicalLines->count() > $maxLines)
           <div class="flex justify-end">
             <button
-              class="flex-shrink-0 px-5 py-3 text-xs font-bold text-gray-700 bg-gray-100 border border-gray-100 rounded hover:bg-gray-50"
+              class="flex-shrink-0 px-5 py-3 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded-md hover:border-gray-100 hover:bg-gray-50"
               wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
               type="button"
             >
@@ -275,62 +312,66 @@
           </div>
         @endif
 
-        <ul class="space-y-4 text-sm">
-          @foreach ($this->shippingLines as $shippingLine)
-            <li class="flex items-center justify-between px-4 py-2 border border-gray-200 rounded-lg">
-              <div class="flex items-center">
-                <x-hub::icon
-                  ref="truck"
-                  class="mr-2"
-                />
+        <div class="p-4 border rounded-lg bg-gray-50">
+          <ul class="space-y-2 text-sm text-gray-900">
+            @foreach ($this->shippingLines as $shippingLine)
+              <li class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <x-hub::icon
+                    ref="truck"
+                    class="mr-2"
+                  />
 
-                {!! $shippingLine->description !!}
-              </div>
-
-              {{ $shippingLine->sub_total->formatted }}
-            </li>
-          @endforeach
-        </ul>
-
-        <div class="grid grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
-          <div class="col-span-2">
-            <article class="text-sm">
-              <strong>Notes:</strong>
-
-              <p class="mt-4 {{ !$order->notes ? 'text-gray-500' : '' }}">
-                @if ($order->notes)
-                  {{ $order->notes }}
-                @else
-                  No notes on this order
-                @endif
-              </p>
-            </article>
-          </div>
-
-          <div>
-            <dl class="space-y-2 text-xs text-right">
-              <div class="flex justify-between">
-                <dt>Sub Total</dt>
-                <dd>{{ $order->sub_total->formatted }}</dd>
-              </div>
-
-              <div class="flex justify-between">
-                <dt>Shipping Total</dt>
-                <dd>{{ $order->shipping_total->formatted }}</dd>
-              </div>
-
-              @foreach ($order->tax_breakdown as $tax)
-                <div class="flex justify-between">
-                  <dt>{{ $tax->description }}</dt>
-                  <dd>{{ $tax->total->formatted }}</dd>
+                  {!! $shippingLine->description !!}
                 </div>
-              @endforeach
 
-              <div class="flex justify-between text-sm font-bold">
-                <dt>Total</dt>
-                <dd>{{ $order->total->formatted }}</dd>
-              </div>
-            </dl>
+                <strong>
+                  {{ $shippingLine->sub_total->formatted }}
+                </strong>
+              </li>
+            @endforeach
+          </ul>
+
+          <div class="grid grid-cols-3 gap-4 pt-4 mt-4 border-t">
+            <div class="col-span-2">
+              <article>
+                <strong>Notes:</strong>
+
+                <p class="text-sm mt-1 {{ !$order->notes ? 'text-gray-500' : '' }}">
+                  @if ($order->notes)
+                    {{ $order->notes }}
+                  @else
+                    No notes on this order
+                  @endif
+                </p>
+              </article>
+            </div>
+
+            <div>
+              <dl class="space-y-1 text-sm text-right text-gray-700">
+                <div class="flex justify-between">
+                  <dt>Sub Total</dt>
+                  <dd>{{ $order->sub_total->formatted }}</dd>
+                </div>
+
+                <div class="flex justify-between">
+                  <dt>Shipping Total</dt>
+                  <dd>{{ $order->shipping_total->formatted }}</dd>
+                </div>
+
+                @foreach ($order->tax_breakdown as $tax)
+                  <div class="flex justify-between">
+                    <dt>{{ $tax->description }}</dt>
+                    <dd>{{ $tax->total->formatted }}</dd>
+                  </div>
+                @endforeach
+
+                <div class="flex justify-between font-bold text-gray-900">
+                  <dt>Total</dt>
+                  <dd>{{ $order->total->formatted }}</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
       </div>
@@ -342,10 +383,11 @@
 
         <ul class="space-y-4">
           @foreach ($order->transactions as $transaction)
-            <li class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg">
+            <li class="flex items-center justify-between p-4 text-sm bg-white border rounded-lg shadow-sm">
               <div class="flex items-center gap-6">
                 <strong
-                  class="px-4 py-2 text-xs font-bold text-green-700 bg-green-100 border border-current rounded-lg">
+                  class="px-4 py-2 text-xs font-bold uppercase border border-current rounded-lg text-emerald-700 bg-emerald-100"
+                >
                   {{ $transaction->status }}
                 </strong>
 
@@ -357,17 +399,20 @@
                   >
                 </div>
 
-                <div class="flex items-center gap-2">
-                  <span class="block">&ast;&ast;&ast;&ast;</span>
-                  <span class="block">&ast;&ast;&ast;&ast;</span>
-                  <span class="block">&ast;&ast;&ast;&ast;</span>
-                  <span class="block">{{ $transaction->last_four }}</span>
-                </div>
+                <p class="text-sm text-gray-600">
+                  <span class="inline-block -translate-y-px">
+                    &lowast;&lowast;&lowast;&lowast; &lowast;&lowast;&lowast;&lowast; &lowast;&lowast;&lowast;&lowast;
+                  </span>
+
+                  <span class="font-medium">
+                    {{ $transaction->last_four }}
+                  </span>
+                </p>
               </div>
 
-              <div class="font-bold">
+              <strong class="text-sm text-gray-900">
                 {{ $transaction->amount->formatted }}
-              </div>
+              </strong>
             </li>
           @endforeach
         </ul>
@@ -409,7 +454,7 @@
             >
               @for ($i = 0; $i < 3; $i++)
                 <li class="relative py-8 ml-5">
-                  <p class="ml-8 font-bold">
+                  <p class="ml-8 font-bold text-gray-900">
                     October 4th, 2021
                   </p>
 
@@ -421,7 +466,7 @@
                       </span>
 
                       <div class="flex justify-between">
-                        <p class="text-sm">
+                        <p class="text-sm text-gray-700">
                           Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
                         </p>
 
@@ -449,12 +494,12 @@
 
                     <li class="relative pl-8">
                       <span
-                        class="absolute w-4 h-4 bg-green-600 rounded-full top-[2px] -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                        class="absolute w-4 h-4 bg-emerald-500 rounded-full top-[2px] -left-[calc(0.5rem_-_1px)] ring-4 ring-emerald-100"
                       >
                       </span>
 
                       <div class="flex justify-between">
-                        <p class="text-sm">A payment of $186.00 was made.</p>
+                        <p class="text-sm text-gray-700">A payment of $186.00 was made.</p>
 
                         <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
                           12:37pm GMT
@@ -464,12 +509,12 @@
 
                     <li class="relative pl-8">
                       <span
-                        class="absolute w-4 h-4 bg-blue-600 rounded-full top-[2px] -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                        class="absolute w-4 h-4 bg-blue-500 rounded-full top-[2px] -left-[calc(0.5rem_-_1px)] ring-4 ring-blue-100"
                       >
                       </span>
 
                       <div class="flex justify-between">
-                        <p class="text-sm">Order was created and marked pending.</p>
+                        <p class="text-sm text-gray-700">Order was created and marked pending.</p>
 
                         <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
                           12:30pm GMT
@@ -487,101 +532,44 @@
 
     <div class="space-y-4 md:sticky md:top-4">
       <header class="flex items-center justify-between">
-        <p class="font-bold truncate">
-          Alec Ritson
-        </p>
+        <strong class="text-gray-700 truncate">
+          {{ $order->customer->first_name }}
 
-        <button
+          @if ($order->customer->last_name)
+            {{ $order->customer->last_name }}
+          @endif
+        </strong>
+
+        <a
           class="flex-shrink-0 px-4 py-2 ml-4 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
-          type="button"
+          href="{{ route('hub.customers.show', $order->customer) }}"
         >
           View User
-        </button>
+        </a>
       </header>
 
       <strong
-        class="block p-4 text-xs font-bold text-center text-green-700 border rounded-lg shadow-sm border-green-900/25 bg-green-50"
+        class="block p-4 text-sm text-center border border-current rounded-lg shadow-sm bg-emerald-100 text-emerald-700"
       >
         Payment Received
       </strong>
 
       <section class="p-4 bg-white rounded-lg shadow">
-        <dl class="space-y-2 text-sm">
-          <div class="grid grid-cols-2 gap-2">
-            <dt class="font-bold">
-              Status:
-            </dt>
-
-            <dd class="text-right">
-              {{ Str::headline($order->status) }}
-            </dd>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <dt class="font-bold">
-              Reference:
-            </dt>
-
-            <dd class="text-right">
-              {{ $order->reference }}
-            </dd>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <dt class="font-bold">
-              Customer Reference:
-            </dt>
-
-            <dd class="text-right">
-              {{ $order->customer_reference ?: '-' }}
-            </dd>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <dt class="font-bold">
-              Channel:
-            </dt>
-
-            <dd class="text-right">
-              {{ $this->channel }}
-            </dd>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <dt class="font-bold">
-              Date:
-            </dt>
-
-            <dd class="text-right">
-              @if ($order->placed_at)
-                {{ $order->placed_at->format('jS M Y') }}
-              @else
-                {{ $order->created_at->format('jS M Y') }}
-              @endif
-            </dd>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <dt class="font-bold">
-              Time:
-            </dt>
-
-            <dd class="text-right">
-              @if ($order->placed_at)
-                {{ $order->placed_at->format('H:ma') }}
-              @else
-                {{ $order->created_at->format('H:ma') }}
-              @endif
-            </dd>
-          </div>
+        <dl class="space-y-2 text-sm text-gray-600">
+          @foreach ($this->details as $key => $value)
+            <div class="grid grid-cols-2 gap-2">
+              <dt class="font-medium text-gray-700">{{ $key }}</dt>
+              <dd class="text-right">{{ $value }}</dd>
+            </div>
+          @endforeach
         </dl>
       </section>
 
       <section class="p-4 bg-white rounded-lg shadow">
         <header class="flex items-center justify-between">
-          <p class="font-bold">
+          <strong class="text-gray-700">
             Shipping Address
-          </p>
+          </strong>
 
           <button
             class="px-4 py-2 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded hover:border-gray-100 hover:bg-gray-50"
@@ -591,7 +579,7 @@
           </button>
         </header>
 
-        <address class="mt-4 text-sm not-italic">
+        <address class="mt-4 text-sm not-italic text-gray-600">
           {{ $this->shipping->fullName }} <br>
           {{ $this->shipping->line_one }} <br>
 
@@ -617,14 +605,14 @@
 
       <section class="p-4 bg-white rounded-lg shadow">
         <header>
-          <p class="font-bold">
+          <strong class="text-gray-700">
             Billing Address
-          </p>
+          </strong>
         </header>
 
-        <p class="mt-4 text-sm {{ !$this->shippingEqualsBilling ? 'text-gray-500' : '' }}">
+        <div class="mt-4 text-sm">
           @if ($this->shippingEqualsBilling)
-            <address class="not-italic">
+            <address class="not-italic text-gray-600">
               {{ $this->billing->fullName }} <br>
               {{ $this->billing->line_one }} <br>
 
@@ -647,29 +635,29 @@
               {{ $this->billing->postcode }}
             </address>
           @else
-            Same as shipping address
+            <p class="text-gray-500">
+              Same as shipping address
+            </p>
           @endif
-        </p>
+        </div>
       </section>
 
       <section class="p-4 bg-white rounded-lg shadow">
         <header>
-          <p class="font-bold">
+          <strong class="text-gray-700">
             Additional Details
-          </p>
+          </strong>
         </header>
 
-        <dl class="mt-4 space-y-2 text-sm">
+        <dl class="mt-4 space-y-2 text-sm text-gray-600">
           <div class="grid grid-cols-3 gap-2">
-            <dt class="font-bold">Metafield:</dt>
+            <dt class="font-medium text-gray-700">
+              Metafield:
+            </dt>
 
-            <dd class="col-span-2">Lorem ipsum dolor sit amet.</dd>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2">
-            <dt class="font-bold">Metafield 2:</dt>
-
-            <dd class="col-span-2">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</dd>
+            <dd class="col-span-2">
+              Lorem ipsum dolor sit amet.
+            </dd>
           </div>
         </dl>
       </section>
