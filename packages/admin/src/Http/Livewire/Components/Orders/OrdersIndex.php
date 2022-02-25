@@ -88,6 +88,12 @@ class OrdersIndex extends Component
         $this->setPage(1);
     }
 
+    /**
+     * Handle when selecting all orders.
+     *
+     * @param bool $val
+     * @return void
+     */
     public function updatedSelectAll($val)
     {
         if ($val) {
