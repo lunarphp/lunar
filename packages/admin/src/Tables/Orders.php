@@ -6,6 +6,7 @@ use Closure;
 use GetCandy\Hub\Base\OrdersTableInterface;
 use GetCandy\Hub\DataTransferObjects\TableColumn;
 use GetCandy\Hub\DataTransferObjects\TableFilter;
+use GetCandy\Hub\Exporters\OrderExporter;
 use GetCandy\Models\Order;
 use Illuminate\Support\Collection;
 use MeiliSearch\Endpoints\Indexes;
@@ -25,6 +26,13 @@ class Orders implements OrdersTableInterface
      * @var Collection
      */
     protected Collection $filters;
+
+    /**
+     * The class reference to the exporter.
+     *
+     * @var string
+     */
+    protected $exporter = OrderExporter::class;
 
     public function __construct()
     {
@@ -57,5 +65,17 @@ class Orders implements OrdersTableInterface
     public function getFilters()
     {
         return $this->filters;
+    }
+
+    /**
+     * Set the exporter class.
+     *
+     * @param string $exporter
+     * @return self
+     */
+    public function exportUsing($exporter)
+    {
+        $this->exporter = $exporter;
+        return $this;
     }
 }
