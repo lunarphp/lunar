@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Tables;
 
+use Closure;
 use GetCandy\Hub\Base\OrdersTableInterface;
 use GetCandy\Hub\DataTransferObjects\TableColumn;
 use GetCandy\Hub\DataTransferObjects\TableFilter;
@@ -40,10 +41,10 @@ class Orders implements OrdersTableInterface
         return $column;
     }
 
-    public function addFilter(string $header, string $column)
+    public function addFilter(string $header, string $column, Closure $formatter = null)
     {
         $this->filters->push(
-            $filter = new TableFilter($header, $column)
+            $filter = new TableFilter($header, $column, $formatter)
         );
         return $filter;
     }
