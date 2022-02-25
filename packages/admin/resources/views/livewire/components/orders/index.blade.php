@@ -6,7 +6,7 @@
   <div class="mt-4">
     <button class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
       <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
-      Export Orders
+      Export @if(count($selected)) {{ count($selected) }} @endif Orders
     </button>
   </div>
 
@@ -134,7 +134,7 @@
       </x-slot>
       <x-slot name="head">
         <x-hub::table.heading>
-          <x-hub::input.checkbox />
+          <x-hub::input.checkbox wire:model="selectAll" />
         </x-hub::table.heading>
         <x-hub::table.heading>
           Status
@@ -163,9 +163,9 @@
       </x-slot>
       <x-slot name="body">
         @forelse($this->orders->items as $order)
-          <x-hub::table.row wire:key="row-{{ $order->id }}">
+          <x-hub::table.row wire:key="row-{{ $order->id }}" :selected="in_array($order->id, $selected)">
             <x-hub::table.cell>
-              <x-hub::input.checkbox />
+              <x-hub::input.checkbox wire:model.defer="selected" value="{{ $order->id }}" />
             </x-hub::table.cell>
             <x-hub::table.cell>
               <x-hub::orders.status :status="$order->status" />

@@ -30,6 +30,20 @@ class OrdersIndex extends Component
     public $filters = [];
 
     /**
+     * The selected orders.
+     *
+     * @var array
+     */
+    public $selected = [];
+
+    /**
+     * Whether to select all visible orders.
+     *
+     * @var boolean
+     */
+    public $selectAll = false;
+
+    /**
      * Define what to track in the query string.
      *
      * @var array
@@ -59,6 +73,8 @@ class OrdersIndex extends Component
         return array_merge([
             'filters.from' => 'nullable',
             'filters.to' => 'nullable',
+            'selected' => 'nullable|array',
+            'selectAll' => 'nullable',
         ], $this->withSavedSearchesValidationRules());
     }
 
@@ -70,6 +86,15 @@ class OrdersIndex extends Component
     public function updatedSearch()
     {
         $this->setPage(1);
+    }
+
+    public function updatedSelectAll($val)
+    {
+        if ($val) {
+            $this->selected = $this->orders->items->pluck('id')->toArray();
+        } else {
+            $this->selected = [];
+        }
     }
 
     /**
