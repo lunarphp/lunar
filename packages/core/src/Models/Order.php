@@ -74,7 +74,7 @@ class Order extends BaseModel
     {
         $statuses = config('getcandy.orders.statuses');
 
-        return $statuses[$this->status] ?? $this->status;
+        return $statuses[$this->status]['label'] ?? $this->status;
     }
 
     /**
