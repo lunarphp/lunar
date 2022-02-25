@@ -90,6 +90,17 @@ class Orders implements OrdersTableInterface
     }
 
     /**
+     * Export the orders.
+     *
+     * @param array $orderIds
+     * @return void
+     */
+    public function export($orderIds)
+    {
+        return app($this->exporter)->export($orderIds);
+    }
+
+    /**
      * Set the exporter class.
      *
      * @param string $exporter

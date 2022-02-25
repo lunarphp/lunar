@@ -140,6 +140,17 @@ class OrdersIndex extends Component
         );
     }
 
+    public function export()
+    {
+        $ids = $this->selected;
+
+        if (!count($ids)) {
+            $ids = $this->orders->items->pluck('id')->toArray();
+        }
+
+        return OrdersTable::export($ids);
+    }
+
     /**
      * Render the livewire component.
      *

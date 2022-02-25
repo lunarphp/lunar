@@ -4,7 +4,7 @@
   </div>
 
   <div class="mt-4">
-    <button class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
+    <button type="button" wire:click="export" class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
       <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
       Export @if(count($selected)) {{ count($selected) }} @endif Orders
     </button>
