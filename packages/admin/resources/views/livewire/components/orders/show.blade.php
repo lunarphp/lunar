@@ -397,59 +397,83 @@
           </form>
         </div>
 
-        <ul class="pl-8 ml-5">
-          <li
-            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:h-full before:bg-gray-200 pb-6 before:rounded-full pt-8"
-          >
-            <p class="text-lg font-bold">Today</p>
+        <div class="relative pt-8">
+          <span class="absolute inset-y-0 left-5 w-[2px] bg-gray-200"></span>
 
-            <div
-              class="mt-4 relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5 before:rounded-full"
+          <div class="flow-root">
+            <ul
+              class="-my-8 divide-y-2 divide-gray-200"
+              role="list"
             >
-              <p>
-                Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
-              </p>
+              @for ($i = 0; $i < 3; $i++)
+                <li class="relative py-8 ml-5">
+                  <p class="ml-8 font-bold">
+                    October 4th, 2021
+                  </p>
 
-              <div class="flex gap-4 mt-2">
-                <button
-                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
-                  type="button"
-                >
-                  Resend Email
-                </button>
+                  <ul class="mt-4 space-y-6">
+                    <li class="relative pl-8">
+                      <span
+                        class="absolute w-4 h-4 bg-gray-300 rounded-full top-1 -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                      >
+                      </span>
 
-                <button
-                  class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
-                  type="button"
-                >
-                  View Email
-                </button>
-              </div>
-            </div>
-          </li>
+                      <div class="flex justify-between">
+                        <p class="text-sm">
+                          Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
+                        </p>
 
-          <li
-            class="before:w-0.5 before:absolute before:inset-y-0 relative before:-left-8 before:bg-gray-200 pb-6 before:h-[calc(100%_+_0.75rem)] before:rounded-full"
-          >
-            <div
-              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5 before:rounded-full"
-            >
-              <p>
-                A payment of $186.00 was made.
-              </p>
-            </div>
-          </li>
+                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500">12:40pm GMT</time>
+                      </div>
 
-          <li>
-            <div
-              class="relative before:w-6 before:h-0.5 before:bg-gray-200 before:absolute before:-left-8 before:top-2.5 before:rounded-full"
-            >
-              <p>
-                Order was created and marked pending.
-              </p>
-            </div>
-          </li>
-        </ul>
+                      <div class="flex gap-4 mt-2">
+                        <button
+                          class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
+                          type="button"
+                        >
+                          Resend Email
+                        </button>
+
+                        <button
+                          class="flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
+                          type="button"
+                        >
+                          View Email
+                        </button>
+                      </div>
+                    </li>
+
+                    <li class="relative pl-8">
+                      <span
+                        class="absolute w-4 h-4 bg-green-600 rounded-full top-1 -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                      >
+                      </span>
+
+                      <div class="flex justify-between">
+                        <p class="text-sm">A payment of $186.00 was made.</p>
+
+                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500">12:37pm GMT</time>
+                      </div>
+                    </li>
+
+                    <li class="relative pl-8">
+                      <span
+                        class="absolute w-4 h-4 bg-blue-600 rounded-full top-1 -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                      >
+                      </span>
+
+                      <div class="flex justify-between">
+                        <p class="text-sm">Order was created and marked pending.</p>
+
+                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500">12:30pm GMT</time>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              @endfor
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
 
