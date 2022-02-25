@@ -228,8 +228,8 @@ class Order extends BaseModel
             'id'        => $this->id,
             'reference' => $this->reference,
             'status'    => $this->status,
-            'placed_at' => $this->placed_at,
-            'created_at' => $this->created_at,
+            'placed_at' => optional($this->placed_at)->timestamp,
+            'created_at' => $this->created_at->timestamp,
             'charges'   => $this->transactions->map(function ($transaction) {
                 return [
                     'reference' => $transaction->reference,
