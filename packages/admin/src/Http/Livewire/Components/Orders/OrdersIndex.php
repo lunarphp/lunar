@@ -3,6 +3,8 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
 use GetCandy\Hub\Facades\OrdersTable;
+use GetCandy\Hub\Search\OrderSearch;
+use GetCandy\Hub\Tables\Orders;
 use GetCandy\Models\Order;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -51,17 +53,13 @@ class OrdersIndex extends Component
 
     public function getOrdersProperty()
     {
-        $query = Order::search($this->search)->orderBy('created_at', 'desc')->orderBy('placed_at', 'desc');
+        $search = new OrderSearch();
 
-        foreach ($this->appliedFilters as $attribute => $value) {
-            $query->where($attribute, $value);
-        }
-
-        return tap(
-            $query->paginate(50),
-            function ($orders) {
-                return $orders->load(['billingAddress']);
-            }
+        return $search->search(
+            $this->search,
+            [
+                'filters' => $this->filters,
+            ]
         );
     }
 
