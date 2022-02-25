@@ -44,19 +44,24 @@
         </button>
 
         @foreach($this->savedSearches as $savedSearch)
-          <button
-            type="button"
-            wire:click.prevent="applySavedSearch({{ $savedSearch->id }})"
-            class="
-              text-sm font-medium px-3
-              @if($this->activeSavedSearch && $this->activeSavedSearch->id == $savedSearch->id)
-                text-blue-600
-              @else
-                text-gray-500 hover:text-gray-700
-              @endif"
-          >
-            {{ $savedSearch->name }}
-          </button>
+          <div class="flex" wire:key="saved_search_{{ $savedSearch->id }}">
+              <button
+                type="button"
+                wire:click.prevent="applySavedSearch({{ $savedSearch->id }})"
+                class="
+                  text-sm font-medium px-3
+                  @if($this->activeSavedSearch && $this->activeSavedSearch->id == $savedSearch->id)
+                    text-blue-600
+                  @else
+                    text-gray-500 hover:text-gray-700
+                  @endif"
+              >
+                {{ $savedSearch->name }}
+              </button>
+              <button class="text-gray-400 hover:text-red-500" type="button" wire:click.prevent="deleteSavedSearch({{ $savedSearch->id }})">
+                <x-hub::icon ref="x" style="solid" class="w-3" />
+              </button>
+          </div>
         @endforeach
       </nav>
     </div>

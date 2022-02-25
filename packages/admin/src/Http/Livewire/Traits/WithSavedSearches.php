@@ -109,4 +109,17 @@ trait WithSavedSearches
 
         return false;
     }
+
+    /**
+     * Delete a saved search.
+     *
+     * @param string|int $id
+     * @return void
+     */
+    public function deleteSavedSearch($id)
+    {
+        SavedSearch::whereId($id)->delete();
+
+        $this->notify('Saved Search Deleted');
+    }
 }
