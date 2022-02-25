@@ -227,15 +227,6 @@
                         </div>
                       </button>
                     </div>
-
-                    <article class="pl-8 mt-2">
-                      <p class="text-sm text-gray-700">
-                        <strong>Notes:</strong>
-
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, amet perferendis
-                        distinctio quos harum atque error odio.
-                      </p>
-                    </article>
                   </div>
                 </div>
 
@@ -243,14 +234,25 @@
                   class="pl-[calc(8rem_-_10px)]"
                   x-show="showDetails"
                 >
-                  <dl class="flex flex-wrap gap-2 pt-4 mt-4 text-xs text-gray-700 border-t">
-                    @for ($i = 0; $i < 8; $i++)
-                      <div class="flex gap-0.5">
-                        <dt>Unit Price:</dt>
-                        <dd>$150.00</dd>
-                      </div>
-                    @endfor
-                  </dl>
+                  <div class="pt-4 mt-4 space-y-4 border-t border-gray-100">
+                    <article>
+                      <p class="text-sm text-gray-700">
+                        <strong>Notes:</strong>
+
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, amet perferendis
+                        distinctio quos harum atque error odio.
+                      </p>
+                    </article>
+
+                    <dl class="flex flex-wrap gap-2 text-xs text-gray-700">
+                      @for ($i = 0; $i < 8; $i++)
+                        <div class="flex gap-0.5">
+                          <dt>Unit Price:</dt>
+                          <dd>$150.00</dd>
+                        </div>
+                      @endfor
+                    </dl>
+                  </div>
                 </div>
               </li>
             @endforeach
