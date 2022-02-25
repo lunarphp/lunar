@@ -1,15 +1,4 @@
 <section class="px-12 mx-auto max-w-7xl">
-  <div
-    x-data="{ antialiased: false }"
-    x-init="$watch('antialiased', (value) => document.body.classList.toggle('antialiased'))"
-  >
-    <button x-on:click="antialiased = !antialiased">
-      Toggle Antialiasing
-      <span x-show="antialiased">Off</span>
-      <span x-show="!antialiased">On</span>
-    </button>
-  </div>
-
   <header class="flex items-center">
     <h1 class="text-lg font-bold md:text-2xl">
       <span class="text-gray-500">Orders //</span> #{{ $order->id }}
