@@ -19,14 +19,34 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4" x-show="filtersVisible" x-cloak>
-            <x-hub::input.group label="Status" for="brand">
+            <x-hub::input.group label="Status" for="status">
               <x-hub::input.select wire:model="filters.status">
                 <option value>Any</option>
-                @foreach($this->statuses as $status => $label)
-                <option value="{{ $status }}">{{ $label }}</option>
+                @foreach($this->orders->facets->get('status') as $facet)
+                  <option value="{{ $facet->value }}">{{ $facet->value }}</option>
                 @endforeach
               </x-hub::input.select>
             </x-hub::input.group>
+
+            @foreach($this->availableFilters as $filter)
+              <x-hub::input.group :label="$filter->heading" for="{{ $filter->field }}">
+                <x-hub::input.select wire:model="filters.{{ $filter->field }}">
+                  <option value>Any</option>
+                  @foreach($this->orders->facets->get($filter->field) as $facet)
+                    <option value="{{ $facet->value }}">{{ $facet->value }}</option>
+                  @endforeach
+                </x-hub::input.select>
+              </x-hub::input.group>
+            @endforeach
+
+            <x-hub::input.group label="From Date" for="from_date">
+              <x-hub::input.datepicker wire:model="filters.from" />
+            </x-hub::input.group>
+
+            <x-hub::input.group label="To Date" for="to_date">
+              <x-hub::input.datepicker wire:model="filters.to" />
+            </x-hub::input.group>
+
           </div>
         </div>
       </x-slot>
@@ -57,7 +77,7 @@
         <x-hub::table.heading></x-hub::table.heading>
       </x-slot>
       <x-slot name="body">
-        @forelse($this->orders as $order)
+        @forelse($this->orders->items as $order)
           <x-hub::table.row wire:key="row-{{ $order->id }}">
             <x-hub::table.cell>
               {{ $order->statusLabel }}
@@ -102,7 +122,7 @@
       </x-slot>
     </x-hub::table>
     <div>
-      {{ $this->orders->links() }}
+      {{ $this->orders->items->links() }}
     </div>
   </div>
 </div>

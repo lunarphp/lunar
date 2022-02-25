@@ -27,6 +27,8 @@ class OrdersIndex extends Component
      */
     public $filters = [
         'status' => null,
+        'from' => null,
+        'to' => null,
     ];
 
     /**
@@ -35,6 +37,17 @@ class OrdersIndex extends Component
      * @var array
      */
     protected $queryString = ['search', 'filters'];
+
+    public function mount()
+    {
+        if (!$this->filters['from']) {
+            $this->filters['from'] = now()->startOfMonth()->format('Y-m-d');
+        }
+
+        if (!$this->filters['to']) {
+            $this->filters['to'] = now()->endOfMonth()->format('Y-m-d');
+        }
+    }
 
     public function getAppliedFiltersProperty()
     {
@@ -49,6 +62,11 @@ class OrdersIndex extends Component
     public function getColumnsProperty()
     {
         return OrdersTable::getColumns();
+    }
+
+    public function getAvailableFiltersProperty()
+    {
+        return OrdersTable::getFilters();
     }
 
     public function getOrdersProperty()
