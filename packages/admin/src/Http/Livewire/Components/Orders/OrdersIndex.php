@@ -3,6 +3,8 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
 use GetCandy\Hub\Facades\OrdersTable;
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithSavedSearches;
 use GetCandy\Hub\Search\OrderSearch;
 use GetCandy\Hub\Tables\Orders;
 use GetCandy\Models\Order;
@@ -11,7 +13,7 @@ use Livewire\WithPagination;
 
 class OrdersIndex extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSavedSearches, Notifies;
 
     /**
      * The search term.
@@ -25,28 +27,33 @@ class OrdersIndex extends Component
      *
      * @var array
      */
-    public $filters = [
-        'status' => null,
-        'from' => null,
-        'to' => null,
-    ];
+    public $filters = [];
 
     /**
      * Define what to track in the query string.
      *
      * @var array
      */
-    protected $queryString = ['search', 'filters'];
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'filters',
+    ];
 
     public function mount()
     {
-        if (!$this->filters['from']) {
-            $this->filters['from'] = now()->startOfMonth()->format('Y-m-d');
-        }
+        $this->filters = array_merge([
+            'status' => null,
+            'to' => null,
+            'from' => null,
+        ], $this->filters);
+    }
 
-        if (!$this->filters['to']) {
-            $this->filters['to'] = now()->endOfMonth()->format('Y-m-d');
-        }
+    public function rules()
+    {
+        return array_merge([
+            'filters.from' => 'nullable',
+            'filters.to' => 'nullable',
+        ], $this->withSavedSearchesValidationRules());
     }
 
     public function getAppliedFiltersProperty()
@@ -72,6 +79,8 @@ class OrdersIndex extends Component
     public function getOrdersProperty()
     {
         $search = new OrderSearch();
+
+        $filters = $this->filters;
 
         return $search->search(
             $this->search,

@@ -3,18 +3,95 @@
     <strong class="text-lg font-bold md:text-2xl">Orders</strong>
   </div>
 
+  <div class="mt-4">
+    <button class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
+      <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
+      Export Orders
+    </button>
+  </div>
+
+<x-hub::modal.dialog form="saveSearch" wire:model="showSaveSearch">
+    <x-slot name="title">Save Search</x-slot>
+    <x-slot name="content">
+      <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" required :error="$errors->first('savedSearch.name')">
+        <x-hub::input.text wire:model.defer="savedSearch.name" :error="$errors->first('savedSearch.name')" required/>
+      </x-hub::input.group>
+    </x-slot>
+    <x-slot name="footer">
+      <x-hub::button type="button" wire:click.prevent="$set('showSaveSearch', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
+      <x-hub::button type="submit">Save Search</x-hub::button>
+    </x-slot>
+  </x-hub::modal.dialog>
+
+
+
   <div class="space-y-4">
+    <div class="hidden sm:block">
+      <nav class="flex space-x-4" aria-label="Tabs">
+        <!-- Current: "bg-gray-200 text-gray-800", Default: "text-gray-600 hover:text-gray-800" -->
+        <button
+          type="button"
+          wire:click.prevent="resetSearch"
+          class="
+            text-sm font-medium px-3
+            @if(!$this->activeSavedSearch && !$this->hasCustomFilters)
+              text-blue-600
+            @else
+              text-gray-500 hover:text-gray-700
+            @endif"
+        >
+          All Orders
+        </button>
+
+        @foreach($this->savedSearches as $savedSearch)
+          <button
+            type="button"
+            wire:click.prevent="applySavedSearch({{ $savedSearch->id }})"
+            class="
+              text-sm font-medium px-3
+              @if($this->activeSavedSearch && $this->activeSavedSearch->id == $savedSearch->id)
+                text-blue-600
+              @else
+                text-gray-500 hover:text-gray-700
+              @endif"
+          >
+            {{ $savedSearch->name }}
+          </button>
+        @endforeach
+      </nav>
+    </div>
     <x-hub::table>
       <x-slot name="toolbar">
-        <div class="p-4 space-y-4 border-b" x-data="{ filtersVisible: true }">
+        <div class="p-4 space-y-4 border-b" x-data="{ filtersVisible: false }">
           <div class="flex items-center space-x-4">
             <div class="flex items-center w-full space-x-4">
-              <x-hub::input.text placeholder="Search by reference or customer name" class="py-2" wire:model.debounce.400ms="search" />
+              <div class="grow">
+                <x-hub::input.text placeholder="Search by reference or customer name" class="py-2" wire:model.debounce.400ms="search" />
+              </div>
 
-              <x-hub::button theme="gray" class="inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
-                <x-hub::icon ref="filter" class="w-4 mr-1" />
-                Filter
-              </x-hub::button>
+              <div class="flex items-center justify-end space-x-4">
+                <x-hub::button theme="gray" class="relative inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
+                  <x-hub::icon ref="filter" style="solid"  class="w-4 mr-1" />
+                  Filter
+                  @if($this->hasCustomFilters)
+                    <span class="absolute block w-3 h-3 bg-red-500 rounded-full -right-1 -top-1"></span>
+                  @endif
+                </x-hub::button>
+
+                @if($this->hasCustomFilters)
+                  <x-hub::button theme="gray" class="inline-flex items-center" type="button" wire:click.prevent="resetSearch">
+                    <x-hub::icon ref="trash" style="solid" class="w-4 mr-1" />
+                    Clear
+                  </x-hub::button>
+
+                  @if(!$this->activeSavedSearch)
+                    <x-hub::button wire:click.prevent="$set('showSaveSearch', true)" class="inline-flex items-center">
+                      <x-hub::icon ref="bookmark" style="solid" class="w-4 mr-1" />
+                      Save
+                    </x-hub::button>
+                  @endif
+                @endif
+              </div>
             </div>
           </div>
 
@@ -33,7 +110,7 @@
                 <x-hub::input.select wire:model="filters.{{ $filter->field }}">
                   <option value>Any</option>
                   @foreach($this->orders->facets->get($filter->field) as $facet)
-                    <option value="{{ $facet->value }}">{{ $facet->value }}</option>
+                    <option value="{{ $facet->value }}">{{ $filter->format($facet->value) }}</option>
                   @endforeach
                 </x-hub::input.select>
               </x-hub::input.group>
@@ -51,6 +128,9 @@
         </div>
       </x-slot>
       <x-slot name="head">
+        <x-hub::table.heading>
+          <x-hub::input.checkbox />
+        </x-hub::table.heading>
         <x-hub::table.heading>
           Status
         </x-hub::table.heading>
@@ -80,7 +160,10 @@
         @forelse($this->orders->items as $order)
           <x-hub::table.row wire:key="row-{{ $order->id }}">
             <x-hub::table.cell>
-              {{ $order->statusLabel }}
+              <x-hub::input.checkbox />
+            </x-hub::table.cell>
+            <x-hub::table.cell>
+              <x-hub::orders.status :status="$order->status" />
             </x-hub::table.cell>
             <x-hub::table.cell>
               {{ $order->reference }}
