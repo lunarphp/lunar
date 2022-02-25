@@ -150,4 +150,14 @@ class Staff extends Authenticatable
 
         return "https://www.gravatar.com/avatar/$hash?d=mp";
     }
+
+    /**
+     * Return the saved searches relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function savedSearches()
+    {
+        return $this->hasMany(SavedSearch::class);
+    }
 }
