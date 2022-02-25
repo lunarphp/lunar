@@ -48,7 +48,28 @@ class OrderSearch extends AbstractSearch
                 // 'sort' => [$this->sort],
             ];
 
+
             foreach ($filters as $field => $values) {
+                if ($field == 'to') {
+                    continue;
+                }
+
+                if ($field == 'from') {
+                    $createdAtFilter = "created_at >= " . now()->parse($values)->startOfDay()->timestamp;
+                    $placedAtFilter = "placed_at >= " . now()->parse($values)->startOfDay()->timestamp;
+
+                    if ($filters['to']) {
+                        $createdAtFilter .= " AND created_at <= " . now()->parse($filters['to'])->endOfDay()->timestamp;
+                        $placedAtFilter .= " AND placed_at <= " . now()->parse($filters['to'])->endOfDay()->timestamp;
+                    }
+
+                    $dateFilter = "($createdAtFilter) OR ($placedAtFilter)";
+
+                    $parsedFilters->push('('.$dateFilter.')');
+
+                    continue;
+                }
+
                 if (empty($values)) {
                     continue;
                 }
@@ -63,6 +84,8 @@ class OrderSearch extends AbstractSearch
             if ($parsedFilters->count()) {
                 $options['filter'] = $parsedFilters->join(" AND ");
             }
+
+            // dd($options);
 
             return $engine->search($query, $options);
         });
