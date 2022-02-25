@@ -101,8 +101,6 @@ class OrdersIndex extends Component
     {
         $search = new OrderSearch();
 
-        $filters = $this->filters;
-
         return $search->search(
             $this->search,
             [
