@@ -303,9 +303,23 @@ You will need to determine what variants you need to create and assign the corre
 
 For example, lets say we have an option "Colour" and we want to create "Blue" and "Red" variants.
 
-Create the product.
+::: tip
+A product variant will require a product, currency and a tax class. 
+If you do not have these entities created, you will need to do so before continuing.
+:::
+
+If needed, Create the product and tax class.
 ```php
 $product = Product::create([...]);
+$taxClass = TaxClass::create([...]);
+$currency = Currency::create([...]);
+```
+
+Otherwise, fetch them.
+```php
+$product = Product::where(...)->first();
+$taxClass = TaxClass::where(...)->first();
+$currency = Currency::where(...)->first();
 ```
 
 Then we need to create our base option and it's values.
@@ -330,7 +344,7 @@ $redOption = $option->values()->create([
 ]);
 ```
 
-From here we create our variants and attach the option id.
+From here we create our variant, associate it with a product and a tax class, then attach the option id.
 
 ```php
 $blueVariant = ProductVariant::create([
@@ -340,10 +354,20 @@ $blueVariant = ProductVariant::create([
 $blueVariant->values()->attach($blueOption);
 
 $redVariant = ProductVariant::create([
+    'product_id' => $product->id,
+    'tax_class_id' => $taxClass->id,
     'sku' => 'red-product',
 ]);
 
 $redVariant->values()->attach($redOption);
+```
+
+Now, we *MUST* create a price for our variant. This is where we use our *currency* created or fetched earlier.
+```php
+$variant->prices()->create([
+    'price' => 199,
+    'currency_id' => $currency->id,
+]);
 ```
 
 ### Exceptions
