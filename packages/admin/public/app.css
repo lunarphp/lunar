@@ -721,6 +721,15 @@ Ensure the default browser behavior of the `hidden` attribute.
 .-left-\[calc\(0\.5rem_-_1px\)\] {
   left: calc(calc(0.5rem - 1px) * -1);
 }
+.top-0\.5 {
+  top: 0.125rem;
+}
+.top-\[3px\] {
+  top: 3px;
+}
+.top-\[2px\] {
+  top: 2px;
+}
 .z-50 {
   z-index: 50;
 }

@@ -425,7 +425,7 @@
                   <ul class="mt-4 space-y-6">
                     <li class="relative pl-8">
                       <span
-                        class="absolute w-4 h-4 bg-gray-300 rounded-full top-1 -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                        class="absolute w-4 h-4 bg-gray-300 rounded-full top-[2px] -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
                       >
                       </span>
 
@@ -434,7 +434,9 @@
                           Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
                         </p>
 
-                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500">12:40pm GMT</time>
+                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
+                          12:40pm GMT
+                        </time>
                       </div>
 
                       <div class="flex gap-4 mt-2">
@@ -456,27 +458,31 @@
 
                     <li class="relative pl-8">
                       <span
-                        class="absolute w-4 h-4 bg-green-600 rounded-full top-1 -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                        class="absolute w-4 h-4 bg-green-600 rounded-full top-[2px] -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
                       >
                       </span>
 
                       <div class="flex justify-between">
                         <p class="text-sm">A payment of $186.00 was made.</p>
 
-                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500">12:37pm GMT</time>
+                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
+                          12:37pm GMT
+                        </time>
                       </div>
                     </li>
 
                     <li class="relative pl-8">
                       <span
-                        class="absolute w-4 h-4 bg-blue-600 rounded-full top-1 -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
+                        class="absolute w-4 h-4 bg-blue-600 rounded-full top-[2px] -left-[calc(0.5rem_-_1px)] ring-4 ring-gray-200"
                       >
                       </span>
 
                       <div class="flex justify-between">
                         <p class="text-sm">Order was created and marked pending.</p>
 
-                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500">12:30pm GMT</time>
+                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
+                          12:30pm GMT
+                        </time>
                       </div>
                     </li>
                   </ul>
