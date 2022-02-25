@@ -466,7 +466,7 @@
                       </span>
 
                       <div class="flex justify-between">
-                        <p class="text-sm text-gray-700">
+                        <p class="text-sm font-medium text-gray-700">
                           Order confirmation email was sent to Alec Ritson (alec@neondigital.co.uk)
                         </p>
 
@@ -499,7 +499,9 @@
                       </span>
 
                       <div class="flex justify-between">
-                        <p class="text-sm text-gray-700">A payment of $186.00 was made.</p>
+                        <p class="text-sm font-medium text-gray-700">
+                          A payment of $186.00 was made.
+                        </p>
 
                         <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
                           12:37pm GMT
@@ -514,7 +516,9 @@
                       </span>
 
                       <div class="flex justify-between">
-                        <p class="text-sm text-gray-700">Order was created and marked pending.</p>
+                        <p class="text-sm font-medium text-gray-700">
+                          Order was created and marked pending.
+                        </p>
 
                         <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
                           12:30pm GMT
