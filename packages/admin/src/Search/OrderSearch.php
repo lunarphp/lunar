@@ -50,7 +50,7 @@ class OrderSearch extends AbstractSearch
 
 
             foreach ($filters as $field => $values) {
-                if ($field == 'to') {
+                if ($field == 'to' || !$values) {
                     continue;
                 }
 
@@ -58,7 +58,7 @@ class OrderSearch extends AbstractSearch
                     $createdAtFilter = "created_at >= " . now()->parse($values)->startOfDay()->timestamp;
                     $placedAtFilter = "placed_at >= " . now()->parse($values)->startOfDay()->timestamp;
 
-                    if ($filters['to']) {
+                    if (!empty($filters['to'])) {
                         $createdAtFilter .= " AND created_at <= " . now()->parse($filters['to'])->endOfDay()->timestamp;
                         $placedAtFilter .= " AND placed_at <= " . now()->parse($filters['to'])->endOfDay()->timestamp;
                     }
