@@ -39,6 +39,9 @@ class OrdersIndex extends Component
         'filters',
     ];
 
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
         $this->filters = array_merge([
@@ -48,6 +51,9 @@ class OrdersIndex extends Component
         ], $this->filters);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function rules()
     {
         return array_merge([
@@ -56,26 +62,41 @@ class OrdersIndex extends Component
         ], $this->withSavedSearchesValidationRules());
     }
 
-    public function getAppliedFiltersProperty()
-    {
-        return collect($this->filters)->filter();
-    }
-
+    /**
+     * Handle when search is updated.
+     *
+     * @return void
+     */
     public function updatedSearch()
     {
         $this->setPage(1);
     }
 
+    /**
+     * Return the table columns.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getColumnsProperty()
     {
         return OrdersTable::getColumns();
     }
 
+    /**
+     * Return the available filters.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getAvailableFiltersProperty()
     {
         return OrdersTable::getFilters();
     }
 
+    /**
+     * Return the orders for the listing.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getOrdersProperty()
     {
         $search = new OrderSearch();
@@ -88,11 +109,6 @@ class OrdersIndex extends Component
                 'filters' => $this->filters,
             ]
         );
-    }
-
-    public function getStatusesProperty()
-    {
-        return config('getcandy.orders.statuses');
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use GetCandy\Hub\Models\SavedSearch;
-use GetCandy\Models\Language;
 
 trait WithSavedSearches
 {
@@ -14,8 +13,18 @@ trait WithSavedSearches
      */
     public $showSaveSearch = false;
 
+    /**
+     * The saved search instance to create.
+     *
+     * @var SavedSearch
+     */
     public SavedSearch $savedSearch;
 
+    /**
+     * Mount the livewire trait.
+     *
+     * @return void
+     */
     public function mountWithSavedSearches()
     {
         $this->savedSearch = new SavedSearch;
@@ -45,6 +54,11 @@ trait WithSavedSearches
         )->get();
     }
 
+    /**
+     * Return the active saved search.
+     *
+     * @return null|\GetCandy\Hub\Models\SavedSearch
+     */
     public function getActiveSavedSearchProperty()
     {
         return $this->savedSearches->first(function ($search) {
@@ -86,6 +100,11 @@ trait WithSavedSearches
         $this->search = $savedSearch->term;
     }
 
+    /**
+     * Reset the search and filters.
+     *
+     * @return void
+     */
     public function resetSearch()
     {
         $this->search = null;
@@ -95,6 +114,11 @@ trait WithSavedSearches
         }
     }
 
+    /**
+     * Returns whether we have custom filters applied.
+     *
+     * @return bool
+     */
     public function getHasCustomFiltersProperty()
     {
         if ($this->search) {
