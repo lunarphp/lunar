@@ -139,7 +139,7 @@
                         class="relative flex items-center justify-between gap-4 pl-8 xl:justify-end xl:pl-0 xl:order-last"
                         x-data="{ showMenu: false }"
                       >
-                        <p class="text-sm">
+                        <p class="text-sm font-medium">
                           {{ $line->quantity }} @ {{ $line->unit_price->formatted }}
 
                           <span class="ml-1">

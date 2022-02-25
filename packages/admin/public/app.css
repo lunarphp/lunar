@@ -2172,6 +2172,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 .underline-offset-2 {
   text-underline-offset: 2px;
 }
+.antialiased {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .placeholder-gray-500::-moz-placeholder {
   --tw-placeholder-opacity: 1;
   color: rgb(107 114 128 / var(--tw-placeholder-opacity));
