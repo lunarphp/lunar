@@ -64,4 +64,7 @@ return [
     'max.label'                              => 'Max.',
     'tax_ref.label' => 'Tax Reference',
     'tax_ref.instructions' => 'Add the third party tax reference, if required.',
+    'status.label'                          => 'Status',
+    'from_date.label'                       => 'From Date',
+    'to_date.label'                         => 'To Date',
 ];

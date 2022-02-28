@@ -1,17 +1,21 @@
 <div class="flex-col px-12 space-y-4">
   <div class="flex items-center justify-between">
-    <strong class="text-lg font-bold md:text-2xl">Orders</strong>
+    <strong class="text-lg font-bold md:text-2xl">
+      {{ __('adminhub::orders.index.title') }}
+    </strong>
   </div>
 
   <div class="mt-4">
     <button type="button" wire:click="export" class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
       <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
-      Export @if(count($selected)) {{ count($selected) }} @endif Orders
+      {{ __('adminhub::orders.index.export_btn') }}
     </button>
   </div>
 
 <x-hub::modal.dialog form="saveSearch" wire:model="showSaveSearch">
-    <x-slot name="title">Save Search</x-slot>
+    <x-slot name="title">
+      {{ __('adminhub::orders.index.save_search.title') }}
+    </x-slot>
     <x-slot name="content">
       <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" required :error="$errors->first('savedSearch.name')">
         <x-hub::input.text wire:model.defer="savedSearch.name" :error="$errors->first('savedSearch.name')" required/>
@@ -19,7 +23,9 @@
     </x-slot>
     <x-slot name="footer">
       <x-hub::button type="button" wire:click.prevent="$set('showSaveSearch', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
-      <x-hub::button type="submit">Save Search</x-hub::button>
+      <x-hub::button type="submit">
+        {{ __('adminhub::orders.index.save_search.btn') }}
+      </x-hub::button>
     </x-slot>
   </x-hub::modal.dialog>
 
@@ -40,7 +46,7 @@
               text-gray-500 hover:text-gray-700
             @endif"
         >
-          All Orders
+          {{ __('adminhub::orders.index.all_orders') }}
         </button>
 
         @foreach($this->savedSearches as $savedSearch)
@@ -71,13 +77,13 @@
           <div class="flex items-center space-x-4">
             <div class="flex items-center w-full space-x-4">
               <div class="grow">
-                <x-hub::input.text placeholder="Search by reference or customer name" class="py-2" wire:model.debounce.400ms="search" />
+                <x-hub::input.text :placeholder="__('adminhub::orders.index.search_placeholder')" class="py-2" wire:model.debounce.400ms="search" />
               </div>
 
               <div class="flex items-center justify-end space-x-4">
                 <x-hub::button theme="gray" class="relative inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
                   <x-hub::icon ref="filter" style="solid"  class="w-4 mr-1" />
-                  Filter
+                  {{ __('adminhub::global.filter') }}
                   @if($this->hasCustomFilters)
                     <span class="absolute block w-3 h-3 bg-red-500 rounded-full -right-1 -top-1"></span>
                   @endif
@@ -86,13 +92,13 @@
                 @if($this->hasCustomFilters)
                   <x-hub::button theme="gray" class="inline-flex items-center" type="button" wire:click.prevent="resetSearch">
                     <x-hub::icon ref="trash" style="solid" class="w-4 mr-1" />
-                    Clear
+                    {{ __('adminhub::global.clear') }}
                   </x-hub::button>
 
                   @if(!$this->activeSavedSearch)
                     <x-hub::button wire:click.prevent="$set('showSaveSearch', true)" class="inline-flex items-center">
                       <x-hub::icon ref="bookmark" style="solid" class="w-4 mr-1" />
-                      Save
+                      {{ __('adminhub::global.save') }}
                     </x-hub::button>
                   @endif
                 @endif
@@ -101,9 +107,9 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4" x-show="filtersVisible" x-cloak>
-            <x-hub::input.group label="Status" for="status">
+            <x-hub::input.group :label="__('adminhub::inputs.status.label')" for="status">
               <x-hub::input.select wire:model="filters.status">
-                <option value>Any</option>
+                <option value>{{ __('adminhub::global.any') }}</option>
                 @foreach($this->orders->facets->get('status') as $facet)
                   <option value="{{ $facet->value }}">{{ $facet->value }}</option>
                 @endforeach
@@ -113,7 +119,7 @@
             @foreach($this->availableFilters as $filter)
               <x-hub::input.group :label="$filter->heading" for="{{ $filter->field }}">
                 <x-hub::input.select wire:model="filters.{{ $filter->field }}">
-                  <option value>Any</option>
+                  <option value>{{ __('adminhub::global.any') }}</option>
                   @foreach($this->orders->facets->get($filter->field) as $facet)
                     <option value="{{ $facet->value }}">{{ $filter->format($facet->value) }}</option>
                   @endforeach
@@ -121,11 +127,11 @@
               </x-hub::input.group>
             @endforeach
 
-            <x-hub::input.group label="From Date" for="from_date">
+            <x-hub::input.group :label="__('adminhub::inputs.from_date.label')" for="from_date">
               <x-hub::input.datepicker wire:model="filters.from" />
             </x-hub::input.group>
 
-            <x-hub::input.group label="To Date" for="to_date">
+            <x-hub::input.group :label="__('adminhub::inputs.to_date.label')" for="to_date">
               <x-hub::input.datepicker wire:model="filters.to" />
             </x-hub::input.group>
 
@@ -137,16 +143,16 @@
           <x-hub::input.checkbox wire:model="selectAll" />
         </x-hub::table.heading>
         <x-hub::table.heading>
-          Status
+          {{ __('adminhub::global.status') }}
         </x-hub::table.heading>
         <x-hub::table.heading>
-          Reference
+          {{ __('adminhub::global.reference') }}
         </x-hub::table.heading>
         <x-hub::table.heading>
-          Customer
+          {{ __('adminhub::global.customer') }}
         </x-hub::table.heading>
         <x-hub::table.heading>
-          Total
+          {{ __('adminhub::global.total') }}
         </x-hub::table.heading>
         @foreach($this->columns as $column)
           <x-hub::table.heading>
@@ -154,10 +160,10 @@
           </x-hub::table.heading>
         @endforeach
         <x-hub::table.heading>
-          Date
+          {{ __('adminhub::global.date') }}
         </x-hub::table.heading>
         <x-hub::table.heading>
-          Time
+          {{ __('adminhub::global.time') }}
         </x-hub::table.heading>
         <x-hub::table.heading></x-hub::table.heading>
       </x-slot>
