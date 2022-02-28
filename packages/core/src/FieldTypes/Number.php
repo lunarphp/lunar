@@ -78,8 +78,8 @@ class Number implements FieldType
         return [
             'view'    => 'adminhub::field-types.number',
             'options' => [
-                'min' => 'numeric,min:1',
-                'max' => 'numeric,max:255',
+                'min' => 'numeric|min:1',
+                'max' => 'numeric|max:255',
             ],
         ];
     }
