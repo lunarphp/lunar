@@ -140,6 +140,11 @@ class OrdersIndex extends Component
         );
     }
 
+    /**
+     * Export the current orders.
+     *
+     * @return \Symfony\Component\HttpFoundation\File\Stream
+     */
     public function export()
     {
         $ids = $this->selected;
