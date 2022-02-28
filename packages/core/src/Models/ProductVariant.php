@@ -149,6 +149,14 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     /**
      * {@inheritDoc}
      */
+    public function getOptions()
+    {
+        return $this->values->map(fn ($value) => $value->translate('name'));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getIdentifier()
     {
         return $this->sku;
