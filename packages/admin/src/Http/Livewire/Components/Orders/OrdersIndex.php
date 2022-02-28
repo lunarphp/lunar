@@ -44,6 +44,13 @@ class OrdersIndex extends Component
     public $selectAll = false;
 
     /**
+     * Whether saved search should be visible.
+     *
+     * @var boolean
+     */
+    public $showSaveSearch = false;
+
+    /**
      * Define what to track in the query string.
      *
      * @var array
