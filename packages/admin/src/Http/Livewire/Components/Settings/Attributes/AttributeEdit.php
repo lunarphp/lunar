@@ -86,7 +86,7 @@ class AttributeEdit extends Component
         ];
 
         foreach ($this->languages as $lang) {
-            $rules["attribute.name.{$lang->code}"] = ($lang->default ? 'required' : 'nullable') . '|string|max:255';
+            $rules["attribute.name.{$lang->code}"] = ($lang->default ? 'required' : 'nullable').'|string|max:255';
         }
 
         if ($this->getFieldType()) {
