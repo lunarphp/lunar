@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
+use GetCandy\Base\Casts\TaxBreakdown;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\OrderLineFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,7 +41,7 @@ class OrderLine extends BaseModel
         'unit_quantity'  => 'integer',
         'quantity'       => 'integer',
         'meta'           => 'object',
-        'tax_breakdown'  => 'object',
+        'tax_breakdown'  => TaxBreakdown::class,
         'unit_price'     => Price::class,
         'sub_total'      => Price::class,
         'tax_total'      => Price::class,
