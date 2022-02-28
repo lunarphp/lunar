@@ -51,6 +51,20 @@ class OrdersIndex extends Component
     public $showSaveSearch = false;
 
     /**
+     * Whether to show the update status model.
+     *
+     * @var boolean
+     */
+    public $showUpdateStatus = false;
+
+    /**
+     * The status to update orders to.
+     *
+     * @var string
+     */
+    public $status = null;
+
+    /**
      * Define what to track in the query string.
      *
      * @var array
@@ -78,6 +92,7 @@ class OrdersIndex extends Component
     public function rules()
     {
         return array_merge([
+            'status' => 'required',
             'filters.from' => 'nullable',
             'filters.to' => 'nullable',
             'selected' => 'nullable|array',
@@ -163,6 +178,31 @@ class OrdersIndex extends Component
         return OrdersTable::export($ids);
     }
 
+    /**
+     * Update order status.
+     *
+     * @return void
+     */
+    public function updateStatus()
+    {
+        Order::whereIn('id', $this->selected)->update([
+            'status' => $this->status,
+        ]);
+
+        $this->showUpdateStatus = false;
+        $this->status = null;
+        $this->selected = [];
+
+        $this->notify(
+            __('adminhub::notifications.orders.status_updated')
+        );
+    }
+
+    /**
+     * Return the configured statuses.
+     *
+     * @return array
+     */
     public function getStatusesProperty()
     {
         return config('getcandy.orders.statuses', []);

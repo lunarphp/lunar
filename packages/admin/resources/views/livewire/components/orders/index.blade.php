@@ -6,33 +6,74 @@
   </div>
 
   <div class="mt-4">
-    <button type="button" wire:click="export" class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
-      <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
+    <button
+      class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
+      type="button"
+      wire:click="export"
+    >
+      <x-hub::icon
+        ref="download"
+        style="solid"
+        class="w-4 mr-2"
+      />
       {{ __('adminhub::orders.index.export_btn') }}
     </button>
 
-    <button type="button" wire:click="export" class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
-      <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
-      {{ __('adminhub::orders.index.update_statuses_btn') }}
+    @if(count($selected))
+
+     <button
+      class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
+      type="button"
+      wire:click="$set('showUpdateStatus', true)"
+    >
+      <x-hub::icon
+        ref="save"
+        style="solid"
+        class="w-4 mr-2"
+      />
+      {{ __('adminhub::orders.index.update_status.btn') }}
     </button>
+
+    @endif
   </div>
 
+<x-hub::modal.dialog form="updateStatus" wire:model="showUpdateStatus">
+  <x-slot name="title">
+    {{ __('adminhub::orders.index.update_status.title') }}
+  </x-slot>
+  <x-slot name="content">
+    <x-hub::input.group :label="__('adminhub::inputs.status.label')" for="status" required :error="$errors->first('status')">
+      <x-hub::input.select wire:model.defer="status" required>
+        @foreach($this->statuses as $handle => $status)
+          <option value="{{ $handle }}">{{ $status['label'] }}</option>
+        @endforeach
+      </x-hub::input.select>
+    </x-hub::input.group>
+  </x-slot>
+  <x-slot name="footer">
+    <x-hub::button type="button" wire:click.prevent="$set('showUpdateStatus', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
+    <x-hub::button type="submit">
+      {{ __('adminhub::orders.index.update_status.btn') }}
+    </x-hub::button>
+  </x-slot>
+</x-hub::modal.dialog>
+
 <x-hub::modal.dialog form="saveSearch" wire:model="showSaveSearch">
-    <x-slot name="title">
-      {{ __('adminhub::orders.index.save_search.title') }}
-    </x-slot>
-    <x-slot name="content">
-      <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" required :error="$errors->first('savedSearch.name')">
-        <x-hub::input.text wire:model.defer="savedSearch.name" :error="$errors->first('savedSearch.name')" required/>
-      </x-hub::input.group>
-    </x-slot>
-    <x-slot name="footer">
-      <x-hub::button type="button" wire:click.prevent="$set('showSaveSearch', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
-      <x-hub::button type="submit">
-        {{ __('adminhub::orders.index.save_search.btn') }}
-      </x-hub::button>
-    </x-slot>
-  </x-hub::modal.dialog>
+  <x-slot name="title">
+    {{ __('adminhub::orders.index.save_search.title') }}
+  </x-slot>
+  <x-slot name="content">
+    <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" required :error="$errors->first('savedSearch.name')">
+      <x-hub::input.text wire:model.defer="savedSearch.name" :error="$errors->first('savedSearch.name')" required/>
+    </x-hub::input.group>
+  </x-slot>
+  <x-slot name="footer">
+    <x-hub::button type="button" wire:click.prevent="$set('showSaveSearch', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
+    <x-hub::button type="submit">
+      {{ __('adminhub::orders.index.save_search.btn') }}
+    </x-hub::button>
+  </x-slot>
+</x-hub::modal.dialog>
 
 
 
@@ -176,7 +217,7 @@
         @forelse($this->orders->items as $order)
           <x-hub::table.row wire:key="row-{{ $order->id }}" :selected="in_array($order->id, $selected)">
             <x-hub::table.cell>
-              <x-hub::input.checkbox wire:model.defer="selected" value="{{ $order->id }}" />
+              <x-hub::input.checkbox wire:model="selected" value="{{ $order->id }}" />
             </x-hub::table.cell>
             <x-hub::table.cell>
               <x-hub::orders.status :status="$order->status" />

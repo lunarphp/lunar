@@ -10,5 +10,6 @@ return [
     'index.save_search.btn' => 'Save Search',
     'index.all_orders' => 'All Orders',
     'index.search_placeholder' => 'Search by reference or customer name',
-    'index.update_statuses_btn' => 'Update Statuses',
+    'index.update_status.btn' => 'Update Status',
+    'index.update_status.title' => 'Update Status',
 ];
