@@ -31,4 +31,7 @@ return [
     'attribute-edit.created'            => 'Attribute created',
     'attribute-edit.updated'            => 'Attribute updated',
     'attributes.deleted'                => 'Attribute Deleted',
+    'orders.status_updated'             => 'Status updated',
+    'saved_searches.saved'              => 'Search saved',
+    'saved_searches.deleted'              => 'Search deleted',
 ];

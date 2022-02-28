@@ -79,7 +79,9 @@ trait WithSavedSearches
 
         auth()->user()->savedSearches()->save($this->savedSearch);
 
-        $this->notify('Search saved');
+        $this->notify(
+            __('adminhub::notifications.saved_searches.saved')
+        );
 
         $this->savedSearch = new SavedSearch;
         $this->showSaveSearch = false;
@@ -144,6 +146,8 @@ trait WithSavedSearches
     {
         SavedSearch::whereId($id)->delete();
 
-        $this->notify('Saved Search Deleted');
+        $this->notify(
+            __('adminhub::notifications.saved_searches.deleted')
+        );
     }
 }
