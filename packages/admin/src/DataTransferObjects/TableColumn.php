@@ -18,12 +18,14 @@ class TableColumn
     public function value(Closure $callback)
     {
         $this->callback = $callback;
+
         return $this;
     }
 
     public function sortable(bool $sortable = true)
     {
         $this->sortable = $sortable;
+
         return $this;
     }
 

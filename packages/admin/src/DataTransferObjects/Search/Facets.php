@@ -9,7 +9,7 @@ class Facets
     public function __construct(
         public ?Collection $items = null
     ) {
-        if (!$items) {
+        if (! $items) {
             $this->items = collect();
         }
     }
@@ -17,7 +17,7 @@ class Facets
     public function get($field)
     {
         $facet = $this->items->first(
-            fn($facet) => $facet->field == $field
+            fn ($facet) => $facet->field == $field
         );
 
         return $facet->values ?: collect();

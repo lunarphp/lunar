@@ -7,21 +7,21 @@ use Illuminate\View\Component;
 class Status extends Component
 {
     /**
-     * The status string
+     * The status string.
      *
      * @var string
      */
     public string $status = '';
 
     /**
-     * The status label
+     * The status label.
      *
      * @var string
      */
     public string $label;
 
     /**
-     * The status color
+     * The status color.
      *
      * @var string
      */

@@ -4,5 +4,4 @@ namespace GetCandy\Hub\Base;
 
 interface OrdersTableInterface
 {
-
 }

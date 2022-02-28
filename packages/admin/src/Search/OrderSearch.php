@@ -2,16 +2,11 @@
 
 namespace GetCandy\Hub\Search;
 
-use GetCandy\Hub\Base\SearchInterface;
 use GetCandy\Hub\DataTransferObjects\Search\Facet;
 use GetCandy\Hub\DataTransferObjects\Search\FacetField;
 use GetCandy\Hub\DataTransferObjects\Search\Facets;
 use GetCandy\Hub\DataTransferObjects\Search\SearchResults;
 use GetCandy\Models\Order;
-use Illuminate\Container\Container;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use MeiliSearch\Endpoints\Indexes;
 
 class OrderSearch extends AbstractSearch
 {
@@ -48,19 +43,18 @@ class OrderSearch extends AbstractSearch
                 // 'sort' => [$this->sort],
             ];
 
-
             foreach ($filters as $field => $values) {
-                if ($field == 'to' || !$values) {
+                if ($field == 'to' || ! $values) {
                     continue;
                 }
 
                 if ($field == 'from') {
-                    $createdAtFilter = "created_at >= " . now()->parse($values)->startOfDay()->timestamp;
-                    $placedAtFilter = "placed_at >= " . now()->parse($values)->startOfDay()->timestamp;
+                    $createdAtFilter = 'created_at >= '.now()->parse($values)->startOfDay()->timestamp;
+                    $placedAtFilter = 'placed_at >= '.now()->parse($values)->startOfDay()->timestamp;
 
-                    if (!empty($filters['to'])) {
-                        $createdAtFilter .= " AND created_at <= " . now()->parse($filters['to'])->endOfDay()->timestamp;
-                        $placedAtFilter .= " AND placed_at <= " . now()->parse($filters['to'])->endOfDay()->timestamp;
+                    if (! empty($filters['to'])) {
+                        $createdAtFilter .= ' AND created_at <= '.now()->parse($filters['to'])->endOfDay()->timestamp;
+                        $placedAtFilter .= ' AND placed_at <= '.now()->parse($filters['to'])->endOfDay()->timestamp;
                     }
 
                     $dateFilter = "($createdAtFilter) OR ($placedAtFilter)";
@@ -75,14 +69,14 @@ class OrderSearch extends AbstractSearch
                 }
 
                 $filterString = collect($values)->map(function ($value) use ($field) {
-                    return $field . ' = "'.$value.'"';
+                    return $field.' = "'.$value.'"';
                 })->join('OR');
 
                 $parsedFilters->push('('.$filterString.')');
             }
 
             if ($parsedFilters->count()) {
-                $options['filter'] = $parsedFilters->join(" AND ");
+                $options['filter'] = $parsedFilters->join(' AND ');
             }
 
             // dd($options);
@@ -97,6 +91,7 @@ class OrderSearch extends AbstractSearch
             $options = [
                 'facetsDistribution' => (new Order)->getFilterableAttributes(),
             ];
+
             return $engine->search(null, $options);
         })->raw();
 

@@ -3,13 +3,11 @@
 namespace GetCandy\Hub\Search;
 
 use GetCandy\Hub\Base\SearchInterface;
-use GetCandy\Models\Order;
 
 class Meilisearch
 {
     public function search()
     {
-
     }
 
     public function build(SearchInterface $search)
@@ -34,14 +32,14 @@ class Meilisearch
             }
 
             $filterString = collect($values)->map(function ($value) use ($field) {
-                return $field . ' = "'.$value.'"';
+                return $field.' = "'.$value.'"';
             })->join('OR');
 
             $filters->push('('.$filterString.')');
         }
 
         if ($filters->count()) {
-            $options['filter'] = $filters->join(" AND ");
+            $options['filter'] = $filters->join(' AND ');
         }
 
         return $search->engine->search($search->term, $options);

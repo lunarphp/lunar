@@ -19,6 +19,7 @@ class TableFilter
         if ($this->formatter) {
             return call_user_func($this->formatter, $value);
         }
+
         return $value;
     }
 }

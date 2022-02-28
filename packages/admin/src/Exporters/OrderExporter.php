@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Storage;
 class OrderExporter
 {
     /**
-     * Export the orders
+     * Export the orders.
      *
-     * @param array $orderIds
+     * @param  array  $orderIds
      * @return void
      */
     public function export($orderIds)

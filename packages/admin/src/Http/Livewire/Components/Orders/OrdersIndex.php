@@ -39,21 +39,21 @@ class OrdersIndex extends Component
     /**
      * Whether to select all visible orders.
      *
-     * @var boolean
+     * @var bool
      */
     public $selectAll = false;
 
     /**
      * Whether saved search should be visible.
      *
-     * @var boolean
+     * @var bool
      */
     public $showSaveSearch = false;
 
     /**
      * Whether to show the update status model.
      *
-     * @var boolean
+     * @var bool
      */
     public $showUpdateStatus = false;
 
@@ -113,7 +113,7 @@ class OrdersIndex extends Component
     /**
      * Handle when selecting all orders.
      *
-     * @param bool $val
+     * @param  bool  $val
      * @return void
      */
     public function updatedSelectAll($val)
@@ -171,7 +171,7 @@ class OrdersIndex extends Component
     {
         $ids = $this->selected;
 
-        if (!count($ids)) {
+        if (! count($ids)) {
             $ids = $this->orders->items->pluck('id')->toArray();
         }
 

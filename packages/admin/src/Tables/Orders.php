@@ -12,14 +12,14 @@ use Illuminate\Support\Collection;
 class Orders implements OrdersTableInterface
 {
     /**
-     * A collection of columns
+     * A collection of columns.
      *
      * @var Collection
      */
     protected Collection $columns;
 
     /**
-     * A collection of filters
+     * A collection of filters.
      *
      * @var Collection
      */
@@ -39,9 +39,9 @@ class Orders implements OrdersTableInterface
     }
 
     /**
-     * Add a table column
+     * Add a table column.
      *
-     * @param string $header
+     * @param  string  $header
      * @return \GetCandy\Hub\DataTransferObjects\TableColumn
      */
     public function addColumn(string $header)
@@ -54,11 +54,11 @@ class Orders implements OrdersTableInterface
     }
 
     /**
-     * Add a filter
+     * Add a filter.
      *
-     * @param string $header
-     * @param string $column
-     * @param Closure|null $formatter
+     * @param  string  $header
+     * @param  string  $column
+     * @param  Closure|null  $formatter
      * @return \GetCandy\Hub\DataTransferObjects\TableFilter
      */
     public function addFilter(string $header, string $column, Closure $formatter = null)
@@ -66,6 +66,7 @@ class Orders implements OrdersTableInterface
         $this->filters->push(
             $filter = new TableFilter($header, $column, $formatter)
         );
+
         return $filter;
     }
 
@@ -80,7 +81,7 @@ class Orders implements OrdersTableInterface
     }
 
     /**
-     * Return the table filters
+     * Return the table filters.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -92,7 +93,7 @@ class Orders implements OrdersTableInterface
     /**
      * Export the orders.
      *
-     * @param array $orderIds
+     * @param  array  $orderIds
      * @return void
      */
     public function export($orderIds)
@@ -103,12 +104,13 @@ class Orders implements OrdersTableInterface
     /**
      * Set the exporter class.
      *
-     * @param string $exporter
+     * @param  string  $exporter
      * @return self
      */
     public function exportUsing($exporter)
     {
         $this->exporter = $exporter;
+
         return $this;
     }
 }

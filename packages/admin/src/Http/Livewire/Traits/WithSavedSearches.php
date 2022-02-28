@@ -9,7 +9,7 @@ trait WithSavedSearches
     /**
      * Whether we are saving the current search.
      *
-     * @var boolean
+     * @var bool
      */
     public $showSaveSearch = false;
 
@@ -88,14 +88,14 @@ trait WithSavedSearches
     }
 
     /**
-     * Apply the saved search
+     * Apply the saved search.
      *
      * @return void
      */
     public function applySavedSearch($id)
     {
         $savedSearch = $this->savedSearches->first(
-            fn($search) => $search->id == $id
+            fn ($search) => $search->id == $id
         );
 
         $this->filters = $savedSearch->filters;
@@ -139,7 +139,7 @@ trait WithSavedSearches
     /**
      * Delete a saved search.
      *
-     * @param string|int $id
+     * @param  string|int  $id
      * @return void
      */
     public function deleteSavedSearch($id)

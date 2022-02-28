@@ -3,8 +3,6 @@
 namespace GetCandy\Hub\Search;
 
 use GetCandy\Hub\Base\SearchInterface;
-use GetCandy\Models\Order;
-use MeiliSearch\Endpoints\Indexes;
 
 abstract class AbstractSearch implements SearchInterface
 {

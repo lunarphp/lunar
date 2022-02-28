@@ -4,5 +4,5 @@ namespace GetCandy\Hub\Base;
 
 interface SearchInterface
 {
-  //
+    //
 }
