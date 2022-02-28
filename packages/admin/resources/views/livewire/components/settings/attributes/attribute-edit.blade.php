@@ -51,7 +51,7 @@
       <x-hub::input.group
         :label="__('adminhub::inputs.required')"
         for="required"
-        :error="$errors->first('attributeGroup.required')"
+        :error="$errors->first('attribute.required')"
         :instructions="__('adminhub::components.attribute-edit.required.instructions')"
       >
         <x-hub::input.toggle :disabled="!!$attribute->system" id="required" wire:model="attribute.required" value="1" />
@@ -60,7 +60,7 @@
       <x-hub::input.group
         :label="__('adminhub::inputs.searchable.label')"
         for="searchable"
-        :error="$errors->first('attributeGroup.searchable')"
+        :error="$errors->first('attribute.searchable')"
         :instructions="__('adminhub::components.attribute-edit.searchable.instructions')"
       >
         <x-hub::input.toggle id="searchable" wire:model="attribute.searchable" />
@@ -69,7 +69,7 @@
       <x-hub::input.group
         :label="__('adminhub::inputs.filterable.label')"
         for="filterable"
-        :error="$errors->first('attributeGroup.filterable')"
+        :error="$errors->first('attribute.filterable')"
         :instructions="__('adminhub::components.attribute-edit.filterable.instructions')"
       >
         <x-hub::input.toggle :disabled="!!$attribute->system" id="filterable" wire:model="attribute.filterable" />
