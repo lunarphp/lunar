@@ -600,11 +600,11 @@
         Payment Received
       </strong>
 
-      <section class="p-4 bg-white rounded-lg shadow">
-        <dl class="space-y-2 text-sm text-gray-600">
+      <section class="bg-white rounded-lg shadow">
+        <dl class="text-sm text-gray-600">
           @foreach ($this->details as $key => $value)
-            <div class="grid grid-cols-2 gap-2">
-              <dt class="font-medium text-gray-700">{{ $key }}</dt>
+            <div class="grid grid-cols-2 gap-2 px-4 py-3 border-b">
+              <dt class="font-medium text-gray-500">{{ $key }}</dt>
               <dd class="text-right">{{ $value }}</dd>
             </div>
           @endforeach
