@@ -74,7 +74,6 @@ class AttributeEdit extends Component
     {
         $rules = [
             'attribute.name'                                => 'required',
-            "attribute.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
             'attribute.handle'                              => 'required',
             'attribute.required'                            => 'nullable|boolean',
             'attribute.searchable'                          => 'nullable|boolean',
@@ -85,6 +84,10 @@ class AttributeEdit extends Component
             'attribute.type'                                => 'required',
             'attribute.validation_rules'                    => 'nullable|string',
         ];
+
+        foreach ($this->languages as $lang) {
+            $rules["attribute.name.{$lang->code}"] = ($lang->default ? 'required' : 'nullable') . '|string|max:255';
+        }
 
         if ($this->getFieldType()) {
             $fieldTypeOptions = $this->getFieldTypeConfig()['options'] ?? [];
