@@ -5,14 +5,16 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
+use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Scout\Searchable;
 
 class Order extends BaseModel
 {
-    use HasFactory;
-    use Searchable;
+    use HasFactory,
+        Searchable,
+        LogsActivity;
 
     /**
      * {@inheritDoc}

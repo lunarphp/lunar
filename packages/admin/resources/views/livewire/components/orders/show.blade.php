@@ -210,19 +210,21 @@
                           </p> --}}
 
                           <div class="flex text-xs font-medium text-gray-600">
-                            <p>CONV-70-1</p>
+                            <p>{{ $line->identifier }}</p>
 
-                            <dl class="flex before:content-['|'] before:mx-3 before:text-gray-200">
-                              <div class="flex gap-0.5">
-                                <dt>Size:</dt>
-                                <dd>UK 5</dd>
-                              </div>
+                            @if($line->purchasable->getOptions()->count())
+                              <dl class="flex before:content-['|'] before:mx-3 before:text-gray-200">
+                                <div class="flex gap-0.5">
+                                  <dt>Size:</dt>
+                                  <dd>UK 5</dd>
+                                </div>
 
-                              <div class="flex gap-0.5 before:content-['/'] before:mx-1.5 before:text-gray-200">
-                                <dt>Color:</dt>
-                                <dd>Black</dd>
-                              </div>
-                            </dl>
+                                <div class="flex gap-0.5 before:content-['/'] before:mx-1.5 before:text-gray-200">
+                                  <dt>Color:</dt>
+                                  <dd>Black</dd>
+                                </div>
+                              </dl>
+                            @endif
                           </div>
                         </div>
                       </button>
@@ -239,8 +241,7 @@
                       <p>
                         <strong>Notes:</strong>
 
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, amet perferendis
-                        distinctio quos harum atque error odio.
+                        {{ $line->notes }}
                       </p>
                     </article>
 
@@ -253,39 +254,62 @@
                             </td>
 
                             <td class="p-2 text-gray-700 whitespace-nowrap">
-                              $150.00
+                              {{ $line->unit_price->formatted }} / {{ $line->unit_quantity }}
                             </td>
                           </tr>
 
                           <tr class="divide-x divide-gray-200">
                             <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
-                              Unit Price
+                              Quantity
                             </td>
 
                             <td class="p-2 text-gray-700 whitespace-nowrap">
-                              $150.00
+                              {{ $line->quantity }}
                             </td>
                           </tr>
 
                           <tr class="divide-x divide-gray-200">
                             <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
-                              Unit Price
+                              Sub Total
                             </td>
 
                             <td class="p-2 text-gray-700 whitespace-nowrap">
-                              $150.00
+                              {{ $line->sub_total->formatted }}
                             </td>
                           </tr>
 
                           <tr class="divide-x divide-gray-200">
                             <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
-                              Unit Price
+                              Discount
                             </td>
 
                             <td class="p-2 text-gray-700 whitespace-nowrap">
-                              $150.00
+                              {{ $line->discount_total->formatted }}
                             </td>
                           </tr>
+
+                          @foreach($line->tax_breakdown as $tax)
+                            <tr class="divide-x divide-gray-200">
+                              <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
+                                {{ $tax->description }}
+                              </td>
+
+                              <td class="p-2 text-gray-700 whitespace-nowrap">
+                                {{ $tax->total->formatted }}
+                              </td>
+                            </tr>
+                          @endforeach
+
+                          <tr class="divide-x divide-gray-200">
+                            <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
+                              Total
+                            </td>
+
+                            <td class="p-2 text-gray-700 whitespace-nowrap">
+                              {{ $line->total->formatted }}
+                            </td>
+                          </tr>
+
                         </tbody>
                       </table>
                     </div>
@@ -419,20 +443,22 @@
       </div>
 
       <div class="mt-4">
-        <header class="sr-only">
+        <header class="mt-6 font-medium">
           Timeline
         </header>
 
-        <div class="flex items-center">
+        <div class="flex items-center mt-4">
           <div class="flex-shrink-0">
             @livewire('hub.components.avatar')
           </div>
 
-          <form class="relative w-full ml-4">
+          <form class="relative w-full ml-4" wire:submit.prevent="addComment">
             <input
               class="w-full pl-4 pr-32 border border-gray-200 rounded-lg h-[58px] sm:text-sm form-text"
               type="text"
               placeholder="Add a comment"
+              wire:model.defer="comment"
+              required
             >
 
             <button
@@ -452,7 +478,22 @@
               class="-my-8 divide-y-2 divide-gray-200"
               role="list"
             >
-              @for ($i = 0; $i < 3; $i++)
+              @foreach($this->activityLog as $log)
+                <li class="relative py-8 ml-5">
+                  <p class="ml-8 font-bold text-gray-900">
+                    {{ $log['date']->format('F jS, Y') }}
+                  </p>
+
+                  <ul class="mt-4 space-y-6">
+                    @foreach($log['items'] as $item)
+                      <x-hub::activity-log.order-activity
+                        :activity="$item"
+                      />
+                    @endforeach
+                  </ul>
+                </li>
+              @endforeach
+              {{-- @for ($i = 0; $i < 3; $i++)
                 <li class="relative py-8 ml-5">
                   <p class="ml-8 font-bold text-gray-900">
                     October 4th, 2021
@@ -527,7 +568,7 @@
                     </li>
                   </ul>
                 </li>
-              @endfor
+              @endfor --}}
             </ul>
           </div>
         </div>
@@ -536,12 +577,12 @@
 
     <div class="space-y-4 md:sticky md:top-4">
       <header class="flex items-center justify-between">
+        @if($order->customer)
         <strong class="text-gray-700 truncate">
-          {{ $order->customer->first_name }}
-
-          @if ($order->customer->last_name)
-            {{ $order->customer->last_name }}
-          @endif
+            {{ $order->customer->first_name }}
+            @if ($order->customer->last_name)
+              {{ $order->customer->last_name }}
+            @endif
         </strong>
 
         <a
@@ -550,6 +591,7 @@
         >
           View User
         </a>
+        @endif
       </header>
 
       <strong

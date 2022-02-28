@@ -47,18 +47,27 @@ class OrderShow extends Component
     public bool $shippingEqualsBilling = false;
 
     /**
+     * The new comment property.
+     *
+     * @var string
+     */
+    public string $comment = '';
+
+    /**
      * {@inheritDoc}
      */
     public function rules()
     {
         return [
             'order.status' => 'string',
+            'comment' => 'required|string',
         ];
     }
 
     public function mount(Order $order)
     {
         $this->shippingEqualsBilling = false;
+        // dd($this->activityLog->last()['items']->first());
     }
 
     /**
@@ -160,6 +169,39 @@ class OrderShow extends Component
 
         $this->notify('Order status updated');
         $this->updatingStatus = false;
+    }
+
+    /**
+     * Returns the activity log for the order.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getActivityLogProperty()
+    {
+        return $this->order->activities()->orderBy('created_at', 'desc')->get()->groupBy(function ($log) {
+            return $log->created_at->format('Y-m-d');
+        })->map(function ($logs) {
+            return [
+                'date' => $logs->first()->created_at->startOfDay(),
+                'items' => $logs,
+            ];
+        });
+    }
+
+    public function addComment()
+    {
+        activity()
+            ->performedOn($this->order)
+            ->causedBy(
+                auth()->user()
+            )
+            ->event('comment')
+            ->withProperties(['content' => $this->comment])
+            ->log('comment');
+
+        $this->notify('Comment added');
+
+        $this->comment = '';
     }
 
     /**
