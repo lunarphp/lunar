@@ -10,6 +10,11 @@
       <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
       {{ __('adminhub::orders.index.export_btn') }}
     </button>
+
+    <button type="button" wire:click="export" class="flex items-center px-2 py-1 text-xs text-gray-600 border rounded hover:bg-gray-50">
+      <x-hub::icon ref="download" style="solid" class="w-3 mr-1" />
+      {{ __('adminhub::orders.index.update_statuses_btn') }}
+    </button>
   </div>
 
 <x-hub::modal.dialog form="saveSearch" wire:model="showSaveSearch">

@@ -156,6 +156,11 @@ class OrdersIndex extends Component
         return OrdersTable::export($ids);
     }
 
+    public function getStatusesProperty()
+    {
+        return config('getcandy.orders.statuses', []);
+    }
+
     /**
      * Render the livewire component.
      *
