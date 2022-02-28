@@ -25,7 +25,7 @@
         @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
           <x-slot :name="$language->code">
             <x-hub::input.text
-              wire:model="attributeGroup.name.{{ $language->code }}"
+              wire:model="attribute.name.{{ $language->code }}"
               :placeholder="__('adminhub::components.attribute-edit.name.placeholder')"
             />
           </x-slot>
