@@ -19,7 +19,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('providers.users.model', User::class);
 
         activity()->disableLogging();
-
     }
 
     protected function getPackageProviders($app)

@@ -113,7 +113,7 @@ class OrderShowTest extends TestCase
             'properties' => json_encode([
                 'new' => 'foo-bar',
                 'previous' => 'awaiting-payment',
-            ])
+            ]),
         ]);
     }
 
@@ -159,7 +159,7 @@ class OrderShowTest extends TestCase
             'causer_id' => $staff->id,
             'properties' => json_encode([
                 'content' => 'Testing 123',
-            ])
+            ]),
         ]);
     }
 }

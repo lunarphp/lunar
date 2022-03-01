@@ -31,7 +31,6 @@ class OrderReferenceGeneratorTest extends TestCase
         ]);
     }
 
-
     /** @test */
     public function can_generate_reference()
     {
