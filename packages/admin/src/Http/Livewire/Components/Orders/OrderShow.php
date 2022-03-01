@@ -87,7 +87,7 @@ class OrderShow extends Component
      */
     public function getStatusesProperty()
     {
-        return config('getcandy.orders.statuses');
+        return config('getcandy.orders.statuses', []);
     }
 
     /**
@@ -173,6 +173,11 @@ class OrderShow extends Component
         $this->notify('Comment added');
 
         $this->comment = '';
+    }
+
+    public function updateStatus()
+    {
+
     }
 
     /**
