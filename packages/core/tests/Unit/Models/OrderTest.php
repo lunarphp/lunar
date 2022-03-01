@@ -79,13 +79,11 @@ class OrderTest extends TestCase
 
         $this->assertCount(0, $order->lines);
 
-        $data = OrderLine::factory()->make([
+        OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
             'purchasable_id'   => ProductVariant::factory()->create()->id,
-        ])->toArray();
-        unset($data['currency']);
-
-        $order->lines()->create($data);
+            'order_id' => $order->id,
+        ]);
 
         $this->assertCount(1, $order->refresh()->lines);
     }
