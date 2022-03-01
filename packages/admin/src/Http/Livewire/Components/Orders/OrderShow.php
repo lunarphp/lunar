@@ -64,10 +64,9 @@ class OrderShow extends Component
         ];
     }
 
-    public function mount(Order $order)
+    public function mount()
     {
         $this->shippingEqualsBilling = optional($this->billing)->postcode == optional($this->shipping)->postcode;
-        // dd($this->activityLog->last()['items']->first());
     }
 
     /**
