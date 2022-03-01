@@ -594,20 +594,41 @@
         @endif
       </header>
 
-      <strong
-        class="block p-4 text-sm text-center border border-current rounded-lg shadow-sm bg-emerald-100 text-emerald-700"
-      >
-        Payment Received
-      </strong>
+
 
       <section class="bg-white rounded-lg shadow">
         <dl class="text-sm text-gray-600">
-          @foreach ($this->details as $key => $value)
+          <div class="grid items-center grid-cols-2 gap-2 px-4 py-3 border-b">
+            <dt class="font-medium text-gray-500">Status</dt>
+            <dd class="text-right"><x-hub::orders.status :status="$order->status" /></dd>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 px-4 py-3 border-b">
+            <dt class="font-medium text-gray-500">Reference</dt>
+            <dd class="text-right">{{ $order->reference }}</dd>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 px-4 py-3 border-b">
+            <dt class="font-medium text-gray-500">Customer Reference</dt>
+            <dd class="text-right">{{ $order->customer_reference }}</dd>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 px-4 py-3 border-b">
+            <dt class="font-medium text-gray-500">Channel</dt>
+            <dd class="text-right">{{ $order->channel->name }}</dd>
+          </div>
+
+          @if(!$order->placed_at)
             <div class="grid grid-cols-2 gap-2 px-4 py-3 border-b">
-              <dt class="font-medium text-gray-500">{{ $key }}</dt>
-              <dd class="text-right">{{ $value }}</dd>
+              <dt class="font-medium text-gray-500">Date Created</dt>
+              <dd class="text-right">{{ $order->created_at->format('Y-m-d h:ma') }}</dd>
             </div>
-          @endforeach
+          @endif
+
+          <div class="grid grid-cols-2 gap-2 px-4 py-3 border-b">
+            <dt class="font-medium text-gray-500">Date Placed</dt>
+            <dd class="text-right">{{ $order->placed_at->format('Y-m-d h:ma') }}</dd>
+          </div>
         </dl>
       </section>
 
@@ -657,7 +678,7 @@
         </header>
 
         <div class="mt-4 text-sm">
-          @if ($this->shippingEqualsBilling)
+          @if (!$this->shippingEqualsBilling)
             <address class="not-italic text-gray-600">
               {{ $this->billing->fullName }} <br>
               {{ $this->billing->line_one }} <br>
@@ -709,25 +730,4 @@
       </section>
     </div>
 
-    {{-- <x-hub::slideover title="Update Status" wire:model="updatingStatus">
-    <x-hub::input.select wire:model="order.status">
-      @foreach ($this->statuses as $value => $label)
-        <option value="{{ $value }}">{{ $label }}</option>
-      @endforeach
-    </x-hub::input.select>
-
-    <x-slot name="footer">
-      <x-hub::button type="button" wire:click.prevent="$set('updatingStatus', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
-      <x-hub::button type="button" wire:click="saveStatus">Save</x-hub::button>
-    </x-slot>
-  </x-hub::modal.dialog> --}}
-
-    {{-- <div>
-      <x-hub::button type="button" wire:click="$set('updatingStatus', true)">Update Status</x-hub::button>
-    </div> --}}
-
-    {{-- <header>
-          <h3>Order Lines ({{ $this->physicalLines->count() }})</h3>
-        </header> --}}
-    {{-- <x-hub::input.checkbox /> --}}
 </section>

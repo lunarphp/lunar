@@ -66,7 +66,7 @@ class OrderShow extends Component
 
     public function mount(Order $order)
     {
-        $this->shippingEqualsBilling = false;
+        $this->shippingEqualsBilling = optional($this->billing)->postcode == optional($this->shipping)->postcode;
         // dd($this->activityLog->last()['items']->first());
     }
 
@@ -78,35 +78,6 @@ class OrderShow extends Component
     public function getChannelProperty()
     {
         return Channel::findOrFail($this->order->channel_id)->name;
-    }
-
-    /**
-     * Return all the listed details in an array.
-     *
-     * @return array
-     */
-    public function getDetailsProperty()
-    {
-        $orderDate = $this->order->placed_at ? $this->order->placed_at : $this->order->created_at;
-
-        return [
-            'Status' => $this->order->status,
-            'Reference' => $this->order->reference,
-            'Customer Reference' => $this->order->customer_reference ?: '-',
-            'Channel' => $this->channel,
-            'Date' => $orderDate->format('jS M Y'),
-            'Time' => $orderDate->format('H:i'),
-        ];
-    }
-
-    /**
-     * Return the computed status property.
-     *
-     * @return string
-     */
-    public function getStatusProperty()
-    {
-        return $this->statuses[$this->order->status] ?? $this->order->status;
     }
 
     /**
