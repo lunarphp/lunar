@@ -111,10 +111,10 @@
 
       <div class="p-6 mt-4 space-y-8 bg-white rounded-lg shadow">
         <div class="flow-root">
-          <ul class="-my-6 divide-y divide-gray-100">
+          <ul class="divide-y divide-gray-100">
             @foreach ($this->visibleLines as $line)
               <li
-                class="py-6"
+                class="py-3"
                 x-data="{ showDetails: false }"
               >
                 <div class="flex items-start">
@@ -127,7 +127,7 @@
 
                     <div class="flex-shrink-0 p-1 overflow-hidden border border-gray-100 rounded">
                       <img
-                        class="object-contain w-12 h-12"
+                        class="object-contain w-8 h-8"
                         src="{{ $line->purchasable->getThumbnail() }}"
                       />
                     </div>
@@ -194,20 +194,26 @@
                         x-on:click="showDetails = !showDetails"
                         type="button"
                       >
+                        <div
+                          class="transition-transform "
+                          :class="{
+                            '-rotate-90 ': !showDetails
+                          }"
+                        >
                         <x-hub::icon
-                          ref="chevron-right"
+                          ref="chevron-down"
                           style="solid"
-                          class="w-6 mx-1 text-gray-400 transition -mt-7 group-hover:text-gray-500 xl:mt-0"
+                          class="w-6 mx-1 text-gray-400 -mt-7 group-hover:text-gray-500 xl:mt-0"
+
                         />
-
+                        </div>
                         <div class="max-w-sm space-y-2 text-left">
-                          <p class="text-sm font-bold leading-tight text-gray-800">
+                          <x-hub::tooltip :text="$line->description">
+                            <p class="text-sm font-bold leading-tight text-gray-800 truncate">
                             {{ $line->description }}
-                          </p>
+                            </p>
+                          </x-hub::tooltip>
 
-                          {{-- <p class="text-xs text-gray-500">
-                            KB123450ASDB
-                          </p> --}}
 
                           <div class="flex text-xs font-medium text-gray-600">
                             <p>{{ $line->identifier }}</p>
@@ -429,7 +435,7 @@
                   </span>
 
                   <span class="font-medium">
-                    {{ $transaction->last_four }}
+                    {{ (string) $transaction->last_four }}
                   </span>
                 </p>
               </div>
