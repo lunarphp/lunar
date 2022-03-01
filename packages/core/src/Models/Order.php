@@ -7,7 +7,6 @@ use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\OrderFactory;
-use GetCandy\Models\Channel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Scout\Searchable;
 

@@ -2,10 +2,8 @@
 
 namespace GetCandy\Hub\Views\Components\ActivityLog;
 
-use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class OrderActivity extends Component
 {

@@ -49,7 +49,7 @@ class OrderShow extends Component
     /**
      * Whether to show the update status modal.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $showUpdateStatus = false;
 
@@ -133,7 +133,7 @@ class OrderShow extends Component
     }
 
     /**
-     * Update the order status
+     * Update the order status.
      *
      * @return void
      */

@@ -23,7 +23,7 @@ class OrderShow extends Component
     {
         return view('adminhub::livewire.pages.orders.show')
             ->layout('adminhub::layouts.app', [
-                'title' => __('adminhub::orders.show.title', ['id' => $this->order->id])
+                'title' => __('adminhub::orders.show.title', ['id' => $this->order->id]),
             ]);
     }
 }
