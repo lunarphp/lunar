@@ -623,8 +623,6 @@
         @endif
       </header>
 
-
-
       <section class="bg-white rounded-lg shadow">
         <dl class="text-sm text-gray-600">
           <div class="grid items-center grid-cols-2 gap-2 px-4 py-3 border-b">
@@ -667,14 +665,17 @@
             Shipping Address
           </strong>
 
-          <button
-            class="px-4 py-2 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded hover:border-gray-100 hover:bg-gray-50"
-            type="button"
-          >
-            Edit
-          </button>
+          @if($this->shipping)
+            <button
+              class="px-4 py-2 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded hover:border-gray-100 hover:bg-gray-50"
+              type="button"
+            >
+              Edit
+            </button>
+          @endif
         </header>
 
+        @if($this->Shipping)
         <address class="mt-4 text-sm not-italic text-gray-600">
           {{ $this->shipping->fullName }} <br>
           {{ $this->shipping->line_one }} <br>
@@ -697,6 +698,9 @@
 
           {{ $this->shipping->postcode }}
         </address>
+        @else
+          <span class="text-sm text-gray-600">No shipping address set</span>
+        @endif
       </section>
 
       <section class="p-4 bg-white rounded-lg shadow">
