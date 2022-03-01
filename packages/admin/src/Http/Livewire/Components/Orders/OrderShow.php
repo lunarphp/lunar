@@ -164,6 +164,11 @@ class OrderShow extends Component
         });
     }
 
+    /**
+     * Add a comment to the order.
+     *
+     * @return void
+     */
     public function addComment()
     {
         activity()
