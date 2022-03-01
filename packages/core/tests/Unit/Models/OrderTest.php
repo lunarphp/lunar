@@ -5,6 +5,7 @@ namespace GetCandy\Tests\Unit\Models;
 use DateTime;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
+use GetCandy\Models\Language;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
@@ -19,6 +20,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class OrderTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Language::factory()->create([
+            'default' => true,
+            'code'    => 'en',
+        ]);
+
+        Currency::factory()->create([
+            'default'        => true,
+            'decimal_places' => 2,
+        ]);
+    }
 
     /** @test */
     public function can_make_an_order()
@@ -73,7 +89,7 @@ class OrderTest extends TestCase
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
-                ['name' => 'VAT', 'percentage' => 20, 'total' => 200],
+                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 

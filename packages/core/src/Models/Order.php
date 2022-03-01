@@ -13,7 +13,8 @@ use Laravel\Scout\Searchable;
 class Order extends BaseModel
 {
     use HasFactory,
-        Searchable;
+        Searchable,
+        LogsActivity;
 
     /**
      * {@inheritDoc}

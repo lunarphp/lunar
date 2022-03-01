@@ -3,6 +3,8 @@
 namespace GetCandy\Tests\Unit\Base;
 
 use GetCandy\Base\OrderReferenceGenerator;
+use GetCandy\Models\Currency;
+use GetCandy\Models\Language;
 use GetCandy\Models\Order;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,6 +15,22 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class OrderReferenceGeneratorTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Language::factory()->create([
+            'default' => true,
+            'code'    => 'en',
+        ]);
+
+        Currency::factory()->create([
+            'default'        => true,
+            'decimal_places' => 2,
+        ]);
+    }
+
 
     /** @test */
     public function can_generate_reference()

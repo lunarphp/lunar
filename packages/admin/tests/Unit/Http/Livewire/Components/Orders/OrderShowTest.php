@@ -2,26 +2,15 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Orders;
 
-use GetCandy\Database\Factories\OrderFactory;
-use GetCandy\FieldTypes\Text;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 
@@ -39,11 +28,6 @@ class OrderShowTest extends TestCase
         Language::factory()->create([
             'default' => true,
             'code'    => 'en',
-        ]);
-
-        Language::factory()->create([
-            'default' => false,
-            'code'    => 'fr',
         ]);
 
         Currency::factory()->create([
