@@ -19,13 +19,6 @@ class OrderShow extends Component
     public Order $order;
 
     /**
-     * Whether we are updating the status.
-     *
-     * @var bool
-     */
-    public bool $updatingStatus = false;
-
-    /**
      * Whether all lines should be visible.
      *
      * @var bool
@@ -52,6 +45,13 @@ class OrderShow extends Component
      * @var string
      */
     public string $comment = '';
+
+    /**
+     * Whether to show the update status modal.
+     *
+     * @var boolean
+     */
+    public bool $showUpdateStatus = false;
 
     /**
      * {@inheritDoc}
@@ -132,14 +132,19 @@ class OrderShow extends Component
         });
     }
 
-    public function saveStatus()
+    /**
+     * Update the order status
+     *
+     * @return void
+     */
+    public function updateStatus()
     {
         $this->order->update([
             'status' => $this->order->status,
         ]);
 
         $this->notify('Order status updated');
-        $this->updatingStatus = false;
+        $this->showUpdateStatus = false;
     }
 
     /**
@@ -173,11 +178,6 @@ class OrderShow extends Component
         $this->notify('Comment added');
 
         $this->comment = '';
-    }
-
-    public function updateStatus()
-    {
-
     }
 
     /**

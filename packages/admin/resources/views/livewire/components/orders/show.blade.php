@@ -37,11 +37,13 @@
         <button
           class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
           type="button"
+            wire:click.prevent="$set('showUpdateStatus', true)"
         >
           <x-hub::icon
             ref="flag"
             style="solid"
             class="w-4 mr-2"
+
           />
 
           Update Status
@@ -108,6 +110,27 @@
           </div>
         </div>
       </div>
+
+      <x-hub::modal.dialog form="updateStatus" wire:model="showUpdateStatus">
+        <x-slot name="title">
+          {{ __('adminhub::orders.update_status.title') }}
+        </x-slot>
+        <x-slot name="content">
+          <x-hub::input.group :label="__('adminhub::inputs.status.label')" for="status" required :error="$errors->first('status')">
+            <x-hub::input.select wire:model.defer="order.status" required>
+              @foreach($this->statuses as $handle => $status)
+                <option value="{{ $handle }}">{{ $status['label'] }}</option>
+              @endforeach
+            </x-hub::input.select>
+          </x-hub::input.group>
+        </x-slot>
+        <x-slot name="footer">
+          <x-hub::button type="button" wire:click.prevent="$set('showUpdateStatus', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
+          <x-hub::button type="submit">
+            {{ __('adminhub::orders.update_status.btn') }}
+          </x-hub::button>
+        </x-slot>
+      </x-hub::modal.dialog>
 
       <div class="p-6 mt-4 space-y-8 bg-white rounded-lg shadow">
         <div class="flow-root">
