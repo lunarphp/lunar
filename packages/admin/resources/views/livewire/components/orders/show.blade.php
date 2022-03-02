@@ -185,5 +185,4 @@
         </x-hub::button>
       </x-slot>
     </x-hub::slideover>
-
 </section>
