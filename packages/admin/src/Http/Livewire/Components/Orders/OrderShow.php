@@ -139,11 +139,21 @@ class OrderShow extends Component
         return $this->order->shippingLines;
     }
 
+    /**
+     * Return all lines "above the fold"
+     *
+     * @return void
+     */
     public function getVisibleLinesProperty()
     {
         return $this->physicalLines->take($this->allLinesVisible ? null : $this->maxLines);
     }
 
+    /**
+     * Return the physical order lines.
+     *
+     * @return void
+     */
     public function getPhysicalLinesProperty()
     {
         return $this->order->lines->filter(function ($line) {
