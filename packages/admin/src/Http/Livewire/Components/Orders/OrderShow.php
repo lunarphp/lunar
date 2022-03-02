@@ -166,11 +166,21 @@ class OrderShow extends Component
         $this->showUpdateStatus = false;
     }
 
+    /**
+     * Handler when shipping edit toggle is updated.
+     *
+     * @return void
+     */
     public function updatedShowShippingAddressEdit()
     {
         $this->shippingAddress = $this->shippingAddress->refresh();
     }
 
+    /**
+     * Save the shipping address.
+     *
+     * @return void
+     */
     public function saveShippingAddress()
     {
         $addressRules = collect($this->rules())->filter(function ($rule, $field) {
@@ -203,6 +213,11 @@ class OrderShow extends Component
         });
     }
 
+    /**
+     * Return whether the billing postcode matches the shipping postcode.
+     *
+     * @return void
+     */
     public function getShippingEqualsBillingProperty()
     {
         return optional($this->billing)->postcode == optional($this->shippingAddress)->postcode;
