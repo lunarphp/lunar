@@ -14,6 +14,7 @@ use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
 use GetCandy\Base\OrderReferenceGenerator;
 use GetCandy\Base\OrderReferenceGeneratorInterface;
+use GetCandy\Base\PaymentManagerInterface;
 use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\ShippingManifest;
 use GetCandy\Base\ShippingManifestInterface;
@@ -27,6 +28,7 @@ use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
+use GetCandy\Managers\PaymentManager;
 use GetCandy\Managers\PricingManager;
 use GetCandy\Managers\TaxManager;
 use GetCandy\Models\Address;
@@ -128,6 +130,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->app->singleton(TaxManagerInterface::class, function ($app) {
             return $app->make(TaxManager::class);
+        });
+
+        $this->app->singleton(PaymentManagerInterface::class, function ($app) {
+            return $app->make(PaymentManager::class);
         });
     }
 
