@@ -140,7 +140,7 @@ class OrderShow extends Component
     }
 
     /**
-     * Return all lines "above the fold"
+     * Return all lines "above the fold".
      *
      * @return void
      */
