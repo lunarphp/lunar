@@ -231,9 +231,9 @@
                         />
                         </div>
                         <div class="max-w-sm space-y-2 text-left">
-                          <x-hub::tooltip :text="$line->description">
+                          <x-hub::tooltip :text="$line->description" :left="true">
                             <p class="text-sm font-bold leading-tight text-gray-800 truncate">
-                            {{ $line->description }}
+                              {{ $line->description }}
                             </p>
                           </x-hub::tooltip>
 
@@ -242,16 +242,17 @@
                             <p>{{ $line->identifier }}</p>
 
                             @if($line->purchasable->getOptions()->count())
-                              <dl class="flex before:content-['|'] before:mx-3 before:text-gray-200">
+                              <dl class="flex before:content-['|'] before:mx-3 before:text-gray-200 space-x-3">
+                                @foreach($line->purchasable->getOptions() as $option)
                                 <div class="flex gap-0.5">
-                                  <dt>Size:</dt>
-                                  <dd>UK 5</dd>
+                                  <dt>{{ $option }}</dt>
                                 </div>
+                                @endforeach
 
-                                <div class="flex gap-0.5 before:content-['/'] before:mx-1.5 before:text-gray-200">
+                                {{-- <div class="flex gap-0.5 before:content-['/'] before:mx-1.5 before:text-gray-200">
                                   <dt>Color:</dt>
                                   <dd>Black</dd>
-                                </div>
+                                </div> --}}
                               </dl>
                             @endif
                           </div>
@@ -665,38 +666,39 @@
             Shipping Address
           </strong>
 
-          @if($this->shipping)
+          @if($this->shippingAddress)
             <button
               class="px-4 py-2 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded hover:border-gray-100 hover:bg-gray-50"
               type="button"
+              wire:click.prevent="$set('showShippingAddressEdit', true)"
             >
               Edit
             </button>
           @endif
         </header>
 
-        @if($this->Shipping)
+        @if($shippingAddress)
         <address class="mt-4 text-sm not-italic text-gray-600">
-          {{ $this->shipping->fullName }} <br>
-          {{ $this->shipping->line_one }} <br>
+          {{ $shippingAddress->fullName }} <br>
+          {{ $shippingAddress->line_one }} <br>
 
-          @if ($this->shipping->line_two)
-            {{ $this->shipping->line_two }} <br>
+          @if ($shippingAddress->line_two)
+            {{ $this->shippingAddress->line_two }} <br>
           @endif
 
-          @if ($this->shipping->line_three)
-            {{ $this->shipping->line_three }} <br>
+          @if ($shippingAddress->line_three)
+            {{ $shippingAddress->line_three }} <br>
           @endif
 
-          @if ($this->shipping->city)
-            {{ $this->shipping->city }} <br>
+          @if ($shippingAddress->city)
+            {{ $shippingAddress->city }} <br>
           @endif
 
-          @if ($this->shipping->state)
-            {{ $this->shipping->state }} <br>
+          @if ($shippingAddress->state)
+            {{ $shippingAddress->state }} <br>
           @endif
 
-          {{ $this->shipping->postcode }}
+          {{ $shippingAddress->postcode }}
         </address>
         @else
           <span class="text-sm text-gray-600">No shipping address set</span>
@@ -762,5 +764,20 @@
         </dl>
       </section>
     </div>
+
+    <x-hub::slideover wire:model="showShippingAddressEdit">
+      @include('adminhub::partials.forms.address', [
+        'model' => 'shippingAddress',
+      ])
+
+      <x-slot name="footer">
+        <x-hub::button wire:click.prevent="$set('showShippingAddressEdit', false)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button wire:click.prevent="saveShippingAddress">
+          {{ __('adminhub::components.orders.show.save_shipping_btn') }}
+        </x-hub::button>
+      </x-slot>
+    </x-hub::slideover>
 
 </section>

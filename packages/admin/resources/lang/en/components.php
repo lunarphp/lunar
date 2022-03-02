@@ -87,4 +87,8 @@ return [
     'collection-search.select_empty'                => 'When you select collections, they will appear here.',
     'collection-search.title'                       => 'Search for collections',
     'collection-search.commit_btn'                  => 'Select Collections',
+    /**
+     * Order Show
+     */
+    'orders.show.save_shipping_btn'                 => 'Save Address',
 ];

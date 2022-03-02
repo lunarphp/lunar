@@ -3,13 +3,15 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
+use GetCandy\Models\OrderAddress;
 use Livewire\Component;
 
 class OrderShow extends Component
 {
-    use Notifies;
+    use Notifies, WithCountries;
 
     /**
      * The current order in view.
@@ -17,6 +19,13 @@ class OrderShow extends Component
      * @var \GetCandy\Models\Order
      */
     public Order $order;
+
+    /**
+     * The instance of the shipping address.
+     *
+     * @var \GetCandy\Models\OrderAddress
+     */
+    public ?OrderAddress $shippingAddress = null;
 
     /**
      * Whether all lines should be visible.
@@ -54,19 +63,48 @@ class OrderShow extends Component
     public bool $showUpdateStatus = false;
 
     /**
+     * Whether to show the address edit screen.
+     *
+     * @var boolean
+     */
+    public bool $showShippingAddressEdit = false;
+
+    /**
      * {@inheritDoc}
      */
     public function rules()
     {
-        return [
+        $rules = [
             'order.status' => 'string',
             'comment' => 'required|string',
         ];
+
+        if ($this->shippingAddress) {
+            $rules = array_merge($rules, [
+                'shippingAddress.postcode' => 'required|string|max:255',
+                'shippingAddress.title' => 'nullable|string|max:255',
+                'shippingAddress.first_name' => 'nullable|string|max:255',
+                'shippingAddress.last_name' => 'nullable|string|max:255',
+                'shippingAddress.company_name' => 'nullable|string|max:255',
+                'shippingAddress.line_one' => 'nullable|string|max:255',
+                'shippingAddress.line_two' => 'nullable|string|max:255',
+                'shippingAddress.line_three' => 'nullable|string|max:255',
+                'shippingAddress.city' => 'nullable|string|max:255',
+                'shippingAddress.state' => 'nullable|string|max:255',
+                'shippingAddress.delivery_instructions' => 'nullable|string|max:255',
+                'shippingAddress.contact_email' => 'nullable|email|max:255',
+                'shippingAddress.contact_phone' => 'nullable|string|max:255',
+                'shippingAddress.country_id'   => 'required',
+            ]);
+        }
+
+        return $rules;
     }
 
     public function mount()
     {
-        $this->shippingEqualsBilling = optional($this->billing)->postcode == optional($this->shipping)->postcode;
+        $this->shippingAddress = $this->order->shippingAddress;
+        $this->shippingEqualsBilling = optional($this->billing)->postcode == optional($this->shippingAddress)->postcode;
     }
 
     /**
@@ -97,16 +135,6 @@ class OrderShow extends Component
     public function getBillingProperty()
     {
         return $this->order->billingAddress;
-    }
-
-    /**
-     * Get the shipping address computed property.
-     *
-     * @return \GetCandy\Models\OrderAddress|null
-     */
-    public function getShippingProperty()
-    {
-        return $this->order->shippingAddress;
     }
 
     /**
@@ -144,6 +172,22 @@ class OrderShow extends Component
 
         $this->notify('Order status updated');
         $this->showUpdateStatus = false;
+    }
+
+    public function updatedShowShippingAddressEdit()
+    {
+        $this->shippingAddress = $this->shippingAddress->refresh();
+    }
+
+    public function saveShippingAddress()
+    {
+        $this->validateOnly('shippingAddress');
+
+        $this->shippingAddress->save();
+
+        $this->notify('Shipping Address Saved');
+
+        $this->showShippingAddressEdit = false;
     }
 
     /**
