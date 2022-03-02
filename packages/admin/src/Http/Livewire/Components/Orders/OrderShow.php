@@ -7,7 +7,6 @@ use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
-use Illuminate\Support\Arr;
 use Livewire\Component;
 
 class OrderShow extends Component
@@ -59,7 +58,7 @@ class OrderShow extends Component
     /**
      * Whether to show the address edit screen.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $showShippingAddressEdit = false;
 
