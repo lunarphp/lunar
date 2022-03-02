@@ -679,6 +679,9 @@
 
         @if($shippingAddress)
         <address class="mt-4 text-sm not-italic text-gray-600">
+          @if($shippingAddress->company_name)
+            {{ $shippingAddress->company_name }} <br>
+          @endif
           {{ $shippingAddress->fullName }} <br>
           {{ $shippingAddress->line_one }} <br>
 
@@ -698,7 +701,9 @@
             {{ $shippingAddress->state }} <br>
           @endif
 
-          {{ $shippingAddress->postcode }}
+          {{ $shippingAddress->postcode }} <br>
+
+          {{ $shippingAddress->country->name }}
         </address>
         @else
           <span class="text-sm text-gray-600">No shipping address set</span>
@@ -715,6 +720,10 @@
         <div class="mt-4 text-sm">
           @if (!$this->shippingEqualsBilling)
             <address class="not-italic text-gray-600">
+              @if($this->billing->company_name)
+                {{ $this->billing->company_name }} <br>
+              @endif
+
               {{ $this->billing->fullName }} <br>
               {{ $this->billing->line_one }} <br>
 
@@ -734,7 +743,9 @@
                 {{ $this->billing->state }} <br>
               @endif
 
-              {{ $this->billing->postcode }}
+              {{ $this->billing->postcode }} <br>
+
+              {{ $this->billing->country->name }}
             </address>
           @else
             <p class="text-gray-500">
