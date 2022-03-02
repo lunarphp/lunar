@@ -90,5 +90,10 @@ return [
     /**
      * Order Show
      */
+    'orders.show.title'                             => 'Order',
     'orders.show.save_shipping_btn'                 => 'Save Address',
+    'orders.show.print_btn'                         => 'Print',
+    'orders.show.refund_btn'                         => 'Refund',
+    'orders.show.update_status_btn'                         => 'Update Status',
+    'orders.show.more_actions_btn'                         => 'More Actions',
 ];

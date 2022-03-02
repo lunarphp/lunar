@@ -1,7 +1,7 @@
 <section class="px-12 mx-auto max-w-7xl">
   <header class="flex items-center">
     <h1 class="text-lg font-bold text-gray-900 md:text-2xl">
-      <span class="text-gray-500">Orders //</span> #{{ $order->id }}
+      <span class="text-gray-500">{{ __('adminhub::components.orders.show.title') }} //</span> #{{ $order->id }}
     </h1>
   </header>
 
@@ -18,7 +18,7 @@
             class="w-4 mr-2"
           />
 
-          Print
+          {{ __('adminhub::components.orders.show.print_btn') }}
         </button>
 
         <button
@@ -31,7 +31,7 @@
             class="w-4 mr-2"
           />
 
-          Refund
+          {{ __('adminhub::components.orders.show.refund_btn') }}
         </button>
 
         <button
@@ -46,7 +46,7 @@
 
           />
 
-          Update Status
+          {{ __('adminhub::components.orders.show.update_status_btn') }}
         </button>
 
         <div
@@ -58,7 +58,7 @@
             type="button"
             x-on:click="showMenu = !showMenu"
           >
-            More Actions
+            {{ __('adminhub::components.orders.show.more_actions_btn') }}
 
             <x-hub::icon
               ref="chevron-down"
