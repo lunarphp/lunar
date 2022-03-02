@@ -495,7 +495,13 @@
               class="absolute h-[42px] text-xs font-bold leading-[42px] text-gray-700 bg-gray-100 border border-transparent rounded-md hover:border-gray-100 hover:bg-gray-50 w-28 top-2 right-2"
               type="submit"
             >
-              Add Comment
+              <div wire:loading.remove wire:target="addComment">
+                Add Comment
+              </div>
+              <div wire:loading wire:target="addComment">
+                <x-hub::icon ref="refresh" style="solid" class="inline-block rotate-180 animate-spin" />
+              </div>
+
             </button>
           </form>
         </div>
