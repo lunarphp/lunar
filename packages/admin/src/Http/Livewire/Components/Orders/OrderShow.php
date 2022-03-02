@@ -7,6 +7,7 @@ use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
+use Illuminate\Support\Arr;
 use Livewire\Component;
 
 class OrderShow extends Component
@@ -40,13 +41,6 @@ class OrderShow extends Component
      * @var int
      */
     public int $maxLines = 5;
-
-    /**
-     * Wether shipping address equals billing address.
-     *
-     * @var bool
-     */
-    public bool $shippingEqualsBilling = false;
 
     /**
      * The new comment property.
@@ -104,7 +98,6 @@ class OrderShow extends Component
     public function mount()
     {
         $this->shippingAddress = $this->order->shippingAddress;
-        $this->shippingEqualsBilling = optional($this->billing)->postcode == optional($this->shippingAddress)->postcode;
     }
 
     /**
@@ -181,7 +174,11 @@ class OrderShow extends Component
 
     public function saveShippingAddress()
     {
-        $this->validateOnly('shippingAddress');
+        $addressRules = collect($this->rules())->filter(function ($rule, $field) {
+            return str_contains($field, 'shippingAddress');
+        });
+
+        $this->validate($addressRules->toArray());
 
         $this->shippingAddress->save();
 
@@ -205,6 +202,11 @@ class OrderShow extends Component
                 'items' => $logs,
             ];
         });
+    }
+
+    public function getShippingEqualsBillingProperty()
+    {
+        return optional($this->billing)->postcode == optional($this->shippingAddress)->postcode;
     }
 
     /**
