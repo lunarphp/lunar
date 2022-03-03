@@ -115,4 +115,12 @@ return [
     'orders.show.refund_btn'                         => 'Refund',
     'orders.show.update_status_btn'                         => 'Update Status',
     'orders.show.more_actions_btn'                         => 'More Actions',
+    'orders.show.refund_lines_btn'                  => 'Refund Lines',
+    'orders.show.update_status_btn'                         => 'Update Status',
+    'orders.show.more_actions_btn'                         => 'More Actions',
+    /**
+     * Order Refund.
+     */
+    'orders.refund.confirm_text'                    => 'CONFIRM',
+    'orders.refund.confirm_message'                 => 'Please type :confirm to confirm you want to send the refund',
 ];
