@@ -38,6 +38,8 @@ The is a new configraton option under `getcandy-hub/products.php` to disable pro
 'disable_variants' => false,
 ```
 
+If your storefront already supports variants, you do not need to change anything.
+
 ---
 
 If you are using the scout `Searchable` trait. Make sure to change this to GetCandy's if you want to tap into the Model Observers.
