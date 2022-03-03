@@ -32,6 +32,14 @@ php artisan getcandy:meilisearch:setup
 
 ## [Unreleased]
 
+The is a new configraton option under `getcandy-hub/products.php` to disable product variants. This is useful if your storefront will never need to generate different product options and you don't want staff members to be able to do it accidentally.
+
+```
+'disable_variants' => false,
+```
+
+---
+
 If you are using the scout `Searchable` trait. Make sure to change this to GetCandy's if you want to tap into the Model Observers.
 
 ```php
