@@ -25,6 +25,7 @@ class OrderActionsMenu
     protected function makeTopLevel()
     {
         Menu::slot('order_actions');
+
         return $this;
     }
 }
