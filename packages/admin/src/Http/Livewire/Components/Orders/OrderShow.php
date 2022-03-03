@@ -63,6 +63,20 @@ class OrderShow extends Component
     public bool $showShippingAddressEdit = false;
 
     /**
+     * The currently selected lines.
+     *
+     * @var array
+     */
+    public array $selectedLines = [];
+
+    /**
+     * Whether to show the refund panel.
+     *
+     * @var boolean
+     */
+    public bool $showRefund = false;
+
+    /**
      * {@inheritDoc}
      */
     public function rules()
@@ -185,6 +199,32 @@ class OrderShow extends Component
     {
         $this->shippingAddress = $this->shippingAddress->refresh();
     }
+
+    public function getRefundAmountProperty()
+    {
+        if (count($this->selectedLines)) {
+            return $this->order->lines->filter(function ($line) {
+                return in_array($line->id, $this->selectedLines);
+            })->sum('total.value');
+        }
+        return $this->order->total->value;
+    }
+
+    public function updatedSelectedLines($val)
+    {
+        $this->emit('updateRefundAmount', $this->refundAmount);
+        // dd($this->refundAmount);
+    }
+
+    // public function updatedSelectedLines($val)
+    // {
+    //     dd($this->selectedLines);
+    //     $lines = $this->order->lines->filter(function ($line) use ($val) {
+    //         return in_array($line->id, $val);
+    //     });
+
+    //     // dd($lines->first());
+    // }
 
     /**
      * Save the shipping address.

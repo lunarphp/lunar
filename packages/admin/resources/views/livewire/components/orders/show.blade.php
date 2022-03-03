@@ -24,6 +24,7 @@
         <button
           class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
           type="button"
+          wire:click.prevent="$set('showRefund', true)"
         >
           <x-hub::icon
             ref="rewind"
@@ -31,7 +32,12 @@
             class="w-4 mr-2"
           />
 
-          {{ __('adminhub::components.orders.show.refund_btn') }}
+          @if(count($this->selectedLines))
+            {{ __('adminhub::components.orders.show.refund_lines_btn') }}
+          @else
+            {{ __('adminhub::components.orders.show.refund_btn') }}
+          @endif
+
         </button>
 
         <button
@@ -142,12 +148,7 @@
               >
                 <div class="flex items-start">
                   <div class="flex gap-2">
-                    <input
-                      class="w-5 h-5 text-blue-500 border-gray-300 rounded cursor-pointer form-checkbox"
-                      aria-label="{{ $line->id }}"
-                      type="checkbox"
-                    >
-
+                    <x-hub::input.checkbox value="{{ $line->id }}" wire:model="selectedLines" />
                     <div class="flex-shrink-0 p-1 overflow-hidden border border-gray-100 rounded">
                       <img
                         class="object-contain w-8 h-8"
@@ -781,6 +782,15 @@
         </dl>
       </section>
     </div>
+
+    <x-hub::modal wire:model="showRefund">
+      <div class="p-4">
+        @livewire('hub.components.orders.refund', [
+          'order' => $this->order,
+          'amount' => $this->refundAmount / 100,
+        ])
+      </div>
+    </x-hub::modal>
 
     <x-hub::slideover wire:model="showShippingAddressEdit">
       @include('adminhub::partials.forms.address', [

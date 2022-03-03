@@ -74,4 +74,7 @@ return [
     'state.label' => 'State / Province',
     'postcode.label' => 'Postal Code',
     'country.label' => 'Country',
+    'amount.label' => 'Amount',
+    'notes.label' => 'Notes',
+    'confirm.label' => 'Confirm',
 ];
