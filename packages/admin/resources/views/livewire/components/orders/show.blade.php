@@ -74,45 +74,26 @@
           </button>
 
           <div
-            class="absolute right-0 z-50 w-screen max-w-[200px] mt-2 text-sm bg-white border rounded-lg shadow-lg top-full"
+            class="absolute right-0 z-50 w-screen max-w-[200px] mt-2 text-sm bg-white border rounded-lg shadow-lg top-full overflow-hidden"
             role="menu"
             x-on:click.away="showMenu = false"
             x-show="showMenu"
             x-transition
             x-cloak
           >
-            <div
-              class="py-1"
-              role="none"
-            >
-              <button
-                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-white"
-                role="menuitem"
-                type="button"
-              >
-                <x-hub::icon
-                  ref="credit-card"
-                  style="solid"
-                  class="w-4 mr-2"
-                />
-
-                Add Payment
-              </button>
-
-              <button
-                class="flex items-center w-full px-4 py-2 text-left transition hover:bg-white"
-                role="menuitem"
-                type="button"
-              >
-                <x-hub::icon
-                  ref="flag"
-                  style="solid"
-                  class="w-4 mr-2"
-                />
-
-                Update Status
-              </button>
-            </div>
+            <x-hub::menu handle="order_actions">
+              @foreach($component->items as $item)
+                @if ($item->component)
+                  @livewire($item->component, [
+                    'order' => $this->order,
+                  ])
+                @else
+                  <x-hub::dropdown.link :route="route($item->route, $this->order->id)">
+                    {{ $item->name }}
+                  </x-hub::dropdown.link>
+                @endif
+              @endforeach
+            </x-hub::menu>
           </div>
         </div>
       </div>
