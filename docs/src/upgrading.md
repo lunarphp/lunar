@@ -40,6 +40,12 @@ The is a new configraton option under `getcandy-hub/products.php` to disable pro
 
 If your storefront already supports variants, you do not need to change anything.
 
+If you disable variants, the `GenerateVariants` job will now throw an exception if it's called when this setting is `true` so you will need to update any calls to this job to handle it.
+
+```php
+GetCandy\Hub\Exceptions\VariantsDisabledException
+```
+
 ---
 
 If you are using the scout `Searchable` trait. Make sure to change this to GetCandy's if you want to tap into the Model Observers.
