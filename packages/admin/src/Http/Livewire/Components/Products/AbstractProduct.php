@@ -335,7 +335,7 @@ abstract class AbstractProduct extends Component
             }
 
             // We generating variants?
-            $generateVariants = (bool) count($this->optionValues) && !$this->variantsDisabled;
+            $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
 
             if ($generateVariants) {
                 GenerateVariants::dispatch($this->product, $this->optionValues);
