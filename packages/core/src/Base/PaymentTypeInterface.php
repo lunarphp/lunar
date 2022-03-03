@@ -32,6 +32,14 @@ interface PaymentTypeInterface
     public function withData(array $data): self;
 
     /**
+     * Set any configuration on the driver.
+     *
+     * @param array $config
+     * @return self
+     */
+    public function setConfig(array $config): self;
+
+    /**
      * Release the payment.
      *
      * @return void

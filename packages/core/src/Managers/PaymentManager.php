@@ -3,9 +3,11 @@
 namespace GetCandy\Managers;
 
 use GetCandy\Base\PaymentTypeInterface;
-use GetCandy\PaymentTypes\OfflinePayment;
 use GetCandy\Exceptions\InvalidPaymentTypeException;
+use GetCandy\PaymentTypes\OfflinePayment;
 use Illuminate\Support\Manager;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class PaymentManager extends Manager
 {
@@ -15,22 +17,45 @@ class PaymentManager extends Manager
     }
 
     /**
-     * Set the payment type driver.
+     * Create a new driver instance.
      *
-     * @param string $type
-     * @return \GetCandy\Base\PaymentTypeInterface
+     * @param  string  $driver
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
-    public function type($type): PaymentTypeInterface
+    protected function createDriver($driver)
     {
-        $driver = config("getcandy.payments.types.{$type}.driver");
+        $type = config("getcandy.payments.types.{$driver}");
 
-        if (!$driver) {
+        if (!isset($type['driver'])) {
             throw new InvalidPaymentTypeException(
-                "Payment type \"{$type}\" doesn't have a supported driver"
+                "Payment type \"{$type['driver']}\" doesn't have a supported driver"
             );
         }
 
-        return $this->driver($driver);
+        $driver = $type['driver'];
+
+        $driverInstance = null;
+
+        // First, we will determine if a custom driver creator exists for the given driver and
+        // if it does not we will check for a creator method for the driver. Custom creator
+        // callbacks allow developers to build their own "drivers" easily using Closures.
+        if (isset($this->customCreators[$driver])) {
+            $driverInstance = $this->callCustomCreator($driver);
+        } else {
+            $method = 'create'.Str::studly($driver).'Driver';
+
+            if (method_exists($this, $method)) {
+                $driverInstance = $this->$method();
+            }
+        }
+
+        if (!$driverInstance) {
+            throw new InvalidArgumentException("Driver [$driver] not supported.");
+        }
+
+        return $driverInstance->setConfig($type);
     }
 
     /**
@@ -46,6 +71,6 @@ class PaymentManager extends Manager
 
     public function getDefaultDriver()
     {
-        return config('getcandy.payments.default', 'offline');
+        return config('getcandy.payments.default');
     }
 }

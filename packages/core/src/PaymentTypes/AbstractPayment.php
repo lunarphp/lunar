@@ -23,6 +23,13 @@ abstract class AbstractPayment implements PaymentTypeInterface
     protected ?Order $order = null;
 
     /**
+     * Any config for this payment provider.
+     *
+     * @var array
+     */
+    protected array $config = [];
+
+    /**
      * {@inheritDoc}
      */
     public function cart(Cart $cart): self
@@ -46,6 +53,15 @@ abstract class AbstractPayment implements PaymentTypeInterface
     public function withData(array $data): self
     {
         $this->data = $data;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setConfig(array $config): self
+    {
+        $this->config = $config;
         return $this;
     }
 }
