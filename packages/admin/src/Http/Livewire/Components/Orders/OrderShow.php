@@ -72,7 +72,7 @@ class OrderShow extends Component
     /**
      * Whether to show the refund panel.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $showRefund = false;
 
@@ -207,6 +207,7 @@ class OrderShow extends Component
                 return in_array($line->id, $this->selectedLines);
             })->sum('total.value');
         }
+
         return $this->order->total->value;
     }
 

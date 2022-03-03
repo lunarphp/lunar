@@ -8,9 +8,9 @@ use Livewire\Component;
 class OrderRefund extends Component
 {
     /**
-     * The amount to refund
+     * The amount to refund.
      *
-     * @var integer
+     * @var int
      */
     public $amount = 0;
 
@@ -41,7 +41,7 @@ class OrderRefund extends Component
      * @var array
      */
     protected $listeners = [
-        'updateRefundAmount'
+        'updateRefundAmount',
     ];
 
     /**
@@ -57,9 +57,9 @@ class OrderRefund extends Component
     }
 
     /**
-     * Update the refund amount
+     * Update the refund amount.
      *
-     * @param int $val
+     * @param  int  $val
      * @return void
      */
     public function updateRefundAmount(int $val)
