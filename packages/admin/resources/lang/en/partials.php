@@ -137,4 +137,16 @@ return [
     'shipping.calculated_volume' => 'Calculated as :value.',
     'shipping.manual_volume_btn' => 'Click to set manually',
     'shipping.auto_volume_btn'   => 'Use generated volume',
+    /**
+     * Orders
+     */
+    'orders.totals.sub_total' => 'Sub Total',
+    'orders.totals.shipping_total' => 'Shipping Total',
+    'orders.totals.total' => 'Total',
+    'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.lines.unit_price' => 'Unit Price',
+    'orders.lines.quantity' => 'Quantity',
+    'orders.lines.sub_total' => 'Sub Total',
+    'orders.lines.discount_total' => 'Discount Total',
+    'orders.lines.total' => 'Total',
 ];
