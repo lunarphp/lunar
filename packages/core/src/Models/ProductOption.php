@@ -82,10 +82,10 @@ class ProductOption extends BaseModel
     {
         return [
             'id'      => $this->id,
-            'name'    => $this->translate('name'),
+            'name'    => collect(json_decode($this->attributes['name']))->values()->all(),
             'options' => $this->values->map(function ($option) {
-                return $option->translate('name');
-            })->toArray(),
+                return collect(json_decode($option->attributes['name']))->values();
+            })->collapse()->toArray(),
         ];
     }
 }

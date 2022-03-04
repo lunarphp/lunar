@@ -2,6 +2,7 @@
 
 namespace GetCandy\Models;
 
+use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasChannels;
@@ -199,7 +200,15 @@ class Product extends BaseModel implements SpatieHasMedia
         $data = Arr::except($attributes, 'attribute_data');
 
         foreach ($this->attribute_data ?? [] as $field => $value) {
-            $data[$field] = $this->translateAttribute($field);
+            if ($value instanceof TranslatedText) {
+                $textArray = [];
+                foreach ($value->getValue() as $text) {
+                    $textArray[] = $text?->getValue();
+                }
+                $data[$field] = $textArray;
+            } else {
+                $data[$field] = $this->translateAttribute($field);
+            }
         }
 
         if ($this->thumbnail) {
