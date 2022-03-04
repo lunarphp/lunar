@@ -2,6 +2,8 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\Base\DataTransferObjects\PaymentRefund;
+use GetCandy\Base\DataTransferObjects\PaymentRelease;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Order;
 use GetCandy\Models\Transaction;
@@ -45,13 +47,15 @@ interface PaymentTypeInterface
      *
      * @return void
      */
-    public function release();
+    public function release(): PaymentRelease;
 
     /**
-     * Refund an amount against the order.
+     * Refund a transaction for a given amount
      *
+     * @param \GetCandy\Models\Transaction $transaction
      * @param integer $amount
-     * @return void
+     * @param null|string $notes
+     * @return \GetCandy\Base\DataTransferObjects\PaymentRefund
      */
-    public function refund(Transaction $transaction, int $amount);
+    public function refund(Transaction $transaction, int $amount, $notes = null): PaymentRefund;
 }

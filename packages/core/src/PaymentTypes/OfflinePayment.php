@@ -2,14 +2,16 @@
 
 namespace GetCandy\PaymentTypes;
 
+use GetCandy\Base\DataTransferObjects\PaymentRefund;
 use GetCandy\Base\DataTransferObjects\PaymentRelease;
+use GetCandy\Models\Transaction;
 
 class OfflinePayment extends AbstractPayment
 {
     /**
      * {@inheritDoc}
      */
-    public function release()
+    public function release(): PaymentRelease
     {
         if (!$this->order) {
             if (!$this->order = $this->cart->order) {
@@ -22,11 +24,14 @@ class OfflinePayment extends AbstractPayment
             'placed_at' => now(),
         ]);
 
-        return new PaymentRelease(success: true);
+        return new PaymentRelease(true);
     }
 
-    public function refund(int $amount)
+    /**
+     * {@inheritDoc}
+     */
+    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
-        //
+        return new PaymentRefund(true);
     }
 }
