@@ -97,6 +97,11 @@ return [
     'orders.show.refund_lines_btn'                  => 'Refund Lines',
     'orders.show.update_status_btn'                         => 'Update Status',
     'orders.show.more_actions_btn'                         => 'More Actions',
+    'orders.show.show_all_lines_btn' => 'Show all lines',
+    'orders.show.collapse_lines_btn' => 'Collapse lines',
+    'orders.show.transactions_header' => 'Transactions',
+    'orders.show.timeline_header' => 'Timeline',
+    'orders.show.additional_fields_header' => 'Additional Information',
     /**
      * Order Refund.
      */
