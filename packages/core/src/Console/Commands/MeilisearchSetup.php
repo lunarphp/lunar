@@ -6,6 +6,7 @@ use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
+use GetCandy\Models\Collection;
 use Illuminate\Console\Command;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Engines\MeiliSearchEngine;
@@ -39,6 +40,7 @@ class MeilisearchSetup extends Command
         Order::class,
         ProductOption::class,
         Customer::class,
+        Collection::class,
     ];
 
     /**
@@ -58,10 +60,12 @@ class MeilisearchSetup extends Command
 
             try {
                 $index = $this->engine->getIndex($indexName);
+                $this->warn("Index {$indexName} found for {$searchable}");
             } catch (ApiException $e) {
-                $this->info("Creating index for {$searchable}");
+                $this->warn($e->getMessage());
+                $this->info("Creating index {$indexName} for {$searchable}");
                 $this->engine->createIndex($indexName);
-
+                sleep(1);
                 $index = $this->engine->getIndex($indexName);
             }
 
@@ -76,6 +80,8 @@ class MeilisearchSetup extends Command
             $index->updateSortableAttributes(
                 $model->getSortableAttributes()
             );
+
+            $this->newLine();
         }
     }
 }
