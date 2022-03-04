@@ -138,7 +138,7 @@ return [
     'shipping.manual_volume_btn' => 'Click to set manually',
     'shipping.auto_volume_btn'   => 'Use generated volume',
     /**
-     * Orders
+     * Orders.
      */
     'orders.totals.sub_total' => 'Sub Total',
     'orders.totals.shipping_total' => 'Shipping Total',
