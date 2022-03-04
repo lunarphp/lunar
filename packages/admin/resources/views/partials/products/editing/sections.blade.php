@@ -115,7 +115,16 @@
        <div id="collections">
         @include('adminhub::partials.products.editing.collections')
        </div>
-
+       
+      {{--
+        Slots
+       --}}
+       @foreach ($this->slots as $slot)
+       <div id="{{ $slot->getHandle() }}">
+        {!! $slot->render() !!}
+       </div>
+       @endforeach
+       
       {{--
         Delete area
        --}}
@@ -186,6 +195,19 @@
           @if(!empty($item['has_errors']))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
           <span class="truncate">
             {{ $item['title'] }}
+          </span>
+        </a>
+        @endforeach
+        
+        @foreach($this->slots as $slot)
+        <a
+          href="#{{ $slot->getHandle() }}"
+          class="@if(!empty($slot->getErrors()) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          aria-current="page"
+        >
+          @if(!empty($slot->getErrors()))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          <span class="truncate">
+            {{ $slot->getTitle() }}
           </span>
         </a>
         @endforeach

@@ -6,6 +6,7 @@ use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
 use GetCandy\Hub\Http\Livewire\Traits\HasImages;
 use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
+use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
 use GetCandy\Hub\Http\Livewire\Traits\HasTags;
 use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
@@ -40,6 +41,7 @@ abstract class AbstractProduct extends Component
     use HasDimensions;
     use HasUrls;
     use HasTags;
+    use HasSlots;
 
     /**
      * The current product we are editing.
@@ -242,6 +244,7 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->withAttributesValidationRules(),
+            $this->hasSlotsValidationRules(),
         );
     }
 
@@ -411,6 +414,8 @@ abstract class AbstractProduct extends Component
                         ['position' => $collection['position']]
                     );
             });
+            
+            $this->updateSlots($this->product);
 
             $this->product->refresh();
 
@@ -855,6 +860,16 @@ abstract class AbstractProduct extends Component
      * @return \GetCandy\Models\Product
      */
     protected function getMediaModel()
+    {
+        return $this->product;
+    }
+    
+    /**
+     * Returns the model which has slots associated.
+     *
+     * @return \GetCandy\Models\Product
+     */
+    protected function getSlotModel()
     {
         return $this->product;
     }
