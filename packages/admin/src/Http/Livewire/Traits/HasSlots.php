@@ -58,7 +58,7 @@ trait HasSlots
      */
     public function updateSlots($model)
     {
-        $this->slots->each(function ($slot) {
+        $this->slots->each(function ($slot) use ($model) {
             $slot->handleSave($model);    
         });     
     }
