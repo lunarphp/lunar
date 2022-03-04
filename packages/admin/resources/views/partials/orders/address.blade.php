@@ -9,7 +9,7 @@
       type="button"
       wire:click.prevent="$set('{{ $editTrigger }}', true)"
     >
-      Edit
+      {{ __('adminhub::global.edit') }}
     </button>
   @endif
 </header>
@@ -47,5 +47,7 @@
     <span class="text-sm text-gray-600">{{ $message ?? null }}</span>
   @endif
 @else
-  <span class="text-sm text-gray-600">No address set</span>
+  <span class="text-sm text-gray-600">
+    {{ __('adminhub::partials.orders.address.not_set') }}
+  </span>
 @endif

@@ -155,4 +155,5 @@ return [
     'orders.details.channel' => 'Channel',
     'orders.details.date_created' => 'Date Created',
     'orders.details.date_placed' => 'Date Placed',
+    'orders.address.no_set' => 'No address set',
 ];

@@ -92,7 +92,7 @@
         @include('adminhub::partials.orders.address', [
           'heading' => 'Billing Address',
           'hidden' => $this->shippingEqualsBilling,
-          'message' => 'Same as shipping address',
+          'message' => __('adminhub::components.orders.show.billing_matches_shipping'),
           'address' => $this->shippingAddress,
         ])
       </section>

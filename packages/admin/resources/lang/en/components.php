@@ -102,6 +102,7 @@ return [
     'orders.show.transactions_header' => 'Transactions',
     'orders.show.timeline_header' => 'Timeline',
     'orders.show.additional_fields_header' => 'Additional Information',
+    'orders.show.billing_matches_shipping' => 'Same as shipping address',
     /**
      * Order Refund.
      */
