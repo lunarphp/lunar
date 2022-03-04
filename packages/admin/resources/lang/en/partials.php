@@ -149,4 +149,10 @@ return [
     'orders.lines.sub_total' => 'Sub Total',
     'orders.lines.discount_total' => 'Discount Total',
     'orders.lines.total' => 'Total',
+    'orders.details.status' => 'Status',
+    'orders.details.reference' => 'Reference',
+    'orders.details.customer_reference' => 'Customer Reference',
+    'orders.details.channel' => 'Channel',
+    'orders.details.date_created' => 'Date Created',
+    'orders.details.date_placed' => 'Date Placed',
 ];
