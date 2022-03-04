@@ -26,15 +26,17 @@ class PaymentManager extends Manager
      */
     protected function createDriver($driver)
     {
+        $originalDriver = $driver;
+
         $type = config("getcandy.payments.types.{$driver}");
 
-        if (!isset($type['driver'])) {
-            throw new InvalidPaymentTypeException(
-                "Payment type \"{$type['driver']}\" doesn't have a supported driver"
-            );
-        }
+        // if (!isset($type['driver'])) {
+        //     throw new InvalidPaymentTypeException(
+        //         "Payment type \"{$driver}\" doesn't have a supported driver"
+        //     );
+        // }
 
-        $driver = $type['driver'];
+        $driver = $type['driver'] ?? $originalDriver;
 
         $driverInstance = null;
 
@@ -51,11 +53,11 @@ class PaymentManager extends Manager
             }
         }
 
-        if (!$driverInstance) {
-            throw new InvalidArgumentException("Driver [$driver] not supported.");
+        if ($driverInstance) {
+            return $driverInstance->setConfig($type ?? []);
         }
 
-        return $driverInstance->setConfig($type);
+        return parent::driver($originalDriver);
     }
 
     /**

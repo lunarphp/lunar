@@ -4,6 +4,7 @@ namespace GetCandy\Base;
 
 use GetCandy\Models\Cart;
 use GetCandy\Models\Order;
+use GetCandy\Models\Transaction;
 
 interface PaymentTypeInterface
 {
@@ -52,5 +53,5 @@ interface PaymentTypeInterface
      * @param integer $amount
      * @return void
      */
-    public function refund(int $amount);
+    public function refund(Transaction $transaction, int $amount);
 }

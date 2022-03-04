@@ -18,7 +18,7 @@ class TransactionObserver
         activity()
             ->causedBy(auth()->user())
             ->performedOn($transaction->order)
-            ->event('transaction')
+            ->event($transaction->refund ? 'refund' : 'charge')
             ->withProperties([
                 'amount' => $transaction->amount->value,
                 'refund' => $transaction->refund,
@@ -26,6 +26,7 @@ class TransactionObserver
                 'card_type' => $transaction->card_type,
                 'last_four' => $transaction->last_four,
                 'reference' => $transaction->reference,
+                'notes' => $transaction->notes,
             ])->log('created');
     }
 }

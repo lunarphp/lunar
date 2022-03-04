@@ -2,11 +2,16 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
+use GetCandy\Base\DataTransferObjects\PaymentRefund;
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\Order;
+use GetCandy\Models\Transaction;
 use Livewire\Component;
 
 class OrderRefund extends Component
 {
+    use Notifies;
+
     /**
      * The amount to refund.
      *
@@ -15,11 +20,11 @@ class OrderRefund extends Component
     public $amount = 0;
 
     /**
-     * The fail safe confirm text.
+     * Confirm the refund
      *
      * @var string
      */
-    public string $confirmText = '';
+    public bool $confirmed = false;
 
     /**
      * Any notes for the refund.
@@ -28,12 +33,21 @@ class OrderRefund extends Component
      */
     public string $notes = '';
 
+    public $transaction;
+
     /**
      * The instance of the order to refund.
      *
      * @var Order
      */
     public Order $order;
+
+    /**
+     * The refund error message.
+     *
+     * @var boolean
+     */
+    public string $refundError = '';
 
     /**
      * {@inheritDoc}
@@ -51,8 +65,9 @@ class OrderRefund extends Component
     {
         return [
             'amount' => 'required|numeric|min:1',
-            'confirmText' => 'required',
+            'confirmed' => 'required',
             'notes' => 'nullable|string',
+            'transaction' => 'required',
         ];
     }
 
@@ -67,14 +82,14 @@ class OrderRefund extends Component
         $this->amount = $val / 100;
     }
 
-    /**
-     * Whether the confirmText matches what is required to send the refund.
-     *
-     * @return void
-     */
-    public function getIsConfirmedProperty()
+    public function getChargesProperty()
     {
-        return $this->confirmText === __('adminhub::components.orders.refund.confirm_text');
+        return $this->order->transactions()->whereRefund(false)->whereSuccess(true)->get();
+    }
+
+    public function getTransactionModelProperty()
+    {
+        return Transaction::find($this->transaction);
     }
 
     /**
@@ -84,7 +99,20 @@ class OrderRefund extends Component
      */
     public function refund()
     {
+        $this->refundError = '';
+
         $this->validate();
+
+        $response = $this->transactionModel->refund($this->amount * 100);
+
+        if (!$response->success) {
+            $this->refundError = $response->message;
+
+            $this->notify(
+                message: 'There was a problem with the refund',
+                level: 'error'
+            );
+        }
     }
 
     /**
