@@ -39,7 +39,7 @@ class Number implements FieldType
      */
     public function setValue($value)
     {
-        if (! is_numeric($value)) {
+        if ((! is_numeric($value)) && $value !== '') {
             throw new FieldTypeException(self::class.' value must be numeric.');
         }
 
@@ -79,7 +79,7 @@ class Number implements FieldType
             'view'    => 'adminhub::field-types.number',
             'options' => [
                 'min' => 'numeric|min:1',
-                'max' => 'numeric|max:255',
+                'max' => 'numeric',
             ],
         ];
     }
