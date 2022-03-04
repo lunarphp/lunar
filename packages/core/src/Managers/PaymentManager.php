@@ -26,6 +26,7 @@ class PaymentManager extends Manager
      */
     protected function createDriver($driver)
     {
+
         $originalDriver = $driver;
 
         $type = config("getcandy.payments.types.{$driver}");
@@ -37,6 +38,7 @@ class PaymentManager extends Manager
         // }
 
         $driver = $type['driver'] ?? $originalDriver;
+
 
         $driverInstance = null;
 
@@ -57,7 +59,7 @@ class PaymentManager extends Manager
             return $driverInstance->setConfig($type ?? []);
         }
 
-        return parent::driver($originalDriver);
+        return parent::createDriver($originalDriver);
     }
 
     /**

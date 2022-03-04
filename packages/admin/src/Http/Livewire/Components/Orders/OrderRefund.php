@@ -103,16 +103,30 @@ class OrderRefund extends Component
 
         $this->validate();
 
-        $response = $this->transactionModel->refund($this->amount * 100);
+        $response = $this->transactionModel->refund($this->amount * 100, $this->notes);
 
         if (!$response->success) {
+            $this->emit('refundError', $this->transaction);
+
             $this->refundError = $response->message;
 
             $this->notify(
                 message: 'There was a problem with the refund',
                 level: 'error'
             );
+
+            return;
         }
+
+        $this->transaction = null;
+        $this->amount = 0;
+        $this->notes = '';
+
+        $this->emit('refundSuccess', $this->transaction);
+
+        $this->notify(
+            message: 'Refund successful',
+        );
     }
 
     /**
