@@ -81,7 +81,7 @@
 
       <section class="p-4 bg-white rounded-lg shadow">
         @include('adminhub::partials.orders.address', [
-          'heading' => 'Shipping Address',
+          'heading' =>  __('adminhub::components.orders.show.shipping_header'),
           'editTrigger' => 'showShippingAddressEdit',
           'hidden' => false,
           'address' => $this->shippingAddress,
@@ -90,7 +90,7 @@
 
       <section class="p-4 bg-white rounded-lg shadow">
         @include('adminhub::partials.orders.address', [
-          'heading' => 'Billing Address',
+          'heading' => __('adminhub::components.orders.show.billing_header'),
           'hidden' => $this->shippingEqualsBilling,
           'message' => __('adminhub::components.orders.show.billing_matches_shipping'),
           'address' => $this->shippingAddress,
