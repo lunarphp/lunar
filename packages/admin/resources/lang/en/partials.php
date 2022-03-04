@@ -138,7 +138,7 @@ return [
     'shipping.manual_volume_btn' => 'Click to set manually',
     'shipping.auto_volume_btn'   => 'Use generated volume',
     /**
-     * Orders.
+     * Orders
      */
     'orders.totals.sub_total' => 'Sub Total',
     'orders.totals.shipping_total' => 'Shipping Total',
@@ -155,5 +155,5 @@ return [
     'orders.details.channel' => 'Channel',
     'orders.details.date_created' => 'Date Created',
     'orders.details.date_placed' => 'Date Placed',
-    'orders.address.not_set' => 'No address set',
+    'orders.address.no_set' => 'No address set',
 ];

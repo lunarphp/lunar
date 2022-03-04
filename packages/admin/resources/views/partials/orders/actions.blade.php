@@ -32,7 +32,6 @@
   {{ __('adminhub::components.orders.show.update_status_btn') }}
 </button>
 
-
 <div
   class="relative flex justify-end flex-1"
   x-data="{ showMenu: false }"
