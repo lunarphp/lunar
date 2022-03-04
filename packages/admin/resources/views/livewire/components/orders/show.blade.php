@@ -21,6 +21,7 @@
           {{ __('adminhub::components.orders.show.print_btn') }}
         </button>
 
+        @if($order->transactions->count())
         <button
           class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
           type="button"
@@ -39,6 +40,7 @@
           @endif
 
         </button>
+        @endif
 
         <button
           class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
