@@ -6,6 +6,7 @@ use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
+use GetCandy\Models\Collection;
 use Illuminate\Console\Command;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Engines\MeiliSearchEngine;
@@ -34,12 +35,13 @@ class MeilisearchSetup extends Command
      *
      * @var array
      */
-    protected $searchables = [
-        Product::class,
-        Order::class,
-        ProductOption::class,
-        Customer::class,
-    ];
+    // protected $searchables = [
+    //     Product::class,
+    //     Order::class,
+    //     ProductOption::class,
+    //     Customer::class,
+    //     Collection::class,
+    // ];
 
     /**
      * Execute the console command.
@@ -48,20 +50,26 @@ class MeilisearchSetup extends Command
      */
     public function handle(EngineManager $engine)
     {
+        // Return the models we want to search on.
+        $searchables = config('getcandy.indexer.models', []);
+        
         $this->engine = $engine->createMeilisearchDriver();
 
         // Make sure we have the relevant indexes ready to go.
-        foreach ($this->searchables as $searchable) {
+        foreach ($searchables as $searchable) {
+        // foreach ($this->searchables as $searchable) {
             $model = (new $searchable());
 
             $indexName = $model->searchableAs();
 
             try {
                 $index = $this->engine->getIndex($indexName);
+                $this->warn("Index {$indexName} found for {$searchable}");
             } catch (ApiException $e) {
-                $this->info("Creating index for {$searchable}");
+                $this->warn($e->getMessage());
+                $this->info("Creating index {$indexName} for {$searchable}");
                 $this->engine->createIndex($indexName);
-
+                sleep(1);
                 $index = $this->engine->getIndex($indexName);
             }
 
@@ -76,6 +84,8 @@ class MeilisearchSetup extends Command
             $index->updateSortableAttributes(
                 $model->getSortableAttributes()
             );
+
+            $this->newLine();
         }
     }
 }
