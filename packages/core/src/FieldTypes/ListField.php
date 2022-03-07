@@ -4,8 +4,9 @@ namespace GetCandy\FieldTypes;
 
 use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
+use JsonSerializable;
 
-class ListField implements FieldType
+class ListField implements FieldType, JsonSerializable
 {
     /**
      * @var string
@@ -23,6 +24,16 @@ class ListField implements FieldType
     }
 
     /**
+     * Serialize the class.
+     *
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->value;
+    }
+
+    /**
      * Return the value of this field.
      *
      * @return array
@@ -31,6 +42,7 @@ class ListField implements FieldType
     {
         return json_decode($this->value);
     }
+
 
     /**
      * Set the value of this field.
