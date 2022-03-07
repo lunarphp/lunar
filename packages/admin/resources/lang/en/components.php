@@ -128,5 +128,5 @@ return [
      * Order Refund.
      */
     'orders.refund.confirm_text'                    => 'CONFIRM',
-    'orders.refund.confirm_message'                 => 'Please type confirm you want to send the refund',
+    'orders.refund.confirm_message'                 => 'Please type :confirm to confirm you want to send the refund',
 ];
