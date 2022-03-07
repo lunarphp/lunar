@@ -17,7 +17,7 @@ class OrdersIndex extends Component
     /**
      * Number of results to display per page.
      *
-     * @var integer
+     * @var int
      */
     public $perPage = 25;
 
