@@ -43,7 +43,6 @@ class ListField implements FieldType, JsonSerializable
         return json_decode($this->value);
     }
 
-
     /**
      * Set the value of this field.
      *
