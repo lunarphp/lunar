@@ -39,12 +39,9 @@ class Orders implements OrdersTableInterface
     }
 
     /**
-     * Add a table column.
-     *
-     * @param  string  $header
-     * @return \GetCandy\Hub\DataTransferObjects\TableColumn
+     * {@inheritDoc}
      */
-    public function addColumn(string $header)
+    public function addColumn(string $header): TableColumn
     {
         $this->columns->push(
             $column = new TableColumn($header)
@@ -54,14 +51,9 @@ class Orders implements OrdersTableInterface
     }
 
     /**
-     * Add a filter.
-     *
-     * @param  string  $header
-     * @param  string  $column
-     * @param  Closure|null  $formatter
-     * @return \GetCandy\Hub\DataTransferObjects\TableFilter
+     * {@inheritDoc}
      */
-    public function addFilter(string $header, string $column, Closure $formatter = null)
+    public function addFilter(string $header, string $column, Closure $formatter = null): TableFilter
     {
         $this->filters->push(
             $filter = new TableFilter($header, $column, $formatter)
@@ -71,21 +63,17 @@ class Orders implements OrdersTableInterface
     }
 
     /**
-     * Return the table columns.
-     *
-     * @return \Illuminate\Support\Collection
+     * {@inheritDoc}
      */
-    public function getColumns()
+    public function getColumns(): Collection
     {
         return $this->columns;
     }
 
     /**
-     * Return the table filters.
-     *
-     * @return \Illuminate\Support\Collection
+     * {@inheritDoc}
      */
-    public function getFilters()
+    public function getFilters(): Collection
     {
         return $this->filters;
     }
@@ -102,12 +90,9 @@ class Orders implements OrdersTableInterface
     }
 
     /**
-     * Set the exporter class.
-     *
-     * @param  string  $exporter
-     * @return self
+     * {@inheritDoc}
      */
-    public function exportUsing($exporter)
+    public function exportUsing($exporter): self
     {
         $this->exporter = $exporter;
 
