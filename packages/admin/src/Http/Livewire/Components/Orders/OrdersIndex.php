@@ -115,7 +115,17 @@ class OrdersIndex extends Component
      */
     public function updatedSearch()
     {
-        $this->setPage(1);
+        $this->resetPage();
+    }
+
+    /**
+     * Handle when filters are updated.
+     *
+     * @return void
+     */
+    public function updatedFilters()
+    {
+        $this->resetPage();
     }
 
     /**
@@ -160,9 +170,7 @@ class OrdersIndex extends Component
      */
     public function getOrdersProperty()
     {
-        $search = new OrderSearch();
-
-        return $search->search(
+        return app(OrderSearch::class)->search(
             $this->search,
             [
                 'filters' => $this->filters,

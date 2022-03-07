@@ -20,6 +20,6 @@ class Facets
             fn ($facet) => $facet->field == $field
         );
 
-        return $facet->values ?: collect();
+        return $facet->values ?? collect();
     }
 }
