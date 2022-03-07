@@ -19,11 +19,9 @@
         </div>
 
         <div>
-          <img
-            class="object-contain w-12 h-auto"
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1599px-Visa_Inc._logo.svg.png?20170118154621"
-            alt="{{ $transaction->card_type }}"
-          >
+          <svg viewBox="0 0 50 50" class="w-10">
+              <use xlink:href="#{{ $transaction->card_type }}"></use>
+          </svg>
         </div>
 
         <p class="text-sm text-gray-600">

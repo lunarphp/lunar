@@ -25,4 +25,11 @@ class GetCandyHub
 
         return str_replace('<svg', sprintf('<svg%s', $attrs), File::get($iconPath));
     }
+
+    public static function paymentIcons()
+    {
+        return File::get(
+            __DIR__."/../resources/icons/payment_icons.svg"
+        );
+    }
 }
