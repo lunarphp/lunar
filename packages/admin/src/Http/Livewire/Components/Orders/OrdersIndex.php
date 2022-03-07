@@ -6,7 +6,6 @@ use GetCandy\Hub\Facades\OrdersTable;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithSavedSearches;
 use GetCandy\Hub\Search\OrderSearch;
-use GetCandy\Hub\Tables\Orders;
 use GetCandy\Models\Order;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -15,7 +14,12 @@ class OrdersIndex extends Component
 {
     use WithPagination, WithSavedSearches, Notifies;
 
-    public $perPage = 5;
+    /**
+     * Number of results to display per page.
+     *
+     * @var integer
+     */
+    public $perPage = 25;
 
     /**
      * The search term.
