@@ -15,6 +15,8 @@ class OrdersIndex extends Component
 {
     use WithPagination, WithSavedSearches, Notifies;
 
+    public $perPage = 5;
+
     /**
      * The search term.
      *
@@ -71,6 +73,8 @@ class OrdersIndex extends Component
      */
     protected $queryString = [
         'search' => ['except' => ''],
+        'page',
+        'perPage',
         'filters',
     ];
 
@@ -158,7 +162,9 @@ class OrdersIndex extends Component
             $this->search,
             [
                 'filters' => $this->filters,
-            ]
+            ],
+            $this->perPage,
+            $this->page
         );
     }
 

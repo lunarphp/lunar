@@ -10,12 +10,10 @@ use GetCandy\Models\Order;
 
 class OrderSearch extends AbstractSearch
 {
-    public function getModel()
-    {
-        return Order::class;
-    }
-
-    public function search($term, $options = [], $perPage = 25, $page = 1)
+    /**
+     * {@inheritDoc}
+     */
+    public function search($term, $options = [], $perPage = 25, $page = 1): SearchResults
     {
         if ($this->driver == 'meilisearch') {
             return $this->meilisearch(
@@ -27,20 +25,27 @@ class OrderSearch extends AbstractSearch
         }
     }
 
+    /**
+     * Return meilisearch results.
+     *
+     * @param string $term
+     * @param array $options
+     * @param integer $perPage
+     * @param integer $page
+     * @return SearchResults
+     */
     protected function meilisearch($term, $options = [], $perPage = 25, $page = 1)
     {
         $filters = $options['filters'] ?? [];
 
-        $builder = Order::search($term, function ($engine, $query) use ($filters) {
+        $builder = Order::search($term, function ($engine, $query) use ($filters, $perPage, $page) {
             $parsedFilters = collect();
 
             $options = [
-                // 'limit' => $this->perPage,
-                // 'offset' => ($this->perPage * $this->page) - $this->perPage,
+                'limit' => $perPage,
+                'offset' => ($perPage * $page) - $perPage,
                 'facetsDistribution' => (new Order)->getFilterableAttributes(),
                 'sort' => ['placed_at:desc', 'created_at:desc'],
-                // 'filter' => null,
-                // 'sort' => [$this->sort],
             ];
 
             foreach ($filters as $field => $values) {
@@ -79,13 +84,11 @@ class OrderSearch extends AbstractSearch
                 $options['filter'] = $parsedFilters->join(' AND ');
             }
 
-            // dd($options);
-
             return $engine->search($query, $options);
         });
 
-        // In order to get all the facets we need, we need to do a separate call to meilisearch with an empty
-        // search and filters. Since Meilisearch will remove any facets not in the result which is the opposite of what
+        // In order to get all the facets we need, we need to do a separate call to meilisearch with empty
+        // search and filters. Since Meilisearch will remove any facets not in the result, which is the opposite of what
         // we want. Hopefully one day we can change this...
         $emptySearch = Order::search($term, function ($engine, $query) use ($options) {
             $options = [
@@ -95,7 +98,7 @@ class OrderSearch extends AbstractSearch
             return $engine->search(null, $options);
         })->raw();
 
-        $results = $builder->paginate($perPage, null, $page);
+        $results = $builder->paginate($perPage, 'page', $page);
 
         $facets = new Facets;
 
