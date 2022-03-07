@@ -8,7 +8,7 @@ use GetCandy\Hub\DataTransferObjects\Search\SearchResults;
 abstract class AbstractSearch implements SearchInterface
 {
     /**
-     * Initialise the class
+     * Initialise the class.
      */
     public function __construct()
     {
@@ -16,12 +16,12 @@ abstract class AbstractSearch implements SearchInterface
     }
 
     /**
-     * Return search results from given criteria
+     * Return search results from given criteria.
      *
-     * @param string $term
-     * @param array $options
-     * @param integer $perPage
-     * @param integer $page
+     * @param  string  $term
+     * @param  array  $options
+     * @param  int  $perPage
+     * @param  int  $page
      * @return SearchResults
      */
     abstract public function search($term, $options = [], $perPage = 25, $page = 1): SearchResults;

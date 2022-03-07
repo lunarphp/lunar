@@ -28,10 +28,10 @@ class OrderSearch extends AbstractSearch
     /**
      * Return meilisearch results.
      *
-     * @param string $term
-     * @param array $options
-     * @param integer $perPage
-     * @param integer $page
+     * @param  string  $term
+     * @param  array  $options
+     * @param  int  $perPage
+     * @param  int  $page
      * @return SearchResults
      */
     protected function meilisearch($term, $options = [], $perPage = 25, $page = 1)
