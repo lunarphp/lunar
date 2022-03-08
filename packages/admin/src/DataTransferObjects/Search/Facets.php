@@ -14,6 +14,12 @@ class Facets
         }
     }
 
+    /**
+     * Get a facet field values
+     *
+     * @param string $field
+     * @return void
+     */
     public function get($field)
     {
         $facet = $this->items->first(

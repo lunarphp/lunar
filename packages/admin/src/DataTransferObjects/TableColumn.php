@@ -15,6 +15,12 @@ class TableColumn
         // ..
     }
 
+    /**
+     * Set the value for the table column with a closure.
+     *
+     * @param Closure $callback
+     * @return void
+     */
     public function value(Closure $callback)
     {
         $this->callback = $callback;
@@ -22,6 +28,12 @@ class TableColumn
         return $this;
     }
 
+    /**
+     * Set whether the column should be sortable
+     *
+     * @param boolean $sortable
+     * @return void
+     */
     public function sortable(bool $sortable = true)
     {
         $this->sortable = $sortable;
@@ -29,8 +41,14 @@ class TableColumn
         return $this;
     }
 
-    public function getValue(Order $order)
+    /**
+     * Get the value for the column.
+     *
+     * @param mixed $entity
+     * @return void
+     */
+    public function getValue($entity)
     {
-        return call_user_func($this->callback, $order);
+        return call_user_func($this->callback, $entity);
     }
 }
