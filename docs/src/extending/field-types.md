@@ -131,7 +131,7 @@ You will also have access to the `$language` variable, which is generally used o
 Once you've made the FieldType, you need to register it. Typically this could done in a service provider:
 
 ```php
-\GetCandy\Facades\AttributeManifest::add(
+\GetCandy\Facades\FieldTypeManifest::add(
   ColourFieldType::class
 );
 ```
