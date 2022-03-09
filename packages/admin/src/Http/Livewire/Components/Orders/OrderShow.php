@@ -200,6 +200,12 @@ class OrderShow extends Component
         $this->shippingAddress = $this->shippingAddress->refresh();
     }
 
+    /**
+     * Return the refund amount based on selected lines
+     * or based on the order total.
+     *
+     * @return int
+     */
     public function getRefundAmountProperty()
     {
         if (count($this->selectedLines)) {
@@ -211,21 +217,16 @@ class OrderShow extends Component
         return $this->order->total->value;
     }
 
+    /**
+     * Handle when selected order lines update.
+     *
+     * @param array $val
+     * @return void
+     */
     public function updatedSelectedLines($val)
     {
         $this->emit('updateRefundAmount', $this->refundAmount);
-        // dd($this->refundAmount);
     }
-
-    // public function updatedSelectedLines($val)
-    // {
-    //     dd($this->selectedLines);
-    //     $lines = $this->order->lines->filter(function ($line) use ($val) {
-    //         return in_array($line->id, $val);
-    //     });
-
-    //     // dd($lines->first());
-    // }
 
     /**
      * Save the shipping address.
