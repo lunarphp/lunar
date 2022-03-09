@@ -17,7 +17,7 @@ class TableFilter
     /**
      * Format the value for display.
      *
-     * @param string $value
+     * @param  string  $value
      * @return void
      */
     public function format($value)
