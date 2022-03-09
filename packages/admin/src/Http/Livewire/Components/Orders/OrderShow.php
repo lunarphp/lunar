@@ -276,6 +276,16 @@ class OrderShow extends Component
     }
 
     /**
+     * Display meta fields.
+     *
+     * @return void
+     */
+    public function getMetaFieldsProperty()
+    {
+        return (array) $this->order->meta;
+    }
+
+    /**
      * Add a comment to the order.
      *
      * @return void

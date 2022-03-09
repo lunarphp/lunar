@@ -105,15 +105,21 @@
         </header>
 
         <dl class="mt-4 space-y-2 text-sm text-gray-600">
-          <div class="grid grid-cols-3 gap-2">
-            <dt class="font-medium text-gray-700">
-              Metafield:
-            </dt>
+          @foreach($this->metaFields as $key => $value)
+            <div class="grid grid-cols-3 gap-2">
+              <dt class="font-medium text-gray-700">
+                {{ $key }}:
+              </dt>
 
-            <dd class="col-span-2">
-              Lorem ipsum dolor sit amet.
-            </dd>
-          </div>
+              <dd class="col-span-2">
+                @if(!is_string($value))
+                  <pre class="font-mono">{{ json_encode($value) }}</pre>
+                @else
+                  {{ $value }}
+                @endif
+              </dd>
+            </div>
+          @endforeach
         </dl>
       </section>
     </div>
