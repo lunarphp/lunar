@@ -41,10 +41,10 @@ abstract class AbstractTable implements OrdersTableInterface
     /**
      * {@inheritDoc}
      */
-    public function addColumn(string $header): TableColumn
+    public function addColumn(string $header, bool $sortable = false, Closure $callback = null): TableColumn
     {
         $this->columns->push(
-            $column = new TableColumn($header)
+            $column = new TableColumn($header, $sortable, $callback)
         );
 
         return $column;

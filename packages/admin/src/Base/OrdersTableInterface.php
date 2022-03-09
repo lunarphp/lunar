@@ -15,7 +15,7 @@ interface OrdersTableInterface
      * @param  string  $header
      * @return \GetCandy\Hub\DataTransferObjects\TableColumn
      */
-    public function addColumn(string $header): TableColumn;
+    public function addColumn(string $header, bool $sortable = false, Closure $callback = null): TableColumn;
 
     /**
      * Add a filter.
