@@ -6,7 +6,7 @@
       </a>
       <strong class="text-xl">
          @foreach($variant->values as $value)
-          {{ $value->name->en }} {{ !$loop->last ? '/' : null }}
+          {{ $value->translate('name') }} {{ !$loop->last ? '/' : null }}
          @endforeach
       </strong>
     </div>

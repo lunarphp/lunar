@@ -4,8 +4,9 @@ namespace GetCandy\FieldTypes;
 
 use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
+use JsonSerializable;
 
-class Dropdown implements FieldType
+class Dropdown implements FieldType, JsonSerializable
 {
     /**
      * @var string|int
@@ -20,6 +21,16 @@ class Dropdown implements FieldType
     public function __construct($value = '')
     {
         $this->setValue($value);
+    }
+
+    /**
+     * Serialize the class.
+     *
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->value;
     }
 
     /**

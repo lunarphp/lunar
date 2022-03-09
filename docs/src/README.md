@@ -4,7 +4,7 @@ We're delighted you are considering GetCandy for your project. We've spent a lot
 
 ## What is GetCandy?
 
-GetCandy is a package which brings functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
+GetCandy is a [Laravel e-commerce package](https://getcandy.io/) which brings functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
 
 ## Tech Stack
 

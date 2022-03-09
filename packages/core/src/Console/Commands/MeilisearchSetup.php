@@ -52,7 +52,9 @@ class MeilisearchSetup extends Command
 
         // Make sure we have the relevant indexes ready to go.
         foreach ($this->searchables as $searchable) {
-            $indexName = (new $searchable())->searchableAs();
+            $model = (new $searchable());
+
+            $indexName = $model->searchableAs();
 
             try {
                 $index = $this->engine->getIndex($indexName);
@@ -63,25 +65,17 @@ class MeilisearchSetup extends Command
                 $index = $this->engine->getIndex($indexName);
             }
 
-            $index->updateFilterableAttributes([
-                '__soft_deleted',
-            ]);
+            $this->info("Adding filterable fields to {$searchable}");
+
+            $index->updateFilterableAttributes(
+                $model->getFilterableAttributes()
+            );
+
+            $this->info("Adding sortable fields to {$searchable}");
+
+            $index->updateSortableAttributes(
+                $model->getSortableAttributes()
+            );
         }
-
-        $this->setUpOrders();
-    }
-
-    protected function setUpOrders()
-    {
-        $index = $this->engine->getIndex(
-            (new Order())->searchableAs()
-        );
-
-        $index->updateFilterableAttributes([
-            'status',
-            'placed_at',
-            'created_at',
-            'total',
-        ]);
     }
 }
