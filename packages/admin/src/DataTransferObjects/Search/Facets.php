@@ -15,9 +15,9 @@ class Facets
     }
 
     /**
-     * Get a facet field values
+     * Get a facet field values.
      *
-     * @param string $field
+     * @param  string  $field
      * @return void
      */
     public function get($field)

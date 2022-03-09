@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\DataTransferObjects;
 
 use Closure;
-use GetCandy\Models\Order;
 
 class TableColumn
 {
@@ -18,7 +17,7 @@ class TableColumn
     /**
      * Set the value for the table column with a closure.
      *
-     * @param Closure $callback
+     * @param  Closure  $callback
      * @return void
      */
     public function value(Closure $callback)
@@ -29,9 +28,9 @@ class TableColumn
     }
 
     /**
-     * Set whether the column should be sortable
+     * Set whether the column should be sortable.
      *
-     * @param boolean $sortable
+     * @param  bool  $sortable
      * @return void
      */
     public function sortable(bool $sortable = true)
@@ -44,7 +43,7 @@ class TableColumn
     /**
      * Get the value for the column.
      *
-     * @param mixed $entity
+     * @param  mixed  $entity
      * @return void
      */
     public function getValue($entity)
