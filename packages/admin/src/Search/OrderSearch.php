@@ -23,6 +23,14 @@ class OrderSearch extends AbstractSearch
                 $page,
             );
         }
+
+        $facets = new Facets;
+        $results = Order::search($term)->paginate($perPage, 'page', $page);
+
+        return new SearchResults(
+            $results,
+            $facets
+        );
     }
 
     /**
