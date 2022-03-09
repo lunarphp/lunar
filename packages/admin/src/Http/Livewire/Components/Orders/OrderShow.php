@@ -220,7 +220,7 @@ class OrderShow extends Component
     /**
      * Handle when selected order lines update.
      *
-     * @param array $val
+     * @param  array  $val
      * @return void
      */
     public function updatedSelectedLines($val)
