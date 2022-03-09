@@ -33,6 +33,11 @@ class OrderRefund extends Component
      */
     public string $notes = '';
 
+    /**
+     * The transaction id to refund.
+     *
+     * @var string|int
+     */
     public $transaction;
 
     /**
@@ -69,6 +74,16 @@ class OrderRefund extends Component
             'notes' => 'nullable|string',
             'transaction' => 'required',
         ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mount()
+    {
+        if ($this->charges->count() == 1) {
+            $this->transaction = $this->charges->first()->id;
+        }
     }
 
     /**

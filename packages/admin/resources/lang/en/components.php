@@ -129,4 +129,7 @@ return [
      */
     'orders.refund.confirm_text'                    => 'CONFIRM',
     'orders.refund.confirm_message'                 => 'Please type :confirm to confirm you want to send the refund',
+    'orders.refund.no_charges'                      => 'There are no refundable charges on this order',
+    'orders.refund.select_transaction'              => 'Select a transaction',
+    'orders.refund.refund_btn'                      => 'Send refund',
 ];
