@@ -2,8 +2,8 @@
 
 namespace GetCandy\Hub\Slots;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class SlotRegistry
 {
@@ -13,14 +13,14 @@ class SlotRegistry
      * @var array
      */
     protected $slots = [];
-    
+
     /**
-     * The component we want to show slots for
+     * The component we want to show slots for.
      *
      * @var string
      */
     protected $component;
-    
+
     /**
      * Initialise the class.
      */
@@ -29,7 +29,7 @@ class SlotRegistry
     }
 
     /**
-     * Register a slot against a specific handle
+     * Register a slot against a specific handle.
      *
      * @param  string  $handle
      * @param  class  $slot
@@ -43,7 +43,7 @@ class SlotRegistry
 
         $this->slots[$handle][] = $slot;
     }
-    
+
     /**
      * What handle do we want slots for?
      *
@@ -56,9 +56,9 @@ class SlotRegistry
 
         return $this;
     }
-    
+
     /**
-     * Get slots for the current component
+     * Get slots for the current component.
      *
      * @param  Model  $model
      * @return \Illuminate\Support\Collection

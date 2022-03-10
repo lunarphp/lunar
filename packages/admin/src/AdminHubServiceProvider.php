@@ -95,11 +95,11 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->app->singleton(MenuRegistry::class, function () {
             return new MenuRegistry();
         });
-        
+
         $this->app->singleton(SlotRegistry::class, function () {
             return new SlotRegistry();
         });
-        
+
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
             return new \GetCandy\Hub\Editing\ProductSection();
         });

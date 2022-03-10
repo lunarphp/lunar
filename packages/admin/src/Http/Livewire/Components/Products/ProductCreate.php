@@ -53,7 +53,7 @@ class ProductCreate extends AbstractProduct
         return view('adminhub::livewire.components.products.create')
             ->layout('adminhub::layouts.base');
     }
-    
+
     protected function getSlotContexts()
     {
         return ['product.all', 'product.create'];

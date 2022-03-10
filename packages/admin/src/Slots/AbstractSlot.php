@@ -7,26 +7,26 @@ use Illuminate\View\View;
 abstract class AbstractSlot
 {
     /**
-     * The model the slot is handling
+     * The model the slot is handling.
      *
      * @var string
      */
     protected $model;
-    
+
     /**
      * The menu slot handle.
      *
      * @var string
      */
     protected $handle;
-    
+
     /**
      * The menu slot location.
      *
      * @var string
      */
     protected $location;
-    
+
     /**
      * The menu slot title.
      *
@@ -35,7 +35,7 @@ abstract class AbstractSlot
     protected $title;
 
     /**
-     * Set the model we are affecting
+     * Set the model we are affecting.
      *
      * @param  string  $model
      */
@@ -45,7 +45,7 @@ abstract class AbstractSlot
     }
 
     /**
-     * Get validation rules the slot required
+     * Get validation rules the slot required.
      *
      * @return array
      */
@@ -55,7 +55,7 @@ abstract class AbstractSlot
     }
 
     /**
-     * Save the model
+     * Save the model.
      *
      * @param  mixed  $model
      * @return void
@@ -65,7 +65,7 @@ abstract class AbstractSlot
     }
 
     /**
-     * Render the slot
+     * Render the slot.
      *
      * @return \Illuminate\View\View
      */
@@ -74,7 +74,7 @@ abstract class AbstractSlot
     }
 
     /**
-     * Get any errors
+     * Get any errors.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -92,9 +92,9 @@ abstract class AbstractSlot
     {
         return $this->handle;
     }
-    
+
     /**
-     * Get the location on the view where the slot appears
+     * Get the location on the view where the slot appears.
      *
      * @return string
      */
@@ -102,7 +102,7 @@ abstract class AbstractSlot
     {
         return $this->location;
     }
-    
+
     /**
      * Get the title of the slot.
      *

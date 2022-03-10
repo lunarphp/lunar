@@ -36,10 +36,10 @@ trait HasSlots
         $contexts = $this->getSlotContexts();
 
         return $this->slots->filter(function ($context) use ($contexts) {
-                return in_array($context, $contexts);    
-            })
+            return in_array($context, $contexts);
+        })
             ->flatten()
-            ->map(function($slot) {
+            ->map(function ($slot) {
                 return $slot->getValidationRules() ?? [];
             })
             ->filter()
@@ -47,7 +47,7 @@ trait HasSlots
     }
 
     /**
-     * Get the contexts for slots
+     * Get the contexts for slots.
      *
      * @return array
      */
@@ -61,7 +61,7 @@ trait HasSlots
     abstract protected function getSlotModel();
 
     /**
-     * Update all slots for a given context
+     * Update all slots for a given context.
      *
      * @param  string  $context
      * @return void
@@ -72,8 +72,8 @@ trait HasSlots
         $contexts = $this->getSlotContexts();
 
         $this->slots->filter(function ($context) use ($contexts) {
-                return in_array($context, $contexts);    
-            })
+            return in_array($context, $contexts);
+        })
             ->flatten()
             ->each(function ($slot) use ($model) {
                 $slot->handleSave($model);
@@ -81,7 +81,7 @@ trait HasSlots
     }
 
     /**
-     * Utility function to get slots for a given context, e.g. 'product.create'
+     * Utility function to get slots for a given context, e.g. 'product.create'.
      */
     private function getSlotsForContext($context)
     {

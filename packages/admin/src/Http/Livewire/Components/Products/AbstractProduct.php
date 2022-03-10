@@ -414,7 +414,7 @@ abstract class AbstractProduct extends Component
                         ['position' => $collection['position']]
                     );
             });
-            
+
             $this->updateSlots('product.all');
 
             $this->product->refresh();
@@ -863,7 +863,7 @@ abstract class AbstractProduct extends Component
     {
         return $this->product;
     }
-    
+
     /**
      * Returns the model which has slots associated.
      *
@@ -873,9 +873,9 @@ abstract class AbstractProduct extends Component
     {
         return $this->product;
     }
-    
+
     /**
-     * Returns the contexts for any slots
+     * Returns the contexts for any slots.
      *
      * @return array
      */
