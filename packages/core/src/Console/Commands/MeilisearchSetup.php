@@ -2,11 +2,6 @@
 
 namespace GetCandy\Console\Commands;
 
-use GetCandy\Models\Customer;
-use GetCandy\Models\Order;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\Collection;
 use Illuminate\Console\Command;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Engines\MeiliSearchEngine;
@@ -31,19 +26,6 @@ class MeilisearchSetup extends Command
     protected MeiliSearchEngine $engine;
 
     /**
-     * The models we want to search on.
-     *
-     * @var array
-     */
-    // protected $searchables = [
-    //     Product::class,
-    //     Order::class,
-    //     ProductOption::class,
-    //     Customer::class,
-    //     Collection::class,
-    // ];
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -52,7 +34,7 @@ class MeilisearchSetup extends Command
     {
         // Return the models we want to search on.
         $searchables = config('getcandy.indexer.models', []);
-        
+
         $this->engine = $engine->createMeilisearchDriver();
 
         // Make sure we have the relevant indexes ready to go.

@@ -12,17 +12,6 @@ use GetCandy\Models\Order;
 class ScoutIndexer extends Command
 {
     /**
-     * GetCandy models for indexing
-     */
-    // private $models = [
-    //     Collection::class,
-    //     Product::class,
-    //     ProductOption::class,
-    //     Customer::class,
-    //     Order::class,
-    // ];
-
-    /**
      * The name and signature of the console command.
      *
      * @var string
