@@ -244,7 +244,7 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->withAttributesValidationRules(),
-            $this->hasSlotsValidationRules(),
+            $this->hasSlotsValidationRules('product.all'),
         );
     }
 
@@ -415,7 +415,7 @@ abstract class AbstractProduct extends Component
                     );
             });
             
-            $this->updateSlots($this->product);
+            $this->updateSlots('product.all');
 
             $this->product->refresh();
 

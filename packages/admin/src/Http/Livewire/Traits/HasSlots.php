@@ -2,46 +2,24 @@
 
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
-trait HasSlots
-{
-    /**
-     * List of registered slot classes
-     *
-     * @var array
-     */
-    public static $registeredSlots = [];
+use GetCandy\Hub\Facades\Slot;
 
-    public static function registerSlot($klass)
-    {
-        self::$registeredSlots[] = $klass;
-    }
-    
+trait HasSlots
+{    
     /**
      * Get validation rules for slots.
      *
+     * @param  string  $context
      * @return array
      */
-    protected function hasSlotsValidationRules()
+    protected function hasSlotsValidationRules($context)
     {
-        return $this->slots->map(function($slot) {
-            return $slot->getValidationRules() ?? [];    
-        })
+        return $this->getSlotsForContext($context)
+            ->map(function($slot) {
+                return $slot->getValidationRules() ?? [];    
+            })
             ->flatten(1)
             ->filter();
-    }
-
-    /**
-     * Mount the component trait.
-     *
-     * @return void
-     */
-    public function mountHasSlots()
-    {
-        $model = $this->getSlotModel();
-        
-        $this->slots = collect(self::$registeredSlots)->map(function ($slot) use ($model) {
-            return new $slot($model);
-        });
     }
     
     /**
@@ -52,14 +30,27 @@ trait HasSlots
     abstract protected function getSlotModel();
     
     /**
-     * Update all slots based on 
+     * Update all slots for a given context
      *
+     * @param  string  $context
      * @return void
      */
-    public function updateSlots($model)
+    public function updateSlots($context)
     {
-        $this->slots->each(function ($slot) use ($model) {
-            $slot->handleSave($model);    
-        });     
+        $model = $this->getSlotModel();
+
+        $this->getSlotsForContext($context)
+            ->each(function ($slot) use ($model) {
+                $slot->handleSave($model);    
+            });     
+    }
+    
+    /**
+     * Utility function to get slots for a given context, e.g. 'product.create'
+     */
+    private function getSlotsForContext($context)
+    {
+        return Slot::for($context)
+            ->get($this->getSlotModel());    
     }
 }

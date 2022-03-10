@@ -62,6 +62,7 @@ use GetCandy\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use GetCandy\Hub\Menu\MenuRegistry;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
+use GetCandy\Hub\Menu\SlotRegistry;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -94,7 +95,11 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->app->singleton(MenuRegistry::class, function () {
             return new MenuRegistry();
         });
-
+        
+        $this->app->singleton(SlotRegistry::class, function () {
+            return new SlotRegistry();
+        });
+        
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
             return new \GetCandy\Hub\Editing\ProductSection();
         });

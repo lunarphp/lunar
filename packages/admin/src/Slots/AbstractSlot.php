@@ -2,6 +2,8 @@
 
 namespace GetCandy\Hub\Slots;
 
+use Illuminate\View\View;
+
 abstract class AbstractSlot
 {
     /**
@@ -26,11 +28,11 @@ abstract class AbstractSlot
     protected $title;
 
     /**
-     * Initialise the class.
+     * Set the model we are affecting
      *
      * @param  string  $model
      */
-    public function __construct($model)
+    public function setModel($model)
     {
         $this->model = $model;
     }
@@ -58,11 +60,10 @@ abstract class AbstractSlot
     /**
      * Render the slot
      *
-     * @return string
+     * @return \Illuminate\View\View
      */
     public function render()
     {
-        return '';
     }
 
     /**
