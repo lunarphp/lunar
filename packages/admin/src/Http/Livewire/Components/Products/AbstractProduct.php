@@ -873,6 +873,16 @@ abstract class AbstractProduct extends Component
     {
         return $this->product;
     }
+    
+    /**
+     * Returns the contexts for any slots
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['product.all'];
+    }
 
     /**
      * Render the livewire component.

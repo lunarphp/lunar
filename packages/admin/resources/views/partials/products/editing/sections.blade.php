@@ -37,7 +37,16 @@
           </x-hub::alert>
         @endif
       </div>
-
+      
+      {{--
+        Top Slots
+       --}}
+        @foreach($this->slotsByLocation->get('top', []) as $slot)
+       <div id="{{ $slot->getHandle() }}">
+        {!! $slot->render() !!}
+       </div>
+       @endforeach
+       
       {{--
         Basic Information
        --}}
@@ -117,9 +126,9 @@
        </div>
        
       {{--
-        Slots
+        Bottom Slots
        --}}
-       @foreach ($this->slots as $slot)
+        @foreach($this->slotsByLocation->get('bottom', []) as $slot)
        <div id="{{ $slot->getHandle() }}">
         {!! $slot->render() !!}
        </div>
@@ -186,6 +195,19 @@
   <div>
     <aside class="fixed hidden px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3 md:block">
       <nav class="space-y-2" aria-label="Sidebar">
+        @foreach($this->slotsByLocation->get('top', []) as $slot)
+        <a
+          href="#{{ $slot->getHandle() }}"
+          class="@if(!empty($slot->getErrors())) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          aria-current="page"
+        >
+          @if(!empty($slot->getErrors()))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          <span class="truncate">
+            {{ $slot->getTitle() }}
+          </span>
+        </a>
+        @endforeach      
+      
         @foreach($this->sideMenu as $item)
         <a
           href="#{{ $item['id'] }}"
@@ -199,7 +221,7 @@
         </a>
         @endforeach
         
-        @foreach($this->slots as $slot)
+        @foreach($this->slotsByLocation->get('bottom', []) as $slot)
         <a
           href="#{{ $slot->getHandle() }}"
           class="@if(!empty($slot->getErrors())) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"

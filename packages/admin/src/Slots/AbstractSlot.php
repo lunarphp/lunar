@@ -21,6 +21,13 @@ abstract class AbstractSlot
     protected $handle;
     
     /**
+     * The menu slot location.
+     *
+     * @var string
+     */
+    protected $location;
+    
+    /**
      * The menu slot title.
      *
      * @var string
@@ -84,6 +91,16 @@ abstract class AbstractSlot
     public function getHandle()
     {
         return $this->handle;
+    }
+    
+    /**
+     * Get the location on the view where the slot appears
+     *
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->location;
     }
     
     /**
