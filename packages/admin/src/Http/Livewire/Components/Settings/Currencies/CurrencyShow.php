@@ -25,6 +25,12 @@ class CurrencyShow extends Component
      * @var bool
      */
     public $showFormatInfo = false;
+    /**
+     * Determine whether to show thousand point info text.
+     *
+     * @var bool
+     */
+    public $showThousandPointInfo = false;
 
     /**
      * Define the validation rules.

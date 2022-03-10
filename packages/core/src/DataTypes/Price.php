@@ -76,7 +76,8 @@ class Price
             $this->decimal(),
             $this->currency->decimal_places,
             $this->currency->decimal_point,
-            $this->currency->thousand_point
+            // Use the plus sign (+) to add space as thousand point
+            ($this->currency->thousand_point === '+' ? ' ' : $this->currency->thousand_point)
         );
 
         return str_replace('{value}', $format, $this->currency->format);

@@ -82,6 +82,12 @@ return [
         'When displaying, GetCandy will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
         'You must always include <code>{value}</code> for this to work properly.',
     ],
+    'currencies.form.thousand_point_tip' => 'Need space?',
+    'currencies.form.thousand_point_help_text' => [
+        'To use space as a thousands point, instead of space, type the plus sign (<code>+</code>).',
+        'When displaying prices, GetCandy will change the plus sign to a space.',
+        'Example: Instead of displaying <code>10+000.00</code>, it will display <code>10 000.00</code>.',
+    ],
     /*
      * Addons.
      */

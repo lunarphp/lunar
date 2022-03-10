@@ -43,6 +43,21 @@
         </x-hub::input.group>
 
         <x-hub::input.group :label="__('adminhub::inputs.thousand_point')" for="thousand_point" :error="$errors->first('currency.thousand_point')">
+
+          <x-slot name="instructions">
+            <button type="button" wire:click.prevent="$set('showThousandPointInfo', true)" class="text-indigo-500 hover:underline">
+              {{ __('adminhub::settings.currencies.form.thousand_point_tip') }}
+            </button>
+          </x-slot>
+
+          <x-hub::modal wire:model="showThousandPointInfo">
+            <div class="px-6 py-4">
+              @foreach(__('adminhub::settings.currencies.form.thousand_point_help_text') as $value)
+                <p>{!! $value !!}</p>
+              @endforeach
+            </div>
+          </x-hub::modal>
+
           <x-hub::input.text wire:model="currency.thousand_point" name="thousand_point" id="thousand_point" :error="$errors->first('currency.thousand_point')" />
         </x-hub::input.group>
 
