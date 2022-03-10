@@ -5,7 +5,6 @@ namespace GetCandy\Tests\Unit\Observers;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
-use GetCandy\Models\Url;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Activitylog\Models\Activity;
@@ -32,7 +31,6 @@ class OrderObserverTest extends TestCase
         ]);
     }
 
-
     /** @test */
     public function activity_is_logged_when_status_changes()
     {
@@ -44,7 +42,7 @@ class OrderObserverTest extends TestCase
 
         $this->assertDatabaseMissing((new Activity)->getTable(), [
             'subject_id' => $order->id,
-            'event' => 'status-update'
+            'event' => 'status-update',
         ]);
 
         $order->update([
@@ -57,7 +55,7 @@ class OrderObserverTest extends TestCase
             'properties' => json_encode([
                 'new' => 'status-b',
                 'previous' => 'status-a',
-            ])
+            ]),
         ]);
 
         $order->update([
@@ -70,7 +68,7 @@ class OrderObserverTest extends TestCase
             'properties' => json_encode([
                 'new' => 'status-b',
                 'previous' => 'status-b',
-            ])
+            ]),
         ]);
 
         $order->status = 'status-c';
@@ -82,7 +80,7 @@ class OrderObserverTest extends TestCase
             'properties' => json_encode([
                 'new' => 'status-c',
                 'previous' => 'status-b',
-            ])
+            ]),
         ]);
     }
 }
