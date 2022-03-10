@@ -29,16 +29,19 @@ trait HasSlots
     /**
      * Get validation rules for slots.
      *
-     * @param  string  $context
      * @return array
      */
-    protected function hasSlotsValidationRules($context)
+    protected function hasSlotsValidationRules()
     {
-        return $this->slots->get($context, collect([]))
+        $contexts = $this->getSlotContexts();
+
+        return $this->slots->filter(function ($context) use ($contexts) {
+                return in_array($context, $contexts);    
+            })
+            ->flatten()
             ->map(function($slot) {
                 return $slot->getValidationRules() ?? [];
             })
-            ->flatten(1)
             ->filter()
             ->toArray();
     }
@@ -66,8 +69,12 @@ trait HasSlots
     public function updateSlots($context)
     {
         $model = $this->getSlotModel();
+        $contexts = $this->getSlotContexts();
 
-        $this->slots->get($context, collect([]))
+        $this->slots->filter(function ($context) use ($contexts) {
+                return in_array($context, $contexts);    
+            })
+            ->flatten()
             ->each(function ($slot) use ($model) {
                 $slot->handleSave($model);
             });
