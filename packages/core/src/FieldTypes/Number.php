@@ -4,8 +4,9 @@ namespace GetCandy\FieldTypes;
 
 use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
+use JsonSerializable;
 
-class Number implements FieldType
+class Number implements FieldType, JsonSerializable
 {
     /**
      * @var int|float
@@ -20,6 +21,16 @@ class Number implements FieldType
     public function __construct($value = 0)
     {
         $this->setValue($value);
+    }
+
+    /**
+     * Serialize the class.
+     *
+     * @return string
+     */
+    public function jsonSerialize(): mixed
+    {
+        return $this->value;
     }
 
     /**
@@ -67,7 +78,7 @@ class Number implements FieldType
      */
     public function getView(): string
     {
-        return 'admihub::field-types.number.view';
+        return 'adminhub::field-types.number.view';
     }
 
     /**
@@ -78,8 +89,8 @@ class Number implements FieldType
         return [
             'view'    => 'adminhub::field-types.number',
             'options' => [
-                'min' => 'numeric,min:1',
-                'max' => 'numeric,max:255',
+                'min' => 'numeric|min:1',
+                'max' => 'numeric|max:255',
             ],
         ];
     }

@@ -686,4 +686,121 @@ class ProductShowTest extends TestCase
             'type' => 'cross-sell',
         ]);
     }
+
+    /**
+     * @test
+     * */
+    public function variants_are_enabled_by_default()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
+            ]);
+        }
+
+        LiveWire::actingAs($staff, 'staff')
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSeeHtml('Variants');
+    }
+
+    /**
+     * @test
+     * */
+    public function variants_can_be_disabled()
+    {
+        Config::set('getcandy-hub.products.disable_variants', true);
+
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
+            ]);
+        }
+
+        LiveWire::actingAs($staff, 'staff')
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertDontSeeHtml('Variants');
+    }
+
+    /**
+     * @test
+     * */
+    public function variants_arent_generated_when_disabled()
+    {
+        Config::set('getcandy-hub.products.disable_variants', true);
+
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+            'brand'  => 'BAR',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id'   => $variant->id,
+                'currency_id'    => $currency->id,
+                'tier'           => 1,
+            ]);
+        }
+
+        ProductOption::factory(2)->create()->each(function ($option) {
+            $option->values()->createMany(
+                ProductOptionValue::factory(2)->make()->toArray()
+            );
+        });
+
+        $values = ProductOptionValue::get();
+
+        Config::set('getcandy-hub.products.sku.unique', true);
+
+        LiveWire::actingAs($staff, 'staff')
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->set('optionValues', $values->pluck('id')->toArray())
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertEquals(1, $product->variants()->count());
+    }
 }

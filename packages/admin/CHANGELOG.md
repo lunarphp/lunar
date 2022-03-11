@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+## Added
+
+- Added new config option `disable_variants` to `getcandy-hub/products.php`. This is set to `false` by default so variants remain enabled.
+
+## Fixed
+
+- `wire:model` now correctly references the current property when editing an attribute.
+- Attribute editing validation rules will now take in to account all languages.
+
 ## 2.0-beta10.1 - 2022-02-19
 
 ### Fixed
