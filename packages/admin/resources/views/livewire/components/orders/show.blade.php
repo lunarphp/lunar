@@ -173,7 +173,7 @@
             @foreach($order->tax_breakdown as $tax)
               <tr>
                 <td colspan="6"></td>
-                <td class="p-2 text-sm">{{ $tax->name }}</td>
+                <td class="p-2 text-sm">{{ $tax->description }}</td>
                 <td>{{ $tax->total->formatted }}</td>
               </tr>
             @endforeach

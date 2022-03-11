@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Tests\Unit\Jobs\Products;
 
 use GetCandy\Hub\Exceptions\InvalidProductValuesException;
+use GetCandy\Hub\Exceptions\VariantsDisabledException;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Product;
@@ -89,6 +90,17 @@ class GenerateVariantsTest extends TestCase
 
         $this->expectException(ValidationException::class);
         GenerateVariants::dispatchSync($product, [1, 'foo']);
+    }
+
+    /** @test */
+    public function check_variants_only_generate_when_enabled()
+    {
+        Config::set('getcandy-hub.products.disable_variants', true);
+
+        $product = Product::factory()->has(ProductVariant::factory(), 'variants')->create();
+
+        $this->expectException(VariantsDisabledException::class);
+        GenerateVariants::dispatchSync($product, [[1], [2]]);
     }
 
     /** @test */
