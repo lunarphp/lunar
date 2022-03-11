@@ -15,7 +15,6 @@
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
-        "livewire-ui/modal": "^1.0",
         "livewire/livewire": "^2.0",
         "php": "^8.0",
         "spatie/laravel-activitylog": "^4.4",
