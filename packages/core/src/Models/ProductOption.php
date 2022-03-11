@@ -39,7 +39,7 @@ class ProductOption extends BaseModel
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'_product_options';
+        return config('scout.prefix').'product_options';
     }
 
     /**

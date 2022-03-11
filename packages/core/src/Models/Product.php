@@ -68,7 +68,7 @@ class Product extends BaseModel implements SpatieHasMedia
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'_products';
+        return config('scout.prefix').'products';
     }
 
     /**

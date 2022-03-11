@@ -72,7 +72,7 @@ class Order extends BaseModel
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'_orders';
+        return config('scout.prefix').'orders';
     }
 
     /**

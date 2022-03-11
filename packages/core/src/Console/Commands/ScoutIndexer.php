@@ -81,7 +81,7 @@ class ScoutIndexer extends Command
         }
 
         // Return searchable models from config
-        $searchables = config('getcandy.indexer.models', []);
+        $searchables = config('getcandy.search.models', []);
 
         // Checks whether to ignore models pinned to the class
         if ($this->option('ignore')) {

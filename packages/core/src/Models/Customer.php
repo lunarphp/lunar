@@ -65,7 +65,7 @@ class Customer extends BaseModel
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'_customers';
+        return config('scout.prefix').'customers';
     }
 
     /**

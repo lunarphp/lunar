@@ -102,7 +102,7 @@ class Collection extends BaseModel implements SpatieHasMedia
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'_collections';
+        return config('scout.prefix').'collections';
     }
 
     /**

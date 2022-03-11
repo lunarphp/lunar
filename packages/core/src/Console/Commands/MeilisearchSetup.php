@@ -33,7 +33,7 @@ class MeilisearchSetup extends Command
     public function handle(EngineManager $engine)
     {
         // Return the models we want to search on.
-        $searchables = config('getcandy.indexer.models', []);
+        $searchables = config('getcandy.search.models', []);
 
         $this->engine = $engine->createMeilisearchDriver();
 
