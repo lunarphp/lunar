@@ -8,7 +8,6 @@ use GetCandy\Hub\AdminHubServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
-use LivewireUI\Modal\LivewireModalServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
@@ -30,7 +29,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
             LivewireServiceProvider::class,
             AdminHubServiceProvider::class,
             ActivitylogServiceProvider::class,
-            LivewireModalServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,

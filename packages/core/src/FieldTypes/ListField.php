@@ -28,7 +28,7 @@ class ListField implements FieldType, JsonSerializable
      *
      * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->value;
     }

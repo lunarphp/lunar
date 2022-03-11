@@ -33,7 +33,7 @@ class TranslatedText implements FieldType, JsonSerializable
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->value;
     }
