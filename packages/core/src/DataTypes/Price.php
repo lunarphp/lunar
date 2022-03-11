@@ -74,11 +74,12 @@ class Price
      */
     public function formatted($locale = null, $formatter = NumberFormatter::CURRENCY)
     {
-        if (!$locale) {
+        if (! $locale) {
             $locale = App::currentLocale();
         }
 
         $formatter = new NumberFormatter($locale, $formatter);
+
         return $formatter->formatCurrency($this->value, $this->currency->code);
     }
 }
