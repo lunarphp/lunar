@@ -19,7 +19,7 @@ class PriceTest extends TestCase
     public function can_initiate_the_datatype()
     {
         $currency = Currency::factory()->create([
-            'format'         => '£{value}',
+            'code'           => 'GBP',
             'decimal_places' => 2,
         ]);
 
@@ -36,7 +36,7 @@ class PriceTest extends TestCase
     public function can_handle_multiple_decimal_places()
     {
         $currency = Currency::factory()->create([
-            'format'         => '£{value}',
+            'code'           => 'GBP',
             'decimal_places' => 3,
         ]);
 
@@ -44,20 +44,20 @@ class PriceTest extends TestCase
 
         $this->assertEquals(1500, $dataType->value);
         $this->assertEquals(1.500, $dataType->decimal);
-        $this->assertEquals('£1.500', $dataType->formatted);
+        $this->assertEquals('£1.50', $dataType->formatted);
 
         $dataType = new Price(155, $currency, 1);
 
         $this->assertEquals(155, $dataType->value);
         $this->assertEquals(0.155, $dataType->decimal);
-        $this->assertEquals('£0.155', $dataType->formatted);
+        $this->assertEquals('£0.16', $dataType->formatted);
     }
 
     /** @test */
     public function can_handle_decimals_being_passed()
     {
         $currency = Currency::factory()->create([
-            'format'         => '£{value}',
+            'code'           => 'GBP',
             'decimal_places' => 2,
         ]);
 
