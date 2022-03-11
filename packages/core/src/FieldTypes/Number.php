@@ -4,8 +4,9 @@ namespace GetCandy\FieldTypes;
 
 use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
+use JsonSerializable;
 
-class Number implements FieldType
+class Number implements FieldType, JsonSerializable
 {
     /**
      * @var int|float
@@ -20,6 +21,16 @@ class Number implements FieldType
     public function __construct($value = 0)
     {
         $this->setValue($value);
+    }
+
+    /**
+     * Serialize the class.
+     *
+     * @return string
+     */
+    public function jsonSerialize(): mixed
+    {
+        return $this->value;
     }
 
     /**
