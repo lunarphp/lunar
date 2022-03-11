@@ -80,6 +80,6 @@ class Price
 
         $formatter = new NumberFormatter($locale, $formatter);
 
-        return $formatter->formatCurrency($this->value, $this->currency->code);
+        return $formatter->formatCurrency($this->decimal(), $this->currency->code);
     }
 }
