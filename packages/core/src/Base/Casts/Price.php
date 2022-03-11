@@ -25,7 +25,7 @@ class Price implements CastsAttributes
         /**
          * Make it an integer based on currency requirements.
          */
-        $value = preg_replace("/[^0-9]/", "", $value);
+        $value = preg_replace('/[^0-9]/', '', $value);
 
         Validator::make([
             $key => $value,
