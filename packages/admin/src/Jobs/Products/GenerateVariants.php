@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Jobs\Products;
 
 use GetCandy\Hub\Exceptions\InvalidProductValuesException;
+use GetCandy\Hub\Exceptions\VariantsDisabledException;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductOptionValue;
 use GetCandy\Models\ProductVariant;
@@ -67,6 +68,12 @@ class GenerateVariants implements ShouldQueue
      */
     public function handle()
     {
+        if (config('getcandy-hub.products.disable_variants')) {
+            throw new VariantsDisabledException(
+                'Variants are not enabled, check the hub config'
+            );
+        }
+
         Validator::make([
             'optionValues' => $this->optionValues,
         ], [
