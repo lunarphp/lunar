@@ -5,6 +5,7 @@ namespace GetCandy\Tests\Unit\Models;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
 use GetCandy\Models\CustomerGroup;
+use GetCandy\Models\Language;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductType;
@@ -19,6 +20,15 @@ use Illuminate\Support\Facades\DB;
 class ProductTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Language::factory()->create([
+            'default' => true,
+        ]);
+    }
 
     /** @test */
     public function can_make_a_product()
