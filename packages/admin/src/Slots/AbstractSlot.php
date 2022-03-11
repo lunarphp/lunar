@@ -38,10 +38,13 @@ abstract class AbstractSlot
      * Set the model we are affecting.
      *
      * @param  string  $model
+     * @return self
      */
     public function setModel($model)
     {
         $this->model = $model;
+        
+        return $this;
     }
 
     /**
