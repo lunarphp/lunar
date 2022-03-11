@@ -30,7 +30,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
             LivewireServiceProvider::class,
             AdminHubServiceProvider::class,
             ActivitylogServiceProvider::class,
-            LivewireModalServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
