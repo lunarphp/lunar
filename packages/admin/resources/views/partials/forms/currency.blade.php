@@ -16,36 +16,6 @@
           <x-hub::input.text type="number" step="0.0001" wire:model="currency.exchange_rate" name="exchange_rate" id="exchange_rate" :error="$errors->first('currency.exchange_rate')" />
         </x-hub::input.group>
 
-        <x-hub::input.group
-          :label="__('adminhub::inputs.format')"
-          for="format"
-          :error="$errors->first('currency.format')"
-          :has-info="true"
-        >
-          <x-slot name="instructions">
-            <button type="button" wire:click.prevent="$set('showFormatInfo', true)" class="text-indigo-500 hover:underline">
-              {{ __('adminhub::global.info_link') }}
-            </button>
-          </x-slot>
-
-          <x-hub::modal wire:model="showFormatInfo">
-            <div class="px-6 py-4">
-              @foreach(__('adminhub::settings.currencies.form.format_help_text') as $value)
-                <p>{!! $value !!}</p>
-              @endforeach
-            </div>
-          </x-hub::modal>
-          <x-hub::input.text wire:model="currency.format" name="format" id="format" :error="$errors->first('currency.format')" />
-        </x-hub::input.group>
-
-        <x-hub::input.group :label="__('adminhub::inputs.decimal_point')" for="decimal_point" :error="$errors->first('currency.decimal_point')">
-          <x-hub::input.text wire:model="currency.decimal_point" name="decimal_point" id="decimal_point" :error="$errors->first('currency.decimal_point')" />
-        </x-hub::input.group>
-
-        <x-hub::input.group :label="__('adminhub::inputs.thousand_point')" for="thousand_point" :error="$errors->first('currency.thousand_point')">
-          <x-hub::input.text wire:model="currency.thousand_point" name="thousand_point" id="thousand_point" :error="$errors->first('currency.thousand_point')" />
-        </x-hub::input.group>
-
         <x-hub::input.group :label="__('adminhub::inputs.decimal_places')" for="decimal_places" :error="$errors->first('currency.decimal_places')">
           <x-hub::input.text :disabled="$currency->id && !Auth::user()->admin" wire:model="currency.decimal_places" name="decimal_places" id="decimal_places" :error="$errors->first('currency.decimal_places')" />
         </x-hub::input.group>
