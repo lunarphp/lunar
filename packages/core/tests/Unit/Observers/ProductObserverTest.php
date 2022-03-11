@@ -2,7 +2,6 @@
 
 namespace GetCandy\Tests\Unit\Observers;
 
-use GetCandy\Models\Collection;
 use GetCandy\Models\Language;
 use GetCandy\Models\Product;
 use GetCandy\Models\Url;

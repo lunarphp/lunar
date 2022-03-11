@@ -12,12 +12,12 @@ class CollectionObserver
     /**
      * Handle the collection "created" event.
      *
-     * @param Collection $collection
+     * @param  Collection  $collection
      * @return void
      */
     public function created(Collection $collection)
     {
-        if (!$collection->urls()->count() && $language = Language::getDefault()) {
+        if (! $collection->urls()->count() && $language = Language::getDefault()) {
             $collection->urls()->create([
                 'slug' => Str::slug($collection->translateAttribute('name')),
                 'default' => true,

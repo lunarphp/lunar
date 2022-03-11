@@ -12,12 +12,12 @@ class ProductObserver
     /**
      * Handle the collection "created" event.
      *
-     * @param Collection $collection
+     * @param  Collection  $collection
      * @return void
      */
     public function created(Product $product)
     {
-        if (!$product->urls()->count() && $language = Language::getDefault()) {
+        if (! $product->urls()->count() && $language = Language::getDefault()) {
             $product->urls()->create([
                 'slug' => Str::slug($product->translateAttribute('name')),
                 'default' => true,
