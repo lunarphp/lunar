@@ -2,10 +2,12 @@
 
 namespace GetCandy\Base\Casts;
 
+use App;
 use GetCandy\DataTypes\Price as PriceDataType;
 use GetCandy\Models\Currency;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Facades\Validator;
+use NumberFormatter;
 
 class Price implements CastsAttributes
 {
@@ -25,10 +27,8 @@ class Price implements CastsAttributes
         /**
          * Make it an integer based on currency requirements.
          */
-        $value = str_replace([
-            $currency->thousand_point,
-            $currency->decimal_point,
-        ], '', $value);
+        $formatter = new NumberFormatter(App::currentLocale(), NumberFormatter::DECIMAL);
+        $value = $formatter->parse($value) * $currency->factor;
 
         Validator::make([
             $key => $value,
