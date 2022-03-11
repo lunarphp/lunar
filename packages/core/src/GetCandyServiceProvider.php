@@ -67,6 +67,7 @@ class GetCandyServiceProvider extends ServiceProvider
         'taxes',
         'cart',
         'orders',
+        'search',
     ];
 
     protected $root = __DIR__.'/..';
