@@ -23,7 +23,7 @@ If you are using meilisearch, there is some additional set up needed. We have a 
 php artisan getcandy:meilisearch:setup
 ```
 
-The above command will create the indexes for the models listed in `getcandy/indexer.php` config file. If you want to use other models or your own models in the search engine, you can add the reference for them on the config file.
+The above command will create the indexes for the models listed in the config file `getcandy/indexer.php`. If you want to use other models or your own models in the search engine, you can add the reference for them on the config file.
 
 ```php
 'models' => [

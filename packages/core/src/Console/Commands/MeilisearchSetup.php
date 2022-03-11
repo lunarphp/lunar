@@ -39,7 +39,6 @@ class MeilisearchSetup extends Command
 
         // Make sure we have the relevant indexes ready to go.
         foreach ($searchables as $searchable) {
-        // foreach ($this->searchables as $searchable) {
             $model = (new $searchable());
 
             $indexName = $model->searchableAs();
