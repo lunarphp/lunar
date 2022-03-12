@@ -415,7 +415,7 @@ abstract class AbstractProduct extends Component
                     );
             });
 
-            $this->updateSlots('product.all');
+            $this->updateSlots();
 
             $this->product->refresh();
 

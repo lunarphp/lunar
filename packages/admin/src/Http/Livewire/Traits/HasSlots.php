@@ -6,24 +6,33 @@ use GetCandy\Hub\Facades\Slot;
 
 trait HasSlots
 {
+    protected $slotsForOutput;
+
     /**
-     * Mount the component trait.
+     * Get slots to be output in a given position on the page
      *
-     * @return void
+     * @return array
      */
-    public function mountHasSlots()
+    public function getSlotsByLocation($location)
     {
-        $model = $this->getSlotModel();
+        if (! isset($this->slotsForOutput)) {
 
-        $this->slots = collect($this->getSlotContexts())
-            ->map(function ($context) use ($model) {
-                return $this->getSlotsForContext($context, $model);
-            });
+            $this->slotsForOutput = $this->getSlots()
+            ->map(function ($slot) {
+                return (object) [
+                    'handle' => $slot->getHandle(),
+                    'errors' => $slot->getErrors(),
+                    'title' => $slot->getTitle(),
+                    'location' => $slot->getLocation(),
+                    'render' => $slot->render(),
+                ];
+            })
+            ->groupBy('location')
+            ->toArray();
 
-        $this->slotsByLocation = $this->slots->flatten()
-            ->groupBy(function ($slot) {
-                return $slot->getLocation();
-            });
+        }
+
+        return $this->slotsForOutput[$location] ?? [];
     }
 
     /**
@@ -33,12 +42,7 @@ trait HasSlots
      */
     protected function hasSlotsValidationRules()
     {
-        $contexts = $this->getSlotContexts();
-
-        return $this->slots->filter(function ($context) use ($contexts) {
-            return in_array($context, $contexts);
-        })
-            ->flatten()
+        return $this->getSlots()
             ->map(function ($slot) {
                 return $slot->getValidationRules() ?? [];
             })
@@ -61,20 +65,16 @@ trait HasSlots
     abstract protected function getSlotModel();
 
     /**
-     * Update all slots for a given context.
+     * Update all slots
      *
      * @param  string  $context
      * @return void
      */
-    public function updateSlots($context)
+    public function updateSlots()
     {
         $model = $this->getSlotModel();
-        $contexts = $this->getSlotContexts();
 
-        $this->slots->filter(function ($context) use ($contexts) {
-            return in_array($context, $contexts);
-        })
-            ->flatten()
+        $this->getSlots()
             ->each(function ($slot) use ($model) {
                 $slot->handleSave($model);
             });
@@ -83,6 +83,22 @@ trait HasSlots
     /**
      * Utility function to get slots for a given context, e.g. 'product.create'.
      */
+    private function getSlots()
+    {
+        return $this->getSlotsGroupedByContext()
+            ->flatten();
+    }
+
+    private function getSlotsGroupedByContext()
+    {
+        $model = $this->getSlotModel();
+
+        return collect($this->getSlotContexts())
+            ->map(function ($context) use ($model) {
+                return $this->getSlotsForContext($context, $model);
+            });
+    }
+
     private function getSlotsForContext($context)
     {
         return Slot::for($context)

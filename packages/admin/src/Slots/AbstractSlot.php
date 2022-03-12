@@ -37,13 +37,13 @@ abstract class AbstractSlot
     /**
      * Set the model we are affecting.
      *
-     * @param  string  $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return self
      */
     public function setModel($model)
     {
         $this->model = $model;
-        
+
         return $this;
     }
 
@@ -60,10 +60,10 @@ abstract class AbstractSlot
     /**
      * Save the model.
      *
-     * @param  mixed  $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
-    public function handleSave(mixed $model)
+    public function handleSave($model)
     {
     }
 
@@ -79,11 +79,11 @@ abstract class AbstractSlot
     /**
      * Get any errors.
      *
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
     public function getErrors()
     {
-        return collect([]);
+        return [];
     }
 
     /**
