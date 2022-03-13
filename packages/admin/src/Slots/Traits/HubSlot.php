@@ -98,9 +98,9 @@ trait HubSlot
     }
 
     /**
-     * Save slot data in parent component
+     * Save slot data in parent component.
      *
-     * @param  mixed $data
+     * @param  mixed  $data
      * @return string
      */
     protected function saveSlotData($data)
@@ -109,9 +109,9 @@ trait HubSlot
     }
 
     /**
-     * Raise slot errors in parent
+     * Raise slot errors in parent.
      *
-     * @param  mixed $data
+     * @param  mixed  $data
      * @return string
      */
     protected function raiseSlotErrors($errors)

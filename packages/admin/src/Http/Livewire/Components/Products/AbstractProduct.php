@@ -158,13 +158,13 @@ abstract class AbstractProduct extends Component
     protected function getListeners()
     {
         return array_merge([
-                'useProductOptions'             => 'setOptions',
-                'productOptionCreated'          => 'resetOptionView',
-                'option-manager.selectedValues' => 'setOptionValues',
-                'urlSaved'                      => 'refreshUrls',
-                'product-search.selected'       => 'updateAssociations',
-                'collectionSearch.selected'     => 'selectCollections',
-            ],
+            'useProductOptions'             => 'setOptions',
+            'productOptionCreated'          => 'resetOptionView',
+            'option-manager.selectedValues' => 'setOptionValues',
+            'urlSaved'                      => 'refreshUrls',
+            'product-search.selected'       => 'updateAssociations',
+            'collectionSearch.selected'     => 'selectCollections',
+        ],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners()
         );

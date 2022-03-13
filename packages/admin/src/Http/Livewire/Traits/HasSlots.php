@@ -19,18 +19,16 @@ trait HasSlots
     }
 
     /**
-     * Get slots to be output in a given position on the page
+     * Get slots to be output in a given position on the page.
      *
      * @return array
      */
     public function getSlotsByPosition($position)
     {
         if (! isset($this->slotsForOutput)) {
-
             $this->slotsForOutput = $this->getSlots()
             ->map(function ($slot) {
-
-                $slotComponentName = (string)Str::of(get_class($slot))->afterLast('\\')->snake()->replace('_', '-');
+                $slotComponentName = (string) Str::of(get_class($slot))->afterLast('\\')->snake()->replace('_', '-');
 
                 return (object) [
                     'handle' => $slot->getSlotHandle(),
@@ -41,7 +39,6 @@ trait HasSlots
             })
             ->groupBy('position')
             ->toArray();
-
         }
 
         return $this->slotsForOutput[$position] ?? [];
@@ -77,7 +74,7 @@ trait HasSlots
     abstract protected function getSlotModel();
 
     /**
-     * Update all slots
+     * Update all slots.
      *
      * @param  string  $context
      * @return void
@@ -98,7 +95,7 @@ trait HasSlots
         if (! array_get($this->slotStore, $handle)) {
             $this->slotStore[$handle] = [
                 'errors' => [],
-                'data' => []
+                'data' => [],
             ];
         }
     }
