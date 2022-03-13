@@ -66,7 +66,7 @@ class SlotRegistry
     public function get(Model $model): Collection
     {
         return collect($this->slots[$this->component] ?? [])->map(function ($class) use ($model) {
-            return app($class)->setModel($model);
+            return app($class)->setSlotModel($model);
         });
     }
 }

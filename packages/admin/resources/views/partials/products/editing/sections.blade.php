@@ -41,9 +41,9 @@
       {{--
         Top Slots
        --}}
-        @foreach($this->getSlotsByLocation('top') as $slot)
+        @foreach($this->getSlotsByPosition('top') as $slot)
        <div id="{{ $slot->handle }}">
-        {!! $slot->render !!}
+        @livewire($slot->component, [], ['key' => 'slot'.$slot->handle])
        </div>
        @endforeach
 
@@ -128,9 +128,9 @@
       {{--
         Bottom Slots
        --}}
-        @foreach($this->getSlotsByLocation('bottom') as $slot)
+        @foreach($this->getSlotsByPosition('bottom') as $slot)
        <div id="{{ $slot->handle }}">
-        {!! $slot->render !!}
+        @livewire($slot->component, [], ['key' => 'slot'.$slot->handle])
        </div>
        @endforeach
 
@@ -195,13 +195,17 @@
   <div>
     <aside class="fixed hidden px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3 md:block">
       <nav class="space-y-2" aria-label="Sidebar">
-        @foreach($this->getSlotsByLocation('top') as $slot)
+        @foreach($this->getSlotsByPosition('top') as $slot)
+            @php
+                $thisSlotStore = array_get($slotStore, $slot->handle, []);
+                $slotErrors = array_get($thisSlotStore, 'errors', []);
+            @endphp
         <a
           href="#{{ $slot->handle }}"
-          class="@if(!empty($slot->errors)) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          class="@if(!empty($slotErrors)) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
           aria-current="page"
         >
-          @if(!empty($slot->errors))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          @if(!empty($slotErrors))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
           <span class="truncate">
             {{ $slot->title }}
           </span>
@@ -221,13 +225,17 @@
         </a>
         @endforeach
 
-        @foreach($this->getSlotsByLocation('bottom') as $slot)
+        @foreach($this->getSlotsByPosition('bottom') as $slot)
+            @php
+                $thisSlotStore = array_get($slotStore, $slot->handle, []);
+                $slotErrors = array_get($thisSlotStore, 'errors', []);
+            @endphp
         <a
           href="#{{ $slot->handle }}"
-          class="@if(!empty($slot->errors)) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          class="@if(!empty($slotErrors)) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
           aria-current="page"
         >
-          @if(!empty($slot->errors))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          @if(!empty($slotErrors))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
           <span class="truncate">
             {{ $slot->title }}
           </span>

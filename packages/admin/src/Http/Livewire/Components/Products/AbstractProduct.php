@@ -158,13 +158,16 @@ abstract class AbstractProduct extends Component
     protected function getListeners()
     {
         return array_merge([
-            'useProductOptions'             => 'setOptions',
-            'productOptionCreated'          => 'resetOptionView',
-            'option-manager.selectedValues' => 'setOptionValues',
-            'urlSaved'                      => 'refreshUrls',
-            'product-search.selected'       => 'updateAssociations',
-            'collectionSearch.selected'     => 'selectCollections',
-        ], $this->getHasImagesListeners());
+                'useProductOptions'             => 'setOptions',
+                'productOptionCreated'          => 'resetOptionView',
+                'option-manager.selectedValues' => 'setOptionValues',
+                'urlSaved'                      => 'refreshUrls',
+                'product-search.selected'       => 'updateAssociations',
+                'collectionSearch.selected'     => 'selectCollections',
+            ],
+            $this->getHasImagesListeners(),
+            $this->getHasSlotsListeners()
+        );
     }
 
     /**
@@ -243,8 +246,7 @@ abstract class AbstractProduct extends Component
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            $this->withAttributesValidationRules(),
-            $this->hasSlotsValidationRules(),
+            $this->withAttributesValidationRules()
         );
     }
 

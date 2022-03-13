@@ -3,36 +3,48 @@
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use GetCandy\Hub\Facades\Slot;
+use Illuminate\Support\Str;
 
 trait HasSlots
 {
     protected $slotsForOutput;
+    public $slotStore = [];
+
+    public function getHasSlotsListeners()
+    {
+        return [
+            'saveSlotData' => 'saveSlotData',
+            'raiseSlotErrors' => 'raiseSlotErrors',
+        ];
+    }
 
     /**
      * Get slots to be output in a given position on the page
      *
      * @return array
      */
-    public function getSlotsByLocation($location)
+    public function getSlotsByPosition($position)
     {
         if (! isset($this->slotsForOutput)) {
 
             $this->slotsForOutput = $this->getSlots()
             ->map(function ($slot) {
+
+                $slotComponentName = (string)Str::of(get_class($slot))->afterLast('\\')->snake()->replace('_', '-');
+
                 return (object) [
-                    'handle' => $slot->getHandle(),
-                    'errors' => $slot->getErrors(),
-                    'title' => $slot->getTitle(),
-                    'location' => $slot->getLocation(),
-                    'render' => $slot->render(),
+                    'handle' => $slot->getSlotHandle(),
+                    'title' => $slot->getSlotTitle(),
+                    'position' => $slot->getSlotPosition(),
+                    'component' => $slotComponentName,
                 ];
             })
-            ->groupBy('location')
+            ->groupBy('position')
             ->toArray();
 
         }
 
-        return $this->slotsForOutput[$location] ?? [];
+        return $this->slotsForOutput[$position] ?? [];
     }
 
     /**
@@ -76,13 +88,21 @@ trait HasSlots
 
         $this->getSlots()
             ->each(function ($slot) use ($model) {
-                $slot->handleSave($model);
+                $store = array_get($this->slotStore, $slot->getSlotHandle(), []);
+                $slot->handleSlotSave($model, $store['data'] ?? []);
             });
     }
 
-    /**
-     * Utility function to get slots for a given context, e.g. 'product.create'.
-     */
+    private function ensureSlotStoreHandleExists($handle)
+    {
+        if (! array_get($this->slotStore, $handle)) {
+            $this->slotStore[$handle] = [
+                'errors' => [],
+                'data' => []
+            ];
+        }
+    }
+
     private function getSlots()
     {
         return $this->getSlotsGroupedByContext()
@@ -103,5 +123,17 @@ trait HasSlots
     {
         return Slot::for($context)
             ->get($this->getSlotModel());
+    }
+
+    public function raiseSlotErrors($handle, $errors)
+    {
+        $this->ensureSlotStoreHandleExists($handle);
+        $this->slotStore[$handle]['errors'] = $errors;
+    }
+
+    public function saveSlotData($handle, $data)
+    {
+        $this->ensureSlotStoreHandleExists($handle);
+        $this->slotStore[$handle]['data'] = $data;
     }
 }
