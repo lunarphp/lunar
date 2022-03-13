@@ -105,7 +105,7 @@ trait HubSlot
      */
     protected function saveSlotData($data)
     {
-        $this->emit('saveSlotData', $this->getSlotHandle(), $data);
+        $this->emitUp('saveSlotData', $this->getSlotHandle(), $data);
     }
 
     /**
@@ -116,6 +116,6 @@ trait HubSlot
      */
     protected function raiseSlotErrors($errors)
     {
-        $this->emit('raiseSlotErrors', $this->getSlotHandle(), $errors);
+        $this->emitUp('raiseSlotErrors', $this->getSlotHandle(), $errors);
     }
 }
