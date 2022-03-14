@@ -190,7 +190,6 @@ abstract class AbstractProduct extends Component
             'product.status'          => 'required|string',
             'product.brand'           => 'nullable|string|max:255',
             'product.product_type_id' => 'required',
-            'urls'                    => 'array',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
             'associations.*.type'     => 'required|string',
@@ -242,6 +241,7 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->withAttributesValidationRules(),
+            $this->hasUrlsValidationRules(!$this->product->id),
         );
     }
 
@@ -821,6 +821,8 @@ abstract class AbstractProduct extends Component
                 'id'         => 'urls',
                 'hidden'     => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
+                    'urls',
+                    'urls.*',
                 ]),
             ],
             [
