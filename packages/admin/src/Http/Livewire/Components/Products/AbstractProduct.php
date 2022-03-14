@@ -241,7 +241,7 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->withAttributesValidationRules(),
-            $this->hasUrlsValidationRules(!$this->product->id),
+            $this->hasUrlsValidationRules(! $this->product->id),
         );
     }
 
