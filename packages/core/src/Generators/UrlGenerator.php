@@ -2,7 +2,6 @@
 
 namespace GetCandy\Generators;
 
-use GetCandy\FieldTypes\Text;
 use GetCandy\Models\Language;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -34,14 +33,14 @@ class UrlGenerator
     /**
      * Handle the URL generation.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
     public function handle(Model $model)
     {
         $this->model = $model;
 
-        if (!$model->urls->count()) {
+        if (! $model->urls->count()) {
             if ($model->attribute_data) {
                 return $this->createFromAttribute('name');
             }
@@ -51,7 +50,7 @@ class UrlGenerator
     /**
      * Create default url from an attribute.
      *
-     * @param string $attribute
+     * @param  string  $attribute
      * @return void
      */
     protected function createFromAttribute($attribute)
