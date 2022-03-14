@@ -28,13 +28,12 @@ trait HasSlots
         if (! isset($this->slotsForOutput)) {
             $this->slotsForOutput = $this->getSlots()
             ->map(function ($slot) {
-                $slotComponentName = (string) Str::of(get_class($slot))->afterLast('\\')->snake()->replace('_', '-');
 
                 return (object) [
                     'handle' => $slot->getSlotHandle(),
                     'title' => $slot->getSlotTitle(),
                     'position' => $slot->getSlotPosition(),
-                    'component' => $slotComponentName,
+                    'component' => $slot->getName(),
                 ];
             })
             ->groupBy('position')
@@ -42,6 +41,17 @@ trait HasSlots
         }
 
         return $this->slotsForOutput[$position] ?? [];
+    }
+
+    /**
+     * Get slots errors by handle.
+     *
+     * @return array
+     */
+    public function getSlotErrorsByHandle($handle)
+    {
+        $handleSlotStore = array_get($this->slotStore, $handle, []);
+        return array_get($handleSlotStore, 'errors', []);
     }
 
     /**

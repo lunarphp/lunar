@@ -196,16 +196,12 @@
     <aside class="fixed hidden px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3 md:block">
       <nav class="space-y-2" aria-label="Sidebar">
         @foreach($this->getSlotsByPosition('top') as $slot)
-            @php
-                $thisSlotStore = array_get($slotStore, $slot->handle, []);
-                $slotErrors = array_get($thisSlotStore, 'errors', []);
-            @endphp
         <a
           href="#{{ $slot->handle }}"
-          class="@if(!empty($slotErrors)) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          class="@if(!empty($this->getSlotErrorsByHandle($slot->handle))) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
           aria-current="page"
         >
-          @if(!empty($slotErrors))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          @if(!empty($this->getSlotErrorsByHandle($slot->handle)))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
           <span class="truncate">
             {{ $slot->title }}
           </span>
@@ -226,16 +222,12 @@
         @endforeach
 
         @foreach($this->getSlotsByPosition('bottom') as $slot)
-            @php
-                $thisSlotStore = array_get($slotStore, $slot->handle, []);
-                $slotErrors = array_get($thisSlotStore, 'errors', []);
-            @endphp
         <a
           href="#{{ $slot->handle }}"
-          class="@if(!empty($slotErrors)) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          class="@if(!empty($this->getSlotErrorsByHandle($slot->handle))) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
           aria-current="page"
         >
-          @if(!empty($slotErrors))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          @if(!empty($this->getSlotErrorsByHandle($slot->handle)))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
           <span class="truncate">
             {{ $slot->title }}
           </span>
