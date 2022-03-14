@@ -8,7 +8,7 @@ return [
   | If you have a generator specified below, this setting will have no effect
   | on validation rules across the system.
   */
-    'required' => true,
+  'required' => false,
 
     /*
   |--------------------------------------------------------------------------
