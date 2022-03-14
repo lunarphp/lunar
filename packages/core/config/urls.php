@@ -1,7 +1,7 @@
 <?php
 
 return [
-  /*
+    /*
   |--------------------------------------------------------------------------
   | URL Generator
   |--------------------------------------------------------------------------
@@ -12,6 +12,6 @@ return [
   | ships with GetCandy, which by default will use the name attribute.
   |
   */
-  'generator' => null,
-  // 'generator' => GetCandy\Generators\UrlGenerator::class
+    'generator' => null,
+    // 'generator' => GetCandy\Generators\UrlGenerator::class
 ];

@@ -22,7 +22,6 @@ trait HasUrls
         });
     }
 
-
     /**
      * Get all of the models urls.
      */
