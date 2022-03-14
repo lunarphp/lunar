@@ -68,36 +68,6 @@ trait HubSlot
     }
 
     /**
-     * Get the handle of the slot.
-     *
-     * @return string
-     */
-    public function getSlotHandle()
-    {
-        return $this->slotHandle;
-    }
-
-    /**
-     * Get the position in the view where the slot appears.
-     *
-     * @return string
-     */
-    public function getSlotPosition()
-    {
-        return $this->slotPosition;
-    }
-
-    /**
-     * Get the title of the slot.
-     *
-     * @return string
-     */
-    public function getSlotTitle()
-    {
-        return $this->slotTitle;
-    }
-
-    /**
      * Save slot data in parent component.
      *
      * @param  mixed  $data
