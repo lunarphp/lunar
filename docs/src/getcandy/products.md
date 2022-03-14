@@ -362,7 +362,7 @@ $redVariant = ProductVariant::create([
 $redVariant->values()->attach($redOption);
 ```
 
-Now, we *MUST* create a price for our variant. This is where we use our *currency* created or fetched earlier.
+Now, we need to create a price for our variant. This is where we use our *currency* created or fetched earlier.
 ```php
 $variant->prices()->create([
     'price' => 199,
