@@ -20,6 +20,12 @@ trait HasUrls
                 app($generator)->handle($model);
             }
         });
+
+        static::deleted(function (Model $model) {
+            if (!$model->deleted_at) {
+                $model->urls()->delete();
+            }
+        });
     }
 
 
