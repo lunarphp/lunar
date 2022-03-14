@@ -2,8 +2,6 @@
 
 namespace GetCandy\Hub\Slots\Traits;
 
-use Illuminate\View\View;
-
 trait HubSlot
 {
     /**
