@@ -18,6 +18,29 @@ trait HasUrls
     }
 
     /**
+     * Return the validation rules for creation.
+     *
+     * @param boolean $create
+     * @return boolean
+     */
+    public function hasUrlsValidationRules($create = false)
+    {
+        $rules = [
+            'urls' => 'array',
+        ];
+
+        $required = config('getcandy.urls.required', true);
+        $generator = config('getcandy.urls.generator', null);
+
+        if (($required && !$create) || ($required && $create && !$generator)) {
+            $rules['urls'] = 'array|min:1';
+            $rules['urls.*.slug'] = 'required|max:255';
+        }
+
+        return $rules;
+    }
+
+    /**
      * Computed property for existing tags.
      *
      * @return \Illuminate\Database\Eloquent\Model
@@ -52,6 +75,7 @@ trait HasUrls
     public function saveUrls()
     {
         $rules = [];
+
         foreach ($this->urls as $index => $url) {
             $rules["urls.{$index}.slug"] = [
                 'required',
