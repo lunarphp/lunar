@@ -20,8 +20,8 @@ trait HasUrls
     /**
      * Return the validation rules for creation.
      *
-     * @param boolean $create
-     * @return boolean
+     * @param  bool  $create
+     * @return bool
      */
     public function hasUrlsValidationRules($create = false)
     {
@@ -32,7 +32,7 @@ trait HasUrls
         $required = config('getcandy.urls.required', true);
         $generator = config('getcandy.urls.generator', null);
 
-        if (($required && !$create) || ($required && $create && !$generator)) {
+        if (($required && ! $create) || ($required && $create && ! $generator)) {
             $rules['urls'] = 'array|min:1';
             $rules['urls.*.slug'] = 'required|max:255';
         }

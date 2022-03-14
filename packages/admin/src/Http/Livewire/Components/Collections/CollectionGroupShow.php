@@ -276,13 +276,13 @@ class CollectionGroupShow extends Component
     public function getSlugIsRequiredProperty()
     {
         return config('getcandy.urls.required', false) &&
-            !config('getcandy.urls.generator', null);
+            ! config('getcandy.urls.generator', null);
     }
 
     /**
      * Handler for when the slug is updated.
      *
-     * @param string $value
+     * @param  string  $value
      * @return void
      */
     public function updatedSlug($value)
