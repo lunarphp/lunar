@@ -23,7 +23,7 @@ class PaymentsTest extends TestCase
     }
 
     /** @test */
-    public function can_extend_taxes()
+    public function can_extend_payments()
     {
         Payments::extend('testing', function ($app) {
             return $app->make(TestPaymentDriver::class);
