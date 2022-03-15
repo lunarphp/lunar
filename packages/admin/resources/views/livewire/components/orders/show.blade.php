@@ -74,7 +74,6 @@
 
         </header>
       @endif
-
       <section class="bg-white rounded-lg shadow">
         @include('adminhub::partials.orders.details')
       </section>
@@ -91,9 +90,10 @@
       <section class="p-4 bg-white rounded-lg shadow">
         @include('adminhub::partials.orders.address', [
           'heading' => __('adminhub::components.orders.show.billing_header'),
+          'editTrigger' => 'showBillingAddressEdit',
           'hidden' => $this->shippingEqualsBilling,
           'message' => __('adminhub::components.orders.show.billing_matches_shipping'),
-          'address' => $this->shippingAddress,
+          'address' => $this->billingAddress,
         ])
       </section>
 
@@ -105,15 +105,21 @@
         </header>
 
         <dl class="mt-4 space-y-2 text-sm text-gray-600">
-          <div class="grid grid-cols-3 gap-2">
-            <dt class="font-medium text-gray-700">
-              Metafield:
-            </dt>
+          @foreach($this->metaFields as $key => $value)
+            <div class="grid grid-cols-3 gap-2">
+              <dt class="font-medium text-gray-700">
+                {{ $key }}:
+              </dt>
 
-            <dd class="col-span-2">
-              Lorem ipsum dolor sit amet.
-            </dd>
-          </div>
+              <dd class="col-span-2">
+                @if(!is_string($value))
+                  <pre class="font-mono">{{ json_encode($value) }}</pre>
+                @else
+                  {{ $value }}
+                @endif
+              </dd>
+            </div>
+          @endforeach
         </dl>
       </section>
     </div>
@@ -148,17 +154,34 @@
       </div>
     </x-hub::modal>
 
-    <x-hub::slideover wire:model="showShippingAddressEdit">
+    <x-hub::slideover wire:model="showShippingAddressEdit" form="saveShippingAddress">
       @include('adminhub::partials.forms.address', [
-        'model' => 'shippingAddress',
+        'bind' => 'shippingAddress',
+        'states' => $this->shippingStates,
       ])
 
       <x-slot name="footer">
         <x-hub::button wire:click.prevent="$set('showShippingAddressEdit', false)" theme="gray">
           {{ __('adminhub::global.cancel') }}
         </x-hub::button>
-        <x-hub::button wire:click.prevent="saveShippingAddress">
+        <x-hub::button type="submit">
           {{ __('adminhub::components.orders.show.save_shipping_btn') }}
+        </x-hub::button>
+      </x-slot>
+    </x-hub::slideover>
+
+    <x-hub::slideover wire:model="showBillingAddressEdit" form="saveBillingAddress">
+      @include('adminhub::partials.forms.address', [
+        'bind' => 'billingAddress',
+        'states' => $this->billingStates,
+      ])
+
+      <x-slot name="footer">
+        <x-hub::button wire:click.prevent="$set('showBillingAddressEdit', false)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button type="submit">
+          {{ __('adminhub::components.orders.show.save_billing_btn') }}
         </x-hub::button>
       </x-slot>
     </x-hub::slideover>
