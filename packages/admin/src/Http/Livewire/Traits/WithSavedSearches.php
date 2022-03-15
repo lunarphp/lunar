@@ -18,7 +18,7 @@ trait WithSavedSearches
      *
      * @var string|int
      */
-    public $savedSearchToDelete = 5;
+    public $savedSearchToDelete = null;
 
     /**
      * The saved search instance to create.
