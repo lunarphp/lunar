@@ -2,7 +2,6 @@
 
 namespace GetCandy\Observers;
 
-use GetCandy\Models\Order;
 use GetCandy\Models\Transaction;
 
 class TransactionObserver
