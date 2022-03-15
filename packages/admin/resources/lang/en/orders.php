@@ -12,4 +12,7 @@ return [
     'index.search_placeholder' => 'Search by reference or customer name',
     'index.update_status.btn' => 'Update Status',
     'index.update_status.title' => 'Update Status',
+    'index.delete_saved_search.title' => 'Delete saved search',
+    'index.delete_saved_search.confirm' => 'Are you sure you want to delete this saved search?',
+    'index.delete_saved_search.btn' => 'Confirm Delete',
 ];

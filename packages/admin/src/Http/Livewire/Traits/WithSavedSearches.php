@@ -14,6 +14,13 @@ trait WithSavedSearches
     public $showSaveSearch = false;
 
     /**
+     * The ID of the saved search to delete.
+     *
+     * @var string|int
+     */
+    public $savedSearchToDelete = 5;
+
+    /**
      * The saved search instance to create.
      *
      * @var SavedSearch
@@ -142,9 +149,11 @@ trait WithSavedSearches
      * @param  string|int  $id
      * @return void
      */
-    public function deleteSavedSearch($id)
+    public function deleteSavedSearch()
     {
-        SavedSearch::whereId($id)->delete();
+        SavedSearch::whereId($this->savedSearchToDelete)->delete();
+
+        $this->savedSearchToDelete = null;
 
         $this->notify(
             __('adminhub::notifications.saved_searches.deleted')

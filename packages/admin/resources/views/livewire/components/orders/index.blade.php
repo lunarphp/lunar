@@ -1,4 +1,4 @@
-<div class="flex-col px-12 space-y-4">
+<div class="flex-col px-8 space-y-4 md:px-12">
   <div class="flex items-center justify-between">
     <strong class="text-lg font-bold md:text-2xl">
       {{ __('adminhub::orders.index.title') }}
@@ -58,6 +58,21 @@
   </x-slot>
 </x-hub::modal.dialog>
 
+<x-hub::modal.dialog form="deleteSavedSearch" wire:model="savedSearchToDelete">
+  <x-slot name="title">
+    {{ __('adminhub::orders.index.delete_saved_search.title') }}
+  </x-slot>
+  <x-slot name="content">
+    {{ __('adminhub::orders.index.delete_saved_search.confirm') }}
+  </x-slot>
+  <x-slot name="footer">
+    <x-hub::button type="button" wire:click.prevent="$set('savedSearchToDelete', null)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
+    <x-hub::button type="submit" theme="danger">
+      {{ __('adminhub::orders.index.delete_saved_search.btn') }}
+    </x-hub::button>
+  </x-slot>
+</x-hub::modal.dialog>
+
 <x-hub::modal.dialog form="saveSearch" wire:model="showSaveSearch">
   <x-slot name="title">
     {{ __('adminhub::orders.index.save_search.title') }}
@@ -75,17 +90,15 @@
   </x-slot>
 </x-hub::modal.dialog>
 
-
-
   <div class="space-y-4">
-    <div class="hidden sm:block">
-      <nav class="flex space-x-4" aria-label="Tabs">
+    <div class="sm:block">
+      <nav class="flex pb-4 space-x-4 overflow-x-auto" aria-label="Tabs">
         <!-- Current: "bg-gray-200 text-gray-800", Default: "text-gray-600 hover:text-gray-800" -->
         <button
           type="button"
           wire:click.prevent="resetSearch"
           class="
-            text-sm font-medium px-3
+            text-sm font-medium px-3 flex-shrink-0
             @if(!$this->activeSavedSearch && !$this->hasCustomFilters)
               text-blue-600
             @else
@@ -96,7 +109,7 @@
         </button>
 
         @foreach($this->savedSearches as $savedSearch)
-          <div class="flex" wire:key="saved_search_{{ $savedSearch->id }}">
+          <div class="flex flex-shrink-0 no-wrap" wire:key="saved_search_{{ $savedSearch->id }}">
               <button
                 type="button"
                 wire:click.prevent="applySavedSearch({{ $savedSearch->id }})"
@@ -110,7 +123,7 @@
               >
                 {{ $savedSearch->name }}
               </button>
-              <button class="text-gray-400 hover:text-red-500" type="button" wire:click.prevent="deleteSavedSearch({{ $savedSearch->id }})">
+              <button class="text-gray-400 hover:text-red-500" type="button" wire:click.prevent="$set('savedSearchToDelete', {{ $savedSearch->id }})">
                 <x-hub::icon ref="x" style="solid" class="w-3" />
               </button>
           </div>
@@ -120,13 +133,13 @@
     <x-hub::table>
       <x-slot name="toolbar">
         <div class="p-4 space-y-4 border-b" x-data="{ filtersVisible: false }">
-          <div class="flex items-center space-x-4">
-            <div class="flex items-center w-full space-x-4">
-              <div class="grow">
+          <div class="items-center space-x-4 md:flex">
+            <div class="items-center w-full md:space-x-4 md:flex">
+              <div class="w-full md:grow">
                 <x-hub::input.text :placeholder="__('adminhub::orders.index.search_placeholder')" class="py-2" wire:model.debounce.400ms="search" />
               </div>
 
-              <div class="flex items-center justify-end space-x-4">
+              <div class="items-center mt-4 space-x-4 md:flex md:justify-end md:mt-0">
                 <x-hub::button theme="gray" class="relative inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
                   <x-hub::icon ref="filter" style="solid"  class="w-4 mr-1" />
                   {{ __('adminhub::global.filter') }}
