@@ -143,7 +143,9 @@
               </div>
 
               <div class="items-center mt-4 space-x-4 md:flex md:justify-end md:mt-0">
-                <x-hub::button theme="gray" class="relative inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
+                <x-hub::button theme="gray" class="relative inline-flex items-center" ::class="{
+                  'bg-gray-100 hover:bg-gray-100 shadow-inner': filtersVisible
+                }" @click.prevent="filtersVisible = !filtersVisible">
                   <x-hub::icon ref="filter" style="solid"  class="w-4 mr-1" />
                   {{ __('adminhub::global.filter') }}
                   @if($this->hasCustomFilters)
