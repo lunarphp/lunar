@@ -73,7 +73,7 @@ class OrderShow extends Component
     /**
      * Whether to show the billing address edit.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $showBillingAddressEdit = false;
 
@@ -330,28 +330,30 @@ class OrderShow extends Component
     }
 
     /**
-     * Return states for the shipping address
+     * Return states for the shipping address.
      *
      * @return \Illuminate\Support\Collection
      */
     public function getShippingStatesProperty()
     {
-        if (!$this->shippingAddress) {
+        if (! $this->shippingAddress) {
             return collect();
         }
+
         return State::whereCountryId($this->shippingAddress->country_id)->get();
     }
 
     /**
-     * Return states for the shipping address
+     * Return states for the shipping address.
      *
      * @return \Illuminate\Support\Collection
      */
     public function getBillingStatesProperty()
     {
-        if (!$this->billingAddress) {
+        if (! $this->billingAddress) {
             return collect();
         }
+
         return State::whereCountryId($this->billingAddress->country_id)->get();
     }
 
