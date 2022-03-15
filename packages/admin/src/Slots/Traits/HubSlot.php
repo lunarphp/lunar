@@ -9,28 +9,7 @@ trait HubSlot
      *
      * @var string
      */
-    protected $slotModel;
-
-    /**
-     * The menu slot handle.
-     *
-     * @var string
-     */
-    protected $slotHandle;
-
-    /**
-     * The menu slot position.
-     *
-     * @var string
-     */
-    protected $slotPosition;
-
-    /**
-     * The menu slot title.
-     *
-     * @var string
-     */
-    protected $slotTitle;
+    public $slotModel;
 
     /**
      * Set the model we are affecting.
