@@ -92,7 +92,7 @@
           'heading' => __('adminhub::components.orders.show.billing_header'),
           'hidden' => $this->shippingEqualsBilling,
           'message' => __('adminhub::components.orders.show.billing_matches_shipping'),
-          'address' => $this->shippingAddress,
+          'address' => $this->billing,
         ])
       </section>
 
@@ -153,16 +153,17 @@
       </div>
     </x-hub::modal>
 
-    <x-hub::slideover wire:model="showShippingAddressEdit">
+    <x-hub::slideover wire:model="showShippingAddressEdit" form="saveShippingAddress">
       @include('adminhub::partials.forms.address', [
-        'model' => 'shippingAddress',
+        'bind' => 'shippingAddress',
+        'states' => $this->shippingStates,
       ])
 
       <x-slot name="footer">
         <x-hub::button wire:click.prevent="$set('showShippingAddressEdit', false)" theme="gray">
           {{ __('adminhub::global.cancel') }}
         </x-hub::button>
-        <x-hub::button wire:click.prevent="saveShippingAddress">
+        <x-hub::button type="submit">
           {{ __('adminhub::components.orders.show.save_shipping_btn') }}
         </x-hub::button>
       </x-slot>

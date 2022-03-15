@@ -7,6 +7,7 @@ use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
+use GetCandy\Models\State;
 use Livewire\Component;
 
 class OrderShow extends Component
@@ -60,7 +61,7 @@ class OrderShow extends Component
      *
      * @var bool
      */
-    public bool $showShippingAddressEdit = false;
+    public bool $showShippingAddressEdit = true;
 
     /**
      * The currently selected lines.
@@ -243,6 +244,8 @@ class OrderShow extends Component
 
         $this->shippingAddress->save();
 
+        $this->shippingAddress->refresh();
+
         $this->notify('Shipping Address Saved');
 
         $this->showShippingAddressEdit = false;
@@ -273,6 +276,16 @@ class OrderShow extends Component
     public function getShippingEqualsBillingProperty()
     {
         return optional($this->billing)->postcode == optional($this->shippingAddress)->postcode;
+    }
+
+    /**
+     * Return states for the shipping address
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getShippingStatesProperty()
+    {
+        return State::whereCountryId($this->shippingAddress->country_id)->get();
     }
 
     /**
