@@ -9,7 +9,7 @@ use GetCandy\PaymentTypes\AbstractPayment;
 
 class TestPaymentDriver extends AbstractPayment
 {
-  /**
+    /**
      * {@inheritDoc}
      */
     public function release(): PaymentRelease

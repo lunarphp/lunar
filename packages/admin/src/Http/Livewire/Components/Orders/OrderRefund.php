@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
-use GetCandy\Base\DataTransferObjects\PaymentRefund;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\Order;
 use GetCandy\Models\Transaction;
@@ -20,7 +19,7 @@ class OrderRefund extends Component
     public $amount = 0;
 
     /**
-     * Confirm the refund
+     * Confirm the refund.
      *
      * @var string
      */
@@ -50,7 +49,7 @@ class OrderRefund extends Component
     /**
      * The refund error message.
      *
-     * @var boolean
+     * @var bool
      */
     public string $refundError = '';
 
@@ -120,7 +119,7 @@ class OrderRefund extends Component
 
         $response = $this->transactionModel->refund($this->amount * 100, $this->notes);
 
-        if (!$response->success) {
+        if (! $response->success) {
             $this->emit('refundError', $this->transaction);
 
             $this->refundError = $response->message;

@@ -2,12 +2,10 @@
 
 namespace GetCandy\Managers;
 
-use GetCandy\Base\PaymentTypeInterface;
 use GetCandy\Exceptions\InvalidPaymentTypeException;
 use GetCandy\PaymentTypes\OfflinePayment;
 use Illuminate\Support\Manager;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
 
 class PaymentManager extends Manager
 {
@@ -26,7 +24,6 @@ class PaymentManager extends Manager
      */
     protected function createDriver($driver)
     {
-
         $originalDriver = $driver;
 
         $type = config("getcandy.payments.types.{$driver}");
@@ -38,7 +35,6 @@ class PaymentManager extends Manager
         // }
 
         $driver = $type['driver'] ?? $originalDriver;
-
 
         $driverInstance = null;
 

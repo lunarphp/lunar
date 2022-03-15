@@ -29,7 +29,7 @@ class GetCandyHub
     public static function paymentIcons()
     {
         return File::get(
-            __DIR__."/../resources/icons/payment_icons.svg"
+            __DIR__.'/../resources/icons/payment_icons.svg'
         );
     }
 }

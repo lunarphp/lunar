@@ -35,15 +35,17 @@ abstract class AbstractPayment implements PaymentTypeInterface
     public function cart(Cart $cart): self
     {
         $this->cart = $cart;
+
         return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function order(Order $order):self
+    public function order(Order $order): self
     {
         $this->order = $order;
+
         return $this;
     }
 
@@ -53,6 +55,7 @@ abstract class AbstractPayment implements PaymentTypeInterface
     public function withData(array $data): self
     {
         $this->data = $data;
+
         return $this;
     }
 
@@ -62,6 +65,7 @@ abstract class AbstractPayment implements PaymentTypeInterface
     public function setConfig(array $config): self
     {
         $this->config = $config;
+
         return $this;
     }
 }

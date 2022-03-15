@@ -4,7 +4,6 @@ namespace GetCandy\Tests\Unit\Observers;
 
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
-use GetCandy\Models\Url;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Activitylog\Models\Activity;
