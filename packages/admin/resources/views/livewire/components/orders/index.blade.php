@@ -82,7 +82,7 @@
   </x-slot>
   <x-slot name="content">
     <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" required :error="$errors->first('savedSearch.name')">
-      <x-hub::input.text wire:model.defer="savedSearch.name" :error="$errors->first('savedSearch.name')" required/>
+      <x-hub::input.text wire:model.defer="savedSearch.name" :error="$errors->first('savedSearch.name')" required autofocus/>
     </x-hub::input.group>
   </x-slot>
   <x-slot name="footer">
