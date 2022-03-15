@@ -44,6 +44,9 @@
   <x-slot name="content">
     <x-hub::input.group :label="__('adminhub::inputs.status.label')" for="status" required :error="$errors->first('status')">
       <x-hub::input.select wire:model.defer="status" required>
+        <option value>
+          {{ __('adminhub::inputs.select_option.label') }}
+        </option>
         @foreach($this->statuses as $handle => $status)
           <option value="{{ $handle }}">{{ $status['label'] }}</option>
         @endforeach

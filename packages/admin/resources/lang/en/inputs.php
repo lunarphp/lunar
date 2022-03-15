@@ -67,4 +67,5 @@ return [
     'status.label'                          => 'Status',
     'from_date.label'                       => 'From Date',
     'to_date.label'                         => 'To Date',
+    'select_option.label'                     => 'Select an option',
 ];

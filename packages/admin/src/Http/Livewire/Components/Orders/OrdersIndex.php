@@ -203,6 +203,8 @@ class OrdersIndex extends Component
      */
     public function updateStatus()
     {
+        $this->validateOnly('status');
+
         Order::whereIn('id', $this->selected)->update([
             'status' => $this->status,
         ]);
