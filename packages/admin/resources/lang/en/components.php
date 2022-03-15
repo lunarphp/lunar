@@ -92,6 +92,7 @@ return [
      */
     'orders.show.title'                             => 'Order',
     'orders.show.save_shipping_btn'                 => 'Save Address',
+    'orders.show.save_billing_btn'                 => 'Save Address',
     'orders.show.print_btn'                         => 'Print',
     'orders.show.refund_btn'                         => 'Refund',
     'orders.show.refund_lines_btn'                  => 'Refund Lines',

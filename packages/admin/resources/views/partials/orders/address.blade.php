@@ -14,7 +14,7 @@
   @endif
 </header>
 
-@if($address)
+@if($address->id)
   @if(!$hidden)
   <address class="mt-4 text-sm not-italic text-gray-600">
     @if($address->company_name)

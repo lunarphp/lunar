@@ -57,7 +57,7 @@
     </x-hub::input.group>
 
     <x-hub::input.group :label="__('adminhub::inputs.postcode.label')" :error="$errors->first($bind.'.postcode')" for="postcode">
-      <x-hub::input.text wire:model="{{ $bind }}.postcode" id="postcode" required />
+      <x-hub::input.text wire:model="{{ $bind }}.postcode" id="postcode" />
     </x-hub::input.group>
   </div>
 

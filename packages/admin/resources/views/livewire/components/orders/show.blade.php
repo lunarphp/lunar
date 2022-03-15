@@ -90,9 +90,10 @@
       <section class="p-4 bg-white rounded-lg shadow">
         @include('adminhub::partials.orders.address', [
           'heading' => __('adminhub::components.orders.show.billing_header'),
+          'editTrigger' => 'showBillingAddressEdit',
           'hidden' => $this->shippingEqualsBilling,
           'message' => __('adminhub::components.orders.show.billing_matches_shipping'),
-          'address' => $this->billing,
+          'address' => $this->billingAddress,
         ])
       </section>
 
@@ -165,6 +166,22 @@
         </x-hub::button>
         <x-hub::button type="submit">
           {{ __('adminhub::components.orders.show.save_shipping_btn') }}
+        </x-hub::button>
+      </x-slot>
+    </x-hub::slideover>
+
+    <x-hub::slideover wire:model="showBillingAddressEdit" form="saveBillingAddress">
+      @include('adminhub::partials.forms.address', [
+        'bind' => 'billingAddress',
+        'states' => $this->billingStates,
+      ])
+
+      <x-slot name="footer">
+        <x-hub::button wire:click.prevent="$set('showBillingAddressEdit', false)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button type="submit">
+          {{ __('adminhub::components.orders.show.save_billing_btn') }}
         </x-hub::button>
       </x-slot>
     </x-hub::slideover>

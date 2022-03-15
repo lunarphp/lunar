@@ -29,6 +29,13 @@ class OrderShow extends Component
     public ?OrderAddress $shippingAddress = null;
 
     /**
+     * The instance of the shipping address.
+     *
+     * @var \GetCandy\Models\OrderAddress
+     */
+    public ?OrderAddress $billingAddress = null;
+
+    /**
      * Whether all lines should be visible.
      *
      * @var bool
@@ -61,7 +68,14 @@ class OrderShow extends Component
      *
      * @var bool
      */
-    public bool $showShippingAddressEdit = true;
+    public bool $showShippingAddressEdit = false;
+
+    /**
+     * Whether to show the billing address edit.
+     *
+     * @var boolean
+     */
+    public bool $showBillingAddressEdit = false;
 
     /**
      * The currently selected lines.
@@ -82,36 +96,45 @@ class OrderShow extends Component
      */
     public function rules()
     {
-        $rules = [
+        return [
             'order.status' => 'string',
             'comment' => 'required|string',
+            'shippingAddress.postcode' => 'required|string|max:255',
+            'shippingAddress.title' => 'nullable|string|max:255',
+            'shippingAddress.first_name' => 'nullable|string|max:255',
+            'shippingAddress.last_name' => 'nullable|string|max:255',
+            'shippingAddress.company_name' => 'nullable|string|max:255',
+            'shippingAddress.line_one' => 'nullable|string|max:255',
+            'shippingAddress.line_two' => 'nullable|string|max:255',
+            'shippingAddress.line_three' => 'nullable|string|max:255',
+            'shippingAddress.city' => 'nullable|string|max:255',
+            'shippingAddress.state' => 'nullable|string|max:255',
+            'shippingAddress.delivery_instructions' => 'nullable|string|max:255',
+            'shippingAddress.contact_email' => 'nullable|email|max:255',
+            'shippingAddress.contact_phone' => 'nullable|string|max:255',
+            'shippingAddress.country_id'   => 'required',
+            'billingAddress.postcode' => 'required|string|max:255',
+            'billingAddress.title' => 'nullable|string|max:255',
+            'billingAddress.first_name' => 'nullable|string|max:255',
+            'billingAddress.last_name' => 'nullable|string|max:255',
+            'billingAddress.company_name' => 'nullable|string|max:255',
+            'billingAddress.line_one' => 'nullable|string|max:255',
+            'billingAddress.line_two' => 'nullable|string|max:255',
+            'billingAddress.line_three' => 'nullable|string|max:255',
+            'billingAddress.city' => 'nullable|string|max:255',
+            'billingAddress.state' => 'nullable|string|max:255',
+            'billingAddress.delivery_instructions' => 'nullable|string|max:255',
+            'billingAddress.contact_email' => 'nullable|email|max:255',
+            'billingAddress.contact_phone' => 'nullable|string|max:255',
+            'billingAddress.country_id'   => 'required',
         ];
-
-        if ($this->shippingAddress) {
-            $rules = array_merge($rules, [
-                'shippingAddress.postcode' => 'required|string|max:255',
-                'shippingAddress.title' => 'nullable|string|max:255',
-                'shippingAddress.first_name' => 'nullable|string|max:255',
-                'shippingAddress.last_name' => 'nullable|string|max:255',
-                'shippingAddress.company_name' => 'nullable|string|max:255',
-                'shippingAddress.line_one' => 'nullable|string|max:255',
-                'shippingAddress.line_two' => 'nullable|string|max:255',
-                'shippingAddress.line_three' => 'nullable|string|max:255',
-                'shippingAddress.city' => 'nullable|string|max:255',
-                'shippingAddress.state' => 'nullable|string|max:255',
-                'shippingAddress.delivery_instructions' => 'nullable|string|max:255',
-                'shippingAddress.contact_email' => 'nullable|email|max:255',
-                'shippingAddress.contact_phone' => 'nullable|string|max:255',
-                'shippingAddress.country_id'   => 'required',
-            ]);
-        }
-
-        return $rules;
     }
 
     public function mount()
     {
-        $this->shippingAddress = $this->order->shippingAddress;
+        $this->shippingAddress = $this->order->shippingAddress ?: new OrderAddress();
+
+        $this->billingAddress = $this->order->billingAddress ?: new OrderAddress();
     }
 
     /**
@@ -242,13 +265,41 @@ class OrderShow extends Component
 
         $this->validate($addressRules->toArray());
 
+        $this->shippingAddress->order_id = $this->order->id;
         $this->shippingAddress->save();
 
         $this->shippingAddress->refresh();
 
-        $this->notify('Shipping Address Saved');
+        $this->notify(
+            __('adminhub::nofications.shipping_address.saved')
+        );
 
         $this->showShippingAddressEdit = false;
+    }
+
+    /**
+     * Save the shipping address.
+     *
+     * @return void
+     */
+    public function saveBillingAddress()
+    {
+        $addressRules = collect($this->rules())->filter(function ($rule, $field) {
+            return str_contains($field, 'billingAddress');
+        });
+
+        $this->validate($addressRules->toArray());
+
+        $this->billingAddress->order_id = $this->order->id;
+        $this->billingAddress->save();
+
+        $this->billingAddress->refresh();
+
+        $this->notify(
+            __('adminhub::nofications.billing_address.saved')
+        );
+
+        $this->showBillingAddressEdit = false;
     }
 
     /**
@@ -285,7 +336,23 @@ class OrderShow extends Component
      */
     public function getShippingStatesProperty()
     {
+        if (!$this->shippingAddress) {
+            return collect();
+        }
         return State::whereCountryId($this->shippingAddress->country_id)->get();
+    }
+
+    /**
+     * Return states for the shipping address
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getBillingStatesProperty()
+    {
+        if (!$this->billingAddress) {
+            return collect();
+        }
+        return State::whereCountryId($this->billingAddress->country_id)->get();
     }
 
     /**
