@@ -39,7 +39,7 @@ class Status extends Component
         $match = $statuses[$status] ?? null;
 
         $this->label = $match['label'] ?? $status;
-        $this->color = $match['color'] ?? '#f5f5f5';
+        $this->color = $match['color'] ?? '#7C7C7C';
         $this->status = $status;
     }
 
