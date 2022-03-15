@@ -17,29 +17,32 @@
         @if(!$activity->causer)
           System (Guest)
         @else
-          {{ $activity->causer->fullName ?: $activity->causer->name }} - {{ $activity->causer->email }}
+          {{ $activity->causer->fullName ?: $activity->causer->name }}
         @endif
       </div>
       <p class="mt-2 text-sm font-medium text-gray-700">
         @if($activity->event == 'status-update')
-          Order status changed from <strong>{{ $activity->getExtraProperty('previous') }}</strong> to <strong>{{ $activity->getExtraProperty('new') }}</strong>
+          Order status changed
+          <strong><x-hub::orders.status :status="$activity->getExtraProperty('previous')" /></strong>
+          to
+          <strong><x-hub::orders.status :status="$activity->getExtraProperty('new')" /></strong>
         @elseif($activity->event == 'created')
           Order Created
         @elseif($activity->event == 'comment')
-          {{ $activity->getExtraProperty('content') }}
+          {!! nl2br($activity->getExtraProperty('content')) !!}
         @elseif($activity->event == 'charge')
           Payment of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
         @elseif($activity->event == 'refund')
           Refund of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
           @if($notes = $activity->getExtraProperty('notes'))
-            <p>{{ $notes }}</p>
+            <p>{{ nl2br($notes) }}</p>
           @endif
         @endif
       </p>
     </div>
 
     <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
-      {{ $activity->created_at->format('h:ma T')}}
+      {{ $activity->created_at->format('h:ia')}}
     </time>
   </div>
 </li>
