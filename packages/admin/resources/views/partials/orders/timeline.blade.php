@@ -4,13 +4,15 @@
           </div>
 
           <form class="relative w-full ml-4" wire:submit.prevent="addComment">
-            <input
-              class="w-full pl-4 pr-32 border border-gray-200 rounded-lg h-[58px] sm:text-sm form-text"
+            <textarea
+              class="w-full pl-4 pr-32 pt-5 border border-gray-200 rounded-lg h-[58px] sm:text-sm form-text"
               type="text"
               placeholder="Add a comment"
               wire:model.defer="comment"
               required
+              multiline
             >
+            </textarea>
 
             <button
               class="absolute h-[42px] text-xs font-bold leading-[42px] text-gray-700 bg-gray-100 border border-transparent rounded-md hover:border-gray-100 hover:bg-gray-50 w-28 top-2 right-2"
