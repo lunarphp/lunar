@@ -35,6 +35,7 @@ trait HasSlots
                 ];
             })
             ->groupBy('position')
+            ->sortBy('handle')
             ->toArray();
         }
 
