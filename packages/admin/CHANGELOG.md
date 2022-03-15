@@ -8,11 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Added
 
 - Added new config option `disable_variants` to `getcandy-hub/products.php`. This is set to `false` by default so variants remain enabled.
+- Added ability to save searches on the orders table.
 
 ## Fixed
 
 - `wire:model` now correctly references the current property when editing an attribute.
 - Attribute editing validation rules will now take in to account all languages.
+
+### Changed
+
+- Complete rewrite to the orders table.
+- The way order statuses are defined in `config/getcandy/orders.php` has changed, see upgrade guide for detais.
 
 ## 2.0-beta10.1 - 2022-02-19
 
