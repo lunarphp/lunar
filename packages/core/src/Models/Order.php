@@ -7,9 +7,7 @@ use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\OrderFactory;
-use GetCandy\Models\Channel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Arr;
 
 class Order extends BaseModel
 {
