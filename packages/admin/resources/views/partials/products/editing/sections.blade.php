@@ -43,7 +43,7 @@
        --}}
         @foreach($this->getSlotsByPosition('top') as $slot)
        <div id="{{ $slot->handle }}">
-        @livewire($slot->component, ['slotModel' => $product], key("top-slot-{{ $slot->handle }}"))
+        <div>@livewire($slot->component, ['slotModel' => $product], key("top-slot-{{ $slot->handle }}"))</div>
        </div>
        @endforeach
 
@@ -130,7 +130,7 @@
        --}}
         @foreach($this->getSlotsByPosition('bottom') as $slot)
        <div id="{{ $slot->handle }}">
-        @livewire($slot->component, ['slotModel' => $product], key("bottom-slot-{{ $slot->handle }}"))
+        <div>@livewire($slot->component, ['slotModel' => $product], key("bottom-slot-{{ $slot->handle }}"))</div>
        </div>
        @endforeach
 
