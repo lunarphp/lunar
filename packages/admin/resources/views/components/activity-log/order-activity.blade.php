@@ -30,8 +30,10 @@
           Order Created
         @elseif($activity->event == 'comment')
           {!! nl2br($activity->getExtraProperty('content')) !!}
-        @elseif($activity->event == 'charge')
+        @elseif($activity->event == 'capture')
           Payment of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
+        @elseif($activity->event == 'intent')
+          Authorized payment of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
         @elseif($activity->event == 'refund')
           Refund of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
           @if($notes = $activity->getExtraProperty('notes'))

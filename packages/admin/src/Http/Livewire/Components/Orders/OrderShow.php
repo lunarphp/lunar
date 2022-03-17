@@ -92,6 +92,21 @@ class OrderShow extends Component
     public bool $showRefund = false;
 
     /**
+     * Whether to show the capture panel.
+     *
+     * @var boolean
+     */
+    public bool $showCapture = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $listeners = [
+        'captureSuccess',
+        'refundSuccess',
+    ];
+
+    /**
      * {@inheritDoc}
      */
     public function rules()
@@ -239,6 +254,111 @@ class OrderShow extends Component
         }
 
         return $this->order->total->value;
+    }
+
+    /**
+     * Returns whether this order still requires capture.
+     *
+     * @return void
+     */
+    public function getRequiresCaptureProperty()
+    {
+        return !$this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'capture';
+        })->count();
+    }
+
+    /**
+     * Return the order transactions.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTransactionsProperty()
+    {
+        return $this->order->transactions()->orderBy('created_at', 'desc')->get();
+    }
+
+    /**
+     * Return the total amount captured.
+     *
+     * @return int
+     */
+    public function getCaptureTotalProperty()
+    {
+        return $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'capture';
+        })->sum('amount.value');
+    }
+
+    /**
+     * Return the total amount refunded.
+     *
+     * @return int
+     */
+    public function getRefundTotalProperty()
+    {
+        return $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'refund';
+        })->sum('amount.value');
+    }
+
+    /**
+     * Return the total amount refunded.
+     *
+     * @return int
+     */
+    public function getIntentTotalProperty()
+    {
+        return $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'intent';
+        })->sum('amount.value');
+    }
+
+    /**
+     * Return whether this order is partially refunded.
+     *
+     * @return void
+     */
+    public function getPaymentStatusProperty()
+    {
+        $total = $this->intentTotal ?: $this->captureTotal;
+
+        if (
+            ($this->refundTotal && $this->refundTotal < $total) ||
+            ($this->intentTotal && $this->captureTotal < $this->intentTotal)
+        ) {
+            return 'partial-refund';
+        }
+
+        if ($this->refundTotal >= $total) {
+            return 'refunded';
+        }
+
+        if ($this->captureTotal >= $this->intentTotal) {
+            return 'captured';
+        }
+
+        return 'uncaptured';
+    }
+
+    /**
+     * Handle when a capture is successful.
+     *
+     * @return void
+     */
+    public function captureSuccess()
+    {
+        $this->showCapture = false;
+    }
+
+    /**
+     * Handle when a refund is successful.
+     *
+     * @return void
+     */
+    public function refundSuccess()
+    {
+        $this->showRefund = false;
     }
 
     /**

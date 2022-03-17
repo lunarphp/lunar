@@ -74,4 +74,9 @@ class Transaction extends BaseModel
     {
         return $this->driver()->refund($this, $amount, $notes);
     }
+
+    public function capture(int $amount = 0)
+    {
+        return $this->driver()->capture($this, $amount);
+    }
 }

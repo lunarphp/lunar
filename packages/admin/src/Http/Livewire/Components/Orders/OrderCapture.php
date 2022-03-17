@@ -7,7 +7,7 @@ use GetCandy\Models\Order;
 use GetCandy\Models\Transaction;
 use Livewire\Component;
 
-class OrderRefund extends Component
+class OrderCapture extends Component
 {
     use Notifies;
 
@@ -26,41 +26,25 @@ class OrderRefund extends Component
     public bool $confirmed = false;
 
     /**
-     * Any notes for the refund.
-     *
-     * @var string
-     */
-    public string $notes = '';
-
-    /**
-     * The transaction id to refund.
+     * The transaction id to capture.
      *
      * @var string|int
      */
     public $transaction;
 
     /**
-     * The instance of the order to refund.
+     * The instance of the order to capture.
      *
      * @var Order
      */
     public Order $order;
 
     /**
-     * The refund error message.
+     * The capture error message.
      *
      * @var bool
      */
-    public string $refundError = '';
-
-    /**
-     * {@inheritDoc}
-     *
-     * @var array
-     */
-    protected $listeners = [
-        'updateRefundAmount',
-    ];
+    public string $captureError = '';
 
     /**
      * {@inheritDoc}
@@ -70,7 +54,6 @@ class OrderRefund extends Component
         return [
             'amount' => 'required|numeric|min:1',
             'confirmed' => 'required',
-            'notes' => 'nullable|string',
             'transaction' => 'required',
         ];
     }
@@ -80,20 +63,9 @@ class OrderRefund extends Component
      */
     public function mount()
     {
-        if ($this->charges->count() == 1) {
-            $this->transaction = $this->charges->first()->id;
+        if ($this->intents->count() == 1) {
+            $this->transaction = $this->intents->first()->id;
         }
-    }
-
-    /**
-     * Update the refund amount.
-     *
-     * @param  int  $val
-     * @return void
-     */
-    public function updateRefundAmount(int $val)
-    {
-        $this->amount = $val / 100;
     }
 
     /**
@@ -101,9 +73,9 @@ class OrderRefund extends Component
      *
      * @return void
      */
-    public function getChargesProperty()
+    public function getIntentsProperty()
     {
-        return $this->order->transactions()->whereType('capture')->whereSuccess(true)->get();
+        return $this->order->transactions()->whereType('intent')->whereSuccess(true)->get();
     }
 
     public function getTransactionModelProperty()
@@ -118,19 +90,21 @@ class OrderRefund extends Component
      */
     public function refund()
     {
-        $this->refundError = '';
+        $this->captureError = '';
 
         $this->validate();
 
-        $response = $this->transactionModel->refund($this->amount * 100, $this->notes);
+        $response = $this->transactionModel->capture(
+            $this->amount * 100
+        );
 
         if (! $response->success) {
-            $this->emit('refundError', $this->transaction);
+            $this->emit('captureError', $this->transaction);
 
-            $this->refundError = $response->message;
+            $this->captureError = $response->message;
 
             $this->notify(
-                message: 'There was a problem with the refund',
+                message: 'There was a problem with the capture',
                 level: 'error'
             );
 
@@ -139,12 +113,11 @@ class OrderRefund extends Component
 
         $this->transaction = null;
         $this->amount = 0;
-        $this->notes = '';
 
-        $this->emit('refundSuccess', $this->transaction);
+        $this->emit('captureSuccess', $this->transaction);
 
         $this->notify(
-            message: 'Refund successful',
+            message: 'Capture successful',
         );
     }
 
@@ -155,7 +128,7 @@ class OrderRefund extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.orders.refund')
+        return view('adminhub::livewire.components.orders.capture')
             ->layout('adminhub::layouts.base');
     }
 }
