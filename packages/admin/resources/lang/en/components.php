@@ -124,6 +124,8 @@ return [
     'orders.show.billing_matches_shipping' => 'Same as shipping address',
     'orders.show.billing_header' => 'Billing Address',
     'orders.show.shipping_header' => 'Shipping Address',
+    'orders.show.requires_capture' => 'This order still requires payment to be captured.',
+    'orders.show.capture_payment_btn' => 'Capture Payment',
     /**
      * Order Refund.
      */
@@ -132,4 +134,12 @@ return [
     'orders.refund.no_charges'                      => 'There are no refundable charges on this order',
     'orders.refund.select_transaction'              => 'Select a transaction',
     'orders.refund.refund_btn'                      => 'Send refund',
+    /**
+     * Order Capture.
+     */
+    'orders.capture.confirm_text'                    => 'CONFIRM',
+    'orders.capture.confirm_message'                 => 'Please confirm you want to capture this payment',
+    'orders.capture.no_intents'                      => 'There are no refundable charges on this order',
+    'orders.capture.select_transaction'              => 'Select a transaction',
+    'orders.capture.capture_btn'                      => 'Capture payment',
 ];
