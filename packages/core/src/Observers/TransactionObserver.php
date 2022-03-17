@@ -17,7 +17,7 @@ class TransactionObserver
         activity()
             ->causedBy(auth()->user())
             ->performedOn($transaction->order)
-            ->event($transaction->refund ? 'refund' : 'charge')
+            ->event($transaction->type)
             ->withProperties([
                 'amount' => $transaction->amount->value,
                 'refund' => $transaction->refund,
