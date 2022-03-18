@@ -4,6 +4,7 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants;
 
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
 use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
+use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
@@ -27,7 +28,8 @@ class VariantShow extends Component
     use WithLanguages;
     use WithAttributes;
     use HasDimensions;
-
+    use HasSlots;
+    
     /**
      * Instance of the parent product.
      *
@@ -96,9 +98,14 @@ class VariantShow extends Component
      *
      * @var array
      */
-    protected $listeners = [
-        'option-value-create-modal.value-created' => 'refreshAndSelectOption',
-    ];
+    protected function getListeners()
+    {
+        return array_merge([
+            'option-value-create-modal.value-created' => 'refreshAndSelectOption',
+        ],
+            $this->getHasSlotsListeners()
+        );
+    }
 
     /**
      * Returns any custom validation messages.
@@ -252,6 +259,9 @@ class VariantShow extends Component
         $this->image = null;
         // $this->variant->refresh();
         $this->removeImage = false;
+        
+        $this->updateSlots();
+        
         $this->notify('Variant updated');
     }
 
@@ -402,6 +412,26 @@ class VariantShow extends Component
         return ProductType::find(
             $this->variant->product->product_type_id
         )->variantAttributes->sortBy('position')->values();
+    }
+    
+    /**
+     * Returns the model which has slots associated.
+     *
+     * @return \GetCandy\Models\ProductVariant
+     */
+    protected function getSlotModel()
+    {
+        return $this->variant;
+    }
+
+    /**
+     * Returns the contexts for any slots.
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['productvariant.show'];
     }
 
     /**

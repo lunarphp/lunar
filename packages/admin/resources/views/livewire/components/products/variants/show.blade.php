@@ -97,6 +97,15 @@
     </div>
     <div class="space-y-6 lg:col-span-9">
 
+      {{--
+        Top Slots
+       --}}
+        @foreach($this->getSlotsByPosition('top') as $slot)
+       <div id="{{ $slot->handle }}">
+        <div>@livewire($slot->component, ['slotModel' => $product], key("top-slot-{{ $slot->handle }}"))</div>
+       </div>
+       @endforeach
+
       <div id="attributes">
         @include('adminhub::partials.attributes')
       </div>
@@ -105,6 +114,15 @@
       @include('adminhub::partials.products.variants.identifiers')
       @include('adminhub::partials.products.variants.inventory')
       @include('adminhub::partials.shipping')
+
+      {{--
+        Bottom Slots
+       --}}
+        @foreach($this->getSlotsByPosition('bottom') as $slot)
+       <div id="{{ $slot->handle }}">
+        <div>@livewire($slot->component, ['slotModel' => $product], key("bottom-slot-{{ $slot->handle }}"))</div>
+       </div>
+       @endforeach
 
 
       <div class="bg-white border border-red-300 rounded shadow">
