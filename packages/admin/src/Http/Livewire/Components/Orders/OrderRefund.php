@@ -82,6 +82,7 @@ class OrderRefund extends Component
     {
         if ($this->charges->count() == 1) {
             $this->transaction = $this->charges->first()->id;
+            $this->amount = $this->transactionModel->amount->value / 100;
         }
     }
 
