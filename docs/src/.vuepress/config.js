@@ -120,6 +120,7 @@ module.exports = {
           '/extending/field-types',
           '/extending/models',
           '/extending/order-modifiers',
+          '/extending/payments',
           '/extending/search',
           '/extending/shipping',
           '/extending/taxation',
