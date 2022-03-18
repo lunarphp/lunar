@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\Base\DataTransferObjects\PaymentCapture;
 use GetCandy\Base\DataTransferObjects\PaymentRefund;
 use GetCandy\Base\DataTransferObjects\PaymentRelease;
 use GetCandy\Models\Cart;
@@ -58,4 +59,13 @@ interface PaymentTypeInterface
      * @return \GetCandy\Base\DataTransferObjects\PaymentRefund
      */
     public function refund(Transaction $transaction, int $amount, $notes = null): PaymentRefund;
+
+    /**
+     * Capture an amount for a transaction.
+     *
+     * @param  \GetCandy\Models\Transaction  $transaction
+     * @param  int  $amount
+     * @return \GetCandy\Base\DataTransferObjects\PaymentCapture
+     */
+    public function capture(Transaction $transaction, $amount = 0): PaymentCapture;
 }
