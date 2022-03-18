@@ -42,7 +42,7 @@
 
     <x-hub::button
       :disabled="!$confirmed"
-      wire:click.prevent="refund"
+      wire:click.prevent="capture"
       type="button"
     >
       <div wire:loading wire:target="capture">

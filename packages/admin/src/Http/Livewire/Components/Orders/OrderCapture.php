@@ -88,7 +88,7 @@ class OrderCapture extends Component
      *
      * @return void
      */
-    public function refund()
+    public function capture()
     {
         $this->captureError = '';
 
