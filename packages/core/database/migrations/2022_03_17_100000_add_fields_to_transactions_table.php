@@ -12,10 +12,12 @@ class AddFieldsToTransactionsTable extends Migration
             $table->foreignId('parent_transaction_id')->after('id')
                 ->nullable()
                 ->constrained($this->prefix.'transactions');
-            $table->dropColumn('refund');
-            $table->dateTime('captured_at')->after('last_four')->nullable()->index();
-
+            $table->dateTime('captured_at')->nullable()->index();
             $table->enum('type', ['refund', 'intent', 'capture'])->after('success')->index()->default('capture');
+        });
+
+        Schema::table($this->prefix.'transactions', function (Blueprint $table) {
+            $table->dropColumn('refund');
         });
     }
 
@@ -25,6 +27,10 @@ class AddFieldsToTransactionsTable extends Migration
             $table->dropForeign(['parent_transaction_id']);
             $table->dropColumn('parent_transaction_id');
             $table->dropColumn('type');
+            $table->boolean('refund')->default(false)->index();
+        });
+
+        Schema::table($this->prefix.'transactions', function ($table) {
             $table->boolean('refund')->default(false)->index();
         });
     }
