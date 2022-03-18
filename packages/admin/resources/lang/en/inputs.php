@@ -9,6 +9,7 @@ return [
     'handle'                                 => __('adminhub::global.handle'),
     'url'                                    => __('adminhub::global.url'),
     'email'                                  => __('adminhub::global.email'),
+    'remember_me'                            => 'Remember me',
     'new_password'                           => 'New password',
     'new_password_confirmation'              => 'Confirm new password',
     'password'                               => 'Password',
@@ -80,4 +81,10 @@ return [
     'amount.label' => 'Amount',
     'notes.label' => 'Notes',
     'confirm.label' => 'Confirm',
+    'tax_ref.label'                          => 'Tax Reference',
+    'tax_ref.instructions'                   => 'Add the third party tax reference, if required.',
+    'select_attribute_group'                 => 'Select attribute group',
+    'select_field_type'                      => 'Select a field type',
+    'text'                                   => 'Text',
+    'richtext'                               => 'Richtext',
 ];
