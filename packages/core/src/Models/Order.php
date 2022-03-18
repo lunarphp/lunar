@@ -181,18 +181,33 @@ class Order extends BaseModel
     }
 
     /**
+     * Return the channel relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
+    }
+
+    /**
      * Return the charges relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function charges()
+    public function captures()
     {
-        return $this->transactions()->whereRefund(false);
+        return $this->transactions()->whereType('capture');
     }
 
-    public function channel()
+    /**
+     * Return the charges relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function intents()
     {
-        return $this->belongsTo(Channel::class);
+        return $this->transactions()->whereType('intent');
     }
 
     /**
@@ -202,7 +217,7 @@ class Order extends BaseModel
      */
     public function refunds()
     {
-        return $this->transactions()->whereRefund(true);
+        return $this->transactions()->whereType('refund');
     }
 
     /**
