@@ -2,6 +2,7 @@
 
 namespace GetCandy\Tests\Unit\Observers;
 
+use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
 use GetCandy\Tests\TestCase;
