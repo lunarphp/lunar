@@ -12,7 +12,7 @@ interface AbstractSlot
     public function getSlotHandle();
 
     /**
-     * Get the initial value of the slot data
+     * Get the initial value of the slot data.
      *
      * @return mixed
      */

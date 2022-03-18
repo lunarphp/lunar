@@ -29,7 +29,7 @@ class VariantShow extends Component
     use WithAttributes;
     use HasDimensions;
     use HasSlots;
-    
+
     /**
      * Instance of the parent product.
      *
@@ -259,9 +259,9 @@ class VariantShow extends Component
         $this->image = null;
         // $this->variant->refresh();
         $this->removeImage = false;
-        
+
         $this->updateSlots();
-        
+
         $this->notify('Variant updated');
     }
 
@@ -413,7 +413,7 @@ class VariantShow extends Component
             $this->variant->product->product_type_id
         )->variantAttributes->sortBy('position')->values();
     }
-    
+
     /**
      * Returns the model which has slots associated.
      *

@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use GetCandy\Hub\Facades\Slot;
-use Illuminate\Support\Str;
 
 trait HasSlots
 {
@@ -28,7 +27,7 @@ trait HasSlots
         if (! isset($this->slotsForOutput)) {
             $this->slotsForOutput = $this->getSlots()
             ->map(function ($slot) {
-                if (!isset($this->slotStore[$slot->getSlotHandle()])) {
+                if (! isset($this->slotStore[$slot->getSlotHandle()])) {
                     $this->saveSlotData($slot->getSlotHandle(), $slot->getSlotInitialValue());
                 }
 
