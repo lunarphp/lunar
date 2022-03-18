@@ -323,9 +323,13 @@ class OrderShow extends Component
     {
         $total = $this->intentTotal ?: $this->captureTotal;
 
+        if (!$total) {
+            return 'offline';
+        }
+
         if (
             ($this->refundTotal && $this->refundTotal < $total) ||
-            ($this->intentTotal && $this->captureTotal < $this->intentTotal)
+            ($this->captureTotal && $this->captureTotal < $this->intentTotal)
         ) {
             return 'partial-refund';
         }
