@@ -104,6 +104,7 @@ module.exports = {
           '/getcandy/images',
           '/getcandy/languages',
           '/getcandy/orders',
+          '/getcandy/payments',
           '/getcandy/products',
           '/getcandy/search',
           '/getcandy/tags',

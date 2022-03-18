@@ -171,3 +171,87 @@ public function setConfig(array $config): self
 ```
 
 Here you can set up any additional config for this payment driver. By default, this will be called when you register your payment driver and will take any values which are set in `config/getcandy/payments.php` for that type.
+
+
+## Creating transactions
+
+Depending on how your driver works, you're likely going to need to create some transactions depending on different scenarios.
+
+### Database Schema
+
+```
+GetCandy\Models\Transaction
+```
+
+|Field|Description|Example|
+|:-|:-|:-|
+|id||
+|parent_transaction_id|The ID of the related transaction, nullable|
+|order_id|The ID of the order this transaction relates to|
+|success| Whether or not the transaction was successful|1
+|type|Whether `intent`,`capture` or `refund`|`intent`
+|driver|The driver used i.e. `stripe`|`stripe`
+|amount|The amount for the transaction in cents|`10000`
+|reference|The reference for the driver to use|`STRIPE_123456`
+|status|Usually populated from the payment provider|`success`
+|notes|Any additional notes for the transaction|
+|card_type|The card type| `visa`
+|last_four|The last four digits of the card used|`1234`
+|captured_at| The DateTime the transaction was captured|
+|meta| Any additional meta info for the transaction| `{"cvc_check": "pass", "address_line1_check": "pass", "address_postal_code_check": "pass"}`
+|created_at||
+|updated_at||
+
+
+### Best Practices
+
+#### Releasing
+
+When releasing a payment, if you're not charging the card straight away, you should create a transaction with type `intent`. This tells GetCandy you intend to charge the card at a later date.
+
+```php
+Transaction::create([
+    //...
+    'type' => 'intent',
+]);
+```
+
+If you are charging the card straight away, set the type to `capture`.
+
+```php
+Transaction::create([
+    //...
+    'type' => 'intent',
+]);
+```
+
+#### Capturing
+
+:::tip
+If you're already charging the card, you can skip this as you already have payment. 🥳
+:::
+
+When capturing a transaction, you should create an additional transaction with the amount that's been captured. Even if this is the same amount as the `intent` transaction.
+
+```php
+$intent = Transaction::whereType('intent')->first();
+
+Transaction::create([
+    //...
+    'parent_transaction_id' => $intent->id,
+    'type' => 'capture',
+    'amount' => 2000,
+]);
+```
+
+#### Refunding
+
+```php
+$capture = Transaction::whereType('capture')->first();
+
+Transaction::create([
+    //...
+    'parent_transaction_id' => $capture->id,
+    'type' => 'refund',
+]);
+```
