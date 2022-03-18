@@ -81,16 +81,6 @@ class Order extends BaseModel
     }
 
     /**
-     * Return the channel relationship.
-     *
-     * @return void
-     */
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class);
-    }
-
-    /**
      * Return the lines relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
