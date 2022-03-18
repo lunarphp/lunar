@@ -133,7 +133,6 @@ class OrderTest extends TestCase
             'status'  => 'status_a',
         ]);
 
-
         $this->assertCount(0, $order->transactions);
 
         $transaction = Transaction::factory()->make()->toArray();
@@ -141,7 +140,6 @@ class OrderTest extends TestCase
         unset($transaction['currency']);
 
         $order->transactions()->create($transaction);
-
 
         $this->assertCount(1, $order->refresh()->transactions);
     }

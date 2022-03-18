@@ -181,7 +181,7 @@ class Order extends BaseModel
     }
 
     /**
-     * Return the channel relationship
+     * Return the channel relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

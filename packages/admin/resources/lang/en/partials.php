@@ -157,7 +157,7 @@ return [
     'orders.details.date_placed' => 'Date Placed',
     'orders.address.not_set' => 'No address set',
     /**
-     * Transactions
+     * Transactions.
      */
     'orders.transactions.capture' => 'Capture',
     'orders.transactions.intent' => 'Intent',

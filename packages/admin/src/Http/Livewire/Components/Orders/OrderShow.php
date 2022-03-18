@@ -94,7 +94,7 @@ class OrderShow extends Component
     /**
      * Whether to show the capture panel.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $showCapture = false;
 
@@ -263,7 +263,7 @@ class OrderShow extends Component
      */
     public function getRequiresCaptureProperty()
     {
-        return !$this->transactions->filter(function ($transaction) {
+        return ! $this->transactions->filter(function ($transaction) {
             return $transaction->type == 'capture';
         })->count();
     }
@@ -323,7 +323,7 @@ class OrderShow extends Component
     {
         $total = $this->intentTotal ?: $this->captureTotal;
 
-        if (!$total) {
+        if (! $total) {
             return 'offline';
         }
 
