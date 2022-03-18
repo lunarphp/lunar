@@ -20,6 +20,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('auth.guards.staff', [
             'driver' => 'getcandyhub',
         ]);
+
+        activity()->disableLogging();
     }
 
     protected function getPackageProviders($app)

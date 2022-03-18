@@ -71,6 +71,8 @@ class OrderShowTest extends TestCase
     /** @test */
     public function can_update_status()
     {
+        activity()->enableLogging();
+
         $staff = Staff::factory()->create([
             'admin' => true,
         ]);
@@ -120,6 +122,8 @@ class OrderShowTest extends TestCase
     /** @test */
     public function can_add_comment()
     {
+        activity()->enableLogging();
+
         $staff = Staff::factory()->create([
             'admin' => true,
         ]);
