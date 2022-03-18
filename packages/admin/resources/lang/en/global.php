@@ -68,4 +68,5 @@ return [
     'total'               => 'Total',
     'date'                => 'Date',
     'time'                => 'Time',
+    'notes'               => 'Notes',
 ];

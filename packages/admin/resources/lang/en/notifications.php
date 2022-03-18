@@ -34,4 +34,6 @@ return [
     'orders.status_updated'             => 'Status updated',
     'saved_searches.saved'              => 'Search saved',
     'saved_searches.deleted'              => 'Search deleted',
+    'billing_address.saved'             => 'Billing address saved',
+    'shipping_address.saved'            => 'Shipping address saved',
 ];

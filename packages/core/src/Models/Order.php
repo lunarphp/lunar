@@ -5,14 +5,16 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
+use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends BaseModel
 {
-    use HasFactory;
-    use Searchable;
+    use HasFactory,
+        Searchable,
+        LogsActivity;
 
     /**
      * Define our base filterable attributes.
@@ -48,6 +50,7 @@ class Order extends BaseModel
         'discount_total' => Price::class,
         'tax_total'      => Price::class,
         'total'          => Price::class,
+        'shipping_total' => Price::class,
     ];
 
     /**
@@ -188,13 +191,33 @@ class Order extends BaseModel
     }
 
     /**
+     * Return the channel relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
+    }
+
+    /**
      * Return the charges relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function charges()
+    public function captures()
     {
-        return $this->transactions()->whereRefund(false);
+        return $this->transactions()->whereType('capture');
+    }
+
+    /**
+     * Return the charges relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function intents()
+    {
+        return $this->transactions()->whereType('intent');
     }
 
     /**
@@ -204,7 +227,7 @@ class Order extends BaseModel
      */
     public function refunds()
     {
-        return $this->transactions()->whereRefund(true);
+        return $this->transactions()->whereType('refund');
     }
 
     /**

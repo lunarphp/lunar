@@ -21,5 +21,8 @@ return [
             'label' => 'Payment Received',
             'color' => '#6a67ce',
         ],
+        'dispatched'  => [
+            'label' => 'Dispatched',
+        ],
     ],
 ];

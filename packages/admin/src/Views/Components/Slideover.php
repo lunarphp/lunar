@@ -10,10 +10,13 @@ class Slideover extends Component
 
     public $nested = false;
 
-    public function __construct($title = '', $nested = false)
+    public $form = true;
+
+    public function __construct($title = '', $nested = false, $form = null)
     {
         $this->title = $title;
         $this->nested = $nested;
+        $this->form = $form;
     }
 
     /**

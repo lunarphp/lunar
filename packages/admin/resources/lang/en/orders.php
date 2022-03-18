@@ -15,4 +15,7 @@ return [
     'index.delete_saved_search.title' => 'Delete saved search',
     'index.delete_saved_search.confirm' => 'Are you sure you want to delete this saved search?',
     'index.delete_saved_search.btn' => 'Confirm Delete',
+    'update_status.btn' => 'Update Status',
+    'update_status.title' => 'Update Status',
+    'show.title' => 'Order #:id',
 ];
