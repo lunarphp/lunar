@@ -3,7 +3,9 @@
   <div>
     @if($minimal)
       <button @click.prevent="menuOpen = !menuOpen" type="button" class="flex items-center text-gray-400 rounded-full hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" aria-expanded="true" aria-haspopup="true">
-        <span class="sr-only">Open options</span>
+        <span class="sr-only">
+            {{ __('adminhub::menu.dropdown-options') }}
+        </span>
         <!-- Heroicon name: solid/dots-vertical -->
         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />

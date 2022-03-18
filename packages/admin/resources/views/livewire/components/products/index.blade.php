@@ -1,8 +1,10 @@
 <div class="flex-col px-12 space-y-4">
   <div class="flex items-center justify-between">
-    <strong class="text-lg font-bold md:text-2xl">Products</strong>
+    <strong class="text-lg font-bold md:text-2xl">
+        {{ __('adminhub::components.products.index.title') }}
+    </strong>
     <div class="text-right">
-      <x-hub::button tag="a" href="{{ route('hub.products.create') }}">Create Product</x-hub::button>
+      <x-hub::button tag="a" href="{{ route('hub.products.create') }}">{{ __('adminhub::components.products.index.create_product') }}</x-hub::button>
     </div>
   </div>
 
@@ -69,9 +71,9 @@
         <div class="grid grid-cols-4 gap-4" x-show="filtersVisible" x-cloak>
           <x-hub::input.group label="Status" for="brand">
             <x-hub::input.select wire:model="filters.status">
-              <option>Any</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
+              <option>{{ __('adminhub::global.any') }}</option>
+              <option value="published">{{ __('adminhub::global.published') }}</option>
+              <option value="draft">{{ __('adminhub::global.draft') }}</option>
             </x-hub::input.select>
           </x-hub::input.group>
 
@@ -127,10 +129,12 @@
         <x-hub::table.row class="border-b bg-indigo-50">
           <x-hub::table.cell colspan="24">
             @unless($selectAll)
-              <span class="text-sm text-indigo-800">You have selected <strong>{{ count($selected) }}</strong> products, do you want to select all <strong>{{ $products->total() }}</strong>?</span>
-              <button wire:click="selectAll" class="ml-1 text-blue-700 hover:underline">Select all</button>
+              <span class="text-sm text-indigo-800">{{ __('adminhub::components.products.index.you_have_selected') }} 
+                <strong>{{ count($selected) }}</strong> {{ __('adminhub::components.products.index.want_to_select_all') }} <strong>{{ $products->total() }}</strong>?</span>
+              <button wire:click="selectAll" class="ml-1 text-blue-700 hover:underline">{{ __('adminhub::components.products.index.select_all_btn') }}</button>
             @else
-              <span class="text-sm text-indigo-800">You have selected all <strong>{{ $products->total() }}</strong> products.</span>
+              <span class="text-sm text-indigo-800">{{ __('adminhub::components.products.index.you_have_selected_all') }} 
+                <strong>{{ $products->total() }}</strong> {{ __('adminhub::components.products.index.products') }}</span>
             @endif
 
           </x-hub::table.cell>
@@ -177,7 +181,7 @@
 
         <x-hub::table.cell>
             <a href="{{ route('hub.products.show', $product->id) }}" class="text-indigo-500 hover:underline">
-              Edit
+                {{ __('adminhub::global.edit') }}
             </a>
         </x-hub::table.cell>
       </x-hub::table.row>

@@ -71,6 +71,7 @@ return [
      * Currency create page.
      */
     'currencies.create.title' => 'Edit Currency',
+    'currencies.index.create_currency_btn' => 'Create Currency',
     /**
      * Currency form.
      */

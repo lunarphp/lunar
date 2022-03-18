@@ -1,8 +1,8 @@
 <div class="flex-col px-12 mx-auto space-y-4 max-w-7xl">
   <div class="flex items-center justify-between">
-    <strong class="text-lg font-bold md:text-2xl">Order</strong>
+    <strong class="text-lg font-bold md:text-2xl">{{ __('adminhub::global.order') }}</strong>
     <div>
-      <x-hub::button type="button" wire:click="$set('updatingStatus', true)">Update Status</x-hub::button>
+      <x-hub::button type="button" wire:click="$set('updatingStatus', true)">{{ __('adminhub::global.update_status') }}</x-hub::button>
     </div>
   </div>
 
@@ -11,7 +11,7 @@
       <div class="flex items-center px-4 py-4 bg-white rounded-lg">
         <div class="flex items-center">
           <div>
-            <span class="block text-xs">Status</span>
+            <span class="block text-xs">{{ __('adminhub::global.status') }}</span>
             <strong class="text-sm font-bold">{{ $this->status }}</strong>
           </div>
         </div>
@@ -22,7 +22,7 @@
       <div class="flex items-center px-4 py-4 bg-white rounded-lg">
         <div class="flex items-center">
           <div>
-            <span class="block text-xs">Reference</span>
+            <span class="block text-xs">{{ __('adminhub::global.reference') }}</span>
             <strong class="text-sm font-bold">{{ $order->reference }}</strong>
           </div>
         </div>
@@ -33,7 +33,7 @@
       <div class="flex items-center px-4 py-4 bg-white rounded-lg">
         <div class="flex items-center">
           <div>
-            <span class="block text-xs">Customer Reference</span>
+            <span class="block text-xs">{{ __('adminhub::catalogue.orders.show.customer_reference') }}</span>
             <strong class="text-sm font-bold">{{ $order->customer_reference ?: '-' }}</strong>
           </div>
         </div>
@@ -44,7 +44,7 @@
       <div class="flex items-center px-4 py-4 bg-white rounded-lg">
         <div class="flex items-center">
           <div>
-            <span class="block text-xs">Date</span>
+            <span class="block text-xs">{{ __('adminhub::global.date') }}</span>
             <strong class="text-sm font-bold">
               @if($order->placed_at)
                 {{ $order->placed_at->format('jS M Y') }}
@@ -61,7 +61,7 @@
       <div class="flex items-center px-4 py-4 bg-white rounded-lg">
         <div class="flex items-center">
           <div>
-            <span class="block text-xs">Time</span>
+            <span class="block text-xs">{{ __('adminhub::global.time') }}</span>
             <strong class="text-sm font-bold">
               @if($order->placed_at)
                 {{ $order->placed_at->format('h:ma') }}
@@ -82,13 +82,14 @@
   <div class="grid grid-cols-3 gap-4">
     @if($this->shipping)
       <div class="p-4 bg-white rounded-lg">
-        <h3 class="font-semibold text-gray-900">Shipping Option{{ $this->shippingLines->count() > 1 ? 's' : null }}</h3>
+        <h3 class="font-semibold text-gray-900">{{ __('adminhub::catalogue.orders.show.shipping_option') }}
+            {{ $this->shippingLines->count() > 1 ? 's' : null }}</h3>
         @foreach($this->shippingLines as $line)
           {{ $line->description }}
         @endforeach
       </div>
       <div class="p-4 bg-white rounded-lg">
-        <h3 class="font-semibold text-gray-900">Shipping Address</h3>
+        <h3 class="font-semibold text-gray-900">{{ __('adminhub::catalogue.orders.show.shipping_address') }}</h3>
         <div class="mt-2">
           <span class="adr">
             <span class="block">{{ $this->shipping->fullName }}</span>
@@ -111,7 +112,7 @@
       </div>
       @endif
       <div class="p-4 bg-white rounded-lg">
-        <h3 class="font-semibold text-gray-900">Billing Address</h3>
+        <h3 class="font-semibold text-gray-900">{{ __('adminhub::catalogue.orders.show.billing_address') }}</h3>
         <div class="mt-2">
           <span class="adr">
             <span class="block">{{ $this->billing->fullName }}</span>
@@ -135,19 +136,19 @@
   </div>
   <div class="mt-8">
    <div class="p-4 bg-white rounded-lg">
-      <h3 class="text-lg font-semibold text-gray-900">Order Lines</h3>
+      <h3 class="text-lg font-semibold text-gray-900">{{ __('adminhub::catalogue.orders.show.order_lines') }}</h3>
       <div>
         <table class="w-full mt-4">
           <thead class="font-normal">
             <tr class="text-sm text-left text-gray-600 border-b">
-              <th class="pb-2 font-normal">Identifier</th>
-              <th class="pb-2 font-normal">Description</th>
-              <th class="pb-2 font-normal">Option</th>
-              <th class="pb-2 font-normal">Quantity</th>
-              <th class="pb-2 font-normal">Sub Total</th>
-              <th class="pb-2 font-normal">Tax</th>
-              <th class="pb-2 font-normal">Discount</th>
-              <th class="pb-2 font-normal">Total</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.identifier') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.description') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.option') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.quantity') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.sub_total') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.tax') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.discount') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.total') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -167,7 +168,7 @@
           <tfoot class="text-sm bg-gray-50">
             <tr>
               <td colspan="6"></td>
-              <td class="p-2 text-sm">Sub Total</td>
+              <td class="p-2 text-sm">{{ __('adminhub::global.sub_total') }}</td>
               <td>{{ $order->sub_total->formatted }}</td>
             </tr>
             @foreach($order->tax_breakdown as $tax)
@@ -179,7 +180,7 @@
             @endforeach
             <tr>
               <td colspan="6"></td>
-              <td class="p-2 text-sm">Total</td>
+              <td class="p-2 text-sm">{{ __('adminhub::global.total') }}</td>
               <td>{{ $order->total->formatted }}</td>
             </tr>
           </tfoot>
@@ -190,19 +191,19 @@
 
   <div class="mt-8">
     <div class="p-4 bg-white rounded-lg">
-      <h3 class="text-lg font-semibold text-gray-900">Transactions</h3>
+      <h3 class="text-lg font-semibold text-gray-900">{{ __('adminhub::catalogue.orders.show.transactions') }}</h3>
       <div>
         <table class="w-full mt-4">
           <thead class="font-normal">
             <tr class="text-sm text-left text-gray-600 border-b">
-              <th class="pb-2 font-normal">Status</th>
-              <th class="pb-2 font-normal">Success</th>
-              <th class="pb-2 font-normal">Refund</th>
-              <th class="pb-2 font-normal">Amount</th>
-              <th class="pb-2 font-normal">Card Type</th>
-              <th class="pb-2 font-normal">Last four</th>
-              <th class="pb-2 font-normal">Date</th>
-              <th class="pb-2 font-normal">Notes</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.status') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.success') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.refund') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.amount') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.card_type') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.last_four') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.date') }}</th>
+              <th class="pb-2 font-normal">{{ __('adminhub::global.notes') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -233,7 +234,7 @@
 
     <x-slot name="footer">
       <x-hub::button type="button" wire:click.prevent="$set('updatingStatus', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
-      <x-hub::button type="button" wire:click="saveStatus">Save</x-hub::button>
+      <x-hub::button type="button" wire:click="saveStatus">{{ __('adminhub::global.save') }}</x-hub::button>
     </x-slot>
   </x-hub::modal.dialog>
 </div>

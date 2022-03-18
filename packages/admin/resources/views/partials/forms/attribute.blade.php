@@ -55,7 +55,7 @@
 
       <x-hub::input.group :label="__('adminhub::inputs.attribute_group')" :error="$errors->first('attribute.attribute_group_id')" for="group">
         <x-hub::input.select wire:model="attribute.attribute_group_id" :disabled="$this->isLocked" :error="$errors->first('attribute.attribute_group_id')">
-          <option value readonly>Select attribute group</option>
+          <option value readonly>{{ __('adminhub::inputs.select_attribute_group') }}</option>
           @foreach($this->attributeGroups as $group)
             <option value="{{ $group->id }}">{{ $group->translate('name') }}</option>
           @endforeach
@@ -77,9 +77,9 @@
           :error="$errors->first('attribute.configuration.type')"
         >
           <x-hub::input.select wire:model="attribute.configuration.type" id="fieldType" :error="$errors->first('attribute.configuration.type')" :disabled="$this->isLocked">
-            <option value>Select a field type</option>
-            <option value="text">Text</option>
-            <option value="richtext">Richtext</option>
+            <option value>{{ __('adminhub::inputs.select_field_type') }}</option>
+            <option value="text">{{ __('adminhub::inputs.text') }}</option>
+            <option value="richtext">{{ __('adminhub::inputs.richtext') }}</option>
           </x-hub::input.select>
         </x-hub::input.group>
       @endif
@@ -113,7 +113,7 @@
             <x-hub::input.text type="email" wire:model="deleteConfirm" />
           </div>
           <div class="col-span-3 text-right lg:col-span-2">
-            <x-hub::button theme="danger" :disabled="!$this->canDelete" wire:click="delete" type="button">Delete</x-hub::button>
+            <x-hub::button theme="danger" :disabled="!$this->canDelete" wire:click="delete" type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
           </div>
         </div>
       </div>

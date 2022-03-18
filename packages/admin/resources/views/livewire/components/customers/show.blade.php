@@ -4,7 +4,7 @@
       {{ $customer->fullName }}
     </strong>
     <div>
-      <x-hub::button type="button" wire:click="save">Save Customer</x-hub::button>
+      <x-hub::button type="button" wire:click="save">{{ __('adminhub::catalogue.customers.show.save_btn') }}</x-hub::button>
     </div>
   </div>
 
@@ -45,7 +45,7 @@
       <div class="bg-white rounded shadow">
         <div class="bg-white rounded shadow">
             <header class="px-4 py-4 font-bold border-b">
-              Users
+                {{ __('adminhub::global.users') }}
             </header>
 
             <div class="p-4 space-y-2">
@@ -83,7 +83,7 @@
     <div class="w-1/3">
       <div class="bg-white rounded shadow">
         <header class="px-4 py-4 font-bold border-b">
-          Customer Groups
+          {{ __('adminhub::catalogue.customer.show.customer-groups') }}
         </header>
 
         <div class="p-4 space-y-2">

@@ -34,7 +34,7 @@
       @if(Auth::user()->can('settings'))
         <a href="{{ route('hub.settings') }}" class="flex items-center mx-5 px-2 py-2 text-base rounded-md group @if(!Str::contains(request()->url(), 'settings')) text-gray-400 hover:text-gray-900 @else text-gray-900 bg-gray-100 @endif">
           {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-6 h-6 mr-2') !!}
-          Settings
+          {{ __('adminhub:global.settings') }}
         </a>
       @endif
     </div>

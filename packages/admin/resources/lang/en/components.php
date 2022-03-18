@@ -73,6 +73,8 @@ return [
     'attribute-edit.searchable.instructions' => 'Should users be able to search via this attribute?',
     'attribute-edit.filterable.instructions' => 'Should users be able to filter results based on this attribute?',
     'attribute-edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
+    'attribute-edit.cancel_btn'              => 'Cancel',
+    'attribute-edit.save_attribute_btn'      => 'Save Attribute',
 
     /**
      * Collection search.
@@ -87,4 +89,16 @@ return [
     'collection-search.select_empty'                => 'When you select collections, they will appear here.',
     'collection-search.title'                       => 'Search for collections',
     'collection-search.commit_btn'                  => 'Select Collections',
+
+    /**
+     * Product Index.
+     */
+    'products.index.title' => 'Products',
+    'products.index.create_product' => 'Create Product',
+    'products.index.you_have_selected' => 'You have selected',
+    'products.index.you_have_selected_all' => 'You have selected all',
+    'products.index.want_to_select_all' => 'products, do you want to select all',
+    'products.index.products' => 'products.',
+    'products.index.select_all_btn' => 'Select all',
+    'products.index.deselect_all_btn' => 'Deselect all',
 ];

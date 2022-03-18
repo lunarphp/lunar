@@ -9,7 +9,7 @@
     @if($product->id)
       {{ $product->translateAttribute('name') }}
     @else
-      New Product
+    {{ __('adminhub::global.new_product') }}
     @endif
   </h1>
 </div>

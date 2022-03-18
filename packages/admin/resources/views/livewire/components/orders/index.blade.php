@@ -1,6 +1,6 @@
 <div class="flex-col px-12 space-y-4">
   <div class="flex items-center justify-between">
-    <strong class="text-lg font-bold md:text-2xl">Orders</strong>
+    <strong class="text-lg font-bold md:text-2xl">{{ __('adminhub::global.orders') }}</strong>
   </div>
 
   <div class="space-y-4">

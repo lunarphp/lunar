@@ -31,4 +31,9 @@ return [
     'attribute-edit.created'            => 'Attribute created',
     'attribute-edit.updated'            => 'Attribute updated',
     'attributes.deleted'                => 'Attribute Deleted',
+    'image.deleted'                     => 'Image has been deleted',
+    'sorry'                             => 'Sorry!',
+    'search-results.none'               => 'We were unable to find any results based on your search.',
+    'addon.not_licensed'                => 'This addon has not been licensed, please check the config for this addon.',
+    'product.no-images-associated'      => 'Product does not have any images associated',
 ];
