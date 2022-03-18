@@ -1,7 +1,7 @@
 <div class="space-y-4">
   @if(!$this->intents->count())
     <x-hub::alert level="danger">
-      {{ __('adminhub::components.orders.refund.no_intents') }}
+      {{ __('adminhub::components.orders.capture.no_intents') }}
     </x-hub::alert>
   @else
     <x-hub::input.group for="amount" :label="__('adminhub::inputs.transaction.label')" required :error="$errors->first('transaction')">

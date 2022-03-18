@@ -139,7 +139,7 @@ return [
      */
     'orders.capture.confirm_text'                    => 'CONFIRM',
     'orders.capture.confirm_message'                 => 'Please confirm you want to capture this payment',
-    'orders.capture.no_intents'                      => 'There are no refundable charges on this order',
+    'orders.capture.no_intents'                      => 'There are no transactions available for capture',
     'orders.capture.select_transaction'              => 'Select a transaction',
     'orders.capture.capture_btn'                      => 'Capture payment',
 ];
