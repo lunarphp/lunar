@@ -12,6 +12,13 @@ interface AbstractSlot
     public function getSlotHandle();
 
     /**
+     * Get the initial value of the slot data
+     *
+     * @return mixed
+     */
+    public function getSlotInitialValue();
+
+    /**
      * Get the position in the view where the slot appears.
      *
      * @return string
