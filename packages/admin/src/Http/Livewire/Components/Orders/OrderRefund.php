@@ -83,8 +83,9 @@ class OrderRefund extends Component
     {
         if ($this->charges->count() == 1) {
             $this->transaction = $this->charges->first()->id;
-            $this->amount = $this->transactionModel->amount->value / 100;
         }
+
+        $this->amount = $this->availableToRefund;
     }
 
     /**
@@ -101,13 +102,38 @@ class OrderRefund extends Component
     /**
      * Return the available charges.
      *
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     public function getChargesProperty()
     {
         return $this->order->transactions()->whereType('capture')->whereSuccess(true)->get();
     }
 
+    /**
+     * Return the existing refunds.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getRefundsProperty()
+    {
+        return $this->order->transactions()->whereType('refund')->whereSuccess(true)->get();
+    }
+
+    /**
+     * Return the amount that's available for refunding.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAvailableToRefundProperty()
+    {
+        return $this->charges->sum('amount.value') > $this->refunds->sum('amount.value');
+    }
+
+    /**
+     * Return the selected transaction model.
+     *
+     * @return void
+     */
     public function getTransactionModelProperty()
     {
         return Transaction::find($this->transaction);

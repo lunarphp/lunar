@@ -3,6 +3,10 @@
     <x-hub::alert level="danger">
       {{ __('adminhub::components.orders.refund.no_charges') }}
     </x-hub::alert>
+  @elseif(!$this->availableToRefund)
+    <x-hub::alert level="danger">
+      {{ __('adminhub::components.orders.refund.fully_refunded') }}
+    </x-hub::alert>
   @else
     <x-hub::input.group for="amount" :label="__('adminhub::inputs.transaction.label')" required :error="$errors->first('transaction')">
       <x-hub::input.select wire:model="transaction">

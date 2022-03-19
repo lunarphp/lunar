@@ -134,6 +134,7 @@ return [
     'orders.refund.no_charges'                      => 'There are no refundable charges on this order',
     'orders.refund.select_transaction'              => 'Select a transaction',
     'orders.refund.refund_btn'                      => 'Send refund',
+    'orders.refund.fully_refunded'                  => 'The captures on this order have been refunded',
     /**
      * Order Capture.
      */
