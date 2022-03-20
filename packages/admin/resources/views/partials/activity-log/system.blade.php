@@ -14,7 +14,7 @@
           </div>
           <div class="min-w-0 flex-1 py-1.5">
             <div class="text-sm text-gray-500">
-              <a href="#" class="font-medium text-gray-900">{{ __('adminhub:partials.activity-log.system.system') }}</a>
+              <a href="#" class="font-medium text-gray-900">{{ __('adminhub::partials.activity-log.system.system') }}</a>
               {{ $row->description }}
               <span class="whitespace-nowrap">{{ $row->created_at->diffForHumans() }}</span>
             </div>
