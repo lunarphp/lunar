@@ -17,7 +17,7 @@ class EnsureAllProductsHavePriceSortingSet
         // Get all prices at tier 1 and force an update
         Price::where('tier', '=', 1)->chunk(1000, function ($prices) {
             foreach ($prices as $price) {
-                event('eloquent.updating: '.Price::class, $price);
+                event('eloquent.updated: '.Price::class, $price);
             }
         });
     }
