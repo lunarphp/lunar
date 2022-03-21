@@ -22,7 +22,7 @@ class CartLineObserver
     }
 
     /**
-     * Handle the CartLine "updated" event.
+     * Handle the CartLine "updating" event.
      *
      * @param  \GetCandy\Models\CartLine  $cartLine
      * @return void

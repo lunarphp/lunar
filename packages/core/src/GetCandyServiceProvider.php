@@ -25,6 +25,7 @@ use GetCandy\Console\Commands\MeilisearchSetup;
 use GetCandy\Console\InstallGetCandy;
 use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
+use GetCandy\Database\State\EnsureAllProductsHavePriceSortingSet;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Managers\PricingManager;
@@ -36,6 +37,7 @@ use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\OrderLine;
+use GetCandy\Models\Price;
 use GetCandy\Models\Url;
 use GetCandy\Observers\AddressObserver;
 use GetCandy\Observers\CartLineObserver;
@@ -44,6 +46,7 @@ use GetCandy\Observers\CollectionObserver;
 use GetCandy\Observers\CurrencyObserver;
 use GetCandy\Observers\LanguageObserver;
 use GetCandy\Observers\OrderLineObserver;
+use GetCandy\Observers\PriceObserver;
 use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -201,6 +204,7 @@ class GetCandyServiceProvider extends ServiceProvider
         $states = [
             ConvertProductTypeAttributesToProducts::class,
             EnsureDefaultTaxClassExists::class,
+            EnsureAllProductsHavePriceSortingSet::class,
         ];
 
         foreach ($states as $state) {
@@ -218,14 +222,15 @@ class GetCandyServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
-        Channel::observe(ChannelObserver::class);
-        Language::observe(LanguageObserver::class);
-        Currency::observe(CurrencyObserver::class);
-        Url::observe(UrlObserver::class);
-        Collection::observe(CollectionObserver::class);
-        CartLine::observe(CartLineObserver::class);
-        OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
+        CartLine::observe(CartLineObserver::class);
+        Channel::observe(ChannelObserver::class);
+        Collection::observe(CollectionObserver::class);
+        Currency::observe(CurrencyObserver::class);
+        Language::observe(LanguageObserver::class);
+        OrderLine::observe(OrderLineObserver::class);
+        Price::observe(PriceObserver::class);
+        Url::observe(UrlObserver::class);
     }
 
     /**

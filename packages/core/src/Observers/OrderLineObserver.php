@@ -22,7 +22,7 @@ class OrderLineObserver
     }
 
     /**
-     * Handle the OrderLine "updated" event.
+     * Handle the OrderLine "updating" event.
      *
      * @param  \GetCandy\Models\OrderLine  $orderLine
      * @return void

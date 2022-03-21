@@ -100,6 +100,7 @@ class Product extends BaseModel implements SpatieHasMedia
      */
     protected $casts = [
         'attribute_data' => AsAttributeData::class,
+        'sorting' => 'array',
     ];
 
     /**
