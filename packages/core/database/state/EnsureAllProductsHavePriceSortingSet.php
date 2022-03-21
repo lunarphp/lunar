@@ -4,7 +4,6 @@ namespace GetCandy\Database\State;
 
 use GetCandy\Models\Price;
 use GetCandy\Models\Product;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class EnsureAllProductsHavePriceSortingSet
@@ -16,7 +15,7 @@ class EnsureAllProductsHavePriceSortingSet
         }
 
         // Get all prices at tier 1 and force an update
-        Price::where('tier', '=', 1)->chunk(1000, function($prices){
+        Price::where('tier', '=', 1)->chunk(1000, function ($prices) {
             foreach ($prices as $price) {
                 event('eloquent.updating: '.Price::class, $price);
             }

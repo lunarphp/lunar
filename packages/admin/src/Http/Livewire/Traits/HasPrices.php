@@ -108,7 +108,7 @@ trait HasPrices
             // Save customer group pricing.
             if (! $this->customerPricingEnabled) {
                 // If customer group pricing isn't enabled, we need to remove the prices for customer groups.
-                $model->prices()->whereNotNull('customer_group_id')->whereTier(1)->get()->each(function($price) {
+                $model->prices()->whereNotNull('customer_group_id')->whereTier(1)->get()->each(function ($price) {
                     $price->delete();
                 });
 
