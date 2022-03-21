@@ -232,4 +232,9 @@ class Product extends BaseModel implements SpatieHasMedia
             'ends_at',
         ])->withTimestamps();
     }
+
+    public function scopeUseSorting($query, $field, $dir = 'asc', $cast = 'unsigned')
+    {
+        $query->reorder()->orderByRaw('CAST(sorting->>"$.'.$field.'" AS '.$cast.') '.$dir);
+    }
 }
