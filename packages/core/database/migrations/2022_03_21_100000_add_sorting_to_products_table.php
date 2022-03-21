@@ -9,7 +9,7 @@ class AddSortingToProductsTable extends Migration
     public function up()
     {
         Schema::table($this->prefix.'products', function (Blueprint $table) {
-            $table->json('sorting')->after('brand');
+            $table->json('sorting')->after('brand')->nullable();
         });
     }
 
