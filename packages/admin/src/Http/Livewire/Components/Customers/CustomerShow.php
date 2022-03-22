@@ -2,14 +2,21 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 
+use Carbon\CarbonPeriod;
+use GetCandy\DataTypes\Price;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
+use GetCandy\Models\Order;
+use GetCandy\Models\OrderLine;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class CustomerShow extends Component
 {
-    use Notifies;
+    use Notifies, WithPagination;
 
     /**
      * The current customer in view.
@@ -26,15 +33,34 @@ class CustomerShow extends Component
     public array $syncedGroups = [];
 
     /**
+     * The purchase history page.
+     *
+     * @var integer
+     */
+    public $phPage = 1;
+
+    /**
+     * The order history page.
+     *
+     * @var integer
+     */
+    public $ohPage = 1;
+
+    protected $queryString = [
+        'phPage',
+        'ohPage',
+    ];
+
+    /**
      * {@inheritDoc}
      */
     public function rules()
     {
         return [
             'syncedGroups'          => 'array',
-            'customer.title'        => 'string',
-            'customer.first_name'   => 'string',
-            'customer.last_name'    => 'string',
+            'customer.title'        => 'string|nullable',
+            'customer.first_name'   => 'string|required',
+            'customer.last_name'    => 'string|required',
             'customer.company_name' => 'nullable|string',
             'customer.vat_no'       => 'nullable|string',
         ];
@@ -78,6 +104,178 @@ class CustomerShow extends Component
     public function getCustomerGroupsProperty()
     {
         return CustomerGroup::get();
+    }
+
+    /**
+     * Return the paginated customer orders.
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getOrdersProperty()
+    {
+        return $this->customer->orders()->orderBy('placed_at', 'desc')->paginate(
+            perPage: 10,
+            pageName: 'ohPage'
+        );
+    }
+
+    /**
+     * Return the order count for the customer.
+     *
+     * @return int
+     */
+    public function getOrdersCountProperty()
+    {
+        return $this->customer->orders()->count();
+    }
+
+    /**
+     * Return the average spend for the customer.
+     *
+     * @return \GetCandy\DataTypes\Price
+     */
+    public function getAvgSpendProperty()
+    {
+        $avg = (int) round($this->customer->orders()->average(
+            DB::RAW('sub_total * exchange_rate')
+        ));
+        return new Price($avg, Currency::getDefault());
+    }
+
+    /**
+     * Return the average spend for the customer.
+     *
+     * @return \GetCandy\DataTypes\Price
+     */
+    public function getTotalSpendProperty()
+    {
+        $avg = (int) round($this->customer->orders()->sum(
+            DB::RAW('sub_total * exchange_rate')
+        ));
+        return new Price($avg, Currency::getDefault());
+    }
+
+    /**
+     * Return the spending chart data.
+     *
+     * @return \GetCandy\Models\Collection
+     */
+    public function getSpendingChartProperty()
+    {
+        $start = now()->subYear()->startOfDay();
+        $end = now()->endOfDay();
+        $defaultCurrency = Currency::getDefault();
+
+        $thisPeriod = $this->customer->orders()->select(
+            DB::RAW('SUM(sub_total) as sub_total'),
+            db_date('placed_at', '%Y-%m', 'format_date')
+        )->whereNotNull('placed_at')
+        ->whereBetween('placed_at', [
+            $start,
+            $end,
+        ])->groupBy('format_date')->get();
+
+        $previousPeriod = $this->customer->orders()->select(
+            DB::RAW('SUM(sub_total) as sub_total'),
+            db_date('placed_at', '%Y-%m', 'format_date')
+        )->whereNotNull('placed_at')
+        ->whereBetween('placed_at', [
+            $start->clone()->subYear(),
+            $end->clone()->subYear(),
+        ])->groupBy('format_date')->get();
+
+        $period = CarbonPeriod::create($start, '1 month', $end);
+
+        $thisPeriodMonths = collect();
+        $previousPeriodMonths = collect();
+        $months = collect();
+
+        foreach ($period as $datetime) {
+            $months->push($datetime->toDateTimeString());
+            // Do we have some totals for this month?
+            if ($totals = $thisPeriod->first(fn ($p) => $p->format_date == $datetime->format('Y-m'))) {
+                $thisPeriodMonths->push($totals->sub_total->decimal);
+            } else {
+                $thisPeriodMonths->push(0);
+            }
+            if ($prevTotals = $previousPeriod->first(fn ($p) => $p->format_date == $datetime->format('Y-m'))) {
+                $previousPeriodMonths->push($prevTotals->sub_total->decimal);
+            } else {
+                $previousPeriodMonths->push(0);
+            }
+        }
+
+        return collect([
+            'chart' => [
+                'type'    => 'area',
+                'toolbar' => [
+                    'show' => false,
+                ],
+                'height' => '100%',
+            ],
+            'dataLabels' => [
+                'enabled' => false,
+            ],
+            'fill' => [
+                'type'     => 'gradient',
+                'gradient' => [
+                    'shadeIntensity' => 1,
+                    'opacityFrom'    => 0.45,
+                    'opacityTo'      => 0.05,
+                    'stops'          => [50, 100, 100, 100],
+                ],
+            ],
+            'series' => [
+                [
+                    'name' => 'This Period',
+                    'data' => $thisPeriodMonths->toArray(),
+                ],
+                [
+                    'name' => 'Previous Period',
+                    'data' => $previousPeriodMonths->toArray(),
+                ],
+            ],
+            'xaxis' => [
+                'type'       => 'datetime',
+                'categories' => $months->toArray(),
+            ],
+            'yaxis' => [
+                'title' => [
+                    'text' => "Spending {$defaultCurrency->code}",
+                ],
+            ],
+            'tooltip' => [
+                'x' => [
+                    'format' => 'dd MMM yyyy',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Return the purchase history
+     *
+     * @return void
+     */
+    public function getPurchaseHistoryProperty()
+    {
+        $ordersTable = (new Order)->getTable();
+        $orderLinesTable = (new OrderLine)->getTable();
+
+        return OrderLine::select(
+            DB::RAW('COUNT(*) as order_count'),
+            DB::RAW('SUM(quantity) as quantity'),
+            DB::RAW("SUM({$orderLinesTable}.sub_total) as sub_total"),
+            "description",
+            'identifier',
+            DB::RAW("MAX(DATE_FORMAT(placed_at, '%Y-%m-%d')) as last_ordered")
+        )->join($ordersTable, "{$ordersTable}.id", '=', "{$orderLinesTable}.order_id")
+        ->whereIn(
+            'order_id', $this->customer->orders()->pluck('id')
+        )->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
+            perPage: 10,
+            pageName: 'phPage'
+        );
     }
 
     /**
