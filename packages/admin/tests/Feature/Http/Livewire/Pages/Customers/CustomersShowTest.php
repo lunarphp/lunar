@@ -36,7 +36,6 @@ class CustomersShowTest extends TestCase
     /** @test */
     public function cant_view_page_without_permission()
     {
-
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
@@ -59,7 +58,6 @@ class CustomersShowTest extends TestCase
                 'handle' => 'catalogue:manage-customers',
             ],
         ]);
-
 
         $this->actingAs($staff, 'staff');
 
