@@ -5,30 +5,36 @@
     </strong>
   </div>
 
-  <div class="flex gap-x-4">
-    <div class="w-2/3 space-y-4">
+  <div class="md:flex gap-x-4">
+    <div class="space-y-4 md:w-2/3">
       <!-- This example requires Tailwind CSS v2.0+ -->
       <div>
         <dl class="grid grid-cols-1 gap-5 sm:grid-cols-3">
           <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-            <dt class="text-sm font-medium text-gray-500 truncate">Total Orders</dt>
+            <dt class="text-sm font-medium text-gray-500 truncate">
+              {{ __('adminhub::components.customers.show.metrics.total_orders') }}
+            </dt>
             <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ $this->ordersCount }}</dd>
           </div>
 
           <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-            <dt class="text-sm font-medium text-gray-500 truncate">Avg. Spend</dt>
+            <dt class="text-sm font-medium text-gray-500 truncate">
+              {{ __('adminhub::components.customers.show.metrics.avg_spend') }}
+            </dt>
             <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ $this->avgSpend->formatted }}</dd>
           </div>
 
           <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-            <dt class="text-sm font-medium text-gray-500 truncate">Total Spend</dt>
+            <dt class="text-sm font-medium text-gray-500 truncate">
+              {{ __('adminhub::components.customers.show.metrics.total_spend') }}
+            </dt>
             <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ $this->totalSpend->formatted }}</dd>
           </div>
         </dl>
       </div>
       <div class="bg-white rounded shadow">
         <header class="px-4 py-4 font-bold border-b">
-          Spending the past year
+          {{ __('adminhub::components.customers.show.year_spending') }}
         </header>
         <div class="p-4 h-80">
         @livewire('hub.components.reporting.apex-chart', ['options' => $this->spendingChart])
@@ -49,7 +55,7 @@
                   'hover:text-gray-700 text-gray-500': tab != 'purchase_history'
                 }"
               >
-                Purchase History
+                {{ __('adminhub::components.customers.show.purchase_history') }}
               </button>
 
               <button
@@ -61,7 +67,7 @@
                   'hover:text-gray-700 text-gray-500': tab != 'order_history'
                 }"
               >
-                Order History
+                {{ __('adminhub::components.customers.show.order_history') }}
               </button>
 
               <button
@@ -73,7 +79,7 @@
                   'hover:text-gray-700 text-gray-500': tab != 'users'
                 }"
               >
-                Users
+                {{ __('adminhub::components.customers.show.users') }}
               </button>
 
               <a
@@ -85,7 +91,7 @@
                   'hover:text-gray-700 text-gray-500': tab != 'addresses'
                 }"
               >
-                Addresses
+                {{ __('adminhub::components.customers.show.addresses') }}
               </a>
             </nav>
           </div>
@@ -99,44 +105,15 @@
           @include('adminhub::partials.customers.order-history')
         </div>
 
+        <div x-show="tab == 'users'" class="mt-4">
+          @include('adminhub::partials.customers.users')
+        </div>
+
+        <div x-show="tab == 'addresses'" class="mt-4">
+          @include('adminhub::partials.customers.addresses')
+        </div>
+
       </div>
-
-      {{-- <div class="bg-white rounded shadow">
-        <div class="bg-white rounded shadow">
-            <header class="px-4 py-4 font-bold border-b">
-              Users
-            </header>
-
-            <div class="p-4 space-y-2">
-              <x-hub::table>
-                <x-slot name="head">
-                  <x-hub::table.heading>
-                    {{ __('adminhub::global.name') }}
-                  </x-hub::table.heading>
-
-                  <x-hub::table.heading>
-                    {{ __('adminhub::global.email') }}
-                  </x-hub::table.heading>
-                </x-slot>
-                <x-slot name="body">
-                  @forelse($customer->users as $user)
-                    <x-hub::table.row>
-                      <x-hub::table.cell>
-                        {{ $user->name }}
-                      </x-hub::table.cell>
-
-                      <x-hub::table.cell>
-                        {{ $user->email }}
-                      </x-hub::table.cell>
-                    </x-hub::table.row>
-                  @empty
-
-                  @endforelse
-                </x-slot>
-              </x-hub::table>
-            </div>
-          </div>
-      </div> --}}
     </div>
 
     <div class="w-1/3">
@@ -144,31 +121,31 @@
         <div class="p-4 space-y-4">
           <div class="grid grid-cols-3 gap-4">
             <div>
-              <x-hub::input.group for="title" label="Title">
+              <x-hub::input.group for="title" :label="__('adminhub::inputs.title')">
                 <x-hub::input.text wire:model="customer.title" />
               </x-hub::input.group>
             </div>
             <div>
-              <x-hub::input.group for="first_name" label="First Name">
+              <x-hub::input.group for="first_name" :label="__('adminhub::inputs.firstname')">
                 <x-hub::input.text wire:model="customer.first_name" />
               </x-hub::input.group>
             </div>
             <div>
-              <x-hub::input.group for="last_name" label="Last Name">
+              <x-hub::input.group for="last_name" :label="__('adminhub::inputs.lastname')">
                 <x-hub::input.text wire:model="customer.last_name" />
               </x-hub::input.group>
             </div>
           </div>
 
-          <x-hub::input.group for="company_name" label="Company Name">
+          <x-hub::input.group for="company_name" :label="__('adminhub::inputs.company_name.label')">
             <x-hub::input.text wire:model="customer.company_name" />
           </x-hub::input.group>
 
-          <x-hub::input.group for="vat_no" label="VAT No.">
+          <x-hub::input.group for="vat_no" :label="__('adminhub::inputs.vat_no.label')">
             <x-hub::input.text wire:model="customer.vat_no" />
           </x-hub::input.group>
           <header class="">
-            Customer Groups
+            {{ __('adminhub::components.customers.show.customer_groups') }}
           </header>
 
           <div class="space-y-2">
@@ -180,7 +157,19 @@
           </div>
         </div>
         <div class="p-4 text-right rounded-b bg-gray-50">
-          <x-hub::button type="button" wire:click="save">Save Customer</x-hub::button>
+            <x-hub::button type="button" wire:click="save">
+              <div wire:loading wire:target="save">
+                <div>
+                  <svg class="w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div wire:loading.remove wire:target="save">
+                <span>{{ __('adminhub::components.customers.show.save_customer') }}</span>
+              </div>
+            </x-hub::button>
         </div>
       </div>
     </div>

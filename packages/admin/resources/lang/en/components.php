@@ -87,4 +87,17 @@ return [
     'collection-search.select_empty'                => 'When you select collections, they will appear here.',
     'collection-search.title'                       => 'Search for collections',
     'collection-search.commit_btn'                  => 'Select Collections',
+    /**
+     * Customers
+     */
+    'customers.show.metrics.total_orders'                => 'Total Orders',
+    'customers.show.metrics.avg_spend'                => 'Avg. Spend',
+    'customers.show.metrics.total_spend'                => 'Total Spend',
+    'customers.show.year_spending'                => 'Spending the past year',
+    'customers.show.purchase_history'                => 'Purchase History',
+    'customers.show.order_history'                => 'Order History',
+    'customers.show.users'                => 'Users',
+    'customers.show.addresses'                => 'Customer Addresses',
+    'customers.show.customer_groups'                => 'Customer Groups',
+    'customers.show.save_customer' => 'Save Customer',
 ];

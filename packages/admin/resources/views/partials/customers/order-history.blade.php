@@ -7,6 +7,10 @@
       </x-hub::table.heading>
 
       <x-hub::table.heading>
+        User
+      </x-hub::table.heading>
+
+      <x-hub::table.heading>
         Status
       </x-hub::table.heading>
 
@@ -27,6 +31,10 @@
         <x-hub::table.row>
           <x-hub::table.cell>
             <a href="{{ route('hub.orders.show', $order->id) }}" class="text-indigo-500 hover:underline">{{ $order->id }}</a>
+          </x-hub::table.cell>
+
+          <x-hub::table.cell>
+            {{ $order->user->name }}
           </x-hub::table.cell>
 
           <x-hub::table.cell>

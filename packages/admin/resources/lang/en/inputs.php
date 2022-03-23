@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'title'                                 => 'Title',
     'firstname'                              => __('adminhub::global.firstname'),
     'lastname'                               => __('adminhub::global.lastname'),
     'name'                                   => 'Name',
@@ -64,4 +65,6 @@ return [
     'max.label'                              => 'Max.',
     'tax_ref.label' => 'Tax Reference',
     'tax_ref.instructions' => 'Add the third party tax reference, if required.',
+    'company_name.label'                    => 'Company Name',
+    'vat_no.label'                    => 'Vat No.',
 ];

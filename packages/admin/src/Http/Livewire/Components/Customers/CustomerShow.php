@@ -11,6 +11,7 @@ use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -32,6 +33,14 @@ class CustomerShow extends Component
      */
     public array $syncedGroups = [];
 
+
+    /**
+     * The ID of the user to remove.
+     *
+     * @var string|int
+     */
+    public $userIdToRemove = null;
+
     /**
      * The purchase history page.
      *
@@ -46,9 +55,35 @@ class CustomerShow extends Component
      */
     public $ohPage = 1;
 
+    /**
+     * The users table page.
+     *
+     * @var integer
+     */
+    public $uPage = 1;
+
+    /**
+     * The users search page.
+     *
+     * @var integer
+     */
+    public $usPage = 1;
+
+    /**
+     * The search term for finding users
+     *
+     * @var string
+     */
+    public $userSearchTerm = null;
+
+    /**
+     * {@inheritDoc}
+     */
     protected $queryString = [
         'phPage',
         'ohPage',
+        'uPage',
+        'usPage',
     ];
 
     /**
@@ -116,6 +151,69 @@ class CustomerShow extends Component
         return $this->customer->orders()->orderBy('placed_at', 'desc')->paginate(
             perPage: 10,
             pageName: 'ohPage'
+        );
+    }
+
+    /**
+     * Return the users for the customer.
+     *
+     * @return void
+     */
+    public function getUsersProperty()
+    {
+        return $this->customer->users()->paginate(
+            perPage: 10,
+            pageName: 'uPage',
+        );
+    }
+
+    /**
+     * Remove a user from a customer.
+     *
+     * @return void
+     */
+    public function removeUser()
+    {
+        $this->customer->users()->detach($this->userIdToRemove);
+
+        $this->userIdToRemove = null;
+        $this->notify('User Removed');
+    }
+
+    /**
+     * Return the paginated addresses
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getAddressesProperty()
+    {
+        return $this->customer->addresses()->paginate(10);
+    }
+
+    /**
+     * Send password reset reminder.
+     *
+     * @param string|int $userId
+     * @return void
+     */
+    public function sendPasswordReset($userId)
+    {
+        $user = $this->users->first(fn ($user) => $user->id == $userId);
+
+        if (!$user) {
+            $this->notify(
+                'Unable to send password reset',
+                level: 'error'
+            );
+            return;
+        }
+        $status = Password::sendResetLink([
+            'email' => $user->email,
+        ]);
+
+        $this->notify(
+            __($status),
+            level: $status != Password::RESET_LINK_SENT ? 'error' : 'success'
         );
     }
 
