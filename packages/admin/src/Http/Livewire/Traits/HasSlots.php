@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use GetCandy\Hub\Facades\Slot;
+use Illuminate\Support\Arr;
 
 trait HasSlots
 {
@@ -53,9 +54,9 @@ trait HasSlots
      */
     public function getSlotErrorsByHandle($handle)
     {
-        $handleSlotStore = array_get($this->slotStore, $handle, []);
+        $handleSlotStore = Arr::get($this->slotStore, $handle, []);
 
-        return array_get($handleSlotStore, 'errors', []);
+        return Arr::get($handleSlotStore, 'errors', []);
     }
 
     /**
@@ -99,7 +100,7 @@ trait HasSlots
 
         $this->getSlots()
             ->each(function ($slot) use ($model) {
-                $store = array_get($this->slotStore, $slot->getSlotHandle(), []);
+                $store = Arr::get($this->slotStore, $slot->getSlotHandle(), []);
                 $result = $slot->handleSlotSave($model, $store['data'] ?? []);
                 if ($result) { // errors
                     $this->raiseSlotErrors($slot->getSlotHandle(), $result);
@@ -109,7 +110,7 @@ trait HasSlots
 
     private function ensureSlotStoreHandleExists($handle)
     {
-        if (! array_get($this->slotStore, $handle)) {
+        if (! Arr::get($this->slotStore, $handle)) {
             $this->slotStore[$handle] = [
                 'errors' => [],
                 'data' => [],
