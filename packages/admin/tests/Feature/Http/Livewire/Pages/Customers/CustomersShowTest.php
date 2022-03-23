@@ -4,6 +4,7 @@ namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Products;
 
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
+use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -17,6 +18,10 @@ class CustomersShowTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Currency::factory()->create([
+            'default' => true,
+        ]);
     }
 
     /** @test */
@@ -31,6 +36,7 @@ class CustomersShowTest extends TestCase
     /** @test */
     public function cant_view_page_without_permission()
     {
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
@@ -41,7 +47,10 @@ class CustomersShowTest extends TestCase
             ->assertStatus(403);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group thisone
+     * */
     public function can_view_page_with_correct_permission()
     {
         $staff = Staff::factory()->create([
@@ -53,6 +62,7 @@ class CustomersShowTest extends TestCase
                 'handle' => 'catalogue:manage-customers',
             ],
         ]);
+
 
         $this->actingAs($staff, 'staff');
 

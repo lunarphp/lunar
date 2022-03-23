@@ -47,6 +47,10 @@ if (! function_exists('db_date')) {
             $select = "TO_CHAR({$column} :: DATE, '{$format}')";
         }
 
+        if ($driver == 'sqlite') {
+            $select = "strftime('{$format}', {$column})";
+        }
+
         if ($alias) {
             $select .= " as {$alias}";
         }

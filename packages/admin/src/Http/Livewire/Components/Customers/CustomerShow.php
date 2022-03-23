@@ -362,13 +362,15 @@ class CustomerShow extends Component
         $ordersTable = (new Order)->getTable();
         $orderLinesTable = (new OrderLine)->getTable();
 
+        $column = db_date('placed_at', '%Y-%m-%d');
+
         return OrderLine::select(
             DB::RAW('COUNT(*) as order_count'),
             DB::RAW('SUM(quantity) as quantity'),
             DB::RAW("SUM({$orderLinesTable}.sub_total) as sub_total"),
             'description',
             'identifier',
-            DB::RAW("MAX(DATE_FORMAT(placed_at, '%Y-%m-%d')) as last_ordered")
+            DB::RAW("MAX({$column}) as last_ordered")
         )->join($ordersTable, "{$ordersTable}.id", '=', "{$orderLinesTable}.order_id")
         ->whereIn(
             'order_id', $this->customer->orders()->pluck('id')
