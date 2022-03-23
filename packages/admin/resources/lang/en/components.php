@@ -88,7 +88,7 @@ return [
     'collection-search.title'                       => 'Search for collections',
     'collection-search.commit_btn'                  => 'Select Collections',
     /**
-     * Customers
+     * Customers.
      */
     'customers.show.metrics.total_orders'                => 'Total Orders',
     'customers.show.metrics.avg_spend'                => 'Avg. Spend',

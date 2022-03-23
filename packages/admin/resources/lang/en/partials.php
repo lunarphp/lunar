@@ -138,7 +138,7 @@ return [
     'shipping.manual_volume_btn' => 'Click to set manually',
     'shipping.auto_volume_btn'   => 'Use generated volume',
     /**
-     * Customer Addresses
+     * Customer Addresses.
      */
     'customers.addresses.billing_default'   => 'Billing Default',
     'customers.addresses.shipping_default'   => 'Shipping Default',

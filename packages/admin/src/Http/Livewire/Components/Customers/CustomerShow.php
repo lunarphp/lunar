@@ -33,7 +33,6 @@ class CustomerShow extends Component
      */
     public array $syncedGroups = [];
 
-
     /**
      * The ID of the user to remove.
      *
@@ -44,33 +43,33 @@ class CustomerShow extends Component
     /**
      * The purchase history page.
      *
-     * @var integer
+     * @var int
      */
     public $phPage = 1;
 
     /**
      * The order history page.
      *
-     * @var integer
+     * @var int
      */
     public $ohPage = 1;
 
     /**
      * The users table page.
      *
-     * @var integer
+     * @var int
      */
     public $uPage = 1;
 
     /**
      * The users search page.
      *
-     * @var integer
+     * @var int
      */
     public $usPage = 1;
 
     /**
-     * The search term for finding users
+     * The search term for finding users.
      *
      * @var string
      */
@@ -181,7 +180,7 @@ class CustomerShow extends Component
     }
 
     /**
-     * Return the paginated addresses
+     * Return the paginated addresses.
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
@@ -193,18 +192,19 @@ class CustomerShow extends Component
     /**
      * Send password reset reminder.
      *
-     * @param string|int $userId
+     * @param  string|int  $userId
      * @return void
      */
     public function sendPasswordReset($userId)
     {
         $user = $this->users->first(fn ($user) => $user->id == $userId);
 
-        if (!$user) {
+        if (! $user) {
             $this->notify(
                 'Unable to send password reset',
                 level: 'error'
             );
+
             return;
         }
         $status = Password::sendResetLink([
@@ -237,6 +237,7 @@ class CustomerShow extends Component
         $avg = (int) round($this->customer->orders()->average(
             DB::RAW('sub_total * exchange_rate')
         ));
+
         return new Price($avg, Currency::getDefault());
     }
 
@@ -250,6 +251,7 @@ class CustomerShow extends Component
         $avg = (int) round($this->customer->orders()->sum(
             DB::RAW('sub_total * exchange_rate')
         ));
+
         return new Price($avg, Currency::getDefault());
     }
 
@@ -351,7 +353,7 @@ class CustomerShow extends Component
     }
 
     /**
-     * Return the purchase history
+     * Return the purchase history.
      *
      * @return void
      */
@@ -364,7 +366,7 @@ class CustomerShow extends Component
             DB::RAW('COUNT(*) as order_count'),
             DB::RAW('SUM(quantity) as quantity'),
             DB::RAW("SUM({$orderLinesTable}.sub_total) as sub_total"),
-            "description",
+            'description',
             'identifier',
             DB::RAW("MAX(DATE_FORMAT(placed_at, '%Y-%m-%d')) as last_ordered")
         )->join($ordersTable, "{$ordersTable}.id", '=', "{$orderLinesTable}.order_id")
