@@ -21,6 +21,10 @@ abstract class BaseModel extends Model
         parent::__construct($attributes);
 
         $this->setTable(config('getcandy.database.table_prefix').$this->getTable());
+
+        if ($connection = config('getcandy.database.connection', false)) {
+            $this->setConnection($connection);
+        }        
     }
 
     /**
