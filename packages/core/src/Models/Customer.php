@@ -59,6 +59,16 @@ class Customer extends BaseModel
     }
 
     /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return config('scout.prefix').'customers';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getSearchableAttributes()

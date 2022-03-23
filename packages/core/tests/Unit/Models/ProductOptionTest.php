@@ -18,7 +18,7 @@ class ProductOptionTest extends TestCase
      * */
     public function takes_scout_prefix_into_account()
     {
-        $expected = config('scout.prefix').'product_options_en';
+        $expected = config('scout.prefix').'product_options';
 
         $this->assertEquals($expected, (new ProductOption)->searchableAs());
     }

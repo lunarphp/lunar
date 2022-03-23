@@ -23,9 +23,33 @@ If you are using meilisearch, there is some additional set up needed. We have a 
 php artisan getcandy:meilisearch:setup
 ```
 
+The above command will create the indexes for the models listed in the config file `getcandy/indexer.php`. If you want to use other models or your own models in the search engine, you can add the reference for them on the config file.
+
+```php
+'models' => [
+        // These models are required by the system, do not change them.
+        \GetCandy\Models\Collection::class,
+        \GetCandy\Models\Product::class,
+        \GetCandy\Models\ProductOption::class,
+        \GetCandy\Models\Order::class,
+        \GetCandy\Models\Customer::class,
+        // Below you can add your own models for indexing
+    ]
+```
+
 ### Additional drivers
 
 If you don't plan on using MySQL, there are some other Scout drivers you can use, depending on your set up. Bear in mind these haven't tested by GetCandy and are provided as reference.
 
 - [PostgreSQL](https://github.com/pmatseykanets/laravel-scout-postgres)
 - [SQLite](https://github.com/teamtnt/laravel-scout-tntsearch-driver)
+
+## Index records
+
+If you installed the GetCandy package in an existing project and you like to use the database records with the search engine, or you just need to do some maintenance on the indexes, you can use the index command.
+
+```sh
+php artisan getcandy:search:index
+```
+
+The command will import the records of the models listed in the `getcandy/indexer.php` configuration file. Type `--help` to see the available options.
