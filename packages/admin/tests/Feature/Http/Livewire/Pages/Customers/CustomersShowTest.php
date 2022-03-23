@@ -47,10 +47,7 @@ class CustomersShowTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     * @group thisone
-     * */
+    /** @test */
     public function can_view_page_with_correct_permission()
     {
         $staff = Staff::factory()->create([
