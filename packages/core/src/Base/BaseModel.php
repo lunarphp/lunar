@@ -24,7 +24,7 @@ abstract class BaseModel extends Model
 
         if ($connection = config('getcandy.database.connection', false)) {
             $this->setConnection($connection);
-        }        
+        }
     }
 
     /**
