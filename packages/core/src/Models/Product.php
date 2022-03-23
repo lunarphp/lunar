@@ -2,7 +2,6 @@
 
 namespace GetCandy\Models;
 
-use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasChannels;
@@ -14,6 +13,7 @@ use GetCandy\Base\Traits\HasUrls;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductFactory;
+use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Jobs\Products\Associations\Associate;
 use GetCandy\Jobs\Products\Associations\Dissociate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -202,7 +202,7 @@ class Product extends BaseModel implements SpatieHasMedia
         foreach ($this->attribute_data ?? [] as $field => $value) {
             if ($value instanceof TranslatedText) {
                 foreach ($value->getValue() as $locale => $text) {
-                    $data[$field . '_' . $locale] = $text?->getValue();
+                    $data[$field.'_'.$locale] = $text?->getValue();
                 }
             } else {
                 $data[$field] = $this->translateAttribute($field);

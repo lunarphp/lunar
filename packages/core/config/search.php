@@ -7,7 +7,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The model listed here will be used to create/populate the indexes.
-    | You can provide your own model here to run them all on the same 
+    | You can provide your own model here to run them all on the same
     | search engine.
     |
     */
@@ -19,5 +19,5 @@ return [
         \GetCandy\Models\Order::class,
         \GetCandy\Models\Customer::class,
         // Below you can add your own models for indexing
-    ]
+    ],
 ];

@@ -3,11 +3,6 @@
 namespace GetCandy\Console\Commands;
 
 use Illuminate\Console\Command;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\Customer;
-use GetCandy\Models\Order;
 
 class ScoutIndexer extends Command
 {
@@ -40,18 +35,20 @@ class ScoutIndexer extends Command
     }
 
     /**
-     * Executes the re-index of the informed models
-     * @param array $models Models array for indexing
+     * Executes the re-index of the informed models.
+     *
+     * @param  array  $models  Models array for indexing
      * @return void
      */
-    private function indexer (array $models) :void {
-        foreach($models as $model) {
+    private function indexer(array $models): void
+    {
+        foreach ($models as $model) {
             $this->newLine();
 
             // Check whether to delete the records
             if ($this->option('flush') || $this->option('refresh')) {
                 // Delete model records from the index
-                $this->warn('Deleting [' . $model . '] records from the index.');
+                $this->warn('Deleting ['.$model.'] records from the index.');
                 $this->call('scout:flush', ['model' => $model]);
             }
 
@@ -77,6 +74,7 @@ class ScoutIndexer extends Command
             $this->newLine();
             $this->error('You can\'t use the [--refresh] and [--flush] options together.');
             $this->newLine();
+
             return;
         }
 
@@ -92,10 +90,11 @@ class ScoutIndexer extends Command
                 $this->error('No model passed on call');
                 $this->info('When using the [--ignore] option, you must provide at least one model to index.');
                 $this->newLine();
+
                 return;
             } else {
                 // Run the indexer commands
-                $this->indexer($this->argument('models'));    
+                $this->indexer($this->argument('models'));
             }
         } else {
             // Returns only the models of the call that are not present in the class array

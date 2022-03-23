@@ -84,13 +84,13 @@ class ProductOption extends BaseModel
 
         // Loop for add option name
         foreach ($this->name as $locale => $name) {
-            $data['name_' . $locale] = $name;
+            $data['name_'.$locale] = $name;
         }
 
         // Loop for add options
         foreach ($this->values as $option) {
             foreach ($option->name as $locale => $name) {
-                $key = 'option_' . $option->id . '_' . $locale;
+                $key = 'option_'.$option->id.'_'.$locale;
                 $data[$key] = $name;
             }
         }
