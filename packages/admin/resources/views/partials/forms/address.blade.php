@@ -43,16 +43,19 @@
     </x-hub::input.group>
 
     <x-hub::input.group :label="__('adminhub::inputs.state.label')" :error="$errors->first($bind.'.state')" for="state">
-      @if($states->count())
-        <x-hub::input.select wire:model="{{ $bind }}.state" id="state">
-          <option value>Select a state</option>
-          @foreach($states as $state)
-            <option value="{{ $state->name }}">{{ $state->name }}</option>
-          @endforeach
-        </x-hub::input.select>
-      @else
-        <x-hub::input.text wire:model="{{ $bind }}.state" id="state" />
-      @endif
+
+      <div>
+        @if($states->count())
+          <x-hub::input.select wire:model="{{ $bind }}.state" id="states" wire:key="country_states">
+            <option value>Select a state</option>
+            @foreach($states as $state)
+              <option value="{{ $state->name }}">{{ $state->name }}</option>
+            @endforeach
+          </x-hub::input.select>
+        @else
+          <x-hub::input.text wire:model="{{ $bind }}.state" wire:key="country_state" />
+        @endif
+      </div>
 
     </x-hub::input.group>
 
