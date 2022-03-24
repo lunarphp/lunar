@@ -94,6 +94,7 @@
 </x-hub::modal.dialog>
 
   <div class="space-y-4">
+    @if($this->savedSearches->count())
     <div class="sm:block">
       <nav class="flex pb-4 space-x-4 overflow-x-auto" aria-label="Tabs">
         <!-- Current: "bg-gray-200 text-gray-800", Default: "text-gray-600 hover:text-gray-800" -->
@@ -133,6 +134,7 @@
         @endforeach
       </nav>
     </div>
+    @endif
     <x-hub::table>
       <x-slot name="toolbar">
         <div class="p-4 space-y-4 border-b" x-data="{ filtersVisible: false }">
