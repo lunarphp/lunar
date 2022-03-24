@@ -14,7 +14,7 @@ trait HubSlot
     public function initializeHubSlot()
     {
         $this->listeners = array_merge($this->listeners, [
-            'updateSlotModel' => 'updateSlotModel'
+            'updateSlotModel' => 'updateSlotModel',
         ]);
     }
 
@@ -27,6 +27,7 @@ trait HubSlot
     public function setSlotModel($model)
     {
         $this->slotModel = $model;
+
         return $this;
     }
 
@@ -40,6 +41,7 @@ trait HubSlot
     public function updateSlotModel($modelClass, $modelKey)
     {
         $this->slotModel = $modelClass::find($modelKey);
+
         return $this;
     }
 
