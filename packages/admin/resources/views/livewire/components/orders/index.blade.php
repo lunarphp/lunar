@@ -5,7 +5,7 @@
     </strong>
 
     <div class="mt-4 space-x-2 md:mt-0">
-      <x-hub::button theme="gray" size="sm" wire:click="export">
+      <x-hub::button theme="gray" size="sm" wire:click="export" :disabled="!$this->orders->items->count()">
         <div class="flex items-center">
           <x-hub::icon
             ref="download"
@@ -16,18 +16,18 @@
         </div>
       </x-hub::button>
 
-      {{-- @if(count($selected)) --}}
-      <x-hub::button theme="gray" size="sm" wire:click="$set('showUpdateStatus', true)">
-        <div class="flex items-center">
-          <x-hub::icon
-            ref="save"
-            style="solid"
-            class="w-4 mr-2"
-          />
-          {{ __('adminhub::orders.index.update_status.btn') }}
-        </div>
-      </x-hub::button>
-      {{-- @endif --}}
+      @if(count($selected))
+        <x-hub::button theme="gray" size="sm" wire:click="$set('showUpdateStatus', true)">
+          <div class="flex items-center">
+            <x-hub::icon
+              ref="save"
+              style="solid"
+              class="w-4 mr-2"
+            />
+            {{ __('adminhub::orders.index.update_status.btn') }}
+          </div>
+        </x-hub::button>
+      @endif
     </div>
   </div>
 
