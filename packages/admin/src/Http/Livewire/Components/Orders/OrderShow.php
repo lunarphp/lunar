@@ -326,7 +326,7 @@ class OrderShow extends Component
      */
     public function getShippingEqualsBillingProperty()
     {
-        return optional($this->billing)->postcode == optional($this->shippingAddress)->postcode;
+        return optional($this->billingAddress)->postcode == optional($this->shippingAddress)->postcode;
     }
 
     /**
