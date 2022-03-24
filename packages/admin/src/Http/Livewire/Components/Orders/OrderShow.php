@@ -263,9 +263,19 @@ class OrderShow extends Component
      */
     public function getRequiresCaptureProperty()
     {
-        return ! $this->transactions->filter(function ($transaction) {
+        $captures = $this->transactions->filter(function ($transaction) {
             return $transaction->type == 'capture';
         })->count();
+
+        $intents = $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'capture';
+        })->count();
+
+        if (!$intents) {
+            return false;
+        }
+
+        return (bool) $captures->count();
     }
 
     /**
