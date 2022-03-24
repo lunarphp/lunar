@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'connection' => '',
+
     'table_prefix' => 'getcandy_',
 
     /*

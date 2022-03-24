@@ -22,6 +22,7 @@ use GetCandy\Base\TaxManagerInterface;
 use GetCandy\Console\Commands\AddonsDiscover;
 use GetCandy\Console\Commands\Import\AddressData;
 use GetCandy\Console\Commands\MeilisearchSetup;
+use GetCandy\Console\Commands\ScoutIndexer;
 use GetCandy\Console\InstallGetCandy;
 use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
@@ -66,6 +67,7 @@ class GetCandyServiceProvider extends ServiceProvider
         'cart',
         'orders',
         'urls',
+        'search',
     ];
 
     protected $root = __DIR__.'/..';
@@ -163,6 +165,7 @@ class GetCandyServiceProvider extends ServiceProvider
                 AddonsDiscover::class,
                 MeilisearchSetup::class,
                 AddressData::class,
+                ScoutIndexer::class,
             ]);
         }
 

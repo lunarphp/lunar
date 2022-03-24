@@ -11,6 +11,7 @@ use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\HasUrls;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\CollectionFactory;
+use GetCandy\FieldTypes\TranslatedText;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
@@ -95,6 +96,16 @@ class Collection extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return config('scout.prefix').'collections';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getSearchableAttributes()
@@ -104,7 +115,13 @@ class Collection extends BaseModel implements SpatieHasMedia
         $data = Arr::except($attributes, 'attribute_data');
 
         foreach ($this->attribute_data ?? [] as $field => $value) {
-            $data[$field] = $this->translateAttribute($field);
+            if ($value instanceof TranslatedText) {
+                foreach ($value->getValue() as $locale => $text) {
+                    $data[$field.'_'.$locale] = $text?->getValue();
+                }
+            } else {
+                $data[$field] = $this->translateAttribute($field);
+            }
         }
 
         return $data;
