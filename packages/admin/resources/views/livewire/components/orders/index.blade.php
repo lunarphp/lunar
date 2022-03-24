@@ -244,7 +244,10 @@
               {{ $order->reference }}
             </x-hub::table.cell>
             <x-hub::table.cell>
-              {{ $order->billingAddress->first_name }}
+              {{ $order->billingAddress->fullName }}
+              @if($order->billingAddress->company_name)
+                <span class="block text-xs text-gray-500">{{ $order->billingAddress->company_name }}</span>
+              @endif
             </x-hub::table.cell>
             <x-hub::table.cell>
               {{ $order->total->formatted() }}
