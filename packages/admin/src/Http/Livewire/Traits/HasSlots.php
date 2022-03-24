@@ -106,6 +106,8 @@ trait HasSlots
                     $this->raiseSlotErrors($slot->getSlotHandle(), $result);
                 }
             });
+
+        $this->updateSlotModel();
     }
 
     private function ensureSlotStoreHandleExists($handle)
@@ -144,6 +146,14 @@ trait HasSlots
     {
         $this->ensureSlotStoreHandleExists($handle);
         $this->slotStore[$handle]['errors'] = $errors;
+    }
+
+    public function updateSlotModel()
+    {
+        $model = $this->getSlotModel();
+
+        $this->emit('updateSlotModel', get_class($model), $model->getKey());
+        return;
     }
 
     public function saveSlotData($handle, $data)
