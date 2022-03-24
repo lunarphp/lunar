@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'title'                                 => 'Title',
     'firstname'                              => __('adminhub::global.firstname'),
     'lastname'                               => __('adminhub::global.lastname'),
     'name'                                   => 'Name',
@@ -81,4 +82,6 @@ return [
     'notes.label' => 'Notes',
     'confirm.label' => 'Confirm',
     'transaction.label' => 'Transaction',
+    'company_name.label'                    => 'Company Name',
+    'vat_no.label'                    => 'Vat No.',
 ];

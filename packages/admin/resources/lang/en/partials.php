@@ -162,4 +162,9 @@ return [
     'orders.transactions.capture' => 'Capture',
     'orders.transactions.intent' => 'Intent',
     'orders.transactions.refund' => 'Refund',
+    /**
+     * Customer Addresses.
+     */
+    'customers.addresses.billing_default'   => 'Billing Default',
+    'customers.addresses.shipping_default'   => 'Shipping Default',
 ];

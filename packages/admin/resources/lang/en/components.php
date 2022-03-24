@@ -142,4 +142,17 @@ return [
     'orders.capture.no_intents'                      => 'There are no transactions available for capture',
     'orders.capture.select_transaction'              => 'Select a transaction',
     'orders.capture.capture_btn'                      => 'Capture payment',
+    /**
+     * Customers.
+     */
+    'customers.show.metrics.total_orders'                => 'Total Orders',
+    'customers.show.metrics.avg_spend'                => 'Avg. Spend',
+    'customers.show.metrics.total_spend'                => 'Total Spend',
+    'customers.show.year_spending'                => 'Spending the past year',
+    'customers.show.purchase_history'                => 'Purchase History',
+    'customers.show.order_history'                => 'Order History',
+    'customers.show.users'                => 'Users',
+    'customers.show.addresses'                => 'Customer Addresses',
+    'customers.show.customer_groups'                => 'Customer Groups',
+    'customers.show.save_customer' => 'Save Customer',
 ];
