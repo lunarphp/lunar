@@ -148,7 +148,7 @@
                 }" @click.prevent="filtersVisible = !filtersVisible">
                   <x-hub::icon ref="filter" style="solid"  class="w-4 mr-1" />
                   {{ __('adminhub::global.filter') }}
-                  @if($this->hasCustomFilters)
+                  @if($this->hasFiltersApplied)
                     <span class="absolute block w-3 h-3 bg-red-500 rounded-full -right-1 -top-1"></span>
                   @endif
                 </x-hub::button>
