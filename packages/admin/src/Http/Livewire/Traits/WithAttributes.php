@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
+use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
@@ -185,7 +186,14 @@ trait WithAttributes
                 $validation = array_merge($validation, ['required']);
             }
 
-            $rules[$field] = implode(',', $validation);
+            if ($attribute['type'] == Number::class) {
+                $validation = array_merge($validation, [
+                    'numeric'.($attribute['configuration']['min'] ? '|min:'.$attribute['configuration']['min'] : ''),
+                    'numeric'.($attribute['configuration']['max'] ? '|max:'.$attribute['configuration']['max'] : ''),
+                ]);
+            }
+
+            $rules[$field] = implode('|', $validation);
         }
 
         return $rules;
