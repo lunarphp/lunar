@@ -271,7 +271,7 @@ class OrderShow extends Component
             return $transaction->type == 'capture';
         })->count();
 
-        if (!$intents) {
+        if (! $intents) {
             return false;
         }
 
