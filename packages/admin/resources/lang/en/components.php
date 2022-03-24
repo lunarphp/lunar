@@ -100,4 +100,8 @@ return [
     'customers.show.addresses'                => 'Customer Addresses',
     'customers.show.customer_groups'                => 'Customer Groups',
     'customers.show.save_customer' => 'Save Customer',
+    'customers.show.no_purchase_history'      => 'This customer has no purchase history.',
+    'customers.show.no_order_history'      => 'This customer has no order history.',
+    'customers.show.no_users'      => 'This customer has no users associated.',
+    'customers.show.no_addresses'      => 'This customer has no addresses.',
 ];

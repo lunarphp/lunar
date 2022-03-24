@@ -98,19 +98,43 @@
         </div>
 
         <div x-show="tab == 'purchase_history'" class="mt-4">
-          @include('adminhub::partials.customers.purchase-history')
+          @if(!$this->purchaseHistory->count())
+            <div class="w-full mt-12 text-sm text-center text-gray-500">
+              {{ __('adminhub::components.customers.show.no_purchase_history') }}
+            </div>
+          @else
+            @include('adminhub::partials.customers.purchase-history')
+          @endif
         </div>
 
         <div x-show="tab == 'order_history'" class="mt-4">
-          @include('adminhub::partials.customers.order-history')
+          @if(!$this->orders->count())
+            <div class="w-full mt-12 text-sm text-center text-gray-500">
+              {{ __('adminhub::components.customers.show.no_order_history') }}
+            </div>
+          @else
+            @include('adminhub::partials.customers.order-history')
+          @endif
         </div>
 
         <div x-show="tab == 'users'" class="mt-4">
-          @include('adminhub::partials.customers.users')
+          @if(!$this->users->count())
+            <div class="w-full mt-12 text-sm text-center text-gray-500">
+              {{ __('adminhub::components.customers.show.no_users') }}
+            </div>
+          @else
+            @include('adminhub::partials.customers.users')
+          @endif
         </div>
 
         <div x-show="tab == 'addresses'" class="mt-4">
-          @include('adminhub::partials.customers.addresses')
+          @if(!$this->addresses->count())
+            <div class="w-full mt-12 text-sm text-center text-gray-500">
+              {{ __('adminhub::components.customers.show.no_addresses') }}
+            </div>
+          @else
+            @include('adminhub::partials.customers.addresses')
+          @endif
         </div>
 
       </div>
