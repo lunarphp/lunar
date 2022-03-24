@@ -405,7 +405,7 @@ class OrderShow extends Component
         $this->shippingAddress->refresh();
 
         $this->notify(
-            __('adminhub::nofications.shipping_address.saved')
+            __('adminhub::notifications.shipping_address.saved')
         );
 
         $this->showShippingAddressEdit = false;
@@ -430,7 +430,7 @@ class OrderShow extends Component
         $this->billingAddress->refresh();
 
         $this->notify(
-            __('adminhub::nofications.billing_address.saved')
+            __('adminhub::notifications.billing_address.saved')
         );
 
         $this->showBillingAddressEdit = false;
@@ -460,7 +460,7 @@ class OrderShow extends Component
      */
     public function getShippingEqualsBillingProperty()
     {
-        return optional($this->billing)->postcode == optional($this->shippingAddress)->postcode;
+        return optional($this->billingAddress)->postcode == optional($this->shippingAddress)->postcode;
     }
 
     /**
