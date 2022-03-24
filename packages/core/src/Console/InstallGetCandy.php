@@ -60,8 +60,9 @@ class InstallGetCandy extends Command
 
         $confirmed = $this->confirm('I understand, lets do this 🚀');
 
-        if (!$confirmed) {
-            $this->info("😔 Understood, if you have concerns, please reach out to us on Discord, https://discord.gg/v6qVWaf");
+        if (! $confirmed) {
+            $this->info('😔 Understood, if you have concerns, please reach out to us on Discord, https://discord.gg/v6qVWaf');
+
             return;
         }
 
