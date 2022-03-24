@@ -395,7 +395,7 @@ class OrderShow extends Component
         $this->shippingAddress->refresh();
 
         $this->notify(
-            __('adminhub::nofications.shipping_address.saved')
+            __('adminhub::notifications.shipping_address.saved')
         );
 
         $this->showShippingAddressEdit = false;
@@ -420,7 +420,7 @@ class OrderShow extends Component
         $this->billingAddress->refresh();
 
         $this->notify(
-            __('adminhub::nofications.billing_address.saved')
+            __('adminhub::notifications.billing_address.saved')
         );
 
         $this->showBillingAddressEdit = false;
