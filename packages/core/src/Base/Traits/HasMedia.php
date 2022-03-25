@@ -45,6 +45,8 @@ trait HasMedia
                     $border['type']
                 );
             }
+
+            $conversion->keepOriginalImageFormat();
         });
     }
 }
