@@ -5,9 +5,11 @@ namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Orders;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
+use GetCandy\Models\Country;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
+use GetCandy\Models\OrderAddress;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -46,6 +48,7 @@ class OrderShowTest extends TestCase
         $order = Order::factory()->create([
             'user_id'   => null,
             'placed_at' => now(),
+            'currency_code' => Currency::getDefault()->code,
             'meta'      => [
                 'foo' => 'bar',
             ],
@@ -77,6 +80,7 @@ class OrderShowTest extends TestCase
 
         $order = Order::factory()->create([
             'user_id'   => null,
+            'currency_code' => Currency::getDefault()->code,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
             'meta'      => [
@@ -128,6 +132,7 @@ class OrderShowTest extends TestCase
             'user_id'   => null,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
+            'currency_code' => Currency::getDefault()->code,
             'meta'      => [
                 'foo' => 'bar',
             ],
@@ -161,5 +166,99 @@ class OrderShowTest extends TestCase
                 'content' => 'Testing 123',
             ]),
         ]);
+    }
+
+    /** @test */
+    public function billing_address_visibility_is_correct()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id'   => null,
+            'placed_at' => now(),
+            'status' => 'awaiting-payment',
+            'currency_code' => Currency::getDefault()->code,
+            'meta'      => [
+                'foo' => 'bar',
+            ],
+            'tax_breakdown' => [
+                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
+            ],
+        ]);
+
+        $shipping = OrderAddress::factory()->create([
+            'type' => 'shipping',
+            'order_id' => $order->id,
+            'country_id' => Country::factory()->create()->id,
+        ]);
+
+        $billing = $shipping->toArray();
+        unset($billing['id']);
+        $billing['type'] = 'billing';
+
+        OrderAddress::factory()->create($billing);
+
+        LiveWire::actingAs($staff, 'staff')
+        ->test(OrderShow::class, [
+            'order' => $order,
+        ])->assertSet('order.status', $order->status)
+        ->assertSee(
+            __('adminhub::components.orders.show.billing_matches_shipping')
+        )->set('billingAddress.postcode', 'TX1 1TX')
+        ->call('saveBillingAddress')
+        ->assertHasNoErrors()
+        ->assertDontSee(
+            __('adminhub::components.orders.show.billing_matches_shipping')
+        );
+    }
+
+    /** @test */
+    public function can_update_addresses()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id'   => null,
+            'placed_at' => now(),
+            'status' => 'awaiting-payment',
+            'currency_code' => Currency::getDefault()->code,
+            'meta'      => [
+                'foo' => 'bar',
+            ],
+            'tax_breakdown' => [
+                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
+            ],
+        ]);
+
+        $shipping = OrderAddress::factory()->create([
+            'type' => 'shipping',
+            'order_id' => $order->id,
+            'country_id' => Country::factory()->create()->id,
+        ]);
+
+        $billing = $shipping->toArray();
+        unset($billing['id']);
+        $billing['type'] = 'billing';
+
+        $billing = OrderAddress::factory()->create($billing);
+
+        LiveWire::actingAs($staff, 'staff')
+        ->test(OrderShow::class, [
+            'order' => $order,
+        ])->assertSet('shippingAddress.id', $shipping->id)
+         ->set('shippingAddress.postcode', '1TX RX1')
+         ->set('billingAddress.postcode', 'BI1 LL1')
+         ->call('saveShippingAddress')
+         ->call('saveBillingAddress')
+         ->assertHasNoErrors()
+         ->assertSet('shippingAddress.postcode', '1TX RX1')
+         ->assertSet('billingAddress.postcode', 'BI1 LL1');
+
+        $this->assertEquals($shipping->refresh()->postcode, '1TX RX1');
+        $this->assertEquals($billing->refresh()->postcode, 'BI1 LL1');
     }
 }

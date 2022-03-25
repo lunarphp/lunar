@@ -33,4 +33,6 @@ return [
     'attributes.deleted'                => 'Attribute Deleted',
     'billing_address.saved'             => 'Billing address saved',
     'shipping_address.saved'            => 'Shipping address saved',
+    'order.status_updated'              => 'Order status updated',
+    'order.comment_added'              => 'Comment added',
 ];

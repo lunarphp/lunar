@@ -69,6 +69,16 @@ class Order extends BaseModel
     }
 
     /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return config('scout.prefix').'orders';
+    }
+
+    /**
      * Getter for status label.
      *
      * @return string
