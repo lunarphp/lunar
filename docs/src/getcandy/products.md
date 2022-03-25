@@ -426,6 +426,13 @@ You can get the full formatted value for the price, this is based on the currenc
 $price->price->formatted // £1.99
 ```
 
+The formatted price uses the native PHP [NumberFormatter](https://www.php.net/manual/en/class.numberformatter.php). If you wish to specify a locale or formatting style you can, see the examples below.
+
+```php
+$price->price->formatted('fr') // 1,99 £GB
+$price->price->formatted('en-gb', \NumberFormatter::SPELLOUT) // one point nine nine.
+```
+
 ### Base Pricing
 
 Pricing is defined on a variant level, meaning you will have a different price for each variant and also for each currency in the system. In order to add pricing to a variant, you can either create the model directly or use the relationship method.

@@ -244,6 +244,12 @@ CartSession::updateLines(collect([
 CartSession::removeLine($cartLineId);
 ```
 
+### Clear a cart
+This will remove all lines from the cart.
+```php
+CartSession::clear();
+```
+
 ### Associating a cart to a user
 You can easily associate a cart to a user.
 
