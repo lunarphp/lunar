@@ -106,7 +106,9 @@ class OrderSearch extends AbstractSearch
             return $engine->search(null, $options);
         })->raw();
 
-        $results = $builder->paginate($perPage, 'page', $page);
+        $results = tap($builder->paginate($perPage, 'page', $page), function ($orders) {
+            return $orders->load(['billingAddress', 'currency']);
+        });
 
         $facets = new Facets;
 
