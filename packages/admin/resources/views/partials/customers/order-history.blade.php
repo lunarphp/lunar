@@ -38,7 +38,7 @@
           </x-hub::table.cell>
 
           <x-hub::table.cell>
-            {{ $order->status }}
+            <x-hub::orders.status :status="$order->status" />
           </x-hub::table.cell>
 
           <x-hub::table.cell>
