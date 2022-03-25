@@ -54,6 +54,21 @@ class PriceTest extends TestCase
     }
 
     /** @test */
+    public function can_format_numbers()
+    {
+        $currency = Currency::factory()->create([
+            'code'           => 'EUR',
+            'decimal_places' => 2,
+        ]);
+
+        $dataType = new Price(1500, $currency, 1);
+
+        $this->assertEquals('15,00 €', $dataType->formatted('fr'));
+        $this->assertEquals('€15.00', $dataType->formatted('en-gb'));
+        $this->assertEquals('fifteen', $dataType->formatted('en-gb', \NumberFormatter::SPELLOUT));
+    }
+
+    /** @test */
     public function can_handle_decimals_being_passed()
     {
         $currency = Currency::factory()->create([
