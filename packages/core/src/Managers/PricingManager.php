@@ -54,7 +54,7 @@ class PricingManager implements PricingManagerInterface
      * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @return self
      */
-    public function user(Authenticatable $user)
+    public function user(?Authenticatable $user)
     {
         $this->user = $user;
 
@@ -67,7 +67,7 @@ class PricingManager implements PricingManagerInterface
      * @param  \GetCandy\Models\Currency  $currency
      * @return self
      */
-    public function currency(Currency $currency)
+    public function currency(?Currency $currency)
     {
         $this->currency = $currency;
 
@@ -93,7 +93,7 @@ class PricingManager implements PricingManagerInterface
      * @param  Collection  $customerGroups
      * @return self
      */
-    public function customerGroups(Collection $customerGroups)
+    public function customerGroups(?Collection $customerGroups)
     {
         $this->customerGroups = $customerGroups;
 
@@ -106,7 +106,7 @@ class PricingManager implements PricingManagerInterface
      * @param  CustomerGroup  $customerGroup
      * @return self
      */
-    public function customerGroup(CustomerGroup $customerGroup)
+    public function customerGroup(?CustomerGroup $customerGroup)
     {
         $this->customerGroups(
             collect([$customerGroup])

@@ -44,20 +44,17 @@ trait HasPrices
     {
         $pricing = Pricing::qty($qty);
 
-        if ($currency) {
-            $pricing->currency($currency);
-        }
+        // Set currency, even if NULL
+        $pricing->currency($currency);
 
-        if ($user) {
-            $pricing->user($user);
-        }
+        // Set user, even if NULL
+        $pricing->user($user);
 
-        if ($customerGroups) {
-            if ($customerGroups instanceof Collection) {
-                $pricing->customerGroups($customerGroup);
-            } else {
-                $pricing->customerGroup($customerGroup);
-            }
+        // Set customerGroups, even if NULL
+        if ($customerGroups instanceof Collection) {
+            $pricing->customerGroups($customerGroups);
+        } else {
+            $pricing->customerGroup($customerGroups);
         }
 
         return $pricing->for($this);
