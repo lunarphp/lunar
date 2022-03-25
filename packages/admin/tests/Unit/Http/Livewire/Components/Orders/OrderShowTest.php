@@ -262,7 +262,7 @@ class OrderShowTest extends TestCase
          ->assertSet('shippingAddress.postcode', '1TX RX1')
          ->assertSet('billingAddress.postcode', 'BI1 LL1');
 
-         $this->assertEquals($shipping->refresh()->postcode, '1TX RX1');
-         $this->assertEquals($billing->refresh()->postcode, 'BI1 LL1');
+        $this->assertEquals($shipping->refresh()->postcode, '1TX RX1');
+        $this->assertEquals($billing->refresh()->postcode, 'BI1 LL1');
     }
 }
