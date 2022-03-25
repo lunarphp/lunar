@@ -235,19 +235,23 @@ class PriceTest extends TestCase
         ]);
 
         // Check we get the default currency price
-        $price = $variant->getPrice();
+        $price = $variant->pricing()->get();
         $this->assertEquals(1.23, $price->matched->price->decimal);
 
         // Check we get a tier price
-        $price = $variant->getPrice(6);
+        $price = $variant->pricing()->qty(6)->guest()->get();
         $this->assertEquals(1.01, $price->matched->price->decimal);
 
         // Check we get a price for GBP
-        $price = $variant->getPrice(6, $currencyGBP);
+        $price = $variant->pricing()->qty(6)->currency($currencyGBP)->get();
         $this->assertEquals(0.99, $price->matched->price->decimal);
 
         // Check we get a price for a customer group
-        $price = $variant->getPrice(1, null, null, $customerGroup);
+        $price = $variant->pricing()
+            ->qty(1)
+            ->currency(null)
+            ->customerGroup($customerGroup)
+            ->get();
         $this->assertEquals(0.75, $price->matched->price->decimal);
     }
 }

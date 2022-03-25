@@ -484,12 +484,12 @@ To get the pricing for a product you can simple use the following helpers:
 A quantity of 1 is implied when not passed.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant);
+$pricing = \GetCandy\Facades\Pricing::for($variant)->get();
 ```
 
 #### With Quantities
 ```php
-$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant)->get();
 ```
 
 #### With Customer Groups
@@ -497,15 +497,24 @@ $pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant);
 If you don't pass in a customer group, GetCandy will use the default, including any pricing that isn't specific to a customer group.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant)->get();
 
 // Or a single customer group
-$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant)->get();
 ```
 
 #### Specific to a user
+The PricingManager assumes you want the price for the current authenticated user.
+
+If you want to always return the guest price, you may use...
+
 ```php
-$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::guest()->for($variant)->get();
+```
+
+
+```php
+$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant)->get();
 ```
 
 #### With a specific currency
@@ -513,7 +522,14 @@ $pricing = \GetCandy\Facades\Pricing::user($user)->for($variant);
 If you don't pass in a currency, the default is implied.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant)->get();
+```
+
+#### For a model
+Assuming you have a model that implements the `hasPrices` trait, such as a `ProductVariant`, you can use the following to retrieve pricing.
+
+```php
+$pricing = $variant->pricing()->qty(5)->get();
 ```
 
 ::: danger Be aware
@@ -544,20 +560,6 @@ $pricing->tiers;
  * All customer group pricing available for the given criteria.
  */
 $pricing->customerGroupPrices;
-```
-
-### From a model
-
-You can quickly get pricing directly from a model that implements the `hasPrices` trait, ie. a ProductVariant. This convenient method that wraps the `PricingManager` can be used as follows...
-
-```php
-$pricingResponse = $variant->getPrice(int $qty = 1, Currency $currency = null, Authenticatable $user = null, $customerGroups = null);
-
-$pricingResponse = $variant->getPrice();
-
-$pricingResponse = $variant->getPrice(5);
-
-// Etc.
 ```
 
 ## Full Example

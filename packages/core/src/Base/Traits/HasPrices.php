@@ -32,31 +32,12 @@ trait HasPrices
     }
 
     /**
-     * Return a Price based upon criteria.
+     * Return a PricingManager for this model.
      *
-     * @param  int  $qty
-     * @param  Currency  $currency
-     * @param  Authenticatable  $user
-     * @param  mixed  $customerGroups
-     * @return \GetCandy\DataTypes\Price
+     * @return \GetCandy\Managers\PricingManager
      */
-    public function getPrice(int $qty = 1, Currency $currency = null, Authenticatable $user = null, $customerGroups = null)
+    public function pricing()
     {
-        $pricing = Pricing::qty($qty);
-
-        // Set currency, even if NULL
-        $pricing->currency($currency);
-
-        // Set user, even if NULL
-        $pricing->user($user);
-
-        // Set customerGroups, even if NULL
-        if ($customerGroups instanceof Collection) {
-            $pricing->customerGroups($customerGroups);
-        } else {
-            $pricing->customerGroup($customerGroups);
-        }
-
-        return $pricing->for($this);
+        return Pricing::for($this);
     }
 }

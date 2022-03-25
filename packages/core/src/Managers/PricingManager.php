@@ -10,9 +10,17 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\CustomerGroup;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class PricingManager implements PricingManagerInterface
 {
+    /**
+     * The instance of the purchasable model.
+     *
+     * @var \GetCandy\Base\Purchasable
+     */
+    protected Purchasable $purchasable;
+
     /**
      * The instance of the user.
      *
@@ -35,18 +43,29 @@ class PricingManager implements PricingManagerInterface
     protected int $qty = 1;
 
     /**
-     * The instance of the purchasable object.
-     *
-     * @var \GetCandy\Base\Purchasable
-     */
-    protected Purchasable $purchasable;
-
-    /**
      * The customer groups to check against.
      *
      * @var \Illuminate\Support\Collection
      */
     protected ?Collection $customerGroups = null;
+
+    public function __construct()
+    {
+        $this->user = Auth::user();
+    }
+
+    /**
+     * Set the purchasable property.
+     *
+     * @param  \GetCandy\Base\Purchasable  $purchasable
+     * @return self
+     */
+    public function for(Purchasable $purchasable)
+    {
+        $this->purchasable = $purchasable;
+
+        return $this;
+    }
 
     /**
      * Set the user property.
@@ -57,6 +76,18 @@ class PricingManager implements PricingManagerInterface
     public function user(?Authenticatable $user)
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Set the user property to NULL.
+     *
+     * @return self
+     */
+    public function guest()
+    {
+        $this->user = null;
 
         return $this;
     }
@@ -116,13 +147,16 @@ class PricingManager implements PricingManagerInterface
     }
 
     /**
-     * Get the price for a purchasable.
+     * Get the price for the purchasable.
      *
-     * @param  Purchasable  $purchasable
      * @return \GetCandy\Base\DataTransferObjects\PricingResponse
      */
-    public function for(Purchasable $purchasable)
+    public function get()
     {
+        if (! $this->purchasable) {
+            throw new \ErrorException('No purchasable set.');
+        }
+
         if (! $this->currency) {
             $this->currency = Currency::getDefault();
         }
@@ -143,7 +177,7 @@ class PricingManager implements PricingManagerInterface
             }
         }
 
-        $currencyPrices = $purchasable->getPrices()->filter(function ($price) {
+        $currencyPrices = $this->purchasable->getPrices()->filter(function ($price) {
             return $price->currency_id == $this->currency->id;
         });
 
