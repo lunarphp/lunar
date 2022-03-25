@@ -12,7 +12,6 @@ use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
-use GetCandy\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
