@@ -3,10 +3,7 @@
 namespace GetCandy\Base\Traits;
 
 use GetCandy\Facades\Pricing;
-use GetCandy\Models\Currency;
 use GetCandy\Models\Price;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Collection;
 
 trait HasPrices
 {
