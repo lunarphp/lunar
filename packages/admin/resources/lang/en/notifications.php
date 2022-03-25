@@ -31,4 +31,6 @@ return [
     'attribute-edit.created'            => 'Attribute created',
     'attribute-edit.updated'            => 'Attribute updated',
     'attributes.deleted'                => 'Attribute Deleted',
+    'customers.user_removed'            => 'User Removed',
+    'customers.reset_failed'            => 'Unable to send password reset',
 ];

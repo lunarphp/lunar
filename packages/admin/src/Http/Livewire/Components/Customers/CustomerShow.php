@@ -176,7 +176,9 @@ class CustomerShow extends Component
         $this->customer->users()->detach($this->userIdToRemove);
 
         $this->userIdToRemove = null;
-        $this->notify('User Removed');
+        $this->notify(
+            __('adminhub::notifications.customers.user_removed')
+        );
     }
 
     /**
@@ -201,7 +203,7 @@ class CustomerShow extends Component
 
         if (! $user) {
             $this->notify(
-                'Unable to send password reset',
+                __('adminhub::notifications.customers.reset_failed'),
                 level: 'error'
             );
 
