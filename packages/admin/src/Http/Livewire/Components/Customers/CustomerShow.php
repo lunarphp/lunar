@@ -5,11 +5,14 @@ namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 use Carbon\CarbonPeriod;
 use GetCandy\DataTypes\Price;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
+use GetCandy\Models\Address;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
+use GetCandy\Models\State;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Livewire\Component;
@@ -17,7 +20,7 @@ use Livewire\WithPagination;
 
 class CustomerShow extends Component
 {
-    use Notifies, WithPagination;
+    use Notifies, WithPagination, WithCountries;
 
     /**
      * The current customer in view.
@@ -76,6 +79,25 @@ class CustomerShow extends Component
     public $userSearchTerm = null;
 
     /**
+     * The ID of the address to edit
+     */
+    public $addressIdToEdit = null;
+
+    /**
+     * The ID of the address to remove.
+     *
+     * @var string
+     */
+    public $addressToRemove = null;
+
+    /**
+     * The current address we want to edit.
+     *
+     * @var Address|null
+     */
+    public ?Address $address = null;
+
+    /**
      * {@inheritDoc}
      */
     protected $queryString = [
@@ -97,6 +119,23 @@ class CustomerShow extends Component
             'customer.last_name'    => 'string|required',
             'customer.company_name' => 'nullable|string',
             'customer.vat_no'       => 'nullable|string',
+            'address'               => 'nullable',
+            'address.postcode' => 'required|string|max:255',
+            'address.title' => 'nullable|string|max:255',
+            'address.first_name' => 'nullable|string|max:255',
+            'address.last_name' => 'nullable|string|max:255',
+            'address.company_name' => 'nullable|string|max:255',
+            'address.line_one' => 'nullable|string|max:255',
+            'address.line_two' => 'nullable|string|max:255',
+            'address.line_three' => 'nullable|string|max:255',
+            'address.city' => 'nullable|string|max:255',
+            'address.state' => 'nullable|string|max:255',
+            'address.delivery_instructions' => 'nullable|string|max:255',
+            'address.contact_email' => 'nullable|email|max:255',
+            'address.contact_phone' => 'nullable|string|max:255',
+            'address.country_id'   => 'required',
+            'address.billing_default' => 'nullable',
+            'address.shipping_default' => 'nullable',
         ];
     }
 
@@ -107,6 +146,7 @@ class CustomerShow extends Component
      */
     public function mount()
     {
+        $this->address = new Address;
         $this->syncedGroups = $this->customer->customerGroups->pluck('id')->map(fn ($id) => (string) $id)->toArray();
     }
 
@@ -117,7 +157,7 @@ class CustomerShow extends Component
      */
     public function save()
     {
-        $this->validate();
+        $this->validateOnly('customer');
 
         $this->customer->customerGroups()->sync(
             $this->syncedGroups
@@ -129,6 +169,53 @@ class CustomerShow extends Component
             __('adminhub::notifications.customer.updated')
         );
     }
+
+    /**
+     * Handler for when address to update changes.
+     *
+     * @param string $val
+     * @return void
+     */
+    public function updatedAddressIdToEdit($val)
+    {
+        if ($val) {
+            return $this->setEditableAddress($val);
+        }
+
+        $this->address = new Address;
+    }
+
+    /**
+     * Save the address
+     *
+     * @return void
+     */
+    public function saveAddress()
+    {
+        $this->validateOnly('address');
+        $this->address->save();
+        $this->addressIdToEdit = null;
+        $this->address = new Address;
+        $this->notify(
+            __('adminhub::notifications.customers.address_updated')
+        );
+    }
+
+    /**
+     * Remove an address.
+     *
+     * @return void
+     */
+    public function removeAddress()
+    {
+        Address::find($this->addressToRemove)->delete();
+        $this->addressToRemove = null;
+
+        $this->notify(
+            __('adminhub::notifications.customers.address_removed')
+        );
+    }
+
 
     /**
      * Return the computed customer groups.
@@ -190,6 +277,16 @@ class CustomerShow extends Component
     }
 
     /**
+     * Set the editable address.
+     */
+    public function setEditableAddress($addressId)
+    {
+        $this->address = $this->addresses->first(
+            fn($address) => $address->id == $addressId
+        );
+    }
+
+    /**
      * Send password reset reminder.
      *
      * @param  string|int  $userId
@@ -218,6 +315,20 @@ class CustomerShow extends Component
     }
 
     /**
+     * Return states for the shipping address.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getStatesProperty()
+    {
+        if (! $this->address || !$this->address?->country_id) {
+            return collect();
+        }
+
+        return State::whereCountryId($this->address->country_id)->get();
+    }
+
+    /**
      * Return the order count for the customer.
      *
      * @return int
@@ -226,6 +337,7 @@ class CustomerShow extends Component
     {
         return $this->customer->orders()->count();
     }
+
 
     /**
      * Return the average spend for the customer.
