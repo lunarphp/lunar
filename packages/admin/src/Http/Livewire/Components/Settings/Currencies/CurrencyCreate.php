@@ -17,6 +17,13 @@ class CurrencyCreate extends Component
      */
     public Currency $currency;
 
+    /**
+     * Determine whether to show format info text.
+     *
+     * @var bool
+     */
+    public $showFormatInfo = false;
+
     public function mount()
     {
         $this->currency = new Currency();

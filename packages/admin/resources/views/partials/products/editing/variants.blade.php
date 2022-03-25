@@ -38,7 +38,7 @@
               <x-hub::table.row>
                 <x-hub::table.cell class="w-full">
                   @foreach($variant->values as $value)
-                    {{ $value->name->en }} {{ !$loop->last ? '/' : null }}
+                    {{ $value->translate('name') }} {{ !$loop->last ? '/' : null }}
                   @endforeach
                 </x-hub::table.cell>
                 <x-hub::table.cell>

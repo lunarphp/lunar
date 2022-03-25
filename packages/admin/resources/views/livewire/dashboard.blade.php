@@ -128,7 +128,7 @@
             <div class="relative flex items-center py-8 space-x-3 bg-white border-b border-slate-100">
               <div class="flex-shrink-0">
                 @if($thumbnail = $product->purchasable->getThumbnail())
-                  <img class="rounded shadow" src="{{ $thumbnail }}" class="w-24 h-24 rounded-lg" />
+                  <img src="{{ $thumbnail }}" class="w-24 h-24 rounded-lg" />
                 @else
                     <x-hub::icon ref="photograph" class="w-24 h-24 text-gray-200 rounded-lg" />
                 @endif
