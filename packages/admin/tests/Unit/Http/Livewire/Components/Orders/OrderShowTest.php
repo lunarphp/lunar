@@ -12,6 +12,7 @@ use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
+use GetCandy\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
@@ -260,5 +261,66 @@ class OrderShowTest extends TestCase
 
         $this->assertEquals($shipping->refresh()->postcode, '1TX RX1');
         $this->assertEquals($billing->refresh()->postcode, 'BI1 LL1');
+    }
+
+    /** @test */
+    public function requires_capture_displays_correctly()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id'   => null,
+            'placed_at' => now(),
+            'status' => 'awaiting-payment',
+            'currency_code' => Currency::getDefault()->code,
+            'meta'      => [
+                'foo' => 'bar',
+            ],
+            'tax_breakdown' => [
+                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
+            ],
+        ]);
+
+        LiveWire::actingAs($staff, 'staff')
+        ->test(OrderShow::class, [
+            'order' => $order,
+        ])->assertSet('order.status', $order->status)
+        ->assertDontSee(
+            __('adminhub::components.orders.show.capture_payment_btn')
+        );
+
+        $order = Order::factory()->create([
+            'user_id'   => null,
+            'placed_at' => now(),
+            'status' => 'awaiting-payment',
+            'currency_code' => Currency::getDefault()->code,
+            'meta'      => [
+                'foo' => 'bar',
+            ],
+            'tax_breakdown' => [
+                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
+            ],
+        ]);
+
+        $order->transactions()->create([
+            'type' => 'intent',
+            'amount' => 100,
+            'success' => true,
+            'driver' => 'test',
+            'reference' => 'TEST123',
+            'status' => 'ok',
+            'card_type' => 'TEST',
+            'last_four' => 1234,
+        ]);
+
+        LiveWire::actingAs($staff, 'staff')
+        ->test(OrderShow::class, [
+            'order' => $order->refresh(),
+        ])->assertSet('order.status', $order->status)
+        ->assertSee(
+            __('adminhub::components.orders.show.capture_payment_btn')
+        );
     }
 }

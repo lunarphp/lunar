@@ -28,12 +28,6 @@ class PaymentManager extends Manager
 
         $type = config("getcandy.payments.types.{$driver}");
 
-        // if (!isset($type['driver'])) {
-        //     throw new InvalidPaymentTypeException(
-        //         "Payment type \"{$driver}\" doesn't have a supported driver"
-        //     );
-        // }
-
         $driver = $type['driver'] ?? $originalDriver;
 
         $driverInstance = null;
