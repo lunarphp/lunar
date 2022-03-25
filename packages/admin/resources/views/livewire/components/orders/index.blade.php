@@ -174,8 +174,8 @@
             <x-hub::input.group :label="__('adminhub::inputs.status.label')" for="status">
               <x-hub::input.select wire:model="filters.status">
                 <option value>{{ __('adminhub::global.any') }}</option>
-                @foreach($this->orders->facets->get('status') as $facet)
-                  <option value="{{ $facet->value }}">{{ $facet->value }}</option>
+                @foreach($this->statuses as $handle => $status)
+                  <option value="{{ $handle }}">{{ $status['label'] ?? $handle }}</option>
                 @endforeach
               </x-hub::input.select>
             </x-hub::input.group>
