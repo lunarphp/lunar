@@ -210,7 +210,9 @@ class OrderShow extends Component
             'status' => $this->order->status,
         ]);
 
-        $this->notify('Order status updated');
+        $this->notify(
+            __('adminhub::notifications.order.status_updated')
+        );
         $this->showUpdateStatus = false;
     }
 
@@ -383,7 +385,9 @@ class OrderShow extends Component
             ->withProperties(['content' => $this->comment])
             ->log('comment');
 
-        $this->notify('Comment added');
+        $this->notify(
+            __('adminhub::notifications.order.comment_added')
+        );
 
         $this->comment = '';
     }
