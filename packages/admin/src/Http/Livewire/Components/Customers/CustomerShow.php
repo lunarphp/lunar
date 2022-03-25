@@ -79,7 +79,7 @@ class CustomerShow extends Component
     public $userSearchTerm = null;
 
     /**
-     * The ID of the address to edit
+     * The ID of the address to edit.
      */
     public $addressIdToEdit = null;
 
@@ -173,7 +173,7 @@ class CustomerShow extends Component
     /**
      * Handler for when address to update changes.
      *
-     * @param string $val
+     * @param  string  $val
      * @return void
      */
     public function updatedAddressIdToEdit($val)
@@ -186,7 +186,7 @@ class CustomerShow extends Component
     }
 
     /**
-     * Save the address
+     * Save the address.
      *
      * @return void
      */
@@ -215,7 +215,6 @@ class CustomerShow extends Component
             __('adminhub::notifications.customers.address_removed')
         );
     }
-
 
     /**
      * Return the computed customer groups.
@@ -284,7 +283,7 @@ class CustomerShow extends Component
     public function setEditableAddress($addressId)
     {
         $this->address = $this->addresses->first(
-            fn($address) => $address->id == $addressId
+            fn ($address) => $address->id == $addressId
         );
     }
 
@@ -323,7 +322,7 @@ class CustomerShow extends Component
      */
     public function getStatesProperty()
     {
-        if (! $this->address || !$this->address?->country_id) {
+        if (! $this->address || ! $this->address?->country_id) {
             return collect();
         }
 
@@ -339,7 +338,6 @@ class CustomerShow extends Component
     {
         return $this->customer->orders()->count();
     }
-
 
     /**
      * Return the average spend for the customer.
