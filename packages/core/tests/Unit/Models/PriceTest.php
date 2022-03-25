@@ -8,7 +8,6 @@ use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Price;
 use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\Stubs\User;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
