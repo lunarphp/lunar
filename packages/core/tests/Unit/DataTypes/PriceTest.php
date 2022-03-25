@@ -50,7 +50,7 @@ class PriceTest extends TestCase
 
         $this->assertEquals(155, $dataType->value);
         $this->assertEquals(0.155, $dataType->decimal);
-        $this->assertEquals('£0.16', $dataType->formatted);
+        $this->assertEquals('£0.155', $dataType->formatted);
     }
 
     /** @test */
