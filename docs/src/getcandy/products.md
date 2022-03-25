@@ -546,6 +546,20 @@ $pricing->tiers;
 $pricing->customerGroupPrices;
 ```
 
+### From a model
+
+You can quickly get pricing directly from a model that implements the `hasPrices` trait, ie. a ProductVariant. This convenient method that wraps the `PricingManager` can be used as follows...
+
+```php
+$pricingResponse = $variant->getPrice(int $qty = 1, Currency $currency = null, Authenticatable $user = null, $customerGroups = null);
+
+$pricingResponse = $variant->getPrice();
+
+$pricingResponse = $variant->getPrice(5);
+
+// Etc.
+```
+
 ## Full Example
 
 For this example, we're going to be creating some Dr. Martens boots. Below is a screenshot of what we're aiming for:
