@@ -79,8 +79,10 @@ class Price
         }
 
         $formatter = new NumberFormatter($locale, $formatter);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $this->currency->decimal_places);
 
-        return $formatter->formatCurrency($this->decimal(), $this->currency->code);
+        $formatter->setTextAttribute(NumberFormatter::CURRENCY_CODE, $this->currency->code );
+        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $this->currency->decimal_places);
+
+        return $formatter->format($this->decimal());
     }
 }
