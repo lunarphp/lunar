@@ -126,6 +126,9 @@ return [
     'orders.show.shipping_header' => 'Shipping Address',
     'orders.show.requires_capture' => 'This order still requires payment to be captured.',
     'orders.show.capture_payment_btn' => 'Capture Payment',
+    'orders.show.partially_refunded' => 'This order has been partially refunded.',
+    'orders.show.refunded' => 'This order has been partially refunded.',
+
     /**
      * Order Refund.
      */

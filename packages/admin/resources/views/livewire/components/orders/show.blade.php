@@ -22,14 +22,14 @@
         @if($this->paymentStatus == 'partial-refund')
           <div class="border border-blue-500 rounded">
             <x-hub::alert>
-              This order has been partially refunded.
+              {{ __('adminhub::components.orders.show.partially_refunded') }}
             </x-hub::alert>
           </div>
         @endif
         @if($this->paymentStatus == 'refunded')
           <div class="border border-red-500 rounded">
             <x-hub::alert level="danger">
-              This order has been refunded.
+              {{ __('adminhub::components.orders.show.refunded') }}
             </x-hub::alert>
           </div>
         @endif
