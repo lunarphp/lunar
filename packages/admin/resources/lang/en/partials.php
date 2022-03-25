@@ -142,4 +142,23 @@ return [
      */
     'customers.addresses.billing_default'   => 'Billing Default',
     'customers.addresses.shipping_default'   => 'Shipping Default',
+    /**
+     * Orders.
+     */
+    'orders.totals.sub_total' => 'Sub Total',
+    'orders.totals.shipping_total' => 'Shipping Total',
+    'orders.totals.total' => 'Total',
+    'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.lines.unit_price' => 'Unit Price',
+    'orders.lines.quantity' => 'Quantity',
+    'orders.lines.sub_total' => 'Sub Total',
+    'orders.lines.discount_total' => 'Discount Total',
+    'orders.lines.total' => 'Total',
+    'orders.details.status' => 'Status',
+    'orders.details.reference' => 'Reference',
+    'orders.details.customer_reference' => 'Customer Reference',
+    'orders.details.channel' => 'Channel',
+    'orders.details.date_created' => 'Date Created',
+    'orders.details.date_placed' => 'Date Placed',
+    'orders.address.not_set' => 'No address set',
 ];

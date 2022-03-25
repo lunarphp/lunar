@@ -5,14 +5,16 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
+use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends BaseModel
 {
-    use HasFactory;
-    use Searchable;
+    use HasFactory,
+        Searchable,
+        LogsActivity;
 
     /**
      * Define our base filterable attributes.
@@ -48,6 +50,7 @@ class Order extends BaseModel
         'discount_total' => Price::class,
         'tax_total'      => Price::class,
         'total'          => Price::class,
+        'shipping_total' => Price::class,
     ];
 
     /**
@@ -195,6 +198,11 @@ class Order extends BaseModel
     public function charges()
     {
         return $this->transactions()->whereRefund(false);
+    }
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
     }
 
     /**

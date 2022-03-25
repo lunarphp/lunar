@@ -54,7 +54,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
      */
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     /**
@@ -149,6 +149,14 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     /**
      * {@inheritDoc}
      */
+    public function getOptions()
+    {
+        return $this->values->map(fn ($value) => $value->translate('name'));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getIdentifier()
     {
         return $this->sku;
@@ -163,8 +171,13 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
             return $variantThumbnail->getUrl('small');
         }
 
+        if (! $this->product) {
+            dD($this);
+        }
+        // dd($this->product);
+
         if ($thumbnail = $this->product->thumbnail) {
-            return $thumbnail->getUrl('small');
+            return $thumbnail->getUrl();
         }
 
         return null;

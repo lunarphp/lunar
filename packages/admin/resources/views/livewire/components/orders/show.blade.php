@@ -1,239 +1,189 @@
-<div class="flex-col px-12 mx-auto space-y-4 max-w-7xl">
-  <div class="flex items-center justify-between">
-    <strong class="text-lg font-bold md:text-2xl">Order</strong>
-    <div>
-      <x-hub::button type="button" wire:click="$set('updatingStatus', true)">Update Status</x-hub::button>
-    </div>
-  </div>
+<section class="px-12 mx-auto max-w-7xl">
+  <header class="flex items-center">
+    <h1 class="text-lg font-bold text-gray-900 md:text-2xl">
+      <span class="text-gray-500">{{ __('adminhub::components.orders.show.title') }} //</span> #{{ $order->id }}
+    </h1>
+  </header>
 
-  <div class="grid grid-cols-6 gap-4">
-    <div>
-      <div class="flex items-center px-4 py-4 bg-white rounded-lg">
-        <div class="flex items-center">
-          <div>
-            <span class="block text-xs">Status</span>
-            <strong class="text-sm font-bold">{{ $this->status }}</strong>
-          </div>
-        </div>
+  <div class="grid grid-cols-1 gap-8 mt-8 lg:items-start lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <div class="flex items-center space-x-2 text-xs text-gray-700">
+        @include('adminhub::partials.orders.actions')
       </div>
-    </div>
 
-    <div>
-      <div class="flex items-center px-4 py-4 bg-white rounded-lg">
-        <div class="flex items-center">
-          <div>
-            <span class="block text-xs">Reference</span>
-            <strong class="text-sm font-bold">{{ $order->reference }}</strong>
-          </div>
+      <div class="p-6 mt-4 space-y-8 bg-white rounded-lg shadow">
+        <div class="flow-root">
+          <ul class="divide-y divide-gray-100">
+            @include('adminhub::partials.orders.lines')
+          </ul>
         </div>
-      </div>
-    </div>
 
-    <div>
-      <div class="flex items-center px-4 py-4 bg-white rounded-lg">
-        <div class="flex items-center">
-          <div>
-            <span class="block text-xs">Customer Reference</span>
-            <strong class="text-sm font-bold">{{ $order->customer_reference ?: '-' }}</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="flex items-center px-4 py-4 bg-white rounded-lg">
-        <div class="flex items-center">
-          <div>
-            <span class="block text-xs">Date</span>
-            <strong class="text-sm font-bold">
-              @if($order->placed_at)
-                {{ $order->placed_at->format('jS M Y') }}
+        @if ($this->physicalLines->count() > $maxLines)
+          <div class="flex justify-end">
+            <button
+              class="flex-shrink-0 px-5 py-3 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded-md hover:border-gray-100 hover:bg-gray-50"
+              wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
+              type="button"
+            >
+              @if (!$allLinesVisible)
+                {{ __('adminhub::components.orders.show.show_all_lines_btn') }}
               @else
-                {{ $order->created_at->format('jS M Y') }}
+                {{ __('adminhub::components.orders.show.collapse_lines_btn') }}
               @endif
-            </strong>
+            </button>
           </div>
-        </div>
+        @endif
+
+        @include('adminhub::partials.orders.totals')
+
+      </div>
+
+      <div class="mt-4">
+        <header class="sr-only">
+          {{ __('adminhub::components.orders.show.transactions_header') }}
+        </header>
+
+        @include('adminhub::partials.orders.transactions')
+      </div>
+
+      <div class="mt-4">
+        <header class="my-6 font-medium">
+          {{ __('adminhub::components.orders.show.timeline_header') }}
+        </header>
+
+        @include('adminhub::partials.orders.timeline')
       </div>
     </div>
 
-    <div >
-      <div class="flex items-center px-4 py-4 bg-white rounded-lg">
-        <div class="flex items-center">
-          <div>
-            <span class="block text-xs">Time</span>
-            <strong class="text-sm font-bold">
-              @if($order->placed_at)
-                {{ $order->placed_at->format('h:ma') }}
-              @else
-                {{ $order->created_at->format('h:ma') }}
+    <div class="space-y-4">
+      @if($order->customer)
+        <header class="flex items-center justify-between">
+          <strong class="text-gray-700 truncate">
+              {{ $order->customer->first_name }}
+              @if ($order->customer->last_name)
+                {{ $order->customer->last_name }}
               @endif
-            </strong>
-          </div>
-        </div>
-      </div>
-    </div>
+          </strong>
 
-    <!-- End Top Stats -->
+          <a
+            class="flex-shrink-0 px-4 py-2 ml-4 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
+            href="{{ route('hub.customers.show', $order->customer) }}"
+          >
+            View User
+          </a>
 
-
-  </div>
-
-  <div class="grid grid-cols-3 gap-4">
-    @if($this->shipping)
-      <div class="p-4 bg-white rounded-lg">
-        <h3 class="font-semibold text-gray-900">Shipping Option{{ $this->shippingLines->count() > 1 ? 's' : null }}</h3>
-        @foreach($this->shippingLines as $line)
-          {{ $line->description }}
-        @endforeach
-      </div>
-      <div class="p-4 bg-white rounded-lg">
-        <h3 class="font-semibold text-gray-900">Shipping Address</h3>
-        <div class="mt-2">
-          <span class="adr">
-            <span class="block">{{ $this->shipping->fullName }}</span>
-            <span class="block">{{ $this->shipping->line_one }}</span>
-            @if($this->shipping->line_two)
-              <span class="block">{{ $this->shipping->line_two }}</span>
-            @endif
-            @if($this->shipping->line_three)
-              <span class="block">{{ $this->shipping->line_three }}</span>
-            @endif
-            @if($this->shipping->city)
-              <span class="block">{{ $this->shipping->city }}</span>
-            @endif
-            @if($this->shipping->state)
-              <span class="block">{{ $this->shipping->state }}</span>
-            @endif
-            <span class="block">{{ $this->shipping->postcode }}</span>
-          </span>
-        </div>
-      </div>
+        </header>
       @endif
-      <div class="p-4 bg-white rounded-lg">
-        <h3 class="font-semibold text-gray-900">Billing Address</h3>
-        <div class="mt-2">
-          <span class="adr">
-            <span class="block">{{ $this->billing->fullName }}</span>
-            <span class="block">{{ $this->billing->line_one }}</span>
-            @if($this->billing->line_two)
-              <span class="block">{{ $this->billing->line_two }}</span>
-            @endif
-            @if($this->billing->line_three)
-              <span class="block">{{ $this->billing->line_three }}</span>
-            @endif
-            @if($this->billing->city)
-              <span class="block">{{ $this->billing->city }}</span>
-            @endif
-            @if($this->billing->state)
-              <span class="block">{{ $this->billing->state }}</span>
-            @endif
-            <span class="block">{{ $this->billing->postcode }}</span>
-          </span>
-        </div>
-      </div>
-  </div>
-  <div class="mt-8">
-   <div class="p-4 bg-white rounded-lg">
-      <h3 class="text-lg font-semibold text-gray-900">Order Lines</h3>
-      <div>
-        <table class="w-full mt-4">
-          <thead class="font-normal">
-            <tr class="text-sm text-left text-gray-600 border-b">
-              <th class="pb-2 font-normal">Identifier</th>
-              <th class="pb-2 font-normal">Description</th>
-              <th class="pb-2 font-normal">Option</th>
-              <th class="pb-2 font-normal">Quantity</th>
-              <th class="pb-2 font-normal">Sub Total</th>
-              <th class="pb-2 font-normal">Tax</th>
-              <th class="pb-2 font-normal">Discount</th>
-              <th class="pb-2 font-normal">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($this->order->lines as $line)
-            <tr class="text-sm bg-white even:bg-gray-50">
-              <td class="p-2">{{ $line->identifier }}</td>
-              <td class="p-2">{{ $line->description }}</td>
-              <td class="p-2">{{ $line->option }}</td>
-              <td class="p-2">{{ $line->quantity }}</td>
-              <td class="p-2">{{ $line->sub_total->formatted }}</td>
-              <td class="p-2">{{ $line->tax_total->formatted }}</td>
-              <td class="p-2">{{ $line->discount_total->formatted }}</td>
-              <td class="p-2">{{ $line->total->formatted }}</td>
-            </tr>
-            @endforeach
-          </tbody>
-          <tfoot class="text-sm bg-gray-50">
-            <tr>
-              <td colspan="6"></td>
-              <td class="p-2 text-sm">Sub Total</td>
-              <td>{{ $order->sub_total->formatted }}</td>
-            </tr>
-            @foreach($order->tax_breakdown as $tax)
-              <tr>
-                <td colspan="6"></td>
-                <td class="p-2 text-sm">{{ $tax->description }}</td>
-                <td>{{ $tax->total->formatted }}</td>
-              </tr>
-            @endforeach
-            <tr>
-              <td colspan="6"></td>
-              <td class="p-2 text-sm">Total</td>
-              <td>{{ $order->total->formatted }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      <section class="bg-white rounded-lg shadow">
+        @include('adminhub::partials.orders.details')
+      </section>
+
+      <section class="p-4 bg-white rounded-lg shadow">
+        @include('adminhub::partials.orders.address', [
+          'heading' =>  __('adminhub::components.orders.show.shipping_header'),
+          'editTrigger' => 'showShippingAddressEdit',
+          'hidden' => false,
+          'address' => $this->shippingAddress,
+        ])
+      </section>
+
+      <section class="p-4 bg-white rounded-lg shadow">
+        @include('adminhub::partials.orders.address', [
+          'heading' => __('adminhub::components.orders.show.billing_header'),
+          'editTrigger' => 'showBillingAddressEdit',
+          'hidden' => $this->shippingEqualsBilling,
+          'message' => __('adminhub::components.orders.show.billing_matches_shipping'),
+          'address' => $this->billingAddress,
+        ])
+      </section>
+
+      <section class="p-4 bg-white rounded-lg shadow">
+        <header>
+          <strong class="text-gray-700">
+            {{ __('adminhub::components.orders.show.additional_fields_header') }}
+          </strong>
+        </header>
+
+        <dl class="mt-4 space-y-2 text-sm text-gray-600">
+          @foreach($this->metaFields as $key => $value)
+            <div class="grid grid-cols-3 gap-2">
+              <dt class="font-medium text-gray-700">
+                {{ $key }}:
+              </dt>
+
+              <dd class="col-span-2">
+                @if(!is_string($value))
+                  <pre class="font-mono">{{ json_encode($value) }}</pre>
+                @else
+                  {{ $value }}
+                @endif
+              </dd>
+            </div>
+          @endforeach
+        </dl>
+      </section>
     </div>
-  </div>
 
-  <div class="mt-8">
-    <div class="p-4 bg-white rounded-lg">
-      <h3 class="text-lg font-semibold text-gray-900">Transactions</h3>
-      <div>
-        <table class="w-full mt-4">
-          <thead class="font-normal">
-            <tr class="text-sm text-left text-gray-600 border-b">
-              <th class="pb-2 font-normal">Status</th>
-              <th class="pb-2 font-normal">Success</th>
-              <th class="pb-2 font-normal">Refund</th>
-              <th class="pb-2 font-normal">Amount</th>
-              <th class="pb-2 font-normal">Card Type</th>
-              <th class="pb-2 font-normal">Last four</th>
-              <th class="pb-2 font-normal">Date</th>
-              <th class="pb-2 font-normal">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($order->transactions as $transaction)
-              <tr>
-                <td class="p-2">{{ $transaction->status }}</td>
-                <td class="p-2">{{ $transaction->success ? 'Yes' : 'No' }}</td>
-                <td class="p-2">{{ $transaction->refund ? 'Yes' : 'No' }}</td>
-                <td class="p-2">{{ $transaction->amount->formatted }}</td>
-                <td class="p-2">{{ $transaction->card_type }}</td>
-                <td class="p-2">{{ $transaction->last_four }}</td>
-                <td class="p-2">{{ $transaction->created_at->format('jS M Y h:ma') }}</td>
-                <td class="p-2">{{ $transaction->notes }}</td>
-              </tr>
+    <x-hub::modal.dialog form="updateStatus" wire:model="showUpdateStatus">
+      <x-slot name="title">
+        {{ __('adminhub::orders.update_status.title') }}
+      </x-slot>
+      <x-slot name="content">
+        <x-hub::input.group :label="__('adminhub::inputs.status.label')" for="status" required :error="$errors->first('status')">
+          <x-hub::input.select wire:model.defer="order.status" required>
+            @foreach($this->statuses as $handle => $status)
+              <option value="{{ $handle }}">{{ $status['label'] }}</option>
             @endforeach
-          </tbody>
-        </table>
+          </x-hub::input.select>
+        </x-hub::input.group>
+      </x-slot>
+      <x-slot name="footer">
+        <x-hub::button type="button" wire:click.prevent="$set('showUpdateStatus', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
+        <x-hub::button type="submit">
+          {{ __('adminhub::orders.update_status.btn') }}
+        </x-hub::button>
+      </x-slot>
+    </x-hub::modal.dialog>
+
+    <x-hub::modal wire:model="showRefund">
+      <div class="p-4">
+        @livewire('hub.components.orders.refund', [
+          'order' => $this->order,
+          'amount' => $this->refundAmount / 100,
+        ])
       </div>
-    </div>
-  </div>
+    </x-hub::modal>
 
-  <x-hub::slideover title="Update Status" wire:model="updatingStatus">
-    <x-hub::input.select wire:model="order.status">
-      @foreach($this->statuses as $value => $label)
-        <option value="{{ $value }}">{{ $label }}</option>
-      @endforeach
-    </x-hub::input.select>
+    <x-hub::slideover wire:model="showShippingAddressEdit" form="saveShippingAddress">
+      @include('adminhub::partials.forms.address', [
+        'bind' => 'shippingAddress',
+        'states' => $this->shippingStates,
+      ])
 
-    <x-slot name="footer">
-      <x-hub::button type="button" wire:click.prevent="$set('updatingStatus', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
-      <x-hub::button type="button" wire:click="saveStatus">Save</x-hub::button>
-    </x-slot>
-  </x-hub::modal.dialog>
-</div>
+      <x-slot name="footer">
+        <x-hub::button wire:click.prevent="$set('showShippingAddressEdit', false)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button type="submit">
+          {{ __('adminhub::components.orders.show.save_shipping_btn') }}
+        </x-hub::button>
+      </x-slot>
+    </x-hub::slideover>
+
+    <x-hub::slideover wire:model="showBillingAddressEdit" form="saveBillingAddress">
+      @include('adminhub::partials.forms.address', [
+        'bind' => 'billingAddress',
+        'states' => $this->billingStates,
+      ])
+
+      <x-slot name="footer">
+        <x-hub::button wire:click.prevent="$set('showBillingAddressEdit', false)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button type="submit">
+          {{ __('adminhub::components.orders.show.save_billing_btn') }}
+        </x-hub::button>
+      </x-slot>
+    </x-hub::slideover>
+
+</section>

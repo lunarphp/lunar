@@ -60,4 +60,5 @@ return [
     'attribute_groups'    => 'Attribute Groups',
     'attributes'          => 'Attributes',
     'product'             => 'Product',
+    'notes'               => 'Notes',
 ];
