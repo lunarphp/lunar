@@ -33,6 +33,8 @@ return [
     'attributes.deleted'                => 'Attribute Deleted',
     'customers.user_removed'            => 'User Removed',
     'customers.reset_failed'            => 'Unable to send password reset',
+    'customers.address_updated'         => 'Address updated',
+    'customers.address_removed'         => 'Address removed',
     'billing_address.saved'             => 'Billing address saved',
     'shipping_address.saved'            => 'Shipping address saved',
     'order.status_updated'              => 'Order status updated',

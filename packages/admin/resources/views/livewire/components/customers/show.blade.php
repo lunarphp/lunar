@@ -198,4 +198,43 @@
       </div>
     </div>
   </div>
+
+  <x-hub::slideover wire:model="addressIdToEdit" form="saveAddress">
+    @include('adminhub::partials.forms.address', [
+      'bind' => 'address',
+      'states' => $this->states,
+    ])
+
+    <div class="flex justify-between mt-4">
+      <x-hub::input.group label="Billing Default" for="billing_default">
+        <x-hub::input.toggle wire:model.defer="address.billing_default" />
+      </x-hub::input.group>
+
+      <x-hub::input.group label="Shipping Default" for="shipping_default">
+        <x-hub::input.toggle wire:model.defer="address.shipping_default" />
+      </x-hub::input.group>
+    </div>
+
+    <x-slot name="footer">
+      <x-hub::button wire:click.prevent="$set('addressIdToEdit', null)" theme="gray">
+        {{ __('adminhub::global.cancel') }}
+      </x-hub::button>
+      <x-hub::button type="submit">
+        {{ __('adminhub::components.orders.show.save_shipping_btn') }}
+      </x-hub::button>
+    </x-slot>
+  </x-hub::slideover>
+
+  <x-hub::modal.dialog form="removeAddress" wire:model="addressToRemove">
+    <x-slot name="title">{{ __('adminhub::components.customers.show.remove_address.title') }}</x-slot>
+    <x-slot name="content">
+      <x-hub::alert level="warning">
+        {{ __('adminhub::components.customers.show.remove_address.confirm') }}
+      </x-hub::alert>
+    </x-slot>
+    <x-slot name="footer">
+      <x-hub::button type="button" wire:click.prevent="$set('addressToRemove', null)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
+      <x-hub::button type="submit">{{ __('adminhub::components.customers.show.remove_address_btn') }}</x-hub::button>
+    </x-slot>
+  </x-hub::modal.dialog>
 </div>

@@ -11,8 +11,12 @@
               <span class="px-3 py-1 text-xs text-green-600 bg-green-50">Shipping Default</span>
             @endif
           </div>
-          <div>
-            <x-hub::button theme="gray" size="xs">Edit</x-hub::button>
+          <div class="flex space-x-4">
+            <x-hub::button theme="gray" size="xs" wire:click.prevent="$set('addressIdToEdit', '{{ $address->id }}')">Edit</x-hub::button>
+
+            <x-hub::button theme="danger" size="xs" wire:click.prevent="$set('addressToRemove', '{{ $address->id }}')">
+              {{ __('adminhub::components.customers.show.remove_address_btn') }}
+            </x-hub::button>
           </div>
         </div>
 
@@ -37,8 +41,6 @@
           <span class="block">{{ $address->contact_email }}</span>
           <span class="block">{{ $address->contact_phone }}</span>
         </div>
-
-
       </div>
     @endforeach
   </div>
