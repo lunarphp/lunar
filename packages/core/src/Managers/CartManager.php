@@ -216,6 +216,16 @@ class CartManager
     }
 
     /**
+     * Deletes all cart lines
+     */
+    public function clear()
+    {
+        $this->cart->lines()->delete();
+
+        return $this->calculate()->getCart();
+    }
+
+    /**
      * Update cart lines.
      *
      * @param  Collection  $lines
