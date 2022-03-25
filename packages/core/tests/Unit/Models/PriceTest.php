@@ -95,7 +95,7 @@ class PriceTest extends TestCase
 
         $this->assertEquals(12995, $price->price->value);
         $this->assertEquals(12.995, $price->price->decimal);
-        $this->assertEquals('$13.00', $price->price->formatted('en-us'));
+        $this->assertEquals('$12.995', $price->price->formatted('en-us'));
 
         $price = Price::factory()->create([
             'currency_id'    => $currencyGBP->id,
