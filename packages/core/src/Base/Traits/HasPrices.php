@@ -54,7 +54,7 @@ trait HasPrices
         }
 
         if ($customerGroups) {
-            if ($customerGroups instanceof Collection)) {
+            if ($customerGroups instanceof Collection) {
                 $pricing->customerGroups($customerGroup);
             } else {
                 $pricing->customerGroup($customerGroup);
