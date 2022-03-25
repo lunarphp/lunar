@@ -175,14 +175,12 @@ class PriceTest extends TestCase
         $currencyUSD = Currency::factory()->create([
             'code'           => 'USD',
             'decimal_places' => 2,
-            'format'         => '£{value}',
             'default'        => true,
         ]);
 
         $currencyGBP = Currency::factory()->create([
             'code'           => 'GBP',
             'decimal_places' => 2,
-            'format'         => '£{value}',
             'default'        => false,
         ]);
 
