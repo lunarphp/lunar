@@ -39,7 +39,7 @@ class ProductOption extends BaseModel
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'product_options_'.app()->getLocale();
+        return config('scout.prefix').'product_options';
     }
 
     /**
@@ -80,12 +80,21 @@ class ProductOption extends BaseModel
      */
     public function getSearchableAttributes()
     {
-        return [
-            'id'      => $this->id,
-            'name'    => $this->translate('name'),
-            'options' => $this->values->map(function ($option) {
-                return $option->translate('name');
-            })->toArray(),
-        ];
+        $data['id'] = $this->id;
+
+        // Loop for add option name
+        foreach ($this->name as $locale => $name) {
+            $data['name_'.$locale] = $name;
+        }
+
+        // Loop for add options
+        foreach ($this->values as $option) {
+            foreach ($option->name as $locale => $name) {
+                $key = 'option_'.$option->id.'_'.$locale;
+                $data[$key] = $name;
+            }
+        }
+
+        return $data;
     }
 }
