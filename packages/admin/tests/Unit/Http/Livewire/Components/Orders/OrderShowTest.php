@@ -218,10 +218,7 @@ class OrderShowTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * @group moo
-     * */
+    /** @test */
     public function can_update_addresses()
     {
         $staff = Staff::factory()->create([
