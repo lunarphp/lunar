@@ -31,9 +31,6 @@ class CurrencyCreateTest extends TestCase
             'code'           => 'TST',
             'default'        => true,
             'exchange_rate'  => 0.5,
-            'format'         => '£{value}',
-            'decimal_point'  => ':',
-            'thousand_point' => ';',
             'decimal_places' => 2,
             'enabled'        => 0,
         ];
@@ -63,26 +60,17 @@ class CurrencyCreateTest extends TestCase
             'currency.name'           => 'required',
             'currency.code'           => 'required',
             'currency.exchange_rate'  => 'required',
-            'currency.format'         => 'required',
-            'currency.decimal_point'  => 'required',
-            'currency.thousand_point' => 'required',
         ]);
 
         Livewire::test(CurrencyCreate::class)
             ->set('currency.name', Str::random(260))
             ->set('currency.code', Str::random(260))
             ->set('currency.exchange_rate', Str::random(260))
-            ->set('currency.format', Str::random(260))
-            ->set('currency.decimal_point', Str::random(260))
-            ->set('currency.thousand_point', Str::random(260))
             ->call('create')
             ->assertHasErrors([
                 'currency.code'           => 'max',
                 'currency.name'           => 'max',
                 'currency.exchange_rate'  => 'max',
-                'currency.format'         => 'max',
-                'currency.decimal_point'  => 'max',
-                'currency.thousand_point' => 'max',
             ]);
 
         Currency::factory()->create([

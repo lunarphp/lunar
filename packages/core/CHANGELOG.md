@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `createOrder($forget = true)` method to the `CartSession` facade.
 - Added `active` scope to the `Cart` model for carts that do not have an order associated.
 - Added ability to tap into filterable, searchable and sortable fields in Scout.
+- Added ability to format prices using different locales via the php NumberFormatter.
+- Added new `clear()` function to the CartManager.
 
 ### Fixed
 

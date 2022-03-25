@@ -2,7 +2,7 @@
   <div class="grid grid-cols-2 gap-4">
     <x-hub::input.group
       :label="__('adminhub::inputs.min.label')"
-      for="fieldType"
+      for="min"
       :error="$errors->first('attribute.configuration.min')"
     >
       <x-hub::input.text
@@ -15,8 +15,8 @@
 
     <x-hub::input.group
       :label="__('adminhub::inputs.max.label')"
-      for="fieldType"
-      :error="$errors->first('attribute.configuration.min')"
+      for="max"
+      :error="$errors->first('attribute.configuration.max')"
     >
       <x-hub::input.text
         type="number"
