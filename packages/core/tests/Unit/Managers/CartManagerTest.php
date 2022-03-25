@@ -539,6 +539,46 @@ class CartManagerTest extends TestCase
     }
 
     /** @test */
+    public function can_clear_a_cart()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+        $purchasableB = ProductVariant::factory()->create();
+
+        PriceModel::factory()->create([
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id'   => $purchasableA->id,
+        ]);
+
+        PriceModel::factory()->create([
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id'   => $purchasableB->id,
+        ]);
+
+        $cart->lines()->createMany([
+            ['quantity' => 1, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableA->id],
+            ['quantity' => 2, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableB->id],
+        ]);
+
+        $this->assertCount(2, $cart->refresh()->lines);
+
+        $cart->getManager()->clear();
+
+        $this->assertCount(0, $cart->refresh()->lines);
+    }
+
+    /** @test */
     public function cannot_remove_cart_line_from_another_cart()
     {
         $currency = Currency::factory()->create();

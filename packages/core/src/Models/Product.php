@@ -13,6 +13,7 @@ use GetCandy\Base\Traits\HasUrls;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductFactory;
+use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Jobs\Products\Associations\Associate;
 use GetCandy\Jobs\Products\Associations\Dissociate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,7 +68,7 @@ class Product extends BaseModel implements SpatieHasMedia
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'products_'.app()->getLocale();
+        return config('scout.prefix').'products';
     }
 
     /**
@@ -199,7 +200,13 @@ class Product extends BaseModel implements SpatieHasMedia
         $data = Arr::except($attributes, 'attribute_data');
 
         foreach ($this->attribute_data ?? [] as $field => $value) {
-            $data[$field] = $this->translateAttribute($field);
+            if ($value instanceof TranslatedText) {
+                foreach ($value->getValue() as $locale => $text) {
+                    $data[$field.'_'.$locale] = $text?->getValue();
+                }
+            } else {
+                $data[$field] = $this->translateAttribute($field);
+            }
         }
 
         if ($this->thumbnail) {
