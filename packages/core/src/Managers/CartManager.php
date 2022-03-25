@@ -216,7 +216,7 @@ class CartManager
     }
 
     /**
-     * Deletes all cart lines
+     * Deletes all cart lines.
      */
     public function clear()
     {
