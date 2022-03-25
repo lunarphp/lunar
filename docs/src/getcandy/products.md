@@ -519,6 +519,7 @@ If you want to always return the guest price, you may use...
 $pricing = \GetCandy\Facades\Pricing::guest()->for($variant)->get();
 ```
 
+Or to specify a different user...
 
 ```php
 $pricing = \GetCandy\Facades\Pricing::user($user)->for($variant)->get();
