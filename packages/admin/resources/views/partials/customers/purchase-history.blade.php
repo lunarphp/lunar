@@ -4,24 +4,22 @@
   <x-hub::table>
     <x-slot name="head">
       <x-hub::table.heading>
-        Purchasable
+        {{ __('adminhub::partials.customers.purchase-history.purchasable') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
-        Idenfitier
+        {{ __('adminhub::partials.customers.purchase-history.identifier') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
-        Quantity
+        {{ __('adminhub::partials.customers.purchase-history.quantity') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
-        Revenue
+        {{ __('adminhub::partials.customers.purchase-history.revenue') }}
       </x-hub::table.heading>
-
       <x-hub::table.heading>
-        No. Orders
+        {{ __('adminhub::partials.customers.purchase-history.order_count') }}
       </x-hub::table.heading>
-
       <x-hub::table.heading>
-        Last ordered
+        {{ __('adminhub::partials.customers.purchase-history.last_ordered') }}
       </x-hub::table.heading>
     </x-slot>
     <x-slot name="body">

@@ -143,6 +143,15 @@ return [
     'customers.addresses.billing_default'   => 'Billing Default',
     'customers.addresses.shipping_default'   => 'Shipping Default',
     /**
+     * Customers
+     */
+    'customers.purchase-history.purchasable' => 'Purchasable',
+    'customers.purchase-history.identifier' => 'Identifier',
+    'customers.purchase-history.quantity' => 'Quantity',
+    'customers.purchase-history.revenue' => 'Revenue',
+    'customers.purchase-history.order_count' => 'No. Orders',
+    'customers.purchase-history.last_ordered' => 'Last Ordered',
+    /**
      * Orders.
      */
     'orders.totals.sub_total' => 'Sub Total',
