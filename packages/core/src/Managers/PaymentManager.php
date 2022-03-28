@@ -2,7 +2,6 @@
 
 namespace GetCandy\Managers;
 
-use GetCandy\Exceptions\InvalidPaymentTypeException;
 use GetCandy\PaymentTypes\OfflinePayment;
 use Illuminate\Support\Manager;
 use Illuminate\Support\Str;
