@@ -61,7 +61,7 @@ class ProductsIndex extends Component
     /**
      * Get the listing thumbnail for a product.
      *
-     * @param Product $product
+     * @param  Product  $product
      * @return void
      */
     public function getThumbnail($product)
