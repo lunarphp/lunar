@@ -16,8 +16,6 @@ return [
     'products.associations.show_inverse' => 'Show inverse',
     'products.associations.add_inverse' => 'Add inverse association',
     'products.associations.add_association' => 'Add association',
-    'products.associations.alfra_piccolo' => 'Alfra Piccolo 38\/50B Magnetic Drilling Machine 240V (mag drill)',
-    'products.associations.20054123' => '20054123',
     'products.associations.up-sell_selecting_products' => 'Add Up-sell products by searching above and selecting products.',
     /**
      * Availability.

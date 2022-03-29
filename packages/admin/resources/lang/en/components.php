@@ -119,7 +119,7 @@ return [
      */
     'products.index.title' => 'Products',
     'products.index.create_product' => 'Create Product',
-    'products.index.you_have_selected' => 'You have selected',
+    'products.index.selected_products' => 'You have selected :count products',
     'products.index.you_have_selected_all' => 'You have selected all',
     'products.index.want_to_select_all' => 'products, do you want to select all',
     'products.index.products' => 'products.',

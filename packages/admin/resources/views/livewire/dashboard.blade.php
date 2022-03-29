@@ -1,9 +1,9 @@
 <div>
   <div class="flex justify-between px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-    <h1 class="text-2xl font-semibold text-gray-900">{{ __('adminhub:gloabl.dashboard') }}</h1>
+    <h1 class="text-2xl font-semibold text-gray-900">{{ __('adminhub::global.dashboard') }}</h1>
     <div class="flex items-center space-x-4">
       <x-hub::input.datepicker wire:model="range.from" />
-      <span class="text-xs font-medium text-gray-500 uppercase">{{ __('adminhub:gloabl.to') }}</span>
+      <span class="text-xs font-medium text-gray-500 uppercase">{{ __('adminhub::global.to') }}</span>
       <x-hub::input.datepicker wire:model="range.to" />
     </div>
   </div>
@@ -19,7 +19,7 @@
           <div class="flex items-center ml-4">
             <div>
               <strong class="text-lg font-bold">{{ $this->newProductsCount }}</strong>
-              <span class="block text-xs">{{ __('adminhub:gloabl.new_products') }}</span>
+              <span class="block text-xs">{{ __('adminhub::global.new_products') }}</span>
             </div>
           </div>
         </div>
