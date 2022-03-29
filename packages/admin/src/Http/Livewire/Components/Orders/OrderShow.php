@@ -277,7 +277,7 @@ class OrderShow extends Component
             return false;
         }
 
-        return !$captures;
+        return ! $captures;
     }
 
     /**
