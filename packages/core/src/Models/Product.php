@@ -43,6 +43,7 @@ class Product extends BaseModel implements SpatieHasMedia
     protected $filterable = [
         '__soft_deleted',
         'skus',
+        'collection_ids',
         'brand',
         'status',
     ];
@@ -214,6 +215,27 @@ class Product extends BaseModel implements SpatieHasMedia
         }
 
         $data['skus'] = $this->variants()->pluck('sku')->toArray();
+
+        $data['collection_ids'] = $this->collections->map(function ($item, $key) {
+            return $item->id;
+        });
+
+        $data['collections'] = $this->collections->map(function ($item, $key) {
+            return $item->translateAttribute('name');
+        });
+
+        $prefix = config('getcandy.database.table_prefix');
+
+        // TODO: We need to handle currencies
+
+        $data['min_price'] = $this->variants()
+            ->join($prefix.'prices', function ($join) use ($prefix) {
+                $join->on($prefix.'product_variants.id', '=', $prefix.'prices.priceable_id')
+                     ->where($prefix.'prices.priceable_type', '=', 'GetCandy\Models\ProductVariant')
+                     ->where($prefix.'prices.tier', '=', 1)
+                     ->whereNull($prefix.'prices.customer_group_id');
+            })
+            ->min($prefix.'prices.price');
 
         return $data;
     }
