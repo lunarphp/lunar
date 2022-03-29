@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `getcandy:search:index` command to reindex models based on options passed. By [@lucasvmds](https://github.com/lucasvmds)
 - Added ability to format prices using different locales via the php NumberFormatter.
 - Added new `clear()` function to the CartManager.
+- The database connection can now be specified for GetCandy's models in `getcandy/database.php`. By [@ryanmitchell](https://github.com/ryanmitchell)
+- Added `getcandy:search:index` command to reindex models based on options passed. By [@lucasvmds](https://github.com/lucasvmds)
 
 ### Fixed
 
