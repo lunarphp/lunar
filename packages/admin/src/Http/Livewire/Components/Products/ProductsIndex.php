@@ -54,8 +54,27 @@ class ProductsIndex extends Component
     public function getProductsProperty()
     {
         return tap(Product::search($this->search)->paginate(50), function ($products) {
-            return $products->load(['thumbnail', 'productType']);
+            return $products->load(['thumbnail', 'productType', 'variants']);
         });
+    }
+
+    /**
+     * Get the listing thumbnail for a product.
+     *
+     * @param Product $product
+     * @return void
+     */
+    public function getThumbnail($product)
+    {
+        if ($product->thumbnail) {
+            return $product->thumbnail;
+        }
+
+        $variant = $product->variants->first(function ($variant) {
+            return $variant->thumbnail;
+        });
+
+        return $variant?->thumbnail;
     }
 
     /**
