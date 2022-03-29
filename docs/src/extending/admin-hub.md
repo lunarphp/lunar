@@ -188,8 +188,8 @@ Rendered on the product creation screen
 
 |Position|Description
 |:-|:-|
-|`top`|Displayed at the top of the product editing sections
-|`bottom`|Displayed at the bottom of the product editing sections
+|`top`|Displayed at the top of the product creation sections
+|`bottom`|Displayed at the bottom of the product creation sections
 
 #### `product.all`
 
@@ -199,5 +199,15 @@ Rendered on the product creation screen
 
 |Position|Description
 |:-|:-|
-|`top`|Displayed at the top of the product editing sections
-|`bottom`|Displayed at the bottom of the product editing sections
+|`top`|Displayed at the top of both the product creation and editing sections
+|`bottom`|Displayed at the bottom of both the product creation and editing sections
+
+
+#### `productvariant.show`
+
+##### Positions
+
+|Position|Description
+|:-|:-|
+|`top`|Displayed at the top of both the product variant editing sections
+|`bottom`|Displayed at the bottom of both the product variant editing sections
