@@ -486,7 +486,7 @@ class CustomerShow extends Component
         )->join($ordersTable, "{$ordersTable}.id", '=', "{$orderLinesTable}.order_id")
         ->whereIn(
             'order_id', $this->customer->orders()->pluck('id')
-        )->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
+        )->orderBy('sub_total', 'desc')->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
             perPage: 10,
             pageName: 'phPage'
         );
