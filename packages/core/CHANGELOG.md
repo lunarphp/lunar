@@ -14,7 +14,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `getcandy:search:index` command to reindex models based on options passed. By [@lucasvmds](https://github.com/lucasvmds)
 - Added ability to format prices using different locales via the php NumberFormatter.
 - Added new `clear()` function to the CartManager.
-- Updated quantity column on `CartLines` table to be `unsignedMediumInteger`.
 
 ### Fixed
 
@@ -25,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - When generating media conversions, the original file format is now kept. By [@lucasvmds](https://github.com/lucasvmds)
+- Quantity column on `CartLines` table is now of type `unsignedMediumInteger`.
 
 ## 2.0-beta10 - 2022-02-18
 
