@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added ability to tap into filterable, searchable and sortable fields in Scout.
 - Added ability to format prices using different locales via the php NumberFormatter.
 - Added new `clear()` function to the CartManager.
+- Updated quantity column on `CartLines` table to be `unsignedMediumInteger`.
 
 ### Fixed
 
