@@ -27,7 +27,6 @@ class AddFieldsToTransactionsTable extends Migration
             $table->dropForeign(['parent_transaction_id']);
             $table->dropColumn('parent_transaction_id');
             $table->dropColumn('type');
-            $table->boolean('refund')->default(false)->index();
         });
 
         Schema::table($this->prefix.'transactions', function ($table) {
