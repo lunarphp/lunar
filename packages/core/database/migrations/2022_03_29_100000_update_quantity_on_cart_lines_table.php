@@ -9,7 +9,7 @@ class UpdateQuantityOnCartLinesTable extends Migration
     public function up()
     {
         Schema::table($this->prefix.'cart_lines', function (Blueprint $table) {
-            $table->unsignedInteger('quantity')->change();
+            $table->unsignedMediumInteger('quantity')->change();
         });
     }
 
