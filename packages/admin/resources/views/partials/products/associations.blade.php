@@ -28,8 +28,8 @@
                     <img src="https://images.unsplash.com/photo-1539185441755-769473a23570?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=40&q=80">
                   </div>
                   <div class="col-span-9">
-                    <a class="block text-xs text-indigo-500 truncate hover:underline" href="#">{{ __('adminhub::partials.products.associations.alfra_piccolo') }}</a>
-                    <span class="text-gray-600">{{ __('adminhub::partials.products.associations.20054123') }}</span>
+                    <a class="block text-xs text-indigo-500 truncate hover:underline" href="#"></a>
+                    <span class="text-gray-600"></span>
                   </div>
                   <div class="col-span-1 text-right">
                     <button>

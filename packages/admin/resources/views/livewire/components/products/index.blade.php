@@ -129,7 +129,9 @@
         <x-hub::table.row class="border-b bg-indigo-50">
           <x-hub::table.cell colspan="24">
             @unless($selectAll)
-              <span class="text-sm text-indigo-800">{{ __('adminhub::components.products.index.you_have_selected') }} 
+              <span class="text-sm text-indigo-800">{{ __('adminhub::components.products.index.you_have_selected', [
+                'count' => 123,
+              ]); }} 
                 <strong>{{ count($selected) }}</strong> {{ __('adminhub::components.products.index.want_to_select_all') }} <strong>{{ $products->total() }}</strong>?</span>
               <button wire:click="selectAll" class="ml-1 text-blue-700 hover:underline">{{ __('adminhub::components.products.index.select_all_btn') }}</button>
             @else
