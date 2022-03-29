@@ -78,6 +78,7 @@ module.exports = {
           '/installation',
           '/configuration',
           ['/upgrading', 'Upgrade Guide'],
+          ['/securing-your-site', 'Security'],
         ]
       },
       {
