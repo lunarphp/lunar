@@ -3,18 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## 2.0-beta11 - 2022-03-29
 
 ### Added
 
 - Added `createOrder($forget = true)` method to the `CartSession` facade.
 - Added `active` scope to the `Cart` model for carts that do not have an order associated.
 - Added ability to tap into filterable, searchable and sortable fields in Scout.
+- The database connection can now be specified for GetCandy's models in `getcandy/database.php`. By [@ryanmitchell](https://github.com/ryanmitchell)
+- Added `getcandy:search:index` command to reindex models based on options passed. By [@lucasvmds](https://github.com/lucasvmds)
 
 ### Fixed
 
 - When a user logs in, the `CartSessionAuthListener` will now check for an active cart, rather than just grabbing the latest. ([#186](https://github.com/getcandy/getcandy/issues/186))
 - `Dropdown`, `ListField` and `Number` field types now implement the `JsonSerializable` interface.
+- When running the `getcandy:meilisearch:setup` it will now wait for a period whilst the index is created before continuing. By [@lucasvmds](https://github.com/lucasvmds)
+
+### Changed
+
+- When generating media conversions, the original file format is now kept. By [@lucasvmds](https://github.com/lucasvmds)
 
 ## 2.0-beta10 - 2022-02-18
 
