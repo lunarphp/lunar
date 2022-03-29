@@ -57,20 +57,27 @@ class OrderSearch extends AbstractSearch
             ];
 
             foreach ($filters as $field => $values) {
-                if ($field == 'to' || ! $values) {
+                if (! $values) {
+                    continue;
+                }
+
+                if ($field == 'to') {
+                    $placedAtFilter = 'placed_at <= '.now()->parse($values)->endOfDay()->timestamp;
+                    $dateFilter = "($placedAtFilter)";
+
+                    $parsedFilters->push('('.$dateFilter.')');
+
                     continue;
                 }
 
                 if ($field == 'from') {
-                    $createdAtFilter = 'created_at >= '.now()->parse($values)->startOfDay()->timestamp;
                     $placedAtFilter = 'placed_at >= '.now()->parse($values)->startOfDay()->timestamp;
 
                     if (! empty($filters['to'])) {
-                        $createdAtFilter .= ' AND created_at <= '.now()->parse($filters['to'])->endOfDay()->timestamp;
                         $placedAtFilter .= ' AND placed_at <= '.now()->parse($filters['to'])->endOfDay()->timestamp;
                     }
 
-                    $dateFilter = "($createdAtFilter) OR ($placedAtFilter)";
+                    $dateFilter = "($placedAtFilter)";
 
                     $parsedFilters->push('('.$dateFilter.')');
 
