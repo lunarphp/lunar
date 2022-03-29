@@ -143,7 +143,7 @@ return [
     'customers.addresses.billing_default'   => 'Billing Default',
     'customers.addresses.shipping_default'   => 'Shipping Default',
     /**
-     * Customers
+     * Customers.
      */
     'customers.purchase-history.purchasable' => 'Purchasable',
     'customers.purchase-history.identifier' => 'Identifier',
