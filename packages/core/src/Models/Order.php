@@ -87,7 +87,17 @@ class Order extends BaseModel
     {
         $statuses = config('getcandy.orders.statuses');
 
-        return $statuses[$this->status] ?? $this->status;
+        return $statuses[$this->status]['label'] ?? $this->status;
+    }
+
+    /**
+     * Return the channel relationship.
+     *
+     * @return void
+     */
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
     }
 
     /**
@@ -242,24 +252,22 @@ class Order extends BaseModel
      */
     protected function getSearchableAttributes()
     {
-        return [
+        $data = [
             'id'        => $this->id,
+            'channel'    => $this->channel->name,
             'reference' => $this->reference,
+            'customer_reference' => $this->customer_reference,
             'status'    => $this->status,
-            'placed_at' => $this->placed_at,
-            'created_at' => $this->created_at,
+            'placed_at' => optional($this->placed_at)->timestamp,
+            'created_at' => $this->created_at->timestamp,
+            'sub_total' => $this->sub_total->value,
+            'total'     => $this->total->value,
+            'currency_code'  => $this->currency_code,
             'charges'   => $this->transactions->map(function ($transaction) {
                 return [
                     'reference' => $transaction->reference,
                 ];
             }),
-            'addresses' => $this->addresses->map(function ($address) {
-                return [
-                    'postcode'   => $address->postcode,
-                    'first_name' => $address->first_name,
-                    'last_name'  => $address->last_name,
-                ];
-            })->toArray(),
             'currency' => $this->currency_code,
             'lines'    => $this->productLines->map(function ($line) {
                 return [
@@ -268,5 +276,29 @@ class Order extends BaseModel
                 ];
             })->toArray(),
         ];
+
+        foreach ($this->addresses as $address) {
+            $fields = [
+                'first_name',
+                'last_name',
+                'company_name',
+                'line_one',
+                'line_two',
+                'line_three',
+                'city',
+                'state',
+                'postcode',
+                'contact_email',
+                'contact_phone',
+            ];
+
+            foreach ($fields as $field) {
+                $data["{$address->type}_{$field}"] = $address->getAttribute($field);
+            }
+
+            $data["{$address->type}_country"] = optional($address->country)->name;
+        }
+
+        return $data;
     }
 }
