@@ -5,8 +5,65 @@
     </strong>
   </div>
 
-  <div class="md:flex gap-x-4">
-    <div class="space-y-4 md:w-2/3">
+  <div class="space-y-4 xl:space-y-0 xl:flex xl:flex-row-reverse gap-x-4">
+    <div class="xl:w-1/3">
+      <div class="bg-white rounded shadow">
+        <div class="p-4 space-y-4">
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <x-hub::input.group for="title" :label="__('adminhub::inputs.title')">
+                <x-hub::input.text wire:model="customer.title" />
+              </x-hub::input.group>
+            </div>
+            <div>
+              <x-hub::input.group for="first_name" :label="__('adminhub::inputs.firstname')">
+                <x-hub::input.text wire:model="customer.first_name" />
+              </x-hub::input.group>
+            </div>
+            <div>
+              <x-hub::input.group for="last_name" :label="__('adminhub::inputs.lastname')">
+                <x-hub::input.text wire:model="customer.last_name" />
+              </x-hub::input.group>
+            </div>
+          </div>
+
+          <x-hub::input.group for="company_name" :label="__('adminhub::inputs.company_name.label')">
+            <x-hub::input.text wire:model="customer.company_name" />
+          </x-hub::input.group>
+
+          <x-hub::input.group for="vat_no" :label="__('adminhub::inputs.vat_no.label')">
+            <x-hub::input.text wire:model="customer.vat_no" />
+          </x-hub::input.group>
+          <header class="">
+            {{ __('adminhub::components.customers.show.customer_groups') }}
+          </header>
+
+          <div class="space-y-2">
+            @foreach($this->customerGroups as $group)
+              <label class="flex items-center p-2 text-sm border rounded cursor-pointer" wire:key="group_{{ $group->id }}">
+                <x-hub::input.checkbox wire:model.debounce.500ms="syncedGroups" value="{{ $group->id }}" /> <span class="ml-2">{{ $group->name }}</span>
+              </label>
+            @endforeach
+          </div>
+        </div>
+        <div class="p-4 text-right rounded-b bg-gray-50">
+            <x-hub::button type="button" wire:click="save">
+              <div wire:loading wire:target="save">
+                <div>
+                  <svg class="w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div wire:loading.remove wire:target="save">
+                <span>{{ __('adminhub::components.customers.show.save_customer') }}</span>
+              </div>
+            </x-hub::button>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-4 xl:w-2/3">
       <!-- This example requires Tailwind CSS v2.0+ -->
       <div>
         <dl class="grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -137,64 +194,6 @@
           @endif
         </div>
 
-      </div>
-    </div>
-
-    <div class="w-1/3">
-      <div class="bg-white rounded shadow">
-        <div class="p-4 space-y-4">
-          <div class="grid grid-cols-3 gap-4">
-            <div>
-              <x-hub::input.group for="title" :label="__('adminhub::inputs.title')">
-                <x-hub::input.text wire:model="customer.title" />
-              </x-hub::input.group>
-            </div>
-            <div>
-              <x-hub::input.group for="first_name" :label="__('adminhub::inputs.firstname')">
-                <x-hub::input.text wire:model="customer.first_name" />
-              </x-hub::input.group>
-            </div>
-            <div>
-              <x-hub::input.group for="last_name" :label="__('adminhub::inputs.lastname')">
-                <x-hub::input.text wire:model="customer.last_name" />
-              </x-hub::input.group>
-            </div>
-          </div>
-
-          <x-hub::input.group for="company_name" :label="__('adminhub::inputs.company_name.label')">
-            <x-hub::input.text wire:model="customer.company_name" />
-          </x-hub::input.group>
-
-          <x-hub::input.group for="vat_no" :label="__('adminhub::inputs.vat_no.label')">
-            <x-hub::input.text wire:model="customer.vat_no" />
-          </x-hub::input.group>
-          <header class="">
-            {{ __('adminhub::components.customers.show.customer_groups') }}
-          </header>
-
-          <div class="space-y-2">
-            @foreach($this->customerGroups as $group)
-              <label class="flex items-center p-2 text-sm border rounded cursor-pointer" wire:key="group_{{ $group->id }}">
-                <x-hub::input.checkbox wire:model.debounce.500ms="syncedGroups" value="{{ $group->id }}" /> <span class="ml-2">{{ $group->name }}</span>
-              </label>
-            @endforeach
-          </div>
-        </div>
-        <div class="p-4 text-right rounded-b bg-gray-50">
-            <x-hub::button type="button" wire:click="save">
-              <div wire:loading wire:target="save">
-                <div>
-                  <svg class="w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                </div>
-              </div>
-              <div wire:loading.remove wire:target="save">
-                <span>{{ __('adminhub::components.customers.show.save_customer') }}</span>
-              </div>
-            </x-hub::button>
-        </div>
       </div>
     </div>
   </div>
