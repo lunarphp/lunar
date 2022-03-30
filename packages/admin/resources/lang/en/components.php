@@ -146,7 +146,7 @@ return [
     'orders.capture.select_transaction'              => 'Select a transaction',
     'orders.capture.capture_btn'                      => 'Capture payment',
     /**
-     * Activity Log
+     * Activity Log.
      */
     'activity-log.system'                           => 'System',
     'activity-log.orders.status_change'             => 'Status updated',
