@@ -463,7 +463,7 @@ class OrderShow extends Component
      */
     public function getShippingEqualsBillingProperty()
     {
-        if (!$this->shippingAddress || !$this->billingAddress) {
+        if (! $this->shippingAddress || ! $this->billingAddress) {
             return false;
         }
 
