@@ -159,9 +159,9 @@ return [
     /**
      * Transactions.
      */
-    'orders.transactions.capture' => 'Capture',
+    'orders.transactions.capture' => 'Captured',
     'orders.transactions.intent' => 'Intent',
-    'orders.transactions.refund' => 'Refund',
+    'orders.transactions.refund' => 'Refunded',
     /**
      * Customer Addresses.
      */
