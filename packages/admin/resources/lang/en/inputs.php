@@ -81,8 +81,6 @@ return [
     'amount.label' => 'Amount',
     'notes.label' => 'Notes',
     'confirm.label' => 'Confirm',
-    'tax_ref.label'                          => 'Tax Reference',
-    'tax_ref.instructions'                   => 'Add the third party tax reference, if required.',
     'select_attribute_group'                 => 'Select attribute group',
     'select_field_type'                      => 'Select a field type',
     'text'                                   => 'Text',

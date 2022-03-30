@@ -90,6 +90,7 @@
 
         </header>
       @endif
+
       <section class="bg-white rounded-lg shadow">
         @include('adminhub::partials.orders.details')
       </section>
