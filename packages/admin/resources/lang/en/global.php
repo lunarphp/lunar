@@ -69,4 +69,10 @@ return [
     'date'                => 'Date',
     'time'                => 'Time',
     'notes'               => 'Notes',
+    'id'                  => 'ID',
+    'user'                => 'User',
+    'status'              => 'Status',
+    'reference'           => 'Reference',
+    'total'               => 'Total',
+    'date'                => 'Date',
 ];

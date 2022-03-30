@@ -3,34 +3,37 @@
   <x-hub::table>
     <x-slot name="head">
       <x-hub::table.heading>
-        ID
+        {{ __('adminhub::global.id') }}
       </x-hub::table.heading>
 
       <x-hub::table.heading>
-        User
+        {{ __('adminhub::global.user') }}
       </x-hub::table.heading>
 
       <x-hub::table.heading>
-        Status
+        {{ __('adminhub::global.status') }}
       </x-hub::table.heading>
 
       <x-hub::table.heading>
-        Reference
+        {{ __('adminhub::global.reference') }}
       </x-hub::table.heading>
 
       <x-hub::table.heading>
-        Total
+        {{ __('adminhub::global.total') }}
       </x-hub::table.heading>
 
       <x-hub::table.heading>
-        Date
+        {{ __('adminhub::global.date') }}
+      </x-hub::table.heading>
+
+      <x-hub::table.heading>
       </x-hub::table.heading>
     </x-slot>
     <x-slot name="body">
       @foreach($this->orders as $order)
         <x-hub::table.row>
           <x-hub::table.cell>
-            <a href="{{ route('hub.orders.show', $order->id) }}" class="text-indigo-500 hover:underline">{{ $order->id }}</a>
+            {{ $order->id }}
           </x-hub::table.cell>
 
           <x-hub::table.cell>
@@ -51,6 +54,12 @@
 
           <x-hub::table.cell>
             {{ $order->placed_at?->format('Y-m-d h:ia') }}
+          </x-hub::table.cell>
+
+          <x-hub::table.cell>
+            <a href="{{ route('hub.orders.show', $order->id) }}" class="text-indigo-500 hover:underline">
+              {{ __('adminhub::global.view') }}
+            </a>
           </x-hub::table.cell>
         </x-hub::table.row>
 

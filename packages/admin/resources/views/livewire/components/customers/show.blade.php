@@ -97,8 +97,11 @@
         @livewire('hub.components.reporting.apex-chart', ['options' => $this->spendingChart])
         </div>
       </div>
+    </div>
+  </div>
 
-      <div x-data="{ tab: 'purchase_history' }">
+  <div>
+    <div x-data="{ tab: 'order_history' }">
         <div>
           <div class="hidden sm:block">
             <nav class="flex space-x-4" aria-label="Tabs">
@@ -195,7 +198,6 @@
         </div>
 
       </div>
-    </div>
   </div>
 
   <x-hub::slideover wire:model="addressIdToEdit" form="saveAddress">
