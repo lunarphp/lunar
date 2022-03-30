@@ -19,7 +19,6 @@
         </div>
 
         @if ($this->physicalLines->count() > $maxLines)
-
           <div class="mt-4 text-center">
             @if(!$allLinesVisible)
               <div class="relative">
@@ -51,7 +50,6 @@
         <div class="mt-8">
           @include('adminhub::partials.orders.totals')
         </div>
-
       </div>
 
       <div class="mt-4">
