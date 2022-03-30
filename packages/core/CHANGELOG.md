@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `config/getcandy/urls.php` config.
 - You can now specify a URL generator when creating records that use the `HasUrls` trait.
 - You can specify whether URLs are required throughout the system.
+- Added ability to format prices using different locales via the php NumberFormatter.
+- Added new `clear()` function to the CartManager.
 
 ### Fixed
 
