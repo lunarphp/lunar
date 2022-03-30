@@ -15,27 +15,40 @@
     <div>
       <div class="text-xs font-medium text-gray-500">
         @if(!$activity->causer)
-          System (Guest)
+          {{ __('adminhub::components.activity-log.system') }}
         @else
           {{ $activity->causer->fullName ?: $activity->causer->name }}
         @endif
       </div>
       <p class="mt-2 text-sm font-medium text-gray-700">
         @if($activity->event == 'status-update')
-          Order status changed
-          <strong><x-hub::orders.status :status="$activity->getExtraProperty('previous')" /></strong>
-          to
-          <strong><x-hub::orders.status :status="$activity->getExtraProperty('new')" /></strong>
+          <div class="flex items-center text-sm font-medium text-gray-700">
+            {{ __('adminhub::components.activity-log.orders.status_change') }}
+            <div class="flex items-center ml-2">
+              <strong><x-hub::orders.status :status="$activity->getExtraProperty('previous')" /></strong>
+              <x-hub::icon ref="chevron-right" style="solid" class="w-4 mx-1" />
+              <strong><x-hub::orders.status :status="$activity->getExtraProperty('new')" /></strong>
+            </div>
+          </div>
         @elseif($activity->event == 'created')
-          Order Created
+          {{ __('adminhub::components.activity-log.orders.order_created') }}
         @elseif($activity->event == 'comment')
           {!! nl2br($activity->getExtraProperty('content')) !!}
         @elseif($activity->event == 'capture')
-          Payment of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
+          {{ __('adminhub::components.activity-log.orders.capture', [
+            'amount' => price($activity->getExtraProperty('amount'), $this->order->currency)->formatted,
+            'last_four' => $activity->getExtraProperty('last_four'),
+          ]) }}
         @elseif($activity->event == 'intent')
-          Authorized payment of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
+          {{ __('adminhub::components.activity-log.orders.authorized', [
+            'amount' => price($activity->getExtraProperty('amount'), $this->order->currency)->formatted,
+            'last_four' => $activity->getExtraProperty('last_four'),
+          ]) }}
         @elseif($activity->event == 'refund')
-          Refund of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
+          {{ __('adminhub::components.activity-log.orders.refund', [
+            'amount' => price($activity->getExtraProperty('amount'), $this->order->currency)->formatted,
+            'last_four' => $activity->getExtraProperty('last_four'),
+          ]) }}
           @if($notes = $activity->getExtraProperty('notes'))
             <p>{{ nl2br($notes) }}</p>
           @endif

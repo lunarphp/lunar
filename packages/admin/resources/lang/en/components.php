@@ -180,4 +180,13 @@ return [
     'customers.show.no_order_history'      => 'This customer has no order history.',
     'customers.show.no_users'      => 'This customer has no users associated.',
     'customers.show.no_addresses'      => 'This customer has no addresses.',
+    /**
+     * Activity Log
+     */
+    'activity-log.system'                           => 'System',
+    'activity-log.orders.status_change'             => 'Status updated',
+    'activity-log.orders.order_created'             => 'Order Created',
+    'activity-log.orders.capture'                   => 'Payment of :amount on card ending :last_four',
+    'activity-log.orders.authorized'                   => 'Authorized of :amount on card ending :last_four',
+    'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
 ];
