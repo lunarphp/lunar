@@ -201,16 +201,6 @@ class Order extends BaseModel
     }
 
     /**
-     * Return the channel relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class);
-    }
-
-    /**
      * Return the charges relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -228,11 +218,6 @@ class Order extends BaseModel
     public function intents()
     {
         return $this->transactions()->whereType('intent');
-    }
-
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class);
     }
 
     /**
