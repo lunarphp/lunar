@@ -143,8 +143,8 @@
         </x-hub::table.cell>
 
         <x-hub::table.cell class="w-24">
-          @if($product->thumbnail)
-            <img class="rounded shadow" src="{{ $product->thumbnail->getUrl('small') }}" />
+          @if($thumbnail = $this->getThumbnail($product))
+            <img class="rounded shadow" src="{{ $thumbnail->getUrl('small') }}" loading="lazy" />
           @else
               <x-hub::icon ref="photograph" class="w-8 h-8 mx-auto text-gray-300" />
           @endif

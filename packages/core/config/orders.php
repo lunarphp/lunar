@@ -15,6 +15,11 @@ return [
     'statuses'     => [
         'awaiting-payment' => [
             'label' => 'Awaiting Payment',
+            'color' => '#848a8c',
+        ],
+        'payment-received' => [
+            'label' => 'Payment Received',
+            'color' => '#6a67ce',
         ],
         'dispatched'  => [
             'label' => 'Dispatched',

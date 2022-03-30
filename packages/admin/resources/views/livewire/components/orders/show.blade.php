@@ -11,7 +11,7 @@
         @include('adminhub::partials.orders.actions')
       </div>
 
-      <div class="p-6 mt-4 space-y-8 bg-white rounded-lg shadow">
+      <div class="p-6 mt-4 bg-white rounded-lg shadow">
         <div class="flow-root">
           <ul class="divide-y divide-gray-100">
             @include('adminhub::partials.orders.lines')
@@ -19,9 +19,22 @@
         </div>
 
         @if ($this->physicalLines->count() > $maxLines)
-          <div class="flex justify-end">
+          <div class="mt-4 text-center">
+            @if(!$allLinesVisible)
+              <div class="relative">
+                <hr class="absolute block w-full border-red-200 top-3 border-b-1 transparent" />
+                <div class="relative">
+                  <span class="px-2 text-xs font-medium text-red-600 bg-white">
+                    {{ __('adminhub::components.orders.show.additional_lines_text', [
+                      'count' => $this->physicalLines->count() - $maxLines
+                    ]) }}
+                  </span>
+                </div>
+              </div>
+            @endif
+
             <button
-              class="flex-shrink-0 px-5 py-3 text-xs font-bold text-gray-700 bg-gray-100 border border-transparent rounded-md hover:border-gray-100 hover:bg-gray-50"
+              class="px-3 py-1 mt-1 text-xs text-blue-800 border rounded shadow-sm"
               wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
               type="button"
             >
@@ -34,8 +47,9 @@
           </div>
         @endif
 
-        @include('adminhub::partials.orders.totals')
-
+        <div class="mt-8">
+          @include('adminhub::partials.orders.totals')
+        </div>
       </div>
 
       <div class="mt-4">
