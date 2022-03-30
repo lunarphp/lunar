@@ -9,6 +9,8 @@ use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Search\OrderSearch;
 use GetCandy\Hub\Tests\TestCase;
+use GetCandy\Models\Currency;
+use GetCandy\Models\Language;
 use GetCandy\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -25,6 +27,14 @@ class OrdersIndexTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        Language::factory()->create([
+            'default' => true,
+        ]);
 
         $this->mockedSearch = Mockery::mock(OrderSearch::class, function ($mock) {
             $mock->shouldReceive('search')->andReturn(

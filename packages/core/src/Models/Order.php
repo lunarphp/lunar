@@ -219,7 +219,7 @@ class Order extends BaseModel
     {
         return $this->transactions()->whereType('intent');
     }
-
+  
     /**
      * Return the refunds relationship.
      *
