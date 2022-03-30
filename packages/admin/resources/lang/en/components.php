@@ -87,4 +87,29 @@ return [
     'collection-search.select_empty'                => 'When you select collections, they will appear here.',
     'collection-search.title'                       => 'Search for collections',
     'collection-search.commit_btn'                  => 'Select Collections',
+    /**
+     * Order Show.
+     */
+    'orders.show.title'                             => 'Order',
+    'orders.show.save_shipping_btn'                 => 'Save Address',
+    'orders.show.save_billing_btn'                 => 'Save Address',
+    'orders.show.print_btn'                         => 'Print',
+    'orders.show.refund_btn'                         => 'Refund',
+    'orders.show.refund_lines_btn'                  => 'Refund Lines',
+    'orders.show.update_status_btn'                         => 'Update Status',
+    'orders.show.more_actions_btn'                         => 'More Actions',
+    'orders.show.show_all_lines_btn' => 'Show all lines',
+    'orders.show.additional_lines_text' => 'An additional :count lines are hidden',
+    'orders.show.collapse_lines_btn' => 'Collapse lines',
+    'orders.show.transactions_header' => 'Transactions',
+    'orders.show.timeline_header' => 'Timeline',
+    'orders.show.additional_fields_header' => 'Additional Information',
+    'orders.show.billing_matches_shipping' => 'Same as shipping address',
+    'orders.show.billing_header' => 'Billing Address',
+    'orders.show.shipping_header' => 'Shipping Address',
+    /**
+     * Order Refund.
+     */
+    'orders.refund.confirm_text'                    => 'CONFIRM',
+    'orders.refund.confirm_message'                 => 'Please type :confirm to confirm you want to send the refund',
 ];

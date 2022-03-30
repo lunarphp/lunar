@@ -17,6 +17,7 @@ use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
@@ -60,6 +61,7 @@ use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
 use GetCandy\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use GetCandy\Hub\Menu\MenuRegistry;
+use GetCandy\Hub\Menu\OrderActionsMenu;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
 use Illuminate\Routing\Events\RouteMatched;
@@ -149,6 +151,7 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         SidebarMenu::make();
         SettingsMenu::make();
+        OrderActionsMenu::make();
     }
 
     /**
@@ -204,6 +207,7 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         Livewire::component('hub.components.orders.index', OrdersIndex::class);
         Livewire::component('hub.components.orders.show', OrderShow::class);
+        Livewire::component('hub.components.orders.refund', OrderRefund::class);
     }
 
     protected function registerCustomerComponents()

@@ -13,7 +13,11 @@ return [
     */
     'draft_status' => 'awaiting-payment',
     'statuses'     => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'dispatched'       => 'Dispatched',
+        'awaiting-payment' => [
+            'label' => 'Awaiting Payment',
+        ],
+        'dispatched'  => [
+            'label' => 'Dispatched',
+        ],
     ],
 ];

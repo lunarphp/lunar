@@ -43,6 +43,13 @@ class MenuLink implements MenuItem
     public $gate;
 
     /**
+     * Reference to the livewire component to use.
+     *
+     * @var string
+     */
+    public $component;
+
+    /**
      * Setter for the name property.
      *
      * @param  string  $name
@@ -90,6 +97,13 @@ class MenuLink implements MenuItem
     public function route($route)
     {
         $this->route = $route;
+
+        return $this;
+    }
+
+    public function component($component)
+    {
+        $this->component = $component;
 
         return $this;
     }
