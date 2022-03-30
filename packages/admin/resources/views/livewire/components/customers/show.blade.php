@@ -39,11 +39,13 @@
           </header>
 
           <div class="space-y-2">
+            <div class="space-y-2 overflow-y-auto max-h-48">
             @foreach($this->customerGroups as $group)
               <label class="flex items-center p-2 text-sm border rounded cursor-pointer" wire:key="group_{{ $group->id }}">
                 <x-hub::input.checkbox wire:model.debounce.500ms="syncedGroups" value="{{ $group->id }}" /> <span class="ml-2">{{ $group->name }}</span>
               </label>
             @endforeach
+            </div>
           </div>
         </div>
         <div class="p-4 text-right rounded-b bg-gray-50">
