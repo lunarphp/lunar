@@ -303,6 +303,7 @@ class CustomerShow extends Component
                 __('adminhub::notifications.customers.reset_failed'),
                 level: 'error'
             );
+
             return;
         }
 
