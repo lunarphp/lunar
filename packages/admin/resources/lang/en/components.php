@@ -131,7 +131,7 @@ return [
      * Order Refund.
      */
     'orders.refund.confirm_text'                    => 'CONFIRM',
-    'orders.refund.confirm_message'                 => 'Please type :confirm to confirm you want to send the refund',
+    'orders.refund.confirm_message'                 => 'Please confirm you wish to refund this amount.',
     'orders.show.print_btn'                         => 'Print',
     'orders.show.refund_btn'                         => 'Refund',
     'orders.show.refund_lines_btn'                  => 'Refund Lines',
@@ -147,11 +147,12 @@ return [
     'orders.show.shipping_header' => 'Shipping Address',
     'orders.show.requires_capture' => 'This order still requires payment to be captured.',
     'orders.show.capture_payment_btn' => 'Capture Payment',
+    'orders.show.partially_refunded' => 'This order has been partially refunded.',
+    'orders.show.refunded' => 'This order has been refunded.',
     /**
      * Order Refund.
      */
     'orders.refund.confirm_text'                    => 'CONFIRM',
-    'orders.refund.confirm_message'                 => 'Please type :confirm to confirm you want to send the refund',
     'orders.refund.no_charges'                      => 'There are no refundable charges on this order',
     'orders.refund.select_transaction'              => 'Select a transaction',
     'orders.refund.refund_btn'                      => 'Send refund',
