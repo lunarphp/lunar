@@ -210,11 +210,6 @@ class Order extends BaseModel
         return $this->transactions()->whereRefund(false);
     }
 
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class);
-    }
-
     /**
      * Return the refunds relationship.
      *
