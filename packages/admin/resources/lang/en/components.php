@@ -119,6 +119,7 @@ return [
     'orders.show.update_status_btn'                         => 'Update Status',
     'orders.show.more_actions_btn'                         => 'More Actions',
     'orders.show.show_all_lines_btn' => 'Show all lines',
+    'orders.show.additional_lines_text' => 'An additional :count lines are hidden',
     'orders.show.collapse_lines_btn' => 'Collapse lines',
     'orders.show.transactions_header' => 'Transactions',
     'orders.show.timeline_header' => 'Timeline',
