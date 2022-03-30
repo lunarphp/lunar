@@ -146,4 +146,13 @@ return [
     'orders.capture.no_intents'                      => 'There are no transactions available for capture',
     'orders.capture.select_transaction'              => 'Select a transaction',
     'orders.capture.capture_btn'                      => 'Capture payment',
+    /**
+     * Activity Log
+     */
+    'activity-log.system'                           => 'System',
+    'activity-log.orders.status_change'             => 'Status updated',
+    'activity-log.orders.order_created'             => 'Order Created',
+    'activity-log.orders.capture'                   => 'Payment of :amount on card ending :last_four',
+    'activity-log.orders.authorized'                   => 'Authorized of :amount on card ending :last_four',
+    'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
 ];
