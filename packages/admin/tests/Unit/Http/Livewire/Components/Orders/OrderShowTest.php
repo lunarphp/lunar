@@ -261,7 +261,7 @@ class OrderShowTest extends TestCase
         $this->assertEquals($shipping->refresh()->postcode, '1TX RX1');
         $this->assertEquals($billing->refresh()->postcode, 'BI1 LL1');
     }
-  
+
     /** @test */
     public function requires_capture_displays_correctly()
     {

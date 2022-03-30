@@ -143,5 +143,5 @@ return [
     'activity-log.orders.capture'                   => 'Payment of :amount on card ending :last_four',
     'activity-log.orders.authorized'                   => 'Authorized of :amount on card ending :last_four',
     'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
-    
+
 ];
