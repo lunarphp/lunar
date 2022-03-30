@@ -24,7 +24,7 @@
     {{ $address->line_one }} <br>
 
     @if ($address->line_two)
-      {{ $this->shippingAddress->line_two }} <br>
+      {{ $address->line_two }} <br>
     @endif
 
     @if ($address->line_three)
