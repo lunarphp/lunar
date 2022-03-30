@@ -105,6 +105,7 @@ class OrderShow extends Component
     protected $listeners = [
         'captureSuccess',
         'refundSuccess',
+        'cancelRefund',
     ];
 
     /**
@@ -374,6 +375,16 @@ class OrderShow extends Component
      * @return void
      */
     public function refundSuccess()
+    {
+        $this->showRefund = false;
+    }
+
+    /**
+     * Cancel the refund process.
+     *
+     * @return void
+     */
+    public function cancelRefund()
     {
         $this->showRefund = false;
     }
