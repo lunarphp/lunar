@@ -109,7 +109,7 @@
             class="flex-shrink-0 px-4 py-2 ml-4 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
             href="{{ route('hub.customers.show', $order->customer) }}"
           >
-            View User
+            {{  __('adminhub::components.orders.show.view_customer') }}
           </a>
 
         </header>
