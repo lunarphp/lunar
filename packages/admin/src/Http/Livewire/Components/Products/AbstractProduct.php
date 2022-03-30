@@ -340,7 +340,7 @@ abstract class AbstractProduct extends Component
             }
 
             // We generating variants?
-            $generateVariants = (bool) count($this->optionValues);
+            $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
 
             if ($generateVariants) {
                 GenerateVariants::dispatch($this->product, $this->optionValues);
@@ -474,6 +474,16 @@ abstract class AbstractProduct extends Component
     public function getExistingTagsProperty(): array
     {
         return $this->product->tags->pluck('value')->toArray();
+    }
+
+    /**
+     * Returns whether variants should be disabled.
+     *
+     * @return void
+     */
+    public function getVariantsDisabledProperty()
+    {
+        return config('getcandy-hub.products.disable_variants', false);
     }
 
     /**
@@ -774,6 +784,7 @@ abstract class AbstractProduct extends Component
             [
                 'title'      => __('adminhub::menu.product.variants'),
                 'id'         => 'variants',
+                'hidden'     => $this->variantsDisabled,
                 'has_errors' => $this->errorBag->hasAny([]),
             ],
             [

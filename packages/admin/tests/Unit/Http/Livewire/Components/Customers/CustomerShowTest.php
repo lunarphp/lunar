@@ -5,6 +5,7 @@ namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Customers;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
+use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,6 +17,15 @@ use Livewire\Livewire;
 class CustomerShowTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+    }
 
     /** @test  */
     public function component_mounts_correctly()

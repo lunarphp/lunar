@@ -82,12 +82,14 @@
         ])
       </div>
 
+      @if(!$this->variantsDisabled)
       {{--
         Variants
        --}}
       <div id="variants">
         @include('adminhub::partials.products.editing.variants')
       </div>
+      @endif
 
       @if($this->getVariantsCount() <= 1)
         <div id="pricing">

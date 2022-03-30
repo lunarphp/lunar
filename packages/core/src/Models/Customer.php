@@ -59,6 +59,16 @@ class Customer extends BaseModel
     }
 
     /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return config('scout.prefix').'customers';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getSearchableAttributes()
@@ -75,6 +85,8 @@ class Customer extends BaseModel
         foreach ($metaFields as $field) {
             $data[$field] = optional($this->meta)->{$field};
         }
+
+        $addresses = $this->addresses->toArray();
 
         return $data;
     }
@@ -117,5 +129,10 @@ class Customer extends BaseModel
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

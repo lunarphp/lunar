@@ -22,6 +22,7 @@ use GetCandy\Base\TaxManagerInterface;
 use GetCandy\Console\Commands\AddonsDiscover;
 use GetCandy\Console\Commands\Import\AddressData;
 use GetCandy\Console\Commands\MeilisearchSetup;
+use GetCandy\Console\Commands\ScoutIndexer;
 use GetCandy\Console\InstallGetCandy;
 use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
@@ -35,6 +36,7 @@ use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
+use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\Url;
 use GetCandy\Observers\AddressObserver;
@@ -44,6 +46,7 @@ use GetCandy\Observers\CollectionObserver;
 use GetCandy\Observers\CurrencyObserver;
 use GetCandy\Observers\LanguageObserver;
 use GetCandy\Observers\OrderLineObserver;
+use GetCandy\Observers\OrderObserver;
 use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -65,6 +68,7 @@ class GetCandyServiceProvider extends ServiceProvider
         'taxes',
         'cart',
         'orders',
+        'search',
     ];
 
     protected $root = __DIR__.'/..';
@@ -162,6 +166,7 @@ class GetCandyServiceProvider extends ServiceProvider
                 AddonsDiscover::class,
                 MeilisearchSetup::class,
                 AddressData::class,
+                ScoutIndexer::class,
             ]);
         }
 
@@ -224,6 +229,7 @@ class GetCandyServiceProvider extends ServiceProvider
         Url::observe(UrlObserver::class);
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
+        Order::observe(OrderObserver::class);
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
     }

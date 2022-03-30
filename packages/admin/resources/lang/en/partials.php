@@ -137,4 +137,37 @@ return [
     'shipping.calculated_volume' => 'Calculated as :value.',
     'shipping.manual_volume_btn' => 'Click to set manually',
     'shipping.auto_volume_btn'   => 'Use generated volume',
+    /**
+     * Customer Addresses.
+     */
+    'customers.addresses.billing_default'   => 'Billing Default',
+    'customers.addresses.shipping_default'   => 'Shipping Default',
+    /**
+     * Customers.
+     */
+    'customers.purchase-history.purchasable' => 'Purchasable',
+    'customers.purchase-history.identifier' => 'Identifier',
+    'customers.purchase-history.quantity' => 'Quantity',
+    'customers.purchase-history.revenue' => 'Revenue',
+    'customers.purchase-history.order_count' => 'No. Orders',
+    'customers.purchase-history.last_ordered' => 'Last Ordered',
+    /**
+     * Orders.
+     */
+    'orders.totals.sub_total' => 'Sub Total',
+    'orders.totals.shipping_total' => 'Shipping Total',
+    'orders.totals.total' => 'Total',
+    'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.lines.unit_price' => 'Unit Price',
+    'orders.lines.quantity' => 'Quantity',
+    'orders.lines.sub_total' => 'Sub Total',
+    'orders.lines.discount_total' => 'Discount Total',
+    'orders.lines.total' => 'Total',
+    'orders.details.status' => 'Status',
+    'orders.details.reference' => 'Reference',
+    'orders.details.customer_reference' => 'Customer Reference',
+    'orders.details.channel' => 'Channel',
+    'orders.details.date_created' => 'Date Created',
+    'orders.details.date_placed' => 'Date Placed',
+    'orders.address.not_set' => 'No address set',
 ];

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'title'                                 => 'Title',
     'firstname'                              => __('adminhub::global.firstname'),
     'lastname'                               => __('adminhub::global.lastname'),
     'name'                                   => 'Name',
@@ -64,4 +65,22 @@ return [
     'max.label'                              => 'Max.',
     'tax_ref.label' => 'Tax Reference',
     'tax_ref.instructions' => 'Add the third party tax reference, if required.',
+    'company_name.label'                    => 'Company Name',
+    'vat_no.label'                    => 'Vat No.',
+    'from_date.label'                       => 'From Date',
+    'to_date.label'                         => 'To Date',
+    'select_option.label'                     => 'Select an option',
+    'status.label'                           => 'Status',
+    'company_name.label'                    => 'Company Name',
+    'phone.label' => 'Phone',
+    'address_line_one.label' => 'Address Line 1',
+    'address_line_two.label' => 'Address Line 2',
+    'address_line_three.label' => 'Address Line 3',
+    'city.label' => 'City',
+    'state.label' => 'State / Province',
+    'postcode.label' => 'Postal Code',
+    'country.label' => 'Country',
+    'amount.label' => 'Amount',
+    'notes.label' => 'Notes',
+    'confirm.label' => 'Confirm',
 ];
