@@ -60,4 +60,13 @@ return [
     'attribute_groups'    => 'Attribute Groups',
     'attributes'          => 'Attributes',
     'product'             => 'Product',
+    'filter'              => 'Filter',
+    'clear'               => 'Clear',
+    'status'              => 'Status',
+    'reference'           => 'Reference',
+    'customer'            => 'Customer',
+    'total'               => 'Total',
+    'date'                => 'Date',
+    'time'                => 'Time',
+    'notes'               => 'Notes',
 ];

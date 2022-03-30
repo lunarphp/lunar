@@ -3,12 +3,16 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
+use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
+use GetCandy\Models\OrderAddress;
+use GetCandy\Models\State;
 use Livewire\Component;
 
 class OrderShow extends Component
 {
-    use Notifies;
+    use Notifies, WithCountries;
 
     /**
      * The current order in view.
@@ -18,11 +22,74 @@ class OrderShow extends Component
     public Order $order;
 
     /**
-     * Whether we are updating the status.
+     * The instance of the shipping address.
+     *
+     * @var \GetCandy\Models\OrderAddress
+     */
+    public ?OrderAddress $shippingAddress = null;
+
+    /**
+     * The instance of the shipping address.
+     *
+     * @var \GetCandy\Models\OrderAddress
+     */
+    public ?OrderAddress $billingAddress = null;
+
+    /**
+     * Whether all lines should be visible.
      *
      * @var bool
      */
-    public bool $updatingStatus = false;
+    public bool $allLinesVisible = false;
+
+    /**
+     * The maximum lines to show on load.
+     *
+     * @var int
+     */
+    public int $maxLines = 5;
+
+    /**
+     * The new comment property.
+     *
+     * @var string
+     */
+    public string $comment = '';
+
+    /**
+     * Whether to show the update status modal.
+     *
+     * @var bool
+     */
+    public bool $showUpdateStatus = false;
+
+    /**
+     * Whether to show the address edit screen.
+     *
+     * @var bool
+     */
+    public bool $showShippingAddressEdit = false;
+
+    /**
+     * Whether to show the billing address edit.
+     *
+     * @var bool
+     */
+    public bool $showBillingAddressEdit = false;
+
+    /**
+     * The currently selected lines.
+     *
+     * @var array
+     */
+    public array $selectedLines = [];
+
+    /**
+     * Whether to show the refund panel.
+     *
+     * @var bool
+     */
+    public bool $showRefund = false;
 
     /**
      * {@inheritDoc}
@@ -31,17 +98,53 @@ class OrderShow extends Component
     {
         return [
             'order.status' => 'string',
+            'comment' => 'required|string',
+            'shippingAddress.postcode' => 'required|string|max:255',
+            'shippingAddress.title' => 'nullable|string|max:255',
+            'shippingAddress.first_name' => 'nullable|string|max:255',
+            'shippingAddress.last_name' => 'nullable|string|max:255',
+            'shippingAddress.company_name' => 'nullable|string|max:255',
+            'shippingAddress.line_one' => 'nullable|string|max:255',
+            'shippingAddress.line_two' => 'nullable|string|max:255',
+            'shippingAddress.line_three' => 'nullable|string|max:255',
+            'shippingAddress.city' => 'nullable|string|max:255',
+            'shippingAddress.state' => 'nullable|string|max:255',
+            'shippingAddress.delivery_instructions' => 'nullable|string|max:255',
+            'shippingAddress.contact_email' => 'nullable|email|max:255',
+            'shippingAddress.contact_phone' => 'nullable|string|max:255',
+            'shippingAddress.country_id'   => 'required',
+            'billingAddress.postcode' => 'required|string|max:255',
+            'billingAddress.title' => 'nullable|string|max:255',
+            'billingAddress.first_name' => 'nullable|string|max:255',
+            'billingAddress.last_name' => 'nullable|string|max:255',
+            'billingAddress.company_name' => 'nullable|string|max:255',
+            'billingAddress.line_one' => 'nullable|string|max:255',
+            'billingAddress.line_two' => 'nullable|string|max:255',
+            'billingAddress.line_three' => 'nullable|string|max:255',
+            'billingAddress.city' => 'nullable|string|max:255',
+            'billingAddress.state' => 'nullable|string|max:255',
+            'billingAddress.delivery_instructions' => 'nullable|string|max:255',
+            'billingAddress.contact_email' => 'nullable|email|max:255',
+            'billingAddress.contact_phone' => 'nullable|string|max:255',
+            'billingAddress.country_id'   => 'required',
         ];
     }
 
+    public function mount()
+    {
+        $this->shippingAddress = $this->order->shippingAddress ?: new OrderAddress();
+
+        $this->billingAddress = $this->order->billingAddress ?: new OrderAddress();
+    }
+
     /**
-     * Return the computed status property.
+     * Return the computed channel property.
      *
      * @return string
      */
-    public function getStatusProperty()
+    public function getChannelProperty()
     {
-        return $this->statuses[$this->order->status] ?? $this->order->status;
+        return Channel::findOrFail($this->order->channel_id)->name;
     }
 
     /**
@@ -51,7 +154,7 @@ class OrderShow extends Component
      */
     public function getStatusesProperty()
     {
-        return config('getcandy.orders.statuses');
+        return config('getcandy.orders.statuses', []);
     }
 
     /**
@@ -65,16 +168,6 @@ class OrderShow extends Component
     }
 
     /**
-     * Get the shipping address computed property.
-     *
-     * @return \GetCandy\Models\OrderAddress|null
-     */
-    public function getShippingProperty()
-    {
-        return $this->order->shippingAddress;
-    }
-
-    /**
      * Return the computed shipping lines.
      *
      * @return void
@@ -84,14 +177,219 @@ class OrderShow extends Component
         return $this->order->shippingLines;
     }
 
-    public function saveStatus()
+    /**
+     * Return all lines "above the fold".
+     *
+     * @return void
+     */
+    public function getVisibleLinesProperty()
+    {
+        return $this->physicalLines->take($this->allLinesVisible ? null : $this->maxLines);
+    }
+
+    /**
+     * Return the physical order lines.
+     *
+     * @return void
+     */
+    public function getPhysicalLinesProperty()
+    {
+        return $this->order->lines->filter(function ($line) {
+            return $line->type == 'physical';
+        });
+    }
+
+    /**
+     * Update the order status.
+     *
+     * @return void
+     */
+    public function updateStatus()
     {
         $this->order->update([
             'status' => $this->order->status,
         ]);
 
-        $this->notify('Order status updated');
-        $this->updatingStatus = false;
+        $this->notify(
+            __('adminhub::notifications.order.status_updated')
+        );
+        $this->showUpdateStatus = false;
+    }
+
+    /**
+     * Handler when shipping edit toggle is updated.
+     *
+     * @return void
+     */
+    public function updatedShowShippingAddressEdit()
+    {
+        $this->shippingAddress = $this->shippingAddress->refresh();
+    }
+
+    /**
+     * Return the refund amount based on selected lines
+     * or based on the order total.
+     *
+     * @return int
+     */
+    public function getRefundAmountProperty()
+    {
+        if (count($this->selectedLines)) {
+            return $this->order->lines->filter(function ($line) {
+                return in_array($line->id, $this->selectedLines);
+            })->sum('total.value');
+        }
+
+        return $this->order->total->value;
+    }
+
+    /**
+     * Handle when selected order lines update.
+     *
+     * @param  array  $val
+     * @return void
+     */
+    public function updatedSelectedLines($val)
+    {
+        $this->emit('updateRefundAmount', $this->refundAmount);
+    }
+
+    /**
+     * Save the shipping address.
+     *
+     * @return void
+     */
+    public function saveShippingAddress()
+    {
+        $addressRules = collect($this->rules())->filter(function ($rule, $field) {
+            return str_contains($field, 'shippingAddress');
+        });
+
+        $this->validate($addressRules->toArray());
+
+        $this->shippingAddress->order_id = $this->order->id;
+        $this->shippingAddress->save();
+
+        $this->shippingAddress->refresh();
+
+        $this->notify(
+            __('adminhub::notifications.shipping_address.saved')
+        );
+
+        $this->showShippingAddressEdit = false;
+    }
+
+    /**
+     * Save the shipping address.
+     *
+     * @return void
+     */
+    public function saveBillingAddress()
+    {
+        $addressRules = collect($this->rules())->filter(function ($rule, $field) {
+            return str_contains($field, 'billingAddress');
+        });
+
+        $this->validate($addressRules->toArray());
+
+        $this->billingAddress->order_id = $this->order->id;
+        $this->billingAddress->save();
+
+        $this->billingAddress->refresh();
+
+        $this->notify(
+            __('adminhub::notifications.billing_address.saved')
+        );
+
+        $this->showBillingAddressEdit = false;
+    }
+
+    /**
+     * Returns the activity log for the order.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getActivityLogProperty()
+    {
+        return $this->order->activities()->whereNotIn('event', ['updated'])->orderBy('created_at', 'desc')->get()->groupBy(function ($log) {
+            return $log->created_at->format('Y-m-d');
+        })->map(function ($logs) {
+            return [
+                'date' => $logs->first()->created_at->startOfDay(),
+                'items' => $logs,
+            ];
+        });
+    }
+
+    /**
+     * Return whether the billing postcode matches the shipping postcode.
+     *
+     * @return void
+     */
+    public function getShippingEqualsBillingProperty()
+    {
+        return optional($this->billingAddress)->postcode == optional($this->shippingAddress)->postcode;
+    }
+
+    /**
+     * Return states for the shipping address.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getShippingStatesProperty()
+    {
+        if (! $this->shippingAddress) {
+            return collect();
+        }
+
+        return State::whereCountryId($this->shippingAddress->country_id)->get();
+    }
+
+    /**
+     * Return states for the shipping address.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getBillingStatesProperty()
+    {
+        if (! $this->billingAddress) {
+            return collect();
+        }
+
+        return State::whereCountryId($this->billingAddress->country_id)->get();
+    }
+
+    /**
+     * Display meta fields.
+     *
+     * @return void
+     */
+    public function getMetaFieldsProperty()
+    {
+        return (array) $this->order->meta;
+    }
+
+    /**
+     * Add a comment to the order.
+     *
+     * @return void
+     */
+    public function addComment()
+    {
+        activity()
+            ->performedOn($this->order)
+            ->causedBy(
+                auth()->user()
+            )
+            ->event('comment')
+            ->withProperties(['content' => $this->comment])
+            ->log('comment');
+
+        $this->notify(
+            __('adminhub::notifications.order.comment_added')
+        );
+
+        $this->comment = '';
     }
 
     /**

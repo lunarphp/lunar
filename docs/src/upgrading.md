@@ -60,6 +60,36 @@ use GetCandy\Base\Traits\Searchable;
 
 ---
 
+### Changes to order statuses - High Impact
+
+The way statuses for orders are defined in `config/getcandy/orders.php` has changed. See below for the new definition:
+
+#### Old
+
+```php
+'statuses'  => [
+    'awaiting-payment' => 'Awaiting Payment',
+    'payment-received' => 'Payment Received',
+],
+```
+
+#### New
+
+```php
+'statuses'  => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
+    ],
+    'payment-received' => [
+        'label' => 'Payment Received',
+        'color' => '#6a67ce',
+    ],
+],
+```
+
+### Changes to index naming - High Impact
+
 You must re index and set up Meilisearch indexes due to a breaking change.
 
 ```sh

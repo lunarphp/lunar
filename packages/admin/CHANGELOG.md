@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Added
 
 - Added new config option `disable_variants` to `getcandy-hub/products.php`. This is set to `false` by default so variants remain enabled.
+- Added ability to save searches on the orders table.
 - Added a new Slot feature so developers can start extending screens within the Hub.
 
 ## Fixed
@@ -20,6 +21,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Customer screens have been completely overhauled.
 - Order screens has been completely overhauled.
+
+### Changed
+
+- Complete rewrite to the orders table.
+- The way order statuses are defined in `config/getcandy/orders.php` has changed, see upgrade guide for detais.
 
 ## 2.0-beta10.1 - 2022-02-19
 
