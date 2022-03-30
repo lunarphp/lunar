@@ -76,8 +76,8 @@ return [
     'image-manager.delete_message'                   => 'This image will be deleted on save,',
     'image-manager.undo_btn'                         => 'undo',
     'image-manager.no_results'                       => 'No images exist for this product, add your first image above.',
-    'image-manager.upload_file'                      => 'Upload a file',
-    'image-manager.drag_and_drop'                    => 'or drag and drop',
+    'image-manager.upload_file'                      => 'Upload a file or drag and drop',
+    'image-manager.file_format'                      => 'PNG, JPG, GIF up to 10MB',
     /**
      * Product Collections.
      */

@@ -8,7 +8,7 @@
       <div class="mt-6 space-y-1 text-gray-500">
         <p>{{ __('adminhub::global.building_hub') }}</p>
         <p>{{ __('adminhub::global.reach_out') }} <a href="https://discord.gg/uW7f6k76" class="text-indigo-500 hover:underline">
-            {{ __('adminhub::global.discord_server') }}</a> {{ __('adminhub::for_updates') }}</p>
+            {{ __('adminhub::global.discord_server') }}</a> {{ __('adminhub::global.for_updates') }}</p>
       </div>
     </div>
   </div>

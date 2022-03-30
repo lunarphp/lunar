@@ -95,10 +95,8 @@ return [
      */
     'products.index.title' => 'Products',
     'products.index.create_product' => 'Create Product',
-    'products.index.selected_products' => 'You have selected :count products',
-    'products.index.you_have_selected_all' => 'You have selected all',
-    'products.index.want_to_select_all' => 'products, do you want to select all',
-    'products.index.products' => 'products.',
+    'products.index.selected_products' => 'You have selected :count products, do you want to select all',
+    'products.index.you_have_selected_all' => 'You have selected all :count products.',
     'products.index.select_all_btn' => 'Select all',
     'products.index.deselect_all_btn' => 'Deselect all',
 ];
