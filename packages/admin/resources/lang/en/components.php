@@ -128,6 +128,7 @@ return [
     'orders.show.capture_payment_btn' => 'Capture Payment',
     'orders.show.partially_refunded' => 'This order has been partially refunded.',
     'orders.show.refunded' => 'This order has been refunded.',
+    'orders.show.view_customer' => 'View customer',
 
     /**
      * Order Refund.
