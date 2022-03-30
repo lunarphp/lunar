@@ -61,4 +61,10 @@ return [
     'attributes'          => 'Attributes',
     'product'             => 'Product',
     'notes'               => 'Notes',
+    'id'                  => 'ID',
+    'user'                => 'User',
+    'status'              => 'Status',
+    'reference'           => 'Reference',
+    'total'               => 'Total',
+    'date'                => 'Date',
 ];
