@@ -4,10 +4,11 @@
     @foreach($this->addresses as $address)
       <div wire:key="address_{{ $address->id }}" class="leading-relaxed bg-white rounded shadow">
         <div class="flex justify-between px-4 py-3 rounded-t bg-gray-50">
-          <div>
+          <div class="space-x-1">
             @if($address->billing_default)
               <span class="px-3 py-1 text-xs text-blue-600 bg-blue-50">Billing Default</span>
-            @elseif($address->shipping_default)
+            @endif
+            @if($address->shipping_default)
               <span class="px-3 py-1 text-xs text-green-600 bg-green-50">Shipping Default</span>
             @endif
           </div>
