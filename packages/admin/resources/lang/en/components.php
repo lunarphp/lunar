@@ -183,7 +183,7 @@ return [
     'customers.show.no_users'      => 'This customer has no users associated.',
     'customers.show.no_addresses'      => 'This customer has no addresses.',
     /**
-     * Activity Log
+     * Activity Log.
      */
     'activity-log.system'                           => 'System',
     'activity-log.orders.status_change'             => 'Status updated',
