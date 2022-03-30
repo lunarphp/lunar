@@ -3,9 +3,19 @@
   <div class="absolute top-[2px] -left-[calc(0.5rem_-_1px)]">
     @if($activity->causer)
       <x-hub::gravatar :email="$activity->causer->email" class="w-5 h-5 rounded-full" />
-    @elseif($activity->event == 'created')
+    @else
       <span
-        class="absolute w-4 h-4 @if($activity->description == 'created') bg-blue-500 ring-blue-100 @else ring-gray-200 @endif bg-gray-300 rounded-full ring-4"
+        class="absolute w-4 h-4
+          @if($activity->description == 'created')
+            bg-blue-500 ring-blue-100
+          @elseif($activity->description == 'status-update')
+            bg-purple-500 ring-purple-100
+          @elseif($activity->description == 'updated')
+            bg-teal-500 ring-teal-100
+          @else
+            bg-gray-300 ring-gray-200
+          @endif
+          rounded-full ring-4"
       >
       </span>
     @endif
@@ -35,7 +45,7 @@
         @elseif($activity->event == 'refund')
           Refund of {{ price($activity->getExtraProperty('amount'), $this->order->currency)->formatted }} on card ending {{ $activity->getExtraProperty('last_four') }}
           @if($notes = $activity->getExtraProperty('notes'))
-            <p>{{ nl2br($notes) }}</p>
+            <p class="mt-2 text-sm text-gray-600">{{ nl2br($notes) }}</p>
           @endif
         @endif
       </p>

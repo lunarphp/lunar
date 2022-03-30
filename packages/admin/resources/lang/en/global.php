@@ -67,4 +67,12 @@ return [
     'reference'           => 'Reference',
     'total'               => 'Total',
     'date'                => 'Date',
+    'filter'              => 'Filter',
+    'clear'               => 'Clear',
+    'status'              => 'Status',
+    'reference'           => 'Reference',
+    'customer'            => 'Customer',
+    'total'               => 'Total',
+    'date'                => 'Date',
+    'time'                => 'Time',
 ];

@@ -30,7 +30,7 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-## [Unreleased]
+## 2.0-beta11
 
 There is a new configuration option under `getcandy-hub/products.php` to disable product variants. This is useful if your storefront will never need to generate different product options and you don't want staff members to be able to do it accidentally.
 
@@ -57,6 +57,50 @@ use Laravel\Scout\Searchable;
 // New
 use GetCandy\Base\Traits\Searchable;
 ```
+
+---
+
+### Changes to order statuses - High Impact
+
+The way statuses for orders are defined in `config/getcandy/orders.php` has changed. See below for the new definition:
+
+#### Old
+
+```php
+'statuses'  => [
+    'awaiting-payment' => 'Awaiting Payment',
+    'payment-received' => 'Payment Received',
+],
+```
+
+#### New
+
+```php
+'statuses'  => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
+    ],
+    'payment-received' => [
+        'label' => 'Payment Received',
+        'color' => '#6a67ce',
+    ],
+],
+```
+
+### Changes to index naming - High Impact
+
+You must re index and set up Meilisearch indexes due to a breaking change.
+
+```sh
+php artisan getcandy:search:index
+```
+
+```sh
+php artisan getcandy:meilisearch:setup
+```
+
+This change removes the `_{locale}` suffix from certain indexes, so those can be removed.
 
 ## 2.0-beta10
 

@@ -34,9 +34,6 @@ class CurrencyShowTest extends TestCase
             'code'           => 'TST',
             'default'        => true,
             'exchange_rate'  => 0.5,
-            'format'         => '£{value}',
-            'decimal_point'  => ':',
-            'thousand_point' => ';',
             'enabled'        => 0,
         ];
 
