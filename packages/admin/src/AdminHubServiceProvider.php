@@ -3,6 +3,7 @@
 namespace GetCandy\Hub;
 
 use GetCandy\Hub\Auth\Manifest;
+use GetCandy\Hub\Base\OrdersTableInterface;
 use GetCandy\Hub\Console\Commands\InstallHub;
 use GetCandy\Hub\Http\Livewire\Components\Account;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
@@ -65,6 +66,7 @@ use GetCandy\Hub\Menu\MenuRegistry;
 use GetCandy\Hub\Menu\OrderActionsMenu;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
+use GetCandy\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -100,6 +102,10 @@ class AdminHubServiceProvider extends ServiceProvider
 
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
             return new \GetCandy\Hub\Editing\ProductSection();
+        });
+
+        $this->app->singleton(OrdersTableInterface::class, function ($app) {
+            return $app->make(Orders::class);
         });
     }
 

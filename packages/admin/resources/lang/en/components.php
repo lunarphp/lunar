@@ -99,6 +99,7 @@ return [
     'orders.show.update_status_btn'                         => 'Update Status',
     'orders.show.more_actions_btn'                         => 'More Actions',
     'orders.show.show_all_lines_btn' => 'Show all lines',
+    'orders.show.additional_lines_text' => 'An additional :count lines are hidden',
     'orders.show.collapse_lines_btn' => 'Collapse lines',
     'orders.show.transactions_header' => 'Transactions',
     'orders.show.timeline_header' => 'Timeline',
@@ -106,34 +107,21 @@ return [
     'orders.show.billing_matches_shipping' => 'Same as shipping address',
     'orders.show.billing_header' => 'Billing Address',
     'orders.show.shipping_header' => 'Shipping Address',
-    /**
-     * Order Refund.
-     */
-    'orders.refund.confirm_text'                    => 'CONFIRM',
-    'orders.refund.confirm_message'                 => 'Please confirm you wish to refund this amount.',
     'orders.show.print_btn'                         => 'Print',
     'orders.show.refund_btn'                         => 'Refund',
     'orders.show.refund_lines_btn'                  => 'Refund Lines',
     'orders.show.update_status_btn'                         => 'Update Status',
     'orders.show.more_actions_btn'                         => 'More Actions',
-    'orders.show.show_all_lines_btn' => 'Show all lines',
-    'orders.show.collapse_lines_btn' => 'Collapse lines',
-    'orders.show.transactions_header' => 'Transactions',
-    'orders.show.timeline_header' => 'Timeline',
-    'orders.show.additional_fields_header' => 'Additional Information',
-    'orders.show.billing_matches_shipping' => 'Same as shipping address',
-    'orders.show.billing_header' => 'Billing Address',
-    'orders.show.shipping_header' => 'Shipping Address',
     'orders.show.requires_capture' => 'This order still requires payment to be captured.',
     'orders.show.capture_payment_btn' => 'Capture Payment',
     'orders.show.partially_refunded' => 'This order has been partially refunded.',
     'orders.show.refunded' => 'This order has been refunded.',
     'orders.show.view_customer' => 'View customer',
-
     /**
      * Order Refund.
      */
     'orders.refund.confirm_text'                    => 'CONFIRM',
+    'orders.refund.confirm_message'                 => 'Please confirm you wish to refund this amount.',
     'orders.refund.no_charges'                      => 'There are no refundable charges on this order',
     'orders.refund.select_transaction'              => 'Select a transaction',
     'orders.refund.refund_btn'                      => 'Send refund',
@@ -155,4 +143,5 @@ return [
     'activity-log.orders.capture'                   => 'Payment of :amount on card ending :last_four',
     'activity-log.orders.authorized'                   => 'Authorized of :amount on card ending :last_four',
     'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
+    
 ];

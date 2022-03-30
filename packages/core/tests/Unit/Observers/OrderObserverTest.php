@@ -35,6 +35,7 @@ class OrderObserverTest extends TestCase
     public function activity_is_logged_when_status_changes()
     {
         activity()->enableLogging();
+
         $order = Order::factory()->create([
             'status' => 'status-a',
         ]);
