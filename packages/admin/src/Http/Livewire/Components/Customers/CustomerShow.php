@@ -301,6 +301,7 @@ class CustomerShow extends Component
                 'Unable to send password reset',
                 level: 'error'
             );
+
             return;
         }
 
