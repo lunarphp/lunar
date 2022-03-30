@@ -34,7 +34,7 @@
     @livewireStyles
   </head>
   <body>
-
+    {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
     <!--
       This example requires Tailwind CSS v2.0+
 

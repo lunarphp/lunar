@@ -170,4 +170,10 @@ return [
     'orders.details.date_created' => 'Date Created',
     'orders.details.date_placed' => 'Date Placed',
     'orders.address.not_set' => 'No address set',
+    /**
+     * Transactions.
+     */
+    'orders.transactions.capture' => 'Captured',
+    'orders.transactions.intent' => 'Intent',
+    'orders.transactions.refund' => 'Refunded',
 ];

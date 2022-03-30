@@ -18,6 +18,7 @@ use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
@@ -214,6 +215,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.index', OrdersIndex::class);
         Livewire::component('hub.components.orders.show', OrderShow::class);
         Livewire::component('hub.components.orders.refund', OrderRefund::class);
+        Livewire::component('hub.components.orders.capture', OrderCapture::class);
     }
 
     protected function registerCustomerComponents()

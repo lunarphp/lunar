@@ -7,8 +7,32 @@
 
   <div class="grid grid-cols-1 gap-8 mt-8 lg:items-start lg:grid-cols-3">
     <div class="lg:col-span-2">
+      @if($this->requiresCapture)
+        <div class="mb-4">
+          <x-hub::alert level="danger">
+            {{ __('adminhub::components.orders.show.requires_capture') }}
+          </x-hub::alert>
+        </div>
+      @endif
       <div class="flex items-center space-x-2 text-xs text-gray-700">
         @include('adminhub::partials.orders.actions')
+      </div>
+
+      <div class="mt-4">
+        @if($this->paymentStatus == 'partial-refund')
+          <div class="border border-blue-500 rounded">
+            <x-hub::alert>
+              {{ __('adminhub::components.orders.show.partially_refunded') }}
+            </x-hub::alert>
+          </div>
+        @endif
+        @if($this->paymentStatus == 'refunded')
+          <div class="border border-red-500 rounded">
+            <x-hub::alert level="danger">
+              {{ __('adminhub::components.orders.show.refunded') }}
+            </x-hub::alert>
+          </div>
+        @endif
       </div>
 
       <div class="p-6 mt-4 bg-white rounded-lg shadow">
@@ -83,7 +107,7 @@
             class="flex-shrink-0 px-4 py-2 ml-4 text-xs font-bold text-gray-700 border rounded bg-gray-50 hover:bg-white"
             href="{{ route('hub.customers.show', $order->customer) }}"
           >
-            View User
+            {{  __('adminhub::components.orders.show.view_customer') }}
           </a>
 
         </header>
@@ -164,6 +188,15 @@
         @livewire('hub.components.orders.refund', [
           'order' => $this->order,
           'amount' => $this->refundAmount / 100,
+        ])
+      </div>
+    </x-hub::modal>
+
+    <x-hub::modal wire:model="showCapture">
+      <div class="p-4">
+        @livewire('hub.components.orders.capture', [
+          'order' => $this->order,
+          'amount' => $this->order->total->decimal,
         ])
       </div>
     </x-hub::modal>

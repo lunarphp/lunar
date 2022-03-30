@@ -83,4 +83,5 @@ return [
     'amount.label' => 'Amount',
     'notes.label' => 'Notes',
     'confirm.label' => 'Confirm',
+    'transaction.label' => 'Transaction',
 ];

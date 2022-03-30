@@ -5,7 +5,9 @@
   >
     <div class="flex items-start">
       <div class="flex gap-2">
-        <x-hub::input.checkbox value="{{ $line->id }}" wire:model="selectedLines" />
+        @if($this->transactions->count())
+          <x-hub::input.checkbox value="{{ $line->id }}" wire:model="selectedLines" />
+        @endif
         <div class="flex-shrink-0 p-1 overflow-hidden border border-gray-100 rounded">
           <img
             class="object-contain w-8 h-8"
