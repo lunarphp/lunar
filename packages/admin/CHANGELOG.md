@@ -3,17 +3,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## 2.0-beta11 - 2022-03-29
 
 ## Added
 
 - Added new config option `disable_variants` to `getcandy-hub/products.php`. This is set to `false` by default so variants remain enabled.
 - Added ability to save searches on the orders table.
+- Added a new Slot feature so developers can start extending screens within the Hub.
 
 ## Fixed
 
 - `wire:model` now correctly references the current property when editing an attribute.
 - Attribute editing validation rules will now take in to account all languages.
+- The `Number` field type will now show the correct input with validation By [@lucasvmds](https://github.com/lucasvmds)
+
+## Changed
+
+- Customer screens have been completely overhauled.
+- Order screens has been completely overhauled.
 
 ### Changed
 

@@ -15,10 +15,7 @@ class CurrencyFactory extends Factory
             'name'           => $this->faker->name(),
             'code'           => $this->faker->unique()->currencyCode,
             'enabled'        => true,
-            'format'         => $this->faker->word,
             'exchange_rate'  => $this->faker->randomFloat(2, 0.1, 5),
-            'decimal_point'  => '.',
-            'thousand_point' => ',',
             'decimal_places' => 2,
             'default'        => true,
         ];

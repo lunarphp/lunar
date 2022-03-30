@@ -25,7 +25,7 @@ class OrderFactory extends Factory
             'shipping_total' => 0,
             'tax_breakdown'  => [
                 [
-                    'name'       => 'VAT',
+                    'description'       => 'VAT',
                     'total'      => 200,
                     'percentage' => 20,
                 ],
