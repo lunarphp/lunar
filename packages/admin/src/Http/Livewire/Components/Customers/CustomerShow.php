@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 
 use Carbon\CarbonPeriod;
+use Exception;
 use GetCandy\DataTypes\Price;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
@@ -300,17 +301,24 @@ class CustomerShow extends Component
                 'Unable to send password reset',
                 level: 'error'
             );
-
             return;
         }
-        $status = Password::sendResetLink([
-            'email' => $user->email,
-        ]);
 
-        $this->notify(
-            __($status),
-            level: $status != Password::RESET_LINK_SENT ? 'error' : 'success'
-        );
+        try {
+            $status = Password::sendResetLink([
+                'email' => $user->email,
+            ]);
+
+            $this->notify(
+                __($status),
+                level: $status != Password::RESET_LINK_SENT ? 'error' : 'success'
+            );
+        } catch (Exception $e) {
+            $this->notify(
+                __('adminhub::notifications.customers.reset_failed'),
+                level: 'error'
+            );
+        }
     }
 
     /**
