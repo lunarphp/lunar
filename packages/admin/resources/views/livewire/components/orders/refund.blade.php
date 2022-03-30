@@ -3,7 +3,7 @@
     <x-hub::alert level="danger">
       {{ __('adminhub::components.orders.refund.no_charges') }}
     </x-hub::alert>
-  @elseif(!$this->availableToRefund)
+  @elseif(!$this->canBeRefunded)
     <x-hub::alert level="danger">
       {{ __('adminhub::components.orders.refund.fully_refunded') }}
     </x-hub::alert>
@@ -35,25 +35,29 @@
     <x-hub::input.group
       for="confirm"
       :label="__('adminhub::inputs.confirm.label')"
-      :instructions="__('adminhub::components.orders.refund.confirm_message', [
-        'confirm' => __('adminhub::components.orders.refund.confirm_text')
-      ])"
+      :instructions="__('adminhub::components.orders.refund.confirm_message')"
     >
       <x-hub::input.toggle wire:model="confirmed" />
     </x-hub::input.group>
 
-    <x-hub::button
-      :disabled="!$confirmed"
-      wire:click.prevent="refund"
-      type="button"
-    >
-      <div wire:loading wire:target="refund">
-        <x-hub::icon ref="refresh" class="inline-block w-4 rotate-180 animate-spin" />
-      </div>
-      <div wire:loading.remove wire:target="refund">
-        {{ __('adminhub::components.orders.refund.refund_btn') }}
-      </div>
-    </x-hub::button>
+    <div class="flex items-center justify-between">
+      <x-hub::button type="button" wire:click.prevent="cancel" theme="gray">
+        {{ __('adminhub::global.cancel') }}
+      </x-hub::button>
+
+      <x-hub::button
+        :disabled="!$confirmed"
+        wire:click.prevent="refund"
+        type="button"
+      >
+        <div wire:loading wire:target="refund">
+          <x-hub::icon ref="refresh" class="inline-block w-4 rotate-180 animate-spin" />
+        </div>
+        <div wire:loading.remove wire:target="refund">
+          {{ __('adminhub::components.orders.refund.refund_btn') }}
+        </div>
+      </x-hub::button>
+    </div>
 
     @if($this->refundError)
       <x-hub::alert level="danger">

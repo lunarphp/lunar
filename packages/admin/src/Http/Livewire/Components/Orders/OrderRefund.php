@@ -85,7 +85,7 @@ class OrderRefund extends Component
             $this->transaction = $this->charges->first()->id;
         }
 
-        $this->amount = $this->availableToRefund;
+        $this->amount = $this->availableToRefund / 100;
     }
 
     /**
@@ -126,7 +126,17 @@ class OrderRefund extends Component
      */
     public function getAvailableToRefundProperty()
     {
-        return $this->charges->sum('amount.value') > $this->refunds->sum('amount.value');
+        return $this->charges->sum('amount.value') - $this->refunds->sum('amount.value');
+    }
+
+    /**
+     * Return the amount that's available for refunding.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getCanBeRefundedProperty()
+    {
+        return $this->availableToRefund > 0;
     }
 
     /**
@@ -165,15 +175,31 @@ class OrderRefund extends Component
             return;
         }
 
-        $this->transaction = null;
-        $this->amount = 0;
-        $this->notes = '';
-
         $this->emit('refundSuccess', $this->transaction);
+
+        $this->transaction = null;
+        $this->amount = $this->availableToRefund / 100;
+        $this->notes = '';
+        $this->confirmed = false;
 
         $this->notify(
             message: 'Refund successful',
         );
+    }
+
+    /**
+     * Cancel the refund.
+     *
+     * @return void
+     */
+    public function cancel()
+    {
+        $this->transaction = null;
+        $this->amount = $this->availableToRefund / 100;
+        $this->notes = '';
+        $this->confirmed = false;
+
+        $this->emit('cancelRefund');
     }
 
     /**
