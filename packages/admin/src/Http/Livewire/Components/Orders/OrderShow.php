@@ -8,6 +8,7 @@ use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
 use GetCandy\Models\State;
+use Illuminate\Support\Arr;
 use Livewire\Component;
 
 class OrderShow extends Component
@@ -462,7 +463,25 @@ class OrderShow extends Component
      */
     public function getShippingEqualsBillingProperty()
     {
-        return optional($this->billingAddress)->postcode == optional($this->shippingAddress)->postcode;
+        if (!$this->shippingAddress || !$this->billingAddress) {
+            return false;
+        }
+
+        $fieldsToCheck = Arr::except(
+            $this->billingAddress->getAttributes(),
+            ['id', 'created_at', 'updated_at', 'order_id', 'type']
+        );
+
+        // Is the same until proven otherwise
+        $isSame = true;
+
+        foreach ($fieldsToCheck as $field => $value) {
+            if ($this->shippingAddress->getAttribute($field) != $value) {
+                $isSame = false;
+            }
+        }
+
+        return $isSame;
     }
 
     /**
