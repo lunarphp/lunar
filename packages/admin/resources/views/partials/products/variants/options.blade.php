@@ -31,10 +31,9 @@
                 <span>{{ __('adminhub::partials.image-manager.upload_file') }}</span>
                 <input id="file-upload" name="file-upload" type="file" class="sr-only">
               </label>
-              <p class="pl-1">{{ __('adminhub::partials.image-manager.drag_and_drop') }}</p>
             </div>
             <p class="text-xs text-gray-500">
-              PNG, JPG, GIF up to 10MB
+                {{ __('adminhub::partials.image-manager.file_format') }}
             </p>
           </div>
         </div>

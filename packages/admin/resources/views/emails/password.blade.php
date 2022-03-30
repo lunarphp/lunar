@@ -333,7 +333,7 @@
     </style>
   </head>
   <body class="">
-    <span class="preheader">{{ __('adminhub::auth.gc-reset-password.title') }}</span>
+    <span class="preheader">GetCandy - {{ __('adminhub::auth.reset-password.title') }}</span>
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
         <td>&nbsp;</td>

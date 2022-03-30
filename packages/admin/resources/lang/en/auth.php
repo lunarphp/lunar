@@ -30,7 +30,6 @@ return [
     'reset-password.send_btn'   => 'Send reset email',
     'reset-password.update_btn' => 'Update password and login',
     'forgot-password.link'      => 'Forgot your password?',
-    'gc-reset-password.title'   => 'GetCandy - Reset Password',
     'follow-link.reset'         => 'Please follow this link to reset your password:',
     'click-here.reset'          => 'Click here to reset',
     'reset-link.not_working'    => 'Link not working? Copy this into your browser',
