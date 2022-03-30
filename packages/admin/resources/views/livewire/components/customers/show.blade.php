@@ -101,7 +101,7 @@
   </div>
 
   <div>
-    <div x-data="{ tab: 'order_history' }">
+    <div x-data="{ tab: 'purchase_history' }">
         <div>
           <div class="hidden sm:block">
             <nav class="flex space-x-4" aria-label="Tabs">
