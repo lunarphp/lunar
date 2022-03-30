@@ -480,7 +480,7 @@ class OrderShow extends Component
 
         $fieldsToCheck = Arr::except(
             $this->billingAddress->getAttributes(),
-            ['id', 'created_at', 'updated_at', 'order_id', 'type']
+            ['id', 'created_at', 'updated_at', 'order_id', 'type', 'meta']
         );
 
         // Is the same until proven otherwise
