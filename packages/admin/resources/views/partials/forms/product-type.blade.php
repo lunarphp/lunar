@@ -9,7 +9,7 @@
       <nav class="flex space-x-4" aria-label="Tabs">
         <!-- Current: "bg-gray-100 text-gray-700", Default: "text-gray-500 hover:text-gray-700" -->
         <button type="button" wire:click="$set('view', 'products')" class="px-3 py-3 text-sm font-medium @if($view == 'products') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t">
-          Product Attributes
+            {{ __('adminhub::partials.product-type.product_attributes_btn') }}
         </button>
 
         <button
@@ -17,7 +17,7 @@
           wire:click="$set('view', 'variants')"
           class="px-3 py-3 text-sm font-medium @if($view == 'variants') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t"
         >
-          Variant Attributes
+        {{ __('adminhub::partials.product-type.variant_attributes_btn') }}
         </button>
       </nav>
 

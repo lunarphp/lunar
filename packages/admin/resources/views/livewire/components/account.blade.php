@@ -27,7 +27,7 @@
 
 
 
-      <h3>Update password</h3>
+      <h3>{{ __('adminhub::account.update_password') }}</h3>
       <div class="grid grid-cols-2 gap-4">
         <x-hub::input.group for="currentPassword" :label="__('adminhub::global.current_password')" :error="$errors->first('currentPassword')">
           <x-hub::input.password id="currentPassword" wire:model="currentPassword" :error="$errors->first('currentPassword')" />

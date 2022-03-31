@@ -92,11 +92,11 @@ class ProductVariantTest extends TestCase
 
         $variant = $variant->load('prices');
 
-        $this->assertEquals(Pricing::for($variant)->matched->price->value, 100);
-        $this->assertEquals(Pricing::qty(5)->for($variant)->matched->price->value, 60);
-        $this->assertEquals(Pricing::qty(5)->customerGroup($groupB)->for($variant)->matched->price->value, 30);
-        $this->assertEquals(Pricing::customerGroup($groupB)->for($variant)->matched->price->value, 80);
-        $this->assertEquals(Pricing::customerGroup($groupA)->for($variant)->matched->price->value, 90);
+        $this->assertEquals(Pricing::for($variant)->get()->matched->price->value, 100);
+        $this->assertEquals(Pricing::qty(5)->for($variant)->get()->matched->price->value, 60);
+        $this->assertEquals(Pricing::qty(5)->customerGroup($groupB)->for($variant)->get()->matched->price->value, 30);
+        $this->assertEquals(Pricing::customerGroup($groupB)->for($variant)->get()->matched->price->value, 80);
+        $this->assertEquals(Pricing::customerGroup($groupA)->for($variant)->get()->matched->price->value, 90);
     }
 
     /** @test */
@@ -137,10 +137,10 @@ class ProductVariantTest extends TestCase
 
         $variant = $variant->load('prices');
 
-        $this->assertEquals(Pricing::currency($currencyA)->for($variant)->matched->price->value, 100);
-        $this->assertEquals(Pricing::currency($currencyB)->for($variant)->matched->price->value, 200);
+        $this->assertEquals(Pricing::currency($currencyA)->for($variant)->get()->matched->price->value, 100);
+        $this->assertEquals(Pricing::currency($currencyB)->for($variant)->get()->matched->price->value, 200);
 
         $this->expectException(MissingCurrencyPriceException::class);
-        $this->assertEquals(Pricing::currency($currencyC)->for($variant)->matched->price->value, 200);
+        $this->assertEquals(Pricing::currency($currencyC)->for($variant)->get()->matched->price->value, 200);
     }
 }

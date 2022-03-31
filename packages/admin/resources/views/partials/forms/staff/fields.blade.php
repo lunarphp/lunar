@@ -47,7 +47,7 @@
             <x-hub::input.text type="email" wire:model="deleteConfirm" />
           </div>
           <div class="col-span-3 text-right lg:col-span-2">
-            <x-hub::button theme="danger" :disabled="!$this->canDelete" wire:click="delete" type="button">Delete</x-hub::button>
+            <x-hub::button theme="danger" :disabled="!$this->canDelete" wire:click="delete" type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
           </div>
         </div>
         @if($this->ownAccount)

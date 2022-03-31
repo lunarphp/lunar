@@ -4,7 +4,7 @@
       @include('adminhub::partials.getcandy-stamp')
 
       <h2 class="mt-6 text-3xl font-extrabold text-center text-gray-900">
-        Reset your password
+        {{ __('adminhub::auth.reset-your-password') }}
       </h2>
     </div>
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

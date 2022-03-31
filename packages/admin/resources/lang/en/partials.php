@@ -4,7 +4,8 @@ return [
     /**
      * Activity Log.
      */
-    'activity-log.added_images.description' => 'Added :count images',
+    'activity-log.added_images.description'         => 'Added :count images',
+    'activity-log.system.system'                    => 'System',
     /**
      * Associations.
      */
@@ -15,6 +16,7 @@ return [
     'products.associations.show_inverse' => 'Show inverse',
     'products.associations.add_inverse' => 'Add inverse association',
     'products.associations.add_association' => 'Add association',
+    'products.associations.up-sell_selecting_products' => 'Add Up-sell products by searching above and selecting products.',
     /**
      * Availability.
      */
@@ -74,6 +76,8 @@ return [
     'image-manager.delete_message'                   => 'This image will be deleted on save,',
     'image-manager.undo_btn'                         => 'undo',
     'image-manager.no_results'                       => 'No images exist for this product, add your first image above.',
+    'image-manager.upload_file'                      => 'Upload a file or drag and drop',
+    'image-manager.file_format'                      => 'PNG, JPG, GIF up to 10MB',
     /**
      * Product Collections.
      */
@@ -100,6 +104,8 @@ return [
     'product-type.selected_title'               => 'Selected Attributes (:count)',
     'product-type.attribute_search_placeholder' => 'Search for an attribute by name',
     'product-type.attribute_system_required'    => 'This attribute is required by the system',
+    'product-type.product_attributes_btn'       => 'Product Attributes',
+    'product-type.variant_attributes_btn'       => 'Variant Attributes',
     /**
      * Pricing.
      */
@@ -137,4 +143,48 @@ return [
     'shipping.calculated_volume' => 'Calculated as :value.',
     'shipping.manual_volume_btn' => 'Click to set manually',
     'shipping.auto_volume_btn'   => 'Use generated volume',
+    /**
+     * Customer Addresses.
+     */
+    'customers.addresses.billing_default'   => 'Billing Default',
+    'customers.addresses.shipping_default'   => 'Shipping Default',
+    /**
+     * Customers.
+     */
+    'customers.purchase-history.purchasable' => 'Purchasable',
+    'customers.purchase-history.identifier' => 'Identifier',
+    'customers.purchase-history.quantity' => 'Quantity',
+    'customers.purchase-history.revenue' => 'Revenue',
+    'customers.purchase-history.order_count' => 'No. Orders',
+    'customers.purchase-history.last_ordered' => 'Last Ordered',
+    /**
+     * Orders.
+     */
+    'orders.totals.sub_total' => 'Sub Total',
+    'orders.totals.shipping_total' => 'Shipping Total',
+    'orders.totals.total' => 'Total',
+    'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.lines.unit_price' => 'Unit Price',
+    'orders.lines.quantity' => 'Quantity',
+    'orders.lines.sub_total' => 'Sub Total',
+    'orders.lines.discount_total' => 'Discount Total',
+    'orders.lines.total' => 'Total',
+    'orders.details.status' => 'Status',
+    'orders.details.reference' => 'Reference',
+    'orders.details.customer_reference' => 'Customer Reference',
+    'orders.details.channel' => 'Channel',
+    'orders.details.date_created' => 'Date Created',
+    'orders.details.date_placed' => 'Date Placed',
+    'orders.address.not_set' => 'No address set',
+    /**
+     * Forms.
+     */
+    'forms.channel.delete_channel'                    => 'Delete channel',
+    'forms.channel.channel_name_delete'               => 'Enter the name of the channel to delete it',
+    /**
+     * Transactions.
+     */
+    'orders.transactions.capture' => 'Captured',
+    'orders.transactions.intent' => 'Intent',
+    'orders.transactions.refund' => 'Refunded',
 ];

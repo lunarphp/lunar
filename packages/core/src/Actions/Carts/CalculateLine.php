@@ -34,7 +34,8 @@ class CalculateLine
                 ->qty($cartLine->quantity)
                 ->currency($cart->currency)
                 ->customerGroups($customerGroups)
-                ->for($purchasable);
+                ->for($purchasable)
+                ->get();
 
             $price = new Price(
                 $priceResponse->matched->price->value,

@@ -3,11 +3,11 @@
     <div class="grid grid-cols-2 gap-6 p-3 text-xs font-bold text-gray-500 uppercase bg-gray-50">
       <div class="flex justify-between">
         <h3>{{ $group->translate('name') }}</h3>
-        <button type="button" wire:click="selectAll('{{ $group->id }}', '{{ $type }}')" class="hover:text-gray-600">Select all</button>
+        <button type="button" wire:click="selectAll('{{ $group->id }}', '{{ $type }}')" class="hover:text-gray-600">{{ __('adminhub::components.products.index.select_all_btn') }}</button>
       </div>
       <div class="flex justify-between">
         <h3>{{ $group->translate('name') }}</h3>
-        <button type="button" wire:click="deselectAll('{{ $group->id }}', '{{ $type }}')" class="hover:text-gray-600">Deselect all</button>
+        <button type="button" wire:click="deselectAll('{{ $group->id }}', '{{ $type }}')" class="hover:text-gray-600">{{ __('adminhub::components.products.index.deselect_all_btn') }}</button>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-6">
@@ -27,7 +27,7 @@
             </div>
           </div>
         @empty
-          <div class="text-sm text-gray-500">There are no attributes to select in this group</div>
+          <div class="text-sm text-gray-500">{{ __('adminhub::catalogue.product-types.attribute.no_attributes') }}</div>
         @endforelse
       </div>
 

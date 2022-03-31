@@ -15,7 +15,9 @@
       @if(auth()->user()->admin)
         <div class="text-right">
           <label class="inline-flex items-center cursor-pointer">
-            <span class="block mr-2 text-xs font-bold @if($staff->admin) text-green-500 @else text-gray-400 @endif uppercase">Admin</span>
+            <span class="block mr-2 text-xs font-bold @if($staff->admin) text-green-500 @else text-gray-400 @endif uppercase">
+                {{ __('adminhub::global.admin') }}
+            </span>
             <x-hub::input.toggle
               :on="$staff->admin"
               wire:click.prevent="toggleAdmin"

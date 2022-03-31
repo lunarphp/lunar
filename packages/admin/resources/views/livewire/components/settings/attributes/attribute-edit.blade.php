@@ -107,8 +107,8 @@
 
   <x-slot name="footer">
     <div class="flex justify-between">
-      <x-hub::button theme="gray" type="button" wire:click="$set('panelVisible', false)">Cancel</x-hub::button>
-      <x-hub::button wire:click="save">Save Attribute</x-hub::button>
+      <x-hub::button theme="gray" type="button" wire:click="$set('panelVisible', false)">{{ __('adminhub::components.attribute-edit.cancel_btn') }}</x-hub::button>
+      <x-hub::button wire:click="save">{{ __('adminhub::components.attribute-edit.save_attribute_btn') }}</x-hub::button>
     </div>
   </x-slot>
 </x-hub::slideover>

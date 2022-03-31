@@ -284,7 +284,9 @@ class ProductShowTest extends TestCase
             ->test(ProductShow::class, [
                 'product' => $product->refresh(),
             ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
-            ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription');
+            ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription')
+            ->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar');
 
         $component->call('save')->assertHasNoErrors();
 
@@ -435,6 +437,8 @@ class ProductShowTest extends TestCase
             ->test(ProductShow::class, [
                 'product' => $product,
             ])->set('optionValues', $values->pluck('id')->toArray())
+            ->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
             ->call('save')
             ->assertHasNoErrors();
 
@@ -549,7 +553,9 @@ class ProductShowTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product->refresh(),
-            ])->assertCount('collections', 0)
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->assertCount('collections', 0)
             ->set('collections', collect([[
                 'id' => $collection->id,
                 'name' => $collection->translateAttribute('name'),
@@ -608,7 +614,9 @@ class ProductShowTest extends TestCase
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product->refresh(),
-            ])->assertCount('associations', 0)
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->assertCount('associations', 0)
             ->set('associations', collect([
                 [
                     'inverse' => false,
@@ -669,7 +677,9 @@ class ProductShowTest extends TestCase
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product->refresh(),
-            ])->assertCount('associations', 0)
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->assertCount('associations', 0)
             ->set('associations', collect([
                 [
                     'inverse' => true,
@@ -797,7 +807,9 @@ class ProductShowTest extends TestCase
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product,
-            ])->set('optionValues', $values->pluck('id')->toArray())
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->set('optionValues', $values->pluck('id')->toArray())
             ->call('save')
             ->assertHasNoErrors();
 

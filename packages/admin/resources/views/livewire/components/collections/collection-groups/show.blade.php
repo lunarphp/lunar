@@ -56,9 +56,17 @@
             @endif
         </x-slot>
         <x-slot name="content">
-          <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('collection.name')" required>
-            <x-hub::input.text wire:model="collection.name" :error="$errors->first('collection.name')" />
-          </x-hub::input.group>
+          <div class="space-y-4">
+            <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('collection.name')" required>
+              <x-hub::input.text wire:model="collection.name" :error="$errors->first('collection.name')" />
+            </x-hub::input.group>
+
+            @if($this->slugIsRequired)
+              <x-hub::input.group :label="__('adminhub::inputs.slug.label')" for="slug" :error="$errors->first('slug')" required>
+                <x-hub::input.text wire:model.lazy="slug" :error="$errors->first('slug')" />
+              </x-hub::input.group>
+            @endif
+          </div>
         </x-slot>
         <x-slot name="footer">
           <x-hub::button type="button" wire:click.prevent="$set('showCreateForm', false)" theme="gray">

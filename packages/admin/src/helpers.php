@@ -1,5 +1,6 @@
 <?php
 
+use GetCandy\DataTypes\Price;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -47,10 +48,21 @@ if (! function_exists('db_date')) {
             $select = "TO_CHAR({$column} :: DATE, '{$format}')";
         }
 
+        if ($driver == 'sqlite') {
+            $select = "strftime('{$format}', {$column})";
+        }
+
         if ($alias) {
             $select .= " as {$alias}";
         }
 
         return DB::RAW($select);
+    }
+}
+
+if (! function_exists('price')) {
+    function price($value, $currency, $unitQty = 1)
+    {
+        return new Price($value, $currency, $unitQty);
     }
 }
