@@ -66,6 +66,7 @@ use GetCandy\Hub\Menu\MenuRegistry;
 use GetCandy\Hub\Menu\OrderActionsMenu;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
+use GetCandy\Hub\Menu\SlotRegistry;
 use GetCandy\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
@@ -98,6 +99,10 @@ class AdminHubServiceProvider extends ServiceProvider
 
         $this->app->singleton(MenuRegistry::class, function () {
             return new MenuRegistry();
+        });
+
+        $this->app->singleton(SlotRegistry::class, function () {
+            return new SlotRegistry();
         });
 
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
