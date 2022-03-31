@@ -117,7 +117,7 @@ European Article numbering code (EAN) is a series of letters and numbers in a un
 
 ### Validation
 
-Depending on your storefront needs, you might not need any of these fields to be required or unique. For this reason you can change this behavior at a validation level.
+Depending on your storefront needs, you might not need any of these fields to be required or unique. For this reason you can change this behaviour at a validation level.
 
 `config/getcandy-hub/products.php`
 

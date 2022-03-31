@@ -99,7 +99,7 @@ This essentially does the same as above, except we already catch the exceptions 
 
 ## Modifying Orders
 
-If you need to programmatically change the Order values or add in new behavior, you will want to extend the Order system.
+If you need to programmatically change the Order values or add in new behaviour, you will want to extend the Order system.
 
 You can find out more in the Extending GetCandy section for [Order Modifiers](/extending/order-modifiers).
 
