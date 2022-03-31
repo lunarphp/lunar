@@ -1,6 +1,6 @@
 <div class="flex-col space-y-4">
   <div class="text-right">
-    <x-hub::button tag="a" href="{{ route('hub.currencies.create') }}">Create Currency</x-hub::button>
+    <x-hub::button tag="a" href="{{ route('hub.currencies.create') }}">{{ __('adminhub::settings.currencies.index.create_currency_btn') }}</x-hub::button>
   </div>
   <x-hub::table>
     <x-slot name="head">

@@ -117,7 +117,7 @@
             x-show="showMenu"
           >
             <button @click="showMenu = false" class="flex items-center justify-center w-10 h-10 ml-1 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-              <span class="sr-only">Close sidebar</span>
+              <span class="sr-only">{{ __('adminhub::menu.close-sidebar') }}</span>
               <!-- Heroicon name: outline/x -->
               <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -146,7 +146,7 @@
                     'class' => 'text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate w-32'
                   ])
                   <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                    View profile
+                    {{ __('adminhub::account.view-profile') }}
                   </p>
                 </div>
                 <div class="pl-2">
@@ -196,7 +196,7 @@
                     'class' => 'text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate w-32'
                   ])
                   <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                    View profile
+                    {{ __('adminhub::account.view-profile') }}
                   </p>
                 </div>
                 <div class="pl-2">
@@ -218,7 +218,7 @@
       <div class="flex flex-col flex-1 w-0 overflow-hidden">
         <div class="relative z-10 flex flex-shrink-0 h-16 bg-white shadow md:hidden">
           <button @click="showMenu = true" class="px-4 text-gray-500 border-r border-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden">
-            <span class="sr-only">Open sidebar</span>
+            <span class="sr-only">{{ __('adminhub::menu.open-sidebar') }}</span>
             <!-- Heroicon name: outline/menu-alt-2 -->
             <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />

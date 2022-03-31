@@ -1,9 +1,9 @@
 <div>
   <div class="flex justify-between px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-    <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
+    <h1 class="text-2xl font-semibold text-gray-900">{{ __('adminhub::global.dashboard') }}</h1>
     <div class="flex items-center space-x-4">
       <x-hub::input.datepicker wire:model="range.from" />
-      <span class="text-xs font-medium text-gray-500 uppercase">to</span>
+      <span class="text-xs font-medium text-gray-500 uppercase">{{ __('adminhub::global.to') }}</span>
       <x-hub::input.datepicker wire:model="range.to" />
     </div>
   </div>
@@ -19,7 +19,7 @@
           <div class="flex items-center ml-4">
             <div>
               <strong class="text-lg font-bold">{{ $this->newProductsCount }}</strong>
-              <span class="block text-xs">New Products</span>
+              <span class="block text-xs">{{ __('adminhub::global.new_products') }}</span>
             </div>
           </div>
         </div>
@@ -34,7 +34,7 @@
           <div class="flex items-center ml-4">
             <div>
               <strong class="text-lg font-bold">{{ $this->returningCustomersPercent }}%</strong>
-              <span class="block text-xs">Returning Customers</span>
+              <span class="block text-xs">{{ __('adminhub::catalogue.customer.dashboard.returning_customers') }}</span>
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@
           <div class="flex items-center ml-4">
             <div>
               <strong class="text-lg font-bold">{{ $this->orderTotal->formatted }}</strong>
-              <span class="block text-xs">Turnover</span>
+              <span class="block text-xs">{{ __('adminhub::catalogue.customer.dashboard.turnover') }}</span>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
           <div class="flex items-center ml-4">
             <div>
               <strong class="text-lg font-bold">{{ $this->orderCount }}</strong>
-              <span class="block text-xs">No. of Orders</span>
+              <span class="block text-xs">{{ __('adminhub::catalogue.customer.dashboard.no_of_orders') }}</span>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
     <div class="flex flex-row gap-x-8">
       <div class="basis-2/3">
         <div class="p-4 bg-white rounded-lg h-96">
-          <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">Sales Performance</h3>
+          <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">{{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}</h3>
           <div class="h-80">
             @livewire('hub.components.reporting.apex-chart', ['options' => $this->salesPerformance])
           </div>
@@ -83,7 +83,7 @@
       </div>
       <div class="basis-1/3">
         <div class="p-4 bg-white rounded-lg h-96">
-          <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">Customer Group Orders</h3>
+          <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">{{ __('adminhub::catalogue.customer.dashboard.customer_group_orders') }}</h3>
           <div class="h-80">
             @livewire('hub.components.reporting.apex-chart', ['options' => $this->customerGroupOrders])
           </div>
@@ -95,15 +95,15 @@
     <div class="flex flex-row gap-x-8">
       <div class="basis-2/3">
         <div class="p-8 bg-white rounded-lg h-96">
-          <h3 class="text-lg font-semibold text-gray-900">Recent Orders</h3>
+          <h3 class="text-lg font-semibold text-gray-900">{{ __('adminhub::catalogue.orders.dashboard.recent_orders') }}</h3>
           <table class="w-full mt-8 table-auto font-sm">
             <thead>
               <tr class="border-b">
-                <th class="pb-2 text-sm font-normal text-left">Order Ref</th>
-                <th class="pb-2 text-sm font-normal text-center">Customer</th>
-                <th class="pb-2 text-sm font-normal text-center">No. Items</th>
-                <th class="pb-2 text-sm font-normal text-center">Placed At</th>
-                <th class="pb-2 text-sm font-normal text-right">Total</th>
+                <th class="pb-2 text-sm font-normal text-left">{{ __('adminhub::global.order_ref') }}</th>
+                <th class="pb-2 text-sm font-normal text-center">{{ __('adminhub::global.customer') }}</th>
+                <th class="pb-2 text-sm font-normal text-center">{{ __('adminhub::global.no_items') }}</th>
+                <th class="pb-2 text-sm font-normal text-center">{{ __('adminhub::global.placed_at') }}</th>
+                <th class="pb-2 text-sm font-normal text-right">{{ __('adminhub::global.total') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -122,7 +122,7 @@
       </div>
       <div class="basis-1/3">
         <div class="p-8 bg-white rounded-lg h-96">
-          <h3 class="text-lg font-semibold text-gray-900">Top Selling Products</h3>
+          <h3 class="text-lg font-semibold text-gray-900">{{ __('adminhub::catalogue.customer.dashboard.top_selling_products') }}</h3>
 
           @foreach($this->topSellingProducts as $product)
             <div class="relative flex items-center py-8 space-x-3 bg-white border-b border-slate-100">

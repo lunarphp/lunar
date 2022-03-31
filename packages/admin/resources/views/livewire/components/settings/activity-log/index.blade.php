@@ -16,7 +16,7 @@
           @if($log->causer)
             {{ $log->causer->email }}
           @else
-            <span class="px-3 py-1 text-xs font-medium text-gray-600 uppercase rounded bg-gray-50">System</span>
+            <span class="px-3 py-1 text-xs font-medium text-gray-600 uppercase rounded bg-gray-50">{{ __('adminhub::global.system') }}</span>
           @endif
         </x-hub::table.cell>
       </x-hub::table.row>

@@ -41,4 +41,9 @@ return [
     'shipping_address.saved'            => 'Shipping address saved',
     'order.status_updated'              => 'Order status updated',
     'order.comment_added'              => 'Comment added',
+    'image.deleted'                     => 'Image has been deleted',
+    'sorry'                             => 'Sorry!',
+    'search-results.none'               => 'We were unable to find any results based on your search.',
+    'addon.not_licensed'                => 'This addon has not been licensed, please check the config for this addon.',
+    'product.no-images-associated'      => 'Product does not have any images associated',
 ];

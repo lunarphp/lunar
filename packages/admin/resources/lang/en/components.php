@@ -73,6 +73,8 @@ return [
     'attribute-edit.searchable.instructions' => 'Should users be able to search via this attribute?',
     'attribute-edit.filterable.instructions' => 'Should users be able to filter results based on this attribute?',
     'attribute-edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
+    'attribute-edit.cancel_btn'              => 'Cancel',
+    'attribute-edit.save_attribute_btn'      => 'Save Attribute',
 
     /**
      * Collection search.
@@ -141,11 +143,20 @@ return [
      * Order Refund.
      */
     'orders.refund.confirm_text'                    => 'CONFIRM',
-    'orders.refund.confirm_message'                 => 'Please confirm you wish to refund this amount.',
+     'orders.refund.confirm_message'                 => 'Please confirm you wish to refund this amount.',
     'orders.refund.no_charges'                      => 'There are no refundable charges on this order',
     'orders.refund.select_transaction'              => 'Select a transaction',
     'orders.refund.refund_btn'                      => 'Send refund',
     'orders.refund.fully_refunded'                  => 'The captures on this order have been refunded',
+    /**
+     * Product Index.
+     */
+    'products.index.title' => 'Products',
+    'products.index.create_product' => 'Create Product',
+    'products.index.selected_products' => 'You have selected :count products, do you want to select all',
+    'products.index.you_have_selected_all' => 'You have selected all :count products.',
+    'products.index.select_all_btn' => 'Select all',
+    'products.index.deselect_all_btn' => 'Deselect all',
     /**
      * Order Capture.
      */
@@ -163,5 +174,4 @@ return [
     'activity-log.orders.capture'                   => 'Payment of :amount on card ending :last_four',
     'activity-log.orders.authorized'                   => 'Authorized of :amount on card ending :last_four',
     'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
-
 ];
