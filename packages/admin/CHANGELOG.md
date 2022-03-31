@@ -90,7 +90,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - When saving a product it will now be wrapped in a transaction to prevent data corruption on error.
 - Removed dependency on `livewire-ui/modal` package since it was only used in one place. ([#47](https://github.com/getcandy/getcandy/issues/47)).
 - Removed `Basket` model since it's completely redundant.
-- Alpinejs has been updated to v3.
+- Alpine JS has been updated to v3.
 
 ### Added
 
@@ -107,7 +107,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- Use Alpinejs `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) ([#41])(https://github.com/getcandy/getcandy/issues/41).
+- Use Alpine JS `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) ([#41])(https://github.com/getcandy/getcandy/issues/41).
 
 ### Added
 
