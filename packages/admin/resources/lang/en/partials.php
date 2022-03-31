@@ -180,7 +180,7 @@ return [
      * Forms.
      */
     'forms.channel.delete_channel'                    => 'Delete channel',
-    'forms.channel.channel_name_delete'               => 'Enter the name of the channel to delete it'
+    'forms.channel.channel_name_delete'               => 'Enter the name of the channel to delete it',
     /**
      * Transactions.
      */
