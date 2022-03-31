@@ -102,6 +102,12 @@ php artisan getcandy:meilisearch:setup
 
 This change removes the `_{locale}` suffix from certain indexes, so those can be removed.
 
+### Changes to URL generation - High Impact
+
+There is a new config file under `config/urls.php` which will define if URL's should be generated for models that use them and how they should be generated. By default this has been set to `true` so URL's are automatically generated.
+
+If you have your own routine for URL's then you should either implement your own generator and set it to the `generator` config option, or turn off automatic generation.
+
 ## 2.0-beta10
 
 ### Changes to Tax drivers - High Impact

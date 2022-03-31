@@ -1,14 +1,14 @@
 <?php
 
 return [
-    /*
+  /*
   | Set whether URLs should be required across the system. Setting this as true
   | will affect how validation works when creating/editing products in the hub.
   |
   | If you have a generator specified below, this setting will have no effect
   | on validation rules across the system.
   */
-    'required' => true,
+  'required' => true,
 
     /*
   |--------------------------------------------------------------------------
@@ -21,5 +21,5 @@ return [
   | ships with GetCandy, which by default will use the name attribute.
   |
   */
-    'generator' => GetCandy\Generators\UrlGenerator::class,
+  'generator' => GetCandy\Generators\UrlGenerator::class,
 ];
