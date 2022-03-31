@@ -143,7 +143,7 @@ return [
      * Order Refund.
      */
     'orders.refund.confirm_text'                    => 'CONFIRM',
-     'orders.refund.confirm_message'                 => 'Please confirm you wish to refund this amount.',
+    'orders.refund.confirm_message'                 => 'Please confirm you wish to refund this amount.',
     'orders.refund.no_charges'                      => 'There are no refundable charges on this order',
     'orders.refund.select_transaction'              => 'Select a transaction',
     'orders.refund.refund_btn'                      => 'Send refund',
