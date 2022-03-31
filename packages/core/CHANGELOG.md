@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - When generating media conversions, the original file format is now kept. By [@lucasvmds](https://github.com/lucasvmds)
 - Quantity column on `cart_lines` and `order_lines` table is now of type `unsignedInteger`.
 
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta10...2.0-beta11)
+
 ## 2.0-beta10 - 2022-02-18
 
 ### Added

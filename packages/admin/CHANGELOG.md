@@ -23,11 +23,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Customer screens have been completely overhauled.
 - Order screens has been completely overhauled.
-
-### Changed
-
 - Complete rewrite to the orders table.
 - The way order statuses are defined in `config/getcandy/orders.php` has changed, see upgrade guide for detais.
+
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta10.1...2.0-beta11)
 
 ## 2.0-beta10.1 - 2022-02-19
 
