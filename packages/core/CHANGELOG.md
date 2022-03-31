@@ -59,7 +59,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - If an attribute value is null it will be returned instead of the `{"en": null}` encoded string. ([#130](https://github.com/getcandy/getcandy/issues/130))
-- When loading an exiting product with channel availabilty, the scheduling modal should no longer display without prompt.
+- When loading an exiting product with channel availability, the scheduling modal should no longer display without prompt.
 - `Product` and `ProductOption` models will now take the Scout prefix config setting on the indexes.
 - The `Text` fieldtype tolerance now accepts numeric values instead of just forcing strings.
 - Translating an attribute via `->translateAttribute('name')` will now handle non translatable fields for consistency.
@@ -75,7 +75,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Instead of assuming `$user->id` we know use `$user->getKey()`. By ([@ryanmitchell](https://github.com/ryanmitchell))
-- Big maintainence update to the Docblocks across the codebase to help with IDE support. By ([@KKSzymanowski](https://github.com/KKSzymanowski))
+- Big maintenance update to the Docblocks across the codebase to help with IDE support. By ([@KKSzymanowski](https://github.com/KKSzymanowski))
 
 [View Changes](https://github.com/getcandy/core/compare/2.0-beta8...2.0-beta9)
 
