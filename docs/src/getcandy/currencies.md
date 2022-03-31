@@ -4,7 +4,7 @@
 
 ## Overview
 
-Currencies allow you to charge different amounts reletive to the currency you're targeting.
+Currencies allow you to charge different amounts relative to the currency you're targeting.
 
 ## Creating a currency
 
@@ -72,4 +72,4 @@ We set the model to be the default and we set the exchange rate to be `1` as we'
 
 Now, say we wanted to add EUR (Euros). Currently the exchange rate from GBP to EUR is `1.17`. But we want this to be relative to our default record. So 1 / 1.17 = 0.8547.
 
-It's entirely up to you what you want to set the exchange rates as, it is also worth mentioning that this is independant of product pricing in the sense that you can specify the price per currency. The exchange rate serves as a helper when working with prices so you have something to go by.
+It's entirely up to you what you want to set the exchange rates as, it is also worth mentioning that this is independent of product pricing in the sense that you can specify the price per currency. The exchange rate serves as a helper when working with prices so you have something to go by.

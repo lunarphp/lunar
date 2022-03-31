@@ -4,7 +4,7 @@
 
 ## Overview
 
-We use Customers in GetCandy to store the customer details, rather than Users. We do this for a few reasons. One, so that we leave your User models well alone and two, because it provides flexibilty.
+We use Customers in GetCandy to store the customer details, rather than Users. We do this for a few reasons. One, so that we leave your User models well alone and two, because it provides flexibility.
 
 ## Customers
 
@@ -82,7 +82,7 @@ Specify different pricing per customer group, for example you may have certain p
 
 ### Product Availability
 
-You can turn product visibilty off depending on the customer group, this would mean only certain products would show depending on the group they belong to. This will also include scheduling availability so you can release products earlier or later to different groups.
+You can turn product visibility off depending on the customer group, this would mean only certain products would show depending on the group they belong to. This will also include scheduling availability so you can release products earlier or later to different groups.
 
 ---
 You must have at least one customer group in your store and when you install GetCandy you will be given a default one to get you started named `retail`.
@@ -185,7 +185,7 @@ $results = MyModel::customerGroup([
 ])->paginate(50);
 ```
 
-The start and end dates should be `DateTime` objects with will query for the existance of a customer group association with the start and end dates between those given. These are optional and the following happens in certain situations:
+The start and end dates should be `DateTime` objects with will query for the existence of a customer group association with the start and end dates between those given. These are optional and the following happens in certain situations:
 
 **Pass neither `startDate` or `endDate`**
 

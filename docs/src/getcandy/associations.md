@@ -131,7 +131,7 @@ $product->associations()->type('my-custom-type')->get();
 
 ## Removing associations
 
-You can dissaciate products with one simple method. If you only pass through the related models, or an array of models, all associations will be removed. If you wish to only remove associations for a certain type you can pass the type through as the second parameter.
+You can dissociate products with one simple method. If you only pass through the related models, or an array of models, all associations will be removed. If you wish to only remove associations for a certain type you can pass the type through as the second parameter.
 
 ```php
 // Remove this associated product from however many different association types it might have.

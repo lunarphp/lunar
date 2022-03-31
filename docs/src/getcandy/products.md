@@ -95,7 +95,7 @@ $product->load(['productType']);
 
 ##  Product Identifiers
 
-You can choose to add product idenfitiers to each product variant. These are fields which, as the name suggests, allow you to identify a product and it's variants for use in your internal systems. You can choose whether these are required and unique in the hub whilst editing.
+You can choose to add product identifiers to each product variant. These are fields which, as the name suggests, allow you to identify a product and it's variants for use in your internal systems. You can choose whether these are required and unique in the hub whilst editing.
 
 ### Available fields
 
@@ -117,7 +117,7 @@ European Article numbering code (EAN) is a series of letters and numbers in a un
 
 ### Validation
 
-Depending on your storefront needs, you might not need any of these fields to be required or unique. For this reason you can change this behaviour at a validation level.
+Depending on your storefront needs, you might not need any of these fields to be required or unique. For this reason you can change this behavior at a validation level.
 
 `config/getcandy-hub/products.php`
 
@@ -304,7 +304,7 @@ You will need to determine what variants you need to create and assign the corre
 For example, lets say we have an option "Colour" and we want to create "Blue" and "Red" variants.
 
 ::: tip
-A product variant will require a product, currency and a tax class. 
+A product variant will require a product, currency and a tax class.
 If you do not have these entities created, you will need to do so before continuing.
 :::
 
@@ -454,7 +454,7 @@ Pricing is defined on a variant level, meaning you will have a different price f
 $variant->prices()->create([/* .. */]);
 ```
 
-### Cutomer group pricing
+### Customer group pricing
 
 You can specify which customer group the price applies to by setting the `customer_group_id` column. If left as `null` the price will apply to all customer groups. This is useful if you want to have different pricing for certain customer groups and also different price tiers per customer group.
 

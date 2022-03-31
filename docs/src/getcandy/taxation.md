@@ -9,7 +9,7 @@ No one likes taxes! But we have to deal with them... GetCandy provides manual ta
 
 ## Tax Classes
 
-Tax Classes are assigned to Products and allow us to clasify products to certain taxable groups that may have differing tax rates.
+Tax Classes are assigned to Products and allow us to classify products to certain taxable groups that may have differing tax rates.
 
 ```php
 GetCandy\Models\TaxClass

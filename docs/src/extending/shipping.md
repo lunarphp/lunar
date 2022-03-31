@@ -41,7 +41,7 @@ class CustomShippingModifier extends ShippingModifier
 
 ```
 
-In your service provder:
+In your service provider:
 
 ```php
 public function boot(\GetCandy\Base\ShippingModifiers $shippingModifiers)
