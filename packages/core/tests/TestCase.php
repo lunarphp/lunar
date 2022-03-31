@@ -4,6 +4,7 @@ namespace GetCandy\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use GetCandy\GetCandyServiceProvider;
+use GetCandy\Tests\Stubs\TestUrlGenerator;
 use GetCandy\Tests\Stubs\User;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
@@ -17,6 +18,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
         // additional setup
         Config::set('providers.users.model', User::class);
+        Config::set('getcandy.urls.generator', TestUrlGenerator::class);
+        activity()->disableLogging();
     }
 
     protected function getPackageProviders($app)

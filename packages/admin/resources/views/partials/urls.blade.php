@@ -6,6 +6,12 @@
       </h3>
     </header>
 
+    @if($errors->has('urls'))
+      <x-hub::alert level="danger">
+        {{ $errors->first('urls') }}
+      </x-hub::alert>
+    @endif
+
     <div class="space-y-4">
       <div>
         <div class="flex items-center space-x-4 text-sm font-medium text-gray-700">

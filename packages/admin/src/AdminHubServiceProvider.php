@@ -3,6 +3,7 @@
 namespace GetCandy\Hub;
 
 use GetCandy\Hub\Auth\Manifest;
+use GetCandy\Hub\Base\OrdersTableInterface;
 use GetCandy\Hub\Console\Commands\InstallHub;
 use GetCandy\Hub\Http\Livewire\Components\Account;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
@@ -17,6 +18,8 @@ use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
+use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
@@ -60,8 +63,11 @@ use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
 use GetCandy\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use GetCandy\Hub\Menu\MenuRegistry;
+use GetCandy\Hub\Menu\OrderActionsMenu;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
+use GetCandy\Hub\Menu\SlotRegistry;
+use GetCandy\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -95,8 +101,16 @@ class AdminHubServiceProvider extends ServiceProvider
             return new MenuRegistry();
         });
 
+        $this->app->singleton(SlotRegistry::class, function () {
+            return new SlotRegistry();
+        });
+
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
             return new \GetCandy\Hub\Editing\ProductSection();
+        });
+
+        $this->app->singleton(OrdersTableInterface::class, function ($app) {
+            return $app->make(Orders::class);
         });
     }
 
@@ -149,6 +163,7 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         SidebarMenu::make();
         SettingsMenu::make();
+        OrderActionsMenu::make();
     }
 
     /**
@@ -204,6 +219,8 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         Livewire::component('hub.components.orders.index', OrdersIndex::class);
         Livewire::component('hub.components.orders.show', OrderShow::class);
+        Livewire::component('hub.components.orders.refund', OrderRefund::class);
+        Livewire::component('hub.components.orders.capture', OrderCapture::class);
     }
 
     protected function registerCustomerComponents()

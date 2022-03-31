@@ -30,7 +30,7 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-## [Unreleased]
+## 2.0-beta11
 
 
 ### PricingManager changes
@@ -72,6 +72,56 @@ use Laravel\Scout\Searchable;
 // New
 use GetCandy\Base\Traits\Searchable;
 ```
+
+---
+
+### Changes to order statuses - High Impact
+
+The way statuses for orders are defined in `config/getcandy/orders.php` has changed. See below for the new definition:
+
+#### Old
+
+```php
+'statuses'  => [
+    'awaiting-payment' => 'Awaiting Payment',
+    'payment-received' => 'Payment Received',
+],
+```
+
+#### New
+
+```php
+'statuses'  => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
+    ],
+    'payment-received' => [
+        'label' => 'Payment Received',
+        'color' => '#6a67ce',
+    ],
+],
+```
+
+### Changes to index naming - High Impact
+
+You must re index and set up Meilisearch indexes due to a breaking change.
+
+```sh
+php artisan getcandy:search:index
+```
+
+```sh
+php artisan getcandy:meilisearch:setup
+```
+
+This change removes the `_{locale}` suffix from certain indexes, so those can be removed.
+
+### Changes to URL generation - High Impact
+
+There is a new config file under `config/urls.php` which will define if URL's should be generated for models that use them and how they should be generated. By default this has been set to `true` so URL's are automatically generated.
+
+If you have your own routine for URL's then you should either implement your own generator and set it to the `generator` config option, or turn off automatic generation.
 
 ## 2.0-beta10
 

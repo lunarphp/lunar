@@ -6,6 +6,7 @@ use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
 use GetCandy\Hub\Http\Livewire\Traits\HasImages;
 use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
+use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
 use GetCandy\Hub\Http\Livewire\Traits\HasTags;
 use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
@@ -40,6 +41,7 @@ abstract class AbstractProduct extends Component
     use HasDimensions;
     use HasUrls;
     use HasTags;
+    use HasSlots;
 
     /**
      * The current product we are editing.
@@ -162,7 +164,10 @@ abstract class AbstractProduct extends Component
             'urlSaved'                      => 'refreshUrls',
             'product-search.selected'       => 'updateAssociations',
             'collectionSearch.selected'     => 'selectCollections',
-        ], $this->getHasImagesListeners());
+        ],
+            $this->getHasImagesListeners(),
+            $this->getHasSlotsListeners()
+        );
     }
 
     /**
@@ -190,7 +195,6 @@ abstract class AbstractProduct extends Component
             'product.status'          => 'required|string',
             'product.brand'           => 'nullable|string|max:255',
             'product.product_type_id' => 'required',
-            'urls'                    => 'array',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
             'associations.*.type'     => 'required|string',
@@ -242,6 +246,8 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->withAttributesValidationRules(),
+            $this->hasUrlsValidationRules(! $this->product->id),
+            $this->withAttributesValidationRules()
         );
     }
 
@@ -411,6 +417,8 @@ abstract class AbstractProduct extends Component
                         ['position' => $collection['position']]
                     );
             });
+
+            $this->updateSlots();
 
             $this->product->refresh();
 
@@ -821,6 +829,8 @@ abstract class AbstractProduct extends Component
                 'id'         => 'urls',
                 'hidden'     => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
+                    'urls',
+                    'urls.*',
                 ]),
             ],
             [
@@ -868,6 +878,26 @@ abstract class AbstractProduct extends Component
     protected function getMediaModel()
     {
         return $this->product;
+    }
+
+    /**
+     * Returns the model which has slots associated.
+     *
+     * @return \GetCandy\Models\Product
+     */
+    protected function getSlotModel()
+    {
+        return $this->product;
+    }
+
+    /**
+     * Returns the contexts for any slots.
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['product.all'];
     }
 
     /**
