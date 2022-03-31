@@ -29,6 +29,8 @@ class ChannelTest extends TestCase
     /** @test */
     public function changes_are_recorded_in_activity_log()
     {
+        activity()->enableLogging();
+
         $channel = Channel::factory()->create([
             'name' => 'Webstore',
         ]);

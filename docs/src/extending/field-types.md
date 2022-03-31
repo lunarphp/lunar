@@ -7,7 +7,7 @@
 There will likely come a point where you need more field types than what GetCandy offers in the core. We've made adding your own a breeze and it's the same process whether you want to add these to directly to your app or via an add on.
 
 
-GetCandy will load up available field types via the `AttributeManifest`. This is a singleton which houses all the field types you can use. We currently have a handleful in the core, with more being added in the future. If you need a field type that's not here, speak with us first in case it's in the pipeline.
+GetCandy will load up available field types via the `AttributeManifest`. This is a singleton which houses all the field types you can use. We currently have a handful in the core, with more being added in the future. If you need a field type that's not here, speak with us first in case it's in the pipeline.
 
 ## Create Your Field Type Class
 
@@ -79,7 +79,7 @@ public function getConfig()
 }
 ```
 
-This will then tell the Livewire component to expect these fields for this FieldType and add the appropriate valiation rules you specify.
+This will then tell the Livewire component to expect these fields for this FieldType and add the appropriate validation rules you specify.
 
 ### Settings View
 

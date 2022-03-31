@@ -2,7 +2,7 @@
   <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
     <header>
       <h3 class="text-lg font-medium leading-6 text-gray-900">
-        Image
+        {{ __('adminhub::menu.product.image') }}
       </h3>
     </header>
     <div class="grid grid-cols-2 gap-4">
@@ -28,7 +28,7 @@
           <div class="flex space-x-4">
             @if($this->thumbnail)
               <x-hub::button type="button" theme="danger" wire:click.prevent="$set('image', null)">
-                Remove
+                {{ __('adminhub::global.remove') }}
               </x-hub::button>
             @elseif ($this->existingThumbnail)
                 <x-hub::button
@@ -39,11 +39,11 @@
                   {{ $removeImage ? 'Undo' : 'Remove' }}
                 </x-hub::button>
             @endif
-            <x-hub::button theme="gray" type="button" wire:click="$set('showImageSelectModal', true)">Choose existing</x-hub::button>
+            <x-hub::button theme="gray" type="button" wire:click="$set('showImageSelectModal', true)">{{ __('adminhub::menu.product.choose-existing-btn') }}</x-hub::button>
           </div>
           <x-hub::modal.dialog wire:model="showImageSelectModal">
             <x-slot name="title">
-              Select an existing product image
+                {{ __('adminhub::menu.product.select-product-image') }}
             </x-slot>
             <x-slot name="content">
               <div class="grid grid-cols-4 gap-4 overflow-y-auto max-h-96">
@@ -54,20 +54,20 @@
                   </label>
                 @empty
                   <div class="col-span-3">
-                    <x-hub::alert>Product does not have any images associated</x-hub::alert>
+                    <x-hub::alert>{{ __('adminhub::notifications.product.no-images-associated') }}</x-hub::alert>
                   </div>
                 @endforelse
               </div>
             </x-slot>
             <x-slot name="footer">
               <div class="flex justify-end space-x-4">
-                <x-hub::button type="button" theme="gray" wire:click="$set('showImageSelectModal', false)">Cancel</x-hub::button>
+                <x-hub::button type="button" theme="gray" wire:click="$set('showImageSelectModal', false)">{{ __('adminhub::global.cancel') }}</x-hub::button>
                 <x-hub::button
                   type="button"
                   :disabled="!$imageToSelect"
                   wire:click.prevent="selectImage"
                 >
-                  Choose Image
+                {{ __('adminhub::menu.product.choose-image') }}
                 </x-hub::button>
               </div>
             </x-slot>

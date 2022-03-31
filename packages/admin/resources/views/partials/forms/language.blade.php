@@ -40,7 +40,7 @@
             <x-hub::input.text wire:model="deleteConfirm" />
           </div>
           <div class="col-span-3 text-right lg:col-span-2">
-            <x-hub::button :disabled="!$this->canDelete" wire:click="delete" type="button" theme="danger">Delete</x-hub::button>
+            <x-hub::button :disabled="!$this->canDelete" wire:click="delete" type="button" theme="danger">{{ __('adminhub::global.delete') }}</x-hub::button>
           </div>
         </div>
       </div>

@@ -95,7 +95,7 @@ $product->load(['productType']);
 
 ##  Product Identifiers
 
-You can choose to add product idenfitiers to each product variant. These are fields which, as the name suggests, allow you to identify a product and it's variants for use in your internal systems. You can choose whether these are required and unique in the hub whilst editing.
+You can choose to add product identifiers to each product variant. These are fields which, as the name suggests, allow you to identify a product and it's variants for use in your internal systems. You can choose whether these are required and unique in the hub whilst editing.
 
 ### Available fields
 
@@ -304,7 +304,7 @@ You will need to determine what variants you need to create and assign the corre
 For example, lets say we have an option "Colour" and we want to create "Blue" and "Red" variants.
 
 ::: tip
-A product variant will require a product, currency and a tax class. 
+A product variant will require a product, currency and a tax class.
 If you do not have these entities created, you will need to do so before continuing.
 :::
 
@@ -454,7 +454,7 @@ Pricing is defined on a variant level, meaning you will have a different price f
 $variant->prices()->create([/* .. */]);
 ```
 
-### Cutomer group pricing
+### Customer group pricing
 
 You can specify which customer group the price applies to by setting the `customer_group_id` column. If left as `null` the price will apply to all customer groups. This is useful if you want to have different pricing for certain customer groups and also different price tiers per customer group.
 
@@ -491,12 +491,12 @@ To get the pricing for a product you can simple use the following helpers:
 A quantity of 1 is implied when not passed.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant);
+$pricing = \GetCandy\Facades\Pricing::for($variant)->get();
 ```
 
 #### With Quantities
 ```php
-$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant)->get();
 ```
 
 #### With Customer Groups
@@ -504,15 +504,25 @@ $pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant);
 If you don't pass in a customer group, GetCandy will use the default, including any pricing that isn't specific to a customer group.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant)->get();
 
 // Or a single customer group
-$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant)->get();
 ```
 
 #### Specific to a user
+The PricingManager assumes you want the price for the current authenticated user.
+
+If you want to always return the guest price, you may use...
+
 ```php
-$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::guest()->for($variant)->get();
+```
+
+Or to specify a different user...
+
+```php
+$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant)->get();
 ```
 
 #### With a specific currency
@@ -520,7 +530,14 @@ $pricing = \GetCandy\Facades\Pricing::user($user)->for($variant);
 If you don't pass in a currency, the default is implied.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant)->get();
+```
+
+#### For a model
+Assuming you have a model that implements the `hasPrices` trait, such as a `ProductVariant`, you can use the following to retrieve pricing.
+
+```php
+$pricing = $variant->pricing()->qty(5)->get();
 ```
 
 ::: danger Be aware

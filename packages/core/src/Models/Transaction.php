@@ -6,6 +6,7 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\TransactionFactory;
+use GetCandy\Facades\Payments;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends BaseModel
@@ -62,5 +63,20 @@ class Transaction extends BaseModel
             'order_id',
             'currency_code'
         );
+    }
+
+    public function driver()
+    {
+        return Payments::driver($this->driver);
+    }
+
+    public function refund(int $amount, $notes = null)
+    {
+        return $this->driver()->refund($this, $amount, $notes);
+    }
+
+    public function capture(int $amount = 0)
+    {
+        return $this->driver()->capture($this, $amount);
     }
 }

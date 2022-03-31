@@ -333,7 +333,7 @@
     </style>
   </head>
   <body class="">
-    <span class="preheader">GetCandy - Reset Password</span>
+    <span class="preheader">GetCandy - {{ __('adminhub::auth.reset-password.title') }}</span>
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
         <td>&nbsp;</td>
@@ -349,8 +349,8 @@
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-                        <p>Hi there,</p>
-                        <p>Please follow this link to reset your password:</p>
+                        <p>{{ __('adminhub::global.hi') }}</p>
+                        <p>{{ __('adminhub::auth.follow-link.reset') }}</p>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
@@ -358,7 +358,7 @@
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
-                                      <td> <a href="{{ $link }}" target="_blank">Click here to reset</a> </td>
+                                      <td> <a href="{{ $link }}" target="_blank">{{ __('adminhub::auth.click-here.reset') }}</a> </td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -366,7 +366,7 @@
                             </tr>
                           </tbody>
                         </table>
-                        <p>Link not working? Copy this into your browser</p>
+                        <p>{{ __('adminhub::auth.reset-link.not_working') }}</p>
                         <p>{{$link}}</p>
                       </td>
                     </tr>

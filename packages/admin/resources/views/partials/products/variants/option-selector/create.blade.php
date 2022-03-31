@@ -37,7 +37,7 @@
         </x-hub::input.group>
       @endforeach
 
-      <x-hub::button theme="gray" wire:click="addValue">Add Value</x-hub::button>
+      <x-hub::button theme="gray" wire:click="addValue">{{ __('adminhub::components.products.option-creator.add_value_btn') }}</x-hub::button>
     </div>
 
     @if($errors->first('values'))
@@ -45,4 +45,4 @@
     @endif
   </div>
 
-  <x-hub::button wire:click="save">Create Option</x-hub::button>
+  <x-hub::button wire:click="save">{{ __('adminhub::components.products.option-creator.create_option_btn') }}</x-hub::button>

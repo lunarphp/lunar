@@ -134,6 +134,7 @@ class CollectionShow extends Component
             ],
             $this->withAttributesValidationRules(),
             $this->hasImagesValidationRules(),
+            $this->hasUrlsValidationRules()
         );
     }
 

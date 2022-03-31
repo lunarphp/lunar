@@ -14,6 +14,7 @@ use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
 use GetCandy\Base\OrderReferenceGenerator;
 use GetCandy\Base\OrderReferenceGeneratorInterface;
+use GetCandy\Base\PaymentManagerInterface;
 use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\ShippingManifest;
 use GetCandy\Base\ShippingManifestInterface;
@@ -28,6 +29,7 @@ use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
+use GetCandy\Managers\PaymentManager;
 use GetCandy\Managers\PricingManager;
 use GetCandy\Managers\TaxManager;
 use GetCandy\Models\Address;
@@ -36,7 +38,9 @@ use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
+use GetCandy\Models\Order;
 use GetCandy\Models\OrderLine;
+use GetCandy\Models\Transaction;
 use GetCandy\Models\Url;
 use GetCandy\Observers\AddressObserver;
 use GetCandy\Observers\CartLineObserver;
@@ -45,6 +49,8 @@ use GetCandy\Observers\CollectionObserver;
 use GetCandy\Observers\CurrencyObserver;
 use GetCandy\Observers\LanguageObserver;
 use GetCandy\Observers\OrderLineObserver;
+use GetCandy\Observers\OrderObserver;
+use GetCandy\Observers\TransactionObserver;
 use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -66,7 +72,9 @@ class GetCandyServiceProvider extends ServiceProvider
         'taxes',
         'cart',
         'orders',
+        'urls',
         'search',
+        'payments',
     ];
 
     protected $root = __DIR__.'/..';
@@ -128,6 +136,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->app->singleton(TaxManagerInterface::class, function ($app) {
             return $app->make(TaxManager::class);
+        });
+
+        $this->app->singleton(PaymentManagerInterface::class, function ($app) {
+            return $app->make(PaymentManager::class);
         });
     }
 
@@ -227,8 +239,10 @@ class GetCandyServiceProvider extends ServiceProvider
         Url::observe(UrlObserver::class);
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
+        Order::observe(OrderObserver::class);
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
+        Transaction::observe(TransactionObserver::class);
     }
 
     /**

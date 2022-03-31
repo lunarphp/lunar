@@ -74,7 +74,7 @@ class PricingManagerTest extends TestCase
             'customer_group_id' => CustomerGroup::factory(),
         ]);
 
-        $pricing = $manager->for($variant);
+        $pricing = $manager->for($variant)->get();
 
         $this->assertInstanceOf(PricingResponse::class, $pricing);
         $this->assertCount(0, $pricing->customerGroupPrices);
@@ -110,7 +110,7 @@ class PricingManagerTest extends TestCase
             'tier'           => 1,
         ]);
 
-        $pricing = $manager->for($variant);
+        $pricing = $manager->for($variant)->get();
 
         $this->assertInstanceOf(PricingResponse::class, $pricing);
 
@@ -156,7 +156,7 @@ class PricingManagerTest extends TestCase
         ]);
 
         $pricing = $manager->customerGroup($customerGroups->first())
-            ->qty(4)->for($variant);
+            ->qty(4)->for($variant)->get();
 
         $this->assertInstanceOf(PricingResponse::class, $pricing);
 
@@ -165,7 +165,7 @@ class PricingManagerTest extends TestCase
         $this->assertEquals($customerGroupPrice->id, $pricing->matched->id);
 
         $pricing = $manager->customerGroup($customerGroups->last())
-            ->qty(10)->for($variant);
+            ->qty(10)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertCount(0, $pricing->customerGroupPrices);
@@ -223,42 +223,42 @@ class PricingManagerTest extends TestCase
             'tier'           => 30,
         ]);
 
-        $pricing = $manager->qty(1)->for($variant);
+        $pricing = $manager->qty(1)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($base->id, $pricing->matched->id);
 
-        $pricing = $manager->qty(5)->for($variant);
+        $pricing = $manager->qty(5)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($base->id, $pricing->matched->id);
 
-        $pricing = $manager->qty(10)->for($variant);
+        $pricing = $manager->qty(10)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered10->id, $pricing->matched->id);
 
-        $pricing = $manager->qty(15)->for($variant);
+        $pricing = $manager->qty(15)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered10->id, $pricing->matched->id);
 
-        $pricing = $manager->qty(20)->for($variant);
+        $pricing = $manager->qty(20)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered20->id, $pricing->matched->id);
 
-        $pricing = $manager->qty(25)->for($variant);
+        $pricing = $manager->qty(25)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered20->id, $pricing->matched->id);
 
-        $pricing = $manager->qty(30)->for($variant);
+        $pricing = $manager->qty(30)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered30->id, $pricing->matched->id);
 
-        $pricing = $manager->qty(100)->for($variant);
+        $pricing = $manager->qty(100)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($tiered30->id, $pricing->matched->id);
@@ -304,12 +304,12 @@ class PricingManagerTest extends TestCase
             'tier'           => 1,
         ]);
 
-        $pricing = $manager->qty(1)->for($variant);
+        $pricing = $manager->qty(1)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($base->id, $pricing->matched->id);
 
-        $pricing = $manager->currency($secondCurrency)->qty(1)->for($variant);
+        $pricing = $manager->currency($secondCurrency)->qty(1)->for($variant)->get();
 
         $this->assertEquals($additional->id, $pricing->base->id);
         $this->assertEquals($additional->id, $pricing->matched->id);
@@ -357,13 +357,13 @@ class PricingManagerTest extends TestCase
             'customer_group_id' => $group->id,
         ]);
 
-        $pricing = $manager->qty(1)->user($user)->for($variant);
+        $pricing = $manager->qty(1)->user($user)->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($base->id, $pricing->matched->id);
 
         $user->customers()->attach($customer);
-        $pricing = $manager->qty(1)->user($user->refresh())->for($variant);
+        $pricing = $manager->qty(1)->user($user->refresh())->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($base->id, $pricing->matched->id);
@@ -371,7 +371,7 @@ class PricingManagerTest extends TestCase
 
         $customer->customerGroups()->attach($group);
 
-        $pricing = $manager->qty(1)->user($user->refresh())->for($variant);
+        $pricing = $manager->qty(1)->user($user->refresh())->for($variant)->get();
 
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($groupPrice->id, $pricing->matched->id);

@@ -99,7 +99,7 @@ $urlB->default // true
 
 ## Adding URL support to Models
 
-Out the box GetCandy has a few preconfigured models which have URLs
+Out the box GetCandy has a few pre-configured models which have URLs
 
 - Products
 - Collections
@@ -126,4 +126,34 @@ You will then have access to the `url` relationship which is Polymorphic.
 
 ```php
 $myModel->urls; // Collection
+```
+
+## Automatically generating URLs
+
+You can tell GetCandy to generate URLs for models that use the `HasUrls` trait automatically by setting the `generator` config option in `config/getcandy/urls.php`.
+
+By default this is set to `null` which means no URLs will be generated. To enable this, set the config like below:
+
+```php
+return [
+    'generator' => GetCandy\Generators\UrlGenerator::class
+];
+```
+
+By default this will use the default language and take the `name` attribute as the slug, you are of course free to use your own class for this. You just need to make sure there is a `handle` method which accepts a `Model`.
+
+```php
+<?php
+
+namspace App\Generators;
+
+use Illuminate\Database\Eloquent\Model;
+
+class MyCustomUrlGenerator
+{
+    public function handle(Model $model)
+    {
+        // ...
+    }
+}
 ```

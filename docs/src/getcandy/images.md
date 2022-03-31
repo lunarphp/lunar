@@ -4,7 +4,7 @@
 
 ## Overview
 
-For handling media across GetCandy we use the brilliant [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) package by Spatie. We are committed to only bringing in additional dependencies when absolutley makes sense and we feel in this case, the medialibrary package offers alot of features we would just end up trying to replicate anyway. Don't reinvent the wheel right?
+For handling media across GetCandy we use the brilliant [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) package by Spatie. We are committed to only bringing in additional dependencies when absolutely makes sense and we feel in this case, the medialibrary package offers a lot of features we would just end up trying to replicate anyway. Don't reinvent the wheel right?
 
 For uploading images in the hub we are using [FilePond](https://pqina.nl).
 

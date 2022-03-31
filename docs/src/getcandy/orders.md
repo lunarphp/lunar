@@ -99,7 +99,7 @@ This essentially does the same as above, except we already catch the exceptions 
 
 ## Modifying Orders
 
-If you need to programatically change the Order values or add in new behaviour, you will want to extend the Order system.
+If you need to programmatically change the Order values or add in new behaviour, you will want to extend the Order system.
 
 You can find out more in the Extending GetCandy section for [Order Modifiers](/extending/order-modifiers).
 
@@ -166,7 +166,7 @@ If you are using the `createOrder` method on a cart, this is all handled for you
     'order_id' => 1,
     'country_id' => 1,
     'title' => null,
-    'first_name' => 'Jacbob',
+    'first_name' => 'Jacob',
     'last_name' => null,
     'company_name' => null,
     'line_one' => '123 Foo Street',

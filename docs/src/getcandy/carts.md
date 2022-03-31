@@ -104,7 +104,7 @@ Each `CartLine` has access to the same properties as a Cart does.
 
 ## Modifying Carts
 
-If you need to programatically change the Cart values, e.g. custom discounts or prices, you will want to extend the Cart. 
+If you need to programmatically change the Cart values, e.g. custom discounts or prices, you will want to extend the Cart.
 
 You can find out more in the Extending GetCandy section for [Cart Modifiers](/extending/cart-modifiers).
 
@@ -227,7 +227,7 @@ CartSession::add($purchasable, $quantity);
 CartSession::updateLine($cartLineId, $quantity, $meta);
 ```
 
-### Update multiplate lines
+### Update multiple lines
 ```php
 CartSession::updateLines(collect([
     [
@@ -306,7 +306,7 @@ GetCandy\Models\SavedCart
 |:-|:-|
 |id||
 |cart_id||
-|name|Refereance name for the saved cart.|
+|name|Reference name for the saved cart.|
 |created_at||
 |updated_at||
 
