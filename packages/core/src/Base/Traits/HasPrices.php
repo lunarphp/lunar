@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base\Traits;
 
+use GetCandy\Facades\Pricing;
 use GetCandy\Models\Price;
 
 trait HasPrices
@@ -25,5 +26,15 @@ trait HasPrices
     public function basePrices()
     {
         return $this->prices()->whereTier(1)->whereNull('customer_group_id');
+    }
+
+    /**
+     * Return a PricingManager for this model.
+     *
+     * @return \GetCandy\Managers\PricingManager
+     */
+    public function pricing()
+    {
+        return Pricing::for($this);
     }
 }
