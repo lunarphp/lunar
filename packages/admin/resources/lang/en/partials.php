@@ -144,6 +144,20 @@ return [
     'shipping.manual_volume_btn' => 'Click to set manually',
     'shipping.auto_volume_btn'   => 'Use generated volume',
     /**
+     * Customer Addresses.
+     */
+    'customers.addresses.billing_default'   => 'Billing Default',
+    'customers.addresses.shipping_default'   => 'Shipping Default',
+    /**
+     * Customers.
+     */
+    'customers.purchase-history.purchasable' => 'Purchasable',
+    'customers.purchase-history.identifier' => 'Identifier',
+    'customers.purchase-history.quantity' => 'Quantity',
+    'customers.purchase-history.revenue' => 'Revenue',
+    'customers.purchase-history.order_count' => 'No. Orders',
+    'customers.purchase-history.last_ordered' => 'Last Ordered',
+    /**
      * Orders.
      */
     'orders.totals.sub_total' => 'Sub Total',
@@ -167,4 +181,10 @@ return [
      */
     'forms.channel.delete_channel'                    => 'Delete channel',
     'forms.channel.channel_name_delete'               => 'Enter the name of the channel to delete it'
+    /**
+     * Transactions.
+     */
+    'orders.transactions.capture' => 'Captured',
+    'orders.transactions.intent' => 'Intent',
+    'orders.transactions.refund' => 'Refunded',
 ];

@@ -8,6 +8,7 @@ use GetCandy\Models\Channel;
 use GetCandy\Models\Order;
 use GetCandy\Models\OrderAddress;
 use GetCandy\Models\State;
+use Illuminate\Support\Arr;
 use Livewire\Component;
 
 class OrderShow extends Component
@@ -90,6 +91,22 @@ class OrderShow extends Component
      * @var bool
      */
     public bool $showRefund = false;
+
+    /**
+     * Whether to show the capture panel.
+     *
+     * @var bool
+     */
+    public bool $showCapture = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $listeners = [
+        'captureSuccess',
+        'refundSuccess',
+        'cancelRefund',
+    ];
 
     /**
      * {@inheritDoc}
@@ -244,6 +261,135 @@ class OrderShow extends Component
     }
 
     /**
+     * Returns whether this order still requires capture.
+     *
+     * @return void
+     */
+    public function getRequiresCaptureProperty()
+    {
+        $captures = $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'capture';
+        })->count();
+
+        $intents = $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'intent';
+        })->count();
+
+        if (! $intents) {
+            return false;
+        }
+
+        return ! $captures;
+    }
+
+    /**
+     * Return the order transactions.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTransactionsProperty()
+    {
+        return $this->order->transactions()->orderBy('created_at', 'desc')->get();
+    }
+
+    /**
+     * Return the total amount captured.
+     *
+     * @return int
+     */
+    public function getCaptureTotalProperty()
+    {
+        return $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'capture';
+        })->sum('amount.value');
+    }
+
+    /**
+     * Return the total amount refunded.
+     *
+     * @return int
+     */
+    public function getRefundTotalProperty()
+    {
+        return $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'refund';
+        })->sum('amount.value');
+    }
+
+    /**
+     * Return the total amount refunded.
+     *
+     * @return int
+     */
+    public function getIntentTotalProperty()
+    {
+        return $this->transactions->filter(function ($transaction) {
+            return $transaction->type == 'intent';
+        })->sum('amount.value');
+    }
+
+    /**
+     * Return whether this order is partially refunded.
+     *
+     * @return void
+     */
+    public function getPaymentStatusProperty()
+    {
+        $total = $this->intentTotal ?: $this->captureTotal;
+
+        if (! $total) {
+            return 'offline';
+        }
+
+        if (
+            ($this->refundTotal && $this->refundTotal < $total) ||
+            ($this->captureTotal && $this->captureTotal < $this->intentTotal)
+        ) {
+            return 'partial-refund';
+        }
+
+        if ($this->refundTotal >= $total) {
+            return 'refunded';
+        }
+
+        if ($this->captureTotal >= $this->intentTotal) {
+            return 'captured';
+        }
+
+        return 'uncaptured';
+    }
+
+    /**
+     * Handle when a capture is successful.
+     *
+     * @return void
+     */
+    public function captureSuccess()
+    {
+        $this->showCapture = false;
+    }
+
+    /**
+     * Handle when a refund is successful.
+     *
+     * @return void
+     */
+    public function refundSuccess()
+    {
+        $this->showRefund = false;
+    }
+
+    /**
+     * Cancel the refund process.
+     *
+     * @return void
+     */
+    public function cancelRefund()
+    {
+        $this->showRefund = false;
+    }
+
+    /**
      * Handle when selected order lines update.
      *
      * @param  array  $val
@@ -328,7 +474,25 @@ class OrderShow extends Component
      */
     public function getShippingEqualsBillingProperty()
     {
-        return optional($this->billingAddress)->postcode == optional($this->shippingAddress)->postcode;
+        if (! $this->shippingAddress || ! $this->billingAddress) {
+            return false;
+        }
+
+        $fieldsToCheck = Arr::except(
+            $this->billingAddress->getAttributes(),
+            ['id', 'created_at', 'updated_at', 'order_id', 'type', 'meta']
+        );
+
+        // Is the same until proven otherwise
+        $isSame = true;
+
+        foreach ($fieldsToCheck as $field => $value) {
+            if ($this->shippingAddress->getAttribute($field) != $value) {
+                $isSame = false;
+            }
+        }
+
+        return $isSame;
     }
 
     /**

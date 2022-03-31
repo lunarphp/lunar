@@ -4,6 +4,7 @@ namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Products;
 
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
+use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -17,6 +18,10 @@ class CustomersShowTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Currency::factory()->create([
+            'default' => true,
+        ]);
     }
 
     /** @test */

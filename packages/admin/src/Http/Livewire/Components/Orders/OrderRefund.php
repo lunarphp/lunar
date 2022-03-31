@@ -2,11 +2,15 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\Order;
+use GetCandy\Models\Transaction;
 use Livewire\Component;
 
 class OrderRefund extends Component
 {
+    use Notifies;
+
     /**
      * The amount to refund.
      *
@@ -15,11 +19,11 @@ class OrderRefund extends Component
     public $amount = 0;
 
     /**
-     * The fail safe confirm text.
+     * Confirm the refund.
      *
      * @var string
      */
-    public string $confirmText = '';
+    public bool $confirmed = false;
 
     /**
      * Any notes for the refund.
@@ -29,11 +33,25 @@ class OrderRefund extends Component
     public string $notes = '';
 
     /**
+     * The transaction id to refund.
+     *
+     * @var string|int
+     */
+    public $transaction;
+
+    /**
      * The instance of the order to refund.
      *
      * @var Order
      */
     public Order $order;
+
+    /**
+     * The refund error message.
+     *
+     * @var bool
+     */
+    public string $refundError = '';
 
     /**
      * {@inheritDoc}
@@ -42,6 +60,7 @@ class OrderRefund extends Component
      */
     protected $listeners = [
         'updateRefundAmount',
+        'captureSuccess',
     ];
 
     /**
@@ -51,9 +70,22 @@ class OrderRefund extends Component
     {
         return [
             'amount' => 'required|numeric|min:1',
-            'confirmText' => 'required',
+            'confirmed' => 'required',
             'notes' => 'nullable|string',
+            'transaction' => 'required',
         ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mount()
+    {
+        if ($this->charges->count() == 1) {
+            $this->transaction = $this->charges->first()->id;
+        }
+
+        $this->amount = $this->availableToRefund / 100;
     }
 
     /**
@@ -68,13 +100,53 @@ class OrderRefund extends Component
     }
 
     /**
-     * Whether the confirmText matches what is required to send the refund.
+     * Return the available charges.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getChargesProperty()
+    {
+        return $this->order->transactions()->whereType('capture')->whereSuccess(true)->get();
+    }
+
+    /**
+     * Return the existing refunds.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getRefundsProperty()
+    {
+        return $this->order->transactions()->whereType('refund')->whereSuccess(true)->get();
+    }
+
+    /**
+     * Return the amount that's available for refunding.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAvailableToRefundProperty()
+    {
+        return $this->charges->sum('amount.value') - $this->refunds->sum('amount.value');
+    }
+
+    /**
+     * Return the amount that's available for refunding.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getCanBeRefundedProperty()
+    {
+        return $this->availableToRefund > 0;
+    }
+
+    /**
+     * Return the selected transaction model.
      *
      * @return void
      */
-    public function getIsConfirmedProperty()
+    public function getTransactionModelProperty()
     {
-        return $this->confirmText === __('adminhub::components.orders.refund.confirm_text');
+        return Transaction::find($this->transaction);
     }
 
     /**
@@ -84,7 +156,50 @@ class OrderRefund extends Component
      */
     public function refund()
     {
+        $this->refundError = '';
+
         $this->validate();
+
+        $response = $this->transactionModel->refund($this->amount * 100, $this->notes);
+
+        if (! $response->success) {
+            $this->emit('refundError', $this->transaction);
+
+            $this->refundError = $response->message;
+
+            $this->notify(
+                message: 'There was a problem with the refund',
+                level: 'error'
+            );
+
+            return;
+        }
+
+        $this->emit('refundSuccess', $this->transaction);
+
+        $this->transaction = null;
+        $this->amount = $this->availableToRefund / 100;
+        $this->notes = '';
+        $this->confirmed = false;
+
+        $this->notify(
+            message: 'Refund successful',
+        );
+    }
+
+    /**
+     * Cancel the refund.
+     *
+     * @return void
+     */
+    public function cancel()
+    {
+        $this->transaction = null;
+        $this->amount = $this->availableToRefund / 100;
+        $this->notes = '';
+        $this->confirmed = false;
+
+        $this->emit('cancelRefund');
     }
 
     /**

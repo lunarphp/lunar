@@ -136,6 +136,7 @@ class OrderTest extends TestCase
         $this->assertCount(0, $order->transactions);
 
         $transaction = Transaction::factory()->make()->toArray();
+
         unset($transaction['currency']);
 
         $order->transactions()->create($transaction);
@@ -160,22 +161,22 @@ class OrderTest extends TestCase
         $charge = Transaction::factory()->create([
             'order_id' => $order->id,
             'amount'   => 200,
-            'refund'   => false,
+            'type'   => 'capture',
         ]);
 
         $refund = Transaction::factory()->create([
             'order_id' => $order->id,
-            'refund'   => true,
+            'type' => 'refund',
         ]);
 
         $order = $order->refresh();
 
         $this->assertCount(2, $order->transactions);
 
-        $this->assertCount(1, $order->charges);
+        $this->assertCount(1, $order->captures);
         $this->assertCount(1, $order->refunds);
 
-        $this->assertEquals($charge->id, $order->charges->first()->id);
+        $this->assertEquals($charge->id, $order->captures->first()->id);
         $this->assertEquals($refund->id, $order->refunds->first()->id);
     }
 

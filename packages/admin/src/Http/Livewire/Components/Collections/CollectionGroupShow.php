@@ -8,6 +8,7 @@ use GetCandy\Jobs\Collections\RebuildCollectionTree;
 use GetCandy\Models\Collection;
 use GetCandy\Models\CollectionGroup;
 use GetCandy\Models\Language;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -82,6 +83,8 @@ class CollectionGroupShow extends Component
      */
     public $searchTerm = null;
 
+    public $slug = null;
+
     /**
      * Return the validation rules.
      *
@@ -89,10 +92,16 @@ class CollectionGroupShow extends Component
      */
     public function rules()
     {
-        return [
+        $rules = [
             'group.name'      => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
             'collection.name' => 'required|string|max:255',
         ];
+
+        if ($this->slugIsRequired) {
+            $rules['slug'] = 'required|string|max:255';
+        }
+
+        return $rules;
     }
 
     /**
@@ -260,6 +269,28 @@ class CollectionGroupShow extends Component
     }
 
     /**
+     * Returns whether the slug should be required.
+     *
+     * @return bool
+     */
+    public function getSlugIsRequiredProperty()
+    {
+        return config('getcandy.urls.required', false) &&
+            ! config('getcandy.urls.generator', null);
+    }
+
+    /**
+     * Handler for when the slug is updated.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function updatedSlug($value)
+    {
+        $this->slug = Str::slug($value);
+    }
+
+    /**
      * Delete the collection.
      *
      * @return void
@@ -283,11 +314,13 @@ class CollectionGroupShow extends Component
      */
     public function createCollection()
     {
-        $this->validateOnly('collection.name', null, [
+        $rules = Arr::only($this->rules(), ['collection.name', 'slug']);
+
+        $this->validate($rules, [
             'collection.name.required' => __('adminhub::validation.generic_required'),
         ]);
 
-        Collection::create([
+        $collection = Collection::create([
             'collection_group_id' => $this->group->id,
             'attribute_data'      => collect([
                 'name' => new TranslatedText([
@@ -296,7 +329,16 @@ class CollectionGroupShow extends Component
             ]),
         ], $this->collectionParent);
 
+        if ($this->slug) {
+            $collection->urls()->create([
+                'slug' => $this->slug,
+                'default' => true,
+                'language_id' => Language::getDefault()->id,
+            ]);
+        }
+
         $this->collection = null;
+        $this->slug = null;
 
         $this->showCreateForm = false;
         $this->notify(

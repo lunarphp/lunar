@@ -39,6 +39,15 @@
       </div>
 
       {{--
+        Top Slots
+       --}}
+        @foreach($this->getSlotsByPosition('top') as $slot)
+       <div id="{{ $slot->handle }}">
+        <div>@livewire($slot->component, ['slotModel' => $product], key("top-slot-{{ $slot->handle }}"))</div>
+       </div>
+       @endforeach
+
+      {{--
         Basic Information
        --}}
       <div id="basic-information">
@@ -119,6 +128,15 @@
        </div>
 
       {{--
+        Bottom Slots
+       --}}
+        @foreach($this->getSlotsByPosition('bottom') as $slot)
+       <div id="{{ $slot->handle }}">
+        <div>@livewire($slot->component, ['slotModel' => $product], key("bottom-slot-{{ $slot->handle }}"))</div>
+       </div>
+       @endforeach
+
+      {{--
         Delete area
        --}}
        @if($product->id)
@@ -179,6 +197,19 @@
   <div>
     <aside class="fixed hidden px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3 md:block">
       <nav class="space-y-2" aria-label="Sidebar">
+        @foreach($this->getSlotsByPosition('top') as $slot)
+        <a
+          href="#{{ $slot->handle }}"
+          class="@if(!empty($this->getSlotErrorsByHandle($slot->handle))) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          aria-current="page"
+        >
+          @if(!empty($this->getSlotErrorsByHandle($slot->handle)))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          <span class="truncate">
+            {{ $slot->title }}
+          </span>
+        </a>
+        @endforeach
+
         @foreach($this->sideMenu as $item)
         <a
           href="#{{ $item['id'] }}"
@@ -188,6 +219,19 @@
           @if(!empty($item['has_errors']))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
           <span class="truncate">
             {{ $item['title'] }}
+          </span>
+        </a>
+        @endforeach
+
+        @foreach($this->getSlotsByPosition('bottom') as $slot)
+        <a
+          href="#{{ $slot->handle }}"
+          class="@if(!empty($this->getSlotErrorsByHandle($slot->handle))) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+          aria-current="page"
+        >
+          @if(!empty($this->getSlotErrorsByHandle($slot->handle)))<x-hub::icon ref="exclamation-circle" class="w-4 mr-1 text-red-600" />@endif
+          <span class="truncate">
+            {{ $slot->title }}
           </span>
         </a>
         @endforeach

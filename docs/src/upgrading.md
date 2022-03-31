@@ -32,6 +32,21 @@ php artisan getcandy:meilisearch:setup
 
 ## 2.0-beta11
 
+
+### PricingManager changes
+The `PricingManager` has been updated to use the currently authorised user by default for price requests and there is a slight syntax breaking change as follows...
+
+Before
+```php
+$pricing = \GetCandy\Facades\Pricing::for($variant);
+```
+
+After
+```php
+$pricing = \GetCandy\Facades\Pricing::for($variant)->get();
+```
+
+### Disabling Variants in the Admin Hub
 There is a new configuration option under `getcandy-hub/products.php` to disable product variants. This is useful if your storefront will never need to generate different product options and you don't want staff members to be able to do it accidentally.
 
 ```
@@ -101,6 +116,12 @@ php artisan getcandy:meilisearch:setup
 ```
 
 This change removes the `_{locale}` suffix from certain indexes, so those can be removed.
+
+### Changes to URL generation - High Impact
+
+There is a new config file under `config/urls.php` which will define if URL's should be generated for models that use them and how they should be generated. By default this has been set to `true` so URL's are automatically generated.
+
+If you have your own routine for URL's then you should either implement your own generator and set it to the `generator` config option, or turn off automatic generation.
 
 ## 2.0-beta10
 
