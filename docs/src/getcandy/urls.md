@@ -99,7 +99,7 @@ $urlB->default // true
 
 ## Adding URL support to Models
 
-Out the box GetCandy has a few preconfigured models which have URLs
+Out the box GetCandy has a few pre-configured models which have URLs
 
 - Products
 - Collections

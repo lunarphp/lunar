@@ -8,7 +8,7 @@ Collections, although not strictly the same, are akin to Categories. They serve 
 
 For example, you may have a Collection called "Red T-Shirts" and within that collection specify that any product which has the tag "Red" and "T-Shirt" to be included.
 
-A collection can also have other collections underneath it, forming a nested set hierachy.
+A collection can also have other collections underneath it, forming a nested set hierarchy.
 
 A collection must also belong to a collection group, this allows you to have greater flexibility when building out things like Menu's and Landing pages.
 

@@ -1,6 +1,6 @@
 # Staff Members
 
-Your staff members are essentially users who can log in to the Admin Hub and have permissions assigned to them. Staff members are not to be confused with users in the `users` table, the Admin Hub uses a different table for authenticating users in the hub. This is a design choice to ensure that your customers can never accidently be given access.
+Your staff members are essentially users who can log in to the Admin Hub and have permissions assigned to them. Staff members are not to be confused with users in the `users` table, the Admin Hub uses a different table for authenticating users in the hub. This is a design choice to ensure that your customers can never accidentally be given access.
 
 ## Permissions
 

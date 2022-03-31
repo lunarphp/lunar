@@ -4,7 +4,7 @@
 
 ## Overview
 
-Configuration for GetCandy is separated into individual files under `config/getcandy` for core and `config/getcandy-hub` for admin hub. You can either override the different config options adhoc or you can publish all the configration options and tweak as you see fit.
+Configuration for GetCandy is separated into individual files under `config/getcandy` for core and `config/getcandy-hub` for admin hub. You can either override the different config options adhoc or you can publish all the configuration options and tweak as you see fit.
 
 ```bash
 php artisan vendor:publish --tag=getcandy

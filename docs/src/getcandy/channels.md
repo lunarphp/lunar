@@ -8,7 +8,7 @@ Default `webstore`.
 
 ## Assigning channels to models.
 
-You can assign Eloquent models to different channels and specify whether they are enabled permenantly or whether they should be scheduled to be enabled.
+You can assign Eloquent models to different channels and specify whether they are enabled permanently or whether they should be scheduled to be enabled.
 
 In order to add this kind of functionality to your model, you need to add the `HasChannels` trait.
 

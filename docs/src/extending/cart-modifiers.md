@@ -4,7 +4,7 @@
 
 ## Overview
 
-There may instances where you need to make changes to a cart or cart line, before and/or after calculations have taken place. For this GetCandy usees `Pipelines`. The cart/cart lines are pumped through these pipelines and you are free to make any changes you need either before or after calculation:
+There may instances where you need to make changes to a cart or cart line, before and/or after calculations have taken place. For this GetCandy uses `Pipelines`. The cart/cart lines are pumped through these pipelines and you are free to make any changes you need either before or after calculation:
 
 ## Adding a Cart Modifier
 
