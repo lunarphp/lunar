@@ -40,6 +40,7 @@ class AddressObserver
         if ($address->shipping_default) {
             $address = Address::query()
                 ->whereCustomerId($address->customer_id)
+                ->where('id', '!=', $address->id)
                 ->whereShippingDefault(true)
                 ->first();
 
@@ -60,6 +61,7 @@ class AddressObserver
         if ($address->billing_default) {
             $address = Address::query()
                 ->whereCustomerId($address->customer_id)
+                ->where('id', '!=', $address->id)
                 ->whereBillingDefault(true)
                 ->first();
 

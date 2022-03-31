@@ -13,7 +13,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}" rel="stylesheet">
 
     <style>
@@ -34,7 +34,7 @@
     @livewireStyles
   </head>
   <body>
-
+    {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
     <!--
       This example requires Tailwind CSS v2.0+
 

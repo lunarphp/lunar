@@ -50,4 +50,9 @@ class ProductShow extends AbstractProduct
         // dd($this->attributeData);
         return view('adminhub::livewire.components.products.show')->layout('adminhub::layouts.base');
     }
+
+    protected function getSlotContexts()
+    {
+        return ['product.all', 'product.show'];
+    }
 }

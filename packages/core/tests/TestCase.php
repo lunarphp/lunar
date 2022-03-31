@@ -19,6 +19,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // additional setup
         Config::set('providers.users.model', User::class);
         Config::set('getcandy.urls.generator', TestUrlGenerator::class);
+        activity()->disableLogging();
     }
 
     protected function getPackageProviders($app)
