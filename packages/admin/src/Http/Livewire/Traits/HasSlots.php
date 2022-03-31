@@ -153,7 +153,6 @@ trait HasSlots
         $model = $this->getSlotModel();
 
         $this->emit('updateSlotModel', get_class($model), $model->getKey());
-
     }
 
     public function saveSlotData($handle, $data)
