@@ -14,6 +14,7 @@ use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Models\TaxClass;
+use GetCandy\Models\Url;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -70,6 +71,8 @@ class ProductCreateTest extends TestCase
 
         $currency = Currency::getDefault();
 
+        $language = Language::getDefault();
+
         $productB = Product::factory()->create([
             'status' => 'published',
             'brand'  => 'PROB',
@@ -91,6 +94,8 @@ class ProductCreateTest extends TestCase
             ->set('variant.sku', '1234')
             ->set('variant.tax_ref', 'CUSTOMTAX')
             ->set("basePrices.{$currency->code}.price", 1234)
+            ->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
             ->set('associations', collect([
                 [
                     'inverse' => false,
@@ -144,5 +149,11 @@ class ProductCreateTest extends TestCase
         ]);
 
         $this->assertDatabaseCount((new Price)->getTable(), 1);
+
+        $this->assertDatabaseHas((new Url)->getTable(), [
+            'slug' => 'foo-bar',
+            'element_type' => Product::class,
+            'element_id' => $component->get('product.id'),
+        ]);
     }
 }

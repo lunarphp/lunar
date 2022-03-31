@@ -72,6 +72,7 @@ class GetCandyServiceProvider extends ServiceProvider
         'taxes',
         'cart',
         'orders',
+        'urls',
         'search',
     ];
 
