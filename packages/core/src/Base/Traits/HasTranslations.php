@@ -26,7 +26,8 @@ trait HasTranslations
             return null;
         }
 
-        $value = Arr::get($values, $locale ?: app()->getLocale());
+        $locale = $locale ?: app()->getLocale();
+        $value = is_array($values) ? Arr::get($values, $locale) : get_object_vars($values)[$locale];
 
         return $value ?: Arr::get(
             $values,
