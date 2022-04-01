@@ -16,7 +16,7 @@
         </div>
       </x-hub::button>
 
-      {{-- @if(count($selected)) --}}
+      @if(count($selected))
       <x-hub::button theme="gray" size="sm" wire:click="$set('showUpdateStatus', true)">
         <div class="flex items-center">
           <x-hub::icon
@@ -27,7 +27,7 @@
           {{ __('adminhub::orders.index.update_status.btn') }}
         </div>
       </x-hub::button>
-      {{-- @endif --}}
+      @endif
     </div>
   </div>
 
