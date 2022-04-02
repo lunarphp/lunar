@@ -78,7 +78,7 @@ use Livewire\Livewire;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
-    protected $configFiles = ['products', 'customers', 'system'];
+    protected $configFiles = ['products', 'customers', 'system', 'sidebar'];
 
     protected $root = __DIR__.'/..';
 
