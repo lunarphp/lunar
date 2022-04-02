@@ -18,6 +18,8 @@ class Menu extends Component
         $slot = MenuFacade::slot($handle);
         $this->items = $slot->getItems();
         $this->sections = $slot->getSections();
+
+        $this->items = collect($this->items)->sortBy('position');
     }
 
     /**
