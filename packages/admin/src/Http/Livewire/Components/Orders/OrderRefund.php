@@ -60,7 +60,6 @@ class OrderRefund extends Component
      */
     protected $listeners = [
         'updateRefundAmount',
-        'captureSuccess',
     ];
 
     /**
