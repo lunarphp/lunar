@@ -32,8 +32,7 @@ class SidebarMenu
                 __('adminhub::menu.sidebar.index')
             )->handle('hub.index')
             ->route('hub.index')
-            ->icon('chart-square-bar')
-            ->position(0);
+            ->icon('chart-square-bar');
         });
 
         return $this;
@@ -57,8 +56,7 @@ class SidebarMenu
                 __('adminhub::menu.sidebar.products')
             )->handle('hub.products')
             ->route('hub.products.index')
-            ->icon('shopping-bag')
-            ->position(1);
+            ->icon('shopping-bag');
         });
 
         $slot->addItem(function ($item) {
@@ -66,8 +64,7 @@ class SidebarMenu
                 __('adminhub::menu.sidebar.product-types')
             )->handle('hub.product-type')
             ->route('hub.product-types.index')
-            ->icon('pencil')
-            ->position(2);
+            ->icon('pencil');
         });
 
         $slot->addItem(function ($item) {
@@ -75,8 +72,7 @@ class SidebarMenu
                 __('adminhub::menu.sidebar.collections')
             )->handle('hub.collection')
             ->route('hub.collection-groups.index')
-            ->icon('collection')
-            ->position(3);
+            ->icon('collection');
         }, 'products');
 
         // $orders = $slot->section('order-processing')->name(
@@ -88,8 +84,7 @@ class SidebarMenu
                 __('adminhub::menu.sidebar.orders')
             )->handle('hub.orders')
             ->route('hub.orders.index')
-            ->icon('cash')
-            ->position(4);
+            ->icon('cash');
         });
 
         $slot->addItem(function ($item) {
@@ -97,8 +92,7 @@ class SidebarMenu
                 __('adminhub::menu.sidebar.customers')
             )->handle('hub.customers')
             ->route('hub.customers.index')
-            ->icon('users')
-            ->position(5);
+            ->icon('users');
         });
 
         return $this;

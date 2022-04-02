@@ -25,8 +25,6 @@ class Menu extends Component
                 config('getcandy-hub.sidebar.order')
             );
         });
-
-        // $this->items = collect($this->items)->sortBy('position');
     }
 
     /**
