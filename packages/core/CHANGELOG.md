@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `Dropdown`, `ListField` and `Number` field types now implement the `JsonSerializable` interface.
 - When deleting a record that has URLs, if it wasn't soft deleted, there is now a clean up routine to remove any existing URLs
 - When running the `getcandy:meilisearch:setup` it will now wait for a period whilst the index is created before continuing. By [@lucasvmds](https://github.com/lucasvmds)
+- `translate` method will now consider non array values passed and use the `$locale` parameter correctly [#251](https://github.com/getcandy/getcandy/issues/251). By [@armezit](https://github.com/armezit)
 
 ### Changed
 
