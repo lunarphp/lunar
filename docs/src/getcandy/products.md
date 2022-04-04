@@ -85,7 +85,7 @@ If you decide to delete an attribute, this will cause the association to be drop
 :::
 
 ### Retrieving the product type relationship
-If you have a product, you can fetch it's product like like so:
+If you have a product, you can fetch its product type like like so:
 
 ```php
 $product->productType;
@@ -592,7 +592,7 @@ $productType = GetCandy\Models\ProductType::create([
 ```
 
 ::: tip Note
-This example assumes we already for Attributes set up for name and description and that they're assigned to the product type.
+This example assumes we already have Attributes set up for name and description and that they're assigned to the product type.
 :::
 
 ### Create the initial product
