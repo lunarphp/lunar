@@ -19,12 +19,12 @@ class Menu extends Component
         $this->items = $slot->getItems();
         $this->sections = $slot->getSections();
 
-        $this->items = $this->items->sortBy(function ($item) {
-            return array_search(
-                $item->handle,
-                config('getcandy-hub.sidebar.order')
-            );
-        });
+        $this->coreItems = collect($this->items)->filter(fn ($item) => ! $item->order);
+        $this->addonItems = collect($this->items)
+            ->filter(fn ($item) => $item->order)
+            ->sortBy(fn ($item) => $item->order);
+
+        $this->items = $this->coreItems->merge($this->addonItems);
     }
 
     /**
