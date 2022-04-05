@@ -67,7 +67,7 @@ class Dashboard extends Component
     {
         $table = (new OrderAddress())->getTable();
 
-        $query = DB::table($table)->where("{$table}.type", '=', 'billing')
+        $query = DB::connection((new OrderAddress())->getConnectionName())->table($table)->where("{$table}.type", '=', 'billing')
             ->select(
                 DB::RAW('COUNT(*) as count'),
                 "{$table}.contact_email"
@@ -77,7 +77,7 @@ class Dashboard extends Component
                 now()->parse($this->range['to']),
             ])->whereNotNull("{$table}.contact_email")
             ->leftJoin(
-                DB::raw((new OrderAddress())->getTable().' address_join'),
+                DB::raw($table.' address_join'),
                 'address_join.contact_email',
                 '=',
                 "{$table}.contact_email"
@@ -286,7 +286,8 @@ class Dashboard extends Component
         $customerUserTable = $customer->users()->getTable();
         $customerCustomerGroupTable = $customer->customerGroups()->getTable();
 
-        $orders = DB::table($ordersTable, 'o')
+        $orders = DB::connection((new Order())->getConnectionName())
+            ->table($ordersTable, 'o')
             ->selectRaw('
                 ccg.customer_group_id,
                 count(o.id) as order_count
