@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+[Unpublished]
+
+## Fixed
+
+- Updated exchange rate validation to allow values greater than 255.
+
+
 ## 2.0-beta11 - 2022-04-04
 
 ## Added
