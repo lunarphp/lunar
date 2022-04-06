@@ -30,7 +30,7 @@ class ProductTypeCreate extends AbstractProductType
     protected function rules()
     {
         return [
-            'productType.name' => 'required|string|unique:'.$this->productType->getTable().',name',
+            'productType.name' => 'required|string|unique:'.get_class($this->productType).',name',
         ];
     }
 

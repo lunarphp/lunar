@@ -40,7 +40,7 @@ class Account extends Component
         return [
             'staff.firstname' => 'required|string',
             'staff.lastname'  => 'nullable',
-            'staff.email'     => 'email|required|unique:'.$this->staff->getTable().',email,'.$this->staff->id,
+            'staff.email'     => 'email|required|unique:'.get_class($this->staff).',email,'.$this->staff->id,
             'currentPassword' => 'nullable|current_password:staff',
             'password'        => 'nullable|min:8',
         ];
