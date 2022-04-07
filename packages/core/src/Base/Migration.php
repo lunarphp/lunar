@@ -20,9 +20,9 @@ abstract class Migration extends BaseMigration
     {
         $this->prefix = config('getcandy.database.table_prefix');
     }
-    
+
     /**
-     * Use the connection specified in config
+     * Use the connection specified in config.
      *
      * @return void
      */
@@ -31,7 +31,7 @@ abstract class Migration extends BaseMigration
         if ($connection = config('getcandy.database.connection', false)) {
             return $connection;
         }
-        
+
         return parent::getConnection();
     }
 }
