@@ -292,6 +292,43 @@ class CartManagerTest extends TestCase
     }
 
     /** @test */
+    public function can_add_multiple_cart_lines()
+    {
+        $cart = Cart::factory()->create();
+
+        $purchasableA = ProductVariant::factory()->create();
+        $purchasableB = ProductVariant::factory()->create();
+
+        $lineA = CartLine::factory()->create(
+            ['quantity' => 1, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableA->id],
+        );
+
+        $lineB = CartLine::factory()->create(
+            ['quantity' => 2, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableB->id],
+        );
+
+        $lines = collect([$lineA, $lineB]);
+
+        $this->assertCount(0, $cart->lines);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+            'meta' => null,
+        ]);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 2,
+            'meta' => null,
+        ]);
+
+        $cart->getManager()->addLines($lines);
+
+        $this->assertCount(2, $cart->refresh()->lines);
+    }
+
+    /** @test */
     public function can_update_cart_line_when_purchasable_exists()
     {
         $cart = Cart::factory()->create();
