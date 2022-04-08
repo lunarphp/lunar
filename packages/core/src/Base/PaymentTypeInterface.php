@@ -44,11 +44,11 @@ interface PaymentTypeInterface
     public function setConfig(array $config): self;
 
     /**
-     * Release the payment.
+     * Authorize the payment.
      *
      * @return void
      */
-    public function release(): PaymentRelease;
+    public function authorize(): PaymentRelease;
 
     /**
      * Refund a transaction for a given amount.

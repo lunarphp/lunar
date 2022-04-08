@@ -31,7 +31,7 @@ class PaymentsTest extends TestCase
 
         $this->assertInstanceOf(TestPaymentDriver::class, Payments::driver('testing'));
 
-        $result = Payments::driver('testing')->release();
+        $result = Payments::driver('testing')->authorize();
 
         $this->assertInstanceOf(PaymentRelease::class, $result);
     }

@@ -55,10 +55,10 @@ $driver->setData([
 ]);
 ```
 
-Finally, we can release the payment.
+Finally, we can authorize the payment.
 
 ```php
-$driver->release();
+$driver->authorize();
 ```
 
 

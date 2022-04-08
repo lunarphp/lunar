@@ -54,7 +54,7 @@ class CustomPayment extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function release(): PaymentRelease
+    public function authorize(): PaymentRelease
     {
         if (!$this->order) {
             if (!$this->order = $this->cart->order) {
@@ -94,7 +94,7 @@ This is the most basic implementation of a driver, you can see we are extending 
 #### Releasing payments
 
 ```php
-public function release();
+public function authorize();
 ```
 
 This is where you'd check the payment details which have been passed in, create any transactions for the order and return the response.

@@ -13,7 +13,7 @@ class TestPaymentDriver extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function release(): PaymentRelease
+    public function authorize(): PaymentRelease
     {
         return new PaymentRelease(true);
     }
