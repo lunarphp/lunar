@@ -12,7 +12,7 @@ class OfflinePayment extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function release(): PaymentAuthorize
+    public function authorize(): PaymentAuthorize
     {
         if (! $this->order) {
             if (! $this->order = $this->cart->order) {
@@ -21,7 +21,7 @@ class OfflinePayment extends AbstractPayment
         }
 
         $this->order->update([
-            'status' => $this->config['released'] ?? null,
+            'status' => $this->config['authorized'] ?? null,
             'placed_at' => now(),
         ]);
 
