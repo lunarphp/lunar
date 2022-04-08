@@ -56,16 +56,16 @@ class CurrencyCreateTest extends TestCase
         $this->actingAs($staff, 'staff');
 
         Livewire::test(CurrencyCreate::class)->call('create')
-        ->assertHasErrors([
-            'currency.name'           => 'required',
-            'currency.code'           => 'required',
-            'currency.exchange_rate'  => 'required',
-        ]);
+            ->assertHasErrors([
+                'currency.name'           => 'required',
+                'currency.code'           => 'required',
+                'currency.exchange_rate'  => 'required',
+            ]);
 
         Livewire::test(CurrencyCreate::class)
             ->set('currency.name', Str::random(260))
             ->set('currency.code', Str::random(260))
-            ->set('currency.exchange_rate', Str::random(260))
+            ->set('currency.exchange_rate', 1000000)
             ->call('create')
             ->assertHasErrors([
                 'currency.code'           => 'max',
