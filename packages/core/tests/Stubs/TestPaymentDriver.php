@@ -2,9 +2,9 @@
 
 namespace GetCandy\Tests\Stubs;
 
+use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Base\DataTransferObjects\PaymentCapture;
 use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Base\DataTransferObjects\PaymentRelease;
 use GetCandy\Models\Transaction;
 use GetCandy\PaymentTypes\AbstractPayment;
 
@@ -13,9 +13,9 @@ class TestPaymentDriver extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function authorize(): PaymentRelease
+    public function authorize(): PaymentAuthorize
     {
-        return new PaymentRelease(true);
+        return new PaymentAuthorize(true);
     }
 
     /**

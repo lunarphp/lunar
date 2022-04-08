@@ -2,7 +2,7 @@
 
 namespace GetCandy\Tests\Unit\Facades;
 
-use GetCandy\Base\DataTransferObjects\PaymentRelease;
+use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Base\PaymentManagerInterface;
 use GetCandy\Facades\Payments;
 use GetCandy\Tests\Stubs\TestPaymentDriver;
@@ -33,6 +33,6 @@ class PaymentsTest extends TestCase
 
         $result = Payments::driver('testing')->authorize();
 
-        $this->assertInstanceOf(PaymentRelease::class, $result);
+        $this->assertInstanceOf(PaymentAuthorize::class, $result);
     }
 }
