@@ -2,9 +2,9 @@
 
 namespace GetCandy\PaymentTypes;
 
+use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Base\DataTransferObjects\PaymentCapture;
 use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Models\Transaction;
 
 class OfflinePayment extends AbstractPayment

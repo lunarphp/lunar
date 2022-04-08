@@ -2,9 +2,9 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Base\DataTransferObjects\PaymentCapture;
 use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Order;
 use GetCandy\Models\Transaction;
