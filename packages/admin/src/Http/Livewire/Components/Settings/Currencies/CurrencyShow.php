@@ -34,7 +34,7 @@ class CurrencyShow extends Component
     protected function rules()
     {
         return [
-            'currency.code'           => 'required|max:255|unique:'.$this->currency->getTable().',code,'.$this->currency->id,
+            'currency.code'           => 'required|max:255|unique:'.get_class($this->currency).',code,'.$this->currency->id,
             'currency.name'           => 'required|max:255',
             'currency.exchange_rate'  => 'required|numeric|min:0.0001|max:999999.9999',
             'currency.decimal_places' => 'required|integer|max:4',

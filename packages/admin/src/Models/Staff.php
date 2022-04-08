@@ -67,6 +67,10 @@ class Staff extends Authenticatable
         parent::__construct($attributes);
 
         $this->setTable(config('getcandy.database.table_prefix').$this->getTable());
+
+        if ($connection = config('getcandy.database.connection', false)) {
+            $this->setConnection($connection);
+        }
     }
 
     /**

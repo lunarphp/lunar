@@ -36,7 +36,7 @@ class ProductTypeShow extends AbstractProductType
             'productType.name' => [
                 'required',
                 'string',
-                'unique:'.$this->productType->getTable().',name,'.$this->productType->id,
+                'unique:'.get_class($this->productType).',name,'.$this->productType->id,
             ],
         ];
     }

@@ -28,7 +28,7 @@ class StaffCreate extends AbstractStaff
     {
         return [
             'staffPermissions'      => 'array',
-            'staff.email'           => 'required|email|unique:'.$this->staff->getTable().',email',
+            'staff.email'           => 'required|email|unique:'.get_class($this->staff).',email',
             'staff.firstname'       => 'string|max:255',
             'staff.lastname'        => 'string|max:255',
             'staff.admin'           => 'nullable|boolean',

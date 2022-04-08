@@ -4,7 +4,6 @@ namespace GetCandy\Hub\Views\Components\ActivityLog;
 
 use Illuminate\Support\Collection;
 use Illuminate\View\Component;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Images extends Component
 {
@@ -26,7 +25,7 @@ class Images extends Component
             return $log->properties['media']['id'] ?? null;
         });
 
-        $media = Media::findMany($mediaIds);
+        $media = app(config('media-library.media_model'))::findMany($mediaIds);
 
         return view('adminhub::components.activity-log.images', [
             'images' => $this->batch->map(function ($log) use ($media) {
