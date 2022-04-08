@@ -161,7 +161,7 @@ This method allows you to add any additional data to the payment driver, this ca
 ```php
 Payments::driver('stripe')->withData([
     'payment_intent' => $paymentIntentId
-])->release();
+])->authorize();
 ```
 
 #### `setConfig`
