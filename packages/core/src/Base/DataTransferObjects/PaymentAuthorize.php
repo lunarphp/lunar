@@ -2,7 +2,7 @@
 
 namespace GetCandy\Base\DataTransferObjects;
 
-class PaymentRelease
+class PaymentAuthorize
 {
     public function __construct(
         public bool $success = false,

@@ -30,6 +30,14 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## [Unreleased]
+
+
+### Payment driver changes.
+
+- The method `released` on Payment Drivers has been renamed to `authorize`
+- `GetCandy\Base\DataTransferObjects\PaymentRelease` has been renamed to `GetCandy\Base\DataTransferObjects\PaymentAuthorize`
+
 ## 2.0-beta11
 
 
