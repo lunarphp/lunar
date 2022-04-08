@@ -8,6 +8,7 @@
 - Laravel 8|9
 - MySQL 5.7+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
+- intl PHP extension (on most systems it will be installed by default)
 - GD PHP extension (used for image manipulation)
 
 ## Install GetCandy
