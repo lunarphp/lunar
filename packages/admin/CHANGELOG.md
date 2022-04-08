@@ -3,12 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-[Unpublished]
+## 2.0-beta12 - 2022-04-08
 
 ## Fixed
 
 - Updated exchange rate validation to allow values greater than 255.
+- Fixed references to DB connection. By [@ryanmitchell](https://github.com/ryanmitchell)
 
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta11...2.0-beta12)
 
 ## 2.0-beta11 - 2022-04-04
 
