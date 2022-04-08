@@ -157,6 +157,6 @@ trait Searchable
             );
         }
 
-        return parent::searchableUsing();
+        return app(EngineManager::class)->engine();
     }
 }
