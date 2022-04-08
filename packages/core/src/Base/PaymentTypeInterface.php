@@ -4,7 +4,7 @@ namespace GetCandy\Base;
 
 use GetCandy\Base\DataTransferObjects\PaymentCapture;
 use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Base\DataTransferObjects\PaymentRelease;
+use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Order;
 use GetCandy\Models\Transaction;
@@ -48,7 +48,7 @@ interface PaymentTypeInterface
      *
      * @return void
      */
-    public function authorize(): PaymentRelease;
+    public function authorize(): PaymentAuthorize;
 
     /**
      * Refund a transaction for a given amount.
