@@ -299,33 +299,32 @@ class CartManagerTest extends TestCase
         $purchasableA = ProductVariant::factory()->create();
         $purchasableB = ProductVariant::factory()->create();
 
-        $lineA = CartLine::factory()->create(
-            ['quantity' => 1, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableA->id],
-        );
-
-        $lineB = CartLine::factory()->create(
-            ['quantity' => 2, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableB->id],
-        );
-
-        $lines = collect([$lineA, $lineB]);
+        $lines = collect([
+            [
+                'purchasable' => $purchasableA,
+                'quantity'    => 1,
+            ],
+            [
+                'purchasable' => $purchasableB,
+                'quantity'    => 2,
+            ]
+        ]);
 
         $this->assertCount(0, $cart->lines);
+
+        $cart->getManager()->addLines($lines);
+
+        $this->assertCount(2, $cart->refresh()->lines);
 
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'purchasable_id' => $purchasableA->id,
             'quantity' => 1,
-            'meta' => null,
         ]);
 
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'purchasable_id' => $purchasableB->id,
             'quantity' => 2,
-            'meta' => null,
         ]);
-
-        $cart->getManager()->addLines($lines);
-
-        $this->assertCount(2, $cart->refresh()->lines);
     }
 
     /** @test */

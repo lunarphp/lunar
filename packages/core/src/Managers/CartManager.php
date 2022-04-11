@@ -201,9 +201,9 @@ class CartManager
     {
         $lines->each(function ($line) {
             $this->add(
-                $line->purchasable,
-                $line->quantity,
-                $line->meta
+                $line['purchasable'],
+                $line['quantity'],
+                $line['meta'] ?? null
             );
         });
 
