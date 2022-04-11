@@ -194,12 +194,12 @@ class CartManager
     /**
      * Add cart lines.
      *
-     * @param  Collection  $lines
+     * @param  iterable  $lines
      * @return bool
      */
-    public function addLines(Collection $lines)
+    public function addLines(iterable $lines)
     {
-        $lines->each(function ($line) {
+        collect($lines)->each(function ($line) {
             $this->add(
                 $line['purchasable'],
                 $line['quantity'],

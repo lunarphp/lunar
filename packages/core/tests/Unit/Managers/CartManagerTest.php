@@ -292,7 +292,7 @@ class CartManagerTest extends TestCase
     }
 
     /** @test */
-    public function can_add_multiple_cart_lines()
+    public function can_add_multiple_cart_lines_as_collection()
     {
         $cart = Cart::factory()->create();
 
@@ -300,15 +300,39 @@ class CartManagerTest extends TestCase
         $purchasableB = ProductVariant::factory()->create();
 
         $lines = collect([
-            [
-                'purchasable' => $purchasableA,
-                'quantity'    => 1,
-            ],
-            [
-                'purchasable' => $purchasableB,
-                'quantity'    => 2,
-            ]
+            ['purchasable' => $purchasableA, 'quantity' => 1],
+            ['purchasable' => $purchasableB, 'quantity' => 2]
         ]);
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->getManager()->addLines($lines);
+
+        $this->assertCount(2, $cart->refresh()->lines);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+        ]);
+
+        $this->assertDatabaseHas((new CartLine)->getTable(), [
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 2,
+        ]);
+    }
+
+    /** @test */
+    public function can_add_multiple_cart_lines_as_array()
+    {
+        $cart = Cart::factory()->create();
+
+        $purchasableA = ProductVariant::factory()->create();
+        $purchasableB = ProductVariant::factory()->create();
+
+        $lines = [
+            ['purchasable' => $purchasableA, 'quantity' => 1],
+            ['purchasable' => $purchasableB, 'quantity' => 2]
+        ];
 
         $this->assertCount(0, $cart->lines);
 
