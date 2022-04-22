@@ -2,14 +2,14 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Collections;
 
+use GetCandy\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Jobs\Collections\RebuildCollectionTree;
 use GetCandy\Models\Collection;
 use Livewire\Component;
 
 class CollectionTree extends Component
 {
-    use Notifies;
+    use Notifies, MapsCollectionTree;
 
     /**
      * The nodes for the tree
@@ -18,9 +18,27 @@ class CollectionTree extends Component
      */
     public array $nodes;
 
+    /**
+     * The sort group
+     *
+     * @var string
+     */
     public $sortGroup;
 
+    /**
+     * The collection group
+     *
+     * @var CollectionGroup
+     */
     public $owner;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $listeners = [
+        'collectionMoved',
+        'collectionsChanged',
+    ];
 
     /**
      * Toggle children visibility
@@ -37,16 +55,9 @@ class CollectionTree extends Component
         $nodes = [];
 
         if (!count($this->nodes[$index]['children'])) {
-            $nodes = Collection::whereParentId($nodeId)->withCount('children')->defaultOrder()->get()->toTree()->map(function ($collection) {
-                return [
-                    'id' => $collection->id,
-                    'parent_id' => $collection->parent_id,
-                    'name' => $collection->translateAttribute('name'),
-                    'thumbnail' => $collection->thumbnail?->getUrl('small'),
-                    'children' => [],
-                    'children_count' => $collection->children_count,
-                ];
-            })->toArray();
+            $nodes = $this->mapCollections(
+                Collection::whereParentId($nodeId)->withCount('children')->defaultOrder()->get()
+            );
         }
 
         $this->nodes[$index]['children'] = $nodes;
@@ -75,18 +86,7 @@ class CollectionTree extends Component
             }
         });
 
-        $this->nodes = $models->map(function ($collection) {
-            return [
-                'id' => $collection->id,
-                'parent_id' => $collection->parent_id,
-                'name' => $collection->translateAttribute('name'),
-                'thumbnail' => $collection->thumbnail?->getUrl('small'),
-                'children' => [],
-                'children_count' => $collection->children_count,
-            ];
-        })->toArray();
-
-        // dd($this->tree);
+        $this->nodes = $this->mapCollections($models);
 
         $this->notify(
             __('adminhub::notifications.collections.reordered')
@@ -124,6 +124,64 @@ class CollectionTree extends Component
     public function removeCollection($nodeId)
     {
         $this->emit('removeCollection', $nodeId);
+    }
+
+    /**
+     * Move a collection
+     *
+     * @param string $nodeId
+     * @return void
+     */
+    public function moveCollection($nodeId)
+    {
+        $this->emit('moveCollection', $nodeId);
+    }
+
+    /**
+     * Handle when collections are moved.
+     *
+     * @param string $id
+     * @return void
+     */
+    public function collectionMoved($id)
+    {
+        // Was the collection that moved part of this tree?
+        $matched = collect($this->nodes)->first(fn($node) => $node['id'] == $id);
+
+        if ($matched) {
+            // Get the first node's parent ID and then load them up.
+            $parentId = collect($this->nodes)->first()['parent_id'];
+            $this->nodes = $this->mapCollections(
+                Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
+            );
+        }
+    }
+
+    /**
+     * Handle when collection state changes.
+     *
+     * @param string $parentId
+     * @return void
+     */
+    public function collectionsChanged($parentId)
+    {
+        // Do the nodes in this tree share the same parent?
+        $parentMatched = collect($this->nodes)->first(fn($node) => $node['parent_id'] == $parentId);
+
+        if ($parentMatched) {
+            $this->nodes = $this->mapCollections(
+                Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
+            );
+        }
+
+        // Have we just added a collection to one that exists in this tree?
+        $nodeMatched = collect($this->nodes)->first(fn($node) => $node['id'] == $parentId);
+
+        if ($nodeMatched) {
+            $this->nodes = $this->mapCollections(
+                Collection::whereParentId($nodeMatched['parent_id'])->withCount('children')->defaultOrder()->get()
+            );
+        }
     }
 
     /**

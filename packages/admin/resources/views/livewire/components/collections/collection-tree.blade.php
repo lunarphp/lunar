@@ -60,7 +60,7 @@
                   {{ __('adminhub::catalogue.collections.groups.node.make_root') }}
                 </x-hub::dropdown.button>
                 @endif
-                <x-hub::dropdown.button wire:click.prevent="$set('collectionMove.source', '{{ $node['id'] }}')">
+                <x-hub::dropdown.button wire:click.prevent="moveCollection('{{ $node['id'] }}')">
                   {{ __('adminhub::catalogue.collections.groups.node.move') }}
                 </x-hub::dropdown.button>
 

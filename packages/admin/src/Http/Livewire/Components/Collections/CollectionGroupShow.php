@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Collections;
 
 use GetCandy\FieldTypes\TranslatedText;
+use GetCandy\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Jobs\Collections\RebuildCollectionTree;
 use GetCandy\Models\Collection;
@@ -15,7 +16,7 @@ use Livewire\Component;
 
 class CollectionGroupShow extends Component
 {
-    use Notifies;
+    use Notifies, MapsCollectionTree;
 
     /**
      * The current collection group.
@@ -91,6 +92,7 @@ class CollectionGroupShow extends Component
         'moveToRoot',
         'addCollection',
         'removeCollection',
+        'moveCollection' => 'setMoveState',
     ];
 
     /**
@@ -127,16 +129,9 @@ class CollectionGroupShow extends Component
      */
     public function loadTree()
     {
-        $this->tree = $this->group->collections()->withCount('children')->whereIsRoot()->defaultOrder()->get()->map(function ($collection) {
-            return [
-                'id' => $collection->id,
-                'parent_id' => $collection->parent_id,
-                'name' => $collection->translateAttribute('name'),
-                'thumbnail' => $collection->thumbnail?->getUrl('small'),
-                'children' => [],
-                'children_count' => $collection->children_count,
-            ];
-        })->toArray();
+        $this->tree = $this->mapCollections(
+            $this->group->collections()->withCount('children')->whereIsRoot()->defaultOrder()->get()
+        );
     }
 
     /**
@@ -218,7 +213,20 @@ class CollectionGroupShow extends Component
 
         $collection->makeRoot()->save();
 
+        $this->emit('collectionMoved', $id);
+
         $this->notify(__('adminhub::notifications.collections.moved_root'));
+    }
+
+    /**
+     * Set the state to ready collection moving
+     *
+     * @param string $collectionId
+     * @return void
+     */
+    public function setMoveState($collectionId)
+    {
+        $this->collectionMove['source'] = $collectionId;
     }
 
     /**
@@ -242,6 +250,9 @@ class CollectionGroupShow extends Component
                 'target' => $this->targetCollection->translateAttribute('name'),
             ])
         );
+
+        $this->emit('collectionsChanged', $this->sourceCollection->parent_id);
+        $this->emit('collectionsChanged', $this->targetCollection->parent_id);
 
         $this->collectionMove = [
             'source' => null,
@@ -346,8 +357,11 @@ class CollectionGroupShow extends Component
         $this->collectionToRemove->products()->detach();
         $this->collectionToRemove->customerGroups()->detach();
         $this->collectionToRemove->channels()->detach();
+        $this->emit('collectionsChanged', $this->collectionToRemove->parent_id);
         $this->collectionToRemove->forceDelete();
         $this->collectionToRemoveId = null;
+
+
         $this->notify(
             __('adminhub::notifications.collections.deleted')
         );
@@ -387,6 +401,9 @@ class CollectionGroupShow extends Component
         $this->slug = null;
 
         $this->showCreateForm = false;
+
+        $this->emit('collectionsChanged', $collection->parent_id);
+
         $this->notify(
             __('adminhub::notifications.collections.added')
         );
