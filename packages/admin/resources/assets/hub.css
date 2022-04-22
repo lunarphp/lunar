@@ -28,3 +28,8 @@ p > code {
     @apply text-blue-600;
     @apply border-blue-300;
 }
+
+
+.ql-editor {
+    @apply space-y-2;
+}
