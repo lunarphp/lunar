@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- When adding a purchasable to the cart, a potential difference in key order for meta is taken into account.
+- When adding a purchasable to the cart, a potential difference in key order for meta is taken into account. [#271](https://github.com/getcandy/getcandy/pull/271)
 
 ### Changed
 
