@@ -29,7 +29,6 @@ p > code {
     @apply border-blue-300;
 }
 
-
 .ql-editor {
     @apply space-y-2;
 }
