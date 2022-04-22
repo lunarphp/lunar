@@ -5,7 +5,6 @@ namespace GetCandy\Hub\Http\Livewire\Components\Collections;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Jobs\Collections\RebuildCollectionTree;
 use GetCandy\Models\Collection;
 use GetCandy\Models\CollectionGroup;
 use GetCandy\Models\Language;
@@ -170,9 +169,9 @@ class CollectionGroupShow extends Component
     }
 
     /**
-     * Set the collection id to remove
+     * Set the collection id to remove.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function removeCollection($nodeId)
