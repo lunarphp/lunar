@@ -12,21 +12,21 @@ class CollectionTree extends Component
     use Notifies, MapsCollectionTree;
 
     /**
-     * The nodes for the tree
+     * The nodes for the tree.
      *
      * @var array
      */
     public array $nodes;
 
     /**
-     * The sort group
+     * The sort group.
      *
      * @var string
      */
     public $sortGroup;
 
     /**
-     * The collection group
+     * The collection group.
      *
      * @var CollectionGroup
      */
@@ -41,9 +41,9 @@ class CollectionTree extends Component
     ];
 
     /**
-     * Toggle children visibility
+     * Toggle children visibility.
      *
-     * @param int $nodeId
+     * @param  int  $nodeId
      * @return void
      */
     public function toggle($nodeId)
@@ -54,7 +54,7 @@ class CollectionTree extends Component
 
         $nodes = [];
 
-        if (!count($this->nodes[$index]['children'])) {
+        if (! count($this->nodes[$index]['children'])) {
             $nodes = $this->mapCollections(
                 Collection::whereParentId($nodeId)->withCount('children')->defaultOrder()->get()
             );
@@ -79,7 +79,6 @@ class CollectionTree extends Component
             return $objectIdPositions[$model->getKey()];
         })->values();
 
-
         $models->each(function ($collection, $index) use ($models) {
             if ($prev = $models[$index - 1] ?? null) {
                 $collection->afterNode($prev)->save();
@@ -96,7 +95,7 @@ class CollectionTree extends Component
     /**
      * Move a node to the root.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function moveToRoot($nodeId)
@@ -105,9 +104,9 @@ class CollectionTree extends Component
     }
 
     /**
-     * Add a new collection to the tree
+     * Add a new collection to the tree.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function addCollection($nodeId)
@@ -116,9 +115,9 @@ class CollectionTree extends Component
     }
 
     /**
-     * Remove a collection
+     * Remove a collection.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function removeCollection($nodeId)
@@ -127,9 +126,9 @@ class CollectionTree extends Component
     }
 
     /**
-     * Move a collection
+     * Move a collection.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function moveCollection($nodeId)
@@ -140,13 +139,13 @@ class CollectionTree extends Component
     /**
      * Handle when collections are moved.
      *
-     * @param string $id
+     * @param  string  $id
      * @return void
      */
     public function collectionMoved($id)
     {
         // Was the collection that moved part of this tree?
-        $matched = collect($this->nodes)->first(fn($node) => $node['id'] == $id);
+        $matched = collect($this->nodes)->first(fn ($node) => $node['id'] == $id);
 
         if ($matched) {
             // Get the first node's parent ID and then load them up.
@@ -160,13 +159,13 @@ class CollectionTree extends Component
     /**
      * Handle when collection state changes.
      *
-     * @param string $parentId
+     * @param  string  $parentId
      * @return void
      */
     public function collectionsChanged($parentId)
     {
         // Do the nodes in this tree share the same parent?
-        $parentMatched = collect($this->nodes)->first(fn($node) => $node['parent_id'] == $parentId);
+        $parentMatched = collect($this->nodes)->first(fn ($node) => $node['parent_id'] == $parentId);
 
         if ($parentMatched) {
             $this->nodes = $this->mapCollections(
@@ -175,7 +174,7 @@ class CollectionTree extends Component
         }
 
         // Have we just added a collection to one that exists in this tree?
-        $nodeMatched = collect($this->nodes)->first(fn($node) => $node['id'] == $parentId);
+        $nodeMatched = collect($this->nodes)->first(fn ($node) => $node['id'] == $parentId);
 
         if ($nodeMatched) {
             $this->nodes = $this->mapCollections(

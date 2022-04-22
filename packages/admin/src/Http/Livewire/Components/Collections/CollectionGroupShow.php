@@ -218,9 +218,9 @@ class CollectionGroupShow extends Component
     }
 
     /**
-     * Set the state to ready collection moving
+     * Set the state to ready collection moving.
      *
-     * @param string $collectionId
+     * @param  string  $collectionId
      * @return void
      */
     public function setMoveState($collectionId)
@@ -359,7 +359,6 @@ class CollectionGroupShow extends Component
         $this->emit('collectionsChanged', $this->collectionToRemove->parent_id);
         $this->collectionToRemove->forceDelete();
         $this->collectionToRemoveId = null;
-
 
         $this->notify(
             __('adminhub::notifications.collections.deleted')
