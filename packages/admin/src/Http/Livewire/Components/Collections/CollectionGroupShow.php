@@ -85,6 +85,14 @@ class CollectionGroupShow extends Component
 
     public $slug = null;
 
+    public array $tree = [];
+
+    protected $listeners = [
+        'moveToRoot',
+        'addCollection',
+        'removeCollection',
+    ];
+
     /**
      * Return the validation rules.
      *
@@ -102,6 +110,33 @@ class CollectionGroupShow extends Component
         }
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mount()
+    {
+        $this->loadTree();
+    }
+
+    /**
+     * Load the tree.
+     *
+     * @return void
+     */
+    public function loadTree()
+    {
+        $this->tree = $this->group->collections()->withCount('children')->whereIsRoot()->defaultOrder()->get()->map(function ($collection) {
+            return [
+                'id' => $collection->id,
+                'parent_id' => $collection->parent_id,
+                'name' => $collection->translateAttribute('name'),
+                'thumbnail' => $collection->thumbnail?->getUrl('small'),
+                'children' => [],
+                'children_count' => $collection->children_count,
+            ];
+        })->toArray();
     }
 
     /**
@@ -137,6 +172,17 @@ class CollectionGroupShow extends Component
     {
         $this->newCollectionParent = $parent;
         $this->showCreateForm = true;
+    }
+
+    /**
+     * Set the collection id to remove
+     *
+     * @param string $nodeId
+     * @return void
+     */
+    public function removeCollection($nodeId)
+    {
+        $this->collectionToRemoveId = $nodeId;
     }
 
     /**
@@ -354,33 +400,6 @@ class CollectionGroupShow extends Component
     public function getCollectionTree()
     {
         return $this->group->load('collections')->collections()->defaultOrder()->get()->toTree();
-    }
-
-    /**
-     * Sort the collections.
-     *
-     * @param  array  $payload
-     * @return void
-     */
-    public function sort($payload)
-    {
-        $parent = null;
-
-        $nodes = $payload['items'];
-
-        if ($parentId = ($nodes[0]['parent'] ?? false)) {
-            $parent = Collection::find($parentId);
-        }
-
-        RebuildCollectionTree::dispatch(
-            $nodes,
-            $this->getCollectionTree()->toArray(),
-            $parent
-        );
-
-        $this->notify(
-            __('adminhub::notifications.collections.reordered')
-        );
     }
 
     /**
