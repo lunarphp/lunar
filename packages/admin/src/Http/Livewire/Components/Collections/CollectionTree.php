@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Collections;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Jobs\Collections\RebuildCollectionTree;
 use GetCandy\Models\Collection;
 use Livewire\Component;
 
@@ -12,7 +11,7 @@ class CollectionTree extends Component
     use Notifies;
 
     /**
-     * The nodes for the tree
+     * The nodes for the tree.
      *
      * @var array
      */
@@ -23,9 +22,9 @@ class CollectionTree extends Component
     public $owner;
 
     /**
-     * Toggle children visibility
+     * Toggle children visibility.
      *
-     * @param int $nodeId
+     * @param  int  $nodeId
      * @return void
      */
     public function toggle($nodeId)
@@ -36,7 +35,7 @@ class CollectionTree extends Component
 
         $nodes = [];
 
-        if (!count($this->nodes[$index]['children'])) {
+        if (! count($this->nodes[$index]['children'])) {
             $nodes = Collection::whereParentId($nodeId)->withCount('children')->defaultOrder()->get()->toTree()->map(function ($collection) {
                 return [
                     'id' => $collection->id,
@@ -68,7 +67,6 @@ class CollectionTree extends Component
             return $objectIdPositions[$model->getKey()];
         })->values();
 
-
         $models->each(function ($collection, $index) use ($models) {
             if ($prev = $models[$index - 1] ?? null) {
                 $collection->afterNode($prev)->save();
@@ -96,7 +94,7 @@ class CollectionTree extends Component
     /**
      * Move a node to the root.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function moveToRoot($nodeId)
@@ -105,9 +103,9 @@ class CollectionTree extends Component
     }
 
     /**
-     * Add a new collection to the tree
+     * Add a new collection to the tree.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function addCollection($nodeId)
@@ -116,9 +114,9 @@ class CollectionTree extends Component
     }
 
     /**
-     * Remove a collection
+     * Remove a collection.
      *
-     * @param string $nodeId
+     * @param  string  $nodeId
      * @return void
      */
     public function removeCollection($nodeId)
