@@ -20,4 +20,18 @@ return [
         \GetCandy\Models\Customer::class,
         // Below you can add your own models for indexing
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | Search engine mapping
+    |--------------------------------------------------------------------------
+    |
+    | You can define what search driver each searchable model should use.
+    | If the model isn't defined here, it will use the SCOUT_DRIVER env variable.
+    |
+    */
+    'engine_map' => [
+        // \GetCandy\Models\Product::class => 'algolia',
+        // \GetCandy\Models\Order::class => 'meilisearch',
+        // \GetCandy\Models\Collection::class => 'meilisearch',
+    ],
 ];
