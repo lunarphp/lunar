@@ -31,7 +31,7 @@ class AsAttributeData implements Castable
                 $returnData = new Collection();
 
                 foreach ($data as $key => $item) {
-                    if (!class_exists($item['field_type'])) {
+                    if (! class_exists($item['field_type'])) {
                         continue;
                     }
                     if (! in_array(FieldType::class, class_implements($item['field_type']))) {

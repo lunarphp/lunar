@@ -55,7 +55,7 @@ trait WithAttributes
     protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
     {
         return $attributes->reject(function ($attribute) {
-            return !class_exists($attribute->type);
+            return ! class_exists($attribute->type);
         })->mapWithKeys(function ($attribute) use ($key, $existingData) {
             $data = $existingData ?
                 $existingData->first(fn ($value, $handle) => $handle == $attribute->handle)
@@ -175,7 +175,7 @@ trait WithAttributes
     {
         $rules = [];
         foreach ($this->attributeMapping as $index => $attribute) {
-            if (!class_exists($attribute['type'])) {
+            if (! class_exists($attribute['type'])) {
                 continue;
             }
 
