@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Added
+
+### Fixed
+
+- If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
+
+### Changed
+
 ## 2.0-beta12 - 2022-04-08
 
 ### Changed
