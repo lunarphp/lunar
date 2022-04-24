@@ -2,13 +2,15 @@
     <x-hub::menu handle="sidebar" current="{{ request()->route()->getName() }}">
       <div class="flex-col space-y-3">
       @foreach($component->items as $item)
-        <a
-          href="{{ route($item->route) }}"
-          class="flex items-center mx-5 px-2 py-2 text-base font-medium rounded-md group @if(!$item->isActive($component->attributes->get('current'))) text-gray-400 hover:text-gray-900 @else text-blue-600 @endif"
-        >
-          {!! $item->renderIcon() !!}
-          <span class="ml-2">{{ $item->name }}</span>
-        </a>
+        @if(auth()->user()->canViewPage($item->name))
+          <a
+            href="{{ route($item->route) }}"
+            class="flex items-center mx-5 px-2 py-2 text-base font-medium rounded-md group @if(!$item->isActive($component->attributes->get('current'))) text-gray-400 hover:text-gray-900 @else text-blue-600 @endif"
+          >
+            {!! $item->renderIcon() !!}
+            <span class="ml-2">{{ $item->name }}</span>
+          </a>
+        @endif
       @endforeach
 
 {{--

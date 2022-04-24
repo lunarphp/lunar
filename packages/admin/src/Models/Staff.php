@@ -114,6 +114,17 @@ class Staff extends Authenticatable
     }
 
     /**
+     * Authorize a page action via permissions.
+     *
+     * @param  string  $permission
+     * @return bool
+     */
+    public function canViewPage($page) 
+    {
+        return auth()->user()->admin || auth()->user()->authorize('catalogue:manage-'.Str::slug($page));
+    }
+
+    /**
      * Apply the basic search scope to a given Eloquent query builder.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
