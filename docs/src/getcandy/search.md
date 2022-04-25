@@ -23,7 +23,7 @@ If you are using meilisearch, there is some additional set up needed. We have a 
 php artisan getcandy:meilisearch:setup
 ```
 
-The above command will create the indexes for the models listed in the config file `getcandy/indexer.php`. If you want to use other models or your own models in the search engine, you can add the reference for them on the config file.
+The above command will create the indexes for the models listed in the config file `getcandy/search.php`. If you want to use other models or your own models in the search engine, you can add the reference for them on the config file.
 
 ```php
 'models' => [
@@ -53,3 +53,19 @@ php artisan getcandy:search:index
 ```
 
 The command will import the records of the models listed in the `getcandy/indexer.php` configuration file. Type `--help` to see the available options.
+
+## Engine Mapping
+
+By default, Scout will use the driver defined in your .env file as `SCOUT_DRIVER`. So if that's set to `meilisearch`, all your models will be indexed via the Meilisearch driver. This can present some issues, if you wanted to use a service like Algolia for Products, you wouldn't want all your Orders being indexed there since it will ramp up the record count and the cost.
+
+In GetCandy we've made it possible to define what driver you would like to use per model. It's all defined in the `config/getcandy/search.php` config file and looks like this:
+
+```php
+'engine_map' => [
+    \GetCandy\Models\Product::class => 'algolia',
+    \GetCandy\Models\Order::class => 'meilisearch',
+    \GetCandy\Models\Collection::class => 'meilisearch',
+],
+```
+
+It's quite self explanatory, if a model class isn't added to the config, it will take on the Scout default.
