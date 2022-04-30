@@ -9,14 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class Asset implements Responsable
 {
     /**
-     * Name of asset.
+     * Name of the asset.
      *
      * @var string
      */
     protected $name;
 
     /**
-     * Path of Asset.
+     * Path of the Asset.
      *
      * @var string|null
      */
