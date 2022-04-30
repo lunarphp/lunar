@@ -1,5 +1,6 @@
 <?php
 
+use GetCandy\Hub\Http\Controllers\ScriptsController;
 use GetCandy\Hub\Http\Livewire\Hub;
 use GetCandy\Hub\Http\Livewire\Pages\Account;
 use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix'     => config('getcandy-hub.system.path', 'hub'),
+    'prefix' => config('getcandy-hub.system.path', 'hub'),
     'middleware' => ['web'],
 ], function () {
     Route::post('logout', function () {
@@ -56,5 +57,11 @@ Route::group([
         Route::group([
             'prefix' => 'customers',
         ], __DIR__.'/includes/customers.php');
+
+        Route::group([
+            'prefix' => 'scripts',
+        ], function () {
+            Route::get('/{script}', ScriptsController::class);
+        });
     });
 });
