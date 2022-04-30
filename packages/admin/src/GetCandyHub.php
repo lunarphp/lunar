@@ -2,11 +2,45 @@
 
 namespace GetCandy\Hub;
 
+use GetCandy\Hub\Assets\Script;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class GetCandyHub
 {
+    /**
+     * Registered scripts.
+     *
+     * @var array<string, \GetCandy\Hub\Assets\Script>
+     */
+    public static $scripts = [];
+
+    /**
+     * Get scripts that should be registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, \GetCandy\Hub\Assets\Script>
+     */
+    public static function scripts(): array
+    {
+        return static::$scripts;
+    }
+
+    /**
+     * Register script with Getcandy.
+     *
+     * @param string $name
+     * @param string $path
+     *
+     * @return static
+     */
+    public static function script(string $name, string $path): static
+    {
+        static::$scripts[] = new Script($name, $path);
+
+        return new static();
+    }
+
     public static function icon($icon, $attrs = null, $style = 'outline')
     {
         if ($attrs) {
