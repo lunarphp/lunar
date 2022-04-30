@@ -291,6 +291,14 @@
     <x-hub::notification />
     @livewire('hub-license')
     @livewireScripts
+
+    @if ($scripts = \GetCandy\Hub\GetCandyHub::scripts())
+        <!-- Package Scripts -->
+        @foreach ($scripts as $asset)
+            <script src="{!! $asset->url() !!}"></script>
+        @endforeach
+    @endif
+
     <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>
   </body>
 </html>
