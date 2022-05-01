@@ -11,7 +11,6 @@ class ScriptsController extends Controller
 {
     /**
      * @param  string  $script
-     *
      * @return \GetCandy\Hub\Assets\Script
      *
      * @throws HttpException

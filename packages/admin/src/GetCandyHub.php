@@ -31,7 +31,6 @@ class GetCandyHub
      *
      * @param  string  $name
      * @param  string  $path
-     *
      * @return static
      */
     public static function script(string $name, string $path): static
