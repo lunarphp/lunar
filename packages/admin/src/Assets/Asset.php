@@ -25,8 +25,8 @@ abstract class Asset implements Responsable
     /**
      * Construct a new Asset instance.
      *
-     * @param string|self $name
-     * @param string|null $path
+     * @param  string|self  $name
+     * @param  string|null  $path
      */
     public function __construct($name, $path)
     {

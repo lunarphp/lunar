@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ScriptsController extends Controller
 {
     /**
-     * @param string $script
+     * @param  string  $script
      *
      * @return \GetCandy\Hub\Assets\Script
      *

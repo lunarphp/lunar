@@ -29,8 +29,8 @@ class GetCandyHub
     /**
      * Register script with Getcandy.
      *
-     * @param string $name
-     * @param string $path
+     * @param  string  $name
+     * @param  string  $path
      *
      * @return static
      */
