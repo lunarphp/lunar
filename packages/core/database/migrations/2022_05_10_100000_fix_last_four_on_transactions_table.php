@@ -9,7 +9,7 @@ class FixLastFourOnTransactionsTable extends Migration
     public function up()
     {
         Schema::table($this->prefix.'transactions', function (Blueprint $table) {
-            $table->string('last_four')->change();
+            $table->string('last_four', 4)->change();
         });
     }
 
