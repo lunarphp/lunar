@@ -2,15 +2,10 @@
 
 namespace GetCandy\Tests\Unit\Models;
 
-use DateTime;
 use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\ProductVariant;
 use GetCandy\Models\Transaction;
-use GetCandy\Tests\Stubs\User;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -56,16 +51,15 @@ class TransactionTest extends TestCase
         $this->assertDatabaseHas((new Transaction())->getTable(), $transaction->getRawOriginal());
     }
 
-
     /** @test */
     public function can_store_last_four_correctly()
     {
         $checks = [
-          '0000',
-          '0001',
-          '1234',
-          '1000',
-          '0101',
+            '0000',
+            '0001',
+            '1234',
+            '1000',
+            '0101',
         ];
 
         foreach ($checks as $check) {
