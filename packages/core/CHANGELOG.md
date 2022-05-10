@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- The `last_four` column has been changed to a `VARCHAR` ([#282](https://github.com/getcandy/getcandy/issues/282)).
+
 ## 2.0-beta12 - 2022-04-08
 
 ### Changed
