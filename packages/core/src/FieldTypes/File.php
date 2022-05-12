@@ -3,9 +3,7 @@
 namespace GetCandy\FieldTypes;
 
 use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use JsonSerializable;
-use Livewire\FileUploadConfiguration;
 use Livewire\TemporaryUploadedFile;
 
 class File implements FieldType, JsonSerializable
