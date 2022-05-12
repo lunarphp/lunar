@@ -7,7 +7,7 @@
     FilePond.registerPlugin(FilePondPluginFileValidateType);
 
 
-    Pond = FilePond.create($refs.input, {
+    let Pond = FilePond.create($refs.input, {
       acceptedFileTypes: @if(is_array($filetypes)) {{ json_encode($filetypes, true) }} @else ['{{ $filetypes }}'] @endif,
       imagePreviewHeight: 100,
       maxFileSize: 'Number({{ max_upload_filesize() }}) * 1000',
@@ -28,7 +28,7 @@
     })
 
     this.addEventListener('pondReset', e => {
-        Pond.removeFiles();
+      Pond.removeFiles();
     });
   "
   wire:ignore
