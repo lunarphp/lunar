@@ -83,19 +83,19 @@ trait WithAttributes
                 'validation'     => $attribute->validation_rules,
                 'data'           => $value,
             ]];
-        });
+        })->toArray();
     }
 
     public function getAttributeGroupsProperty()
     {
-        $groupIds = $this->attributeMapping->pluck('group_id')->unique();
+        $groupIds = collect($this->attributeMapping)->pluck('group_id')->unique();
 
         return AttributeGroup::whereIn('id', $groupIds)
             ->orderBy('position')
             ->get()->map(function ($group) {
                 return [
                     'model'  => $group,
-                    'fields' => $this->attributeMapping->filter(fn ($att) => $att['group_id'] == $group->id),
+                    'fields' => collect($this->attributeMapping)->filter(fn ($att) => $att['group_id'] == $group->id),
                 ];
             });
     }
@@ -109,13 +109,14 @@ trait WithAttributes
     {
         return collect(($attributes ?? $this->attributeMapping))->mapWithKeys(function ($attribute) {
             $value = null;
+
             switch ($attribute['type']) {
                 case TranslatedText::class:
                     $value = $this->mapTranslatedText($attribute['data']);
                     break;
 
                 default:
-                    $value = new $attribute['type']($attribute['data']);
+                    $value = new $attribute['type']($attribute['data'], $attribute['configuration']);
                     break;
             }
 

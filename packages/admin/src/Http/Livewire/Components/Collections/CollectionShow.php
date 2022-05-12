@@ -2,11 +2,13 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Collections;
 
+use GetCandy\FieldTypes\File;
 use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
 use GetCandy\Hub\Http\Livewire\Traits\HasImages;
 use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
+use GetCandy\Hub\Http\Livewire\Traits\WithFileUploads;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
 use GetCandy\Models\Collection;
@@ -18,7 +20,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class CollectionShow extends Component
 {
@@ -227,6 +228,14 @@ class CollectionShow extends Component
     public function save()
     {
         $this->withValidator(function (Validator $validator) {
+            $rules = $validator->getRules();
+
+            foreach ($this->attributeMapping as $attribute) {
+                if ($attribute['type'] == File::class) {
+                    $rules[$attribute['signature']] = ['array'];
+                }
+            }
+
             $validator->after(function ($validator) {
                 if ($validator->errors()->count()) {
                     $this->notify(

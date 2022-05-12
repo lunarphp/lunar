@@ -16,4 +16,5 @@ return [
     'toggle.empty_notice'        => 'Leave blank to use the default boolean values',
     'toggle.on_label'            => 'On Value',
     'toggle.off_label'           => 'Off Value',
+    'file.label'                 => 'File Upload',
 ];

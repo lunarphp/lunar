@@ -5,6 +5,7 @@ namespace GetCandy\Base;
 use GetCandy\Exceptions\FieldTypes\FieldTypeMissingException;
 use GetCandy\Exceptions\FieldTypes\InvalidFieldTypeException;
 use GetCandy\FieldTypes\Dropdown;
+use GetCandy\FieldTypes\File;
 use GetCandy\FieldTypes\ListField;
 use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
@@ -29,6 +30,7 @@ class FieldTypeManifest
             Text::class,
             Toggle::class,
             TranslatedText::class,
+            File::class,
         ]);
     }
 
