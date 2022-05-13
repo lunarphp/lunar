@@ -103,11 +103,17 @@ class OrderShow extends Component
     /**
      * {@inheritDoc}
      */
-    protected $listeners = [
-        'captureSuccess',
-        'refundSuccess',
-        'cancelRefund',
-    ];
+    protected function getListeners()
+    {
+        return array_merge(
+            [
+                'captureSuccess',
+                'refundSuccess',
+                'cancelRefund',
+            ],
+            $this->getHasSlotsListeners()
+        );
+    }
 
     /**
      * {@inheritDoc}
