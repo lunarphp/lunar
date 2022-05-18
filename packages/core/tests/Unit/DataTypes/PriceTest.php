@@ -54,6 +54,21 @@ class PriceTest extends TestCase
     }
 
     /** @test */
+    public function can_handle_no_decimal_places()
+    {
+        $currency = Currency::factory()->create([
+            'code'           => 'VND',
+            'decimal_places' => 0,
+        ]);
+
+        $dataType = new Price(100, $currency, 1);
+
+        $this->assertEquals(100, $dataType->value);
+        $this->assertEquals(100, $dataType->decimal);
+        //$this->assertEquals('£1.500', $dataType->formatted);
+    }
+
+    /** @test */
     public function can_format_numbers()
     {
         $currency = Currency::factory()->create([

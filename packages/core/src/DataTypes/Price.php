@@ -61,8 +61,10 @@ class Price
      */
     protected function decimal()
     {
+        $decimalValue = (! $this->currency->decimal_places) ? $this->value : ($this->value / $this->currency->factor);
+
         return round(
-            ($this->value / $this->currency->factor),
+            $decimalValue,
             $this->currency->decimal_places
         );
     }
