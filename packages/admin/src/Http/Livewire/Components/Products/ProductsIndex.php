@@ -32,7 +32,7 @@ class ProductsIndex extends Component
      */
     public $filters = [
         'status' => null,
-        'soft_deleted' => false
+        'soft_deleted' => false,
     ];
 
     /**
