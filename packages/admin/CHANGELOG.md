@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - The Quill editor now has some added spacing between elements such as Paragraphs.
 - If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
+- When deleting a collection with descendants, their relationships will now be factored in. [#292](https://github.com/getcandy/getcandy/issues/292)
+- When deleting a collection, their URLs will now also be removed.
 
 ## Changed
 

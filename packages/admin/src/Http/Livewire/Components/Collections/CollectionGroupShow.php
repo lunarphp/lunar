@@ -353,16 +353,27 @@ class CollectionGroupShow extends Component
      */
     public function deleteCollection()
     {
-        $this->collectionToRemove->products()->detach();
-        $this->collectionToRemove->customerGroups()->detach();
-        $this->collectionToRemove->channels()->detach();
-        $this->emit('collectionsChanged', $this->collectionToRemove->parent_id);
-        $this->collectionToRemove->forceDelete();
-        $this->collectionToRemoveId = null;
+        DB::transaction(function () {
+            foreach ($this->collectionToRemove->descendants()->get() as $descendant) {
+                $descendant->products()->detach();
+                $descendant->customerGroups()->detach();
+                $descendant->channels()->detach();
+                $descendant->urls()->delete();
+                $descendant->forceDelete();
+            }
+            $this->collectionToRemove->products()->detach();
+            $this->collectionToRemove->customerGroups()->detach();
+            $this->collectionToRemove->channels()->detach();
+            $this->collectionToRemove->urls()->delete();
+            $this->collectionToRemove->forceDelete();
+            $this->collectionToRemoveId = null;
 
-        $this->notify(
-            __('adminhub::notifications.collections.deleted')
-        );
+            $this->emit('collectionsChanged', $this->collectionToRemove->parent_id);
+
+            $this->notify(
+                __('adminhub::notifications.collections.deleted')
+            );
+        });
     }
 
     /**
