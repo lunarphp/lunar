@@ -8,43 +8,6 @@
     </div>
   </div>
 
-  <div>
-    {{-- <div class="sm:hidden">
-      <label for="tabs" class="sr-only">Select a tab</label>
-      <select id="tabs" name="tabs" class="block w-full py-2 pl-3 pr-10 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-        <option>My Account</option>
-
-        <option>Company</option>
-
-        <option selected>Team Members</option>
-
-        <option>Billing</option>
-      </select>
-    </div> --}}
-    {{-- <div class="hidden sm:block">
-      <div class="border-b border-gray-200">
-        <nav class="flex -mb-px space-x-8" aria-label="Tabs">
-          <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
-          <a href="#" class="px-1 py-4 text-sm font-medium text-indigo-600 border-b-2 border-indigo-500 whitespace-nowrap">
-            All products
-          </a>
-
-          <a href="#" class="px-1 py-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 whitespace-nowrap">
-            Featured
-          </a>
-
-          <a href="#" class="px-1 py-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" aria-current="page">
-            Out of stock
-          </a>
-
-          <a href="#" class="inline-flex items-center px-1 py-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 whitespace-nowrap">
-            <x-hub::icon ref="plus" style="solid" />
-            Add custom view
-          </a>
-        </nav>
-      </div>
-    </div> --}}
-  </div>
   <x-hub::table>
     <x-slot name="toolbar">
       <div class="p-4 space-y-4 border-b" x-data="{ filtersVisible: false }">
@@ -53,7 +16,9 @@
           <div>
             <x-hub::dropdown value="Actions" position="right">
               <x-slot name="options" >
-                <x-hub::dropdown.button>Export</x-hub::dropdown.button>
+                <x-hub::dropdown.button>
+                  {{ __('adminhub::global.export') }}
+                </x-hub::dropdown.button>
               </x-slot>
             </x-hub::dropdown>
           </div>
@@ -63,7 +28,7 @@
 
             <x-hub::button theme="gray" class="inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
               <x-hub::icon ref="filter" class="w-4 mr-1" />
-              Filter
+              {{ __('adminhub::global.filter') }}
             </x-hub::button>
           </div>
         </div>
@@ -89,7 +54,7 @@
         <x-hub::input.checkbox wire:model="selectPage" />
       </x-hub::table.heading>
       <x-hub::table.heading>
-        Status
+        {{ __('adminhub::global.status') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
       </x-hub::table.heading>
@@ -97,16 +62,16 @@
         {{ __('adminhub::global.name') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
-        Brand
+        {{ __('adminhub::global.brand') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
-        SKU
+        {{ __('adminhub::global.sku') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
-        Type
+        {{ __('adminhub::global.type') }}
       </x-hub::table.heading>
       <x-hub::table.heading>
-        Stock
+        {{ __('adminhub::global.stock') }}
       </x-hub::table.heading>
       <x-hub::table.heading></x-hub::table.heading>
     </x-slot>
@@ -209,7 +174,7 @@
       </x-hub::table.row>
       @empty
         <x-hub::table.no-results>
-          Unable to find products matching search/filters.
+          {{ __('adminhub::components.products.index.products_empty') }}
         </x-hub::table.no-results>
       @endforelse
     </x-slot>

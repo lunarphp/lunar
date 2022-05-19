@@ -130,4 +130,7 @@ return [
     'discord_server'          => 'Discord server',
     'for_updates'             => 'for updates.',
     'restore' => 'Restore',
+    'export'    => 'Export',
+    'brand' => 'Brand',
+    'stock' => 'Stock',
 ];
