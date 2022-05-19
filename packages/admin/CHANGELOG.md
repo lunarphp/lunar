@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Added
 
+- Added functionality to restore soft deleted products from the listing view.
+- Added functionality to filter products based on status and whether they are soft deleted.
+
 ## Fixed
 
 - The Quill editor now has some added spacing between elements such as Paragraphs.
