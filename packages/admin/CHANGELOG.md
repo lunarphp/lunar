@@ -3,15 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+### [Unreleased]
 
-### Added
+## Added
 
-### Fixed
+## Fixed
 
 - The Quill editor now has some added spacing between elements such as Paragraphs.
 
-### Changed
+## Changed
+
+- Collection tree now uses a Livewire approach for loading, which should reduce the load on the browser. [#274](https://github.com/getcandy/getcandy/pull/274)
 
 ## 2.0-beta12 - 2022-04-08
 
