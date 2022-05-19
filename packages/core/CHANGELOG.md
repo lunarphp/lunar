@@ -14,7 +14,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
-- Added support to allow the scout driver to be defined per model.
 - `savedCart` relationship has been added to the `Cart` model.
 - Incorrect price when currency has zero decimal places.
 - The `last_four` column has been changed to a `VARCHAR` ([#282](https://github.com/getcandy/getcandy/issues/282)).
