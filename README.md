@@ -1,6 +1,6 @@
 <div align="center" height="400">
-    <img src="https://raw.githubusercontent.com/getcandy/getcandy/fix/readme/.github/assets/logo-light.svg#gh-dark-mode-only" alt="GetCandy" width="400">
-    <img src="https://raw.githubusercontent.com/getcandy/getcandy/fix/readme/.github/assets/logo.svg#gh-light-mode-only" alt="GetCandy" width="400">
+    <img src="https://raw.githubusercontent.com/getcandy/getcandy/main/.github/assets/logo-light.svg#gh-dark-mode-only" alt="GetCandy" width="400">
+    <img src="https://raw.githubusercontent.com/getcandy/getcandy/main/.github/assets/logo.svg#gh-light-mode-only" alt="GetCandy" width="400">
 </div>
 
 [GetCandy](https://getcandy.io) is a set of Laravel packages that bring functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
