@@ -45,6 +45,11 @@ class Currency extends BaseModel
          *
          * E.g. For two decimal places, we need to divide by 100.
          */
+
+        if ($this->decimal_places < 1) {
+            return 1;
+        }
+
         return sprintf("1%0{$this->decimal_places}d", 0);
     }
 }
