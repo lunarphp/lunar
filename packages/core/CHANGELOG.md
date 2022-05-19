@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- Added support to allow the scout driver to be defined per model.
+- Added `addLines` method to the `CartManager` that allows for multiple items to be added to the cart.
+
 ### Fixed
 
 - If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.

@@ -192,6 +192,25 @@ class CartManager
     }
 
     /**
+     * Add cart lines.
+     *
+     * @param  iterable  $lines
+     * @return bool
+     */
+    public function addLines(iterable $lines)
+    {
+        collect($lines)->each(function ($line) {
+            $this->add(
+                $line['purchasable'],
+                $line['quantity'],
+                $line['meta'] ?? null
+            );
+        });
+
+        return true;
+    }
+
+    /**
      * Remove a cart line from the cart.
      *
      * @param  int|string  $cartLineId

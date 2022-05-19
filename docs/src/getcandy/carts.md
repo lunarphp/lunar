@@ -221,6 +221,21 @@ CartSession::manager();
 CartSession::add($purchasable, $quantity);
 ```
 
+### Add multiple lines
+
+```php
+CartSession::addLines([
+    [
+        'id' => 1,
+        'quantity' => 25,
+        'meta' => ['foo' => 'bar'],
+    ],
+    // ...
+]);
+```
+
+_Accepts a `collection` or an `array`_
+
 ### Update a single line
 
 ```php
