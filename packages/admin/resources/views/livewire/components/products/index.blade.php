@@ -198,7 +198,7 @@
               type="button"
               wire:click="restoreProduct({{ $product->id }})"
             >
-              Restore
+              {{ __('adminhub::global.restore') }}
             </x-hub::button>
           @else
             <a href="{{ route('hub.products.show', $product->id) }}" class="text-indigo-500 hover:underline">
