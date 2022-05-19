@@ -356,8 +356,6 @@ class CartManagerTest extends TestCase
 
         $this->assertDatabaseCount((new CartLine)->getTable(), 1);
 
-        $this->assertDatabaseCount((new CartLine)->getTable(), 1);
-
         $cart->getManager()->add($purchasable, 1, null);
 
         $this->assertDatabaseHas((new CartLine)->getTable(), [
@@ -402,6 +400,31 @@ class CartManagerTest extends TestCase
         $cart->getManager()->add($purchasable, 1);
 
         $this->assertCount(2, $cart->refresh()->lines);
+    }
+
+    /** @test */
+    public function can_update_existing_purchasable_when_meta_key_order_differs()
+    {
+        $cart = Cart::factory()->create();
+
+        $purchasable = ProductVariant::factory()->create();
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->getManager()->add($purchasable, 1, ['alpha' => 'alpha', 'beta' => 'beta']);
+
+        $cart = $cart->refresh();
+
+        $this->assertEquals($cart->lines->first()->meta, (object) [
+            'alpha' => 'alpha',
+            'beta' => 'beta',
+        ]);
+
+        $this->assertCount(1, $cart->lines);
+
+        $cart->getManager()->add($purchasable, 1, ['beta' => 'beta', 'alpha' => 'alpha']);
+
+        $this->assertCount(1, $cart->refresh()->lines);
     }
 
     /** @test */

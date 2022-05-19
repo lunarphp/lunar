@@ -50,7 +50,7 @@ class Number implements FieldType, JsonSerializable
      */
     public function setValue($value)
     {
-        if ((! is_numeric($value)) && $value !== '') {
+        if ((! is_numeric($value)) && $value != '') {
             throw new FieldTypeException(self::class.' value must be numeric.');
         }
 

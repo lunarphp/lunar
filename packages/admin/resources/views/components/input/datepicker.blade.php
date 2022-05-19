@@ -6,7 +6,7 @@
     enableTime: {{ $enableTime ? 'true' : 'false' }}
   })"
   @change="value = $event.target.value"
-  class="flex"
+  class="flex relative"
 >
   <x-hub::input.text
     x-ref="input"
