@@ -2,12 +2,15 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Customers;
 
+use GetCandy\FieldTypes\Text;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
+use GetCandy\Models\Attribute;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
+use GetCandy\Models\Language;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -24,6 +27,11 @@ class CustomerShowTest extends TestCase
 
         Currency::factory()->create([
             'default' => true,
+        ]);
+        
+        Language::factory()->create([
+            'default' => true,
+            'code'    => 'en',
         ]);
     }
 
@@ -110,5 +118,47 @@ class CustomerShowTest extends TestCase
             ->assertSet('customer.last_name', 'Else')
             ->assertSet('customer.company_name', 'ACME Supplies')
             ->assertSet('customer.vat_no', 'VATNO123');
+    }
+
+    /** @test */
+    public function can_set_customer_attribute_data()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        // Need some attributes...
+        $name = Attribute::factory()->create([
+            'handle' => 'name',
+            'attribute_type' => 'GetCandy\Models\Customer',
+        ]);
+        
+        $description = Attribute::factory()->create([
+            'handle' => 'description',
+            'attribute_type' => 'GetCandy\Models\Customer',
+        ]);
+
+        $customer = Customer::factory()->create();
+
+        $customer->mappedAttributes()->attach(Attribute::get());
+
+        $component = LiveWire::actingAs($staff, 'staff')
+            ->test(CustomerShow::class, [
+                'customer' => $customer,
+            ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
+            ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $newData = $customer->refresh()->attribute_data;
+
+        $name = $newData['name'];
+        $description = $newData['description'];
+
+        $this->assertInstanceOf(Text::class, $name);
+        $this->assertInstanceOf(Text::class, $description);
+
+        $this->assertEquals('nouseforaname', $name->getValue());
+        $this->assertEquals('nouseforadescription', $description->getValue());
     }
 }
