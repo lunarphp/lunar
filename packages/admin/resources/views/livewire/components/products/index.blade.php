@@ -34,7 +34,7 @@
         </div>
 
         <div class="grid grid-cols-4 gap-4" x-show="filtersVisible" x-cloak>
-          <x-hub::input.group label="Status" for="brand">
+          <x-hub::input.group :label="__('adminhub::global.status')" for="brand">
             <x-hub::input.select wire:model="filters.status">
               <option value>{{ __('adminhub::global.any') }}</option>
               <option value="published">{{ __('adminhub::global.published') }}</option>
@@ -42,7 +42,7 @@
             </x-hub::input.select>
           </x-hub::input.group>
 
-          <x-hub::input.group label="Show Deleted" for="brand">
+          <x-hub::input.group :label="__('adminhub::global.show_deleted')" for="shoDeleted">
             <x-hub::input.toggle wire:model="filters.soft_deleted" />
           </x-hub::input.group>
 

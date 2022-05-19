@@ -133,4 +133,5 @@ return [
     'export'    => 'Export',
     'brand' => 'Brand',
     'stock' => 'Stock',
+    'show_deleted' => 'Show Deleted',
 ];
