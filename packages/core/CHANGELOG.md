@@ -4,9 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-[Unreleased]
-
-### Changed
+## [Unreleased]
 
 ### Added
 
@@ -16,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Incorrect price when currency has zero decimal places.
+- The `last_four` column has been changed to a `VARCHAR` ([#282](https://github.com/getcandy/getcandy/issues/282)).
+- When adding a purchasable to the cart, a potential difference in key order for meta is taken into account. [#271](https://github.com/getcandy/getcandy/pull/271)
+
+### Changed
 
 ## 2.0-beta12 - 2022-04-08
 

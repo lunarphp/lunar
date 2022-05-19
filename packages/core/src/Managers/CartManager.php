@@ -169,7 +169,8 @@ class CartManager
         $existing = $this->cart->load('lines')->lines->first(function ($line) use ($purchasable, $meta) {
             return $line->purchasable_id == $purchasable->id &&
             $line->purchasable_type == get_class($purchasable) &&
-            json_encode($line->meta ?: []) == json_encode($meta ?: []);
+            array_diff((array) ($line->meta ?? []), $meta ?? []) == [] &&
+            array_diff($meta ?? [], (array) ($line->meta ?? [])) == [];
         });
 
         if ($existing) {
