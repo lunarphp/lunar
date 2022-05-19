@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
+use GetCandy\Base\Traits\HasAttributes;
 use GetCandy\Base\Traits\HasPersonalDetails;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends BaseModel
 {
+    use HasAttributes;
     use HasFactory;
     use HasPersonalDetails;
     use HasTranslations;
@@ -148,5 +150,21 @@ class Customer extends BaseModel
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+    
+    /**
+     * Get the mapped attributes relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function mappedAttributes()
+    {
+        $prefix = config('getcandy.database.table_prefix');
+
+        return $this->morphToMany(
+            Attribute::class,
+            'attributable',
+            "{$prefix}attributables"
+        )->withTimestamps();
     }
 }

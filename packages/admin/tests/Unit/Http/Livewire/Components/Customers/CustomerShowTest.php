@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Customers;
 
+use GetCandy\FieldTypes\Text;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
@@ -9,6 +10,7 @@ use GetCandy\Models\Attribute;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
+use GetCandy\Models\Language;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -25,6 +27,11 @@ class CustomerShowTest extends TestCase
 
         Currency::factory()->create([
             'default' => true,
+        ]);
+        
+        Language::factory()->create([
+            'default' => true,
+            'code'    => 'en',
         ]);
     }
 
@@ -123,9 +130,12 @@ class CustomerShowTest extends TestCase
         // Need some attributes...
         $name = Attribute::factory()->create([
             'handle' => 'name',
+            'attribute_type' => 'GetCandy\Models\Customer',
         ]);
+        
         $description = Attribute::factory()->create([
             'handle' => 'description',
+            'attribute_type' => 'GetCandy\Models\Customer',
         ]);
 
         $customer = Customer::factory()->create();
