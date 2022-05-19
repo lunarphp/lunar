@@ -2,8 +2,8 @@
 
 namespace GetCandy\Base;
 
-use GetCandy\Models\Customer;
 use GetCandy\Models\Collection as ModelsCollection;
+use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductVariant;
