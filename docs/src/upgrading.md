@@ -30,6 +30,29 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+[Unreleased]
+
+### Additional Scout configuration
+
+It's now possible to define which Scout driver should be used on a per model basis. To enable this, add the following to `config/getcandy/search.php`
+
+```php
+/*
+|--------------------------------------------------------------------------
+| Search engine mapping
+|--------------------------------------------------------------------------
+|
+| You can define what search driver each searchable model should use.
+| If the model isn't defined here, it will use the SCOUT_DRIVER env variable.
+|
+*/
+'engine_map' => [
+    // \GetCandy\Models\Product::class => 'algolia',
+    // \GetCandy\Models\Order::class => 'meilisearch',
+    // \GetCandy\Models\Collection::class => 'meilisearch',
+],
+```
+
 ## 2.0-beta12
 
 ### Payment driver changes.

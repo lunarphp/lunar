@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base\Traits;
 
+use Laravel\Scout\EngineManager;
 use Laravel\Scout\Searchable as ScoutSearchable;
 
 trait Searchable
@@ -141,5 +142,21 @@ trait Searchable
             $this->getSearchableAttributes(),
             $this->additionalSearchFields
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function searchableUsing()
+    {
+        $engines = config('getcandy.search.engine_map', []);
+
+        if (isset($engines[self::class])) {
+            return app(EngineManager::class)->engine(
+                $engines[self::class]
+            );
+        }
+
+        return app(EngineManager::class)->engine();
     }
 }

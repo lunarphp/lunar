@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Fixed
 
+- The Quill editor now has some added spacing between elements such as Paragraphs.
+
 ## Changed
 
 - Collection tree now uses a Livewire approach for loading, which should reduce the load on the browser. [#274](https://github.com/getcandy/getcandy/pull/274)
