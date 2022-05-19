@@ -6,22 +6,12 @@ use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
 use JsonSerializable;
 
-class Number implements FieldType, JsonSerializable
+class YouTube implements FieldType, JsonSerializable
 {
     /**
-     * @var int|float
+     * @var string
      */
     protected $value;
-
-    /**
-     * Create a new instance of Number field type.
-     *
-     * @param  int|float  $value
-     */
-    public function __construct($value = 0)
-    {
-        $this->setValue($value);
-    }
 
     /**
      * Serialize the class.
@@ -34,9 +24,29 @@ class Number implements FieldType, JsonSerializable
     }
 
     /**
+     * Create a new instance of Text field type.
+     *
+     * @param  string  $value
+     */
+    public function __construct($value = '')
+    {
+        $this->setValue($value);
+    }
+
+    /**
+     * Returns the value when accessed as a string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getValue();
+    }
+
+    /**
      * Return the value of this field.
      *
-     * @return int|float
+     * @return string
      */
     public function getValue()
     {
@@ -46,12 +56,12 @@ class Number implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param  int|float  $value
+     * @param  string  $value
      */
     public function setValue($value)
     {
-        if ((! is_numeric($value)) && $value != '') {
-            throw new FieldTypeException(self::class.' value must be numeric.');
+        if ($value && (! is_string($value) && ! is_numeric($value) && ! is_bool($value))) {
+            throw new FieldTypeException(self::class.' value must be a string.');
         }
 
         $this->value = $value;
@@ -62,7 +72,7 @@ class Number implements FieldType, JsonSerializable
      */
     public function getLabel(): string
     {
-        return __('adminhub::fieldtypes.number.label');
+        return __('adminhub::fieldtypes.youtube.label');
     }
 
     /**
@@ -70,7 +80,7 @@ class Number implements FieldType, JsonSerializable
      */
     public function getSettingsView(): string
     {
-        return 'adminhub::field-types.number.settings';
+        return 'adminhub::field-types.youtube.settings';
     }
 
     /**
@@ -78,7 +88,7 @@ class Number implements FieldType, JsonSerializable
      */
     public function getView(): string
     {
-        return 'adminhub::field-types.number.view';
+        return 'adminhub::field-types.youtube.view';
     }
 
     /**
@@ -87,11 +97,7 @@ class Number implements FieldType, JsonSerializable
     public function getConfig(): array
     {
         return [
-            'view'    => 'adminhub::field-types.number',
-            'options' => [
-                'min' => 'numeric|min:1',
-                'max' => 'numeric',
-            ],
+            'view'    => 'adminhub::field-types.youtube',
         ];
     }
 }
