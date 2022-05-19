@@ -77,20 +77,6 @@
             </x-hub::input.select>
           </x-hub::input.group>
 
-          {{-- <x-hub::input.group label="Stock Level" for="brand">
-            <div class="grid grid-cols-2 gap-2">
-              <x-hub::input.text placeholder="From" />
-              <x-hub::input.text placeholder="To" />
-            </div>
-          </x-hub::input.group> --}}
-
-          {{-- <x-hub::input.group label="Quantity Sold" for="brand">
-            <div class="grid grid-cols-2 gap-2">
-              <x-hub::input.text placeholder="From" />
-              <x-hub::input.text placeholder="To" />
-            </div>
-          </x-hub::input.group> --}}
-
           <x-hub::input.group label="Show Deleted" for="brand">
             <x-hub::input.toggle wire:model="filters.soft_deleted" />
           </x-hub::input.group>
