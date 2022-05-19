@@ -358,11 +358,13 @@ class CollectionGroupShow extends Component
                 $descendant->products()->detach();
                 $descendant->customerGroups()->detach();
                 $descendant->channels()->detach();
+                $descendant->urls()->delete();
                 $descendant->forceDelete();
             }
             $this->collectionToRemove->products()->detach();
             $this->collectionToRemove->customerGroups()->detach();
             $this->collectionToRemove->channels()->detach();
+            $this->collectionToRemove->urls()->delete();
             $this->collectionToRemove->forceDelete();
             $this->collectionToRemoveId = null;
 
