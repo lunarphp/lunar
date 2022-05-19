@@ -47,6 +47,11 @@
             @endforeach
             </div>
           </div>
+
+          <div id="attributes">
+            @include('adminhub::partials.attributes', ['inline' => true])
+          </div>
+
         </div>
         <div class="p-4 text-right rounded-b bg-gray-50">
             <x-hub::button type="button" wire:click="save">

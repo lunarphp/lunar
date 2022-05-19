@@ -3,7 +3,9 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasPersonalDetails;
+use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +14,7 @@ class Customer extends BaseModel
 {
     use HasFactory;
     use HasPersonalDetails;
+    use HasTranslations;
     use Searchable;
 
     /**
@@ -45,6 +48,7 @@ class Customer extends BaseModel
      * {@inheritDoc}
      */
     protected $casts = [
+        'attribute_data' => AsAttributeData::class,
         'meta' => 'object',
     ];
 
@@ -86,7 +90,17 @@ class Customer extends BaseModel
             $data[$field] = optional($this->meta)->{$field};
         }
 
-        $addresses = $this->addresses->toArray();
+        foreach ($this->attribute_data ?? [] as $field => $value) {
+            if ($value instanceof TranslatedText) {
+                foreach ($value->getValue() as $locale => $text) {
+                    $data[$field.'_'.$locale] = $text?->getValue();
+                }
+            } else {
+                $data[$field] = $this->translateAttribute($field);
+            }
+        }
+
+        $data['addresses'] = $this->addresses->toArray();
 
         return $data;
     }

@@ -111,4 +111,43 @@ class CustomerShowTest extends TestCase
             ->assertSet('customer.company_name', 'ACME Supplies')
             ->assertSet('customer.vat_no', 'VATNO123');
     }
+
+    /** @test */
+    public function can_set_customer_attribute_data()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        // Need some attributes...
+        $name = Attribute::factory()->create([
+            'handle' => 'name',
+        ]);
+        $description = Attribute::factory()->create([
+            'handle' => 'description',
+        ]);
+
+        $customer = Customer::factory()->create();
+
+        $customer->mappedAttributes()->attach(Attribute::get());
+
+        $component = LiveWire::actingAs($staff, 'staff')
+            ->test(CustomerShow::class, [
+                'customer' => $customer,
+            ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
+            ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $newData = $customer->refresh()->attribute_data;
+
+        $name = $newData['name'];
+        $description = $newData['description'];
+
+        $this->assertInstanceOf(Text::class, $name);
+        $this->assertInstanceOf(Text::class, $description);
+
+        $this->assertEquals('nouseforaname', $name->getValue());
+        $this->assertEquals('nouseforadescription', $description->getValue());
+    }
 }

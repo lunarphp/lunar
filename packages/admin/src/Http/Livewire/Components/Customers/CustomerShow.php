@@ -6,8 +6,11 @@ use Carbon\CarbonPeriod;
 use Exception;
 use GetCandy\DataTypes\Price;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
+use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Address;
+use GetCandy\Models\Attribute;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\CustomerGroup;
@@ -21,7 +24,11 @@ use Livewire\WithPagination;
 
 class CustomerShow extends Component
 {
-    use Notifies, WithPagination, WithCountries;
+    use Notifies;
+    use WithAttributes;
+    use WithPagination;
+    use WithCountries;
+    use WithLanguages;
 
     /**
      * The current customer in view.
@@ -152,6 +159,26 @@ class CustomerShow extends Component
     }
 
     /**
+     * Get the collection attribute data.
+     *
+     * @return void
+     */
+    public function getAttributeDataProperty()
+    {
+        return $this->customer->attribute_data;
+    }
+
+    /**
+     * Returns all available attributes.
+     *
+     * @return void
+     */
+    public function getAvailableAttributesProperty()
+    {
+        return Attribute::whereAttributeType(Customer::class)->orderBy('position')->get();
+    }
+
+    /**
      * Save the customer record.
      *
      * @return void
@@ -163,6 +190,8 @@ class CustomerShow extends Component
         $this->customer->customerGroups()->sync(
             $this->syncedGroups
         );
+
+        $this->customer->attribute_data = $this->prepareAttributeData();
 
         $this->customer->save();
 
