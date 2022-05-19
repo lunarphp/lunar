@@ -3,7 +3,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## 2.0-beta11 - 2022-03-29
+### [Unreleased]
+
+## Added
+
+## Fixed
+
+- The Quill editor now has some added spacing between elements such as Paragraphs.
+- If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
+
+## Changed
+
+- Collection tree now uses a Livewire approach for loading, which should reduce the load on the browser. [#274](https://github.com/getcandy/getcandy/pull/274)
+
+## 2.0-beta12 - 2022-04-08
+
+## Fixed
+
+- Updated exchange rate validation to allow values greater than 255.
+- Fixed references to DB connection. By [@ryanmitchell](https://github.com/ryanmitchell)
+
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta11...2.0-beta12)
+
+## 2.0-beta11 - 2022-04-04
 
 ## Added
 

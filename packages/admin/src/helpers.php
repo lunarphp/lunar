@@ -21,7 +21,7 @@ if (! function_exists('get_validation')) {
         $rules[] = ! empty($config['required']) ? 'required' : 'nullable';
 
         if (($config['unique'] ?? false) && $model) {
-            $rule = 'unique:'.$model->getTable().','.$field;
+            $rule = 'unique:'.get_class($model).','.$field;
 
             if ($model->id) {
                 $rule .= ','.$model->id;

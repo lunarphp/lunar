@@ -8,6 +8,7 @@ use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Product;
+use GetCandy\Models\ProductOption;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -28,8 +29,18 @@ class HasTranslationsTest extends TestCase
             ],
         ]);
 
+        $productOption = ProductOption::factory()->create([
+            'name' => [
+                'en' => 'English Option',
+                'fr' => 'French Option',
+            ],
+        ]);
+
         $this->assertEquals('English', $attributeGroup->translate('name', 'en'));
         $this->assertEquals('French', $attributeGroup->translate('name', 'fr'));
+
+        $this->assertEquals('English Option', $productOption->translate('name', 'en'));
+        $this->assertEquals('French Option', $productOption->translate('name', 'fr'));
 
         $product = Product::factory()->create([
             'attribute_data' => [
@@ -116,6 +127,13 @@ class HasTranslationsTest extends TestCase
             ],
         ]);
 
+        $productOption = ProductOption::factory()->create([
+            'name' => [
+                'en' => 'English Option',
+                'fr' => 'French Option',
+            ],
+        ]);
+
         $product = Product::factory()->create([
             'attribute_data' => [
                 'name' => new TranslatedText(collect([
@@ -129,11 +147,13 @@ class HasTranslationsTest extends TestCase
 
         $this->assertEquals('French', $attributeGroup->translate('name'));
         $this->assertEquals('French Name', $product->translateAttribute('name'));
+        $this->assertEquals('French Option', $productOption->translate('name'));
 
         app()->setLocale('en');
 
         $this->assertEquals('English', $attributeGroup->translate('name'));
         $this->assertEquals('English Name', $product->translateAttribute('name'));
+        $this->assertEquals('English Option', $productOption->translate('name'));
     }
 
     /** @test */
@@ -143,6 +163,13 @@ class HasTranslationsTest extends TestCase
             'name' => [
                 'en' => 'English',
                 'fr' => 'French',
+            ],
+        ]);
+
+        $productOption = ProductOption::factory()->create([
+            'name' => [
+                'en' => 'English Option',
+                'fr' => 'French Option',
             ],
         ]);
 
@@ -158,6 +185,7 @@ class HasTranslationsTest extends TestCase
         app()->setLocale('dk');
 
         $this->assertEquals('English', $attributeGroup->translate('name'));
+        $this->assertEquals('English Option', $productOption->translate('name'));
         $this->assertEquals('English Name', $product->translateAttribute('name'));
     }
 

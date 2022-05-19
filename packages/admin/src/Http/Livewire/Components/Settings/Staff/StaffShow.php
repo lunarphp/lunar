@@ -31,7 +31,7 @@ class StaffShow extends AbstractStaff
     {
         return [
             'staffPermissions' => 'array',
-            'staff.email'      => 'required|email|unique:'.$this->staff->getTable().',email,'.$this->staff->id,
+            'staff.email'      => 'required|email|unique:'.get_class($this->staff).',email,'.$this->staff->id,
             'staff.firstname'  => 'string|max:255',
             'staff.lastname'   => 'string|max:255',
             'staff.admin'      => 'nullable|boolean',

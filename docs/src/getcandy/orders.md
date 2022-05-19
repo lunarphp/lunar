@@ -236,7 +236,7 @@ GetCandy\Models\Transaction
 |reference|The reference returned from the payment Provider. Used to identify the transaction with them.
 |status|A string representation of the status, unlinked to GetCandy e.g. `settled`|
 |notes|Any relevant notes for the transaction
-|cart_type| e.g. `visa`
+|card_type| e.g. `visa`
 |last_four| Last 4 digits of the card
 |meta|Any additional meta info you wish to store
 |created_at||

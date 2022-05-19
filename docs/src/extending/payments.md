@@ -46,7 +46,7 @@ namespace App\PaymentTypes;
 
 use GetCandy\Base\DataTransferObjects\PaymentCapture;
 use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Base\DataTransferObjects\PaymentRelease;
+use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Models\Transaction;
 
 class CustomPayment extends AbstractPayment
@@ -54,7 +54,7 @@ class CustomPayment extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function release(): PaymentRelease
+    public function authorize(): PaymentAuthorize
     {
         if (!$this->order) {
             if (!$this->order = $this->cart->order) {
@@ -64,7 +64,7 @@ class CustomPayment extends AbstractPayment
 
         // ...
 
-        return new PaymentRelease(true);
+        return new PaymentAuthorize(true);
     }
 
     /**
@@ -94,7 +94,7 @@ This is the most basic implementation of a driver, you can see we are extending 
 #### Releasing payments
 
 ```php
-public function release();
+public function authorize();
 ```
 
 This is where you'd check the payment details which have been passed in, create any transactions for the order and return the response.
@@ -161,7 +161,7 @@ This method allows you to add any additional data to the payment driver, this ca
 ```php
 Payments::driver('stripe')->withData([
     'payment_intent' => $paymentIntentId
-])->release();
+])->authorize();
 ```
 
 #### `setConfig`
@@ -221,7 +221,7 @@ If you are charging the card straight away, set the type to `capture`.
 ```php
 Transaction::create([
     //...
-    'type' => 'intent',
+    'type' => 'capture',
 ]);
 ```
 

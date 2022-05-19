@@ -144,6 +144,22 @@ trait WithSavedSearches
     }
 
     /**
+     * Returns whether we have custom filters applied.
+     *
+     * @return bool
+     */
+    public function getHasFiltersAppliedProperty()
+    {
+        foreach ($this->filters as $filter) {
+            if ($filter) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Delete a saved search.
      *
      * @param  string|int  $id

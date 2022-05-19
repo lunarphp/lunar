@@ -1,9 +1,34 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## 2.0-beta11 - 2022-03-29
+## [Unreleased]
+
+### Added
+
+### Fixed
+
+- If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
+- Added support to allow the scout driver to be defined per model.
+- `savedCart` relationship has been added to the `Cart` model.
+- Incorrect price when currency has zero decimal places.
+- The `last_four` column has been changed to a `VARCHAR` ([#282](https://github.com/getcandy/getcandy/issues/282)).
+- When adding a purchasable to the cart, a potential difference in key order for meta is taken into account. [#271](https://github.com/getcandy/getcandy/pull/271)
+
+### Changed
+
+## 2.0-beta12 - 2022-04-08
+
+### Changed
+
+- The method `released` on Payment Drivers has been renamed to `authorize`
+- `GetCandy\Base\DataTransferObjects\PaymentRelease` has been renamed to `GetCandy\Base\DataTransferObjects\PaymentAuthorize`
+
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta11...2.0-beta12)
+
+## 2.0-beta11 - 2022-04-04
 
 ### Added
 
@@ -25,6 +50,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `Dropdown`, `ListField` and `Number` field types now implement the `JsonSerializable` interface.
 - When deleting a record that has URLs, if it wasn't soft deleted, there is now a clean up routine to remove any existing URLs
 - When running the `getcandy:meilisearch:setup` it will now wait for a period whilst the index is created before continuing. By [@lucasvmds](https://github.com/lucasvmds)
+- `translate` method will now consider non array values passed and use the `$locale` parameter correctly [#251](https://github.com/getcandy/getcandy/issues/251). By [@armezit](https://github.com/armezit)
 
 ### Changed
 
@@ -164,12 +190,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2.0-beta2 - 2021-12-23
 
 ### Fixed
+
 - Default currency has `enabled` set to true.
 
 ### Changed
+
 - Install command no longer publishes hub assets
 
 ### Added
+
 - Added a default `CollectionGroup`.
 
 [View Changes](https://github.com/getcandy/core/compare/2.0-beta...2.0-beta2)

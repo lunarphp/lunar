@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\TemporaryUploadedFile;
 use Spatie\Activitylog\Facades\LogBatch;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 trait HasImages
 {
@@ -94,6 +93,15 @@ trait HasImages
      */
     public function handleUploadFinished($name, array $filenames = [])
     {
+        /**
+         * If the upload wasn't triggered via the drag and drop upload queue
+         * then we ignore it since we don't want the files to appear in the
+         * main image block.
+         */
+        if ($name != 'imageUploadQueue') {
+            return;
+        }
+
         if ($this->errorBag->count()) {
             unset($this->imageUploadQueue[0]);
 
@@ -176,7 +184,7 @@ trait HasImages
                     $image['id'] = $media->id;
                 }
 
-                $media = Media::find($image['id']);
+                $media = app(config('media-library.media_model'))::find($image['id']);
 
                 $media->setCustomProperty('caption', $image['caption']);
                 $media->setCustomProperty('primary', $image['primary']);

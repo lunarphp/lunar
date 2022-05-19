@@ -163,6 +163,16 @@ class Cart extends BaseModel
     }
 
     /**
+     * Return the saved cart relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function savedCart()
+    {
+        return $this->hasOne(SavedCart::class);
+    }
+
+    /**
      * Return the cart manager.
      *
      * @return \GetCandy\Managers\CartManager

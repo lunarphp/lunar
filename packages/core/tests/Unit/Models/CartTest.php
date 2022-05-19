@@ -9,6 +9,7 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use GetCandy\Models\ProductVariant;
+use GetCandy\Models\SavedCart;
 use GetCandy\Tests\Stubs\User as StubUser;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -149,5 +150,26 @@ class CartTest extends TestCase
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
+    }
+
+    /** @test */
+    public function can_retrieve_saved_cart_relationship()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id'  => $channel->id,
+            'meta'        => ['foo' => 'bar'],
+        ]);
+
+        $savedCart = SavedCart::create([
+            'name'    => 'Foo',
+            'cart_id' => $cart->id,
+        ]);
+
+        $this->assertInstanceOf(SavedCart::class, $cart->savedCart);
+        $this->assertEquals($savedCart->id, $cart->id);
     }
 }

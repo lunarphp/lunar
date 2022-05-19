@@ -2,9 +2,9 @@
 
 namespace GetCandy\Base;
 
+use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
 use GetCandy\Base\DataTransferObjects\PaymentCapture;
 use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Base\DataTransferObjects\PaymentRelease;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Order;
 use GetCandy\Models\Transaction;
@@ -44,11 +44,11 @@ interface PaymentTypeInterface
     public function setConfig(array $config): self;
 
     /**
-     * Release the payment.
+     * Authorize the payment.
      *
      * @return void
      */
-    public function release(): PaymentRelease;
+    public function authorize(): PaymentAuthorize;
 
     /**
      * Refund a transaction for a given amount.

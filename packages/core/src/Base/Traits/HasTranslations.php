@@ -26,7 +26,10 @@ trait HasTranslations
             return null;
         }
 
-        $value = Arr::get($values, $locale ?: app()->getLocale());
+        $locale = $locale ?: app()->getLocale();
+        $value = Arr::accessible($values) ?
+            Arr::get($values, $locale) :
+            get_object_vars($values)[$locale] ?? null;
 
         return $value ?: Arr::get(
             $values,

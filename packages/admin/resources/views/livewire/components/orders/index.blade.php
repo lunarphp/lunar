@@ -1,41 +1,36 @@
 <div class="flex-col px-8 space-y-4 md:px-12">
-  <div class="flex items-center justify-between">
-    <strong class="text-lg font-bold md:text-2xl">
+  <div class="items-center justify-between md:flex">
+    <strong class="block text-lg font-bold md:text-2xl">
       {{ __('adminhub::orders.index.title') }}
     </strong>
+
+    <div class="mt-4 space-x-2 md:mt-0">
+      <x-hub::button theme="gray" size="sm" wire:click="export">
+        <div class="flex items-center">
+          <x-hub::icon
+            ref="download"
+            style="solid"
+            class="w-4 mr-2"
+          />
+          {{ __('adminhub::orders.index.export_btn') }}
+        </div>
+      </x-hub::button>
+
+      @if(count($selected))
+      <x-hub::button theme="gray" size="sm" wire:click="$set('showUpdateStatus', true)">
+        <div class="flex items-center">
+          <x-hub::icon
+            ref="save"
+            style="solid"
+            class="w-4 mr-2"
+          />
+          {{ __('adminhub::orders.index.update_status.btn') }}
+        </div>
+      </x-hub::button>
+      @endif
+    </div>
   </div>
 
-  <div class="mt-4">
-    <button
-      class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
-      type="button"
-      wire:click="export"
-    >
-      <x-hub::icon
-        ref="download"
-        style="solid"
-        class="w-4 mr-2"
-      />
-      {{ __('adminhub::orders.index.export_btn') }}
-    </button>
-
-    @if(count($selected))
-
-     <button
-      class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent rounded hover:bg-white hover:border-gray-200"
-      type="button"
-      wire:click="$set('showUpdateStatus', true)"
-    >
-      <x-hub::icon
-        ref="save"
-        style="solid"
-        class="w-4 mr-2"
-      />
-      {{ __('adminhub::orders.index.update_status.btn') }}
-    </button>
-
-    @endif
-  </div>
 
 <x-hub::modal.dialog form="updateStatus" wire:model="showUpdateStatus">
   <x-slot name="title">
@@ -94,6 +89,7 @@
 </x-hub::modal.dialog>
 
   <div class="space-y-4">
+    @if($this->savedSearches->count())
     <div class="sm:block">
       <nav class="flex pb-4 space-x-4 overflow-x-auto" aria-label="Tabs">
         <!-- Current: "bg-gray-200 text-gray-800", Default: "text-gray-600 hover:text-gray-800" -->
@@ -101,11 +97,11 @@
           type="button"
           wire:click.prevent="resetSearch"
           class="
-            text-sm font-medium px-3 flex-shrink-0
+            text-sm font-medium px-3 flex-shrink-0 rounded p-2
             @if(!$this->activeSavedSearch && !$this->hasCustomFilters)
-              text-blue-600
+              bg-blue-500 text-white
             @else
-              text-gray-500 hover:text-gray-700
+              text-gray-500 border hover:bg-white
             @endif"
         >
           {{ __('adminhub::orders.index.all_orders') }}
@@ -117,22 +113,32 @@
                 type="button"
                 wire:click.prevent="applySavedSearch({{ $savedSearch->id }})"
                 class="
-                  text-sm font-medium px-3
+                  text-sm font-medium px-3 rounded rounded-r-none
                   @if($this->activeSavedSearch && $this->activeSavedSearch->id == $savedSearch->id)
-                    text-blue-600
+                    bg-blue-500 text-white
                   @else
-                    text-gray-500 hover:text-gray-700
+                    text-gray-500 border hover:bg-white
                   @endif"
               >
                 {{ $savedSearch->name }}
               </button>
-              <button class="text-gray-400 hover:text-red-500" type="button" wire:click.prevent="$set('savedSearchToDelete', {{ $savedSearch->id }})">
+              <button
+                class="px-2 border border-l-0 rounded-r
+                  @if($this->activeSavedSearch && $this->activeSavedSearch->id == $savedSearch->id)
+                    text-white bg-blue-400 hover:bg-blue-600 hover:text-white border-none
+                  @else
+                    text-gray-500 hover:bg-gray-200
+                  @endif"
+                type="button"
+                wire:click.prevent="$set('savedSearchToDelete', {{ $savedSearch->id }})"
+              >
                 <x-hub::icon ref="x" style="solid" class="w-3" />
               </button>
           </div>
         @endforeach
       </nav>
     </div>
+    @endif
     <x-hub::table>
       <x-slot name="toolbar">
         <div class="p-4 space-y-4 border-b" x-data="{ filtersVisible: false }">
@@ -148,7 +154,7 @@
                 }" @click.prevent="filtersVisible = !filtersVisible">
                   <x-hub::icon ref="filter" style="solid"  class="w-4 mr-1" />
                   {{ __('adminhub::global.filter') }}
-                  @if($this->hasCustomFilters)
+                  @if($this->hasFiltersApplied)
                     <span class="absolute block w-3 h-3 bg-red-500 rounded-full -right-1 -top-1"></span>
                   @endif
                 </x-hub::button>
@@ -265,9 +271,9 @@
             </x-hub::table.cell>
             <x-hub::table.cell>
               @if($order->placed_at)
-                {{ $order->placed_at->format('h:ma') }}
+                {{ $order->placed_at->format('h:ia') }}
               @else
-                {{ $order->created_at->format('h:ma') }}
+                {{ $order->created_at->format('h:ia') }}
               @endif
             </x-hub::table.cell>
             <x-hub::table.cell>

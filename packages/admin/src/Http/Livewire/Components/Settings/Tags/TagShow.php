@@ -20,7 +20,7 @@ class TagShow extends Component
     protected function rules()
     {
         return [
-            'tag.value' => 'required|max:255|unique:'.$this->tag->getTable().',value,'.$this->tag->id,
+            'tag.value' => 'required|max:255|unique:'.get_class($this->tag).',value,'.$this->tag->id,
         ];
     }
 
