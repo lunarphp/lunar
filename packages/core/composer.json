@@ -16,7 +16,10 @@
             "GetCandy\\Database\\Factories\\": "database/factories",
             "GetCandy\\Database\\Seeders\\": "database/seeders",
             "GetCandy\\Database\\State\\": "database/state"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

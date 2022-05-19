@@ -1,6 +1,7 @@
 module.exports = {
     content: [
         './resources/views/components/**/*.blade.php',
+        './resources/views/field-types/**/*.blade.php',
         './resources/views/layouts/**/*.blade.php',
         './resources/views/livewire/**/*.blade.php',
         './resources/views/partials/**/*.blade.php',
