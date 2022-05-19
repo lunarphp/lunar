@@ -301,7 +301,7 @@ class CartManagerTest extends TestCase
 
         $lines = collect([
             ['purchasable' => $purchasableA, 'quantity' => 1],
-            ['purchasable' => $purchasableB, 'quantity' => 2]
+            ['purchasable' => $purchasableB, 'quantity' => 2],
         ]);
 
         $this->assertCount(0, $cart->lines);
@@ -331,7 +331,7 @@ class CartManagerTest extends TestCase
 
         $lines = [
             ['purchasable' => $purchasableA, 'quantity' => 1],
-            ['purchasable' => $purchasableB, 'quantity' => 2]
+            ['purchasable' => $purchasableB, 'quantity' => 2],
         ];
 
         $this->assertCount(0, $cart->lines);
