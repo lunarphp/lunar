@@ -151,7 +151,6 @@
           'sortGroup' => 'root',
           'owner' => $group,
         ], key('tree-root'))
-        {{-- <x-hub::collection-tree :tree="$tree" :owner="$group" sort-group="root" /> --}}
       </div>
     </div>
   </div>
