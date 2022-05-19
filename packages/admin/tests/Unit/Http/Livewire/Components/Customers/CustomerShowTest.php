@@ -28,7 +28,7 @@ class CustomerShowTest extends TestCase
         Currency::factory()->create([
             'default' => true,
         ]);
-        
+
         Language::factory()->create([
             'default' => true,
             'code'    => 'en',
@@ -132,7 +132,7 @@ class CustomerShowTest extends TestCase
             'handle' => 'name',
             'attribute_type' => 'GetCandy\Models\Customer',
         ]);
-        
+
         $description = Attribute::factory()->create([
             'handle' => 'description',
             'attribute_type' => 'GetCandy\Models\Customer',

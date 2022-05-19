@@ -151,7 +151,7 @@ class Customer extends BaseModel
     {
         return $this->hasMany(Order::class);
     }
-    
+
     /**
      * Get the mapped attributes relation.
      *

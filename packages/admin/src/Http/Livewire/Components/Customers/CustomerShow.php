@@ -145,7 +145,7 @@ class CustomerShow extends Component
                 'address.country_id'   => 'required',
                 'address.billing_default' => 'nullable',
                 'address.shipping_default' => 'nullable',
-            ], 
+            ],
             $this->withAttributesValidationRules(),
         );
     }
