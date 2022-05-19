@@ -61,41 +61,38 @@
           <div class="flex items-center w-full space-x-4">
             <x-hub::input.text placeholder="Search by attribute or SKU" class="py-2" wire:model="search" />
 
-            {{-- <x-hub::button theme="gray" class="inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
+            <x-hub::button theme="gray" class="inline-flex items-center" @click.prevent="filtersVisible = !filtersVisible">
               <x-hub::icon ref="filter" class="w-4 mr-1" />
               Filter
-            </x-hub::button> --}}
+            </x-hub::button>
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-4" x-show="filtersVisible" x-cloak>
           <x-hub::input.group label="Status" for="brand">
             <x-hub::input.select wire:model="filters.status">
-              <option>{{ __('adminhub::global.any') }}</option>
+              <option value>{{ __('adminhub::global.any') }}</option>
               <option value="published">{{ __('adminhub::global.published') }}</option>
               <option value="draft">{{ __('adminhub::global.draft') }}</option>
             </x-hub::input.select>
           </x-hub::input.group>
 
-          <x-hub::input.group label="Stock Level" for="brand">
+          {{-- <x-hub::input.group label="Stock Level" for="brand">
             <div class="grid grid-cols-2 gap-2">
               <x-hub::input.text placeholder="From" />
               <x-hub::input.text placeholder="To" />
             </div>
-          </x-hub::input.group>
+          </x-hub::input.group> --}}
 
-          <x-hub::input.group label="Quantity Sold" for="brand">
+          {{-- <x-hub::input.group label="Quantity Sold" for="brand">
             <div class="grid grid-cols-2 gap-2">
               <x-hub::input.text placeholder="From" />
               <x-hub::input.text placeholder="To" />
             </div>
-          </x-hub::input.group>
+          </x-hub::input.group> --}}
 
-          <x-hub::input.group label="Price Range" for="brand">
-            <div class="grid grid-cols-2 gap-2">
-              <x-hub::input.text placeholder="From" />
-              <x-hub::input.text placeholder="To" />
-            </div>
+          <x-hub::input.group label="Show Deleted" for="brand">
+            <x-hub::input.toggle wire:model="filters.soft_deleted" />
           </x-hub::input.group>
 
         </div>
@@ -104,6 +101,9 @@
     <x-slot name="head">
       <x-hub::table.heading>
         <x-hub::input.checkbox wire:model="selectPage" />
+      </x-hub::table.heading>
+      <x-hub::table.heading>
+        Status
       </x-hub::table.heading>
       <x-hub::table.heading>
       </x-hub::table.heading>
@@ -143,10 +143,32 @@
           </x-hub::table.cell>
         </x-hub::table.row>
       @endif
+      @if($this->filters['soft_deleted'] ?? false)
+        <x-hub::table.row class="border-b !bg-red-50">
+          <x-hub::table.cell colspan="24">
+              <span class="text-sm text-red-800">
+                {{ __('adminhub::components.products.index.only_deleted_visible') }}
+              </span>
+          </x-hub::table.cell>
+        </x-hub::table.row>
+      @endif
       @forelse($products as $product)
       <x-hub::table.row wire:key="row-{{ $product->id }}">
         <x-hub::table.cell>
           <x-hub::input.checkbox wire:model="selected" :value="$product->id" />
+        </x-hub::table.cell>
+
+        <x-hub::table.cell>
+          <span
+            @class([
+              'text-xs inline-block py-1 px-2 rounded',
+              'text-green-600 bg-green-50' => $product->status == 'published' && !$product->deleted_at,
+              'text-yellow-600 bg-yellow-50' => $product->status == 'draft' && !$product->deleted_at,
+              'text-red-600 bg-red-50' => $product->deleted_at,
+            ])
+          >
+            {{ __('adminhub::components.products.index.' .  ($product->deleted_at ? 'deleted' : $product->status)) }}
+          </span>
         </x-hub::table.cell>
 
         <x-hub::table.cell class="w-24">
@@ -183,9 +205,20 @@
         </x-hub::table.cell>
 
         <x-hub::table.cell>
+          @if($product->deleted_at)
+            <x-hub::button
+              size="xs"
+              theme="gray"
+              type="button"
+              wire:click="restoreProduct({{ $product->id }})"
+            >
+              Restore
+            </x-hub::button>
+          @else
             <a href="{{ route('hub.products.show', $product->id) }}" class="text-indigo-500 hover:underline">
                 {{ __('adminhub::global.edit') }}
             </a>
+          @endif
         </x-hub::table.cell>
       </x-hub::table.row>
       @empty

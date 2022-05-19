@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products;
 
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
 use GetCandy\Models\Product;
 use Livewire\Component;
@@ -11,6 +12,7 @@ class ProductsIndex extends Component
 {
     use WithPagination;
     use SearchesProducts;
+    use Notifies;
 
     public $selectPage = false;
     public $selectAll = false;
@@ -30,6 +32,7 @@ class ProductsIndex extends Component
      */
     public $filters = [
         'status' => null,
+        'soft_deleted' => false
     ];
 
     /**
@@ -53,7 +56,17 @@ class ProductsIndex extends Component
 
     public function getProductsProperty()
     {
-        return tap(Product::search($this->search)->paginate(50), function ($products) {
+        $query = Product::search($this->search);
+
+        if ($this->filters['soft_deleted']) {
+            $query->onlyTrashed();
+        }
+
+        if ($status = $this->filters['status'] ?? null) {
+            $query->where('status', $status);
+        }
+
+        return tap($query->paginate(50), function ($products) {
             return $products->load(['thumbnail', 'productType', 'variants']);
         });
     }
@@ -75,6 +88,15 @@ class ProductsIndex extends Component
         });
 
         return $variant?->thumbnail;
+    }
+
+    public function restoreProduct($productId)
+    {
+        Product::onlyTrashed()->find($productId)->restore();
+
+        $this->notify(
+            __('adminhub::notifications.products.product_restored')
+        );
     }
 
     /**
