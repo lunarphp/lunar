@@ -15,18 +15,18 @@ abstract class AbstractSearch implements SearchInterface
     {
         $this->driver = config('scout.driver');
     }
-    
+
     /**
-     * Return the right driver for the model
+     * Return the right driver for the model.
      *
      * @param  string  $model
      * @return string
-     */    
+     */
     public function getDriverForModel(string $model): string
     {
         $engines = config('getcandy.search.engine_map', []);
         if (isset($engines[$model])) {
-            return $engines[$model];    
+            return $engines[$model];
         }
 
         return $this->driver;
