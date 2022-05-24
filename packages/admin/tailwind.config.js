@@ -1,4 +1,5 @@
 module.exports = {
+    darkMode: 'class',
     content: [
         './resources/views/components/**/*.blade.php',
         './resources/views/field-types/**/*.blade.php',
