@@ -73,7 +73,7 @@ class CartManager
                 $this->getModifiers()->toArray()
             );
 
-        $pipeline->via('calculating')->thenReturn();
+        $pipeline->via('processCalculating')->thenReturn();
 
         $lines = $this->calculateLines();
 
@@ -124,7 +124,7 @@ class CartManager
             ];
         });
 
-        $pipeline->via('calculated')->thenReturn();
+        $pipeline->via('processCalculated')->thenReturn();
 
         return $this;
     }
