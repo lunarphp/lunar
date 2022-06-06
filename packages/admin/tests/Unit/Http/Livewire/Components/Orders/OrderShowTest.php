@@ -322,4 +322,27 @@ class OrderShowTest extends TestCase
             __('adminhub::components.orders.show.capture_payment_btn')
         );
     }
+
+    /** @test */
+    public function can_view_order_without_placed_at_date()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id'   => null,
+            'currency_code' => Currency::getDefault()->code,
+            'placed_at' => null,
+            'status' => 'awaiting-payment',
+            'tax_breakdown' => [
+                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
+            ],
+        ]);
+
+        LiveWire::actingAs($staff, 'staff')
+        ->test(OrderShow::class, [
+            'order' => $order,
+        ])->assertSet('order.placed_at', null);
+    }
 }
