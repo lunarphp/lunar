@@ -3,7 +3,7 @@
       <x-hub::translatable>
         <x-hub::input.text wire:model="name.{{ $this->defaultLanguage->code }}" :error="$errors->first('name.' . $this->defaultLanguage->code)" />
         @foreach($languages->filter(fn ($lang) => !$lang->default) as $language)
-          <x-slot :name="$language->code">
+          <x-slot :name="$language['code']">
             <x-hub::input.text wire:model="name.{{ $language->code }}" />
           </x-slot>
         @endforeach
@@ -25,7 +25,7 @@
                 :error="$errors->first('values.'.$loop->index.'.name.'.$this->defaultLanguage->code)"
               />
               @foreach($languages->filter(fn ($lang) => !$lang->default) as $language)
-                <x-slot :name="$language->code">
+                <x-slot :name="$language['code']">
                   <x-hub::input.text
                     wire:model="values.{{ $key }}.name.{{ $language->code }}"
                     :error="$errors->first('values.'.$loop->index.'.name.'.$language->code)"
