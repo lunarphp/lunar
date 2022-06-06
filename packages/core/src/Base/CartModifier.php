@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base;
 
+use Closure;
 use GetCandy\Models\Cart;
 
 abstract class CartModifier
@@ -11,9 +12,9 @@ abstract class CartModifier
      *
      * @return void
      */
-    public function calculating(Cart $cart)
+    public function calculating(Cart $cart, Closure $next): Cart
     {
-        //
+        return $next($cart);
     }
 
     /**
@@ -21,8 +22,8 @@ abstract class CartModifier
      *
      * @return void
      */
-    public function calculated(Cart $cart)
+    public function calculated(Cart $cart, Closure $next): Cart
     {
-        //
+        return $next($cart);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace GetCandy\Base;
 
-use GetCandy\Models\Cart;
+use Closure;
 use GetCandy\Models\CartLine;
 
 abstract class CartLineModifier
@@ -10,20 +10,20 @@ abstract class CartLineModifier
     /**
      * Called just before cart totals are calculated.
      *
-     * @return void
+     * @return CartLine
      */
-    public function calculating(CartLine $cartLine)
+    public function calculating(CartLine $cartLine, Closure $next): CartLine
     {
-        //
+        return $next($cartLine);
     }
 
     /**
      * Called just after cart totals are calculated.
      *
-     * @return void
+     * @return CartLine
      */
-    public function calculated(CartLine $cartLine)
+    public function calculated(CartLine $cartLine, Closure $next): CartLine
     {
-        //
+        return $next($cartLine);
     }
 }
