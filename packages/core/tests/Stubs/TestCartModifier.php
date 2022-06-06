@@ -16,6 +16,7 @@ class TestCartModifier extends CartModifier
     public function calculated(Cart $cart, Closure $next): Cart
     {
         $cart->total->value = 5000;
+
         return $next($cart);
     }
 }
