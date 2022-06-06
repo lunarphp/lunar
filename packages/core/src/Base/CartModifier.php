@@ -7,11 +7,10 @@ use GetCandy\Models\Cart;
 abstract class CartModifier
 {
     /**
-     * Handle the process calculating pipeline
+     * Handle the process calculating pipeline.
      *
-     * @param CartLine $cartLine
-     * @param \Closure $next
-     *
+     * @param  CartLine  $cartLine
+     * @param  \Closure  $next
      * @return \Closure
      */
     public function processCalculating(Cart $cart, $next)
@@ -22,11 +21,10 @@ abstract class CartModifier
     }
 
     /**
-     * Handle the process calculating pipeline
+     * Handle the process calculating pipeline.
      *
-     * @param CartLine $cartLine
-     * @param \Closure $next
-     *
+     * @param  CartLine  $cartLine
+     * @param  \Closure  $next
      * @return \Closure
      */
     public function processCalculated(Cart $cart, $next)

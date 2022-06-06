@@ -8,11 +8,10 @@ use GetCandy\Models\Order;
 abstract class OrderModifier
 {
     /**
-     * Handle the process calculating pipeline
+     * Handle the process calculating pipeline.
      *
-     * @param Cart $cart
-     * @param \Closure $next
-     *
+     * @param  Cart  $cart
+     * @param  \Closure  $next
      * @return \Closure
      */
     public function processCreating(Cart $cart, $next)
@@ -23,11 +22,10 @@ abstract class OrderModifier
     }
 
     /**
-     * Handle the process calculating pipeline
+     * Handle the process calculating pipeline.
      *
-     * @param Order $order
-     * @param \Closure $next
-     *
+     * @param  Order  $order
+     * @param  \Closure  $next
      * @return \Closure
      */
     public function processCreated(Order $order, $next)

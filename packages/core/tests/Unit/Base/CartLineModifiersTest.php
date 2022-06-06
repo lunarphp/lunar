@@ -4,9 +4,6 @@ namespace GetCandy\Tests\Unit\Base;
 
 use GetCandy\Base\CartLineModifier;
 use GetCandy\Base\CartLineModifiers;
-use GetCandy\Base\CartModifiers;
-use GetCandy\Base\Casts\Price as CastsPrice;
-use GetCandy\Base\OrderModifier;
 use GetCandy\DataTypes\Price as DataTypesPrice;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
@@ -45,7 +42,8 @@ class CartLineModifiersTest extends TestCase
     {
         $modifiers = app(CartLineModifiers::class);
 
-        $modifiers->add(new class extends CartLineModifier {
+        $modifiers->add(new class extends CartLineModifier
+        {
             public function calculating(CartLine $cartLine)
             {
                 echo 1;
@@ -62,7 +60,8 @@ class CartLineModifiersTest extends TestCase
 
         $currency = Currency::factory()->create();
 
-        $modifiers->add(new class extends CartLineModifier {
+        $modifiers->add(new class extends CartLineModifier
+        {
             public function calculating(CartLine $cartLine)
             {
                 $cartLine->total = new DataTypesPrice(
@@ -104,14 +103,15 @@ class CartLineModifiersTest extends TestCase
         $this->assertEquals(100, $cartLine->total?->value);
     }
 
-/** @test */
+    /** @test */
     public function can_send_multiple_modifiers_through_pipeline()
     {
         $modifiers = app(CartLineModifiers::class);
 
         $currency = Currency::factory()->create();
 
-        $modifiers->add(new class extends CartLineModifier {
+        $modifiers->add(new class extends CartLineModifier
+        {
             public function calculating(CartLine $cartLine)
             {
                 $cartLine->total = new DataTypesPrice(
@@ -121,7 +121,8 @@ class CartLineModifiersTest extends TestCase
             }
         });
 
-        $modifiers->add(new class extends CartLineModifier {
+        $modifiers->add(new class extends CartLineModifier
+        {
             public function calculating(CartLine $cartLine)
             {
                 $cartLine->total = new DataTypesPrice(
