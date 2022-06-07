@@ -1,0 +1,42 @@
+{
+  "name": "getcandy/pro-discounts",
+  "description": "GetCandy Pro Discounts Addon",
+  "keywords": ["getcandy", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+      {
+        "name": "GetCandy",
+        "homepage": "https://getcandy.io/"
+      }
+  ],
+  "autoload": {
+      "psr-4": {
+          "GetCandy\\Discounts\\": "src",
+          "GetCandy\\Discounts\\Database\\Factories\\": "database/factories"
+      }
+  },
+  "autoload-dev": {
+      "psr-4": {
+          "GetCandy\\Shipping\\Tests\\": "tests"
+      }
+  },
+  "extra": {
+      "getcandy": {
+        "name": "Discounts"
+      },
+      "laravel": {
+          "providers": [
+              "GetCandy\\Discounts\\DiscountsServiceProvider"
+          ]
+      }
+  },
+  "require": {
+      "php": "^8.0",
+      "getcandy/admin": "*"
+  },
+  "require-dev": {
+      "orchestra/testbench": "^6.0|^7.0",
+      "phpunit/phpunit": "^9.5"
+  }
+}
