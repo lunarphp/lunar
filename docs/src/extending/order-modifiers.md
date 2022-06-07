@@ -32,7 +32,6 @@ class CustomOrderModifier extends OrderModifier
     public function creating(Cart $cart, Closure $next): Cart
     {
         //...
-
         return $next($cart);
     }
 
