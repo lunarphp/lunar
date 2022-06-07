@@ -4,7 +4,7 @@
     'field' => $field,
   ])
   @foreach($this->languages as $language)
-    <x-slot :name="$language->code">
+    <x-slot :name="$language['code']">
       <div wire:key="language-{{ $language->id }}">
         @include("adminhub::field-types.text.view", [
           'language' => $language->code,
