@@ -32,7 +32,7 @@ class CartLineManager
                 $this->getModifiers()->toArray()
             );
 
-        $pipeline->send($this->cartLine)->via('calculating')->thenReturn();
+        $this->cartLine = $pipeline->send($this->cartLine)->via('calculating')->thenReturn();
 
         $line = app(CalculateLine::class)->execute(
             $this->cartLine,
@@ -41,9 +41,7 @@ class CartLineManager
             $billingAddress
         );
 
-        $pipeline->send($line)->via('calculated')->thenReturn();
-
-        return $line;
+        return $pipeline->send($line)->via('calculated')->thenReturn();
     }
 
     /**

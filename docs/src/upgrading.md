@@ -30,6 +30,74 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## [Unreleased]
+
+### Changes to modifiers - High Impact
+
+If you're using custom modifiers, you will need to update the methods like so:
+
+CartLineModifier
+
+```php
+/**
+ * Called just before cart totals are calculated.
+ *
+ * @return CartLine
+ */
+public function calculating(CartLine $cartLine, Closure $next): CartLine
+{
+    return $next($cartLine);
+}
+
+/**
+ * Called just after cart totals are calculated.
+ *
+ * @return CartLine
+ */
+public function calculated(CartLine $cartLine, Closure $next): CartLine
+{
+    return $next($cartLine);
+}
+```
+
+CartLineModifier
+
+```php
+    /**
+ * Called just before cart totals are calculated.
+ *
+ * @return void
+ */
+public function calculating(Cart $cart, Closure $next): Cart
+{
+    return $next($cart);
+}
+
+/**
+ * Called just after cart totals are calculated.
+ *
+ * @return void
+ */
+public function calculated(Cart $cart, Closure $next): Cart
+{
+    return $next($cart);
+}
+```
+
+OrderModifier
+
+```php
+public function creating(Cart $cart, Closure $next): Cart
+{
+    return $next($cart);
+}
+
+public function created(Order $order, Closure $next): Order
+{
+    return $next($order);
+}
+```
+
 ## 2.0-beta13
 
 ### Additional Scout configuration
