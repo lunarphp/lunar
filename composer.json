@@ -36,6 +36,8 @@
             "GetCandy\\Database\\Factories\\": "packages/core/database/factories",
             "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
             "GetCandy\\Database\\State\\": "packages/core/database/state",
+            "GetCandy\\Discounts\\": "packages/pro/discounts/src",
+            "GetCandy\\Discounts\\Database\\Factories\\": "packages/pro/discounts/database/factories",
             "GetCandy\\Hub\\": "packages/admin/src",
             "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
         }
@@ -43,6 +45,7 @@
     "autoload-dev": {
         "psr-4": {
             "GetCandy\\Hub\\Tests\\": "packages/admin/tests",
+            "GetCandy\\Shipping\\Tests\\": "packages/pro/discounts/tests",
             "GetCandy\\Tests\\": "packages/core/tests"
         }
     },
@@ -50,13 +53,18 @@
         "laravel": {
             "providers": [
                 "GetCandy\\Hub\\AdminHubServiceProvider",
+                "GetCandy\\Discounts\\DiscountsServiceProvider",
                 "GetCandy\\GetCandyServiceProvider"
             ]
+        },
+        "getcandy": {
+            "name": "Discounts"
         }
     },
     "replace": {
         "getcandy/admin": "self.version",
-        "getcandy/core": "self.version"
+        "getcandy/core": "self.version",
+        "getcandy/pro-discounts": "self.version"
     },
     "minimum-stability": "beta"
 }
