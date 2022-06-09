@@ -41,7 +41,6 @@ trait Searchable
             'id' => $this->id,
         ];
     }
-
     /**
      * Return our base attributes we want filterable.
      *
@@ -132,7 +131,7 @@ trait Searchable
      */
     public function toSearchableArray()
     {
-        if (config('scout.driver') == 'mysql') {
+        if (in_array($this->getSearchDriverName(), ['database', 'mysql'])) {
             return $this->only(array_keys($this->getAttributes()));
         }
 
@@ -149,14 +148,20 @@ trait Searchable
      */
     public function searchableUsing()
     {
+        return app(EngineManager::class)->engine(
+            $this->getSearchDriverName()
+        );
+    }
+
+    /**
+     * Return the configured search driver name
+     *
+     * @return string
+     */
+    protected function getSearchDriverName()
+    {
         $engines = config('getcandy.search.engine_map', []);
 
-        if (isset($engines[self::class])) {
-            return app(EngineManager::class)->engine(
-                $engines[self::class]
-            );
-        }
-
-        return app(EngineManager::class)->engine();
+        return $engines[self::class] ?? config('scout.driver');
     }
 }
