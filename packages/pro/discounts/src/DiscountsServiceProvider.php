@@ -19,13 +19,36 @@ namespace GetCandy\Discounts;
 // use GetCandy\Shipping\Interfaces\ShippingMethodManagerInterface;
 // use GetCandy\Shipping\Managers\ShippingManager;
 // use GetCandy\Shipping\Menu\ShippingMenu;
+
+use GetCandy\Base\CartLineModifiers;
+use GetCandy\Base\CartModifiers;
+use GetCandy\Discounts\Interfaces\DiscountConditionManagerInterface;
+use GetCandy\Discounts\Interfaces\DiscountRewardManagerInterface;
+use GetCandy\Discounts\Managers\DiscountConditionManager;
+use GetCandy\Discounts\Managers\DiscountRewardManager;
+use GetCandy\Discounts\Modifiers\DiscountCartModifier;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
 class DiscountsServiceProvider extends ServiceProvider
 {
-    public function boot()
-    {
+    public function boot(
+        CartLineModifiers $cartModifiers
+    ) {
+
+        $this->app->singleton(DiscountConditionManagerInterface::class, function ($app) {
+            return $app->make(DiscountConditionManager::class);
+        });
+
+        $this->app->singleton(DiscountRewardManagerInterface::class, function ($app) {
+            return $app->make(DiscountRewardManager::class);
+        });
+
+        $cartModifiers->add(
+            DiscountCartModifier::class
+        );
+
+
 //         $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
 //
 //         $slot = Menu::slot('sidebar');
@@ -44,7 +67,7 @@ class DiscountsServiceProvider extends ServiceProvider
 //
 //         $this->loadRoutesFrom(__DIR__.'/../routes/hub.php');
 //
-//         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 //
 //         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
 //

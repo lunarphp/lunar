@@ -22,21 +22,23 @@ trait TestUtils
             'currency_id' => $currency->id,
         ]);
 
-        $purchasable = ProductVariant::factory()->create();
+        $purchasables = ProductVariant::factory(50)->create();
 
-        Price::factory()->create([
-            'price'          => $price,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
-        ]);
+        foreach ($purchasables as $purchasable) {
+            Price::factory()->create([
+                'price'          => $price,
+                'tier'           => 1,
+                'currency_id'    => $currency->id,
+                'priceable_type' => get_class($purchasable),
+                'priceable_id'   => $purchasable->id,
+            ]);
 
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => $quantity,
-        ]);
+            $cart->lines()->create([
+                'purchasable_type' => get_class($purchasable),
+                'purchasable_id'   => $purchasable->id,
+                'quantity'         => $quantity,
+            ]);
+        }
 
         $manager = new CartManager($cart);
 

@@ -44,6 +44,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "GetCandy\\Discounts\\Tests\\": "packages/pro/discounts/tests",
             "GetCandy\\Hub\\Tests\\": "packages/admin/tests",
             "GetCandy\\Shipping\\Tests\\": "packages/pro/discounts/tests",
             "GetCandy\\Tests\\": "packages/core/tests"

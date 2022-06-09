@@ -5,9 +5,8 @@ namespace GetCandy\Discounts\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Discounts\Database\Factories\DiscountRewardFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use GetCandy\Discounts\Facades\DiscountRewards;
 
-class DiscountReward extends BaseModel
+class DiscountPurchasable extends BaseModel
 {
     use HasFactory;
 
@@ -26,22 +25,12 @@ class DiscountReward extends BaseModel
     }
 
     /**
-     * Return the discount relationship
+     * Return the polymorphic relation.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function discount()
+    public function purchasable()
     {
-        return $this->belongsTo(Discount::class);
-    }
-
-    public function purchasables()
-    {
-        return $this->morphMany(DiscountPurchasable::class, 'discount');
-    }
-
-    public function driver()
-    {
-        return DiscountRewards::driver($this->driver)->with($this);
+        return $this->morphTo();
     }
 }
