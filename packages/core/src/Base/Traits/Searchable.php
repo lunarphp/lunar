@@ -41,6 +41,7 @@ trait Searchable
             'id' => $this->id,
         ];
     }
+
     /**
      * Return our base attributes we want filterable.
      *
@@ -154,7 +155,7 @@ trait Searchable
     }
 
     /**
-     * Return the configured search driver name
+     * Return the configured search driver name.
      *
      * @return string
      */
