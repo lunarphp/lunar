@@ -49,7 +49,11 @@ class CalculateLine
             $cart->currency->decimal_places
         ) * $cart->currency->factor);
 
-        $subTotal = $unitPrice * $cartLine->quantity;
+        if (!$cartLine->discountTotal) {
+            $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
+        }
+
+        $subTotal = ($unitPrice * $cartLine->quantity) - $cartLine->discountTotal->value;
 
         $taxBreakDown = Taxes::setShippingAddress($shippingAddress)
             ->setBillingAddress($billingAddress)
@@ -65,7 +69,8 @@ class CalculateLine
         $cartLine->taxAmount = new Price($taxTotal, $cart->currency, $unitQuantity);
         $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
         $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);
-        $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
+
+
 
         return $cartLine;
     }

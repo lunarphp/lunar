@@ -5,6 +5,7 @@ namespace GetCandy\Discounts\Modifiers;
 use Closure;
 use GetCandy\Base\CartLineModifier;
 use GetCandy\Base\CartModifier;
+use GetCandy\DataTypes\Price;
 use GetCandy\Discounts\Models\Discount;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
@@ -20,6 +21,12 @@ class DiscountCartModifier extends CartLineModifier
             'rewards',
         ])->get();
 
+        $cartLine->discountTotal = new Price(
+            10,
+            $cartLine->cart->currency,
+            1
+        );
+
 
         // dd($discounts->toArray());
 
@@ -29,7 +36,7 @@ class DiscountCartModifier extends CartLineModifier
                 // if ($condition->driver()->check($cart)) {
 
                     foreach ($discount->rewards as $reward) {
-                        $reward->driver()->check($cartLine->cart);
+                        // $reward->driver()->check($cartLine->cart);
                     }
 
                 // }
