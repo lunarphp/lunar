@@ -33,7 +33,7 @@ use Livewire\Livewire;
 class DiscountsServiceProvider extends ServiceProvider
 {
     public function boot(
-        CartLineModifiers $cartModifiers
+        CartModifiers $cartModifiers
     ) {
 
         $this->app->singleton(DiscountConditionManagerInterface::class, function ($app) {

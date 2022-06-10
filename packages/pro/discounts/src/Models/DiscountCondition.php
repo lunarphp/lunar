@@ -43,6 +43,6 @@ class DiscountCondition extends BaseModel
 
     public function driver()
     {
-        return DiscountConditions::driver($this->driver);
+        return DiscountConditions::driver($this->driver)->with($this);
     }
 }

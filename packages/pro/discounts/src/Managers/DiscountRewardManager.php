@@ -2,10 +2,16 @@
 
 namespace GetCandy\Discounts\Managers;
 
+use GetCandy\Discounts\Drivers\Rewards\Percentage;
 use Illuminate\Support\Manager;
 
 class DiscountRewardManager extends Manager
 {
+    public function createPercentageDriver()
+    {
+        return $this->container->make(Percentage::class);
+    }
+
     /**
      * Build a tax provider instance.
      *
@@ -19,6 +25,6 @@ class DiscountRewardManager extends Manager
 
     public function getDefaultDriver()
     {
-        return null;
+        return 'percentage';
     }
 }

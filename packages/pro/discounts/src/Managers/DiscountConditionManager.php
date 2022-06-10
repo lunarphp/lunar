@@ -2,13 +2,14 @@
 
 namespace GetCandy\Discounts\Managers;
 
+use GetCandy\Discounts\Drivers\Conditions\Coupon;
 use Illuminate\Support\Manager;
 
 class DiscountConditionManager extends Manager
 {
-    public function createBasicDriver()
+    public function createCouponDriver()
     {
-        // dd(1);
+        return $this->container->make(Coupon::class);
     }
 
     /**
@@ -24,6 +25,6 @@ class DiscountConditionManager extends Manager
 
     public function getDefaultDriver()
     {
-        return 'basic';
+        return 'coupon';
     }
 }
