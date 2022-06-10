@@ -75,9 +75,7 @@ class CartManager
 
         $this->cart = $pipeline->via('calculating')->thenReturn();
 
-        $lines = $pipeline->send(
-            $this->calculateLines()
-        )->via('calculatedLines')->thenReturn();
+        $lines = $this->calculateLines();
 
         // Get the line subtotals and add together.
         $subTotal = $lines->sum('subTotal.value');
