@@ -3,6 +3,7 @@
 namespace GetCandy\Discounts\Managers;
 
 use GetCandy\Discounts\Drivers\Conditions\Coupon;
+use GetCandy\Discounts\Drivers\Conditions\Product;
 use Illuminate\Support\Manager;
 
 class DiscountConditionManager extends Manager
@@ -10,6 +11,11 @@ class DiscountConditionManager extends Manager
     public function createCouponDriver()
     {
         return $this->container->make(Coupon::class);
+    }
+
+    public function createProductDriver()
+    {
+        return $this->container->make(Product::class);
     }
 
     /**

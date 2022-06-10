@@ -24,7 +24,9 @@ use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
 use GetCandy\Discounts\Interfaces\DiscountConditionManagerInterface;
 use GetCandy\Discounts\Interfaces\DiscountRewardManagerInterface;
+use GetCandy\Discounts\Interfaces\DiscountsInterface;
 use GetCandy\Discounts\Managers\DiscountConditionManager;
+use GetCandy\Discounts\Managers\DiscountManager;
 use GetCandy\Discounts\Managers\DiscountRewardManager;
 use GetCandy\Discounts\Modifiers\DiscountCartModifier;
 use Illuminate\Support\ServiceProvider;
@@ -35,6 +37,9 @@ class DiscountsServiceProvider extends ServiceProvider
     public function boot(
         CartLineModifiers $cartModifiers
     ) {
+        $this->app->singleton(DiscountsInterface::class, function ($app) {
+            return $app->make(DiscountManager::class);
+        });
 
         $this->app->singleton(DiscountConditionManagerInterface::class, function ($app) {
             return $app->make(DiscountConditionManager::class);
