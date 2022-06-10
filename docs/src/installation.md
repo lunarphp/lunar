@@ -88,9 +88,15 @@ See the [Laravel Scout documentation](https://laravel.com/docs/8.x/scout#meilise
 
 ### Going with MySQL
 
+If Scout's `database` driver isn't sufficient for you, you can install a third party MySQL driver.
+
 ::: warning Development Only
 We suggest the MySQL driver is only used for development purposes.
 :::
+
+```
+composer require yab/laravel-scout-mysql-driver
+```
 
 Add/update the entry in your `.env` file as follows.
 
