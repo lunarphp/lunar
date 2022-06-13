@@ -61,13 +61,9 @@ class CalculateLine
 
         $cartLine = $pipeline->send($cartLine)->via('subtotalled')->thenReturn();
 
-//         if (!$cartLine->discountTotal) {
-//
-//
-//             dd($cartLine);
-//             $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
-//             $discountTotal = $cartLine->discountTotal->value;
-//         }
+        if (!$cartLine->discountTotal) {
+            $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
+        }
 
 
         $taxBreakDown = Taxes::setShippingAddress($shippingAddress)

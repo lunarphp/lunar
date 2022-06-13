@@ -15,7 +15,8 @@ class CreateDiscountTables extends Migration
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('ends_at')->nullable();
             $table->mediumInteger('max_uses')->unsigned()->nullable();
-            $table->mediumInteger('priority')->unsigned()->default(1);
+            $table->mediumInteger('priority')->unsigned()->index()->default(1);
+            $table->boolean('stop')->default(false)->index();
             $table->timestamps();
         });
 

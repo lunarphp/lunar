@@ -19,27 +19,43 @@ class DiscountCartModifier extends CartLineModifier
         $discounts = Discount::with([
             'conditions.purchasables',
             'rewards',
-        ])->get();
+        ])->orderBy('priority')->get();
 
-        // $cartLine->discountTotal = new Price(
-        //     10,
-        //     $cartLine->cart->currency,
-        //     1
-        // );
+        $cartMeta = $cartLine->cart->meta ?: (object) [];
 
-
-        // dd($discounts->toArray());
+        $appliedDiscounts = collect();
 
         foreach ($discounts as $discount) {
+            // $hasApplied = false;
+
             foreach ($discount->conditions as $condition) {
                 if ($condition->driver()->check($cartLine->cart)) {
+                    // $hasApplied = true;
+
+                    $appliedDiscounts->push(
+                        $discount->translateAttribute('name')
+                    );
                     foreach ($discount->rewards as $reward) {
                         $cartLine = $reward->driver()->apply($cartLine);
                     }
                 }
                 continue;
             }
+
+            // if ($hasApplied && $discount->stop) {
+            //     continue;
+            // }
         }
+
+        if ($appliedDiscounts->count()) {
+            $cartMeta->discounts = $appliedDiscounts->unique()->toArray();
+        } else {
+            $cartMeta->discounts = null;
+        }
+
+        $cartLine->cart->update([
+            'meta' => $cartMeta,
+        ]);
 
         clock()->event('Discounts')->end();
 

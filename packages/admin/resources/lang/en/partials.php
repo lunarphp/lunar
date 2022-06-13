@@ -164,11 +164,13 @@ return [
     'orders.totals.shipping_total' => 'Shipping Total',
     'orders.totals.total' => 'Total',
     'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.totals.discount_total' => 'Discount Total',
     'orders.lines.unit_price' => 'Unit Price',
     'orders.lines.quantity' => 'Quantity',
     'orders.lines.sub_total' => 'Sub Total',
     'orders.lines.discount_total' => 'Discount Total',
     'orders.lines.total' => 'Total',
+
     'orders.details.status' => 'Status',
     'orders.details.reference' => 'Reference',
     'orders.details.customer_reference' => 'Customer Reference',

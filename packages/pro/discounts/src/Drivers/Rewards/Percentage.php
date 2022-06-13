@@ -26,6 +26,17 @@ class Percentage
 
         $subTotal = $cartLine->subTotal->value;
 
+        // Does this cart line already have a discount?
+        $currentDiscount = $cartLine->discountTotal?->value;
+
+        if ($currentDiscount) {
+            $subTotal = $subTotal - $currentDiscount;
+
+            if (!$subTotal) {
+                return $cartLine;
+            }
+        }
+
         $amount = (int) round($subTotal * ($percentage / 100));
 
         $cartLine->discountTotal = new Price(
