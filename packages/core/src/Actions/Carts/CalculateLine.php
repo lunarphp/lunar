@@ -3,10 +3,12 @@
 namespace GetCandy\Actions\Carts;
 
 use GetCandy\Base\Addressable;
+use GetCandy\Base\CartLineModifiers;
 use GetCandy\DataTypes\Price;
 use GetCandy\Facades\Pricing;
 use GetCandy\Facades\Taxes;
 use GetCandy\Models\CartLine;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 
 class CalculateLine
@@ -49,29 +51,53 @@ class CalculateLine
             $cart->currency->decimal_places
         ) * $cart->currency->factor);
 
-        if (!$cartLine->discountTotal) {
-            $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
-        }
+        $cartLine->subTotal = new Price($unitPrice * $cartLine->quantity, $cart->currency, $unitQuantity);
+        $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);
 
-        $subTotal = ($unitPrice * $cartLine->quantity) - $cartLine->discountTotal->value;
+        $pipeline = app(Pipeline::class)
+            ->through(
+                $this->getModifiers()->toArray()
+            );
+
+        $cartLine = $pipeline->send($cartLine)->via('subtotalled')->thenReturn();
+
+//         if (!$cartLine->discountTotal) {
+//
+//
+//             dd($cartLine);
+//             $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
+//             $discountTotal = $cartLine->discountTotal->value;
+//         }
+
 
         $taxBreakDown = Taxes::setShippingAddress($shippingAddress)
             ->setBillingAddress($billingAddress)
             ->setCurrency($cart->currency)
             ->setPurchasable($purchasable)
             ->setCartLine($cartLine)
-            ->getBreakdown($subTotal);
+            ->getBreakdown($cartLine->subTotal->value - $cartLine->discountTotal->value);
 
         $taxTotal = $taxBreakDown->amounts->sum('price.value');
 
         $cartLine->taxBreakdown = $taxBreakDown;
-        $cartLine->subTotal = new Price($subTotal, $cart->currency, $unitQuantity);
+
+        $cartLine->total = new Price(
+            ($cartLine->subTotal->value - $cartLine->discountTotal->value) + $taxTotal,
+            $cart->currency,
+            $unitQuantity
+        );
         $cartLine->taxAmount = new Price($taxTotal, $cart->currency, $unitQuantity);
-        $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
-        $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);
-
-
 
         return $cartLine;
+    }
+
+    /**
+     * Return the cart line modifiers.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    private function getModifiers()
+    {
+        return app(CartLineModifiers::class)->getModifiers();
     }
 }

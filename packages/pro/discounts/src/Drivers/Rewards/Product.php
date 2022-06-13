@@ -5,10 +5,11 @@ namespace GetCandy\Discounts\Drivers\Rewards;
 use GetCandy\DataTypes\Price;
 use GetCandy\Discounts\Models\DiscountCondition;
 use GetCandy\Discounts\Models\DiscountReward;
+use GetCandy\Facades\Pricing;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
 
-class Percentage
+class Product
 {
     protected DiscountReward $reward;
 
@@ -21,15 +22,18 @@ class Percentage
 
     public function apply(CartLine $cartLine): CartLine
     {
+        $purchasable = $this->reward->purchasables->first(function ($purchasable) use ($cartLine) {
+            return $cartLine->purchasable_id == $purchasable->purchasable_id;
+        })?->purchasable;
 
-        $percentage = $this->reward->data->amount ?? 0;
+        if (!$purchasable) {
+            return $cartLine;
+        }
 
-        $subTotal = $cartLine->subTotal->value;
-
-        $amount = (int) round($subTotal * ($percentage / 100));
+        $unitPrice = Pricing::for($purchasable)->get();
 
         $cartLine->discountTotal = new Price(
-            $amount,
+            $unitPrice->matched->price->value,
             $cartLine->cart->currency,
             1
         );

@@ -3,6 +3,7 @@
 namespace GetCandy\Discounts\Managers;
 
 use GetCandy\Discounts\Drivers\Rewards\Percentage;
+use GetCandy\Discounts\Drivers\Rewards\Product;
 use Illuminate\Support\Manager;
 
 class DiscountRewardManager extends Manager
@@ -10,6 +11,11 @@ class DiscountRewardManager extends Manager
     public function createPercentageDriver()
     {
         return $this->container->make(Percentage::class);
+    }
+
+    public function createProductDriver()
+    {
+        return $this->container->make(Product::class);
     }
 
     /**

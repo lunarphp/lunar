@@ -7,6 +7,7 @@ use GetCandy\Base\Casts\Address;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartFactory;
 use GetCandy\DataTypes\Price;
+use GetCandy\Discounts\Models\DiscountReward;
 use GetCandy\Managers\CartManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,6 +52,8 @@ class Cart extends BaseModel
      * @var Collection
      */
     public Collection $taxBreakdown;
+
+    public ?Collection $discounts = null;
 
     /**
      * The shipping total for the cart.
@@ -191,5 +194,18 @@ class Cart extends BaseModel
     public function scopeActive(Builder $query)
     {
         return $query->whereDoesntHave('order');
+    }
+
+    public function addDiscount(DiscountReward $reward)
+    {
+        if (!$this->discounts) {
+            $this->discounts = collect();
+        }
+
+        $this->discounts->push(
+            $reward
+        );
+
+        return true;
     }
 }

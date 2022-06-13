@@ -12,7 +12,7 @@ use GetCandy\Models\CartLine;
 
 class DiscountCartModifier extends CartLineModifier
 {
-    public function calculating(CartLine $cartLine, Closure $next): CartLine
+    public function subtotalled(CartLine $cartLine, Closure $next): CartLine
     {
         clock()->event('Discounts')->color('purple')->begin();
 
@@ -30,16 +30,16 @@ class DiscountCartModifier extends CartLineModifier
 
         // dd($discounts->toArray());
 
-        // foreach ($discounts as $discount) {
-        //     foreach ($discount->conditions as $condition) {
-        //         if ($condition->driver()->check($cartLine->cart)) {
-        //             foreach ($discount->rewards as $reward) {
-        //                 $reward->driver()->apply($cartLine);
-        //             }
-        //         }
-        //         continue;
-        //     }
-        // }
+        foreach ($discounts as $discount) {
+            foreach ($discount->conditions as $condition) {
+                if ($condition->driver()->check($cartLine->cart)) {
+                    foreach ($discount->rewards as $reward) {
+                        $cartLine = $reward->driver()->apply($cartLine);
+                    }
+                }
+                continue;
+            }
+        }
 
         clock()->event('Discounts')->end();
 
