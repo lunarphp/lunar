@@ -19,7 +19,7 @@ class DiscountCartModifier extends CartLineModifier
         $discounts = Discount::with([
             'conditions.purchasables',
             'rewards',
-        ])->orderBy('priority')->get();
+        ])->active()->orderBy('priority')->get();
 
         $cartMeta = $cartLine->cart->meta ?: (object) [];
 

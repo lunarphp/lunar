@@ -6,6 +6,7 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Discounts\Database\Factories\DiscountFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -20,6 +21,8 @@ class Discount extends BaseModel
      * @var array
      */
     protected $casts = [
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
         'attribute_data' => AsAttributeData::class,
     ];
 
@@ -51,5 +54,15 @@ class Discount extends BaseModel
     public function conditions()
     {
         return $this->hasMany(DiscountCondition::class);
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereNotNull('starts_at')
+            ->whereDate('starts_at', '>=', now())
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                    ->orWhereDate('ends_at', '>', now());
+            });
     }
 }
