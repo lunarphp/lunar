@@ -22,20 +22,26 @@ namespace GetCandy\Discounts;
 
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
+use GetCandy\Discounts\Http\Livewire\Components\CouponEdit;
+use GetCandy\Discounts\Http\Livewire\DiscountShow;
+use GetCandy\Discounts\Http\Livewire\DiscountsIndex;
 use GetCandy\Discounts\Interfaces\DiscountConditionManagerInterface;
 use GetCandy\Discounts\Interfaces\DiscountRewardManagerInterface;
 use GetCandy\Discounts\Interfaces\DiscountsInterface;
 use GetCandy\Discounts\Managers\DiscountConditionManager;
 use GetCandy\Discounts\Managers\DiscountManager;
 use GetCandy\Discounts\Managers\DiscountRewardManager;
+use GetCandy\Discounts\Models\Discount;
 use GetCandy\Discounts\Modifiers\DiscountCartModifier;
+use GetCandy\Facades\AttributeManifest;
+use GetCandy\Hub\Facades\Menu;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
 class DiscountsServiceProvider extends ServiceProvider
 {
     public function boot(
-        CartLineModifiers $cartModifiers
+        CartLineModifiers $cartModifiers,
     ) {
         $this->app->singleton(DiscountsInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
@@ -53,50 +59,40 @@ class DiscountsServiceProvider extends ServiceProvider
             DiscountCartModifier::class
         );
 
+        $this->loadRoutesFrom(__DIR__ . '/../routes/hub.php');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'discounts');
 
-//         $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
-//
-//         $slot = Menu::slot('sidebar');
-//
-//         $slot->addItem(function ($item) {
-//             $item->name(
-//                 __('shipping::index.menu_item')
-//             )->handle('hub.shipping')
-//             ->route('hub.shipping.index')
-//             ->icon('truck');
-//         });
-//
-//         $shippingModifiers->add(
-//             ShippingModifier::class
-//         );
-//
-//         $this->loadRoutesFrom(__DIR__.'/../routes/hub.php');
-//
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-//
-//         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
-//
-//         // // Register the stripe payment component.
-//
-//         $components = [
-//             // Pages
-//             ShippingExclusionListsIndex::class,
-//             ShippingExclusionListsCreate::class,
-//             ShippingExclusionListsShow::class,
-//             ShippingIndex::class,
-//             ShippingZoneShow::class,
-//             ShippingZoneCreate::class,
-//
-//             // Shipping Methods
-//             FreeShipping::class,
-//             FlatRate::class,
-//             ShipBy::class,
-//             Collection::class,
-//         ];
-//
-//         foreach ($components as $component) {
-//             Livewire::component((new $component())->getName(), $component);
-//         }
+        $slot = Menu::slot('sidebar');
+
+        $slot->addItem(function ($item) {
+            $item->name(
+                __('discounts::index.menu_item')
+            )->handle('hub.discounts')
+            ->route('hub.discounts.index')
+            ->icon('ticket');
+
+            $item->name(
+                __('discounts::index.menu_item')
+            )->handle('hub.discounts')
+            ->route('hub.discounts.index')
+            ->icon('ticket');
+        });
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'discounts');
+
+        $components = [
+            DiscountsIndex::class,
+            DiscountShow::class,
+            CouponEdit::class,
+        ];
+
+        foreach ($components as $component) {
+            Livewire::component((new $component())->getName(), $component);
+        }
+
+        AttributeManifest::addType(Discount::class);
 //
 //         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
 //             return $app->make(ShippingManager::class);

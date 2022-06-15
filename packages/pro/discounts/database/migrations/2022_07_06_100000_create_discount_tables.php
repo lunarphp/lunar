@@ -12,8 +12,8 @@ class CreateDiscountTables extends Migration
             $table->id();
             $table->string('handle')->unique();
             $table->json('attribute_data');
-            $table->dateTime('starts_at')->nullable();
-            $table->dateTime('ends_at')->nullable();
+            $table->dateTime('starts_at')->index();
+            $table->dateTime('ends_at')->nullable()->index();
             $table->mediumInteger('max_uses')->unsigned()->nullable();
             $table->mediumInteger('priority')->unsigned()->index()->default(1);
             $table->boolean('stop')->default(false)->index();
