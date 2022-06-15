@@ -2,11 +2,11 @@
 
 namespace GetCandy\Discounts\Managers;
 
-use GetCandy\Discounts\Drivers\Conditions\Coupon;
+use GetCandy\Discounts\Drivers\Rules\Coupon;
 use GetCandy\Discounts\Drivers\Conditions\Product;
 use Illuminate\Support\Manager;
 
-class DiscountConditionManager extends Manager
+class DiscountRuleManager extends Manager
 {
     public function createCouponDriver()
     {

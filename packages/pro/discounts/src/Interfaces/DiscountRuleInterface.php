@@ -2,10 +2,10 @@
 
 namespace GetCandy\Discounts\Interfaces;
 
-use GetCandy\Discounts\Models\DiscountCondition;
+use GetCandy\Discounts\Models\DiscountRule;
 use GetCandy\Models\Cart;
 
-interface DiscountConditionInterface
+interface DiscountRuleInterface
 {
     /**
      * Return the driver name
@@ -15,13 +15,13 @@ interface DiscountConditionInterface
     public function getName(): string;
 
     /**
-     * Set the condition to use for the driver.
+     * Set the rule to use for the driver.
      *
-     * @param DiscountCondition $discountCondition
+     * @param DiscountRule $discountRule
      *
      * @return self
      */
-    public function with(DiscountCondition $discountCondition): self;
+    public function with(DiscountRule $discountRule): self;
 
     /**
      * Check the criteria for the condition

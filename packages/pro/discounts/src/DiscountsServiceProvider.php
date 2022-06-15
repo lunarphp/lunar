@@ -25,12 +25,12 @@ use GetCandy\Base\CartModifiers;
 use GetCandy\Discounts\Http\Livewire\Components\CouponEdit;
 use GetCandy\Discounts\Http\Livewire\DiscountShow;
 use GetCandy\Discounts\Http\Livewire\DiscountsIndex;
-use GetCandy\Discounts\Interfaces\DiscountConditionManagerInterface;
 use GetCandy\Discounts\Interfaces\DiscountRewardManagerInterface;
+use GetCandy\Discounts\Interfaces\DiscountRuleManagerInterface;
 use GetCandy\Discounts\Interfaces\DiscountsInterface;
-use GetCandy\Discounts\Managers\DiscountConditionManager;
 use GetCandy\Discounts\Managers\DiscountManager;
 use GetCandy\Discounts\Managers\DiscountRewardManager;
+use GetCandy\Discounts\Managers\DiscountRuleManager;
 use GetCandy\Discounts\Models\Discount;
 use GetCandy\Discounts\Modifiers\DiscountCartModifier;
 use GetCandy\Facades\AttributeManifest;
@@ -47,8 +47,8 @@ class DiscountsServiceProvider extends ServiceProvider
             return $app->make(DiscountManager::class);
         });
 
-        $this->app->singleton(DiscountConditionManagerInterface::class, function ($app) {
-            return $app->make(DiscountConditionManager::class);
+        $this->app->singleton(DiscountRuleManagerInterface::class, function ($app) {
+            return $app->make(DiscountRuleManager::class);
         });
 
         $this->app->singleton(DiscountRewardManagerInterface::class, function ($app) {

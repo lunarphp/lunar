@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Discounts\Drivers\Conditions;
+namespace GetCandy\Discounts\Drivers\Rules;
 
 use GetCandy\Discounts\Http\Livewire\Components\CouponEdit;
-use GetCandy\Discounts\Interfaces\DiscountConditionInterface;
-use GetCandy\Discounts\Models\DiscountCondition;
+use GetCandy\Discounts\Interfaces\DiscountRuleInterface;
+use GetCandy\Discounts\Models\DiscountRule;
 use GetCandy\Models\Cart;
 
-class Coupon implements DiscountConditionInterface
+class Coupon implements DiscountRuleInterface
 {
-    protected DiscountCondition $condition;
+    protected DiscountRule $rule;
 
     /**
      * {@inheritDoc}
@@ -24,9 +24,9 @@ class Coupon implements DiscountConditionInterface
      *
      * @return self
      */
-    public function with(DiscountCondition $discountCondition): self
+    public function with(DiscountRule $discountRule): self
     {
-        $this->condition = $discountCondition;
+        $this->rule = $discountRule;
 
         return $this;
     }
@@ -36,8 +36,8 @@ class Coupon implements DiscountConditionInterface
      */
     public function check(Cart $cart): bool
     {
-        $cartCoupon = $cart->meta->coupon ?? null;
-        $conditionCoupon = $this->condition->data->coupon ?? null;
+        $cartCoupon = strtoupper($cart->meta->coupon ?? null);
+        $conditionCoupon = strtoupper($this->rule->data->coupon ?? null);
 
         return $cartCoupon && ($cartCoupon === $conditionCoupon);
     }

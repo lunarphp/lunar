@@ -6,11 +6,13 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Discounts\Database\Factories\DiscountRuleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use GetCandy\Discounts\Facades\DiscountConditions;
+use GetCandy\Discounts\Facades\DiscountRules;
 
 class DiscountRule extends BaseModel
 {
     use HasFactory;
+
+    protected $guarded = [];
 
     protected $casts = [
         'data' => 'object',
@@ -43,6 +45,6 @@ class DiscountRule extends BaseModel
 
     public function driver()
     {
-        return DiscountConditions::driver($this->driver)->with($this);
+        return DiscountRules::driver($this->driver)->with($this);
     }
 }

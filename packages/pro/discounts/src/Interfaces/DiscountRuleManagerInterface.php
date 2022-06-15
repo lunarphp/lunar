@@ -2,7 +2,7 @@
 
 namespace GetCandy\Discounts\Interfaces;
 
-interface DiscountRewardManagerInterface
+interface DiscountRuleManagerInterface
 {
 
 }
