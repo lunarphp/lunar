@@ -2,9 +2,8 @@
 
 namespace GetCandy\Discounts\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use GetCandy\Discounts\Interfaces\DiscountConditionManagerInterface;
 use GetCandy\Discounts\Interfaces\DiscountRuleManagerInterface;
+use Illuminate\Support\Facades\Facade;
 
 class DiscountRules extends Facade
 {

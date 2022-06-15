@@ -4,8 +4,6 @@ namespace GetCandy\Discounts\Modifiers;
 
 use Closure;
 use GetCandy\Base\CartLineModifier;
-use GetCandy\Base\CartModifier;
-use GetCandy\DataTypes\Price;
 use GetCandy\Discounts\Models\Discount;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;

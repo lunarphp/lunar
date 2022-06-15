@@ -37,7 +37,7 @@ class Discount extends BaseModel
     }
 
     /**
-     * Return the rewards relationship
+     * Return the rewards relationship.
      *
      * @return HasMany
      */
@@ -47,7 +47,7 @@ class Discount extends BaseModel
     }
 
     /**
-     * Return the conditions relationship
+     * Return the conditions relationship.
      *
      * @return HasMany
      */

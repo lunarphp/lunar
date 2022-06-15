@@ -2,8 +2,8 @@
 
 namespace GetCandy\Discounts\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use GetCandy\Discounts\Interfaces\DiscountsInterface;
+use Illuminate\Support\Facades\Facade;
 
 class Discounts extends Facade
 {

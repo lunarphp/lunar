@@ -44,6 +44,6 @@ class Coupon implements DiscountRuleInterface
 
     public function editComponent(): string
     {
-	    return (new CouponEdit)->getName();
+        return (new CouponEdit)->getName();
     }
 }

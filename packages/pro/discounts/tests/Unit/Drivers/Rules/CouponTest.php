@@ -28,11 +28,11 @@ class DiscountRulesetTest extends TestCase
         ]);
 
         $rule = DiscountRule::factory()->create([
-           'discount_ruleset_id' => $ruleset->id,
-           'driver' => 'coupon',
-           'data' => [
-               'coupon' => '10OFF',
-           ]
+            'discount_ruleset_id' => $ruleset->id,
+            'driver' => 'coupon',
+            'data' => [
+                'coupon' => '10OFF',
+            ],
         ]);
 
         $coupon = $rule->driver();

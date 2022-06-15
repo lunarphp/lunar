@@ -198,7 +198,7 @@ class Cart extends BaseModel
 
     public function addDiscount(DiscountReward $reward)
     {
-        if (!$this->discounts) {
+        if (! $this->discounts) {
             $this->discounts = collect();
         }
 
