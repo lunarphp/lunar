@@ -4,6 +4,7 @@ namespace GetCandy\Discounts\Managers;
 
 use GetCandy\Discounts\Drivers\Rules\Coupon;
 use GetCandy\Discounts\Drivers\Conditions\Product;
+use GetCandy\Discounts\Drivers\Rules\CartTotal;
 use Illuminate\Support\Manager;
 
 class DiscountRuleManager extends Manager
@@ -16,6 +17,11 @@ class DiscountRuleManager extends Manager
     public function createProductDriver()
     {
         return $this->container->make(Product::class);
+    }
+
+    public function createCartTotalDriver()
+    {
+        return $this->container->make(CartTotal::class);
     }
 
     /**
