@@ -10,7 +10,7 @@ use GetCandy\Models\ProductVariant;
 
 trait TestUtils
 {
-    public function createCart($currency = null, $price = 100, $quantity = 1, $meta = [])
+    public function createCart($currency = null, $price = 100, $quantity = 1, $meta = [], $lineCount = 50)
     {
         if (! $currency) {
             $currency = Currency::factory()->create([
@@ -23,7 +23,7 @@ trait TestUtils
             'meta' => $meta,
         ]);
 
-        $purchasables = ProductVariant::factory(50)->create();
+        $purchasables = ProductVariant::factory($lineCount)->create();
 
         foreach ($purchasables as $purchasable) {
             Price::factory()->create([
