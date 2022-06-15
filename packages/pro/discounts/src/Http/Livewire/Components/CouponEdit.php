@@ -4,17 +4,12 @@ namespace GetCandy\Discounts\Http\Livewire\Components;
 
 use GetCandy\Discounts\Models\Discount;
 use GetCandy\Discounts\Models\DiscountCondition;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Customer;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class CouponEdit extends Component
 {
     /**
-     * The instance of the discount
+     * The instance of the discount.
      *
      * @var Discount
      */

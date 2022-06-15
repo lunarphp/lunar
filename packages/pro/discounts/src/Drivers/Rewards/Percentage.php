@@ -3,7 +3,6 @@
 namespace GetCandy\Discounts\Drivers\Rewards;
 
 use GetCandy\DataTypes\Price;
-use GetCandy\Discounts\Models\DiscountCondition;
 use GetCandy\Discounts\Models\DiscountReward;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
@@ -21,7 +20,6 @@ class Percentage
 
     public function apply(CartLine $cartLine): CartLine
     {
-
         $percentage = $this->reward->data->amount ?? 0;
 
         $subTotal = $cartLine->subTotal->value;
@@ -32,7 +30,7 @@ class Percentage
         if ($currentDiscount) {
             $subTotal = $subTotal - $currentDiscount;
 
-            if (!$subTotal) {
+            if (! $subTotal) {
                 return $cartLine;
             }
         }

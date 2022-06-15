@@ -8,7 +8,7 @@ use GetCandy\Models\Cart;
 interface DiscountRuleInterface
 {
     /**
-     * Return the driver name
+     * Return the driver name.
      *
      * @return string
      */
@@ -17,23 +17,21 @@ interface DiscountRuleInterface
     /**
      * Set the rule to use for the driver.
      *
-     * @param DiscountRule $discountRule
-     *
+     * @param  DiscountRule  $discountRule
      * @return self
      */
     public function with(DiscountRule $discountRule): self;
 
     /**
-     * Check the criteria for the condition
+     * Check the criteria for the condition.
      *
-     * @param Cart $cart
-     *
+     * @param  Cart  $cart
      * @return bool
      */
     public function check(Cart $cart): bool;
 
     /**
-     * Reference to the component used for editing the condition
+     * Reference to the component used for editing the condition.
      *
      * @return string
      */

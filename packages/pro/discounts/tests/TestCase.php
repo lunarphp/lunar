@@ -7,7 +7,6 @@ use GetCandy\Discounts\DiscountsServiceProvider;
 use GetCandy\GetCandyServiceProvider;
 use GetCandy\Hub\AdminHubServiceProvider;
 use GetCandy\Hub\Tests\Stubs\User;
-use GetCandy\Shipping\ShippingServiceProvider;
 use GetCandy\Tests\Stubs\TestUrlGenerator;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;

@@ -3,7 +3,6 @@
 namespace GetCandy\Discounts\Http\Livewire;
 
 use GetCandy\Discounts\Models\Discount;
-use GetCandy\Models\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
 

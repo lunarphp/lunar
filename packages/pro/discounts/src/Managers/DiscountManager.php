@@ -4,7 +4,6 @@ namespace GetCandy\Discounts\Managers;
 
 use GetCandy\Discounts\Models\Discount;
 use GetCandy\Models\Cart;
-use Illuminate\Support\Manager;
 
 class DiscountManager
 {

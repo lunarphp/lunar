@@ -6,9 +6,7 @@ use GetCandy\Discounts\Models\Discount;
 use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
-use GetCandy\Models\Customer;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class DiscountShow extends Component
 {
@@ -16,7 +14,7 @@ class DiscountShow extends Component
         WithLanguages;
 
     /**
-     * The instance of the discount
+     * The instance of the discount.
      *
      * @var Discount
      */

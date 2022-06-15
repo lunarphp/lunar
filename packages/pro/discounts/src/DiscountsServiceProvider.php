@@ -21,7 +21,6 @@ namespace GetCandy\Discounts;
 // use GetCandy\Shipping\Menu\ShippingMenu;
 
 use GetCandy\Base\CartLineModifiers;
-use GetCandy\Base\CartModifiers;
 use GetCandy\Discounts\Http\Livewire\Components\CouponEdit;
 use GetCandy\Discounts\Http\Livewire\DiscountShow;
 use GetCandy\Discounts\Http\Livewire\DiscountsIndex;
@@ -59,8 +58,8 @@ class DiscountsServiceProvider extends ServiceProvider
             DiscountCartModifier::class
         );
 
-        $this->loadRoutesFrom(__DIR__ . '/../routes/hub.php');
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'discounts');
+        $this->loadRoutesFrom(__DIR__.'/../routes/hub.php');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'discounts');
 
         $slot = Menu::slot('sidebar');
 
@@ -78,9 +77,9 @@ class DiscountsServiceProvider extends ServiceProvider
             ->icon('ticket');
         });
 
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'discounts');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'discounts');
 
         $components = [
             DiscountsIndex::class,

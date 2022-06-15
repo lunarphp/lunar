@@ -28,7 +28,7 @@ class DiscountRuleset extends BaseModel
     }
 
     /**
-     * Return the rules relationship
+     * Return the rules relationship.
      *
      * @return HasMany
      */
@@ -38,7 +38,7 @@ class DiscountRuleset extends BaseModel
     }
 
     /**
-     * Return the discount relationship
+     * Return the discount relationship.
      *
      * @return BelongsTo
      */

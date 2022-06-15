@@ -4,9 +4,9 @@ namespace GetCandy\Discounts\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Discounts\Database\Factories\DiscountRuleFactory;
+use GetCandy\Discounts\Facades\DiscountRules;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use GetCandy\Discounts\Facades\DiscountRules;
 
 class DiscountRule extends BaseModel
 {
@@ -29,7 +29,7 @@ class DiscountRule extends BaseModel
     }
 
     /**
-     * Return the discount relationship
+     * Return the discount relationship.
      *
      * @return BelongsTo
      */

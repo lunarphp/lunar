@@ -4,8 +4,8 @@ namespace GetCandy\Discounts\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Discounts\Database\Factories\DiscountRewardFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GetCandy\Discounts\Facades\DiscountRewards;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DiscountReward extends BaseModel
 {
@@ -26,7 +26,7 @@ class DiscountReward extends BaseModel
     }
 
     /**
-     * Return the discount relationship
+     * Return the discount relationship.
      *
      * @return BelongsTo
      */

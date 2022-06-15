@@ -8,7 +8,7 @@ class CreateDiscountTables extends Migration
 {
     public function up()
     {
-        Schema::create($this->prefix . 'discounts', function (Blueprint $table) {
+        Schema::create($this->prefix.'discounts', function (Blueprint $table) {
             $table->id();
             $table->string('handle')->unique();
             $table->json('attribute_data');
@@ -20,31 +20,31 @@ class CreateDiscountTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create($this->prefix . 'discount_rulesets', function (Blueprint $table) {
+        Schema::create($this->prefix.'discount_rulesets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('discount_id')->constrained($this->prefix . 'discounts');
+            $table->foreignId('discount_id')->constrained($this->prefix.'discounts');
             $table->string('criteria')->index();
             $table->timestamps();
         });
 
-        Schema::create($this->prefix . 'discount_rules', function (Blueprint $table) {
+        Schema::create($this->prefix.'discount_rules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('discount_ruleset_id')->constrained($this->prefix . 'discount_rulesets');
+            $table->foreignId('discount_ruleset_id')->constrained($this->prefix.'discount_rulesets');
             $table->string('driver')->index();
             $table->json('data');
             $table->timestamps();
         });
 
-        Schema::create($this->prefix . 'discount_purchasables', function (Blueprint $table) {
+        Schema::create($this->prefix.'discount_purchasables', function (Blueprint $table) {
             $table->id();
             $table->morphs('purchasable', 'purchasable_idx');
             $table->morphs('type');
             $table->timestamps();
         });
 
-        Schema::create($this->prefix . 'discount_rewards', function (Blueprint $table) {
+        Schema::create($this->prefix.'discount_rewards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('discount_id')->constrained($this->prefix . 'discounts');
+            $table->foreignId('discount_id')->constrained($this->prefix.'discounts');
             $table->string('driver')->index();
             $table->json('data');
             $table->timestamps();
@@ -53,8 +53,8 @@ class CreateDiscountTables extends Migration
 
     public function down()
     {
-        Schema::dropIfExists($this->prefix . 'discounts');
-        Schema::dropIfExists($this->prefix . 'discount_conditions');
-        Schema::dropIfExists($this->prefix . 'discount_rewards');
+        Schema::dropIfExists($this->prefix.'discounts');
+        Schema::dropIfExists($this->prefix.'discount_conditions');
+        Schema::dropIfExists($this->prefix.'discount_rewards');
     }
 }

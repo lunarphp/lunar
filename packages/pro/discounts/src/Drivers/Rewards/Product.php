@@ -3,10 +3,8 @@
 namespace GetCandy\Discounts\Drivers\Rewards;
 
 use GetCandy\DataTypes\Price;
-use GetCandy\Discounts\Models\DiscountCondition;
 use GetCandy\Discounts\Models\DiscountReward;
 use GetCandy\Facades\Pricing;
-use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
 
 class Product
@@ -26,7 +24,7 @@ class Product
             return $cartLine->purchasable_id == $purchasable->purchasable_id;
         })?->purchasable;
 
-        if (!$purchasable) {
+        if (! $purchasable) {
             return $cartLine;
         }
 

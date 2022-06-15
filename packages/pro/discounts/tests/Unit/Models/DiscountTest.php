@@ -7,14 +7,6 @@ use GetCandy\Discounts\Models\DiscountCondition;
 use GetCandy\Discounts\Models\DiscountReward;
 use GetCandy\Discounts\Tests\TestCase;
 use GetCandy\Discounts\Tests\TestUtils;
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\Country;
-use GetCandy\Models\Currency;
-use GetCandy\Models\TaxClass;
-use GetCandy\Shipping\Facades\Shipping;
-use GetCandy\Shipping\Models\ShippingMethod;
-use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
