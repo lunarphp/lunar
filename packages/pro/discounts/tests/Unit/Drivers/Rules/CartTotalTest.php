@@ -2,7 +2,6 @@
 
 namespace GetCandy\Discounts\Tests\Unit\Rules;
 
-use GetCandy\Discounts\Drivers\Rules\Coupon;
 use GetCandy\Discounts\Models\Discount;
 use GetCandy\Discounts\Models\DiscountRule;
 use GetCandy\Discounts\Models\DiscountRuleset;
@@ -39,14 +38,14 @@ class CartTotalTest extends TestCase
         ]);
 
         $rule = DiscountRule::factory()->create([
-           'discount_ruleset_id' => $ruleset->id,
-           'driver' => 'cart_total',
-           'data' => [
-               'totals' => [
+            'discount_ruleset_id' => $ruleset->id,
+            'driver' => 'cart_total',
+            'data' => [
+                'totals' => [
                     'GBP' => 100,
                     'USD' => 200,
                 ],
-           ]
+            ],
         ]);
 
         $driver = $rule->driver();
