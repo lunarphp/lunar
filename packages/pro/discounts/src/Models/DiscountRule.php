@@ -3,12 +3,12 @@
 namespace GetCandy\Discounts\Models;
 
 use GetCandy\Base\BaseModel;
-use GetCandy\Discounts\Database\Factories\DiscountConditionFactory;
+use GetCandy\Discounts\Database\Factories\DiscountRuleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use GetCandy\Discounts\Facades\DiscountConditions;
 
-class DiscountCondition extends BaseModel
+class DiscountRule extends BaseModel
 {
     use HasFactory;
 
@@ -21,9 +21,9 @@ class DiscountCondition extends BaseModel
      *
      * @return DiscountFactory
      */
-    protected static function newFactory(): DiscountConditionFactory
+    protected static function newFactory(): DiscountRuleFactory
     {
-        return DiscountConditionFactory::new();
+        return DiscountRuleFactory::new();
     }
 
     /**
@@ -31,7 +31,7 @@ class DiscountCondition extends BaseModel
      *
      * @return BelongsTo
      */
-    public function discount()
+    public function ruleset()
     {
         return $this->belongsTo(Discount::class);
     }

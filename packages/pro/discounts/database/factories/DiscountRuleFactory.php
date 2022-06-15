@@ -2,19 +2,17 @@
 
 namespace GetCandy\Discounts\Database\Factories;
 
-use GetCandy\Discounts\Models\DiscountCondition;
-use GetCandy\Discounts\Models\DiscountReward;
+use GetCandy\Discounts\Models\DiscountRule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class DiscountConditionFactory extends Factory
+class DiscountRuleFactory extends Factory
 {
-    protected $model = DiscountCondition::class;
+    protected $model = DiscountRule::class;
 
     public function definition(): array
     {
         return [
             'driver' => 'test',
-            'data' => [],
         ];
     }
 }

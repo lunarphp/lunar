@@ -20,9 +20,16 @@ class CreateDiscountTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create($this->prefix . 'discount_conditions', function (Blueprint $table) {
+        Schema::create($this->prefix . 'discount_rulesets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('discount_id')->constrained($this->prefix . 'discounts');
+            $table->string('criteria')->index();
+            $table->timestamps();
+        });
+
+        Schema::create($this->prefix . 'discount_rules', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('discount_ruleset_id')->constrained($this->prefix . 'discount_rulesets');
             $table->string('driver')->index();
             $table->json('data');
             $table->timestamps();
@@ -31,7 +38,7 @@ class CreateDiscountTables extends Migration
         Schema::create($this->prefix . 'discount_purchasables', function (Blueprint $table) {
             $table->id();
             $table->morphs('purchasable', 'purchasable_idx');
-            $table->morphs('discount');
+            $table->morphs('type');
             $table->timestamps();
         });
 

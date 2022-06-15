@@ -17,6 +17,7 @@ class DiscountFactory extends Factory
 
         return [
             'handle' => Str::slug($name),
+            'starts_at' => now(),
             'attribute_data'  => collect([
                 'name'        => new Text($name),
                 'description' => new Text($this->faker->sentence),
