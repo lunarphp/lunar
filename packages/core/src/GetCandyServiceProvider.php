@@ -9,6 +9,7 @@ use GetCandy\Base\AttributeManifestInterface;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifiers;
 use GetCandy\Base\CartSessionInterface;
+use GetCandy\Base\DiscountManagerInterface;
 use GetCandy\Base\FieldTypeManifest;
 use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
@@ -27,8 +28,10 @@ use GetCandy\Console\Commands\ScoutIndexer;
 use GetCandy\Console\InstallGetCandy;
 use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
+use GetCandy\Facades\Discounts;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
+use GetCandy\Managers\DiscountManager;
 use GetCandy\Managers\PaymentManager;
 use GetCandy\Managers\PricingManager;
 use GetCandy\Managers\TaxManager;
@@ -140,6 +143,10 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->app->singleton(PaymentManagerInterface::class, function ($app) {
             return $app->make(PaymentManager::class);
+        });
+
+        $this->app->singleton(DiscountManagerInterface::class, function ($app) {
+            return $app->make(DiscountManager::class);
         });
     }
 

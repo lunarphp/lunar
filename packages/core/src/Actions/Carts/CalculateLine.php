@@ -5,6 +5,7 @@ namespace GetCandy\Actions\Carts;
 use GetCandy\Base\Addressable;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\DataTypes\Price;
+use GetCandy\Facades\Discounts;
 use GetCandy\Facades\Pricing;
 use GetCandy\Facades\Taxes;
 use GetCandy\Models\CartLine;
@@ -59,7 +60,9 @@ class CalculateLine
                 $this->getModifiers()->toArray()
             );
 
-        $cartLine = $pipeline->send($cartLine)->via('subtotalled')->thenReturn();
+        $cartLine = Discounts::apply(
+            $pipeline->send($cartLine)->via('subtotalled')->thenReturn()
+        );
 
         if (! $cartLine->discountTotal) {
             $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
