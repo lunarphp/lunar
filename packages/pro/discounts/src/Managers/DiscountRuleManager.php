@@ -2,9 +2,9 @@
 
 namespace GetCandy\Discounts\Managers;
 
-use GetCandy\Discounts\Drivers\Rules\Coupon;
 use GetCandy\Discounts\Drivers\Conditions\Product;
 use GetCandy\Discounts\Drivers\Rules\CartTotal;
+use GetCandy\Discounts\Drivers\Rules\Coupon;
 use Illuminate\Support\Manager;
 
 class DiscountRuleManager extends Manager
