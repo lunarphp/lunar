@@ -5,12 +5,9 @@ namespace GetCandy\Managers;
 use GetCandy\Base\CartLineModifier;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifier;
-use GetCandy\Base\CartModifiers;
 use GetCandy\Base\DiscountManagerInterface;
-use GetCandy\Models\Discount;
-use GetCandy\DiscountTypes\Coupon;
 use GetCandy\Models\CartLine;
-
+use GetCandy\Models\Discount;
 
 class DiscountManager implements DiscountManagerInterface
 {
@@ -19,12 +16,13 @@ class DiscountManager implements DiscountManagerInterface
     public function addType($classname)
     {
         $this->types[] = $classname;
+
         return $this;
     }
 
     public function apply(CartLine $cartLine)
     {
-        if (!$this->discounts) {
+        if (! $this->discounts) {
             $this->discounts = Discount::active()->orderBy('priority')->get();
         }
 

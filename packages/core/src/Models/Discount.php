@@ -3,7 +3,6 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Discounts\Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Builder;

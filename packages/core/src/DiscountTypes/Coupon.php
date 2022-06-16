@@ -11,8 +11,7 @@ class Coupon
     /**
      * Set the data for the discount to user.
      *
-     * @param array $data
-     *
+     * @param  array  $data
      * @return self
      */
     public function data(array $data): self
@@ -44,7 +43,7 @@ class Coupon
 
         $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
 
-        if (!$passes) {
+        if (! $passes) {
             return $cartLine;
         }
 
@@ -58,20 +57,17 @@ class Coupon
         return $cartLine;
     }
 
-
     /**
-     * Apply the percentage to the cart line
+     * Apply the percentage to the cart line.
      *
-     * @param int $value
-     * @param CartLine $cartLine
-     *
+     * @param  int  $value
+     * @param  CartLine  $cartLine
      * @return CartLine
      */
     private function applyPercentage($value, $cartLine): CartLine
     {
         $subTotal = $cartLine->subTotal->value;
         $amount = (int) round($subTotal * ($value / 100));
-
 
         $cartLine->discountTotal = new Price(
             $amount,

@@ -5,20 +5,11 @@ namespace GetCandy\Discounts\Tests\Unit\Models;
 use GetCandy\Discounts\Facades\Discounts;
 use GetCandy\Discounts\Managers\DiscountRulesetManager;
 use GetCandy\Discounts\Models\Discount;
-use GetCandy\Discounts\Models\DiscountCondition;
-use GetCandy\Discounts\Models\DiscountReward;
 use GetCandy\Discounts\Models\DiscountRule;
 use GetCandy\Discounts\Models\DiscountRuleset;
 use GetCandy\Discounts\Tests\TestCase;
 use GetCandy\Discounts\Tests\TestUtils;
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\Country;
 use GetCandy\Models\Currency;
-use GetCandy\Models\TaxClass;
-use GetCandy\Shipping\Facades\Shipping;
-use GetCandy\Shipping\Models\ShippingMethod;
-use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -43,21 +34,21 @@ class DiscountRulesetManagerTest extends TestCase
         ]);
 
         $rule = DiscountRule::factory()->create([
-           'discount_ruleset_id' => $ruleset->id,
-           'driver' => 'coupon',
-           'data' => [
-               'coupon' => '10OFF',
-           ]
+            'discount_ruleset_id' => $ruleset->id,
+            'driver' => 'coupon',
+            'data' => [
+                'coupon' => '10OFF',
+            ],
         ]);
 
         $rule = DiscountRule::factory()->create([
-           'discount_ruleset_id' => $ruleset->id,
-           'driver' => 'cart_total',
-           'data' => [
-               'totals' => [
-                   'GBP' => 100,
-               ],
-           ]
+            'discount_ruleset_id' => $ruleset->id,
+            'driver' => 'cart_total',
+            'data' => [
+                'totals' => [
+                    'GBP' => 100,
+                ],
+            ],
         ]);
 
         $manager = new DiscountRulesetManager($ruleset);
@@ -93,21 +84,21 @@ class DiscountRulesetManagerTest extends TestCase
         ]);
 
         $rule = DiscountRule::factory()->create([
-           'discount_ruleset_id' => $ruleset->id,
-           'driver' => 'coupon',
-           'data' => [
-               'coupon' => '10OFF',
-           ]
+            'discount_ruleset_id' => $ruleset->id,
+            'driver' => 'coupon',
+            'data' => [
+                'coupon' => '10OFF',
+            ],
         ]);
 
         $rule = DiscountRule::factory()->create([
-           'discount_ruleset_id' => $ruleset->id,
-           'driver' => 'cart_total',
-           'data' => [
-               'totals' => [
-                   'GBP' => 100,
-               ],
-           ]
+            'discount_ruleset_id' => $ruleset->id,
+            'driver' => 'cart_total',
+            'data' => [
+                'totals' => [
+                    'GBP' => 100,
+                ],
+            ],
         ]);
 
         $manager = Discounts::ruleset($ruleset);

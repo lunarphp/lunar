@@ -28,7 +28,6 @@ use GetCandy\Console\Commands\ScoutIndexer;
 use GetCandy\Console\InstallGetCandy;
 use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
-use GetCandy\Facades\Discounts;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Managers\DiscountManager;
