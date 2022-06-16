@@ -34,7 +34,7 @@ class DiscountRuleset extends BaseModel
      */
     public function rules()
     {
-        return $this->hasMany(DiscountRule::class);
+        return $this->hasMany(DiscountRule::class)->orderBy('position', 'asc');
     }
 
     /**

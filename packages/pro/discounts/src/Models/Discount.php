@@ -51,9 +51,9 @@ class Discount extends BaseModel
      *
      * @return HasMany
      */
-    public function conditions()
+    public function rulesets()
     {
-        return $this->hasMany(DiscountCondition::class);
+        return $this->hasMany(DiscountRuleset::class);
     }
 
     public function scopeActive(Builder $query)

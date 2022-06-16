@@ -41,7 +41,7 @@ class DiscountRule extends BaseModel
 
     public function purchasables()
     {
-        return $this->morphMany(DiscountPurchasable::class, 'discount');
+        return $this->morphMany(DiscountPurchasable::class, 'element');
     }
 
     public function driver()

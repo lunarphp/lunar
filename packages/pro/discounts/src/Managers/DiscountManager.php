@@ -2,11 +2,53 @@
 
 namespace GetCandy\Discounts\Managers;
 
+use GetCandy\Base\DataTransferObjects\CartDiscount;
 use GetCandy\Discounts\Models\Discount;
+use GetCandy\Discounts\Models\DiscountRuleset;
 use GetCandy\Models\Cart;
+use Illuminate\Support\Collection;
 
 class DiscountManager
 {
+    /**
+     * The currently applied discounts
+     *
+     * @var Collection
+     */
+    public Collection $appliedDiscounts;
+
+    /**
+     * Initiate the class
+     */
+    public function __construct()
+    {
+        $this->appliedDiscounts = collect();
+    }
+
+
+    public function addDiscount(CartDiscount $cartDiscount)
+    {
+        $this->appliedDiscounts = $this->appliedDiscounts
+            ->push($cartDiscount)->unique('identifier');
+
+        return $this;
+    }
+
+    public function getApplied()
+    {
+        return $this->appliedDiscounts;
+    }
+
+    public function ruleset(DiscountRuleset $discountRuleset)
+    {
+        return new DiscountRulesetManager($discountRuleset);
+    }
+
+    public function run(Cart $cart)
+    {
+        dd($cart);
+    }
+
     public function getFreebies(Cart $cart)
     {
         $discounts = Discount::whereHas('conditions', function ($query) {

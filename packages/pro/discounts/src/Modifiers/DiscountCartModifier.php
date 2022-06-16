@@ -4,6 +4,7 @@ namespace GetCandy\Discounts\Modifiers;
 
 use Closure;
 use GetCandy\Base\CartLineModifier;
+use GetCandy\Discounts\Facades\Discounts;
 use GetCandy\Discounts\Models\Discount;
 use GetCandy\Models\Cart;
 use GetCandy\Models\CartLine;
@@ -14,12 +15,20 @@ class DiscountCartModifier extends CartLineModifier
     {
 //         clock()->event('Discounts')->color('purple')->begin();
 //
-//         $discounts = Discount::with([
-//             'conditions.purchasables',
-//             'rewards',
-//         ])->active()->orderBy('priority')->get();
+        $discounts = Discount::with([
+            'rulesets.rules.purchasables',
+            'rewards',
+        ])->active()->orderBy('priority')->get();
 //
 //         $cartMeta = $cartLine->cart->meta ?: (object) [];
+
+        foreach ($discounts as $discount) {
+            foreach ($discount->rulesets as $ruleset) {
+                if (Discounts::ruleset($ruleset)->check($cartLine->cart)) {
+                    dd(1);
+                }
+            }
+        }
 //
 //         $appliedDiscounts = collect();
 //

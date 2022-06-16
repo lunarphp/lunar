@@ -37,7 +37,6 @@ class CartTotal implements DiscountRuleInterface
     public function check(Cart $cart): bool
     {
         $priceCheck = $this->rule->getData('totals.' . $cart->currency->code, null);
-
         return $priceCheck && ($cart->subTotal->value >= $priceCheck);
     }
 
