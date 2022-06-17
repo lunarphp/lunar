@@ -3,6 +3,7 @@
 namespace GetCandy\DiscountTypes;
 
 use GetCandy\DataTypes\Price;
+use GetCandy\Models\CartLine;
 
 class Coupon
 {
