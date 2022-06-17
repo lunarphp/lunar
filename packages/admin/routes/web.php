@@ -56,5 +56,9 @@ Route::group([
         Route::group([
             'prefix' => 'customers',
         ], __DIR__.'/includes/customers.php');
+
+        Route::group([
+            'prefix' => 'discounts',
+        ], __DIR__.'/includes/discounts.php');
     });
 });

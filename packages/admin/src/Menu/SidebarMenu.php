@@ -69,6 +69,14 @@ class SidebarMenu
 
         $slot->addItem(function ($item) {
             $item->name(
+                __('adminhub::menu.sidebar.discounts')
+            )->handle('hub.discounts')
+            ->route('hub.discounts.index')
+            ->icon('ticket');
+        });
+
+        $slot->addItem(function ($item) {
+            $item->name(
                 __('adminhub::menu.sidebar.collections')
             )->handle('hub.collection')
             ->route('hub.collection-groups.index')

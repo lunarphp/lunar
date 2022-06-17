@@ -89,4 +89,6 @@ return [
     'text'                                   => 'Text',
     'richtext'                               => 'Richtext',
     'transaction.label' => 'Transaction',
+    'starts_at.label' => 'Starts at',
+    'ends_at.label' => 'Ends at',
 ];
