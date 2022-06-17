@@ -16,10 +16,21 @@ class DiscountManager implements DiscountManagerInterface
 {
     protected $discounts = null;
 
+    protected $types = [
+        Coupon::class
+    ];
+
     public function addType($classname)
     {
         $this->types[] = $classname;
         return $this;
+    }
+
+    public function getTypes()
+    {
+        return collect($this->types)->map(function ($class) {
+           return app($class);
+        });
     }
 
     public function apply(CartLine $cartLine)
