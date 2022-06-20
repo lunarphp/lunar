@@ -6,6 +6,7 @@ use GetCandy\Base\CartLineModifier;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifier;
 use GetCandy\Base\DiscountManagerInterface;
+use GetCandy\DiscountTypes\Coupon;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Discount;
 
