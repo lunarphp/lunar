@@ -22,6 +22,7 @@ use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use GetCandy\Hub\Http\Livewire\Components\Discounts\DiscountShow;
 use GetCandy\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Discounts\Types\Coupon;
+use GetCandy\Hub\Http\Livewire\Components\Discounts\Types\ProductDiscount;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
@@ -337,6 +338,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
             // dd((new Coupon)->getName());
         Livewire::component('hub.components.discounts.types.coupon', Coupon::class);
+        Livewire::component('hub.components.discounts.types.product-discount', ProductDiscount::class);
     }
 
     /**
