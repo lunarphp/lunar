@@ -3,6 +3,7 @@
 namespace GetCandy\DiscountTypes;
 
 use GetCandy\DataTypes\Price;
+use GetCandy\Facades\Discounts;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Discount;
@@ -40,7 +41,7 @@ class ProductDiscount
      *
      * @return CartLine
      */
-    public function execute(CartLine $cartLine): CartLine
+    public function execute(CartLine $cartLine)
     {
         // Is this cart line item the one that's up for the reward?
         $rewardIds = $this->discount->purchasableRewards()->pluck('purchasable_id');
@@ -61,13 +62,38 @@ class ProductDiscount
             return $conditions->contains($line->purchasable_id);
         });
 
-
         if (!$match || ($match && $match->quantity < $data['min_qty'])) {
             return $cartLine;
         }
 
+        // Get all currently applied discounts, filter them out and then
+        // if any of the other cart lines are more expensive than this one,
+        // remove the discount from the line so only the cheapest item has the
+        // discount applied.
+        $applied = Discounts::getApplied()->filter(function ($applied) {
+            return $applied['discount']?->id == $this->discount->id;
+        });
+
+        if ($applied->count()) {
+            foreach ($applied as $appliedDiscount) {
+                if ($appliedDiscount['line']->unitPrice->value > $cartLine->unitPrice->value) {
+                    $appliedDiscount['line']->discount = null;
+                    $appliedDiscount['line']->discountTotal = null;
+                }
+            }
+
+            // Is our current cart line the lowest priced item?
+            $lowerPrice = $applied->first(function ($discount) use ($cartLine) {
+                return $discount['line']->unitPrice->value <= $cartLine->unitPrice->value;
+            });
+
+            if ($lowerPrice) {
+                return $cartLine;
+            }
+        }
+
         // Work out the quantity value we want to take off...
-        $discountQuantity = $cartLine->quantity - $data['reward_qty'];
+        $discountQuantity = $cartLine->quantity - ($data['reward_qty'] + 1);
 
         $cartLine->discount = $this->discount;
 
@@ -77,7 +103,9 @@ class ProductDiscount
             1
         );
 
-        return $cartLine;
+        Discounts::addApplied($cartLine, $this->discount);
+
+        // return $cartLine;
     }
 
 

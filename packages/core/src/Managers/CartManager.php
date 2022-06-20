@@ -2,6 +2,7 @@
 
 namespace GetCandy\Managers;
 
+use GetCandy\Actions\Carts\CalculateLineSubtotal;
 use GetCandy\Actions\Carts\CreateOrder;
 use GetCandy\Actions\Carts\MergeCart;
 use GetCandy\Actions\Carts\ValidateCartForOrder;
@@ -15,6 +16,7 @@ use GetCandy\Exceptions\Carts\CartException;
 use GetCandy\Exceptions\Carts\ShippingAddressMissingException;
 use GetCandy\Exceptions\InvalidCartLineQuantityException;
 use GetCandy\Exceptions\MaximumCartLineQuantityException;
+use GetCandy\Facades\Discounts;
 use GetCandy\Facades\ShippingManifest;
 use GetCandy\Facades\Taxes;
 use GetCandy\Models\Cart;
@@ -483,6 +485,13 @@ class CartManager
      */
     private function calculateLines()
     {
+        // First we need to get the sub total for each line so we can
+        // run it through the discount manager.
+        foreach ($this->cart->lines as $cartLine) {
+            $cartLine = app(CalculateLineSubtotal::class)->execute($cartLine, $this->customerGroups);
+            Discounts::apply($cartLine);
+        }
+
         return $this->cart->lines->map(function ($line) {
             return (new CartLineManager($line))->calculate(
                 $this->customerGroups,

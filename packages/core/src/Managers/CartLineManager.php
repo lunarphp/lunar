@@ -34,9 +34,7 @@ class CartLineManager
 
         $this->cartLine = $pipeline->send($this->cartLine)->via('calculating')->thenReturn();
 
-        // dump('-----');
-        // dump($this->cartLine);
-        // dump('+++');
+
         $line = app(CalculateLine::class)->execute(
             $this->cartLine,
             $customerGroups,
