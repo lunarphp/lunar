@@ -11,20 +11,19 @@ use Illuminate\Support\Collection;
 class DiscountManager
 {
     /**
-     * The currently applied discounts
+     * The currently applied discounts.
      *
      * @var Collection
      */
     public Collection $appliedDiscounts;
 
     /**
-     * Initiate the class
+     * Initiate the class.
      */
     public function __construct()
     {
         $this->appliedDiscounts = collect();
     }
-
 
     public function addDiscount(CartDiscount $cartDiscount)
     {

@@ -4,7 +4,6 @@ namespace GetCandy\Discounts\Managers;
 
 use GetCandy\Base\DataTransferObjects\CartDiscount;
 use GetCandy\Discounts\Facades\Discounts;
-use GetCandy\Discounts\Models\Discount;
 use GetCandy\Discounts\Models\DiscountRuleset;
 use GetCandy\Models\Cart;
 
@@ -36,6 +35,7 @@ class DiscountRulesetManager
                         $this->discountRuleset->discount->id
                     )
                 );
+
                 return true;
             }
             $passes = $result;
