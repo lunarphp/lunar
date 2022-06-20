@@ -13,13 +13,13 @@ class CreateDiscountsTable extends Migration
             $table->string('name');
             $table->string('handle')->unique();
             $table->string('type')->index();
-            $table->string('rule')->index();
             $table->dateTime('starts_at')->index();
             $table->dateTime('ends_at')->nullable()->index();
             $table->integer('uses')->unsigned()->default(0)->index();
             $table->mediumInteger('max_uses')->unsigned()->nullable();
             $table->mediumInteger('priority')->unsigned()->index()->default(1);
             $table->boolean('stop')->default(false)->index();
+            $table->string('restriction')->index()->nullable();
             $table->json('data')->nullable();
             $table->timestamps();
         });

@@ -7,7 +7,7 @@ use GetCandy\Models\CartLine;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Discount;
 
-class Coupon
+class ProductDiscount
 {
     protected Discount $discount;
 
@@ -32,7 +32,7 @@ class Coupon
      */
     public function getName(): string
     {
-        return 'Coupon';
+        return 'Product Discount';
     }
 
     /**
@@ -42,35 +42,42 @@ class Coupon
      */
     public function execute(CartLine $cartLine): CartLine
     {
+        // Is this cart line item the one that's up for the reward?
+        $rewardIds = $this->discount->purchasableRewards()->pluck('purchasable_id');
+
+        // First off, is this purchasable relevant?
+        if (!$rewardIds->count() || !$rewardIds->contains($cartLine->purchasable_id)) {
+            return $cartLine;
+        }
+
         $data = $this->discount->data;
 
-        $cartCoupon = strtoupper($cartLine->cart->meta->coupon ?? null);
-        $conditionCoupon = strtoupper($data['coupon'] ?? null);
+        // Get our conditions...
+        $conditions = $this->discount->purchasableConditions()
+            ->pluck('purchasable_id');
 
-        $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
+        // Do we have a cart item that matches this reward?
+        $match = $cartLine->cart->lines->first(function ($line) use ($conditions) {
+            return $conditions->contains($line->purchasable_id);
+        });
 
-        if (!$passes) {
+
+        if (!$match || ($match && $match->quantity < $data['min_qty'])) {
             return $cartLine;
         }
 
-        $collectionIds = $this->discount->collections->pluck('id');
-
-        if ($collectionIds->count()) {
-            $passes = $cartLine->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
-               $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
-            })->exists();
-        }
-
-        if (!$passes) {
-            return $cartLine;
-        }
+        // Work out the quantity value we want to take off...
+        $discountQuantity = $cartLine->quantity - $data['reward_qty'];
 
         $cartLine->discount = $this->discount;
 
-        return $this->applyPercentage(
-            value: $data['value'],
-            cartLine: $cartLine
+        $cartLine->discountTotal = new Price(
+            $cartLine->unitPrice->value * $discountQuantity,
+            $cartLine->cart->currency,
+            1
         );
+
+        return $cartLine;
     }
 
 

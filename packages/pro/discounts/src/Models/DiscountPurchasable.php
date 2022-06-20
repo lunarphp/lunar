@@ -33,4 +33,9 @@ class DiscountPurchasable extends BaseModel
     {
         return $this->morphTo();
     }
+
+    public function scopeConditions($query)
+    {
+        return $query->whereType('condition');
+    }
 }

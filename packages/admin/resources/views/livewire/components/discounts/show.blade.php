@@ -56,10 +56,10 @@
                 @endif
 
                 <x-hub::input.group for="type" label="Limit discount">
-                    <x-hub::input.select wire:model="discount.type">
-                        <option value="">All products</option>
-                        <option value="">Specific products</option>
-                        <option value="">Products in a collection</option>
+                    <x-hub::input.select wire:model="discount.restriction">
+                        <option value>All products</option>
+                        <option value="products">Specific products</option>
+                        <option value="collection">Products in collections</option>
                     </x-hub::input.select>
                 </x-hub::input.group>
             </div>

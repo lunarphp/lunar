@@ -42,6 +42,8 @@ class CartLine extends BaseModel
      */
     public ?Price $unitPrice = null;
 
+    public ?Discount $discount = null;
+
     /**
      * The discount total.
      *
