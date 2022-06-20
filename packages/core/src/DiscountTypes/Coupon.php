@@ -56,11 +56,11 @@ class Coupon
 
         if ($collectionIds->count()) {
             $passes = $cartLine->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
-               $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
+                $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
             })->exists();
         }
 
-        if (!$passes) {
+        if (! $passes) {
             return $cartLine;
         }
 

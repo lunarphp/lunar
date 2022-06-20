@@ -14,7 +14,7 @@ class DiscountManager implements DiscountManagerInterface
     protected $discounts = null;
 
     protected $types = [
-        Coupon::class
+        Coupon::class,
     ];
 
     public function addType($classname)
@@ -27,7 +27,7 @@ class DiscountManager implements DiscountManagerInterface
     public function getTypes()
     {
         return collect($this->types)->map(function ($class) {
-           return app($class);
+            return app($class);
         });
     }
 

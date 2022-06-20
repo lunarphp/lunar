@@ -180,7 +180,7 @@ return [
     'activity-log.orders.authorized'                   => 'Authorized of :amount on card ending :last_four',
     'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
     /**
-     * Discounts
+     * Discounts.
      */
     'discounts.index.title' => 'Discounts',
     'discounts.index.create_discount' => 'Create Discount',

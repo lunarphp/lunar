@@ -7,7 +7,6 @@ use GetCandy\Database\Factories\DiscountPurchasableFactory;
 use GetCandy\Discounts\Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DiscountPurchasable extends BaseModel
 {

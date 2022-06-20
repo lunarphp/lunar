@@ -3,7 +3,6 @@
 namespace GetCandy\Database\Factories;
 
 use GetCandy\Models\Discount;
-use GetCandy\FieldTypes\Text;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

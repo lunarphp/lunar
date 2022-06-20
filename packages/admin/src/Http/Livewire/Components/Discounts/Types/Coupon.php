@@ -2,8 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Discounts\Types;
 
-use GetCandy\Facades\Discounts;
-use GetCandy\Hub\Editing\DiscountTypes;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Discount;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,7 +17,7 @@ class Coupon extends Component
     public Discount $discount;
 
     /**
-     * {@ineheritDoc}
+     * {@ineheritDoc}.
      */
     public function rules()
     {
@@ -41,7 +39,7 @@ class Coupon extends Component
     }
 
     /**
-     * Return the available currencies
+     * Return the available currencies.
      *
      * @return Collection
      */

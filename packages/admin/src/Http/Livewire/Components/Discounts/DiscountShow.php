@@ -5,9 +5,6 @@ namespace GetCandy\Hub\Http\Livewire\Components\Discounts;
 use GetCandy\Facades\Discounts;
 use GetCandy\Hub\Editing\DiscountTypes;
 use GetCandy\Models\Discount;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
 use Livewire\Component;
 
 class DiscountShow extends Component
@@ -20,7 +17,7 @@ class DiscountShow extends Component
     public Discount $discount;
 
     /**
-     * {@ineheritDoc}
+     * {@ineheritDoc}.
      */
     public function rules()
     {
