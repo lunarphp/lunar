@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+### 2.0-beta14 - 2022-06-10
+
+## Fixed
+
+- Order screens will now handle null `placed_at` columns.
+- Switched to using array access on dynamic scopes for Laravel 9 support
+- Scoped the `FilePond` reference it's component to sort browser quirks
+
+## Changed
+
+- Cart/Order modifiers now require `$next` in pipeline usage.
+
 ### 2.0-beta13 - 2022-05-19
 
 ## Added
