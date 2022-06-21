@@ -5,7 +5,6 @@ namespace GetCandy\DiscountTypes;
 use GetCandy\DataTypes\Price;
 use GetCandy\Facades\Discounts;
 use GetCandy\Models\CartLine;
-use GetCandy\Models\Collection;
 use GetCandy\Models\Discount;
 
 class ProductDiscount
@@ -15,8 +14,7 @@ class ProductDiscount
     /**
      * Set the data for the discount to user.
      *
-     * @param array $data
-     *
+     * @param  array  $data
      * @return self
      */
     public function with(Discount $discount): self
@@ -47,7 +45,7 @@ class ProductDiscount
         $rewardIds = $this->discount->purchasableRewards()->pluck('purchasable_id');
 
         // First off, is this purchasable relevant?
-        if (!$rewardIds->count() || !$rewardIds->contains($cartLine->purchasable_id)) {
+        if (! $rewardIds->count() || ! $rewardIds->contains($cartLine->purchasable_id)) {
             return $cartLine;
         }
 
@@ -62,7 +60,7 @@ class ProductDiscount
             return $conditions->contains($line->purchasable_id);
         });
 
-        if (!$match || ($match && $match->quantity < $data['min_qty'])) {
+        if (! $match || ($match && $match->quantity < $data['min_qty'])) {
             return $cartLine;
         }
 
@@ -108,20 +106,17 @@ class ProductDiscount
         // return $cartLine;
     }
 
-
     /**
-     * Apply the percentage to the cart line
+     * Apply the percentage to the cart line.
      *
-     * @param int $value
-     * @param CartLine $cartLine
-     *
+     * @param  int  $value
+     * @param  CartLine  $cartLine
      * @return CartLine
      */
     private function applyPercentage($value, $cartLine): CartLine
     {
         $subTotal = $cartLine->subTotal->value;
         $amount = (int) round($subTotal * ($value / 100));
-
 
         $cartLine->discountTotal = new Price(
             $amount,

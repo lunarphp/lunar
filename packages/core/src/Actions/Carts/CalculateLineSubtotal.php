@@ -4,7 +4,6 @@ namespace GetCandy\Actions\Carts;
 
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\DataTypes\Price;
-use GetCandy\Facades\Discounts;
 use GetCandy\Facades\Pricing;
 use GetCandy\Models\CartLine;
 use Illuminate\Pipeline\Pipeline;

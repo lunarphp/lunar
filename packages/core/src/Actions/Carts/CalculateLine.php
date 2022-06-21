@@ -5,11 +5,8 @@ namespace GetCandy\Actions\Carts;
 use GetCandy\Base\Addressable;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\DataTypes\Price;
-use GetCandy\Facades\Discounts;
-use GetCandy\Facades\Pricing;
 use GetCandy\Facades\Taxes;
 use GetCandy\Models\CartLine;
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 
 class CalculateLine

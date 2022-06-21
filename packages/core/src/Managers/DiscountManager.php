@@ -22,7 +22,7 @@ class DiscountManager implements DiscountManagerInterface
     ];
 
     /**
-     * The applied discounts
+     * The applied discounts.
      *
      * @var Collection
      */
@@ -43,7 +43,7 @@ class DiscountManager implements DiscountManagerInterface
     public function getTypes()
     {
         return collect($this->types)->map(function ($class) {
-           return app($class);
+            return app($class);
         });
     }
 
