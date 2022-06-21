@@ -26,4 +26,14 @@ abstract class CartLineModifier
     {
         return $next($cartLine);
     }
+
+    /**
+     * Called just after cart sub total is calculated.
+     *
+     * @return CartLine
+     */
+    public function subtotalled(CartLine $cartLine, Closure $next): CartLine
+    {
+        return $next($cartLine);
+    }
 }
