@@ -5,6 +5,7 @@ namespace GetCandy\Managers;
 use GetCandy\Base\CartLineModifier;
 use GetCandy\Base\CartLineModifiers;
 use GetCandy\Base\CartModifier;
+use GetCandy\Base\DataTransferObjects\CartDiscount;
 use GetCandy\Base\DiscountManagerInterface;
 use GetCandy\DiscountTypes\Coupon;
 use GetCandy\DiscountTypes\ProductDiscount;
@@ -47,12 +48,9 @@ class DiscountManager implements DiscountManagerInterface
         });
     }
 
-    public function addApplied(CartLine $cartLine, Discount $discount)
+    public function addApplied(CartDiscount $cartDiscount): self
     {
-        $this->applied->push([
-            'line' => $cartLine,
-            'discount' => $discount,
-        ]);
+        $this->applied->push($cartDiscount);
 
         return $this;
     }
@@ -73,28 +71,5 @@ class DiscountManager implements DiscountManagerInterface
         }
 
         return $cartLine;
-
-//         foreach ($discounts as $discount) {
-//             $type = new $discount->type($discount->data);
-//
-//             $modifier = $type->getModifierType();
-//
-//             if ($modifier == CartLineModifiers::class) {
-//                 $this->cartLineModifiers->add($rule);
-//             }
-//         }
-
-//         foreach ($this->types as $typeClass) {
-//             $rules = app($typeClass)->getRules();
-//             foreach ($rules as $rule) {
-//                 if (is_subclass_of($rule, CartLineModifier::class)) {
-//                     $this->cartLineModifiers->add($rule);
-//                 }
-//
-//                 if (is_subclass_of($rule, CartModifier::class)) {
-//                     $this->cartModifier->add($rule);
-//                 }
-//             }
-//         }
     }
 }

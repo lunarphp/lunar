@@ -2,6 +2,7 @@
 
 namespace GetCandy\DiscountTypes;
 
+use GetCandy\Base\DataTransferObjects\CartDiscount;
 use GetCandy\DataTypes\Price;
 use GetCandy\Facades\Discounts;
 use GetCandy\Models\CartLine;
@@ -69,20 +70,20 @@ class ProductDiscount
         // remove the discount from the line so only the cheapest item has the
         // discount applied.
         $applied = Discounts::getApplied()->filter(function ($applied) {
-            return $applied['discount']?->id == $this->discount->id;
+            return $applied->discount?->id == $this->discount->id;
         });
 
         if ($applied->count()) {
             foreach ($applied as $appliedDiscount) {
-                if ($appliedDiscount['line']->unitPrice->value > $cartLine->unitPrice->value) {
-                    $appliedDiscount['line']->discount = null;
-                    $appliedDiscount['line']->discountTotal = null;
+                if ($appliedDiscount->cartLine->unitPrice->value > $cartLine->unitPrice->value) {
+                    $appliedDiscount->cartLine->discount = null;
+                    $appliedDiscount->cartLine->discountTotal = null;
                 }
             }
 
             // Is our current cart line the lowest priced item?
             $lowerPrice = $applied->first(function ($discount) use ($cartLine) {
-                return $discount['line']->unitPrice->value <= $cartLine->unitPrice->value;
+                return $discount->cartLine->unitPrice->value <= $cartLine->unitPrice->value;
             });
 
             if ($lowerPrice) {
@@ -101,7 +102,9 @@ class ProductDiscount
             1
         );
 
-        Discounts::addApplied($cartLine, $this->discount);
+        Discounts::addApplied(
+            new CartDiscount($cartLine, $this->discount)
+        );
 
         // return $cartLine;
     }

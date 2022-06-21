@@ -2,7 +2,9 @@
 
 namespace GetCandy\DiscountTypes;
 
+use GetCandy\Base\DataTransferObjects\CartDiscount;
 use GetCandy\DataTypes\Price;
+use GetCandy\Facades\Discounts;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Collection;
 use GetCandy\Models\Discount;
@@ -65,6 +67,10 @@ class Coupon
         }
 
         $cartLine->discount = $this->discount;
+
+        Discounts::addApplied(
+            new CartDiscount($cartLine, $this->discount)
+        );
 
         return $this->applyPercentage(
             value: $data['value'],

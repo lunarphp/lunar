@@ -102,6 +102,7 @@ module.exports = {
           '/getcandy/collections',
           '/getcandy/currencies',
           '/getcandy/customers',
+          '/getcandy/discounts',
           '/getcandy/images',
           '/getcandy/languages',
           '/getcandy/orders',
