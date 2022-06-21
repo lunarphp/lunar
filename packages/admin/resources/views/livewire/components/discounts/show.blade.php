@@ -52,7 +52,7 @@
                 @if($this->ui)
                     @livewire($this->ui, [
                         'discount' => $discount,
-                    ])
+                    ], key('ui_'.$discount->type))
                 @endif
 
                 <x-hub::input.group for="type" label="Limit discount">

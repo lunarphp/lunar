@@ -40,6 +40,17 @@ class DiscountPurchasable extends BaseModel
         return $this->belongsTo(Discount::class);
     }
 
+    /**
+     * Return the priceable relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function purchasable()
+    {
+        return $this->morphTo();
+    }
+
+
     public function scopeCondition(Builder $query)
     {
         $query->whereType('condition');
