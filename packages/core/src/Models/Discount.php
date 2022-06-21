@@ -8,7 +8,6 @@ use GetCandy\Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Discount extends BaseModel
 {
@@ -72,10 +71,9 @@ class Discount extends BaseModel
     }
 
     /**
-     * Return the active scope
+     * Return the active scope.
      *
-     * @param Builder $query
-     *
+     * @param  Builder  $query
      * @return void
      */
     public function scopeActive(Builder $query)
