@@ -2,9 +2,6 @@
 
 namespace GetCandy\Managers;
 
-use GetCandy\Base\CartLineModifier;
-use GetCandy\Base\CartLineModifiers;
-use GetCandy\Base\CartModifier;
 use GetCandy\Base\DataTransferObjects\CartDiscount;
 use GetCandy\Base\DiscountManagerInterface;
 use GetCandy\DiscountTypes\Coupon;
