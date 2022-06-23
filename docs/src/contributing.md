@@ -44,7 +44,7 @@ Before you start coding away on the next awesome feature, we highly recommend st
 
 However, you're more than welcome to code away on your idea if you think it will help the discussion. 
 
-## Issue not getting attention?
+## Issue Not Getting Attention?
 
 If you need a bug fixed and nobody is fixing it, your best bet is to provide a fix for it and make a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request). Open source code belongs to all of us, and it's all of our responsibility to push it forward.
 
