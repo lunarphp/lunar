@@ -7,7 +7,6 @@ use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use ReflectionClass;
 
 /**
@@ -44,12 +43,11 @@ class Manifest extends PackageManifest
      * Format a given composer package into our addon format.
      *
      * @param array $package
-     *
      * @return void|array
      */
     protected function formatPackage($package)
     {
-        if (!$provider = $package['extra']['laravel']['providers'][0] ?? null) {
+        if (! $provider = $package['extra']['laravel']['providers'][0] ?? null) {
             return;
         }
 
