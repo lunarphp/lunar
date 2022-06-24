@@ -156,7 +156,7 @@ class OrderShow extends Component
     }
 
     /**
-     * Refresh the current order in the database
+     * Refresh the current order in the database.
      *
      * @return void
      */
