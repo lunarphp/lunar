@@ -451,23 +451,6 @@ class OrderShow extends Component
     }
 
     /**
-     * Returns the activity log for the order.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getActivityLogProperty()
-    {
-        return $this->order->activities()->whereNotIn('event', ['updated'])->orderBy('created_at', 'desc')->get()->groupBy(function ($log) {
-            return $log->created_at->format('Y-m-d');
-        })->map(function ($logs) {
-            return [
-                'date' => $logs->first()->created_at->startOfDay(),
-                'items' => $logs,
-            ];
-        });
-    }
-
-    /**
      * Return whether the billing postcode matches the shipping postcode.
      *
      * @return void
