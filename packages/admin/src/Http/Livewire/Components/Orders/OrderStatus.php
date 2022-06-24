@@ -203,6 +203,7 @@ class OrderStatus extends Component
         $this->notify('Order status updated');
         $this->showStatusSelect = false;
 
+        $this->emit('refreshOrder');
         $this->emit('activityUpdated');
     }
 
