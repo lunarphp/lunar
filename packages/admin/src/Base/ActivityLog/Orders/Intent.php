@@ -2,8 +2,8 @@
 
 namespace GetCandy\Hub\Base\ActivityLog\Orders;
 
-use Spatie\Activitylog\Models\Activity;
 use GetCandy\Hub\Base\ActivityLog\AbstractRender;
+use Spatie\Activitylog\Models\Activity;
 
 class Intent extends AbstractRender
 {

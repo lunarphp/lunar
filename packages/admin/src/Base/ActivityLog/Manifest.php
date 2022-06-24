@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 class Manifest
 {
     /**
-     * The events to watch and render
+     * The events to watch and render.
      *
      * @var array
      */
@@ -25,11 +25,10 @@ class Manifest
     ];
 
     /**
-     * Add an activity log render
+     * Add an activity log render.
      *
-     * @param string $subject
-     * @param string $renderer
-     *
+     * @param  string  $subject
+     * @param  string  $renderer
      * @return self
      */
     public function addRender(string $subject, string $renderer)
@@ -44,16 +43,16 @@ class Manifest
     }
 
     /**
-     * Return the items from a given subject
+     * Return the items from a given subject.
      *
-     * @param string $classname
-     *
+     * @param  string  $classname
      * @return Collection
      */
     public function getItems($subject)
     {
         return collect($this->events[$subject] ?? [])->map(function ($subject) {
             $class = new $subject;
+
             return [
                 'event' => $class->getEvent(),
                 'class' => $class,
