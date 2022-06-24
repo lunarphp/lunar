@@ -23,6 +23,7 @@ use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionValueCreateModal;
 use GetCandy\Hub\Http\Livewire\Components\Products\Editing\CustomerGroups;
@@ -222,6 +223,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.show', OrderShow::class);
         Livewire::component('hub.components.orders.refund', OrderRefund::class);
         Livewire::component('hub.components.orders.capture', OrderCapture::class);
+        Livewire::component('hub.components.orders.status', OrderStatus::class);
     }
 
     protected function registerCustomerComponents()
