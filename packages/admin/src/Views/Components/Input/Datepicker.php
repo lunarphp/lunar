@@ -14,7 +14,7 @@ class Datepicker extends Component
     public bool $error = false;
 
     /**
-     * Any options to pass to the datepicker
+     * Any options to pass to the datepicker.
      *
      * @var array
      */
