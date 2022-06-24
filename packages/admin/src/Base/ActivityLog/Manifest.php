@@ -2,21 +2,58 @@
 
 namespace GetCandy\Hub\Base\ActivityLog;
 
-use Spatie\Activitylog\Models\Activity;
+use GetCandy\Hub\Base\ActivityLog\Orders\Capture;
+use GetCandy\Hub\Base\ActivityLog\Orders\Intent;
+use GetCandy\Hub\Base\ActivityLog\Orders\StatusUpdate;
+use GetCandy\Models\Order;
+use Illuminate\Support\Collection;
 
 class Manifest
 {
-    public $events = [];
+    /**
+     * The events to watch and render
+     *
+     * @var array
+     */
+    public $events = [
+        Order::class => [
+            Comment::class,
+            StatusUpdate::class,
+            Capture::class,
+            Intent::class,
+        ],
+    ];
 
-    public function boot(array $events)
+    /**
+     * Add an activity log render
+     *
+     * @param string $subject
+     * @param string $renderer
+     *
+     * @return self
+     */
+    public function addRender(string $subject, string $renderer)
     {
-        $this->events = $events;
+        if (empty($this->events[$subject])) {
+            $this->events[$subject] = [];
+        }
+
+        $this->events[$subject][] = $renderer;
+
+        return $this;
     }
 
-    public function getItems($classname)
+    /**
+     * Return the items from a given subject
+     *
+     * @param string $classname
+     *
+     * @return Collection
+     */
+    public function getItems($subject)
     {
-        return collect($this->events[$classname] ?? [])->map(function ($className) {
-            $class = new $className;
+        return collect($this->events[$subject] ?? [])->map(function ($subject) {
+            $class = new $subject;
             return [
                 'event' => $class->getEvent(),
                 'class' => $class,
