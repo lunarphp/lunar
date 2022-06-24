@@ -126,8 +126,16 @@
         <span @class([
           'text-red-500' => $line->purchasable->stock < 50,
           'text-green-500' => $line->purchasable->stock > 50
-        ])>Current Stock Level: 203</span>
-        (at time of ordering: <span class="font-medium">34</span>)
+        ])>
+          {{ __('adminhub::partials.orders.lines.current_stock_level', [
+            'count' => $line->purchasable->stock
+          ])}}
+        </span>
+        @if(!is_null($line->meta?->stock_level))
+          ({{ __('adminhub::partials.orders.lines.purchase_stock_level', [
+            'count' => $line->meta->stock_level
+          ])}})
+        @endif
       </span>
       @endif
       <div class="mt-4 space-y-4">
