@@ -14,21 +14,21 @@ class Datepicker extends Component
     public bool $error = false;
 
     /**
-     * Whether the datepicker should support time.
+     * Any options to pass to the datepicker
      *
-     * @var bool
+     * @var array
      */
-    public bool $enableTime = false;
+    public array $options = [];
 
     /**
      * Initialise the component.
      *
      * @param  bool  $error
      */
-    public function __construct($error = false, $enableTime = false)
+    public function __construct($error = false, array $options = [])
     {
         $this->error = $error;
-        $this->enableTime = $enableTime;
+        $this->options = $options;
     }
 
     /**
