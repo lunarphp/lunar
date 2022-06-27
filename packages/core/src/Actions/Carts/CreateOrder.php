@@ -41,7 +41,7 @@ class CreateOrder
                     $this->getModifiers()->toArray()
                 );
 
-            $pipeline->via('creating')->thenReturn();
+            $cart = $pipeline->via('creating')->thenReturn();
 
             $order = Order::create([
                 'user_id'            => $cart->user_id,
@@ -147,9 +147,7 @@ class CreateOrder
 
             $cart->save();
 
-            $pipeline->send($order)->via('created')->thenReturn();
-
-            return $order;
+            return $pipeline->send($order)->via('created')->thenReturn();
         });
     }
 

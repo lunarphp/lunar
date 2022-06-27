@@ -13,19 +13,22 @@ There may instances where you need to make changes to a cart or cart line, befor
 
 namespace App\Modifiers;
 
+use Closure;
 use GetCandy\Base\CartModifier;
 use GetCandy\Models\Cart;
 
 class CustomCartModifier extends CartModifier
 {
-    public function calculating(Cart $cart)
+    public function calculating(Cart $cart, Closure $next): Cart
     {
-        //
+        // ...
+        return $next($cart);
     }
 
-    public function calculated(Cart $cart)
+    public function calculated(Cart $cart, Closure $next): Cart
     {
-        //
+        // ...
+        return $next($cart);
     }
 }
 ```
@@ -35,19 +38,22 @@ class CustomCartModifier extends CartModifier
 
 namespace App\Modifiers;
 
+use Closure;
 use GetCandy\Base\CartLineModifier;
 use GetCandy\Models\CartLine;
 
 class CustomCartLineModifier extends CartLineModifier
 {
-    public function calculating(CartLine $cartLine)
+    public function calculating(CartLine $cartLine, Closure $next): CartLine
     {
-        //
+        // ...
+        return $next($cartLine);
     }
 
-    public function calculated(CartLine $cartLine)
+    public function calculated(CartLine $cartLine, Closure $next): CartLine
     {
-        //
+        // ...
+        return $next($cartLine);
     }
 }
 ```

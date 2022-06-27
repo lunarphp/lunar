@@ -27,6 +27,10 @@ class CartSessionAuthListener
      */
     public function login(Login $event)
     {
+        if (! is_getcandy_user($event->user)) {
+            return;
+        }
+
         $currentCart = CartSession::current();
 
         if ($currentCart && ! $currentCart->user_id) {
@@ -55,6 +59,10 @@ class CartSessionAuthListener
      */
     public function logout(Logout $event)
     {
+        if (! is_getcandy_user($event->user)) {
+            return;
+        }
+
         CartSession::forget();
     }
 }

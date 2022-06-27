@@ -11,6 +11,7 @@ use GetCandy\FieldTypes\Number;
 use GetCandy\FieldTypes\Text;
 use GetCandy\FieldTypes\Toggle;
 use GetCandy\FieldTypes\TranslatedText;
+use GetCandy\FieldTypes\YouTube;
 
 class FieldTypeManifest
 {
@@ -31,6 +32,7 @@ class FieldTypeManifest
             Toggle::class,
             TranslatedText::class,
             File::class,
+            YouTube::class,
         ]);
     }
 

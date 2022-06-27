@@ -15,7 +15,7 @@ class OrderSearch extends AbstractSearch
      */
     public function search($term, $options = [], $perPage = 25, $page = 1): SearchResults
     {
-        if ($this->driver == 'meilisearch') {
+        if ($this->getDriverForModel(Order::class) == 'meilisearch') {
             return $this->meilisearch(
                 $term,
                 $options,

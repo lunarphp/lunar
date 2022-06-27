@@ -93,6 +93,15 @@ trait HasImages
      */
     public function handleUploadFinished($name, array $filenames = [])
     {
+        /**
+         * If the upload wasn't triggered via the drag and drop upload queue
+         * then we ignore it since we don't want the files to appear in the
+         * main image block.
+         */
+        if ($name != 'imageUploadQueue') {
+            return;
+        }
+
         if ($this->errorBag->count()) {
             unset($this->imageUploadQueue[0]);
 

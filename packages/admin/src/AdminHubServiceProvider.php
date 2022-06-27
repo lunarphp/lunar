@@ -13,6 +13,7 @@ use GetCandy\Hub\Http\Livewire\Components\Avatar;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
+use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionTree;
 use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
 use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
@@ -267,6 +268,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.collections.collection-groups.index', CollectionGroupsIndex::class);
         Livewire::component('hub.components.collections.collection-groups.show', CollectionGroupShow::class);
         Livewire::component('hub.components.collections.show', CollectionShow::class);
+        Livewire::component('hub.components.collections.collection-tree', CollectionTree::class);
     }
 
     /**

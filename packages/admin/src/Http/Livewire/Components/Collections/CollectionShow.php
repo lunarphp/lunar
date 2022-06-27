@@ -67,7 +67,7 @@ class CollectionShow extends Component
     public function mount()
     {
         $this->products = $this->mapProducts(
-            $this->collection->load('products.variants.prices.currency')->products
+            $this->collection->load('products.variants.basePrices.currency')->products
         );
         $this->syncAvailability();
     }

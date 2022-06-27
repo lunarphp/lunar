@@ -146,7 +146,11 @@
         </x-hub::modal.dialog>
       @endif
       <div class="mt-4 space-y-2">
-        <x-hub::nested-tree :tree="$this->getCollectionTree()" :owner="$group" sort-group="root" />
+        @livewire('hub.components.collections.collection-tree', [
+          'nodes' => $tree,
+          'sortGroup' => 'root',
+          'owner' => $group,
+        ], key('tree-root'))
       </div>
     </div>
   </div>
