@@ -12,13 +12,13 @@
          x-transition:leave="transition ease-in duration-300"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="-translate-x-full">
-        <div class="w-full max-w-xs p-4 bg-white focus:outline-none"
+        <div class="w-full max-w-xs p-4 overflow-y-auto bg-white focus:outline-none"
              x-on:click.away="showMobileMenu = false">
             <div class="flex items-center justify-between">
                 <a href="{{ route('hub.index') }}"
                    class="block">
-                    <img class="w-auto h-8"
-                         src="https://markmead.dev/gc-logo.svg"
+                    <img class="w-8 h-8"
+                         src="https://markmead.dev/gc-favicon.svg"
                          alt="GetCandy Logo">
                 </a>
 

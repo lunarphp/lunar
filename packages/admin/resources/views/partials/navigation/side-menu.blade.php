@@ -19,7 +19,7 @@
         </div>
 
         <button x-on:click="showExpandedMenu = !showExpandedMenu"
-                class="absolute z-50 p-1 bg-white border border-gray-100 rounded -right-[13px] bottom-8">
+                class="absolute z-50 p-1 bg-white border border-gray-100 rounded -right-[13px] bottom-8 text-gray-600 hover:text-gray-700">
             <span :class="{ '-rotate-180': showExpandedMenu }"
                   class="block">
                 <svg xmlns="http://www.w3.org/2000/svg"
