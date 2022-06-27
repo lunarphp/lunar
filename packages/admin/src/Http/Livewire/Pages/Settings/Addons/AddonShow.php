@@ -23,6 +23,7 @@ class AddonShow extends Component
         return view('adminhub::livewire.pages.settings.addons.show')
             ->layout('adminhub::layouts.settings', [
                 'title' => 'Addon',
+                'menu' => 'settings',
             ]);
     }
 }

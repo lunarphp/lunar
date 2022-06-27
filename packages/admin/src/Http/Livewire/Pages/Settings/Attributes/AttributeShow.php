@@ -33,6 +33,7 @@ class AttributeShow extends Component
                 'title' => __('adminhub::settings.attributes.show.title', [
                     'type' => $this->type,
                 ]),
+                'menu' => 'settings',
             ]);
     }
 }

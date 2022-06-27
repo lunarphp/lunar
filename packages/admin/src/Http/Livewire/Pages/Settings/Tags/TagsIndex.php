@@ -16,6 +16,7 @@ class TagsIndex extends Component
         return view('adminhub::livewire.pages.settings.tags.index')
             ->layout('adminhub::layouts.settings', [
                 'title' => __('adminhub::settings.tags.index.title'),
+                'menu' => 'settings',
             ]);
     }
 }

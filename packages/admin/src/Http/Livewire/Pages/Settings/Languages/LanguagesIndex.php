@@ -16,6 +16,7 @@ class LanguagesIndex extends Component
         return view('adminhub::livewire.pages.settings.languages.index')
             ->layout('adminhub::layouts.settings', [
                 'title' => __('adminhub::settings.languages.index.title'),
+                'menu' => 'settings',
             ]);
     }
 }

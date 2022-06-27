@@ -24,6 +24,7 @@ class LanguageShow extends Component
         return view('adminhub::livewire.pages.settings.languages.show')
             ->layout('adminhub::layouts.settings', [
                 'title' => __('adminhub::settings.languages.show.title'),
+                'menu' => 'settings',
             ]);
     }
 }

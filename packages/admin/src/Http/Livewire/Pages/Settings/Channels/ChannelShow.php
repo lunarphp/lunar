@@ -24,6 +24,7 @@ class ChannelShow extends Component
         return view('adminhub::livewire.pages.settings.channels.show')
             ->layout('adminhub::layouts.settings', [
                 'title' => 'Edit Channel',
+                'menu' => 'settings',
             ]);
     }
 }
