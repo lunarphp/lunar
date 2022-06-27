@@ -26,7 +26,7 @@
 
                         <span x-show="showTooltip"
                               x-transition
-                              class="absolute z-10 p-2 ml-4 text-xs text-white bg-gray-900 rounded left-full">
+                              class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded w-28 left-full">
                             {{ $item->name }}
                         </span>
                     </a>
@@ -61,7 +61,7 @@
 
                 <span x-show="showTooltip"
                       x-transition
-                      class="absolute z-10 p-2 ml-4 text-xs text-white bg-gray-900 rounded left-full">
+                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded w-28 left-full">
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>
