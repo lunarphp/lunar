@@ -7,10 +7,12 @@
                     <a href="{{ route($item->route) }}"
                        @class([
                            'relative flex items-center gap-2 p-2 rounded text-gray-500',
-                           'bg-blue-50 text-blue-700 hover:text-blue-600' => request()->routeIs(
-                               $item->route
+                           'bg-blue-50 text-blue-700 hover:text-blue-600' => $item->isActive(
+                               $component->attributes->get('current')
                            ),
-                           'hover:bg-blue-50 hover:text-blue-700' => !request()->routeIs($item->route),
+                           'hover:bg-blue-50 hover:text-blue-700' => !$item->isActive(
+                               $component->attributes->get('current')
+                           ),
                        ])
                        x-data="{ showTooltip: false }"
                        x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
@@ -38,11 +40,13 @@
             <a href="{{ route('hub.settings') }}"
                @class([
                    'relative flex items-center gap-2 p-2 rounded text-gray-500',
-                   'bg-blue-50 text-blue-700 hover:text-blue-600' => $item->isActive(
-                       $component->attributes->get('current')
+                   'bg-blue-50 text-blue-700 hover:text-blue-600' => Str::contains(
+                       request()->url(),
+                       'settings'
                    ),
-                   'hover:bg-blue-50 hover:text-blue-700' => !$item->isActive(
-                       $component->attributes->get('current')
+                   'hover:bg-blue-50 hover:text-blue-700' => !Str::contains(
+                       request()->url(),
+                       'settings'
                    ),
                ])
                x-data="{ showTooltip: false }"
