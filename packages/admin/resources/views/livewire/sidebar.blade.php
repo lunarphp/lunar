@@ -6,9 +6,11 @@
                 <li>
                     <a href="{{ route($item->route) }}"
                        @class([
-                           'relative flex items-center gap-2 p-2 rounded hover:bg-blue-50 hover:text-blue-700',
-                           'text-blue-600' => request()->routeIs($item->route),
-                           'text-gray-400 hover:text-gray-900' => !request()->routeIs($item->route),
+                           'relative flex items-center gap-2 p-2 rounded text-gray-500',
+                           'bg-blue-50 text-blue-700 hover:text-blue-600' => request()->routeIs(
+                               $item->route
+                           ),
+                           'hover:bg-blue-50 hover:text-blue-700' => !request()->routeIs($item->route),
                        ])
                        x-data="{ showTooltip: false }"
                        x-on:mouseover="showTooltip = showExpandedMenu ? false : true"

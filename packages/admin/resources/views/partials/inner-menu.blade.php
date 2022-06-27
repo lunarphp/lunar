@@ -9,7 +9,7 @@
                             <li>
                                 <a href="{{ route($item->route) }}"
                                    @class([
-                                       'relative flex items-center gap-2 p-2 rounded text-gray-500',
+                                       'flex items-center gap-2 p-2 rounded text-gray-500',
                                        'bg-blue-50 text-blue-700 hover:text-blue-600' => $item->isActive(
                                            $component->attributes->get('current')
                                        ),

@@ -1,4 +1,4 @@
-<div class="flex items-center justify-between h-16 px-4 bg-white sm:px-6 lg:px-8">
+<div class="hidden h-16 px-4 bg-white lg:justify-between lg:flex lg:items-center sm:px-6 lg:px-8">
     <a href="{{ url()->previous() }}"
        class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-600">
         <svg xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +19,7 @@
          class="relative">
         <div x-show="showUserMenu"
              x-transition
-             class="absolute p-2 -mt-2 bg-white border border-gray-100 rounded-lg top-full right-4 w-36">
+             class="absolute z-50 p-2 -mt-2 bg-white border border-gray-100 rounded-lg top-full right-4 w-36">
             <ul class="flex flex-col">
                 <li>
                     <a href="{{ route('hub.account') }}"
