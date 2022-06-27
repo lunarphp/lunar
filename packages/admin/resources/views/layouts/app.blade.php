@@ -17,8 +17,8 @@
     <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}" rel="stylesheet">
 
     <style>
-    .filepond--credits {
-        display:none!important;
+      .filepond--credits {
+        display: none !important;
       }
     </style>
 
@@ -35,35 +35,9 @@
   </head>
   <body class="antialiased">
     {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
-    <!--
-      This example requires Tailwind CSS v2.0+
 
-      This example requires some changes to your config:
-
-      ```
-      // tailwind.config.js
-      module.exports = {
-        // ...
-        plugins: [
-          // ...
-          require('@tailwindcss/forms'),
-        ]
-      }
-      ```
-    -->
     <div class="flex h-screen overflow-hidden bg-gray-100" x-data="{ showMenu: false }">
-      <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
       <div class="fixed inset-0 z-40 flex md:hidden" role="dialog" aria-modal="true" x-cloak x-show="showMenu" x-transition>
-        <!--
-          Off-canvas menu overlay, show/hide based on off-canvas menu state.
-
-          Entering: "transition-opacity ease-linear duration-300"
-            From: "opacity-0"
-            To: "opacity-100"
-          Leaving: "transition-opacity ease-linear duration-300"
-            From: "opacity-100"
-            To: "opacity-0"
-        -->
         <div
           class="fixed inset-0 bg-gray-600 bg-opacity-75"
           x-transition:enter="transition-opacity ease-linear duration-300"
@@ -76,16 +50,6 @@
           aria-hidden="true"
         ></div>
 
-        <!--
-          Off-canvas menu, show/hide based on off-canvas menu state.
-
-          Entering: "transition ease-in-out duration-300"
-            From: "-translate-x-full"
-            To: "translate-x-0"
-          Leaving: "transition ease-in-out duration-300"
-            From: "translate-x-0"
-            To: "-translate-x-full"
-        -->
         <div
           class="relative flex flex-col flex-1 w-full max-w-xs pt-5 pb-4 bg-white"
           x-transition:enter="transition ease-in-out duration-300"
@@ -96,16 +60,6 @@
           x-transition:leave-end="-translate-x-full"
           x-show="showMenu"
         >
-          <!--
-            Close button, show/hide based on off-canvas menu state.
-
-            Entering: "ease-in-out duration-300"
-              From: "opacity-0"
-              To: "opacity-100"
-            Leaving: "ease-in-out duration-300"
-              From: "opacity-100"
-              To: "opacity-0"
-          -->
           <div
             class="absolute top-0 right-0 pt-2 -mr-12"
             x-transition:enter="ease-in-out duration-300"
@@ -118,7 +72,6 @@
           >
             <button @click="showMenu = false" class="flex items-center justify-center w-10 h-10 ml-1 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
               <span class="sr-only">{{ __('adminhub::menu.close-sidebar') }}</span>
-              <!-- Heroicon name: outline/x -->
               <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -130,9 +83,7 @@
           </div>
           <div class="flex-1 h-0 mt-5 overflow-y-auto">
             <nav class="px-2 space-y-1">
-
               @livewire('sidebar')
-
             </nav>
           </div>
           <div class="flex flex-shrink-0 p-4 bg-white border-t border-gray-200">
@@ -165,14 +116,11 @@
           </div>
         </div>
         <div class="flex-shrink-0 w-14" aria-hidden="true">
-          <!-- Dummy element to force sidebar to shrink to fit close icon -->
         </div>
       </div>
 
-      <!-- Static sidebar for desktop -->
       <div class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-50">
-          <!-- Sidebar component, swap this element with another sidebar if you like -->
           <div class="flex flex-col pt-5 pb-4 overflow-y-auto bg-white grow">
             <div class="flex items-center flex-shrink-0 px-4 mx-4 my-2">
               <img class="w-auto" src="https://getcandy.io/hub/getcandy_logo.svg" alt="GetCandy">
@@ -219,66 +167,11 @@
         <div class="relative z-10 flex flex-shrink-0 h-16 bg-white shadow md:hidden">
           <button @click="showMenu = true" class="px-4 text-gray-500 border-r border-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden">
             <span class="sr-only">{{ __('adminhub::menu.open-sidebar') }}</span>
-            <!-- Heroicon name: outline/menu-alt-2 -->
             <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
             </svg>
           </button>
           <div class="flex justify-between flex-1 px-4">
-{{--
-            <div class="flex flex-1">
-              <form class="flex w-full md:ml-0" action="#" method="GET">
-                <label for="search-field" class="sr-only">Search</label>
-                <div class="relative w-full text-gray-400 focus-within:text-gray-600">
-                  <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                    <!-- Heroicon name: solid/search -->
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                    </svg>
-                  </div>
-                  <input id="search-field" class="block w-full h-full py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 border-transparent focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm" placeholder="Search" type="search" name="search">
-                </div>
-              </form>
-            </div>
-            <div class="flex items-center flex-1 ml-4 md:ml-6">
-              <button class="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span class="sr-only">View notifications</span>
-                <!-- Heroicon name: outline/bell -->
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-              </button>
-
-              <!-- Profile dropdown -->
-              <div class="relative ml-3">
-                <div>
-                  <button type="button" class="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                    <span class="sr-only">Open user menu</span>
-                    <x-hub::gravatar email="{{ Auth::user()->email }}" class="w-8 h-8 rounded-full" />
-                  </button>
-                </div>
-
-                <!--
-                  Dropdown menu, show/hide based on menu state.
-
-                  Entering: "ease-out duration-100"
-                    From: "opacity-0 scale-95"
-                    To: "opacity-100 scale-100"
-                  Leaving: "ease-in duration-75"
-                    From: "opacity-100 scale-100"
-                    To: "opacity-0 scale-95"
-                -->
-                <div class="absolute right-0 w-48 py-1 mt-2 origin-top-right scale-95 bg-white rounded-md shadow-lg opacity-0 ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                  <!-- Active: "bg-gray-100", Not Active: "" -->
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
-
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
-                </div>
-              </div>
-            </div>
---}}
           </div>
         </div>
         <main class="relative flex-1 overflow-y-auto focus:outline-none">
