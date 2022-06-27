@@ -1,3 +1,0 @@
-<div>
-  Inner Menu
-</div>
