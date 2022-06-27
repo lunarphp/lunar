@@ -2,7 +2,7 @@
     <aside class="hidden h-full lg:block lg:flex-shrink-0 lg:order-first">
         <div class="relative flex flex-col h-full overflow-y-auto bg-white border-r border-gray-100 w-72">
             <div class="px-4 py-16">
-                <x-hub::menu handle="settings"
+                <x-hub::menu handle="{{ $menu }}"
                              current="{{ request()->route()->getName() }}">
                     <ul class="space-y-2">
                         @foreach ($component->items as $item)
