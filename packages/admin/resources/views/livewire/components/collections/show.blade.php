@@ -186,7 +186,7 @@
                                @class([
                                    'flex items-center gap-2 p-2 rounded text-gray-500',
                                    'hover:bg-blue-50 hover:text-blue-700' => empty($item['has_errors']),
-                                   'text-red-600' => !empty($item['has_errors']),
+                                   'text-red-600 bg-red-50' => !empty($item['has_errors']),
                                ])
                                aria-current="page"
                                x-data="{ linkId: '#{{ $item['id'] }}' }"
@@ -194,14 +194,14 @@
                                    'bg-blue-50 text-blue-700 hover:text-blue-600': linkId === activeAnchorLink
                                }"
                                x-on:click="activeAnchorLink = linkId">
-                                <span class="text-sm font-medium truncate">
-                                    {{ $item['title'] }}
-                                </span>
-
                                 @if (!empty($item['has_errors']))
                                     <x-hub::icon ref="exclamation-circle"
                                                  class="w-4 text-red-600" />
                                 @endif
+
+                                <span class="text-sm font-medium truncate">
+                                    {{ $item['title'] }}
+                                </span>
                             </a>
                         @endforeach
                     </nav>
