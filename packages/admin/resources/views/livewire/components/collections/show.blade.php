@@ -187,7 +187,7 @@
             </div>
         </div>
 
-        <x-hub::page-menu-layout>
+        <x-hub::layout.page-menu>
             <nav class="space-y-2"
                  aria-label="Sidebar"
                  x-data="{ activeAnchorLink: '' }"
@@ -216,6 +216,6 @@
                     </a>
                 @endforeach
             </nav>
-        </x-hub::page-menu-layout>
+        </x-hub::layout.page-menu>
     </div>
 </div>

@@ -1,4 +1,4 @@
-<x-hub::side-menu-layout>
+<x-hub::layout.side-menu>
     <x-hub::menu handle="{{ $menu }}"
                  current="{{ request()->route()->getName() }}">
         <ul class="space-y-2">
@@ -24,4 +24,4 @@
             @endforeach
         </ul>
     </x-hub::menu>
-</x-hub::side-menu-layout>
+</x-hub::layout.side-menu>

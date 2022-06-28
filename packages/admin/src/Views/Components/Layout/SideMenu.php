@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace GetCandy\Hub\Views\Components\Layout;
 
 use Illuminate\View\Component;
 
-class PageMenuLayout extends Component
+class SideMenu extends Component
 {
     public function __construct()
     {
@@ -17,6 +17,6 @@ class PageMenuLayout extends Component
      */
     public function render()
     {
-        return view('adminhub::components.page-menu-layout');
+        return view('adminhub::components.layout.side-menu');
     }
 }

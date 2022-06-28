@@ -1,5 +1,5 @@
 @section('menu')
-    <x-hub::side-menu-layout>
+    <x-hub::layout.side-menu>
         <nav class="space-y-2">
             @foreach ($product->variants as $v)
                 <a href="{{ route('hub.products.variants.show', [
@@ -40,7 +40,7 @@
                 {{ __('adminhub::catalogue.product-variants.add_variant.btn') }}
             </x-hub::button>
         </div>
-    </x-hub::side-menu-layout>
+    </x-hub::layout.side-menu>
 @stop
 
 <form wire:submit.prevent="save"

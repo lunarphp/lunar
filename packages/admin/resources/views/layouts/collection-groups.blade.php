@@ -1,11 +1,11 @@
 @extends('adminhub::layouts.app')
 
 @section('menu')
-    <x-hub::side-menu-layout>
+    <x-hub::layout.side-menu>
         @livewire('hub.components.collections.sidemenu', [
             'currentGroup' => $group ?? null,
         ])
-    </x-hub::side-menu-layout>
+    </x-hub::layout.side-menu>
 @stop
 
 @section('main')
