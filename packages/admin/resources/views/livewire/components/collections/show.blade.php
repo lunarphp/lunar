@@ -17,7 +17,7 @@
     </div>
 
     <form wire:submit.prevent="save"
-          class="fixed bottom-0 right-0 left-auto z-40 p-6 border-t bg-white/75"
+          class="fixed bottom-0 right-0 left-auto z-40 p-6 border-t border-gray-100 bg-white/75"
           :class="{ 'w-[calc(100vw_-_12rem)]': showExpandedMenu, 'w-[calc(100vw_-_5rem)]': !showExpandedMenu }">
         <div class="flex justify-end">
             <x-hub::button type="submit">
