@@ -194,16 +194,20 @@
                      aria-label="Sidebar">
                     @foreach ($this->sideMenu as $item)
                         <a href="#{{ $item['id'] }}"
-                           class="@if (!empty($item['has_errors'])) text-red-600 @else text-gray-900 @endif flex items-center text-sm font-medium bg-gray-100 rounded-md hover:text-indigo-500 hover:underline group"
+                           @class([
+                               'flex items-center gap-2',
+                               'text-gray-700 hover:text-gray-900' => empty($items['has_errors']),
+                               'text-red-600' => !empty($item['has_errors']),
+                           ])
                            aria-current="page">
-                            @if (!empty($item['has_errors']))
-                                <x-hub::icon ref="exclamation-circle"
-                                             class="w-4 mr-1 text-red-600" />
-                            @endif
-
-                            <span class="truncate">
+                            <span class="text-sm font-medium truncate">
                                 {{ $item['title'] }}
                             </span>
+
+                            @if (!empty($item['has_errors']))
+                                <x-hub::icon ref="exclamation-circle"
+                                             class="w-4 text-red-600" />
+                            @endif
                         </a>
                     @endforeach
                 </nav>
