@@ -36,7 +36,7 @@
             </h3>
 
             <button type="button"
-                    x-on:click="showCollectionGroups = false"
+                    x-on:click="showGroupSlideover = false"
                     class="block lg:hidden">
                 <svg class="w-5 h-5"
                      xmlns="http://www.w3.org/2000/svg"
