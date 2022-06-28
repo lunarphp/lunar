@@ -18,9 +18,9 @@
     <div class="space-y-6">
         <div x-data="{ showCollectionGroups: false }">
             <div class="flex items-center justify-between">
-                <strong class="text-xl font-bold md:text-2xl">
+                <h1 class="text-xl font-bold md:text-xl">
                     {{ __('adminhub::catalogue.collections.index.title') }}
-                </strong>
+                </h1>
 
                 <div class="block lg:hidden">
                     <x-hub::button theme="gray"
