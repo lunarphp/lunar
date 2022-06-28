@@ -48,7 +48,7 @@
     @if ($channel->id && !$channel->getOriginal('default') && !$channel->wasRecentlyCreated)
         <div class="bg-white border border-red-300 rounded shadow">
             <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
-                {{ __('adminhub::danger_zone.title') }}
+                {{ __('adminhub::inputs.danger_zone.title') }}
             </header>
 
             <div class="p-6 text-sm">
