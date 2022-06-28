@@ -1,7 +1,20 @@
 <div>
-    <h1 class="text-xl font-bold md:text-xl">
-        {{ $collection->translateAttribute('name') }}
-    </h1>
+    <div class="flex items-center gap-4">
+        <a href="{{ route($collection->parent_id ? 'hub.collections.show' : 'hub.collection-groups.show', [
+            'group' => $collection->group,
+            'collection' => $collection->parent_id,
+        ]) }}"
+           class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+           title="{{ __('adminhub::catalogue.products.show.back_link_title') }}">
+            <x-hub::icon ref="chevron-left"
+                         style="solid"
+                         class="w-8 h-8" />
+        </a>
+
+        <h1 class="text-xl font-bold md:text-xl">
+            {{ $collection->translateAttribute('name') }}
+        </h1>
+    </div>
 
     <form wire:submit.prevent="save"
           class="fixed bottom-0 right-0 left-auto z-40 p-6 border-t border-gray-100 bg-white/75"
