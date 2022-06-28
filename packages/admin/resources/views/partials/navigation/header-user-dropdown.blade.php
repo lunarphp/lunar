@@ -4,6 +4,7 @@
      class="relative">
     <div x-show="showUserMenu"
          x-transition
+         x-cloak
          class="absolute z-50 p-2 -mt-2 bg-white border border-gray-100 rounded-lg top-full right-4 w-36">
         <ul class="flex flex-col">
             <li>

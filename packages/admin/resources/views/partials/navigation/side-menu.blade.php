@@ -6,12 +6,13 @@
             <img src="https://markmead.dev/gc-logo.svg"
                  alt="GetCandy Logo"
                  class="w-auto h-10"
-                 x-show="showExpandedMenu" />
+                 x-show="showExpandedMenu"
+                 x-cloak />
 
             <img src="https://markmead.dev/gc-favicon.svg"
                  alt="GetCandy Logo"
                  class="w-8 h-8"
-                 x-show="!showExpandedMenu">
+                 x-show="!showExpandedMenu" />
         </a>
 
         <div class="px-4 pt-4 border-t border-gray-100">

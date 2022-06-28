@@ -26,6 +26,7 @@
 
                         <span x-show="showTooltip"
                               x-transition
+                              x-cloak
                               class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded w-28 left-full">
                             {{ $item->name }}
                         </span>
@@ -61,6 +62,7 @@
 
                 <span x-show="showTooltip"
                       x-transition
+                      x-cloak
                       class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded w-28 left-full">
                     {{ __('adminhub::global.settings') }}
                 </span>

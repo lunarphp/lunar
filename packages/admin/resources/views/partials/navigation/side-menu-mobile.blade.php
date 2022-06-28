@@ -2,10 +2,13 @@
      role="dialog"
      aria-modal="true">
     <div class="fixed inset-0 bg-gray-600/75"
-         x-show="showMobileMenu"></div>
+         x-show="showMobileMenu"
+         x-cloak
+         aria-hidden="true"></div>
 
     <div class="fixed inset-0 z-40 flex"
          x-show="showMobileMenu"
+         x-cloak
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="-translate-x-full"
          x-transition:enter-end="translate-x-0"
@@ -78,7 +81,8 @@
 
                                 <button x-on:click.prevent="showSettingsMenu = !showSettingsMenu"
                                         class="p-0.5 text-gray-600 bg-white rounded hover:text-gray-700">
-                                    <span x-show="showSettingsMenu">
+                                    <span x-show="showSettingsMenu"
+                                          x-cloak>
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              class="w-4 h-4"
                                              viewBox="0 0 20 20"
@@ -89,7 +93,8 @@
                                         </svg>
                                     </span>
 
-                                    <span x-show="!showSettingsMenu">
+                                    <span x-show="!showSettingsMenu"
+                                          x-cloak>
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              class="w-4 h-4"
                                              viewBox="0 0 20 20"
@@ -103,6 +108,7 @@
                             </a>
 
                             <div x-show="showSettingsMenu"
+                                 x-cloak
                                  class="mt-2 ml-4">
                                 <x-hub::menu handle="settings"
                                              current="{{ request()->route()->getName() }}">
