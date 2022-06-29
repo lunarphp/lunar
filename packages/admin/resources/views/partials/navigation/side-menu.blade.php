@@ -1,8 +1,8 @@
 <div class="hidden lg:flex lg:flex-shrink-0">
     <div class="relative flex flex-col bg-white border-r border-gray-100"
-         :class="{ 'w-48': showExpandedMenu, 'w-20 items-center': !showExpandedMenu }">
+         :class="{ 'w-48': showExpandedMenu, 'w-20': !showExpandedMenu }">
         <a href="{{ route('hub.index') }}"
-           class="flex items-center w-full h-16 px-4 border-b border-gray-100">
+           class="flex items-center w-full h-16 px-4">
             <img src="https://markmead.dev/gc-logo.svg"
                  alt="GetCandy Logo"
                  class="w-auto h-10"
@@ -16,7 +16,7 @@
                  x-cloak />
         </a>
 
-        <div class="px-4 pt-4">
+        <div class="w-full px-4 pt-4 border-t border-gray-100">
             @livewire('sidebar')
         </div>
 

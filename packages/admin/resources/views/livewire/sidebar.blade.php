@@ -1,7 +1,8 @@
 <div>
     <x-hub::menu handle="sidebar"
                  current="{{ request()->route()->getName() }}">
-        <ul class="space-y-2">
+        <ul class="flex flex-col space-y-2"
+            :class="{ 'items-center': !showExpandedMenu }">
             @foreach ($component->items as $item)
                 <li>
                     <a href="{{ route($item->route) }}"
@@ -37,8 +38,9 @@
         </ul>
     </x-hub::menu>
 
-    <div class="pt-4 mt-4 border-t border-gray-100">
-        @if (Auth::user()->can('settings'))
+    @if (Auth::user()->can('settings'))
+        <div class="flex flex-col w-full pt-4 mt-4 border-t border-gray-100"
+             :class="{ 'items-center': !showExpandedMenu }">
             <a href="{{ route('hub.settings') }}"
                @class([
                    'relative flex items-center gap-2 p-2 rounded text-gray-500',
@@ -69,6 +71,6 @@
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>
-        @endif
-    </div>
+        </div>
+    @endif
 </div>
