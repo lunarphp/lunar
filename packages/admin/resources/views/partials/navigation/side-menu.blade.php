@@ -2,7 +2,7 @@
     <div class="relative flex flex-col bg-white border-r border-gray-100"
          :class="{ 'w-48': showExpandedMenu, 'w-20 items-center': !showExpandedMenu }">
         <a href="{{ route('hub.index') }}"
-           class="flex items-center h-16 px-4">
+           class="flex items-center w-full h-16 px-4 border-b border-gray-100">
             <img src="https://markmead.dev/gc-logo.svg"
                  alt="GetCandy Logo"
                  class="w-auto h-10"
@@ -11,11 +11,12 @@
 
             <img src="https://markmead.dev/gc-favicon.svg"
                  alt="GetCandy Logo"
-                 class="w-8 h-8"
-                 x-show="!showExpandedMenu" />
+                 class="w-8 h-8 mx-auto"
+                 x-show="!showExpandedMenu"
+                 x-cloak />
         </a>
 
-        <div class="px-4 pt-4 border-t border-gray-100">
+        <div class="px-4 pt-4">
             @livewire('sidebar')
         </div>
 

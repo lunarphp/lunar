@@ -57,6 +57,7 @@
                 {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-5 h-5') !!}
 
                 <span x-show="showExpandedMenu"
+                      x-cloak
                       class="text-sm font-medium">
                     {{ __('adminhub::global.settings') }}
                 </span>
