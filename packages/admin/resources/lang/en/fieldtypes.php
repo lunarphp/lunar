@@ -18,4 +18,5 @@ return [
     'toggle.off_label'           => 'Off Value',
     'youtube.label'              => 'YouTube Video',
     'richtext.config'            => 'You can you enter any available configuration below supported by :url.',
+    'file.label'                 => 'File Upload',
 ];

@@ -17,7 +17,7 @@
         </div>
 
         <div class="px-3 grow">
-          <span class="block truncate text-xs">{{ $assetModel->id }} {{ $assetModel->file->file_name }}</span>
+          <span class="block truncate text-xs">{{ $assetModel->file->file_name }}</span>
         </div>
 
         <div>
