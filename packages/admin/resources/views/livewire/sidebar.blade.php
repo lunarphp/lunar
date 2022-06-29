@@ -20,6 +20,7 @@
                         {!! $item->renderIcon('w-5 h-5') !!}
 
                         <span x-show="showExpandedMenu"
+                              x-cloak
                               class="text-sm font-medium">
                             {{ $item->name }}
                         </span>
