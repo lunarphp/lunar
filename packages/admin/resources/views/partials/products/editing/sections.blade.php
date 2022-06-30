@@ -43,7 +43,7 @@
        --}}
         @foreach($this->getSlotsByPosition('top') as $slot)
        <div id="{{ $slot->handle }}">
-        <div>@livewire($slot->component, ['slotModel' => $product], key("top-slot-{{ $slot->handle }}"))</div>
+        <div>@livewire($slot->component, ['slotModel' => $product], key("top-slot-".$slot->handle))</div>
        </div>
        @endforeach
 
@@ -104,6 +104,16 @@
         <div id="shipping">
           @include('adminhub::partials.shipping')
         </div>
+        @if($this->getVariantsCount() == 1)
+        {{--
+          Variant Slots
+         --}}
+          @foreach($this->getSlotsByPosition('variant') as $slot)
+         <div id="{{ $slot->handle }}">
+          <div>@livewire($slot->component, ['slotModel' => $variant], key("variant-slot-".$slot->handle))</div>
+         </div>
+          @endforeach
+         @endif
       @endif
 
       {{--
@@ -132,7 +142,7 @@
        --}}
         @foreach($this->getSlotsByPosition('bottom') as $slot)
        <div id="{{ $slot->handle }}">
-        <div>@livewire($slot->component, ['slotModel' => $product], key("bottom-slot-{{ $slot->handle }}"))</div>
+        <div>@livewire($slot->component, ['slotModel' => $product], key("bottom-slot-".$slot->handle))</div>
        </div>
        @endforeach
 
