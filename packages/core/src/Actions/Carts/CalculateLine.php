@@ -44,13 +44,10 @@ class CalculateLine
             );
         }
 
-        $decimalString = (string) round(
-            $price->decimal / $purchasable->getUnitQuantity(),
+        $unitPrice = (int) round(
+            (($price->decimal / $purchasable->getUnitQuantity())
+                * $cart->currency->factor),
             $cart->currency->decimal_places);
-
-        $factorString = (string) $cart->currency->factor;
-
-        $unitPrice = (int) bcmul( $decimalString, $factorString);
 
         $subTotal = $unitPrice * $cartLine->quantity;
 
