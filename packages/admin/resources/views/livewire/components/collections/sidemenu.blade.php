@@ -56,11 +56,9 @@
             @forelse($this->collectionGroups as $group)
                 <a href="{{ route('hub.collection-groups.show', $group->id) }}"
                    @class([
-                       'block p-2 rounded text-gray-500 dark:text-gray-400',
-                       'bg-blue-50 text-blue-700 hover:text-blue-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white' =>
-                           $currentGroup->id == $group->id,
-                       'hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-800 dark:hover:text-white' =>
-                           $currentGroup->id == $group->id,
+                       'menu-link',
+                       'menu-link--active' => $currentGroup->id == $group->id,
+                       'menu-link--inactive' => $currentGroup->id != $group->id,
                    ])
                    aria-current="page">
                     <span class="text-sm font-medium">

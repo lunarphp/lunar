@@ -6,11 +6,11 @@
                 <li>
                     <a href="{{ route($item->route) }}"
                        @class([
-                           'relative flex items-center gap-2 p-2 rounded text-gray-500 dark:text-gray-400',
-                           'bg-blue-50 text-blue-700 hover:text-blue-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white' => $item->isActive(
+                           'menu-link',
+                           'menu-link--active' => $item->isActive(
                                $component->attributes->get('current')
                            ),
-                           'hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-800 dark:hover:text-white' => !$item->isActive(
+                           'menu-link--inactive' => !$item->isActive(
                                $component->attributes->get('current')
                            ),
                        ])>

@@ -11,7 +11,7 @@
 
             <div class="relative space-y-1 text-right md:hidden"
                  x-data="{ menuVisible: false }">
-                <button @click.prevent="menuVisible = true"
+                <button x-on:click.prevent="menuVisible = true"
                         :class="menuVisible ? 'bg-gray-200' : ''"
                         class="inline-flex items-center flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-600 uppercase border rounded ">
                     {{ __('adminhub::settings.layout.menu_btn') }}
