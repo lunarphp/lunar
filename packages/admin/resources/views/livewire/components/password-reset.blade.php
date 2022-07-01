@@ -50,7 +50,7 @@
                                wire:model.defer="password"
                                placeholder="{{ __('adminhub::inputs.new_password') }}"
                                @class([
-                                   'w-full py-3 pl-10 pr-3 text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
+                                   'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
                                    'border-red-600' => $errors->has('password'),
                                    'border-gray-200 dark:border-gray-700' => !$errors->has('password'),
                                ]) />
@@ -85,7 +85,7 @@
                                wire:model.defer="password_confirmation"
                                placeholder="{{ __('adminhub::inputs.new_password_confirmation') }}"
                                @class([
-                                   'w-full py-3 pl-10 pr-3 text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
+                                   'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
                                    'border-red-600' => $errors->has('password_confirmation'),
                                    'border-gray-200 dark:border-gray-700' => !$errors->has(
                                        'password_confirmation'
