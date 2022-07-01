@@ -7,11 +7,11 @@
                 <li>
                     <a href="{{ route($item->route) }}"
                        @class([
-                           'relative flex items-center gap-2 p-2 rounded text-gray-500',
-                           'bg-blue-50 text-blue-700 hover:text-blue-600' => $item->isActive(
+                           'relative flex items-center gap-2 p-2 rounded text-gray-500 dark:text-gray-400',
+                           'bg-blue-50 text-blue-700 hover:text-blue-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white' => $item->isActive(
                                $component->attributes->get('current')
                            ),
-                           'hover:bg-blue-50 hover:text-blue-700' => !$item->isActive(
+                           'hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-800 dark:hover:text-white' => !$item->isActive(
                                $component->attributes->get('current')
                            ),
                        ])
@@ -29,7 +29,7 @@
                         <span x-show="showTooltip"
                               x-transition
                               x-cloak
-                              class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded w-28 left-full">
+                              class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
                             {{ $item->name }}
                         </span>
                     </a>
@@ -39,16 +39,16 @@
     </x-hub::menu>
 
     @if (Auth::user()->can('settings'))
-        <div class="flex flex-col w-full pt-4 mt-4 border-t border-gray-100"
+        <div class="flex flex-col w-full pt-4 mt-4 border-t border-gray-100 dark:border-gray-800"
              :class="{ 'items-center': !showExpandedMenu }">
             <a href="{{ route('hub.settings') }}"
                @class([
-                   'relative flex items-center gap-2 p-2 rounded text-gray-500',
-                   'bg-blue-50 text-blue-700 hover:text-blue-600' => Str::contains(
+                   'relative flex items-center gap-2 p-2 rounded text-gray-500 dark:text-gray-400',
+                   'bg-blue-50 text-blue-700 hover:text-blue-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white' => Str::contains(
                        request()->url(),
                        'settings'
                    ),
-                   'hover:bg-blue-50 hover:text-blue-700' => !Str::contains(
+                   'hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-800 dark:hover:text-white' => !Str::contains(
                        request()->url(),
                        'settings'
                    ),
@@ -67,7 +67,7 @@
                 <span x-show="showTooltip"
                       x-transition
                       x-cloak
-                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded w-28 left-full">
+                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>

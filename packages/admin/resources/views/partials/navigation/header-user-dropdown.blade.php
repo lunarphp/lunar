@@ -5,11 +5,11 @@
     <div x-show="showUserMenu"
          x-transition
          x-cloak
-         class="absolute z-50 p-2 -mt-2 bg-white border border-gray-100 rounded-lg top-full right-4 w-36">
+         class="absolute z-50 p-2 -mt-2 bg-white border border-gray-100 rounded-lg dark:bg-gray-900 dark:border-gray-800 top-full right-4 w-36">
         <ul class="flex flex-col">
             <li>
                 <a href="{{ route('hub.account') }}"
-                   class="block p-2 text-sm font-medium text-gray-500 rounded hover:bg-gray-50">
+                   class="block p-2 text-sm font-medium text-gray-500 rounded dark:text-gray-400 dark:hover:bg-gray-800 hover:bg-gray-50">
                     {{ __('adminhub::account.view-profile') }}
                 </a>
             </li>
@@ -19,7 +19,7 @@
                       action="{{ route('hub.logout') }}">
                     @csrf
                     <button type="submit"
-                            class="flex items-center w-full gap-2 p-2 text-gray-500 rounded hover:bg-gray-50">
+                            class="flex items-center w-full gap-2 p-2 text-gray-500 rounded hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              class="w-4 h-4"
                              fill="none"
@@ -48,7 +48,7 @@
         <div class="hidden leading-none sm:block">
             <strong>
                 @livewire('hub.components.current-staff-name', [
-                    'class' => 'text-sm font-medium leading-none text-gray-900',
+                    'class' => 'text-sm font-medium leading-none text-gray-900 dark:text-white',
                 ])
             </strong>
 

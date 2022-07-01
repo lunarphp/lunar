@@ -4,7 +4,9 @@
     <div>
         <div class="grid items-center grid-cols-2 mb-6 md:mb-8">
             <div>
-                <strong class="text-xl font-bold md:text-2xl">{{ $title }}</strong>
+                <strong class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
+                    {{ $title }}
+                </strong>
             </div>
 
             <div class="relative space-y-1 text-right md:hidden"
