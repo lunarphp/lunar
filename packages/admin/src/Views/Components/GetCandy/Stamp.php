@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace GetCandy\Hub\Views\Components\GetCandy;
 
 use Illuminate\View\Component;
 
-class LoadingIndicator extends Component
+class Stamp extends Component
 {
-  /**
+    /**
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\View\View|\Closure|string
      */
     public function render()
     {
-        return view('adminhub::components.loading-indicator');
+        return view('adminhub::components.getcandy.stamp');
     }
 }
