@@ -1,19 +1,17 @@
 <div x-data="{
     messages: {{ json_encode($messages) }},
     level: '{{ $level }}',
-    remove(message) {
-        this.messages.splice(this.messages.indexOf(message), 1)
-    },
+    timeout: null,
 }"
-     {{-- x-init="messages.length ? setTimeout(() => { remove('{{ $messages[0] ?? null }}') }, 2500) : null" --}}
      x-on:notify.window="
-        let message = $event.detail.message;
-
-        level = $event.detail.level;
-
-        messages.push(message);
-        {{-- setTimeout(() => { remove(message) }, 2500) --}}
+        let message = $event.detail.message
+        level = $event.detail.level
+        messages.push(message)
     "
+     x-init="$watch('messages', () => {
+         clearTimeout(timeout)
+         timeout = setTimeout(() => messages.shift(), 2000)
+     })"
      class="fixed inset-0 z-50 flex flex-col items-center justify-end p-4 space-y-4 pointer-events-none sm:p-6 lg:items-end lg:justify-start">
     <template x-for="(message, messageIndex) in messages"
               :key="messageIndex"
