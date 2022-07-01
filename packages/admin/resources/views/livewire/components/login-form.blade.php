@@ -109,7 +109,7 @@
             <x-hub::loading-indicator class="w-5 h-5 mx-auto" />
         </div>
 
-        <div wire:loading.remove
+        <div wire:loading.delay.remove
              wire:target="login">
             <span>
                 {{ __('adminhub::auth.sign-in.btn') }}
