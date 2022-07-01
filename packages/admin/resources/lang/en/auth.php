@@ -39,5 +39,5 @@ return [
      */
     'sign-in.btn' => 'Sign in',
     'welcome' => 'Welcome to GetCandy',
-    'prompt' => 'Log in to administrate your e-commerce store.'
+    'prompt' => 'Log in to administrate your e-commerce store.',
 ];
