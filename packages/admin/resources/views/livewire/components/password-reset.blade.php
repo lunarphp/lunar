@@ -1,14 +1,25 @@
 <div>
     @if ($invalid)
-        <x-hub::alert level="danger">
-            {{ __('adminhub::auth.reset-password.invalid') }}
-        </x-hub::alert>
+        <div class="mt-8 space-y-4">
+            <div class="p-4 border border-red-100 rounded-md bg-red-50">
+                <div class="flex items-center gap-2">
+                    <span class="text-red-600 shrink-0">
+                        <x-hub::icon ref="x-circle"
+                                     style="solid" />
+                    </span>
 
-        <div class="mt-2 text-sm">
-            <a href="{{ route('hub.login') }}"
-               class="font-medium text-indigo-600 hover:text-indigo-500">
-                {{ __('adminhub::auth.reset-password.back_link') }}
-            </a>
+                    <strong class="text-sm font-medium text-red-600">
+                        {{ __('adminhub::auth.reset-password.invalid') }}
+                    </strong>
+                </div>
+            </div>
+
+            <p>
+                <a href="{{ route('hub.login') }}"
+                   class="text-blue-600 transition hover:text-blue-500">
+                    {{ __('adminhub::auth.reset-password.back_link') }}
+                </a>
+            </p>
         </div>
     @else
         <form method="POST"
