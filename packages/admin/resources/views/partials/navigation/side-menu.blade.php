@@ -1,6 +1,6 @@
 <div class="hidden lg:flex lg:flex-shrink-0">
     <div class="relative flex flex-col bg-white border-r border-gray-100 dark:bg-gray-900 dark:border-gray-800"
-         :class="{ 'w-48': showExpandedMenu, 'w-20': !showExpandedMenu }">
+         :class="{ 'w-64': showExpandedMenu, 'w-20': !showExpandedMenu }">
         <a href="{{ route('hub.index') }}"
            class="flex items-center w-full h-16 px-4">
             <img src="https://markmead.dev/gc-logo.svg"
