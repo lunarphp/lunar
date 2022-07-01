@@ -30,6 +30,7 @@ return [
     'reset-password.send_btn'   => 'Send reset email',
     'reset-password.update_btn' => 'Update password and login',
     'forgot-password.message'   => 'Forgot your password?',
+    'forgot-password.remember'  => 'Remember your password?',
     'forgot-password.link'      => 'Reset password',
     'follow-link.reset'         => 'Please follow this link to reset your password:',
     'click-here.reset'          => 'Click here to reset',
