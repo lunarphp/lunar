@@ -24,7 +24,7 @@
                    wire:model.defer="email"
                    placeholder="{{ __('adminhub::inputs.email') }}"
                    @class([
-                       'w-full py-3 pl-10 pr-3 text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
+                       'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
                        'border-red-600' => $errors->has('password'),
                        'border-gray-200 dark:border-gray-700' => !$errors->has('password'),
                    ]) />
@@ -59,7 +59,7 @@
                    wire:model.defer="password"
                    placeholder="{{ __('adminhub::inputs.password') }}"
                    @class([
-                       'w-full py-3 pl-10 pr-3 text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
+                       'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
                        'border-red-600' => $errors->has('password'),
                        'border-gray-200 dark:border-gray-700' => !$errors->has('password'),
                    ]) />
