@@ -4,7 +4,7 @@
             {{ __('adminhub::auth.reset-password.invalid') }}
         </x-hub::alert>
 
-        <div class="mt-2 text-sm ">
+        <div class="mt-2 text-sm">
             <a href="{{ route('hub.login') }}"
                class="font-medium text-indigo-600 hover:text-indigo-500">
                 {{ __('adminhub::auth.reset-password.back_link') }}
@@ -16,7 +16,7 @@
               class="mt-8 space-y-6">
             @csrf
 
-            @if (!$token)
+            @if ($token)
                 <div>
                     <label for="password"
                            class="sr-only">
@@ -114,8 +114,8 @@
                                placeholder="{{ __('adminhub::inputs.email') }}"
                                @class([
                                    'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
-                                   'border-red-600' => $errors->has('password'),
-                                   'border-gray-200 dark:border-gray-700' => !$errors->has('password'),
+                                   'border-red-600' => $errors->has('email'),
+                                   'border-gray-200 dark:border-gray-700' => !$errors->has('email'),
                                ]) />
                     </div>
 
