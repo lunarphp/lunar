@@ -88,7 +88,7 @@
     </div>
 
     @if (session()->has('error'))
-        <div class="p-4 bg-red-100 border border-red-200 rounded-md">
+        <div class="p-4 border border-red-100 rounde-md bg-red-50">
             <div class="flex items-center gap-2">
                 <span class="text-red-600 shrink-0">
                     <x-hub::icon ref="x-circle"
