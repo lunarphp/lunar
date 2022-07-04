@@ -319,7 +319,7 @@ class CalculateLineTest extends TestCase
         ]);
 
         Price::factory()->create([
-            'price'          => 912, //Know failing value
+            'price'          => 912, //Known failing value
             'currency_id'    => $currency->id,
             'tier'           => 1,
             'priceable_type' => get_class($purchasable),
