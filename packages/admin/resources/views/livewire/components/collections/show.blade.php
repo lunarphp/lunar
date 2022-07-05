@@ -103,7 +103,7 @@
                     @endif
 
                     <div wire:sort
-                         sort.options='{group: "products", method: "sortProducts"}'
+                         sort.options='{ group: "products", method: "sortProducts" }'
                          class="space-y-2">
                         @forelse($products as $product)
                             <div sort.item="products"
