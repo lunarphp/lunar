@@ -20,15 +20,15 @@
                        x-on:mouseleave="showTooltip = false">
                         {!! $item->renderIcon('w-5 h-5') !!}
 
-                        <span x-show="showExpandedMenu"
-                              x-cloak
+                        <span x-cloak
+                              x-show="showExpandedMenu"
                               class="text-sm font-medium">
                             {{ $item->name }}
                         </span>
 
-                        <span x-show="showTooltip"
+                        <span x-cloak
                               x-transition
-                              x-cloak
+                              x-show="showTooltip"
                               class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
                             {{ $item->name }}
                         </span>
@@ -52,15 +52,15 @@
                x-on:mouseleave="showTooltip = false">
                 {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-5 h-5') !!}
 
-                <span x-show="showExpandedMenu"
-                      x-cloak
+                <span x-cloak
+                      x-show="showExpandedMenu"
                       class="text-sm font-medium">
                     {{ __('adminhub::global.settings') }}
                 </span>
 
-                <span x-show="showTooltip"
+                <span x-cloak
                       x-transition
-                      x-cloak
+                      x-show="showTooltip"
                       class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
                     {{ __('adminhub::global.settings') }}
                 </span>

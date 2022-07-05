@@ -2,11 +2,11 @@
      x-on:mouseover="showUserMenu = true"
      x-on:mouseleave="showUserMenu = false"
      class="relative">
-    <div x-show="showUserMenu"
+    <div x-cloak
          x-transition
-         x-cloak
+         x-show="showUserMenu"
          class="absolute z-50 p-2 -mt-2 bg-white border border-gray-100 rounded-lg dark:bg-gray-900 dark:border-gray-800 top-full right-4 w-36">
-        <ul class="flex flex-col">
+        <ul>
             <li>
                 <a href="{{ route('hub.account') }}"
                    class="menu-link menu-link--inactive">
@@ -23,7 +23,7 @@
                     <button type="submit"
                             class="w-full menu-link menu-link--inactive">
                         <x-hub::icon ref="logout"
-                                     class="w-4 h-4" />
+                                     class="w-4 h-4 shrink-0" />
 
                         <span class="text-sm font-medium">
                             {{ __('adminhub::account.logout') }}
