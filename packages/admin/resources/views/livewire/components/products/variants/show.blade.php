@@ -168,7 +168,7 @@
              'lg:w-[calc(100vw_-_12rem)]': showExpandedMenu,
              'lg:w-[calc(100vw_-_5rem)]': !showExpandedMenu
          }">
-        <div class="flex justify-end space-x-6">
+        <div class="flex justify-end">
             <x-hub::button>Save Variant</x-hub::button>
         </div>
     </div>
