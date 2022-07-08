@@ -31,9 +31,9 @@
 
     <div>
         <header class="flex items-center justify-between">
-            <h3 class="font-bold text-gray-900 dark:text-white">
+            <header class="text-sm font-semibold text-gray-600">
                 {{ __('adminhub::catalogue.collections.sidemenu.menu_title') }}
-            </h3>
+            </header>
 
             <button type="button"
                     x-on:click="showGroupSlideover = false"
