@@ -15,7 +15,6 @@ class AddonsIndex extends Component
     {
         return view('adminhub::livewire.pages.settings.addons.index')
             ->layout('adminhub::layouts.settings', [
-                'title' => 'Addons',
                 'menu' => 'settings',
             ]);
     }

@@ -15,7 +15,6 @@ class ActivityLogIndex extends Component
     {
         return view('adminhub::livewire.pages.settings.activity-log.index')
             ->layout('adminhub::layouts.settings', [
-                'title' => 'Activity Log',
                 'menu' => 'settings',
             ]);
     }

@@ -15,7 +15,6 @@ class StaffIndex extends Component
     {
         return view('adminhub::livewire.pages.settings.staff.index')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.staff.index.title'),
                 'menu' => 'settings',
             ]);
     }

@@ -1,4 +1,4 @@
-<div class="flex-col space-y-4">
+<div class="space-y-4">
     <div class="overflow-hidden shadow sm:rounded-md">
         <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
             <x-hub::input.group :label="__('adminhub::inputs.name')"

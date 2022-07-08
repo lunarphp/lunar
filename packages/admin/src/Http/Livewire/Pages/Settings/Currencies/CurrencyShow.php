@@ -23,7 +23,6 @@ class CurrencyShow extends Component
     {
         return view('adminhub::livewire.pages.settings.currencies.show')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.currencies.show.title'),
                 'menu' => 'settings',
             ]);
     }

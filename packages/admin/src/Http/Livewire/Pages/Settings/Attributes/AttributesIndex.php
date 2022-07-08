@@ -15,7 +15,6 @@ class AttributesIndex extends Component
     {
         return view('adminhub::livewire.pages.settings.attributes.index')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.attributes.index.title'),
                 'menu' => 'settings',
             ]);
     }
