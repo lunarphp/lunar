@@ -146,6 +146,10 @@ class AdminHubServiceProvider extends ServiceProvider
                 ], 'getcandy');
             });
 
+            $this->publishes([
+                __DIR__.'/../database/migrations/' => database_path('migrations')
+            ], 'getcandy-migrations');
+
             $this->commands([
                 InstallHub::class,
             ]);
