@@ -26,6 +26,22 @@ class SettingsMenu
     {
         $slot = Menu::slot('settings');
 
+        $storefrontSection = $slot->section('storefront')->name(
+            'Storefront'
+        );
+
+        // $customerSection = $slot->section('customers')->name(
+        //     'Customer Reports'
+        // );
+
+        $storefrontSection->addItem(function ($item) {
+            $item->name('Addons')
+                ->handle('hub.addons')
+                ->route('hub.addons.index')
+                ->gate('settings:core')
+                ->icon('puzzle');
+        });
+
         $slot->addItem(function ($item) {
             $item->name('Staff')
                 ->handle('hub.staff')
@@ -72,14 +88,6 @@ class SettingsMenu
                 ->route('hub.tags.index')
                 ->gate('settings:core')
                 ->icon('tag');
-        });
-
-        $slot->addItem(function ($item) {
-            $item->name('Addons')
-                ->handle('hub.addons')
-                ->route('hub.addons.index')
-                ->gate('settings:core')
-                ->icon('puzzle');
         });
 
         $slot->addItem(function ($item) {
