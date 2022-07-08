@@ -162,7 +162,6 @@ class Cart extends BaseModel
         return $this->belongsTo(Order::class);
     }
 
-
     /**
      * Return the cart manager.
      *
