@@ -35,14 +35,6 @@ class SettingsMenu
         );
 
         $storeSection->addItem(function ($item) {
-            $item->name('Addons')
-                ->handle('hub.addons')
-                ->route('hub.addons.index')
-                ->gate('settings:core')
-                ->icon('puzzle');
-        });
-
-        $storeSection->addItem(function ($item) {
             $item->name('Attributes')
                 ->handle('hub.attributes')
                 ->route('hub.attributes.index')
@@ -83,19 +75,27 @@ class SettingsMenu
         });
 
         $adminSection->addItem(function ($item) {
-            $item->name('Staff')
-                ->handle('hub.staff')
-                ->route('hub.staff.index')
-                ->gate('settings:manage-staff')
-                ->icon('identification');
-        });
-
-        $adminSection->addItem(function ($item) {
             $item->name('Activity Log')
                 ->handle('hub.activity-log')
                 ->route('hub.activity-log.index')
                 ->gate('settings')
                 ->icon('clipboard-list');
+        });
+
+        $adminSection->addItem(function ($item) {
+            $item->name('Addons')
+                ->handle('hub.addons')
+                ->route('hub.addons.index')
+                ->gate('settings:core')
+                ->icon('puzzle');
+        });
+
+        $adminSection->addItem(function ($item) {
+            $item->name('Staff')
+                ->handle('hub.staff')
+                ->route('hub.staff.index')
+                ->gate('settings:manage-staff')
+                ->icon('identification');
         });
 
         return $this;

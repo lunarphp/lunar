@@ -4,7 +4,7 @@
         <div class="space-y-4">
             @forelse ($component->sections as $section)
                 <div>
-                    <header class="text-sm font-semibold tracking-wide text-gray-500">
+                    <header class="text-sm font-semibold text-gray-600">
                         {{ $section->name }}
                     </header>
 
