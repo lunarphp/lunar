@@ -30,6 +30,84 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+## 2.0-beta14
+
+### Removal of Saved Carts - Medium Impact
+
+Saved Carts have now been removed as they aren't a nessicity to the function of a storefront. 
+If you currently use this feature, you will need to either publish the migrations before updating or add the migration to your own app:
+
+```php
+<?php
+
+use GetCandy\Base\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSavedCartsTable extends Migration
+{
+    public function up()
+    {
+        $table = $this->prefix.'saved_carts';
+        
+        if (!Schema::hasTable($table)) {
+            Schema::create($table, function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->foreignId('cart_id')->nullable()->constrained($this->prefix.'carts');
+                $table->string('name');
+                $table->timestamps();
+            });
+        }
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists($this->prefix.'saved_carts');
+    }
+}
+```
+
+Next you should create a `SavedCart` model.
+
+```php
+<?php
+
+namespace App\Models;
+
+use GetCandy\Base\BaseModel;
+use GetCandy\Models\Cart;
+
+class SavedCart extends BaseModel
+{
+    /**
+     * Define which attributes should be
+     * protected from mass assignment.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
+     * Return the cart relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
+}
+```
+
+Finally, you will need to define a dynamic relationship if your service provider.
+
+```php
+
+\GetCandy\Models\Cart::resolveRelationshipUsing('savedCart', function ($cartModel) {
+    return $cartModel->hasOne(SavedCart::class);
+});
+```
+
 ## 2.0-beta13.2
 
 ### Changes to modifiers - High Impact
