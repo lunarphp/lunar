@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Migrations are now publishable under the tag `getcandy-migrations`
 
+### Changed
+
+- Saved carts have been removed from the core
+
 ## 2.0-beta13 - 2022-05-19
 
 ### Added
