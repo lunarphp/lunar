@@ -34,7 +34,7 @@ php artisan getcandy:meilisearch:setup
 
 ### Removal of Saved Carts - Medium Impact
 
-Saved Carts have now been removed as they aren't a nessicity to the function of a storefront. 
+Saved Carts have now been removed as they aren't a necessity to the function of a storefront.
 If you currently use this feature, you will need to either publish the migrations before updating or add the migration to your own app:
 
 ```php
@@ -49,7 +49,7 @@ class CreateSavedCartsTable extends Migration
     public function up()
     {
         $table = $this->prefix.'saved_carts';
-        
+
         if (!Schema::hasTable($table)) {
             Schema::create($table, function (Blueprint $table) {
                 $table->bigIncrements('id');
