@@ -34,7 +34,7 @@ php artisan getcandy:meilisearch:setup
 
 ### Removal of Macro functionality from BaseModel - Low Impact
 
-If you have custom models that extend the GetCandy `BaseModel` you will need to implement the new `HasMacros` trait.
+If you have custom models that extend the GetCandy `BaseModel` and are using macros, you will need to implement the new `HasMacros` trait.
 
 ```php
 <?php
