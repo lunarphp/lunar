@@ -21,8 +21,8 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     use HasFactory;
     use HasMedia;
     use HasPrices;
-    use HasDimensions;
     use LogsActivity;
+    use HasDimensions;
     use HasTranslations;
     use HasMacros;
 
@@ -175,12 +175,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
             return $variantThumbnail->getUrl('small');
         }
 
-        if (! $this->product) {
-            dD($this);
-        }
-        // dd($this->product);
-
-        if ($thumbnail = $this->product->thumbnail) {
+        if ($thumbnail = $this->product?->thumbnail) {
             return $thumbnail->getUrl();
         }
 
