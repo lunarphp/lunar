@@ -2,11 +2,16 @@
 
 namespace GetCandy\Tests\Unit\Base;
 
+use GetCandy\Base\AttributeManifest;
+use GetCandy\Base\AttributeManifestInterface;
+use GetCandy\Models\Channel;
 use GetCandy\Models\Collection as ModelsCollection;
 use GetCandy\Models\Product;
 use GetCandy\Models\Url;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 
 /**
  * @group models.base
@@ -27,15 +32,24 @@ class BaseModelTest extends TestCase
         $this->assertEquals('bar', $product->foo());
     }
 
+
     /** @test */
     public function macros_are_scoped_to_the_correct_model()
     {
+        Route::get('/products/{slug}', function () {
+            return '';
+        })->name('test.products');
+
+        Route::get('/collections/{slug}', function () {
+            return '';
+        })->name('test.collections');
+
         Product::macro('getPermalink', function () {
-            return $this->defaultUrl->slug;
+            return route('test.products', $this->defaultUrl->slug);
         });
 
         ModelsCollection::macro('getPermalink', function () {
-            return $this->defaultUrl->slug;
+            return route('test.collections', $this->defaultUrl->slug);
         });
 
         $product = Product::factory()->create();
@@ -56,8 +70,14 @@ class BaseModelTest extends TestCase
             ])->toArray()
         );
 
-        $this->assertEquals('foo-product', $product->getPermalink());
+        $this->assertEquals(
+            route('test.products', $product->defaultUrl->slug),
+            $product->getPermalink()
+        );
 
-        $this->assertEquals('foo-collection', $collection->getPermalink());
+        $this->assertEquals(
+            route('test.collections', $collection->defaultUrl->slug),
+            $collection->getPermalink()
+        );
     }
 }
