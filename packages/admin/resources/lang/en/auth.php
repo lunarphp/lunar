@@ -29,7 +29,9 @@ return [
     'reset-password.back_link'  => 'Back to login',
     'reset-password.send_btn'   => 'Send reset email',
     'reset-password.update_btn' => 'Update password and login',
-    'forgot-password.link'      => 'Forgot your password?',
+    'forgot-password.message'   => 'Forgot your password?',
+    'forgot-password.remember'  => 'Remember your password?',
+    'forgot-password.link'      => 'Reset password',
     'follow-link.reset'         => 'Please follow this link to reset your password:',
     'click-here.reset'          => 'Click here to reset',
     'reset-link.not_working'    => 'Link not working? Copy this into your browser',
@@ -37,5 +39,6 @@ return [
      * Login.
      */
     'sign-in.btn' => 'Sign in',
-    'welcome' => 'Welcome to the Hub.',
+    'welcome' => 'Welcome to GetCandy',
+    'prompt' => 'Log in to administrate your e-commerce store.',
 ];
