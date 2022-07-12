@@ -19,7 +19,7 @@
                 </div>
             @endif
 
-            <div class="flex items-center space-x-2 text-xs text-gray-700">
+            <div class="flex items-center space-x-2">
                 @include('adminhub::partials.orders.actions')
             </div>
 
@@ -94,7 +94,9 @@
                     {{ __('adminhub::components.orders.show.timeline_header') }}
                 </header>
 
-                @include('adminhub::partials.orders.timeline')
+                @livewire('hub.components.activity-log-feed', [
+                    'subject' => $this->order,
+                ])
             </div>
         </div>
 
