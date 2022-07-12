@@ -33,7 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.js" integrity="sha512-Fc8SDJVBwajCGX0A9z8lBeRPaCjR25Ek577z9PtQLB7CLBz7Mw1XhjbcD2yDWrGszL/uezKGidtGCng6Fhz3+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @livewireStyles
   </head>
-  <body>
+  <body class="antialiased">
     {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
     <!--
       This example requires Tailwind CSS v2.0+
