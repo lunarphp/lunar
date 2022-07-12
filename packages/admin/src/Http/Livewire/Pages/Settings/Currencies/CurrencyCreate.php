@@ -15,7 +15,7 @@ class CurrencyCreate extends Component
     {
         return view('adminhub::livewire.pages.settings.currencies.create')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.currencies.create.title'),
+                'menu' => 'settings',
             ]);
     }
 }

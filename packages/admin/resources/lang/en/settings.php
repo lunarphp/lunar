@@ -4,8 +4,17 @@ return [
     /**
      * Channels.
      */
-    'channels.index.create_btn'            => 'Create Channel',
+    'channels.index.title'                 => 'Channels',
+    'channels.index.create_btn'            => 'Create channel',
     'channels.index.table_row_action_text' => 'Edit channel',
+    /**
+     * Channels show page.
+     */
+    'channels.show.title' => 'Edit Channel',
+    /**
+     * Channels create page.
+     */
+    'channels.create.title' => 'Create Channel',
     /**
      * Settings layout.
      */
@@ -17,11 +26,16 @@ return [
     'staff.index.search_placeholder'    => 'Search staff',
     'staff.index.active_filter'         => 'Show Inactive',
     'staff.index.create_btn'            => 'Add Staff',
-    'staff.index.table_row_action_text' => 'Edit',
+    'staff.index.table_row_action_text' => 'Edit staff',
     /**
      * Staff show page.
      */
+    'staff.show.title' => 'Edit Staff',
     'staff.show.delete_btn' => 'Deactivate account',
+    /**
+     * Staff create page.
+     */
+    'staff.create.title' => 'Create Staff',
     /**
      * Staff form.
      */
@@ -34,15 +48,20 @@ return [
     'staff.form.danger_zone.instructions' => 'Enter the staff members email address to confirm removal.',
     'staff.form.danger_zone.own_account'  => 'Removing your own account will instantly log you out.',
     /**
-     * Addons.
+     * Addons listing page.
      */
+    'addons.index.title' => 'Addons',
     'addons.index.table_row_action_text' => 'View',
+    /**
+     * Addons show page.
+     */
+    'addons.show.title' => 'Addon',
     /*
      * Languages listing page.
      */
     'languages.index.title'                 => 'Languages',
     'languages.index.create_btn'            => 'Create Language',
-    'languages.index.table_row_action_text' => 'Edit',
+    'languages.index.table_row_action_text' => 'Edit language',
     /**
      * Languages create page.
      */
@@ -70,7 +89,7 @@ return [
     /**
      * Currency create page.
      */
-    'currencies.create.title' => 'Edit Currency',
+    'currencies.create.title' => 'Create Currency',
     'currencies.index.create_currency_btn' => 'Create Currency',
     /**
      * Currency form.
@@ -106,4 +125,8 @@ return [
     'tags.form.update_btn'             => 'Update Tag',
     'tags.form.create_btn'             => 'Create Tag',
     'tags.form.notify.updated'         => 'Tag updated',
+    /**
+     * Activity log page.
+     */
+    'activity_log.index.title' => 'Activity Log',
 ];
