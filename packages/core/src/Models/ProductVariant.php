@@ -9,6 +9,7 @@ use GetCandy\Base\Traits\HasDimensions;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasPrices;
 use GetCandy\Base\Traits\HasTranslations;
+use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\ProductVariantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
@@ -20,6 +21,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     use HasMedia;
     use HasPrices;
     use HasDimensions;
+    use LogsActivity;
     use HasTranslations;
 
     /**
