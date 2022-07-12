@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
+use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
 use GetCandy\Models\Channel;
@@ -13,7 +14,7 @@ use Livewire\Component;
 
 class OrderShow extends Component
 {
-    use Notifies, WithCountries;
+    use Notifies, WithCountries, HasSlots;
 
     /**
      * The current order in view.
@@ -102,11 +103,17 @@ class OrderShow extends Component
     /**
      * {@inheritDoc}
      */
-    protected $listeners = [
-        'captureSuccess',
-        'refundSuccess',
-        'cancelRefund',
-    ];
+    protected function getListeners()
+    {
+        return array_merge(
+            [
+                'captureSuccess',
+                'refundSuccess',
+                'cancelRefund',
+            ],
+            $this->getHasSlotsListeners()
+        );
+    }
 
     /**
      * {@inheritDoc}
@@ -548,5 +555,25 @@ class OrderShow extends Component
     {
         return view('adminhub::livewire.components.orders.show')
             ->layout('adminhub::layouts.base');
+    }
+
+    /**
+     * Returns the model which has slots associated.
+     *
+     * @return \GetCandy\Models\Order
+     */
+    protected function getSlotModel()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Returns the contexts for any slots.
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['order.all', 'order.show'];
     }
 }

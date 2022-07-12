@@ -114,6 +114,12 @@
         </header>
       @endif
 
+      @foreach($this->getSlotsByPosition('top') as $slot)
+       <div id="{{ $slot->handle }}">
+        <div>@livewire($slot->component, ['slotModel' => $order], key("top-slot-{{ $slot->handle }}"))</div>
+       </div>
+      @endforeach
+
       <section class="bg-white rounded-lg shadow">
         @include('adminhub::partials.orders.details')
       </section>
@@ -162,6 +168,12 @@
           @endforeach
         </dl>
       </section>
+
+      @foreach($this->getSlotsByPosition('bottom') as $slot)
+       <div id="{{ $slot->handle }}">
+        <div>@livewire($slot->component, ['slotModel' => $order], key("bottom-slot-{{ $slot->handle }}"))</div>
+       </div>
+      @endforeach
     </div>
 
     <x-hub::modal.dialog form="updateStatus" wire:model="showUpdateStatus">
