@@ -3,12 +3,14 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Database\Factories\TaxRateAmountFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxRateAmount extends BaseModel
 {
     use HasFactory;
+    use HasMacros;
 
     /**
      * The tax rate amount.

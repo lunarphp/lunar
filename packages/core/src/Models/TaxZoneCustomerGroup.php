@@ -3,12 +3,14 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Database\Factories\TaxZoneCustomerGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxZoneCustomerGroup extends BaseModel
 {
     use HasFactory;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

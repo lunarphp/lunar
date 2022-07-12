@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\Addressable;
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasPersonalDetails;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\OrderAddressFactory;
@@ -14,6 +15,7 @@ class OrderAddress extends BaseModel implements Addressable
     use HasFactory;
     use LogsActivity;
     use HasPersonalDetails;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

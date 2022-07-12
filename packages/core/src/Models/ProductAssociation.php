@@ -3,6 +3,7 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Database\Factories\ProductAssociationFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,6 +13,7 @@ class ProductAssociation extends BaseModel
 {
     use HasFactory;
     use HasMedia;
+    use HasMacros;
 
     /**
      * Define the cross sell type.
