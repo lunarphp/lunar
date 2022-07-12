@@ -157,5 +157,3 @@
         </form>
     @endif
 </div>
-
-<x-hub::notification />
