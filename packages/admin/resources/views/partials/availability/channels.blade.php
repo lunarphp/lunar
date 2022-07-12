@@ -43,7 +43,7 @@
             >
               <div class="flex">
                 <div class="w-full mr-4">
-                  <x-hub::input.datepicker id="starts_at" wire:model="availability.channels.{{ $channel->id }}.starts_at" :enable-time="true"/>
+                  <x-hub::input.datepicker id="starts_at" wire:model="availability.channels.{{ $channel->id }}.starts_at" :options="[ 'enableTime' => true ]"/>
                 </div>
                 @if($availability['channels'][$channel->id]['starts_at'])
                 <button
@@ -62,7 +62,7 @@
             >
               <div class="flex">
                 <div class="w-full mr-4">
-                  <x-hub::input.datepicker id="ends_at" wire:model="availability.channels.{{ $channel->id }}.ends_at" :enable-time="true"/>
+                  <x-hub::input.datepicker id="ends_at" wire:model="availability.channels.{{ $channel->id }}.ends_at" :options="[ 'enableTime' => true ]"/>
                 </div>
                 @if($availability['channels'][$channel->id]['ends_at'])
                 <button
