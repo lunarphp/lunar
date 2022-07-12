@@ -6,6 +6,7 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasChannels;
 use GetCandy\Base\Traits\HasCustomerGroups;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTags;
 use GetCandy\Base\Traits\HasTranslations;
@@ -21,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
-use GetCandy\Base\Traits\HasMacros;
 
 class Product extends BaseModel implements SpatieHasMedia
 {
