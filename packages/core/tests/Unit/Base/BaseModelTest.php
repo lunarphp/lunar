@@ -2,15 +2,11 @@
 
 namespace GetCandy\Tests\Unit\Base;
 
-use GetCandy\Base\AttributeManifest;
-use GetCandy\Base\AttributeManifestInterface;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Collection as ModelsCollection;
 use GetCandy\Models\Product;
 use GetCandy\Models\Url;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -31,7 +27,6 @@ class BaseModelTest extends TestCase
 
         $this->assertEquals('bar', $product->foo());
     }
-
 
     /** @test */
     public function macros_are_scoped_to_the_correct_model()
