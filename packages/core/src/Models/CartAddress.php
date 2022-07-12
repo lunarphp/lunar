@@ -5,6 +5,7 @@ namespace GetCandy\Models;
 use GetCandy\Base\Addressable;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\DataTransferObjects\TaxBreakdown;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartAddressFactory;
 use GetCandy\DataTypes\Price;
@@ -15,6 +16,7 @@ class CartAddress extends BaseModel implements Addressable
 {
     use HasFactory;
     use LogsActivity;
+    use HasMacros;
 
     /**
      * The applied shipping option.

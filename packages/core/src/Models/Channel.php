@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasDefaultRecord;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\ChannelFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,7 @@ class Channel extends BaseModel
     use SoftDeletes;
     use LogsActivity;
     use HasDefaultRecord;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

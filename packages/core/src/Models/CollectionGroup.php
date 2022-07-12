@@ -3,12 +3,14 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Database\Factories\CollectionGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CollectionGroup extends BaseModel
 {
     use HasFactory;
+    use HasMacros;
 
     protected $guarded = [];
 

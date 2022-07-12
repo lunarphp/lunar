@@ -32,6 +32,26 @@ php artisan getcandy:meilisearch:setup
 
 ## 2.0-beta14
 
+### Removal of Macro functionality from BaseModel - Low Impact
+
+If you have custom models that extend the GetCandy `BaseModel` and are using macros, you will need to implement the new `HasMacros` trait.
+
+```php
+<?php
+
+namespace App\Models;
+
+use GetCandy\Base\Traits\HasMacros;
+use GetCandy\Base\BaseModel;
+
+class CustomModel extends BaseModel
+{
+    use HasMacros;
+
+    // ...
+}
+```
+
 ### Removal of Saved Carts - Medium Impact
 
 Saved Carts have now been removed as they aren't a necessity to the function of a storefront.

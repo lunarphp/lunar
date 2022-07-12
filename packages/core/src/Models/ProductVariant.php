@@ -6,6 +6,7 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\Traits\HasDimensions;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasPrices;
 use GetCandy\Base\Traits\HasTranslations;
@@ -21,6 +22,7 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     use HasPrices;
     use HasDimensions;
     use HasTranslations;
+    use HasMacros;
 
     /**
      * Define the guarded attributes.
