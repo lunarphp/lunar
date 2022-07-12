@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
+use GetCandy\Base\Traits\HasMacros;
 
 class Product extends BaseModel implements SpatieHasMedia
 {
@@ -34,6 +35,7 @@ class Product extends BaseModel implements SpatieHasMedia
     use HasUrls;
     use Searchable;
     use SoftDeletes;
+    use HasMacros;
 
     /**
      * Define our base filterable attributes.

@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasDefaultRecord;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CurrencyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,8 @@ class Currency extends BaseModel
     use HasFactory;
     use LogsActivity;
     use HasDefaultRecord;
+    use HasMacros;
+
     /**
      * Define which attributes should be
      * protected from mass assignment.

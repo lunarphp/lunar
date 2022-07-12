@@ -3,10 +3,13 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserPermission extends BaseModel
 {
+    use HasMacros;
+
     protected $fillable = ['handle'];
 
     /**
