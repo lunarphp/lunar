@@ -2,15 +2,11 @@
 
 namespace GetCandy\Tests\Unit\Base;
 
-use GetCandy\Base\AttributeManifest;
-use GetCandy\Base\AttributeManifestInterface;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Collection as ModelsCollection;
 use GetCandy\Models\Product;
 use GetCandy\Models\Url;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 /**
  * @group models.base
