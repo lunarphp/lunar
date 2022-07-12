@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - The activity log timeline is now extendable.
 
+## Added
+
+- Added current and purchase stock level to order lines
+
 ### 2.0-beta13.2 - 2022-06-23
 
 ## Fixed
