@@ -5,8 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### [Unreleased]
 
-## Added
+### Added
 
+- Migrations are now publishable under the tag `getcandy-migrations`
 - Added current and purchase stock level to order lines
 
 ### 2.0-beta13.2 - 2022-06-23
