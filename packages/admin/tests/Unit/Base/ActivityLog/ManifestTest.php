@@ -2,8 +2,6 @@
 
 namespace GetCandy\Hub\Tests\Unit\Base\ActivityLog;
 
-use GetCandy\Hub\Menu\MenuRegistry;
-use GetCandy\Hub\Menu\MenuSlot;
 use GetCandy\Hub\Facades\ActivityLog;
 use GetCandy\Hub\Tests\Stubs\ActivityLogRenderer;
 use GetCandy\Hub\Tests\TestCase;
