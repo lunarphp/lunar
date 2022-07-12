@@ -144,6 +144,12 @@ GetCandy assumes your User ID field is a "BIGINT". If you are using an "INT" or 
 
 As you'd expect, there's quite a few tables GetCandy needs to function, so run the migrations now.
 
+You can optionally publish these migrations so they're added to your Laravel app.
+
+```sh
+php artisan vendor:publish --tag=getcandy-migrations
+```
+
 ```sh
 php artisan migrate
 ```
