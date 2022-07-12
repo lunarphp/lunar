@@ -131,7 +131,7 @@
             'count' => $line->purchasable->stock
           ])}}
         </span>
-        @if(!is_null($line->meta?->stock_level))
+        @if(!is_null($line->meta?->stock_level ?? null))
           ({{ __('adminhub::partials.orders.lines.purchase_stock_level', [
             'count' => $line->meta->stock_level
           ])}})
