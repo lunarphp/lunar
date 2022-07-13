@@ -61,6 +61,8 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxesShow;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
@@ -334,6 +336,10 @@ class AdminHubServiceProvider extends ServiceProvider
         // Addons
         Livewire::component('hub.components.settings.addons.index', AddonsIndex::class);
         Livewire::component('hub.components.settings.addons.show', AddonShow::class);
+
+        // Taxes
+        Livewire::component('hub.components.settings.taxes.index', TaxesIndex::class);
+        Livewire::component('hub.components.settings.taxes.show', TaxesShow::class);
     }
 
     /**

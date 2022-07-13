@@ -129,4 +129,10 @@ return [
      * Activity log page.
      */
     'activity_log.index.title' => 'Activity Log',
+
+    /**
+     * Taxes
+     */
+    'taxes.index.title'             => 'Taxes',
+    'taxes.index.table_row_action_text' => 'Manage',
 ];

@@ -1,5 +1,6 @@
 <?php
 
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxesShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
@@ -19,6 +20,7 @@ use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagsIndex;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxesIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -106,3 +108,18 @@ Route::group([
     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
 });
+
+/**
+ * Taxes
+ */
+
+ Route::group([
+     'middleware' => 'can:settings:core',
+     'prefix'     => 'taxes',
+ ], function () {
+     Route::get('/', TaxesIndex::class)->name('hub.taxes.index');
+
+     Route::get('{taxZone}', TaxesShow::class)->name('hub.taxes.show');
+     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
+     // Route::get('tags/{tag}', TagShow::class)->name('hub.taxes.show');
+ });
