@@ -1,5 +1,5 @@
 <nav class="flex space-x-4" aria-label="Tabs">
-  <a href="#"
+  <a href="{{ route('hub.taxes.index') }}"
     @class([
       'px-3 py-2 text-sm font-medium rounded-md' => true,
       'bg-white shadow' => request()->route()->getName() == 'hub.taxes.index',
