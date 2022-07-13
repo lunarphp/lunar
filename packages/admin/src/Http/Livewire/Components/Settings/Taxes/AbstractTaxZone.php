@@ -9,8 +9,8 @@ use GetCandy\Models\State;
 use GetCandy\Models\TaxClass;
 use GetCandy\Models\TaxRate;
 use GetCandy\Models\TaxRateAmount;
-use Illuminate\Support\Facades\DB;
 use GetCandy\Models\TaxZone;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -19,7 +19,7 @@ abstract class AbstractTaxZone extends Component
     use WithPagination, Notifies;
 
     /**
-     * The instance of the Tax Zone
+     * The instance of the Tax Zone.
      *
      * @var TaxZone
      */
@@ -77,17 +77,17 @@ abstract class AbstractTaxZone extends Component
     public function rules()
     {
         return [
-          'taxZone.name' => 'required',
-          'taxZone.zone_type' => 'required',
-          'postcodes' => 'nullable|string|required_if:taxZone.zone_type,postcodes',
-          'country' => 'nullable|string|required_if:taxZone.zone_type,postcodes,taxZone.zone_type,states',
-          'selectedCountries' => 'array|required_if:taxZone.zone_type,countries',
-          'selectedStates' => 'array|required_if:taxZone.zone_type,states',
-          'taxRates' => 'array',
-          'taxRates.*.name' => 'string',
-          // 'taxRateAmounts' => 'array',
-          // 'taxRateAmounts.*.percentage' => 'numeric',
-          // 'taxRateAmounts.*.tax_class_id' => 'required',
+            'taxZone.name' => 'required',
+            'taxZone.zone_type' => 'required',
+            'postcodes' => 'nullable|string|required_if:taxZone.zone_type,postcodes',
+            'country' => 'nullable|string|required_if:taxZone.zone_type,postcodes,taxZone.zone_type,states',
+            'selectedCountries' => 'array|required_if:taxZone.zone_type,countries',
+            'selectedStates' => 'array|required_if:taxZone.zone_type,states',
+            'taxRates' => 'array',
+            'taxRates.*.name' => 'string',
+            // 'taxRateAmounts' => 'array',
+            // 'taxRateAmounts.*.percentage' => 'numeric',
+            // 'taxRateAmounts.*.tax_class_id' => 'required',
         ];
     }
 
@@ -99,7 +99,6 @@ abstract class AbstractTaxZone extends Component
      * @return void
      */
     abstract public function save();
-
 
     public function getCustomerGroupsProperty()
     {
@@ -187,6 +186,7 @@ abstract class AbstractTaxZone extends Component
                     $amount = $taxRate->taxRateAmounts->first(function ($amount) use ($taxClass) {
                         return $amount->tax_class_id == $taxClass->id;
                     });
+
                     return [
                         'id' => $amount?->id,
                         'tax_class_id' => $taxClass->id,
@@ -199,10 +199,9 @@ abstract class AbstractTaxZone extends Component
     }
 
     /**
-     * Sync countries for the TaxZone
+     * Sync countries for the TaxZone.
      *
-     * @param array $selectedStates
-     *
+     * @param  array  $selectedStates
      * @return void
      */
     protected function syncCountries(array $selectedCountries)
@@ -216,8 +215,8 @@ abstract class AbstractTaxZone extends Component
             });
 
         $this->taxZone->countries()->createMany(
-            $countriesToAssign->map(fn($countryId) => [
-                'country_id' => $countryId
+            $countriesToAssign->map(fn ($countryId) => [
+                'country_id' => $countryId,
             ])
         );
 
@@ -227,10 +226,9 @@ abstract class AbstractTaxZone extends Component
     }
 
     /**
-     * Sync states for the TaxZone
+     * Sync states for the TaxZone.
      *
-     * @param array $selectedStates
-     *
+     * @param  array  $selectedStates
      * @return void
      */
     protected function syncStates(array $selectedStates)
@@ -243,10 +241,9 @@ abstract class AbstractTaxZone extends Component
                 return $existingStates->contains($stateId);
             });
 
-
         $this->taxZone->states()->createMany(
-            $statesToAssign->map(fn($stateId) => [
-                'state_id' => $stateId
+            $statesToAssign->map(fn ($stateId) => [
+                'state_id' => $stateId,
             ])
         );
 
@@ -277,7 +274,7 @@ abstract class AbstractTaxZone extends Component
                 $this->selectedStates = [];
             } else {
                 $this->syncCountries([
-                    $this->country
+                    $this->country,
                 ]);
 
                 $this->syncStates(

@@ -2,8 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Models\TaxClass;
-
 class TaxZoneShow extends AbstractTaxZone
 {
     /**
