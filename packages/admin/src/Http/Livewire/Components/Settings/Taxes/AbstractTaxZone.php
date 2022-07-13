@@ -8,6 +8,7 @@ use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\State;
 use GetCandy\Models\TaxClass;
 use GetCandy\Models\TaxRate;
+use Illuminate\Support\Facades\DB;
 use GetCandy\Models\TaxZone;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -115,18 +116,11 @@ abstract class AbstractTaxZone extends Component
     }
 
     /**
-     * Save the ShippingZone.
+     * Save the TaxZone.
      *
      * @return void
      */
-    public function save()
-    {
-        // $this->taxZone->save();
-
-        // $this->saveDetails();
-
-        $this->notify('Shipping Zone updated');
-    }
+    abstract public function save();
 
 
     public function getCustomerGroupsProperty()
@@ -175,5 +169,108 @@ abstract class AbstractTaxZone extends Component
     public function getZoneStatesProperty()
     {
         return State::whereIn('id', $this->selectedStates)->get();
+    }
+
+    protected function syncCountries(array $selectedCountries)
+    {
+        $existingCountries = $this->taxZone->countries()->pluck('country_id');
+
+        // Countries to assign
+        $countriesToAssign = collect($selectedCountries)
+            ->reject(function ($countryId) use ($existingCountries) {
+                return $existingCountries->contains($countryId);
+            });
+
+        $this->taxZone->countries()->createMany(
+            $countriesToAssign->map(fn($countryId) => [
+                'country_id' => $countryId
+            ])
+        );
+
+        $this->taxZone->countries()
+            ->whereNotIn('country_id', $selectedCountries)
+            ->delete();
+    }
+
+    protected function syncStates(array $selectedStates)
+    {
+        $existingStates = $this->taxZone->states()->pluck('state_id');
+
+        // States to assign
+        $statesToAssign = collect($selectedStates)
+            ->reject(function ($stateId) use ($existingStates) {
+                return $existingStates->contains($stateId);
+            });
+
+
+        $this->taxZone->states()->createMany(
+            $statesToAssign->map(fn($stateId) => [
+                'state_id' => $stateId
+            ])
+        );
+
+        $this->taxZone->states()
+            ->whereNotIn('state_id', $selectedStates)
+            ->delete();
+    }
+
+    /**
+     * Save common details across new and existing zones.
+     *
+     * @return void
+     */
+    public function saveDetails()
+    {
+        DB::transaction(function () {
+            if ($this->taxZone->zone_type != 'country') {
+                $this->taxZone->countries()->delete();
+                $this->selectedCountries = [];
+            } else {
+                $this->syncCountries(
+                    $this->selectedCountries
+                );
+            }
+
+            if ($this->taxZone->zone_type != 'states') {
+                $this->taxZone->states()->delete();
+                $this->selectedStates = [];
+            } else {
+                $this->syncCountries([
+                    $this->country
+                ]);
+
+                $this->syncStates(
+                    $this->selectedStates
+                );
+            }
+
+            if ($this->taxZone->zone_type == 'postcodes') {
+                $this->syncCountries(
+                    [$this->country]
+                );
+
+                $postcodes = collect(
+                    explode(
+                        "\n",
+                        str_replace(' ', '', $this->postcodes)
+                    )
+                )->unique()->filter();
+
+                $existing = $this->taxZone->postcodes()->delete();
+
+                $this->taxZone->postcodes()->createMany(
+                    $postcodes->map(function ($postcode) {
+                        return [
+                            'country_id' => $this->country,
+                            'postcode' => $postcode,
+                        ];
+                    })
+                );
+
+                $this->postcodes = $this->taxZone->postcodes()->pluck('postcode')->join("\n");
+            } else {
+                $this->taxZone->postcodes()->delete();
+            }
+        });
     }
 }

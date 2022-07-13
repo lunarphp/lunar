@@ -4,7 +4,7 @@
   :error="$errors->first('country')"
 >
   <x-hub::input.select wire:model="country" id="country">
-    @foreach($this->countries as $country)
+    @foreach($this->allCountries as $country)
       <option value="{{ $country->id }}">{{ $country->name }}</option>
     @endforeach
   </x-hub::input.select>

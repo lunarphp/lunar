@@ -33,9 +33,9 @@
 
       <div class="h-full max-h-96 overflow-y-auto border rounded">
       @forelse($this->zoneStates as $state)
-        <label class="block border-b py-2 text-sm px-3 cursor-pointer hover:bg-gray-50" wire:key="zone_country_{{ $country->id }}">
+        <label class="block border-b py-2 text-sm px-3 cursor-pointer hover:bg-gray-50" wire:key="zone_state_{{ $state->id }}">
           {{ $state->name }}
-          <input type="checkbox" class="hidden" wire:model="selectedCountries" value="{{ $state->id }}">
+          <input type="checkbox" class="hidden" wire:model="selectedStates" value="{{ $state->id }}">
         </label>
       @empty
         <div class="flex h-full items-center text-center w-full">

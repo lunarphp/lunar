@@ -17,22 +17,23 @@
           </x-hub::input.select>
         </x-hub::input.group>
 
-
         <div>
-        @if($taxZone->zone_type == 'country')
-          @include('adminhub::partials.forms.tax-zones.country')
-        @endif
+          @if($taxZone->zone_type == 'country')
+            @include('adminhub::partials.forms.tax-zones.country')
+          @endif
         </div>
 
         <div>
-        @if($taxZone->zone_type == 'states')
-          @include('adminhub::partials.forms.tax-zones.states')
-        @endif
+          @if($taxZone->zone_type == 'states')
+            @include('adminhub::partials.forms.tax-zones.states')
+          @endif
         </div>
 
-        @if($taxZone->zone_type == 'postcodes')
-          @include('adminhub::partials.forms.tax-zones.postcode')
-        @endif
+        <div>
+          @if($taxZone->zone_type == 'postcodes')
+            @include('adminhub::partials.forms.tax-zones.postcode')
+          @endif
+        </div>
       </div>
     </div>
 

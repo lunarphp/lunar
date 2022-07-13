@@ -16,6 +16,21 @@ class TaxZoneShow extends AbstractTaxZone
         $this->postcodes = $this->taxZone->postcodes->pluck('postcode')->join("\n");
     }
 
+
+    /**
+     * Save the TaxZone.
+     *
+     * @return void
+     */
+    public function save()
+    {
+        $this->taxZone->save();
+
+        $this->saveDetails();
+
+        $this->notify('Tax Zone updated');
+    }
+
     /**
      * Render the livewire component.
      *
