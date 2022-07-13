@@ -12,7 +12,7 @@ use GetCandy\Models\TaxZone;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class TaxesShow extends Component
+abstract class AbstractTaxZone extends Component
 {
     use WithPagination, Notifies;
 
@@ -93,32 +93,25 @@ class TaxesShow extends Component
         ];
     }
 
-    public function mount()
-    {
-        $this->selectedCountries = $this->taxZone->countries->pluck('country_id')->toArray();
-
-        $this->country = $this->taxZone->countries->pluck('country_id')->first();
-
-        $this->selectedStates = $this->taxZone->states->pluck('state_id')->toArray();
-
-        $this->postcodes = $this->taxZone->postcodes->pluck('postcode')->join("\n");
-    }
+    abstract public function mount();
 
     public function updatedRateId($val)
     {
         $this->taxRate = $val ? TaxRate::find($val) : null;
 
-        $taxRateAmounts = $this->taxRate->taxRateAmounts;
+        if($this->taxRate) {
+            $taxRateAmounts = $this->taxRate->taxRateAmounts;
 
-        $this->taxRateAmounts = TaxClass::get()->map(function ($taxClass) use ($taxRateAmounts) {
-            $taxRateAmount = $taxRateAmounts->first(fn ($rate) => $rate->tax_class_id == $taxClass->id);
+            $this->taxRateAmounts = TaxClass::get()->map(function ($taxClass) use ($taxRateAmounts) {
+                $taxRateAmount = $taxRateAmounts->first(fn ($rate) => $rate->tax_class_id == $taxClass->id);
 
-            return [
-                'name' => $taxClass->name,
-                'tax_class_id' => $taxClass->id,
-                'percentage' => $taxRateAmount?->percentage,
-            ];
-        })->toArray();
+                return [
+                    'name' => $taxClass->name,
+                    'tax_class_id' => $taxClass->id,
+                    'percentage' => $taxRateAmount?->percentage,
+                ];
+            })->toArray();
+        }
     }
 
     /**
@@ -128,7 +121,7 @@ class TaxesShow extends Component
      */
     public function save()
     {
-        $this->taxZone->save();
+        // $this->taxZone->save();
 
         // $this->saveDetails();
 
@@ -182,16 +175,5 @@ class TaxesShow extends Component
     public function getZoneStatesProperty()
     {
         return State::whereIn('id', $this->selectedStates)->get();
-    }
-
-    /**
-     * Render the livewire component.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function render()
-    {
-        return view('adminhub::livewire.components.settings.taxes.show')
-            ->layout('adminhub::layouts.base');
     }
 }

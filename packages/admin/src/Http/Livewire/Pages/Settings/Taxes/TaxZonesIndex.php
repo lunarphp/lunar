@@ -4,7 +4,7 @@ namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes;
 
 use Livewire\Component;
 
-class TaxesIndex extends Component
+class TaxZonesIndex extends Component
 {
     /**
      * Render the livewire component.
@@ -13,9 +13,10 @@ class TaxesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.pages.settings.taxes.index')
+        return view('adminhub::livewire.pages.settings.taxes.tax-zones.index')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.taxes.index.title'),
+                'title' => __('adminhub::settings.taxes.tax-zones.index.title'),
+                'menu' => 'settings',
             ]);
     }
 }

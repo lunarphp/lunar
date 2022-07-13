@@ -28,7 +28,7 @@
 
         <x-hub::table.cell class="text-right">
             <a href="{{ route('hub.taxes.show', $zone->id) }}" class="text-indigo-500 hover:underline">
-              {{ __('adminhub::settings.taxes.index.table_row_action_text') }}
+              {{ __('adminhub::settings.taxes.tax-zones.index.table_row_action_text') }}
             </a>
         </x-hub::table.cell>
       </x-hub::table.row>

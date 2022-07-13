@@ -6,7 +6,7 @@ use GetCandy\Models\TaxZone;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class TaxesIndex extends Component
+class TaxZonesIndex extends Component
 {
     use WithPagination;
 
@@ -17,7 +17,7 @@ class TaxesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.taxes.index', [
+        return view('adminhub::livewire.components.settings.taxes.tax-zones.index', [
             'taxZones' => TaxZone::paginate(),
         ])->layout('adminhub::layouts.base');
     }

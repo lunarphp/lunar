@@ -6,7 +6,7 @@ use GetCandy\Models\TaxZone;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class TaxesShow extends Component
+class TaxZoneShow extends Component
 {
     use WithPagination;
 
@@ -19,9 +19,10 @@ class TaxesShow extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.pages.settings.taxes.show')
+        return view('adminhub::livewire.pages.settings.taxes.tax-zones.show')
             ->layout('adminhub::layouts.settings', [
                 'title' => $this->taxZone->name,
+                'menu' => 'settings',
             ]);
     }
 }

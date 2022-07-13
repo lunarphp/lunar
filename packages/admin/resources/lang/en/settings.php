@@ -133,6 +133,6 @@ return [
     /**
      * Taxes
      */
-    'taxes.index.title'             => 'Taxes',
-    'taxes.index.table_row_action_text' => 'Manage',
+    'taxes.tax-zones.index.title'             => 'Taxes',
+    'taxes.tax-zones.index.table_row_action_text' => 'Manage',
 ];

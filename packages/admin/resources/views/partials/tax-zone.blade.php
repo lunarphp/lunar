@@ -3,6 +3,7 @@
     <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
       <div class="space-y-4">
 
+
         <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('taxZone.name')">
           <x-hub::input.text wire:model="taxZone.name" name="name" id="name" :error="$errors->first('taxZone.name')" />
         </x-hub::input.group>
@@ -88,19 +89,19 @@
     </div>
   </div>
 
-  <form wire:submit.prevent="save" class="px-4 py-3 justify-between bg-gray-50 sm:px-6 flex">
+  <form wire:submit.prevent="save" class="py-3 justify-between bg-gray-50 flex">
     <div>
       @if($taxZone->id)
         <x-hub::button theme="danger" type="button"  wire:click="$set('showDeleteConfirm', true)">
-          Delete Shipping Zone
+          Delete tax zone
         </x-hub::button>
       @endif
     </div>
     <x-hub::button type="submit">
       @if($taxZone->id)
-        Save shipping zone
+        Save tax zone
       @else
-        Create shipping zone
+        Create tax zone
       @endif
     </x-hub::button>
   </form>
