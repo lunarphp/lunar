@@ -1,6 +1,5 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxesShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
@@ -20,7 +19,6 @@ use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagsIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZonesIndex;
 use Illuminate\Support\Facades\Route;
@@ -111,10 +109,9 @@ Route::group([
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
 });
 
-/**
- * Taxes
- */
-
+ /**
+  * Taxes.
+  */
  Route::group([
      'middleware' => 'can:settings:core',
      'prefix'     => 'taxes',

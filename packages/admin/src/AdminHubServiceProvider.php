@@ -61,8 +61,6 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxesIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxesShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
 use GetCandy\Hub\Http\Livewire\Dashboard;

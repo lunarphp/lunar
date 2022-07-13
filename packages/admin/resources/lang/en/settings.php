@@ -131,7 +131,7 @@ return [
     'activity_log.index.title' => 'Activity Log',
 
     /**
-     * Taxes
+     * Taxes.
      */
     'taxes.tax-zones.index.title'             => 'Taxes',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',

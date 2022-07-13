@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
 
-
 class TaxZoneShow extends AbstractTaxZone
 {
     public function mount()
@@ -15,7 +14,6 @@ class TaxZoneShow extends AbstractTaxZone
 
         $this->postcodes = $this->taxZone->postcodes->pluck('postcode')->join("\n");
     }
-
 
     /**
      * Save the TaxZone.
