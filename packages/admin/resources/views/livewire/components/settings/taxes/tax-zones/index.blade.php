@@ -1,4 +1,7 @@
+
 <div class="flex-col space-y-4">
+  @include('adminhub::partials.navigation.taxes')
+
   <x-hub::table>
     <x-slot name="head">
       <x-hub::table.heading>Name</x-hub::table.heading>

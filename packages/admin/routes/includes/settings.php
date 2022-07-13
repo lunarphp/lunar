@@ -117,8 +117,5 @@ Route::group([
      'prefix'     => 'taxes',
  ], function () {
      Route::get('/', TaxZonesIndex::class)->name('hub.taxes.index');
-
      Route::get('{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
-     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
-     // Route::get('tags/{tag}', TagShow::class)->name('hub.taxes.show');
  });
