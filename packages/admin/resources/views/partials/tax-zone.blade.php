@@ -2,8 +2,6 @@
   <div class="overflow-hidden shadow sm:rounded-md">
     <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
       <div class="space-y-4">
-
-
         <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('taxZone.name')">
           <x-hub::input.text wire:model="taxZone.name" name="name" id="name" :error="$errors->first('taxZone.name')" />
         </x-hub::input.group>
@@ -40,53 +38,57 @@
 
   </div>
 
-  <div>
-    @if($this->taxRate)
-      <x-hub::slideover wire:model="rateId" form="saveAddress">
-        <div class="space-y-4">
-          <x-hub::input.group :label="__('adminhub::inputs.name')" for="taxRateName" :error="$errors->first('taxRate.name')">
-            <x-hub::input.text wire:model="taxRate.name" name="taxRateName" id="taxRateName" :error="$errors->first('taxRate.name')" />
-          </x-hub::input.group>
-
-          <h3>Tax Rates</h3>
-
-          @foreach($this->taxRateAmounts as $index => $taxRateAmount)
-            <div class="grid grid-cols-2 gap-4 items-center">
-              <div>
-                <x-hub::input.group label="Tax Class" for="taxRateAmountClass">
-                  {{ $taxRateAmount['name'] }}
-                </x-hub::input.group>
-              </div>
-              <x-hub::input.group label="Percentage" for="taxRateAmountPercentage" :error="$errors->first('taxRateAmount.name')">
-                <x-hub::input.text wire:model="taxRateAmounts.{{ $index }}.percentage" name="taxRateAmountName" id="taxRateAmountName" :error="$errors->first('taxRateAmount.name')" />
-              </x-hub::input.group>
-            </div>
-          @endforeach
-        </div>
-      </x-hub::slideover>
-   @endif
-  </div>
-
-
   <div class="overflow-hidden shadow sm:rounded-md">
     <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
       <div class="space-y-4">
         <h3>Tax Rates</h3>
       </div>
 
-      @foreach($taxZone->taxRates as $rate)
-        <div class="border rounded py-2 px-4 flex items-center justify-between" wire:key="tax_rate_{{ $rate->id }}">
-          <div>
-            {{ $rate->name }}
+      <div class="space-y-4">
+        @foreach($this->taxRates as $taxRateIndex => $rate)
+          <div wire:key="tax_rate_{{ $taxRateIndex }}" class="rounded border p-3">
+            <div class="flex w-full justify-end">
+              <x-hub::button
+                size="xs"
+                theme="gray"
+                type="button"
+                wire:click="removeTaxRate({{ $taxRateIndex }})"
+                :disabled="count($this->taxRates) == 1"
+              >
+                <x-hub::icon ref="trash" class="w-4"/>
+              </x-hub::button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <x-hub::input.group label="Name" for="name" required>
+                <x-hub::input.text wire:model="taxRates.{{ $taxRateIndex }}.name" />
+              </x-hub::input.group>
+
+              <x-hub::input.group label="Priority" for="priority">
+                <x-hub::input.text type="number" wire:model="taxRates.{{ $taxRateIndex }}.priority" />
+              </x-hub::input.group>
+            </div>
+
+            <div class="mt-4">
+              <div class="grid grid-cols-2 gap-4">
+              @foreach($rate['amounts'] as $amountIndex => $amount)
+                <x-hub::input.group
+                  for="tr_{{ $taxRateIndex }}_amount_{{ $amountIndex }}"
+                  wire:key="tr_{{ $taxRateIndex }}_amount_{{ $amountIndex }}"
+                  :label="$amount['tax_class_name']"
+                >
+                  <x-hub::input.text
+                    type="number"
+                    wire:model="taxRates.{{ $taxRateIndex }}.amounts.{{ $amountIndex }}.percentage"
+                  />
+                </x-hub::input.group>
+              @endforeach
+              </div>
+            </div>
           </div>
+        @endforeach
+      </div>
 
-          <div>
-            <x-hub::button size="sm" wire:click="$set('rateId', {{ $rate->id }})">Edit</x-hub::button>
-          </div>
-        </div>
-      @endforeach
-
-
+      <x-hub::button theme="gray" type="button" wire:click="addTaxRate">Add tax rate</x-hub::button>
     </div>
   </div>
 
