@@ -2,8 +2,13 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
 
+use GetCandy\Models\TaxClass;
+
 class TaxZoneShow extends AbstractTaxZone
 {
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
         $this->selectedCountries = $this->taxZone->countries->pluck('country_id')->toArray();
@@ -13,6 +18,8 @@ class TaxZoneShow extends AbstractTaxZone
         $this->selectedStates = $this->taxZone->states->pluck('state_id')->toArray();
 
         $this->postcodes = $this->taxZone->postcodes->pluck('postcode')->join("\n");
+
+        $this->syncTaxRates();
     }
 
     /**
