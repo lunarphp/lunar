@@ -67,8 +67,18 @@ abstract class AbstractTaxZone extends Component
      */
     public ?string $country = null;
 
+    /**
+     * The tax rates for the tax zone
+     *
+     * @var array
+     */
     public array $taxRates = [];
 
+    /**
+     * The tax rate amounts for the tax zone
+     *
+     * @var array
+     */
     public array $taxRateAmounts = [];
 
     /**
@@ -85,12 +95,12 @@ abstract class AbstractTaxZone extends Component
             'selectedStates' => 'array|required_if:taxZone.zone_type,states',
             'taxRates' => 'array',
             'taxRates.*.name' => 'string',
-            // 'taxRateAmounts' => 'array',
-            // 'taxRateAmounts.*.percentage' => 'numeric',
-            // 'taxRateAmounts.*.tax_class_id' => 'required',
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     abstract public function mount();
 
     /**
@@ -116,11 +126,21 @@ abstract class AbstractTaxZone extends Component
             ->whereNotIn('id', $this->selectedCountries)->get();
     }
 
+    /**
+     * Return all the countries available in the system.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getAllCountriesProperty()
     {
         return Country::get();
     }
 
+    /**
+     * Return the filtered states available for selection
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getStatesProperty()
     {
         return State::where('name', 'LIKE', "%{$this->searchTerm}%")
@@ -148,16 +168,33 @@ abstract class AbstractTaxZone extends Component
         return State::whereIn('id', $this->selectedStates)->get();
     }
 
+    /**
+     * Return all the tax classes in the system
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getTaxClassesProperty()
     {
         return TaxClass::get();
     }
 
+    /**
+     * Unset a tax rate based on it's index
+     *
+     * @param int $index
+     *
+     * @return void
+     */
     public function removeTaxRate($index)
     {
         unset($this->taxRates[$index]);
     }
 
+    /**
+     * Add a new tax rate to the array
+     *
+     * @return void
+     */
     public function addTaxRate()
     {
         $this->taxRates[] = [
@@ -175,6 +212,11 @@ abstract class AbstractTaxZone extends Component
         ];
     }
 
+    /**
+     * Sync tax rates based on any changes made.
+     *
+     * @return void
+     */
     protected function syncTaxRates()
     {
         $this->taxRates = $this->taxZone->taxRates()->get()->map(function ($taxRate) {
@@ -313,13 +355,11 @@ abstract class AbstractTaxZone extends Component
             // First remove any existing rates that aren't in our list...
             // get the tax rates which have an ID.
             $ratesWithId = collect($this->taxRates)->pluck('id')->filter()->values();
-//
+
             foreach ($this->taxZone->taxRates()->whereNotIn('id', $ratesWithId)->get() as $rate) {
                 $rate->taxRateAmounts()->delete();
                 $rate->delete();
             }
-//
-//             dd(1);
 
             foreach ($this->taxRates as $taxRate) {
                 if ($taxRate['id']) {
