@@ -14,6 +14,25 @@ class TaxClass extends BaseModel
     use HasDefaultRecord;
     use HasMacros;
 
+    public static function booted()
+    {
+        static::updated(function ($taxClass) {
+            if ($taxClass->default) {
+                TaxClass::whereDefault(true)->where('id', '!=', $taxClass->id)->update([
+                    'default' => false,
+                ]);
+            }
+        });
+
+        static::created(function ($taxClass) {
+            if ($taxClass->default) {
+                TaxClass::whereDefault(true)->where('id', '!=', $taxClass->id)->update([
+                    'default' => false,
+                ]);
+            }
+        });
+    }
+
     /**
      * Return a new factory instance for the model.
      *

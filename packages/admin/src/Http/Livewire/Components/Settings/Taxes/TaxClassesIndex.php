@@ -11,14 +11,9 @@ class TaxClassesIndex extends Component
 {
     use WithPagination, Notifies;
 
-    /**
-     * The tax class.
-     *
-     * @var TaxClass|null
-     */
-    public $taxClass = null;
+    public ?TaxClass $taxClass = null;
 
-    public ?int $taxClassId = null;
+    public $taxClassId = null;
 
     public function rules()
     {
@@ -29,19 +24,37 @@ class TaxClassesIndex extends Component
         ];
     }
 
+    public function updatedTaxClassId($val)
+    {
+        if ($val == 'new') {
+            $this->taxClass = new TaxClass([
+                'default' => false,
+            ]);
+        } else {
+            $this->taxClass = $val ? TaxClass::find($val) : null;
+        }
+    }
+
+    public function toggleDefault()
+    {
+        $this->taxClass->default = !$this->taxClass->default;
+    }
+
     public function save()
     {
         $this->taxClass->save();
 
         $this->taxClassId = null;
 
-        $this->notify('Tax Class updated');
+        $this->notify(
+            __('adminhub::notifications.tax_class.saved')
+        );
     }
-
-    public function editTaxClass($taxClassId)
-    {
-        $this->taxClass = TaxClass::find($taxClassId);
-    }
+//
+//     public function editTaxClass($taxClassId)
+//     {
+//         $this->taxClass = TaxClass::find($taxClassId);
+//     }
 
     /**
      * Render the livewire component.

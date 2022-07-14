@@ -143,6 +143,7 @@ return [
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
     'taxes.tax-classes.index.title' => 'Tax Classes',
     'taxes.tax-classes.index.update.title' => 'Update tax class',
+    'taxes.tax-classes.create_btn' => 'Create tax class',
     'taxes.tax-zones.price_display.label' => 'Price Display',
     'taxes.tax-zones.price_display.excl_tax' => 'Exclude Tax',
     'taxes.tax-zones.price_display.incl_tax' => 'Include Tax',

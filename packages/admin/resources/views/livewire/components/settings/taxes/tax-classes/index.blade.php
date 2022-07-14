@@ -1,34 +1,46 @@
 
 <div class="flex-col space-y-4">
-  @include('adminhub::partials.navigation.taxes')
+  <div class="flex justify-between">
+    @include('adminhub::partials.navigation.taxes')
 
-  <x-hub::modal.dialog form="save" wire:model="taxClass">
-      <x-slot name="title">
-        {{ __('adminhub::settings.taxes.tax-classes.index.update.title') }}
-      </x-slot>
+    <x-hub::button wire:click="$set('taxClassId', 'new')">
+      {{ __('adminhub::settings.taxes.tax-classes.create_btn') }}
+    </x-hub::button>
+  </div>
 
-      <x-slot name="content">
-        <x-hub::input.group label="Name" for="name">
-          <x-hub::input.text wire:model="taxClass.name" />
-        </x-hub::input.group>
+  <div>
+  @if($this->taxClass)
+    <x-hub::modal.dialog form="save" wire:model="taxClassId">
+        <x-slot name="title">
+          {{ __('adminhub::settings.taxes.tax-classes.index.update.title') }}
+        </x-slot>
 
-        @if($this->taxClass)
-          <x-hub::input.group label="Default" for="default">
-            <x-hub::input.toggle wire:model="taxClass.default"/>
-          </x-hub::input.group>
-        @endif
-      </x-slot>
+        <x-slot name="content">
+          <div class="space-y-4">
+            <x-hub::input.group label="Name" for="name">
+              <x-hub::input.text wire:model="taxClass.name"  />
+            </x-hub::input.group>
 
-      <x-slot name="footer">
-        <x-hub::button type="button" wire:click.prevent="$set('taxClass', null)" theme="gray">
-          {{ __('adminhub::global.cancel') }}
-        </x-hub::button>
 
-        <x-hub::button type="submit">
-          {{ __('adminhub::global.save') }}
-        </x-hub::button>
-      </x-slot>
-  </x-hub::modal.dialog>
+            <x-hub::input.group label="Default" for="default">
+              <x-hub::input.toggle :on="$taxClass->default" wire:click="toggleDefault"/>
+            </x-hub::input.group>
+          </div>
+
+        </x-slot>
+
+        <x-slot name="footer">
+          <x-hub::button type="button" wire:click.prevent="$set('taxClassId', null)" theme="gray">
+            {{ __('adminhub::global.cancel') }}
+          </x-hub::button>
+
+          <x-hub::button type="submit">
+            {{ __('adminhub::global.save') }}
+          </x-hub::button>
+        </x-slot>
+    </x-hub::modal.dialog>
+  @endif
+  </div>
 
   <x-hub::table>
     <x-slot name="head">
@@ -48,7 +60,7 @@
           </x-hub::table.cell>
 
           <x-hub::table.cell>
-            <a href="#" wire:click.prevent="editTaxClass({{ $taxClass->id }})" class="text-indigo-500 hover:underline">
+            <a href="#" wire:click.prevent="$set('taxClassId', {{ $taxClass->id }})" class="text-indigo-500 hover:underline">
               {{ __('adminhub::settings.taxes.tax-zones.index.table_row_action_text') }}
             </a>
           </x-hub::table.cell>
