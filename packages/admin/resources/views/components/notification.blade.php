@@ -2,12 +2,13 @@
     messages: {{ json_encode($messages) }},
     level: '{{ $level }}',
     timeout: null,
+    remove(message) {
+        this.messages.splice(this.messages.indexOf(message), 1)
+    },
 }"
      x-on:notify.window="
         level = $event.detail.level
-        messages.push(
-          $event.detail.message
-        )
+        messages.push($event.detail.message)
     "
      x-init="$watch('messages', () => {
          clearTimeout(timeout)
