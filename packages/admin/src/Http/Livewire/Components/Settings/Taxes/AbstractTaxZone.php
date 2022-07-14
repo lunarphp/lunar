@@ -81,7 +81,7 @@ abstract class AbstractTaxZone extends Component
             'taxZone.zone_type' => 'required',
             'postcodes' => 'nullable|string|required_if:taxZone.zone_type,postcodes',
             'country' => 'nullable|string|required_if:taxZone.zone_type,postcodes,taxZone.zone_type,states',
-            'selectedCountries' => 'array|required_if:taxZone.zone_type,countries',
+            'selectedCountries' => 'array|required_if:taxZone.zone_type,country',
             'selectedStates' => 'array|required_if:taxZone.zone_type,states',
             'taxRates' => 'array',
             'taxRates.*.name' => 'string',

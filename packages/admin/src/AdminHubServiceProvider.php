@@ -62,6 +62,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
 use GetCandy\Hub\Http\Livewire\Dashboard;
@@ -341,6 +342,7 @@ class AdminHubServiceProvider extends ServiceProvider
         // Taxes
         Livewire::component('hub.components.settings.taxes.tax-zones.index', TaxZonesIndex::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.show', TaxZoneShow::class);
+        Livewire::component('hub.components.settings.taxes.tax-zones.create', TaxZoneCreate::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
     }

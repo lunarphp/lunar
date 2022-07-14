@@ -2,12 +2,28 @@
   <div class="overflow-hidden shadow sm:rounded-md">
     <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
       <div class="space-y-4">
-        <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('taxZone.name')">
+        <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('taxZone.name')" required>
           <x-hub::input.text wire:model="taxZone.name" name="name" id="name" :error="$errors->first('taxZone.name')" />
         </x-hub::input.group>
 
+        <x-hub::input.group :label="__('adminhub::settings.taxes.tax-zones.price_display.label')" for="priceDisplay" :error="$errors->first('taxZone.price_display')" required>
+          <x-hub::input.select wire:model="taxZone.price_display" id="priceDisplay">
+            <option value="include_tax">{{ __('adminhub::settings.taxes.tax-zones.price_display.incl_tax') }}</option>
+            <option value="exclude_tax">{{ __('adminhub::settings.taxes.tax-zones.price_display.excl_tax') }}</option>
+          </x-hub::input.select>
+        </x-hub::input.group>
 
-        <x-hub::input.group label="Type" for="type"  :error="$errors->first('taxZone.zone_type')">
+        <div class="grid grid-cols-2 gap-4">
+          <x-hub::input.group :label="__('adminhub::inputs.active.label')" for="active" :error="$errors->first('taxZone.active')">
+            <x-hub::input.toggle wire:model="taxZone.active" />
+          </x-hub::input.group>
+
+          <x-hub::input.group :label="__('adminhub::inputs.default.label')" for="active" :error="$errors->first('taxZone.default')">
+            <x-hub::input.toggle wire:model="taxZone.default" />
+          </x-hub::input.group>
+        </div>
+
+        <x-hub::input.group label="Type" for="type"  :error="$errors->first('taxZone.zone_type')" required>
           <x-hub::input.select id="type" wire:model="taxZone.zone_type">
             <option value="country">Limit to Countries</option>
             <option value="states">Limit to States / Provinces</option>
@@ -44,6 +60,14 @@
         <h3>Tax Rates</h3>
       </div>
 
+      @if($errors->has('taxRates'))
+        <div class="bg-red-50 p-3 rounded text-red-700 text-sm space-y-2">
+          @foreach($errors->get('taxRates') as $error)
+            <p>{{ $error }}</p>
+          @endforeach
+        </div>
+      @endif
+
       <div class="space-y-4">
         @foreach($this->taxRates as $taxRateIndex => $rate)
           <div wire:key="tax_rate_{{ $taxRateIndex }}" class="rounded border p-3">
@@ -59,7 +83,7 @@
               </x-hub::button>
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <x-hub::input.group label="Name" for="name" required>
+              <x-hub::input.group label="Name" for="name" required :error="$errors->first('taxRates.'.$taxRateIndex.'.name')">
                 <x-hub::input.text wire:model="taxRates.{{ $taxRateIndex }}.name" />
               </x-hub::input.group>
 
