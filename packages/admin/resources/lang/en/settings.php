@@ -135,4 +135,5 @@ return [
      */
     'taxes.tax-zones.index.title'             => 'Taxes',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
+    'taxes.tax-classes.index.title' => 'Tax Classes',
 ];

@@ -1,5 +1,6 @@
 <?php
 
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxClassesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
@@ -117,5 +118,6 @@ Route::group([
      'prefix'     => 'taxes',
  ], function () {
      Route::get('/', TaxZonesIndex::class)->name('hub.taxes.index');
+     Route::get('/tax-classes', TaxClassesIndex::class)->name('hub.taxes.tax-classes.index');
      Route::get('{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
  });

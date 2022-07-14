@@ -23,7 +23,7 @@
     }"
   >
     @if($attributes->wire('model')->value())
-      <input type="checkbox" x-model="checked" class="hidden" value="{{ $onValue }}" />
+      <input type="checkbox" x-model="checked" value="{{ $onValue }}" />
     @endif
     <span
       aria-hidden="true"

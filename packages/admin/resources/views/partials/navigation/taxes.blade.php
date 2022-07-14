@@ -9,7 +9,7 @@
     Tax Zones
   </a>
 
-  <a href="#"
+  <a href="{{ route('hub.taxes.tax-classes.index') }}"
     @class([
       'px-3 py-2 text-sm font-medium rounded-md' => true,
       'bg-white shadow' => request()->route()->getName() == 'hub.taxes.tax-classes.index',
