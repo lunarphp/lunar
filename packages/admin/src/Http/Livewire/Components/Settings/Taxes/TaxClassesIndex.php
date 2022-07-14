@@ -52,11 +52,6 @@ class TaxClassesIndex extends Component
             __('adminhub::notifications.tax_class.saved')
         );
     }
-//
-//     public function editTaxClass($taxClassId)
-//     {
-//         $this->taxClass = TaxClass::find($taxClassId);
-//     }
 
     /**
      * Render the livewire component.
