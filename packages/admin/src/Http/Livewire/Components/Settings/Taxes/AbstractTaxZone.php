@@ -68,14 +68,14 @@ abstract class AbstractTaxZone extends Component
     public ?string $country = null;
 
     /**
-     * The tax rates for the tax zone
+     * The tax rates for the tax zone.
      *
      * @var array
      */
     public array $taxRates = [];
 
     /**
-     * The tax rate amounts for the tax zone
+     * The tax rate amounts for the tax zone.
      *
      * @var array
      */
@@ -145,7 +145,7 @@ abstract class AbstractTaxZone extends Component
     }
 
     /**
-     * Return the filtered states available for selection
+     * Return the filtered states available for selection.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -177,7 +177,7 @@ abstract class AbstractTaxZone extends Component
     }
 
     /**
-     * Return all the tax classes in the system
+     * Return all the tax classes in the system.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -197,10 +197,9 @@ abstract class AbstractTaxZone extends Component
     }
 
     /**
-     * Unset a tax rate based on it's index
+     * Unset a tax rate based on it's index.
      *
-     * @param int $index
-     *
+     * @param  int  $index
      * @return void
      */
     public function removeTaxRate($index)
@@ -209,7 +208,7 @@ abstract class AbstractTaxZone extends Component
     }
 
     /**
-     * Add a new tax rate to the array
+     * Add a new tax rate to the array.
      *
      * @return void
      */
@@ -289,14 +288,14 @@ abstract class AbstractTaxZone extends Component
     {
         $this->customerGroups = $this->allCustomerGroups->map(function ($group) {
             $relation = $this->taxZone->customerGroups()->get()->first(function ($cg) use ($group) {
-               return $cg->customer_group_id == $group->id;
+                return $cg->customer_group_id == $group->id;
             });
 
             return [
                 'name' => $group->name,
                 'customer_group_id' => $group->id,
                 'link_id' => $relation?->id,
-                'linked' => !!$relation
+                'linked' => (bool) $relation,
             ];
         })->toArray();
     }
@@ -432,7 +431,6 @@ abstract class AbstractTaxZone extends Component
             $unlinked = collect($this->customerGroups)->reject(function ($group) {
                 return (bool) $group['linked'];
             });
-
 
             $linked = collect($this->customerGroups)->filter(function ($group) {
                 return (bool) $group['linked'] && is_null($group['link_id']);
