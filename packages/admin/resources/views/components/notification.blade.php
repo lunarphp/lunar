@@ -4,9 +4,8 @@
     timeout: null,
 }"
      x-on:notify.window="
-        let message = $event.detail.message
         level = $event.detail.level
-        messages.push(message)
+        messages.push($event.detail.message)
     "
      x-init="$watch('messages', () => {
          clearTimeout(timeout)
