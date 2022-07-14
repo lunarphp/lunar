@@ -140,6 +140,7 @@ return [
     'taxes.tax-zones.customer_groups.instructions' => 'Select which customer groups you want to restrict this zone to. Leave unchecked for no restrictions.',
     'taxes.tax-zones.create_title' => 'Create tax zone',
     'taxes.tax-zones.create_btn' => 'Create tax zone',
+    'taxes.tax-zones.delete_btn' => 'Delete tax zone',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
     'taxes.tax-classes.index.title' => 'Tax Classes',
     'taxes.tax-classes.index.update.title' => 'Update tax class',
@@ -152,7 +153,5 @@ return [
     'taxes.tax-zones.zone_type.postcodes' => 'Limit to postcodes',
     'taxes.tax-zones.tax_rates.title' => 'Tax Rates',
     'taxes.tax-zones.tax_rates.create_button' => 'Add tax rate',
-    'settings.taxes.tax-zones.delete_button' => 'Delete tax rate',
-    'settings.taxes.tax-zones.create_button' => 'Create tax rate',
-    'settings.taxes.tax-zones.save_button' => 'Save tax rate',
+    'taxes.tax-zones.save_btn' => 'Save tax zone',
 ];

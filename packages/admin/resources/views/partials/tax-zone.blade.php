@@ -173,15 +173,15 @@
     <div>
       @if($taxZone->id)
         <x-hub::button theme="danger" type="button"  wire:click="$set('taxZoneToRemove', {{ $taxZone->id }})">
-          {{ __('adminhub::settings.taxes.tax-zones.delete_button') }}
+          {{ __('adminhub::settings.taxes.tax-zones.delete_btn') }}
         </x-hub::button>
       @endif
     </div>
     <x-hub::button type="submit">
       @if($taxZone->id)
-        {{ __('adminhub::settings.taxes.tax-zones.save_button') }}
+        {{ __('adminhub::settings.taxes.tax-zones.save_btn') }}
       @else
-        {{ __('adminhub::settings.taxes.tax-zones.create_button') }}
+        {{ __('adminhub::settings.taxes.tax-zones.create_btn') }}
       @endif
     </x-hub::button>
   </form>
