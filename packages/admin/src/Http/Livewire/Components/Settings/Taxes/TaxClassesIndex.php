@@ -4,9 +4,9 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\TaxClass;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\DB;
 
 class TaxClassesIndex extends Component
 {
@@ -48,8 +48,7 @@ class TaxClassesIndex extends Component
     /**
      * Listener when tax class id is updated.
      *
-     * @param string|int $val
-     *
+     * @param  string|int  $val
      * @return void
      */
     public function updatedTaxClassId($val)
@@ -65,7 +64,7 @@ class TaxClassesIndex extends Component
     }
 
     /**
-     * Toggle the tax class default value
+     * Toggle the tax class default value.
      *
      * @return void
      */
@@ -81,7 +80,7 @@ class TaxClassesIndex extends Component
      */
     public function getVariantCountProperty()
     {
-        if (!$this->taxClass) {
+        if (! $this->taxClass) {
             return 0;
         }
 
@@ -89,7 +88,7 @@ class TaxClassesIndex extends Component
     }
 
     /**
-     * Save the TaxClass
+     * Save the TaxClass.
      *
      * @return void
      */
