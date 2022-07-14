@@ -46,6 +46,8 @@ class TaxClassesIndex extends Component
 
         $this->taxClassId = null;
 
+        $this->taxClass = null;
+
         $this->notify(
             __('adminhub::notifications.tax_class.saved')
         );
