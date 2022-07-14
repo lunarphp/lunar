@@ -4,7 +4,6 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\TaxClass;
-use GetCandy\Models\TaxZone;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +12,7 @@ class TaxClassesIndex extends Component
     use WithPagination, Notifies;
 
     /**
-     * The tax class
+     * The tax class.
      *
      * @var TaxClass|null
      */
