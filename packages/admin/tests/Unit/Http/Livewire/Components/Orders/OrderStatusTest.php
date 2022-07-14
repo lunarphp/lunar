@@ -2,20 +2,16 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Country;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Spatie\Activitylog\Models\Activity;
 
 /**
  * @group hub.orders.status
@@ -71,5 +67,4 @@ class OrderShowTest extends TestCase
             'order' => $order,
         ])->assertSet('order.id', $order->id);
     }
-
 }
