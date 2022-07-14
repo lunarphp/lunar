@@ -2,22 +2,33 @@
 <div class="flex-col space-y-4">
   @include('adminhub::partials.navigation.taxes')
 
-  <x-hub::slideover wire:model="taxClassId" form="save">
-    <div class="space-y-4">
-      <x-hub::input.group label="Name" for="name">
-        <x-hub::input.text wire:model="taxClass.name" />
-      </x-hub::input.group>
+  <x-hub::modal.dialog form="save" wire:model="taxClass">
+      <x-slot name="title">
+        {{ __('adminhub::settings.taxes.tax-classes.index.update.title') }}
+      </x-slot>
 
-      <x-hub::input.group label="Default" for="default">
-        <x-hub::input.toggle wire:model="taxClass.default"/>
-      </x-hub::input.group>
-    </div>
+      <x-slot name="content">
+        <x-hub::input.group label="Name" for="name">
+          <x-hub::input.text wire:model="taxClass.name" />
+        </x-hub::input.group>
 
-    <x-slot name="footer">
-      <x-hub::button>Save Tax Class</x-hub::button>
-    </x-slot>
-  </x-hub::slideover>
+        @if($this->taxClass)
+          <x-hub::input.group label="Default" for="default">
+            <x-hub::input.toggle wire:model="taxClass.default"/>
+          </x-hub::input.group>
+        @endif
+      </x-slot>
 
+      <x-slot name="footer">
+        <x-hub::button type="button" wire:click.prevent="$set('taxClass', null)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+
+        <x-hub::button type="submit">
+          {{ __('adminhub::global.save') }}
+        </x-hub::button>
+      </x-slot>
+  </x-hub::modal.dialog>
 
   <x-hub::table>
     <x-slot name="head">
@@ -37,7 +48,7 @@
           </x-hub::table.cell>
 
           <x-hub::table.cell>
-            <a href="#" wire:click.prevent="$set('taxClassId', {{ $taxClass->id }})" class="text-indigo-500 hover:underline">
+            <a href="#" wire:click.prevent="editTaxClass({{ $taxClass->id }})" class="text-indigo-500 hover:underline">
               {{ __('adminhub::settings.taxes.tax-zones.index.table_row_action_text') }}
             </a>
           </x-hub::table.cell>

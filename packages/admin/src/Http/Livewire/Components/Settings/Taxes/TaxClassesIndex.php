@@ -17,15 +17,16 @@ class TaxClassesIndex extends Component
      *
      * @var TaxClass|null
      */
-    public ?TaxClass $taxClass = null;
+    public $taxClass = null;
 
     public ?int $taxClassId = null;
 
     public function rules()
     {
         return [
+            'taxClass' => 'nullable',
             'taxClass.name' => 'string|required',
-            'taxClass.default' => 'required',
+            'taxClass.default' => 'boolean|nullable',
         ];
     }
 
@@ -38,9 +39,9 @@ class TaxClassesIndex extends Component
         $this->notify('Tax Class updated');
     }
 
-    public function updatedTaxClassId($val)
+    public function editTaxClass($taxClassId)
     {
-        $this->taxClass = $val ? TaxClass::find($val) : null;
+        $this->taxClass = TaxClass::find($taxClassId);
     }
 
     /**
