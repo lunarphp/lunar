@@ -49,4 +49,5 @@ return [
     'product.no-images-associated'      => 'Product does not have any images associated',
     'products.product_restored'         => 'Product restored',
     'tax_class.saved'                   => 'Tax class saved',
+    'tax_class.deleted'                 => 'Tax class deleted',
 ];

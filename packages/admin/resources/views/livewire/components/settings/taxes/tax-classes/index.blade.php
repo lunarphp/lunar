@@ -16,27 +16,57 @@
         </x-slot>
 
         <x-slot name="content">
-          <div class="space-y-4">
-            <x-hub::input.group label="Name" for="name">
-              <x-hub::input.text wire:model="taxClass.name"  />
-            </x-hub::input.group>
+          @if($deleting)
+            <div class="bg-red-50 text-red-700 p-3 text-sm">
+              @if($this->variantCount)
+                {{ __('adminhub::settings.taxes.tax-classes.index.delete_message_disabled') }}
+              @elseif($this->taxClass->default)
+                {{ __('adminhub::settings.taxes.tax-classes.index.delete_message_default') }}
+              @else
+                {{ __('adminhub::settings.taxes.tax-classes.index.delete_message') }}
+              @endif
+            </div>
+          @else
+            <div class="space-y-4">
+              <x-hub::input.group label="Name" for="name">
+                <x-hub::input.text wire:model="taxClass.name"  />
+              </x-hub::input.group>
 
 
-            <x-hub::input.group label="Default" for="default">
-              <x-hub::input.toggle :on="$taxClass->default" wire:click="toggleDefault"/>
-            </x-hub::input.group>
-          </div>
+              <x-hub::input.group label="Default" for="default">
+                <x-hub::input.toggle :on="$taxClass->default" wire:click="toggleDefault"/>
+              </x-hub::input.group>
+            </div>
+          @endif
 
         </x-slot>
 
         <x-slot name="footer">
-          <x-hub::button type="button" wire:click.prevent="$set('taxClassId', null)" theme="gray">
-            {{ __('adminhub::global.cancel') }}
-          </x-hub::button>
+          @if($deleting)
+            <x-hub::button type="button" wire:click.prevent="$set('deleting', false)" theme="gray">
+              {{ __('adminhub::global.cancel') }}
+            </x-hub::button>
 
-          <x-hub::button type="submit">
-            {{ __('adminhub::global.save') }}
-          </x-hub::button>
+            <x-hub::button type="submit" theme="danger" :disabled="!!$this->variantCount || $taxClass?->default">
+              {{ __('adminhub::global.delete') }}
+            </x-hub::button>
+          @else
+            <div class="flex w-full justify-between">
+              <x-hub::button type="button" wire:click.prevent="$set('deleting', true)" theme="danger">
+                {{ __('adminhub::global.delete') }}
+              </x-hub::button>
+
+              <div>
+                <x-hub::button type="button" wire:click.prevent="$set('taxClassId', null)" theme="gray">
+                  {{ __('adminhub::global.cancel') }}
+                </x-hub::button>
+
+                <x-hub::button type="submit">
+                  {{ __('adminhub::global.save') }}
+                </x-hub::button>
+              </div>
+            </div>
+          @endif
         </x-slot>
     </x-hub::modal.dialog>
   @endif

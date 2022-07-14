@@ -60,4 +60,14 @@ class TaxClass extends BaseModel
     {
         return $this->hasMany(TaxRateAmount::class);
     }
+
+    /**
+     * Return the ProductVariants relationship.
+     *
+     * @return HasMany
+     */
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
 }

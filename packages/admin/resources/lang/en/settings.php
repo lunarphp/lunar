@@ -154,4 +154,7 @@ return [
     'taxes.tax-zones.tax_rates.title' => 'Tax Rates',
     'taxes.tax-zones.tax_rates.create_button' => 'Add tax rate',
     'taxes.tax-zones.save_btn' => 'Save tax zone',
+    'taxes.tax-classes.index.delete_message' => 'Are you sure? This could cause loss of data.',
+    'taxes.tax-classes.index.delete_message_disabled' => 'You cannot delete a tax class that is associated to product variants',
+    'taxes.tax-classes.index.delete_message_default' => 'You must select a new default before deleting',
 ];

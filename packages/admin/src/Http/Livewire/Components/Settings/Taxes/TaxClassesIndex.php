@@ -6,15 +6,36 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\TaxClass;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 
 class TaxClassesIndex extends Component
 {
     use WithPagination, Notifies;
 
+    /**
+     * The TaxClass to edit.
+     *
+     * @var null|TaxClass
+     */
     public ?TaxClass $taxClass = null;
 
+    /**
+     * The ID of the TaxClass to edit.
+     *
+     * @var int|string
+     */
     public $taxClassId = null;
 
+    /**
+     * Whether the TaxClass should be deleted on save.
+     *
+     * @var bool
+     */
+    public bool $deleting = false;
+
+    /**
+     * {@inheritDoc}
+     */
     public function rules()
     {
         return [
@@ -24,6 +45,13 @@ class TaxClassesIndex extends Component
         ];
     }
 
+    /**
+     * Listener when tax class id is updated.
+     *
+     * @param string|int $val
+     *
+     * @return void
+     */
     public function updatedTaxClassId($val)
     {
         if ($val == 'new') {
@@ -33,23 +61,57 @@ class TaxClassesIndex extends Component
         } else {
             $this->taxClass = $val ? TaxClass::find($val) : null;
         }
+        $this->deleting = false;
     }
 
+    /**
+     * Toggle the tax class default value
+     *
+     * @return void
+     */
     public function toggleDefault()
     {
         $this->taxClass->default = ! $this->taxClass->default;
     }
 
+    /**
+     * Get the variant count for the tax class.
+     *
+     * @return int
+     */
+    public function getVariantCountProperty()
+    {
+        if (!$this->taxClass) {
+            return 0;
+        }
+
+        return $this->taxClass->productVariants()->count();
+    }
+
+    /**
+     * Save the TaxClass
+     *
+     * @return void
+     */
     public function save()
     {
-        $this->taxClass->save();
+        DB::transaction(function () {
+            if ($this->deleting) {
+                $this->taxClass->taxRateAmounts()->delete();
+                $this->taxClass->delete();
+            } else {
+                $this->taxClass->save();
+            }
+        });
 
         $this->taxClassId = null;
 
         $this->taxClass = null;
 
         $this->notify(
-            __('adminhub::notifications.tax_class.saved')
+            __(
+                $this->deleting ? 'adminhub::notifications.tax_class.deleted' : 'adminhub::notifications.tax_class.saved'
+            )
         );
     }
 
