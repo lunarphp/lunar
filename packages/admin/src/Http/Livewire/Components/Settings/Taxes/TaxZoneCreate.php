@@ -44,6 +44,8 @@ class TaxZoneCreate extends AbstractTaxZone
         $this->postcodes = $this->taxZone->postcodes->pluck('postcode')->join("\n");
 
         $this->syncTaxRates();
+
+        $this->syncCustomerGroups();
     }
 
     /**

@@ -1,5 +1,25 @@
 <div class="flex-col space-y-4">
   <div class="overflow-hidden shadow sm:rounded-md">
+
+    <x-hub::modal.dialog form="deleteZone" wire:model="taxZoneToRemove">
+      <x-slot name="title">
+        {{ __('adminhub::settings.taxes.tax-zones.confirm_delete.title') }}
+      </x-slot>
+      <x-slot name="content">
+        <x-hub::alert level="danger">
+          {{ __('adminhub::settings.taxes.tax-zones.confirm_delete.message') }}
+        </x-hub::alert>
+      </x-slot>
+      <x-slot name="footer">
+        <x-hub::button type="button" wire:click.prevent="$set('taxZoneToRemove', null)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button type="submit" theme="danger">
+          {{ __('adminhub::global.remove') }}
+        </x-hub::button>
+      </x-slot>
+    </x-hub::modal.dialog>
+
     <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
       <div class="space-y-4">
         <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('taxZone.name')" required>
@@ -50,8 +70,33 @@
         </div>
       </div>
     </div>
+  </div>
 
+  <div class="overflow-hidden shadow sm:rounded-md">
+    <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
+      <div class="space-y-4">
+        <header>
+          <h3>{{ __('adminhub::settings.taxes.tax-zones.customer_groups.title') }}</h3>
+          <span class="text-sm text-gray-600">
+            {{ __('adminhub::settings.taxes.tax-zones.customer_groups.instructions') }}
+          </span>
+        </header>
 
+        <div class="space-y-4">
+          @foreach($this->customerGroups as $groupIndex => $customerGroup)
+            <div class="border rounded p-3 flex items-center justify-between" wire:key="cg_{{ $groupIndex }}">
+              <div>
+                {{ $customerGroup['name'] }}
+              </div>
+
+              <div>
+                <x-hub::input.toggle wire:model="customerGroups.{{ $groupIndex }}.linked" />
+              </div>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="overflow-hidden shadow sm:rounded-md">
@@ -119,7 +164,7 @@
   <form wire:submit.prevent="save" class="py-3 justify-between bg-gray-50 flex">
     <div>
       @if($taxZone->id)
-        <x-hub::button theme="danger" type="button"  wire:click="$set('showDeleteConfirm', true)">
+        <x-hub::button theme="danger" type="button"  wire:click="$set('taxZoneToRemove', {{ $taxZone->id }})">
           Delete tax zone
         </x-hub::button>
       @endif

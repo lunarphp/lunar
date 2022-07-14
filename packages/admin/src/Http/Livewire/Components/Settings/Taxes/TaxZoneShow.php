@@ -2,8 +2,19 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
 
+use GetCandy\Models\TaxRateAmount;
+use GetCandy\Models\TaxZone;
+use Illuminate\Support\Facades\DB;
+
 class TaxZoneShow extends AbstractTaxZone
 {
+    /**
+     * The ID of the tax zone we want to remove.
+     *
+     * @var int
+     */
+    public ?int $taxZoneToRemove = null;
+
     /**
      * {@inheritDoc}
      */
@@ -18,6 +29,8 @@ class TaxZoneShow extends AbstractTaxZone
         $this->postcodes = $this->taxZone->postcodes->pluck('postcode')->join("\n");
 
         $this->syncTaxRates();
+
+        $this->syncCustomerGroups();
     }
 
     /**
@@ -32,6 +45,28 @@ class TaxZoneShow extends AbstractTaxZone
         $this->saveDetails();
 
         $this->notify('Tax Zone updated');
+    }
+
+    public function deleteZone()
+    {
+        DB::transaction(function () {
+            $taxZone = TaxZone::find($this->taxZoneToRemove);
+
+            $taxZone->states()->delete();
+            $taxZone->postcodes()->delete();
+            $taxZone->customerGroups()->delete();
+            $taxZone->countries()->delete();
+
+            $taxRateIds = $taxZone->taxRates()->pluck('id');
+
+            TaxRateAmount::whereIn('tax_rate_id', $taxRateIds)->delete();
+
+            $taxZone->taxRates()->delete();
+
+            $taxZone->delete();
+        });
+
+        return redirect()->route('hub.taxes.index');
     }
 
     /**

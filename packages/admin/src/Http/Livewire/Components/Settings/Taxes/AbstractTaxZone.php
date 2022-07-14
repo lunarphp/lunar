@@ -82,6 +82,13 @@ abstract class AbstractTaxZone extends Component
     public array $taxRateAmounts = [];
 
     /**
+     * The linked customer groups.
+     *
+     * @var array
+     */
+    public array $customerGroups = [];
+
+    /**
      * {@inheritDoc}
      */
     public function rules()
@@ -89,12 +96,18 @@ abstract class AbstractTaxZone extends Component
         return [
             'taxZone.name' => 'required',
             'taxZone.zone_type' => 'required',
+            'taxZone.zone_type' => 'required',
+            'taxZone.price_display' => 'required',
+            'taxZone.active' => 'boolean|nullable',
+            'taxZone.default' => 'boolean|nullable',
             'postcodes' => 'nullable|string|required_if:taxZone.zone_type,postcodes',
             'country' => 'nullable|string|required_if:taxZone.zone_type,postcodes,taxZone.zone_type,states',
             'selectedCountries' => 'array|required_if:taxZone.zone_type,country',
             'selectedStates' => 'array|required_if:taxZone.zone_type,states',
             'taxRates' => 'array',
             'taxRates.*.name' => 'string',
+            'customerGroups' => 'array',
+            'customerGroups.*.linked' => 'boolean|nullable',
         ];
     }
 
@@ -109,11 +122,6 @@ abstract class AbstractTaxZone extends Component
      * @return void
      */
     abstract public function save();
-
-    public function getCustomerGroupsProperty()
-    {
-        return CustomerGroup::get();
-    }
 
     /**
      * Return a list of available countries.
@@ -176,6 +184,16 @@ abstract class AbstractTaxZone extends Component
     public function getTaxClassesProperty()
     {
         return TaxClass::get();
+    }
+
+    /**
+     * Return all customer groups in the system.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllCustomerGroupsProperty()
+    {
+        return CustomerGroup::get();
     }
 
     /**
@@ -265,6 +283,22 @@ abstract class AbstractTaxZone extends Component
         $this->taxZone->countries()
             ->whereNotIn('country_id', $selectedCountries)
             ->delete();
+    }
+
+    protected function syncCustomerGroups()
+    {
+        $this->customerGroups = $this->allCustomerGroups->map(function ($group) {
+            $relation = $this->taxZone->customerGroups()->get()->first(function ($cg) use ($group) {
+               return $cg->customer_group_id == $group->id;
+            });
+
+            return [
+                'name' => $group->name,
+                'customer_group_id' => $group->id,
+                'link_id' => $relation?->id,
+                'linked' => !!$relation
+            ];
+        })->toArray();
     }
 
     /**
@@ -393,6 +427,26 @@ abstract class AbstractTaxZone extends Component
                     }
                 }
             }
+
+            // Customer groups to unlink.
+            $unlinked = collect($this->customerGroups)->reject(function ($group) {
+                return (bool) $group['linked'];
+            });
+
+
+            $linked = collect($this->customerGroups)->filter(function ($group) {
+                return (bool) $group['linked'] && is_null($group['link_id']);
+            });
+
+            $this->taxZone->customerGroups()->whereIn('customer_group_id', $unlinked->pluck('customer_group_id'))->delete();
+
+            if ($linked->count()) {
+                $this->taxZone->customerGroups()->createMany(
+                    $linked->map(fn ($group) => ['customer_group_id' => $group['customer_group_id']])
+                );
+            }
+
+            $this->syncCustomerGroups();
         });
 
         $this->syncTaxRates();

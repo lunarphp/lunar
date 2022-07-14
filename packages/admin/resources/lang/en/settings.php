@@ -134,6 +134,10 @@ return [
      * Taxes.
      */
     'taxes.tax-zones.index.title'             => 'Taxes',
+    'taxes.tax-zones.confirm_delete.title' => 'Confirm removal',
+    'taxes.tax-zones.confirm_delete.message' => 'Are you sure you want to delete this Tax Zone? This could result in data loss.',
+    'taxes.tax-zones.customer_groups.title' => 'Restrict to customer groups',
+    'taxes.tax-zones.customer_groups.instructions' => 'Select which customer groups you want to restrict this zone to. Leave unchecked for no restrictions.',
     'taxes.tax-zones.create_title' => 'Create tax zone',
     'taxes.tax-zones.create_btn' => 'Create tax zone',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
