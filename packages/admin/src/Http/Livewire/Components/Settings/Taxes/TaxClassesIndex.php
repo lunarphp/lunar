@@ -37,7 +37,7 @@ class TaxClassesIndex extends Component
 
     public function toggleDefault()
     {
-        $this->taxClass->default = !$this->taxClass->default;
+        $this->taxClass->default = ! $this->taxClass->default;
     }
 
     public function save()
