@@ -133,7 +133,7 @@ return [
     /**
      * Taxes.
      */
-    'taxes.tax-zones.index.title'             => 'Taxes',
+    'taxes.tax-zones.index.title'             => 'Tax Zones',
     'taxes.tax-zones.confirm_delete.title' => 'Confirm removal',
     'taxes.tax-zones.confirm_delete.message' => 'Are you sure you want to delete this Tax Zone? This could result in data loss.',
     'taxes.tax-zones.customer_groups.title' => 'Restrict to customer groups',
@@ -147,4 +147,12 @@ return [
     'taxes.tax-zones.price_display.label' => 'Price Display',
     'taxes.tax-zones.price_display.excl_tax' => 'Exclude Tax',
     'taxes.tax-zones.price_display.incl_tax' => 'Include Tax',
+    'taxes.tax-zones.zone_type.countries' => 'Limit to countries',
+    'taxes.tax-zones.zone_type.states' => 'Limit to states / provinces',
+    'taxes.tax-zones.zone_type.postcodes' => 'Limit to postcodes',
+    'taxes.tax-zones.tax_rates.title' => 'Tax Rates',
+    'taxes.tax-zones.tax_rates.create_button' => 'Add tax rate',
+    'settings.taxes.tax-zones.delete_button' => 'Delete tax rate',
+    'settings.taxes.tax-zones.create_button' => 'Create tax rate',
+    'settings.taxes.tax-zones.save_button' => 'Save tax rate',
 ];

@@ -10,10 +10,18 @@
 
   <x-hub::table>
     <x-slot name="head">
-      <x-hub::table.heading>Name</x-hub::table.heading>
-      <x-hub::table.heading>Type</x-hub::table.heading>
-      <x-hub::table.heading>Active</x-hub::table.heading>
-      <x-hub::table.heading>Default</x-hub::table.heading>
+      <x-hub::table.heading>
+        {{ __('adminhub::global.name') }}
+      </x-hub::table.heading>
+      <x-hub::table.heading>
+        {{ __('adminhub::global.type') }}
+      </x-hub::table.heading>
+      <x-hub::table.heading>
+        {{ __('adminhub::global.active') }}
+      </x-hub::table.heading>
+      <x-hub::table.heading>
+        {{ __('adminhub::global.default') }}
+      </x-hub::table.heading>
       <x-hub::table.heading></x-hub::table.heading>
     </x-slot>
     <x-slot name="body">

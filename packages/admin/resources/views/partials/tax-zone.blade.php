@@ -45,9 +45,15 @@
 
         <x-hub::input.group label="Type" for="type"  :error="$errors->first('taxZone.zone_type')" required>
           <x-hub::input.select id="type" wire:model="taxZone.zone_type">
-            <option value="country">Limit to Countries</option>
-            <option value="states">Limit to States / Provinces</option>
-            <option value="postcodes">Limit to list of Postcodes</option>
+            <option value="country">
+              {{ __('adminhub::settings.taxes.tax-zones.zone_type.countries') }}
+            </option>
+            <option value="states">
+              {{ __('adminhub::settings.taxes.tax-zones.zone_type.states') }}
+            </option>
+            <option value="postcodes">
+              {{ __('adminhub::settings.taxes.tax-zones.zone_type.postcodes') }}
+            </option>
           </x-hub::input.select>
         </x-hub::input.group>
 
@@ -102,7 +108,7 @@
   <div class="overflow-hidden shadow sm:rounded-md">
     <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
       <div class="space-y-4">
-        <h3>Tax Rates</h3>
+        <h3>{{ __('adminhub::settings.taxes.tax-zones.tax_rates.title') }}</h3>
       </div>
 
       @if($errors->has('taxRates'))
@@ -128,11 +134,11 @@
               </x-hub::button>
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <x-hub::input.group label="Name" for="name" required :error="$errors->first('taxRates.'.$taxRateIndex.'.name')">
+              <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" required :error="$errors->first('taxRates.'.$taxRateIndex.'.name')">
                 <x-hub::input.text wire:model="taxRates.{{ $taxRateIndex }}.name" />
               </x-hub::input.group>
 
-              <x-hub::input.group label="Priority" for="priority">
+              <x-hub::input.group :label="__('adminhub::inputs.priority.label')" for="priority">
                 <x-hub::input.text type="number" wire:model="taxRates.{{ $taxRateIndex }}.priority" />
               </x-hub::input.group>
             </div>
@@ -157,7 +163,9 @@
         @endforeach
       </div>
 
-      <x-hub::button theme="gray" type="button" wire:click="addTaxRate">Add tax rate</x-hub::button>
+      <x-hub::button theme="gray" type="button" wire:click="addTaxRate">
+        {{ __('adminhub::settings.taxes.tax-zones.tax_rates.create_button') }}
+      </x-hub::button>
     </div>
   </div>
 
@@ -165,15 +173,15 @@
     <div>
       @if($taxZone->id)
         <x-hub::button theme="danger" type="button"  wire:click="$set('taxZoneToRemove', {{ $taxZone->id }})">
-          Delete tax zone
+          {{ __('adminhub::settings.taxes.tax-zones.delete_button') }}
         </x-hub::button>
       @endif
     </div>
     <x-hub::button type="submit">
       @if($taxZone->id)
-        Save tax zone
+        {{ __('adminhub::settings.taxes.tax-zones.save_button') }}
       @else
-        Create tax zone
+        {{ __('adminhub::settings.taxes.tax-zones.create_button') }}
       @endif
     </x-hub::button>
   </form>

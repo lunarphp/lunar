@@ -2,7 +2,7 @@
   <div class="grid grid-cols-2 gap-4">
     <div class="border rounded">
       <div class="p-2 border-b shadow-sm">
-        <x-hub::input.text wire:model="searchTerm" placeholder="Search for country by name" />
+        <x-hub::input.text wire:model="searchTerm" :placeholder="__('adminhub::inputs.country.search_placeholder')" />
       </div>
       <div class="h-full max-h-64 overflow-y-auto">
         @foreach($this->countries as $country)
@@ -22,7 +22,9 @@
       </label>
     @empty
       <div class="flex h-full items-center text-center w-full">
-       <span class="w-full block text-center text-xs text-gray-500">Countries you select will appear here</span>
+       <span class="w-full block text-center text-xs text-gray-500">
+        {{ __('adminhub::inputs.country.empty_selected') }}
+       </span>
       </div>
     @endforelse
     </div>
