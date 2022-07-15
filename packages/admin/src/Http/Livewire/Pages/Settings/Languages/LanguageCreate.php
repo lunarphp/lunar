@@ -15,7 +15,7 @@ class LanguageCreate extends Component
     {
         return view('adminhub::livewire.pages.settings.languages.create')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.languages.create.title'),
+                'menu' => 'settings',
             ]);
     }
 }

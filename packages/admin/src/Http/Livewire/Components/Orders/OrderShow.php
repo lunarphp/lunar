@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
+use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
 use GetCandy\Models\Channel;
@@ -13,7 +14,7 @@ use Livewire\Component;
 
 class OrderShow extends Component
 {
-    use Notifies, WithCountries;
+    use Notifies, WithCountries, HasSlots;
 
     /**
      * The current order in view.
@@ -102,12 +103,18 @@ class OrderShow extends Component
     /**
      * {@inheritDoc}
      */
-    protected $listeners = [
-        'captureSuccess',
-        'refundSuccess',
-        'cancelRefund',
-        'refreshOrder',
-    ];
+    protected function getListeners()
+    {
+        return array_merge(
+            [
+                'captureSuccess',
+                'refundSuccess',
+                'cancelRefund',
+                'refreshOrder',
+            ],
+            $this->getHasSlotsListeners()
+        );
+    }
 
     /**
      * {@inheritDoc}
@@ -462,23 +469,6 @@ class OrderShow extends Component
     }
 
     /**
-     * Returns the activity log for the order.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getActivityLogProperty()
-    {
-        return $this->order->activities()->whereNotIn('event', ['updated'])->orderBy('created_at', 'desc')->get()->groupBy(function ($log) {
-            return $log->created_at->format('Y-m-d');
-        })->map(function ($logs) {
-            return [
-                'date' => $logs->first()->created_at->startOfDay(),
-                'items' => $logs,
-            ];
-        });
-    }
-
-    /**
      * Return whether the billing postcode matches the shipping postcode.
      *
      * @return void
@@ -576,5 +566,25 @@ class OrderShow extends Component
     {
         return view('adminhub::livewire.components.orders.show')
             ->layout('adminhub::layouts.base');
+    }
+
+    /**
+     * Returns the model which has slots associated.
+     *
+     * @return \GetCandy\Models\Order
+     */
+    protected function getSlotModel()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Returns the contexts for any slots.
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['order.all', 'order.show'];
     }
 }

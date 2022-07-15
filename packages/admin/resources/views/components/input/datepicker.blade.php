@@ -1,10 +1,12 @@
 <div
   x-data="{
-    value: @entangle($attributes->wire('model'))
+    value: @entangle($attributes->wire('model')),
+    init() {
+      this.$nextTick(() => {
+        flatpickr($refs.input, {{ json_encode($options) }})
+      })
+    }
   }"
-  x-init="flatpickr($refs.input, {
-    enableTime: {{ $enableTime ? 'true' : 'false' }}
-  })"
   @change="value = $event.target.value"
   class="flex relative"
 >
