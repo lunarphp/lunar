@@ -178,7 +178,6 @@ class OrderStatus extends Component
                 Mail::to($email)->queue($mailable);
 
                 if (method_exists($mailable, 'render')) {
-
                 }
                 $storedPath = 'orders/activity/'.Str::random().'.html';
 
