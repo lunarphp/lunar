@@ -2,12 +2,14 @@
 
 namespace GetCandy\Database\Factories;
 
-use GetCandy\Models\ProductOptionValue;
+use GetCandy\Models\ProductFeatureValue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFeatureValueFactory extends Factory
 {
-    protected $model = ProductOptionValue::class;
+    private static $position = 1;
+
+    protected $model = ProductFeatureValue::class;
 
     public function definition(): array
     {
@@ -15,6 +17,7 @@ class ProductFeatureValueFactory extends Factory
             'name' => [
                 'en' => $this->faker->name,
             ],
+            'position' => self::$position++,
         ];
     }
 }

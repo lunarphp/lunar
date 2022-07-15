@@ -72,7 +72,7 @@ class FeatureValueEdit extends Component
             // @todo Not sure why this is not working here?
             // $this->featureValue->increment('position');
 
-            $this->featureValue->feature()->associate($this->feature);
+            $this->featureValue->productFeature()->associate($this->feature);
             $this->featureValue->save();
             $this->notify(
                 __('adminhub::notifications.attribute-edit.created')

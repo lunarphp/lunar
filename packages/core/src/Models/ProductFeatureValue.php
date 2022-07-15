@@ -11,6 +11,15 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class ProductFeatureValue
+ * @package GetCandy\Models
+ *
+ * @property string $name
+ * @property int $position
+ *
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class ProductFeatureValue extends BaseModel
 {
     use HasFactory;
@@ -59,7 +68,7 @@ class ProductFeatureValue extends BaseModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function feature(): BelongsTo
+    public function productFeature(): BelongsTo
     {
         return $this->belongsTo(ProductFeature::class, 'product_feature_id');
     }

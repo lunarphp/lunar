@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ProductFeature extends BaseModel
 {
     use HasFactory;
-    use HasMedia;
     use HasTranslations;
     use Searchable;
     use HasMacros;
