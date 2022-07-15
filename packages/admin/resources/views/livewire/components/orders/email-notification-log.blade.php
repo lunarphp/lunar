@@ -15,7 +15,6 @@
             <iframe
                 srcdoc="{{ $this->previewHtml }}"
                 class="grow w-full h-full"
-                {{-- sandbox="allow-same-origin" --}}
                 x-ref="iframe"
             ></iframe>
         </div>
