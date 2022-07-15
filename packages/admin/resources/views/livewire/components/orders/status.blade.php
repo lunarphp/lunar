@@ -1,7 +1,16 @@
 <div>
-    <x-hub::button theme="gray" size="sm" type="button" wire:click.prevent="$set('showStatusSelect', true)">
-        {{ __('adminhub::components.orders.status.update_btn') }}
-    </x-hub::button>
+    <button
+        class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent border-gray-200 rounded hover:bg-white bg-gray-50 hover:border-gray-200"
+        type="button"
+        wire:click.prevent="$set('showStatusSelect', true)"
+      >
+      <x-hub::icon
+        ref="status-online"
+        style="solid"
+        class="w-4 mr-2"
+      />
+      {{ __('adminhub::components.orders.status.update_btn') }}
+    </button>
 
     <x-hub::slideover title="Update status" form="updateStatus" wire:model="showStatusSelect">
         <div class="space-y-4">
