@@ -57,7 +57,7 @@ class Manifest extends PackageManifest
         $namespace = implode('\\', $providerParts);
         $autoload = $package['autoload']['psr-4'][$namespace.'\\'];
 
-        $directory = Str::remove($autoload, dirname($reflector->getFileName()));
+        $directory = Str::remove(rtrim($autoload, '/'), dirname($reflector->getFileName()));
         $json = json_decode(File::get($directory.'composer.json'), true);
 
         $getcandy = $json['extra']['getcandy'] ?? [];

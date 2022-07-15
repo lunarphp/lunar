@@ -1,41 +1,70 @@
 <div>
-    <x-hub::menu handle="sidebar" current="{{ request()->route()->getName() }}">
-      <div class="flex-col space-y-3">
-      @foreach($component->items as $item)
-        <a
-          href="{{ route($item->route) }}"
-          class="flex items-center mx-5 px-2 py-2 text-base font-medium rounded-md group @if(!$item->isActive($component->attributes->get('current'))) text-gray-400 hover:text-gray-900 @else text-blue-600 @endif"
-        >
-          {!! $item->renderIcon() !!}
-          <span class="ml-2">{{ $item->name }}</span>
-        </a>
-      @endforeach
+    <x-hub::menu handle="sidebar"
+                 current="{{ request()->route()->getName() }}">
+        <ul class="flex flex-col space-y-2"
+            :class="{ 'items-center': !showExpandedMenu }">
+            @foreach ($component->items as $item)
+                <li>
+                    <a href="{{ route($item->route) }}"
+                       @class([
+                           'menu-link',
+                           'menu-link--active' => $item->isActive(
+                               $component->attributes->get('current')
+                           ),
+                           'menu-link--inactive' => !$item->isActive(
+                               $component->attributes->get('current')
+                           ),
+                       ])
+                       x-data="{ showTooltip: false }"
+                       x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
+                       x-on:mouseleave="showTooltip = false">
+                        {!! $item->renderIcon('w-5 h-5') !!}
 
-{{--
-      @foreach($component->sections as $section)
-        <div>
-          <span class="block text-xs font-medium text-gray-400 uppercase">{{ $section->name }}</span>
-          <nav class="flex-col mt-2 space-y-2">
-            @foreach($section->getItems() as $item)
-              <a href="{{ route($item->route) }}" class="flex items-center px-2 py-2 text-sm font-medium @if(!$item->isActive($component->attributes->get('current'))) text-gray-300 hover:text-gray-900 @else text-gray-900 bg-gray-100 @endif rounded-md group">
-                {!! $item->renderIcon('w-6 h-6') !!}
-                <span class="ml-2">{{ $item->name }}</span>
-              </a>
+                        <span x-cloak
+                              x-show="showExpandedMenu"
+                              class="text-sm font-medium">
+                            {{ $item->name }}
+                        </span>
+
+                        <span x-cloak
+                              x-transition
+                              x-show="showTooltip"
+                              class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                            {{ $item->name }}
+                        </span>
+                    </a>
+                </li>
             @endforeach
-          </nav>
-        </div>
-      @endforeach
---}}
-
-      </div>
+        </ul>
     </x-hub::menu>
 
-    <div class="mt-4">
-      @if(Auth::user()->can('settings'))
-        <a href="{{ route('hub.settings') }}" class="flex items-center mx-5 px-2 py-2 text-base rounded-md group @if(!Str::contains(request()->url(), 'settings')) text-gray-400 hover:text-gray-900 @else text-gray-900 bg-gray-100 @endif">
-          {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-6 h-6 mr-2') !!}
-          {{ __('adminhub::global.settings') }}
-        </a>
-      @endif
-    </div>
+    @if (Auth::user()->can('settings'))
+        <div class="flex flex-col w-full pt-4 mt-4 border-t border-gray-100 dark:border-gray-800"
+             :class="{ 'items-center': !showExpandedMenu }">
+            <a href="{{ route('hub.settings') }}"
+               @class([
+                   'menu-link',
+                   'menu-link--active' => Str::contains(request()->url(), 'settings'),
+                   'menu-link--inactive' => !Str::contains(request()->url(), 'settings'),
+               ])
+               x-data="{ showTooltip: false }"
+               x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
+               x-on:mouseleave="showTooltip = false">
+                {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-5 h-5') !!}
+
+                <span x-cloak
+                      x-show="showExpandedMenu"
+                      class="text-sm font-medium">
+                    {{ __('adminhub::global.settings') }}
+                </span>
+
+                <span x-cloak
+                      x-transition
+                      x-show="showTooltip"
+                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                    {{ __('adminhub::global.settings') }}
+                </span>
+            </a>
+        </div>
+    @endif
 </div>

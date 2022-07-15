@@ -2,9 +2,9 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Tests\Stubs\Mailers\TestAMailer;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use GetCandy\Hub\Models\Staff;
+use GetCandy\Hub\Tests\Stubs\Mailers\TestAMailer;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
@@ -14,7 +14,6 @@ use GetCandy\Models\OrderLine;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 
 /**
@@ -148,7 +147,7 @@ class OrderStatusTest extends TestCase
                 'color' => '#848a8c',
                 'mailers' => [
                     TestAMailer::class,
-                ]
+                ],
             ],
             'payment-received' => [
                 'label' => 'Payment Received',
@@ -215,7 +214,7 @@ class OrderStatusTest extends TestCase
                 'color' => '#848a8c',
                 'mailers' => [
                     TestAMailer::class,
-                ]
+                ],
             ],
         ]);
 
@@ -271,7 +270,7 @@ class OrderStatusTest extends TestCase
                 'color' => '#848a8c',
                 'mailers' => [
                     TestAMailer::class,
-                ]
+                ],
             ],
         ]);
 
@@ -291,7 +290,7 @@ class OrderStatusTest extends TestCase
             (new Order)->getTable(),
             [
                 'id' => $order->id,
-                'status' => $component->get('newStatus')
+                'status' => $component->get('newStatus'),
             ]
         );
     }

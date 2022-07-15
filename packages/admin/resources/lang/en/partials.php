@@ -169,6 +169,8 @@ return [
     'orders.lines.sub_total' => 'Sub Total',
     'orders.lines.discount_total' => 'Discount Total',
     'orders.lines.total' => 'Total',
+    'orders.lines.current_stock_level' => 'Current Stock Level: :count',
+    'orders.lines.purchase_stock_level' => 'at time of ordering: :count',
     'orders.details.status' => 'Status',
     'orders.details.reference' => 'Reference',
     'orders.details.customer_reference' => 'Customer Reference',

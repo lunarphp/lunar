@@ -24,7 +24,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ]);
         Config::set('getcandy.urls.generator', TestUrlGenerator::class);
 
-        View::addLocation(__DIR__ . '/resources/views');
+        View::addLocation(__DIR__.'/resources/views');
     }
 
     protected function getPackageProviders($app)

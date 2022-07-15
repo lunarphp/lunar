@@ -15,7 +15,7 @@ class ChannelCreate extends Component
     {
         return view('adminhub::livewire.pages.settings.channels.create')
             ->layout('adminhub::layouts.settings', [
-                'title' => 'Create Channel',
+                'menu' => 'settings',
             ]);
     }
 }
