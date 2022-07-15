@@ -171,7 +171,7 @@ return [
     'orders.capture.select_transaction'              => 'Select a transaction',
     'orders.capture.capture_btn'                      => 'Capture payment',
     /**
-     * Order Status
+     * Order Status.
      */
     'orders.status.update_btn' => 'Update Status',
     'orders.status.select_new' => 'Select a new status',
