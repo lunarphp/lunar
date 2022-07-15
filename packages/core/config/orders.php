@@ -16,13 +16,19 @@ return [
         'awaiting-payment' => [
             'label' => 'Awaiting Payment',
             'color' => '#848a8c',
+            'mailers' => [],
+            'notifications' => [],
         ],
         'payment-received' => [
             'label' => 'Payment Received',
             'color' => '#6a67ce',
+            'mailers' => [],
+            'notifications' => [],
         ],
         'dispatched'  => [
             'label' => 'Dispatched',
+            'mailers' => [],
+            'notifications' => [],
         ],
     ],
 ];
