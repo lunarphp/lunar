@@ -114,7 +114,7 @@ class ProductFeatureTest extends TestCase
 
         $this->assertDatabaseCount((new ProductFeatureValue)->getTable(), 1);
         $this->assertCount(1, ProductFeatureValue::whereRelation(
-            'feature',
+            'productFeature',
             'product_feature_id',
             $productFeature->id)->get(),
         );
