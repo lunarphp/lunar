@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * @group getcandy.jobs
  */
-class NumberTest extends TestCase
+class UpdateProductPositionsTest extends TestCase
 {
     use RefreshDatabase;
 
