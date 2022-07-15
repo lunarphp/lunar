@@ -309,3 +309,27 @@ Once updated, GetCandy will keep a render of the email sent out in the activity 
 :::tip
 These email notifications do not get sent out automatically if you update the status outside of the hub.
 :::
+
+### Mailer template
+
+When building out the template for your mailer, you should assume you have access to the `$order` model. When the status is updated this is passed through to the view data for the mailer, along with any additional content entered.
+Since you may not always have additional content when sending out the mailer, you should check the existence first.
+
+Here's an example of what the template could look like:
+
+```html
+<h1>It's on the way!</h1>
+
+<p>Your order with reference {{ $order->reference }} has been dispatched!</p>
+
+<p>{{ $order->total->formatted() }}</p>
+
+@if($content ?? null)
+    <h2>Additional notes</h2>
+    <p>{{ $content }}</p>
+@endif
+
+@foreach($order->lines as $line)
+    <!--  -->
+@endforeach
+```
