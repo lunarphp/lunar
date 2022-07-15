@@ -293,8 +293,8 @@ GetCandy allows you to specific what Laravel mailers/notifications should be ava
         'label' => 'Awaiting Payment',
         'color' => '#848a8c',
         'mailers' => [
-            \App\Mail\MyMailer::class,
-            \App\Mail\MyOtherMailer::class,
+            App\Mail\MyMailer::class,
+            App\Mail\MyOtherMailer::class,
         ],
         'notifications' => [],
     ],
