@@ -280,3 +280,32 @@ In the meantime, you can absolutely still get a storefront working, at the end o
 In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table, the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier for you as laid out above.
 
 And as always, if you have any questions you can reach out on our Discord!
+
+
+## Order Notifications
+
+GetCandy allows you to specific what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `getcandy/orders` config file and are defined like so:
+
+
+```php
+'statuses'     => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
+        'mailers' => [
+            MyMailer::class,
+            MyOtherMailer::class,
+        ],
+        'notifications' => [],
+    ],
+    // ...
+],
+```
+
+Now when you update an order's status in the hub, you will have these mailers available if the new status is `awaiting-payment`. You can then choose the email addresses which should be sent out and also add an additional email address if required.
+
+Once updated, GetCandy will keep a render of the email sent out in the activity log so you have a clear history of what's been sent out.
+
+:::tip
+These email notifications do not get sent out automatically if you update the status outside of the hub.
+:::
