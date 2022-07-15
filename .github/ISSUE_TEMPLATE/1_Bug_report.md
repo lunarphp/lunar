@@ -1,6 +1,10 @@
 ---
-name: "Bug report"
-about: "Report something that's broken."
+name: Bug report
+about: Report something that's broken.
+title: ''
+labels: bug
+assignees: ''
+
 ---
 
 <!-- DO NOT THROW THIS AWAY -->
