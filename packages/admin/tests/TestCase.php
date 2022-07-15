@@ -7,6 +7,7 @@ use GetCandy\GetCandyServiceProvider;
 use GetCandy\Hub\AdminHubServiceProvider;
 use GetCandy\Tests\Stubs\TestUrlGenerator;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
@@ -22,6 +23,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'driver' => 'getcandyhub',
         ]);
         Config::set('getcandy.urls.generator', TestUrlGenerator::class);
+
+        View::addLocation(__DIR__ . '/resources/views');
     }
 
     protected function getPackageProviders($app)

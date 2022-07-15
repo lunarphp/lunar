@@ -147,7 +147,7 @@ class OrderStatus extends Component
             return 'Unable to load preview';
         }
 
-        return $this->buildMailer($mailer['class'])->render();
+        return trim($this->buildMailer($mailer['class'])->render());
     }
 
     public function buildMailer($class)
@@ -177,6 +177,9 @@ class OrderStatus extends Component
             foreach ($this->emailAddresses as $email) {
                 Mail::to($email)->queue($mailable);
 
+                if (method_exists($mailable, 'render')) {
+
+                }
                 $storedPath = 'orders/activity/'.Str::random().'.html';
 
                 $storedMailer = Storage::put(
