@@ -134,4 +134,5 @@ return [
     'brand' => 'Brand',
     'stock' => 'Stock',
     'show_deleted' => 'Show Deleted',
+    'preview' => 'Preview',
 ];
