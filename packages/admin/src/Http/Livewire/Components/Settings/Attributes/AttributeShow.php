@@ -105,10 +105,20 @@ class AttributeShow extends AbstractAttribute
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getAttributeGroupsProperty()
+    public function getAttributeGroupsProperty(): Collection
     {
         return AttributeGroup::whereAttributableType($this->typeClass)
-            ->orderBy('position')->get();
+            ->with('attributes')
+            ->orderBy('position')
+            ->get()
+            ->map(function ($group) {
+                if ($group->type === 'model' && $group->source) {
+                    /** @var \Illuminate\Database\Eloquent\Model $model */
+                    $model = app($group->source);
+                    $group->attributes = $model::all();
+                }
+                return $group;
+            });
     }
 
     /**

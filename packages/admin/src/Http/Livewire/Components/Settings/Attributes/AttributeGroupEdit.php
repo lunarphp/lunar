@@ -2,9 +2,14 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
 
+use GetCandy\Facades\FieldTypeManifest;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\AttributeGroup;
+use GetCandy\Models\Collection as CollectionModel;
+use GetCandy\Models\ProductFeature;
+use GetCandy\Models\ProductOption;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -40,6 +45,8 @@ class AttributeGroupEdit extends Component
     public function rules()
     {
         return [
+            "attributeGroup.type" => "required",
+            "attributeGroup.source" => "sometimes|required",
             "attributeGroup.name.{$this->defaultLanguage->code}" => [
                 'required',
                 'string',
@@ -54,6 +61,34 @@ class AttributeGroupEdit extends Component
     public function mount()
     {
         $this->attributeGroup = $this->attributeGroup ?: new AttributeGroup();
+        $this->attributeGroup->type = $this->getGroupTypesProperty()->keys()->first();
+    }
+
+    /**
+     * Return the available group types.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getGroupTypesProperty(): Collection
+    {
+        return collect([
+            'default' => 'Default',
+            'model' => 'Model',
+        ]);
+    }
+
+    /**
+     * Return the models collection.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getModelsCollectionProperty(): Collection
+    {
+        return collect([
+            'brands' => CollectionModel::class,
+            'features' => ProductFeature::class,
+            'options' => ProductOption::class,
+        ]);
     }
 
     public function create()

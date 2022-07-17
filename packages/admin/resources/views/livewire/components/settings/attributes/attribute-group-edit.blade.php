@@ -1,4 +1,4 @@
-<form wire:submit.prevent="create">
+<form wire:submit.prevent="create" class="space-y-2">
   <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('attributeGroup.name.' . $this->defaultLanguage->code)">
     <x-hub::translatable>
       <x-hub::input.text
@@ -16,6 +16,32 @@
       @endforeach
     </x-hub::translatable>
   </x-hub::input.group>
+
+  <x-hub::input.group
+    for="type"
+    :label="__('adminhub::inputs.type.label')"
+    :error="$errors->first('attributeGroup.type')"
+  >
+    <x-hub::input.select wire:model="attributeGroup.type">
+      @foreach($this->groupTypes as $groupType => $groupTypeName)
+        <option value="{{ $groupType }}">{{ $groupTypeName }}</option>
+      @endforeach
+    </x-hub::input.select>
+  </x-hub::input.group>
+
+  @if($attributeGroup->type === 'model')
+    <x-hub::input.group
+    for="type"
+    :label="__('Select Model')"
+    :error="$errors->first('attributeGroup.type')"
+  >
+    <x-hub::input.select wire:model="attributeGroup.source">
+      @foreach($this->modelsCollection as $model)
+        <option value="{{ $model }}">{{ $model }}</option>
+      @endforeach
+    </x-hub::input.select>
+  </x-hub::input.group>
+  @endif
 
   @if($errors->has('attributeGroup.handle'))
     <div class="mt-4">

@@ -81,8 +81,10 @@
                 <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
                      @if ($group->attributes->count()) x-show="expanded" @endif>
                     <div class="space-y-2"
+                         @if($group->type == 'default')
                          wire:sort
                          sort.options='{group: "attributes", method: "sortAttributes", owner: {{ $group->id }}}'
+                         @endif
                          x-show="expanded">
                         @foreach ($group->attributes as $attribute)
                             <div class="flex items-center justify-between w-full p-3 text-sm bg-white border border-transparent rounded shadow-sm sort-item-element hover:border-gray-300"
@@ -90,38 +92,42 @@
                                  sort.item="attributes"
                                  sort.parent="{{ $group->id }}"
                                  sort.id="{{ $attribute->id }}">
-                                <div sort.handle
-                                     class="cursor-grab">
-                                    <x-hub::icon ref="selector"
-                                                 style="solid"
-                                                 class="mr-2 text-gray-400 hover:text-gray-700" />
-                                </div>
-                                <span class="truncate grow">{{ $attribute->translate('name') }}</span>
-                                <div class="mr-4 text-xs text-gray-500">
-                                    {{ class_basename($attribute->type) }}
-                                </div>
-                                <div>
-                                    <x-hub::dropdown minimal>
-                                        <x-slot name="options">
-                                            <x-hub::dropdown.button type="button"
-                                                                    wire:click="$set('editAttributeId', {{ $attribute->id }})"
-                                                                    class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
-                                                {{ __('adminhub::components.attributes.show.edit_attribute_btn') }}
-                                                <x-hub::icon ref="pencil"
-                                                             style="solid"
-                                                             class="w-4" />
-                                            </x-hub::dropdown.button>
-
-                                            @if (!$attribute->system)
-                                                <x-hub::dropdown.button wire:click="$set('deleteAttributeId', {{ $attribute->id }})"
-                                                                        class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
-                                                    <span
-                                                          class="text-red-500">{{ __('adminhub::components.attributes.show.delete_attribute_btn') }}</span>
+                                @if($group->type == 'default')
+                                    <div sort.handle
+                                         class="cursor-grab">
+                                        <x-hub::icon ref="selector"
+                                                     style="solid"
+                                                     class="mr-2 text-gray-400 hover:text-gray-700" />
+                                    </div>
+                                    <span class="truncate grow">{{ $attribute->translate('name') }}</span>
+                                    <div class="mr-4 text-xs text-gray-500">
+                                        {{ class_basename($attribute->type) }}
+                                    </div>
+                                    <div>
+                                        <x-hub::dropdown minimal>
+                                            <x-slot name="options">
+                                                <x-hub::dropdown.button type="button"
+                                                                        wire:click="$set('editAttributeId', {{ $attribute->id }})"
+                                                                        class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
+                                                    {{ __('adminhub::components.attributes.show.edit_attribute_btn') }}
+                                                    <x-hub::icon ref="pencil"
+                                                                 style="solid"
+                                                                 class="w-4" />
                                                 </x-hub::dropdown.button>
-                                            @endif
-                                        </x-slot>
-                                    </x-hub::dropdown>
-                                </div>
+
+                                                @if (!$attribute->system)
+                                                    <x-hub::dropdown.button wire:click="$set('deleteAttributeId', {{ $attribute->id }})"
+                                                                            class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                                                        <span
+                                                              class="text-red-500">{{ __('adminhub::components.attributes.show.delete_attribute_btn') }}</span>
+                                                    </x-hub::dropdown.button>
+                                                @endif
+                                            </x-slot>
+                                        </x-hub::dropdown>
+                                    </div>
+                                @else
+                                    <span class="truncate grow">{{ $attribute->translate('name') }}</span>
+                                @endif
                             </div>
                         @endforeach
                     </div>
