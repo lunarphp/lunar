@@ -32,12 +32,26 @@
   @if($attributeGroup->type === 'model')
     <x-hub::input.group
     for="type"
-    :label="__('Select Model')"
+    :label="__('Model')"
     :error="$errors->first('attributeGroup.type')"
   >
     <x-hub::input.select wire:model="attributeGroup.source">
       @foreach($this->modelsCollection as $model)
         <option value="{{ $model }}">{{ $model }}</option>
+      @endforeach
+    </x-hub::input.select>
+  </x-hub::input.group>
+  @endif
+
+  @if($attributeGroup->type === 'model' && $attributeGroup->source === \GetCandy\Models\Collection::class)
+    <x-hub::input.group
+    for="type"
+    :label="__('Select Collection')"
+    :error="$errors->first('attributeGroup.type')"
+  >
+    <x-hub::input.select wire:model="attributeGroup.source">
+      @foreach($this->collectionTypes as $collectionType)
+        <option value="{{ \GetCandy\Models\Collection::class.'::'.$collectionType }}">{{ $collectionType }}</option>
       @endforeach
     </x-hub::input.select>
   </x-hub::input.group>

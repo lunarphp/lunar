@@ -79,15 +79,30 @@ class AttributeGroupEdit extends Component
 
     /**
      * Return the models collection.
+     * @todo Activate features once merged and any other model you would like to use
      *
      * @return \Illuminate\Support\Collection
      */
     public function getModelsCollectionProperty(): Collection
     {
         return collect([
-            'brands' => CollectionModel::class,
-            'features' => ProductFeature::class,
+            '' => 'Select a model',
+            'collection' => CollectionModel::class,
+            //'features' => ProductFeature::class,
             'options' => ProductOption::class,
+        ]);
+    }
+
+    /**
+     * Return the collection types.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getCollectionTypesProperty(): Collection
+    {
+        return collect([
+            'categories' => 'Categories',
+            'brands' => 'Brands',
         ]);
     }
 

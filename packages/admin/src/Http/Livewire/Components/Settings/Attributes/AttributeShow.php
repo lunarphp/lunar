@@ -113,9 +113,13 @@ class AttributeShow extends AbstractAttribute
             ->get()
             ->map(function ($group) {
                 if ($group->type === 'model' && $group->source) {
-                    /** @var \Illuminate\Database\Eloquent\Model $model */
-                    $model = app($group->source);
-                    $group->attributes = $model::all();
+                    try {
+                        /** @var \Illuminate\Database\Eloquent\Model $model */
+                        $model = app($group->source);
+                        $group->attributes = $model::all();
+                    } catch (\Exception $e) {
+                        //dd($e->getMessage());
+                    }
                 }
                 return $group;
             });
