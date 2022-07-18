@@ -14,14 +14,25 @@ class Richtext extends Component
     public $initialValue = null;
 
     /**
+     * The set of options for the rich text field.
+     *
+     * @var array
+     */
+    public array $options = [
+        'theme' => 'snow',
+    ];
+
+    /**
      * Instantiate the component.
      *
      * @param  string  $initialValue
      */
-    public function __construct($initialValue = null)
+    public function __construct($initialValue = null, array $options = [])
     {
         $this->initialValue = $initialValue;
+        $this->options = array_merge($this->options, $options);
     }
+
 
     /**
      * Get a unique instance id.

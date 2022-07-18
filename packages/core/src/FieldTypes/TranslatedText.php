@@ -5,6 +5,7 @@ namespace GetCandy\FieldTypes;
 use GetCandy\Base\FieldType;
 use GetCandy\Exceptions\FieldTypeException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\Rule;
 use JsonSerializable;
 
 class TranslatedText implements FieldType, JsonSerializable
@@ -108,6 +109,14 @@ class TranslatedText implements FieldType, JsonSerializable
         return [
             'options' => [
                 'richtext' => 'nullable',
+                'options' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if (!json_decode($value, true)) {
+                            $fail('Must be valid json');
+                        }
+                    }
+                ]
             ],
         ];
     }
