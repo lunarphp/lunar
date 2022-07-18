@@ -20,6 +20,3 @@
     <textarea wire:model.defer="attribute.configuration.options" class="w-full text-sm bg-gray-50 p-3 rounded font-mono" rows="20">{{ $attribute->configuration['options'] ?? null }}</textarea>
   </div>
 @endif
-
-
-{{-- JSON.stringify(obj, null, 2); --}}
