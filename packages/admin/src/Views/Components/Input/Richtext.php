@@ -33,7 +33,6 @@ class Richtext extends Component
         $this->options = array_merge($this->options, $options);
     }
 
-
     /**
      * Get a unique instance id.
      *
