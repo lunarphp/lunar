@@ -40,7 +40,7 @@ class Number implements FieldType, JsonSerializable
      */
     public function getValue()
     {
-        return $this->value ?? '';
+        return $this->value;
     }
 
     /**
