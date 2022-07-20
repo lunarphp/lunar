@@ -42,7 +42,7 @@ return [
     'attribute-group-edit.name.placeholder'     => 'e.g. Additional Details',
     'attribute-group-edit.create_btn'           => 'Create attribute group',
     'attribute-group-edit.update_btn'           => 'Update attribute group',
-    'attribute-group-edit.non_unique_handle'    => 'This name has been already been taken',
+    'attribute-group-edit.non_unique_handle'    => 'This name has already been taken',
     /**
      * Attribute show.
      */

@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
 
+use GetCandy\Base\Traits\WithModelAttributeGroup;
 use GetCandy\Facades\AttributeManifest;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
@@ -14,6 +15,7 @@ class AttributeShow extends AbstractAttribute
 {
     use Notifies;
     use WithLanguages;
+    use WithModelAttributeGroup;
 
     /**
      * The type property.
@@ -111,18 +113,7 @@ class AttributeShow extends AbstractAttribute
             ->with('attributes')
             ->orderBy('position')
             ->get()
-            ->map(function ($group) {
-                if ($group->type === 'model' && $group->source) {
-                    try {
-                        /** @var \Illuminate\Database\Eloquent\Model $model */
-                        $model = app($group->source);
-                        $group->attributes = $model::all();
-                    } catch (\Exception $e) {
-                        //dd($e->getMessage());
-                    }
-                }
-                return $group;
-            });
+            ->map(fn ($group) => $this->getAttributeGroupFromModel($group));
     }
 
     /**

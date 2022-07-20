@@ -46,7 +46,7 @@ class AttributeGroupEdit extends Component
     {
         return [
             "attributeGroup.type" => "required",
-            "attributeGroup.source" => "sometimes|required",
+            //"attributeGroup.source" => "required_if:attributeGroup.type,model",
             "attributeGroup.name.{$this->defaultLanguage->code}" => [
                 'required',
                 'string',
@@ -86,7 +86,7 @@ class AttributeGroupEdit extends Component
     public function getModelsCollectionProperty(): Collection
     {
         return collect([
-            '' => 'Select a model',
+            '--' => 'Select a model',
             'collection' => CollectionModel::class,
             //'features' => ProductFeature::class,
             'options' => ProductOption::class,
@@ -106,16 +106,15 @@ class AttributeGroupEdit extends Component
         ]);
     }
 
+    /**
+     * @todo Rename to save then refactor to inject single action
+     */
     public function create()
     {
         $this->validate();
 
-        $handle = Str::handle("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
+        $handle = Str::handle($this->attributeGroup->translate('name'));
         $this->attributeGroup->handle = $handle;
-
-        $this->validate([
-            'attributeGroup.handle' => 'unique:'.get_class($this->attributeGroup).',handle',
-        ]);
 
         if ($this->attributeGroup->id) {
             $this->attributeGroup->save();
@@ -126,6 +125,10 @@ class AttributeGroupEdit extends Component
 
             return;
         }
+
+        $this->validate([
+            'attributeGroup.handle' => 'unique:'.get_class($this->attributeGroup).',handle',
+        ]);
 
         $this->attributeGroup->attributable_type = $this->attributableType;
         $this->attributeGroup->position = AttributeGroup::whereAttributableType(
