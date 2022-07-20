@@ -33,6 +33,8 @@ class ProductTypeShow extends AbstractProductType
 
     public ?int $selectedGroupId = null;
 
+    protected $listeners = ['refreshComponent' => '$refresh'];
+
     public function mount()
     {
         // @todo improve actions
@@ -84,9 +86,10 @@ class ProductTypeShow extends AbstractProductType
 
         $this->notify(
             __('adminhub::catalogue.product-types.show.updated_message'),
-            'hub.product-type.show',
-            [$this->productType]
         );
+
+        $this->emitSelf('refreshComponent');
+        $this->showGroupAssign = false;
     }
 
     /**
