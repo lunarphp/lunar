@@ -5,36 +5,35 @@
       </x-hub::input.group>
     </div>
 
-    <div x-data="{ view: 'products' }">
-      <nav class="flex space-x-4" aria-label="Tabs">
-        <!-- Current: "bg-gray-100 text-gray-700", Default: "text-gray-500 hover:text-gray-700" -->
-        <button type="button" wire:click="$set('view', 'products')" class="px-3 py-3 text-sm font-medium @if($view == 'products') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t">
-            {{ __('adminhub::partials.product-type.product_attributes_btn') }}
-        </button>
+    <x-hub::tabs :tabs="$this->tabs" :activeTab="$this->activeTab">
+        @includeWhen($this->activeTab == 'products', 'adminhub::partials.product-types.attributes', ['type' => 'products'])
+        @includeWhen(str_starts_with($this->activeTab, 'model_'), 'adminhub::partials.product-types.model-list', ['handle' => $this->activeTab])
+    </x-hub::tabs>
 
-        <button
-          type="button"
-          wire:click="$set('view', 'variants')"
-          class="px-3 py-3 text-sm font-medium @if($view == 'variants') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t"
-        >
-        {{ __('adminhub::partials.product-type.variant_attributes_btn') }}
-        </button>
-      </nav>
+{{--    <div x-data="{ view: 'products' }">--}}
+{{--      <nav class="flex space-x-4" aria-label="Tabs">--}}
+{{--        <!-- Current: "bg-gray-100 text-gray-700", Default: "text-gray-500 hover:text-gray-700" -->--}}
+{{--        <button type="button" wire:click="$set('view', 'products')" class="px-3 py-3 text-sm font-medium @if($view == 'products') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t">--}}
+{{--            {{ __('adminhub::partials.product-type.product_attributes_btn') }}--}}
+{{--        </button>--}}
 
-      <div class="p-6 bg-white rounded-b shadow">
-        @if($view == 'products')
-          @include('adminhub::partials.product-types.attributes', [
-            'type' => 'products',
-          ])
-        @endif
+{{--        <button--}}
+{{--          type="button"--}}
+{{--          wire:click="$set('view', 'variants')"--}}
+{{--          class="px-3 py-3 text-sm font-medium @if($view == 'variants') text-gray-800 bg-white @else test-gray-500 hover:text-gray-700 @endif rounded-t"--}}
+{{--        >--}}
+{{--        {{ __('adminhub::partials.product-type.variant_attributes_btn') }}--}}
+{{--        </button>--}}
+{{--      </nav>--}}
 
-        @if($view == 'variants')
-          @include('adminhub::partials.product-types.attributes', [
-            'type' => 'variants',
-          ])
-        @endif
-      </div>
-    </div>
+{{--      <div class="p-6 bg-white rounded-b shadow">--}}
+{{--        @if($view == 'products')--}}
+{{--          @include('adminhub::partials.product-types.attributes', [--}}
+{{--            'type' => 'products',--}}
+{{--          ])--}}
+{{--        @endif--}}
+{{--      </div>--}}
+{{--    </div>--}}
 
     {{-- <div x-data="{ view: 'available' }">
       <div class="grid grid-cols-2 gap-6 lg:hidden">

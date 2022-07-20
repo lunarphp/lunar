@@ -133,9 +133,10 @@ abstract class AbstractProductType extends Component
             $type = ProductVariant::class;
         }
 
-        return AttributeGroup::whereAttributableType($type)->with([
-            'attributes',
-        ])->get();
+        return AttributeGroup
+            ::whereType('default')
+            ->whereAttributableType($type)
+            ->with(['attributes'])->get();
     }
 
     /**

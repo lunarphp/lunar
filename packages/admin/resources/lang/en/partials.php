@@ -100,12 +100,13 @@ return [
     /**
      * Product type.
      */
-    'product-type.available_title'              => 'Available Attributes',
-    'product-type.selected_title'               => 'Selected Attributes (:count)',
-    'product-type.attribute_search_placeholder' => 'Search for an attribute by name',
-    'product-type.attribute_system_required'    => 'This attribute is required by the system',
-    'product-type.product_attributes_btn'       => 'Product Attributes',
-    'product-type.variant_attributes_btn'       => 'Variant Attributes',
+    'product-type.available_title'               => 'Available Attributes',
+    'product-type.selected_title'                => 'Selected Attributes (:count)',
+    'product-type.attribute_search_placeholder'  => 'Search for an attribute by name',
+    'product-type.attribute_system_required'     => 'This attribute is required by the system',
+    'product-type.product_custom_attributes_btn' => 'Custom Attributes',
+    'product-type.product_attributes_btn'        => 'Product Attributes',
+    'product-type.variant_attributes_btn'        => 'Variant Attributes',
     /**
      * Pricing.
      */
