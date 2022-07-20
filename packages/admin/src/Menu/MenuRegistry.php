@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Menu;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class MenuRegistry
@@ -11,7 +12,7 @@ class MenuRegistry
      *
      * @var \Illuminate\Support\Collection
      */
-    protected $slots;
+    protected Collection $slots;
 
     /**
      * Initialise the class.
@@ -34,7 +35,7 @@ class MenuRegistry
     {
         $handle = Str::slug($handle);
 
-        $slot = $this->slots->first(function ($slot) use ($handle) {
+        $slot = $this->slots->first(function (MenuSlot $slot) use ($handle) {
             return $slot->getHandle() == $handle;
         });
 

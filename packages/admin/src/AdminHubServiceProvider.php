@@ -56,6 +56,9 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Features\FeatureEdit;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Features\FeaturesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Features\FeatureValueEdit;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
@@ -69,7 +72,6 @@ use GetCandy\Hub\Menu\MenuRegistry;
 use GetCandy\Hub\Menu\OrderActionsMenu;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
-use GetCandy\Hub\Menu\SlotRegistry;
 use GetCandy\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
@@ -334,6 +336,11 @@ class AdminHubServiceProvider extends ServiceProvider
         // Addons
         Livewire::component('hub.components.settings.addons.index', AddonsIndex::class);
         Livewire::component('hub.components.settings.addons.show', AddonShow::class);
+
+        // Product Feature
+        Livewire::component('hub.components.settings.product.features.index', FeaturesIndex::class);
+        Livewire::component('hub.components.settings.product.feature-edit', FeatureEdit::class);
+        Livewire::component('hub.components.settings.product.feature-value-edit', FeatureValueEdit::class);
     }
 
     /**
