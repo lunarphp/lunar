@@ -81,7 +81,7 @@ trait WithModelAttributeGroup
             : collect();
 
         return $group->attributes->map(
-            fn(ProductOption $option) => [
+            fn(Model $option) => [
                 'id' => $option->id,
                 'name' => $option->translate('name'),
                 'disabled' => $productTypeData->keys()->contains($option->id),

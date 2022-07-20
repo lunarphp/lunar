@@ -46,7 +46,7 @@ class AttributeGroupEdit extends Component
     {
         return [
             "attributeGroup.type" => "required",
-            //"attributeGroup.source" => "required_if:attributeGroup.type,model",
+            "attributeGroup.source" => "required_if:attributeGroup.type,model",
             "attributeGroup.name.{$this->defaultLanguage->code}" => [
                 'required',
                 'string',
@@ -88,7 +88,7 @@ class AttributeGroupEdit extends Component
         return collect([
             '--' => 'Select a model',
             'collection' => CollectionModel::class,
-            //'features' => ProductFeature::class,
+            'features' => ProductFeature::class,
             'options' => ProductOption::class,
         ]);
     }
