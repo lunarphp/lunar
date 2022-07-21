@@ -180,9 +180,13 @@ abstract class AbstractProductType extends Component
         $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
         $group = $this->getAttributeGroupFromModel($group);
 
+        $values = $group->attributes->filter(
+            fn (Model $group) => $group->id == $this->selectedGroupId
+        )->first()->values->pluck('id');
+
         $this->productType->attribute_data ??= collect();
         $this->productType->attribute_data->put(
-            $group->handle, $this->prepareAttributeModelData($group, $group->attributes->pluck('id')->toArray())
+            $group->handle, $this->prepareAttributeModelData($group, $values->toArray())
         );
         $this->productType->save();
 
