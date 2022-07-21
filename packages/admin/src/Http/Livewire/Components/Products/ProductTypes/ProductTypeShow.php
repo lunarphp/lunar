@@ -2,34 +2,18 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Base\Traits\WithModelAttributeGroup;
-use GetCandy\Hub\Actions\ProductType\AssignGroup;
-use GetCandy\Hub\Actions\ProductType\CreateGroup;
 use GetCandy\Hub\Http\Livewire\Traits\HasActions;
 use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
-/**
- * @property Collection $availableGroupOptions
- */
 class ProductTypeShow extends AbstractProductType
 {
     use HasActions;
 
     public bool $deleteDialogVisible = false;
-
-    public bool $showGroupCreate = false;
-
-    public bool $showGroupAssign = false;
-
-    public ?int $selectedGroupId = null;
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
@@ -138,9 +122,7 @@ class ProductTypeShow extends AbstractProductType
      */
     public function render()
     {
-        $this->selectedGroupId ??= $this->availableGroupOptions->filter(
-            fn($group) => !$group['disabled']
-        )->value('id');
+        $this->beforeRender();
 
         return view('adminhub::livewire.components.products.product-types.show')
             ->layout('adminhub::layouts.base');

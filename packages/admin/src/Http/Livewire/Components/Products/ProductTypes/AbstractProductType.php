@@ -61,6 +61,18 @@ abstract class AbstractProductType extends Component
      */
     public $attributeSearch = '';
 
+
+    public bool $showGroupCreate = false;
+
+    public bool $showGroupAssign = false;
+
+    public ?int $selectedGroupId = null;
+
+    public ?int $removeGroupId = null;
+
+    public ?int $attachValueToGroupId = null;
+
+
     public function addAttribute($id, $type)
     {
         $attributeReference = 'selectedProductAttributes';
@@ -299,5 +311,12 @@ abstract class AbstractProductType extends Component
             )->whereSystem(false)
             ->whereNotIn('id', $existing->pluck('id')->toArray())
             ->paginate(25);
+    }
+
+    protected function beforeRender(): void
+    {
+        $this->selectedGroupId ??= $this->availableGroupOptions->filter(
+            fn($group) => !$group['disabled']
+        )->value('id');
     }
 }

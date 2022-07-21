@@ -3,11 +3,17 @@
 namespace GetCandy\Base\Traits;
 
 use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\ProductOption;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * Trait WithModelAttributeGroup
+ * @package GetCandy\Base\Traits
+ *
+ * @property Collection $availableGroupOptions
+ * @property Collection $availableGroupValueOptions
+ */
 trait WithModelAttributeGroup
 {
     /**
@@ -89,6 +95,34 @@ trait WithModelAttributeGroup
     }
 
     /**
+     * Get available groups as options.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getAvailableGroupValueOptionsProperty(): Collection
+    {
+        /** @var AttributeGroup $group */
+        $group = AttributeGroup::whereHandle(
+            $handle = Str::replace('model_', '', $this->activeTab)
+        )->first();
+
+        if (!$group) {
+            return collect();
+        }
+        $group = $this->getAttributeGroupFromModel($group);
+        $productTypeData = $this->productType->attribute_data && $this->productType->attribute_data->has($handle)
+            ? collect($this->productType->attribute_data->get($handle))
+            : collect();
+
+        return $group->attributes->map(
+            fn(Model $option) => [
+                'id' => $option->id,
+                'name' => $option->translate('name'),
+                'disabled' => $productTypeData->keys()->contains($option->id),
+            ]);
+    }
+
+    /**
      * Prepare the attribute model data.
      *
      * @param  \GetCandy\Models\AttributeGroup  $group
@@ -127,5 +161,23 @@ trait WithModelAttributeGroup
             $groupValuePositions = collect($this->productType->attribute_data->get($handle))->get($group->id)['values'];
             return collect($groupValuePositions)->search($groupValue->id);
         });
+    }
+
+    public function detachGroup(): void
+    {
+        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
+        $data = collect($this->productType->attribute_data->get($group->handle));
+        $groupIds = collect($data->get('groupIds'));
+        $data->put('groupIds', $groupIds->filter(fn($id) => $id !== $this->removeGroupId));
+        $data->pull($this->removeGroupId);
+
+        $this->productType->attribute_data->put($group->handle, $data);
+        $this->productType->save();
+        $this->removeGroupId = null;
+    }
+
+    protected function attachGroupValue()
+    {
+
     }
 }

@@ -19,59 +19,7 @@
         @endif
     </div>
 
-    <x-hub::modal.dialog wire:model="deleteDialogVisible">
-        <x-slot name="title">
-            {{ __('adminhub::catalogue.product-types.show.delete.confirm_text') }}
-        </x-slot>
-
-        <x-slot name="content">
-            @if ($this->canDelete)
-                {{ __('adminhub::catalogue.product-types.show.delete.message') }}
-            @else
-                {{ __('adminhub::catalogue.product-types.show.delete.disabled_message') }}
-            @endif
-        </x-slot>
-
-        <x-slot name="footer">
-            <div class="flex items-center justify-end space-x-4">
-                <x-hub::button theme="gray"
-                               type="button"
-                               wire:click="$set('deleteDialogVisible', false)">
-                    {{ __('adminhub::global.cancel') }}
-                </x-hub::button>
-
-                <x-hub::button wire:click="delete"
-                               :disabled="!$this->canDelete">
-                    {{ __('adminhub::catalogue.product-types.show.delete.confirm_text') }}
-                </x-hub::button>
-            </div>
-        </x-slot>
-    </x-hub::modal.dialog>
-
-    <x-hub::modal.dialog form="assignGroup" wire:model="showGroupAssign">
-        <x-slot name="title">
-            {{ __('Assign Product Option') }}
-        </x-slot>
-
-        <x-slot name="content">
-            <x-hub::input.group :label="__('Options')" for="option" required :error="$errors->first('options')">
-                <x-hub::input.select wire:model="selectedGroupId">
-                    @foreach ($this->availableGroupOptions as $option)
-                        <option value="{{ $option['id'] }}" @disabled($option['disabled'])>{{ $option['name'] }}</option>
-                    @endforeach
-                </x-hub::input.select>
-            </x-hub::input.group>
-        </x-slot>
-
-        <x-slot name="footer">
-            <x-hub::button type="button" wire:click.prevent="$set('showGroupAssign', false)" theme="gray">
-                {{ __('adminhub::global.cancel') }}
-            </x-hub::button>
-            <x-hub::button type="submit" theme="green">
-                {{ __('Assign') }}
-            </x-hub::button>
-        </x-slot>
-    </x-hub::modal.dialog>
+    @include('adminhub::livewire.components.products.product-types.partials.dialogs')
 
     @if ($this->showGroupCreate)
         @livewire('hub.components.settings.attributes.attribute-edit')

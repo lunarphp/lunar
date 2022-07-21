@@ -5,11 +5,11 @@
         </h1>
 
         <div class="mt-4 sm:mt-0 space-x-2">
-            <x-hub::button wire:click.prevent="$set('showGroupCreate', true)">
+            <x-hub::button wire:click.prevent="$set('showGroupCreate', true)" disabled>
                 {{ __('Create New') }} {{ \Illuminate\Support\Str::singular($this->tabs->get($handle)) }}
             </x-hub::button>
             <x-hub::button wire:click.prevent="$set('showGroupAssign', true)" theme="green">
-                {{ __('Assign') }} {{ \Illuminate\Support\Str::singular($this->tabs->get($handle)) }}
+                {{ __('Attach') }} {{ \Illuminate\Support\Str::singular($this->tabs->get($handle)) }}
             </x-hub::button>
         </div>
     </header>
@@ -20,7 +20,7 @@
          class="space-y-2">
         @forelse($this->sortedGroups as $group)
             <div wire:key="group_{{ $group->id }}"
-                 x-data="{ expanded: {{ $group->values->count() <= 4 ? 'true' : 'false' }} }"
+                 x-data="{ expanded: {{ $group->values->count() <= 2 ? 'true' : 'false' }} }"
                  sort.item="groups"
                  sort.id="{{ $group->id }}">
                 <div class="flex items-center">
@@ -59,20 +59,14 @@
                             @endif
                             <x-hub::dropdown minimal>
                                 <x-slot name="options">
-                                    <x-hub::dropdown.button wire:click="$set('editGroupId', {{ $group->id }})"
-                                                            class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
-                                        {{ __('adminhub::components.attributes.show.edit_group_btn') }}
+                                    <x-hub::dropdown.button
+                                            wire:click="$set('attachValueToGroupId', {{ $group->id }})"
+                                            class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                                        {{ __('Attach group value') }}
                                     </x-hub::dropdown.button>
-
-                                    <x-hub::dropdown.button wire:click="$set('attributeCreateGroupId', {{ $group->id }})"
+                                    <x-hub::dropdown.button wire:click="$set('removeGroupId', {{ $group->id }})"
                                                             class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
-                                        {{ __('adminhub::components.attributes.show.create_attribute') }}
-                                    </x-hub::dropdown.button>
-
-                                    <x-hub::dropdown.button wire:click="$set('deleteGroupId', {{ $group->id }})"
-                                                            class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
-                                        <span
-                                                class="text-red-500">{{ __('adminhub::components.attributes.show.delete_group_btn') }}</span>
+                                        <span class="text-red-500">{{ __('Detach group') }}</span>
                                     </x-hub::dropdown.button>
                                 </x-slot>
                             </x-hub::dropdown>
