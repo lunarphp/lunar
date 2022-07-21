@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
 
+use GetCandy\Base\Traits\WithModelAttributeGroup;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
@@ -9,7 +10,9 @@ use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -18,6 +21,10 @@ abstract class AbstractProductType extends Component
     use Notifies;
     use WithPagination;
     use WithLanguages;
+    use WithModelAttributeGroup;
+
+
+    public string $activeTab = 'products';
 
     /**
      * The current view of attributes we're assigning.
@@ -115,6 +122,93 @@ abstract class AbstractProductType extends Component
         return $this->selectedVariantAttributes->filter(
             fn ($att) => $att->attribute_group_id == $groupId
         );
+    }
+
+    public function getTabsProperty(): Collection
+    {
+        return collect([
+            'products' => __('adminhub::partials.product-type.product_custom_attributes_btn'),
+            //'variants' => __('adminhub::partials.product-type.variant_attributes_btn'),
+        ])->merge(class_basename($this) === 'ProductTypeShow' ? $this->getTranslatedGroupNames() : []);
+    }
+
+    public function getSortedGroupsProperty(): Collection
+    {
+        if (!$this->productType->attribute_data) {
+            return collect();
+        }
+        
+        $handle = Str::replace('model_', '', $this->activeTab);
+        $groupPositions = collect($this->productType->attribute_data->get($handle))->get('groupIds');
+        $groups = AttributeGroup::whereHandle($handle)
+            ->get()
+            ->flatMap(fn ($group) => $this->getAttributeGroupFromModel($group)->attributes)
+            ->filter(fn ($group) => $this->filterOnlyAssignedGroups($group))
+            ->sortBy(fn (Model $group) => collect($groupPositions)->search($group->id));
+
+        $groups->each(fn (Model $group) => $group->values = $this->sortGroupValues($group, $handle));
+        return $groups ?? collect();
+    }
+
+
+    /**
+     * @todo Refactor to use action
+     */
+    public function assignGroup()
+    {
+        $this->validate([
+            'selectedGroupId' => 'required',
+        ]);
+        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
+
+        $this->productType->attribute_data ??= collect();
+        $this->productType->attribute_data->put($group->handle, $this->prepareAttributeModelData($group));
+        $this->productType->save();
+
+        $this->notify(
+            __('adminhub::catalogue.product-types.show.updated_message'),
+        );
+
+        $this->emitSelf('refreshComponent');
+        $this->showGroupAssign = false;
+    }
+
+    /**
+     * @todo Refactor to use action
+     *
+     * @param  array  $group
+     */
+    public function sortableGroups(array $group): void
+    {
+        $handle = AttributeGroup::whereHandle(
+            Str::replace('model_', '', $this->activeTab)
+        )->value('handle');
+
+        $sortedGroupIds = collect($group['items'])->pluck('id');
+        $data = collect($this->productType->attribute_data->get($handle))->put('groupIds', $sortedGroupIds);
+
+        $this->productType->attribute_data->put($handle, $data);
+        $this->productType->save();
+    }
+
+    /**
+     * @todo Refactor to use action
+     *
+     * @param  array  $group
+     */
+    public function sortableGroupValues(array $group): void
+    {
+        // $handle = AttributeGroup::whereHandle(
+        //     Str::replace('model_', '', $this->activeTab)
+        // )->value('handle');
+
+        $sortedGroupValuesIds = collect($group['items'])->pluck('id');
+        $this->productType->attribute_data->transform(function (array $data) use ($group, $sortedGroupValuesIds) {
+            $data[$group['owner']]['values'] = $sortedGroupValuesIds;
+            return $data;
+        });
+
+        $this->productType->save();
     }
 
     /**

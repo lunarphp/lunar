@@ -22,11 +22,8 @@ use Illuminate\Support\Str;
 class ProductTypeShow extends AbstractProductType
 {
     use HasActions;
-    use WithModelAttributeGroup;
 
     public bool $deleteDialogVisible = false;
-
-    public string $activeTab = 'products';
 
     public bool $showGroupCreate = false;
 
@@ -72,66 +69,6 @@ class ProductTypeShow extends AbstractProductType
     }
 
     /**
-     * @todo Refactor to use action
-     */
-    public function assignGroup()
-    {
-        $this->validate([
-            'selectedGroupId' => 'required',
-        ]);
-        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
-
-        $this->productType->attribute_data ??= collect();
-        $this->productType->attribute_data->put($group->handle, $this->prepareAttributeModelData($group));
-        $this->productType->save();
-
-        $this->notify(
-            __('adminhub::catalogue.product-types.show.updated_message'),
-        );
-
-        $this->emitSelf('refreshComponent');
-        $this->showGroupAssign = false;
-    }
-
-    /**
-     * @todo Refactor to use action
-     *
-     * @param  array  $group
-     */
-    public function sortableGroups(array $group): void
-    {
-        $handle = AttributeGroup::whereHandle(
-            Str::replace('model_', '', $this->activeTab)
-        )->value('handle');
-
-        $sortedGroupIds = collect($group['items'])->pluck('id');
-        $data = collect($this->productType->attribute_data->get($handle))->put('groupIds', $sortedGroupIds);
-
-        $this->productType->attribute_data->put($handle, $data);
-        $this->productType->save();
-    }
-
-    /**
-     * @todo Refactor to use action
-     *
-     * @param  array  $group
-     */
-    public function sortableGroupValues(array $group): void
-    {
-        // $handle = AttributeGroup::whereHandle(
-        //     Str::replace('model_', '', $this->activeTab)
-        // )->value('handle');
-
-        $sortedGroupValuesIds = collect($group['items'])->pluck('id');
-        $this->productType->attribute_data->transform(function (array $data) use ($group, $sortedGroupValuesIds) {
-            $data[$group['owner']]['values'] = $sortedGroupValuesIds;
-            return $data;
-        });
-
-        $this->productType->save();
-    }
-
-    /**
      * Method to handle product type saving.
      *
      * @return void
@@ -153,28 +90,6 @@ class ProductTypeShow extends AbstractProductType
             __('adminhub::catalogue.product-types.show.updated_message'),
             'hub.product-types.index'
         );
-    }
-
-    public function getTabsProperty(): Collection
-    {
-        return collect([
-            'products' => __('adminhub::partials.product-type.product_custom_attributes_btn'),
-            //'variants' => __('adminhub::partials.product-type.variant_attributes_btn'),
-        ])->merge($this->getTranslatedGroupNames());
-    }
-
-    public function getSortedGroupsProperty(): Collection
-    {
-        $handle = Str::replace('model_', '', $this->activeTab);
-        $groupPositions = collect($this->productType->attribute_data->get($handle))->get('groupIds');
-        $groups = AttributeGroup::whereHandle($handle)
-            ->get()
-            ->flatMap(fn ($group) => $this->getAttributeGroupFromModel($group)->attributes)
-            ->filter(fn ($group) => $this->filterOnlyAssignedGroups($group))
-            ->sortBy(fn (Model $group) => collect($groupPositions)->search($group->id));
-
-        $groups->each(fn (Model $group) => $group->values = $this->sortGroupValues($group, $handle));
-        return $groups ?? collect();
     }
 
     public function getCanDeleteProperty()
