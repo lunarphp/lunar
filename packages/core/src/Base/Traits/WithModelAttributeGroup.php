@@ -101,6 +101,10 @@ trait WithModelAttributeGroup
      */
     public function getAvailableGroupValueOptionsProperty(): Collection
     {
+        if (!$this->attachValueToGroupId) {
+            return collect();
+        }
+
         /** @var AttributeGroup $group */
         $group = AttributeGroup::whereHandle(
             $handle = Str::replace('model_', '', $this->activeTab)
@@ -111,14 +115,17 @@ trait WithModelAttributeGroup
         }
         $group = $this->getAttributeGroupFromModel($group);
         $productTypeData = $this->productType->attribute_data && $this->productType->attribute_data->has($handle)
-            ? collect($this->productType->attribute_data->get($handle))
+            ? collect($this->productType->attribute_data->get($handle))->get($this->attachValueToGroupId)['values']
             : collect();
 
-        return $group->attributes->map(
+        /** @var Model $model */
+        $model = app($group->source)->find($this->attachValueToGroupId);
+
+        return $model->values->map(
             fn(Model $option) => [
                 'id' => $option->id,
                 'name' => $option->translate('name'),
-                'disabled' => $productTypeData->keys()->contains($option->id),
+                'disabled' => collect($productTypeData)->contains($option->id),
             ]);
     }
 
@@ -155,12 +162,14 @@ trait WithModelAttributeGroup
         return $data->keys()->contains($model->id);
     }
 
-    protected function sortGroupValues(Model $group, string $handle): Collection
+    protected function sortFilterGroupValues(Model $group, string $handle): Collection
     {
-        return $group->values->sortBy(function (Model $groupValue) use ($group, $handle) {
-            $groupValuePositions = collect($this->productType->attribute_data->get($handle))->get($group->id)['values'];
-            return collect($groupValuePositions)->search($groupValue->id);
-        });
+        $groupValuePositions = collect($this->productType->attribute_data->get($handle))
+            ->get($group->id)['values'];
+
+        return $group->values
+            ->filter(fn (Model $groupValue) => collect($groupValuePositions)->contains($groupValue->id))
+            ->sortBy(fn (Model $groupValue) => collect($groupValuePositions)->search($groupValue->id));
     }
 
     public function detachGroup(): void
@@ -176,8 +185,40 @@ trait WithModelAttributeGroup
         $this->removeGroupId = null;
     }
 
-    protected function attachGroupValue()
+    public function detachGroupValue(): void
     {
+        if (!$groupValue = $this->removeGroupValueId) {
+            return;
+        }
 
+        [$groupValueId, $groupId] = Str::of($groupValue)->explode('_');
+        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
+        $data = collect($this->productType->attribute_data->get($group->handle));
+        $values = collect($data->get($groupId)['values'])->filter(fn($id) => $id !== $groupValueId);
+
+        $data->put($groupId, ['values' => $values]);
+        $this->productType->attribute_data->put($group->handle, $data);
+        $this->productType->save();
+
+        $this->removeGroupValueId = null;
+    }
+
+    public function attachToGroup()
+    {
+        if (!$this->selectedGroupValueId) {
+            $this->attachValueToGroupId = null;
+            return;
+        }
+
+        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
+        $data = collect($this->productType->attribute_data->get($group->handle));
+        $values = collect($data->get($this->attachValueToGroupId)['values'])->push($this->selectedGroupValueId);
+
+        $data->put($this->attachValueToGroupId, ['values' => $values]);
+        $this->productType->attribute_data->put($group->handle, $data);
+        $this->productType->save();
+
+        $this->attachValueToGroupId = null;
+        $this->selectedGroupValueId = null;
     }
 }

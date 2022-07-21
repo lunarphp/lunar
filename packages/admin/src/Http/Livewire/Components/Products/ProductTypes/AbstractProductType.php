@@ -66,9 +66,15 @@ abstract class AbstractProductType extends Component
 
     public bool $showGroupAssign = false;
 
+    public bool $showGroupValueAssign = false;
+
     public ?int $selectedGroupId = null;
 
+    public ?int $selectedGroupValueId = null;
+
     public ?int $removeGroupId = null;
+
+    public ?string $removeGroupValueId = null;
 
     public ?int $attachValueToGroupId = null;
 
@@ -158,7 +164,7 @@ abstract class AbstractProductType extends Component
             ->filter(fn ($group) => $this->filterOnlyAssignedGroups($group))
             ->sortBy(fn (Model $group) => collect($groupPositions)->search($group->id));
 
-        $groups->each(fn (Model $group) => $group->values = $this->sortGroupValues($group, $handle));
+        $groups->each(fn (Model $group) => $group->values = $this->sortFilterGroupValues($group, $handle));
         return $groups ?? collect();
     }
 
@@ -172,9 +178,12 @@ abstract class AbstractProductType extends Component
             'selectedGroupId' => 'required',
         ]);
         $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
+        $group = $this->getAttributeGroupFromModel($group);
 
         $this->productType->attribute_data ??= collect();
-        $this->productType->attribute_data->put($group->handle, $this->prepareAttributeModelData($group));
+        $this->productType->attribute_data->put(
+            $group->handle, $this->prepareAttributeModelData($group, $group->attributes->pluck('id')->toArray())
+        );
         $this->productType->save();
 
         $this->notify(
@@ -210,15 +219,13 @@ abstract class AbstractProductType extends Component
      */
     public function sortableGroupValues(array $group): void
     {
-        // $handle = AttributeGroup::whereHandle(
-        //     Str::replace('model_', '', $this->activeTab)
-        // )->value('handle');
+        $handle = AttributeGroup::whereHandle(
+            Str::replace('model_', '', $this->activeTab)
+        )->value('handle');
 
-        $sortedGroupValuesIds = collect($group['items'])->pluck('id');
-        $this->productType->attribute_data->transform(function (array $data) use ($group, $sortedGroupValuesIds) {
-            $data[$group['owner']]['values'] = $sortedGroupValuesIds;
-            return $data;
-        });
+        $sortedGroupValuesIds = ['values' => collect($group['items'])->pluck('id')];
+        $data = collect($this->productType->attribute_data->get($handle))->put($group['owner'], $sortedGroupValuesIds);
+        $this->productType->attribute_data->put($handle, $data);
 
         $this->productType->save();
     }
@@ -316,6 +323,10 @@ abstract class AbstractProductType extends Component
     protected function beforeRender(): void
     {
         $this->selectedGroupId ??= $this->availableGroupOptions->filter(
+            fn($group) => !$group['disabled']
+        )->value('id');
+
+        $this->selectedGroupValueId ??= $this->availableGroupValueOptions->filter(
             fn($group) => !$group['disabled']
         )->value('id');
     }

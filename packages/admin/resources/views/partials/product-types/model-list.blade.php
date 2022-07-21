@@ -92,8 +92,15 @@
                                                  class="mr-2 text-gray-400 hover:text-gray-700" />
                                 </div>
                                 <span class="truncate grow">{{ $attribute->translate('name') }}</span>
-                                <div class="mr-4 text-xs text-gray-500">
-                                    {{ class_basename($attribute->type) }}
+                                <div class="flex">
+                                    <x-hub::dropdown minimal>
+                                        <x-slot name="options">
+                                            <x-hub::dropdown.button wire:click="$set('removeGroupValueId', '{{ $attribute->id }}_{{ $group->id }}')"
+                                                                    class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                                                <span class="text-red-500">{{ __('Detach group value') }}</span>
+                                            </x-hub::dropdown.button>
+                                        </x-slot>
+                                    </x-hub::dropdown>
                                 </div>
                             </div>
                         @endforeach

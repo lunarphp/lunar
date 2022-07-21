@@ -36,7 +36,7 @@
     </x-slot>
     <x-slot name="footer">
         <div class="flex items-center justify-end space-x-4">
-            <x-hub::button theme="gray" type="button" wire:click="$set('deleteDialogVisible', false)">
+            <x-hub::button theme="gray" type="button" wire:click="$set('removeGroupId', false)">
                 {{ __('adminhub::global.cancel') }}
             </x-hub::button>
 
@@ -47,9 +47,31 @@
     </x-slot>
 </x-hub::modal.dialog>
 
+<x-hub::modal.dialog wire:model="removeGroupValueId">
+    <x-slot name="title">{{ __('Detach group value') }}</x-slot>
+    <x-slot name="content">
+        @if ($this->canDelete)
+            {{ __('Are you sure you want to detach this group value?') }}
+        @else
+            {{ __('adminhub::catalogue.product-types.show.delete.disabled_message') }}
+        @endif
+    </x-slot>
+    <x-slot name="footer">
+        <div class="flex items-center justify-end space-x-4">
+            <x-hub::button theme="gray" type="button" wire:click="$set('removeGroupValueId', false)">
+                {{ __('adminhub::global.cancel') }}
+            </x-hub::button>
+
+            <x-hub::button wire:click="detachGroupValue" :disabled="!$this->canDelete">
+                {{ __('Confirm detach') }}
+            </x-hub::button>
+        </div>
+    </x-slot>
+</x-hub::modal.dialog>
+
 <x-hub::modal.dialog form="assignGroup" wire:model="showGroupAssign">
     <x-slot name="title">
-        {{ __('Assign Product Option') }}
+        {{ __('Attach Product Option') }}
     </x-slot>
 
     <x-slot name="content">
@@ -67,12 +89,12 @@
             {{ __('adminhub::global.cancel') }}
         </x-hub::button>
         <x-hub::button type="submit" theme="green">
-            {{ __('Assign') }}
+            {{ __('Attach') }}
         </x-hub::button>
     </x-slot>
 </x-hub::modal.dialog>
 
-<x-hub::modal.dialog form="attachToGroup" wire:model="showGroupValueAssign">
+<x-hub::modal.dialog form="attachToGroup" wire:model="attachValueToGroupId">
     <x-slot name="title">
         {{ __('Attach to group') }}
     </x-slot>
@@ -92,7 +114,7 @@
             {{ __('adminhub::global.cancel') }}
         </x-hub::button>
         <x-hub::button type="submit" theme="green">
-            {{ __('Assign') }}
+            {{ __('Attach') }}
         </x-hub::button>
     </x-slot>
 </x-hub::modal.dialog>
