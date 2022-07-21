@@ -99,6 +99,14 @@ trait WithModelAttributeGroup
     protected function prepareAttributeModelData(AttributeGroup $group, array $values = []): Collection
     {
         $data = collect($this->productType->attribute_data->get($group->handle));
+        if (!$data->has('groupIds')) {
+            $data->put('groupIds', []);
+        }
+        $groupIds = collect($data->get('groupIds'));
+        if (!$groupIds->contains($this->selectedGroupId)) {
+            $groupIds->push($this->selectedGroupId);
+        }
+        $data->put('groupIds', $groupIds);
         return $data->put($this->selectedGroupId, ['values' => $values]);
     }
 
@@ -111,5 +119,13 @@ trait WithModelAttributeGroup
         $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
         $data = collect($this->productType->attribute_data->get($group->handle));
         return $data->keys()->contains($model->id);
+    }
+
+    protected function sortGroupValues(Model $group, string $handle): Collection
+    {
+        return $group->values->sortBy(function (Model $groupValue) use ($group, $handle) {
+            $groupValuePositions = collect($this->productType->attribute_data->get($handle))->get($group->id)['values'];
+            return collect($groupValuePositions)->search($groupValue->id);
+        });
     }
 }

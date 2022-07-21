@@ -16,7 +16,7 @@
 
 
     <div wire:sort
-         sort.options='{group: "groups", method: "sortGroups"}'
+         sort.options='{group: "groups", method: "sortableGroups"}'
          class="space-y-2">
         @forelse($this->sortedGroups as $group)
             <div wire:key="group_{{ $group->id }}"
@@ -83,7 +83,7 @@
                      @if ($group->values->count()) x-show="expanded" @endif>
                     <div class="space-y-2"
                          wire:sort
-                         sort.options='{group: "attributes", method: "sortGroupValues", owner: {{ $group->id }}}'
+                         sort.options='{group: "attributes", method: "sortableGroupValues", owner: {{ $group->id }}}'
                          x-show="expanded">
                         @foreach ($group->values as $attribute)
                             <div class="flex items-center justify-between w-full p-3 text-sm bg-white border border-transparent rounded shadow-sm sort-item-element hover:border-gray-300"

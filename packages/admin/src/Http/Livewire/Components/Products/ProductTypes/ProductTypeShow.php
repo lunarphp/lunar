@@ -11,6 +11,7 @@ use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -97,17 +98,16 @@ class ProductTypeShow extends AbstractProductType
      *
      * @param  array  $group
      */
-    public function sortGroups(array $group): void
+    public function sortableGroups(array $group): void
     {
         $handle = AttributeGroup::whereHandle(
             Str::replace('model_', '', $this->activeTab)
         )->value('handle');
 
         $sortedGroupIds = collect($group['items'])->pluck('id');
-        $sortedData = collect($this->productType->attribute_data->get($handle))->sortBy(
-            fn (array $values, $groupId) => $sortedGroupIds->search($groupId)
-        );
-        $this->productType->attribute_data->put($handle, $sortedData);
+        $data = collect($this->productType->attribute_data->get($handle))->put('groupIds', $sortedGroupIds);
+
+        $this->productType->attribute_data->put($handle, $data);
         $this->productType->save();
     }
 
@@ -116,7 +116,7 @@ class ProductTypeShow extends AbstractProductType
      *
      * @param  array  $group
      */
-    public function sortGroupValues(array $group): void
+    public function sortableGroupValues(array $group): void
     {
         // $handle = AttributeGroup::whereHandle(
         //     Str::replace('model_', '', $this->activeTab)
@@ -165,11 +165,15 @@ class ProductTypeShow extends AbstractProductType
 
     public function getSortedGroupsProperty(): Collection
     {
-        $groups = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))
+        $handle = Str::replace('model_', '', $this->activeTab);
+        $groupPositions = collect($this->productType->attribute_data->get($handle))->get('groupIds');
+        $groups = AttributeGroup::whereHandle($handle)
             ->get()
             ->flatMap(fn ($group) => $this->getAttributeGroupFromModel($group)->attributes)
-            ->filter(fn ($group) => $this->filterOnlyAssignedGroups($group));
+            ->filter(fn ($group) => $this->filterOnlyAssignedGroups($group))
+            ->sortBy(fn (Model $group) => collect($groupPositions)->search($group->id));
 
+        $groups->each(fn (Model $group) => $group->values = $this->sortGroupValues($group, $handle));
         return $groups ?? collect();
     }
 
