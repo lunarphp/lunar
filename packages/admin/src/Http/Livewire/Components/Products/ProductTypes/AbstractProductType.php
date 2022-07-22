@@ -199,42 +199,6 @@ abstract class AbstractProductType extends Component
     }
 
     /**
-     * @todo Refactor to use action
-     *
-     * @param  array  $group
-     */
-    public function sortableGroups(array $group): void
-    {
-        $handle = AttributeGroup::whereHandle(
-            Str::replace('model_', '', $this->activeTab)
-        )->value('handle');
-
-        $sortedGroupIds = collect($group['items'])->pluck('id');
-        $data = collect($this->productType->attribute_data->get($handle))->put('groupIds', $sortedGroupIds);
-
-        $this->productType->attribute_data->put($handle, $data);
-        $this->productType->save();
-    }
-
-    /**
-     * @todo Refactor to use action
-     *
-     * @param  array  $group
-     */
-    public function sortableGroupValues(array $group): void
-    {
-        $handle = AttributeGroup::whereHandle(
-            Str::replace('model_', '', $this->activeTab)
-        )->value('handle');
-
-        $sortedGroupValuesIds = ['values' => collect($group['items'])->pluck('id')];
-        $data = collect($this->productType->attribute_data->get($handle))->put($group['owner'], $sortedGroupValuesIds);
-        $this->productType->attribute_data->put($handle, $data);
-
-        $this->productType->save();
-    }
-
-    /**
      * Get attribute groups for a given type.
      *
      * @param  string  $type
@@ -322,6 +286,12 @@ abstract class AbstractProductType extends Component
             )->whereSystem(false)
             ->whereNotIn('id', $existing->pluck('id')->toArray())
             ->paginate(25);
+    }
+
+    public function updatedShowGroupAssign()
+    {
+        $this->reset(['selectedGroupId', 'selectedGroupValueId']);
+        $this->beforeRender();
     }
 
     protected function beforeRender(): void

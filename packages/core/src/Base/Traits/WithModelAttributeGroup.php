@@ -2,6 +2,7 @@
 
 namespace GetCandy\Base\Traits;
 
+use GetCandy\Hub\Http\Livewire\Traits\InteractsWithLists;
 use GetCandy\Models\AttributeGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -16,6 +17,8 @@ use Illuminate\Support\Str;
  */
 trait WithModelAttributeGroup
 {
+    use InteractsWithLists;
+
     /**
      * Check if the group type is a model.
      * @param  \GetCandy\Models\AttributeGroup  $group
@@ -149,76 +152,5 @@ trait WithModelAttributeGroup
         }
         $data->put('groupIds', $groupIds);
         return $data->put($this->selectedGroupId, ['values' => $values]);
-    }
-
-    protected function filterOnlyAssignedGroups(Model $model): bool
-    {
-        if (!$this->productType->attribute_data) {
-            return false;
-        }
-
-        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
-        $data = collect($this->productType->attribute_data->get($group->handle));
-        return $data->keys()->contains($model->id);
-    }
-
-    protected function sortFilterGroupValues(Model $group, string $handle): Collection
-    {
-        $groupValuePositions = collect($this->productType->attribute_data->get($handle))
-            ->get($group->id)['values'];
-
-        return $group->values
-            ->filter(fn (Model $groupValue) => collect($groupValuePositions)->contains($groupValue->id))
-            ->sortBy(fn (Model $groupValue) => collect($groupValuePositions)->search($groupValue->id));
-    }
-
-    public function detachGroup(): void
-    {
-        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
-        $data = collect($this->productType->attribute_data->get($group->handle));
-        $groupIds = collect($data->get('groupIds'));
-        $data->put('groupIds', $groupIds->filter(fn($id) => $id !== $this->removeGroupId));
-        $data->pull($this->removeGroupId);
-
-        $this->productType->attribute_data->put($group->handle, $data);
-        $this->productType->save();
-        $this->removeGroupId = null;
-    }
-
-    public function detachGroupValue(): void
-    {
-        if (!$groupValue = $this->removeGroupValueId) {
-            return;
-        }
-
-        [$groupValueId, $groupId] = Str::of($groupValue)->explode('_');
-        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
-        $data = collect($this->productType->attribute_data->get($group->handle));
-        $values = collect($data->get($groupId)['values'])->filter(fn($id) => $id !== $groupValueId);
-
-        $data->put($groupId, ['values' => $values]);
-        $this->productType->attribute_data->put($group->handle, $data);
-        $this->productType->save();
-
-        $this->removeGroupValueId = null;
-    }
-
-    public function attachToGroup()
-    {
-        if (!$this->selectedGroupValueId) {
-            $this->attachValueToGroupId = null;
-            return;
-        }
-
-        $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
-        $data = collect($this->productType->attribute_data->get($group->handle));
-        $values = collect($data->get($this->attachValueToGroupId)['values'])->push($this->selectedGroupValueId);
-
-        $data->put($this->attachValueToGroupId, ['values' => $values]);
-        $this->productType->attribute_data->put($group->handle, $data);
-        $this->productType->save();
-
-        $this->attachValueToGroupId = null;
-        $this->selectedGroupValueId = null;
     }
 }
