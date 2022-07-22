@@ -4,7 +4,6 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductFeatureFactory;
@@ -13,8 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class ProductFeature
- * @package GetCandy\Models
+ * Class ProductFeature.
  *
  * @property string $name
  * @property string $handle

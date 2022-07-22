@@ -7,7 +7,6 @@ use GetCandy\Models\ProductFeatureValue;
 use GetCandy\Tests\TestCase;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
 use Illuminate\Support\Str;
 
 class ProductFeatureTest extends TestCase
@@ -67,7 +66,7 @@ class ProductFeatureTest extends TestCase
             ]);
         });
 
-        $this->assertEquals(range(1,10), $productFeatures->pluck('position')->toArray());
+        $this->assertEquals(range(1, 10), $productFeatures->pluck('position')->toArray());
 
         $position = 10;
         foreach ($productFeatures as $productFeature) {
@@ -76,7 +75,7 @@ class ProductFeatureTest extends TestCase
             $position--;
         }
 
-        $this->assertEquals(array_reverse(range(1,10)), $productFeatures->pluck('position')->toArray());
+        $this->assertEquals(array_reverse(range(1, 10)), $productFeatures->pluck('position')->toArray());
     }
 
     /** @test */

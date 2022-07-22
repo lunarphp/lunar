@@ -31,4 +31,4 @@ class CreateProductFeaturesTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'product_features');
     }
-};
+}
