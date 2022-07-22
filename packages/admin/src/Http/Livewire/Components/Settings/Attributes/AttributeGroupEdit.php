@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\Facades\FieldTypeManifest;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\AttributeGroup;
@@ -45,8 +44,8 @@ class AttributeGroupEdit extends Component
     public function rules()
     {
         return [
-            "attributeGroup.type" => "required",
-            "attributeGroup.source" => "required_if:attributeGroup.type,model",
+            'attributeGroup.type' => 'required',
+            'attributeGroup.source' => 'required_if:attributeGroup.type,model',
             "attributeGroup.name.{$this->defaultLanguage->code}" => [
                 'required',
                 'string',
@@ -79,19 +78,20 @@ class AttributeGroupEdit extends Component
 
     /**
      * Return the models collection.
+     *
      * @todo Activate features once merged and any other model you would like to use
      *
      * @return \Illuminate\Support\Collection
      */
-public function getModelsCollectionProperty(): Collection
-{
-    return collect([
-        '--' => 'Select a model',
-        'collection' => CollectionModel::class,
-        //'features' => ProductFeature::class,
-        'options' => ProductOption::class,
-    ]);
-}
+    public function getModelsCollectionProperty(): Collection
+    {
+        return collect([
+            '--' => 'Select a model',
+            'collection' => CollectionModel::class,
+            //'features' => ProductFeature::class,
+            'options' => ProductOption::class,
+        ]);
+    }
 
     /**
      * Return all collection groups.

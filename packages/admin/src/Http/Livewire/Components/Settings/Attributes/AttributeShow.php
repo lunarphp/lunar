@@ -148,6 +148,7 @@ class AttributeShow extends AbstractAttribute
 
                 // Retrieve dynamic attributes again
                 $group->attributes = $attributes;
+
                 return $group;
             })->sortBy('position');
         });

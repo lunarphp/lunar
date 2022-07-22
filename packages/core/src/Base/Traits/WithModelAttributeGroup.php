@@ -7,14 +7,14 @@ use GetCandy\Models\AttributeGroup;
 trait WithModelAttributeGroup
 {
     /**
-     * Get attribute group from model and override attribures from source.
-     * @param  \GetCandy\Models\AttributeGroup  $group
+     * Get attribute group from model and override attributes from source.
      *
+     * @param  \GetCandy\Models\AttributeGroup  $group
      * @return \GetCandy\Models\AttributeGroup
      */
     protected function getAttributeGroupFromModel(AttributeGroup $group): AttributeGroup
     {
-        if (!$group->source) {
+        if (! $group->source) {
             return $group;
         }
 
