@@ -139,9 +139,15 @@ class AttributeShow extends AbstractAttribute
                 $updatedOrder = collect($groups['items'])->first(function ($updated) use ($group) {
                     return $updated['id'] == $group->id;
                 });
-                $group->position = $updatedOrder['order'];
-                $group->save();
 
+                // Ignore dynamic attributes when updating
+                $attributes = $group->attributes;
+                unset($group->attributes);
+
+                $group->update(['position' => $updatedOrder['order']]);
+
+                // Retrieve dynamic attributes again
+                $group->attributes = $attributes;
                 return $group;
             })->sortBy('position');
         });
@@ -181,9 +187,7 @@ class AttributeShow extends AbstractAttribute
      */
     public function refreshGroups()
     {
-        $this->sortedAttributeGroups = AttributeGroup::whereAttributableType($this->typeClass)
-        ->orderBy('position')->get();
-
+        $this->sortedAttributeGroups = $this->attributeGroups;
         $this->showGroupCreate = false;
     }
 
@@ -313,6 +317,11 @@ class AttributeShow extends AbstractAttribute
 
         $this->deleteAttributeId = null;
         $this->refreshGroups();
+    }
+
+    public function updated(): void
+    {
+        $this->sortedAttributeGroups = $this->attributeGroups;
     }
 
     /**
