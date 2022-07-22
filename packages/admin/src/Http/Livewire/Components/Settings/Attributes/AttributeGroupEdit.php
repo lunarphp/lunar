@@ -8,7 +8,6 @@ use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Collection as CollectionModel;
 use GetCandy\Models\CollectionGroup;
-use GetCandy\Models\ProductFeature;
 use GetCandy\Models\ProductOption;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
