@@ -2,15 +2,13 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Product\Features;
 
-use GetCandy\Facades\AttributeManifest;
-use \GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Attribute;
 use GetCandy\Models\ProductFeature;
 use GetCandy\Models\ProductFeatureValue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Livewire\Component;
 
 class FeaturesIndex extends Component
@@ -94,7 +92,7 @@ class FeaturesIndex extends Component
     }
 
     /**
-     * Return the product features
+     * Return the product features.
      *
      * @return \Illuminate\Support\Collection
      */

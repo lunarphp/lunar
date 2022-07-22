@@ -11,12 +11,13 @@ trait InteractsWithLists
 {
     protected function filterOnlyAssignedGroups(Model $model): bool
     {
-        if (!$this->productType->attribute_data) {
+        if (! $this->productType->attribute_data) {
             return false;
         }
 
         $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
         $data = collect($this->productType->attribute_data->get($group->handle));
+
         return $data->keys()->contains($model->id);
     }
 
@@ -73,7 +74,7 @@ trait InteractsWithLists
         $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
         $data = collect($this->productType->attribute_data->get($group->handle));
         $groupIds = collect($data->get('groupIds'));
-        $data->put('groupIds', $groupIds->filter(fn($id) => $id !== $this->removeGroupId));
+        $data->put('groupIds', $groupIds->filter(fn ($id) => $id !== $this->removeGroupId));
         $data->pull($this->removeGroupId);
 
         $this->productType->attribute_data->put($group->handle, $data);
@@ -83,14 +84,14 @@ trait InteractsWithLists
 
     public function detachGroupValue(): void
     {
-        if (!$groupValue = $this->removeGroupValueId) {
+        if (! $groupValue = $this->removeGroupValueId) {
             return;
         }
 
         [$groupValueId, $groupId] = Str::of($groupValue)->explode('_');
         $group = AttributeGroup::whereHandle(Str::replace('model_', '', $this->activeTab))->first();
         $data = collect($this->productType->attribute_data->get($group->handle));
-        $values = collect($data->get($groupId)['values'])->filter(fn($id) => (int)$id !== (int)$groupValueId);
+        $values = collect($data->get($groupId)['values'])->filter(fn ($id) => (int) $id !== (int) $groupValueId);
 
         $data->put($groupId, ['values' => $values]);
         $this->productType->attribute_data->put($group->handle, $data);
@@ -101,8 +102,9 @@ trait InteractsWithLists
 
     public function attachToGroup()
     {
-        if (!$this->selectedGroupValueId) {
+        if (! $this->selectedGroupValueId) {
             $this->attachValueToGroupId = null;
+
             return;
         }
 

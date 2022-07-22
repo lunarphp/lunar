@@ -29,4 +29,4 @@ class AddAttributeDataToProductTypesTable extends Migration
             $table->dropColumn('attribute_data');
         });
     }
-};
+}

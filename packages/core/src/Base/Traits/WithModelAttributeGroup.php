@@ -9,8 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- * Trait WithModelAttributeGroup
- * @package GetCandy\Base\Traits
+ * Trait WithModelAttributeGroup.
  *
  * @property Collection $availableGroupOptions
  * @property Collection $availableGroupValueOptions
@@ -21,8 +20,8 @@ trait WithModelAttributeGroup
 
     /**
      * Check if the group type is a model.
-     * @param  \GetCandy\Models\AttributeGroup  $group
      *
+     * @param  \GetCandy\Models\AttributeGroup  $group
      * @return bool
      */
     protected function isGroupTypeModel(AttributeGroup $group): bool
@@ -40,7 +39,7 @@ trait WithModelAttributeGroup
         return AttributeGroup::whereType('model')
             ->get()
             ->mapWithKeys(
-                fn(AttributeGroup $group, $key) => [
+                fn (AttributeGroup $group, $key) => [
                     'model_'.$group->handle => $group->translate('name'),
                 ]
             );
@@ -48,13 +47,13 @@ trait WithModelAttributeGroup
 
     /**
      * Get attribute group from model and override attribures from source.
-     * @param  \GetCandy\Models\AttributeGroup  $group
      *
+     * @param  \GetCandy\Models\AttributeGroup  $group
      * @return \GetCandy\Models\AttributeGroup
      */
     protected function getAttributeGroupFromModel(AttributeGroup $group): AttributeGroup
     {
-        if (!$group->source) {
+        if (! $group->source) {
             return $group;
         }
 
@@ -81,7 +80,7 @@ trait WithModelAttributeGroup
             $handle = Str::replace('model_', '', $this->activeTab)
         )->first();
 
-        if (!$group) {
+        if (! $group) {
             return collect();
         }
         $group = $this->getAttributeGroupFromModel($group);
@@ -90,7 +89,7 @@ trait WithModelAttributeGroup
             : collect();
 
         return $group->attributes->map(
-            fn(Model $option) => [
+            fn (Model $option) => [
                 'id' => $option->id,
                 'name' => $option->translate('name'),
                 'disabled' => $productTypeData->keys()->contains($option->id),
@@ -104,7 +103,7 @@ trait WithModelAttributeGroup
      */
     public function getAvailableGroupValueOptionsProperty(): Collection
     {
-        if (!$this->attachValueToGroupId) {
+        if (! $this->attachValueToGroupId) {
             return collect();
         }
 
@@ -113,7 +112,7 @@ trait WithModelAttributeGroup
             $handle = Str::replace('model_', '', $this->activeTab)
         )->first();
 
-        if (!$group) {
+        if (! $group) {
             return collect();
         }
         $group = $this->getAttributeGroupFromModel($group);
@@ -125,7 +124,7 @@ trait WithModelAttributeGroup
         $model = app($group->source)->find($this->attachValueToGroupId);
 
         return $model->values->map(
-            fn(Model $option) => [
+            fn (Model $option) => [
                 'id' => $option->id,
                 'name' => $option->translate('name'),
                 'disabled' => collect($productTypeData)->contains($option->id),
@@ -137,20 +136,20 @@ trait WithModelAttributeGroup
      *
      * @param  \GetCandy\Models\AttributeGroup  $group
      * @param  array  $values
-     *
      * @return \Illuminate\Support\Collection
      */
     protected function prepareAttributeModelData(AttributeGroup $group, array $values = []): Collection
     {
         $data = collect($this->productType->attribute_data->get($group->handle));
-        if (!$data->has('groupIds')) {
+        if (! $data->has('groupIds')) {
             $data->put('groupIds', []);
         }
         $groupIds = collect($data->get('groupIds'));
-        if (!$groupIds->contains($this->selectedGroupId)) {
+        if (! $groupIds->contains($this->selectedGroupId)) {
             $groupIds->push($this->selectedGroupId);
         }
         $data->put('groupIds', $groupIds);
+
         return $data->put($this->selectedGroupId, ['values' => $values]);
     }
 }

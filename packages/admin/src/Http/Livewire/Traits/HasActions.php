@@ -5,8 +5,7 @@ namespace GetCandy\Hub\Http\Livewire\Traits;
 use Illuminate\Support\Collection;
 
 /**
- * Trait HasActions
- * @package GetCandy\Hub\Http\Livewire\Traits
+ * Trait HasActions.
  *
  * @todo Trait to clean up reusable actions currently hard coded in livewire component views
  */

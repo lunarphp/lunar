@@ -64,7 +64,6 @@ class FeatureValueEdit extends Component
         $this->validate();
 
         if (! $this->featureValue->id) {
-
             $this->featureValue->position = ProductFeatureValue::whereProductFeatureId(
                 $this->feature->id
             )->count() + 1;

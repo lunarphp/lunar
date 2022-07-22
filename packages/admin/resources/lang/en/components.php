@@ -181,7 +181,7 @@ return [
     'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
 
     /**
-     * Product Features
+     * Product Features.
      */
     'product.features.no_feature_value_text' => 'No feature values exist, either drag existing feature value or add new ones here.',
 

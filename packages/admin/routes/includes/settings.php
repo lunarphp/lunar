@@ -1,6 +1,5 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
@@ -16,7 +15,6 @@ use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Product\Features\FeaturesIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionsIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;

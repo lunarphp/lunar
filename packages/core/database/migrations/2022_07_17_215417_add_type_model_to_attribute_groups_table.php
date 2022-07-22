@@ -31,4 +31,4 @@ class AddTypeModelToAttributeGroupsTable extends Migration
             $table->dropColumn('source');
         });
     }
-};
+}

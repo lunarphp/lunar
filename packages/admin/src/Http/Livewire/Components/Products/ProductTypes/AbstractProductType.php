@@ -23,7 +23,6 @@ abstract class AbstractProductType extends Component
     use WithLanguages;
     use WithModelAttributeGroup;
 
-
     public string $activeTab = 'products';
 
     /**
@@ -61,7 +60,6 @@ abstract class AbstractProductType extends Component
      */
     public $attributeSearch = '';
 
-
     public bool $showGroupCreate = false;
 
     public bool $showGroupAssign = false;
@@ -77,7 +75,6 @@ abstract class AbstractProductType extends Component
     public ?string $removeGroupValueId = null;
 
     public ?int $attachValueToGroupId = null;
-
 
     public function addAttribute($id, $type)
     {
@@ -152,10 +149,10 @@ abstract class AbstractProductType extends Component
 
     public function getSortedGroupsProperty(): Collection
     {
-        if (!$this->productType->attribute_data) {
+        if (! $this->productType->attribute_data) {
             return collect();
         }
-        
+
         $handle = Str::replace('model_', '', $this->activeTab);
         $groupPositions = collect($this->productType->attribute_data->get($handle))->get('groupIds');
         $groups = AttributeGroup::whereHandle($handle)
@@ -165,9 +162,9 @@ abstract class AbstractProductType extends Component
             ->sortBy(fn (Model $group) => collect($groupPositions)->search($group->id));
 
         $groups->each(fn (Model $group) => $group->values = $this->sortFilterGroupValues($group, $handle));
+
         return $groups ?? collect();
     }
-
 
     /**
      * @todo Refactor to use action
@@ -214,8 +211,7 @@ abstract class AbstractProductType extends Component
             $type = ProductVariant::class;
         }
 
-        return AttributeGroup
-            ::whereType('default')
+        return AttributeGroup::whereType('default')
             ->whereAttributableType($type)
             ->with(['attributes'])->get();
     }
@@ -297,11 +293,11 @@ abstract class AbstractProductType extends Component
     protected function beforeRender(): void
     {
         $this->selectedGroupId ??= $this->availableGroupOptions->filter(
-            fn($group) => !$group['disabled']
+            fn ($group) => ! $group['disabled']
         )->value('id');
 
         $this->selectedGroupValueId ??= $this->availableGroupValueOptions->filter(
-            fn($group) => !$group['disabled']
+            fn ($group) => ! $group['disabled']
         )->value('id');
     }
 }

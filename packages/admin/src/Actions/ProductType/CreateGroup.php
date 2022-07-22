@@ -16,6 +16,5 @@ class CreateGroup extends AbstractAction
      */
     public function execute(Model $owner, Collection $attributes)
     {
-
     }
 }

@@ -14,8 +14,7 @@ class ProductFeatureValueTest extends TestCase
     /** @test */
     public function can_make_a_product_feature_value_with_translations()
     {
-        $featureValue = ProductFeatureValue
-            ::factory()
+        $featureValue = ProductFeatureValue::factory()
             ->for(ProductFeature::factory(), 'productFeature')
             ->create();
 
@@ -32,13 +31,12 @@ class ProductFeatureValueTest extends TestCase
     public function can_edit_translated_product_feature_value()
     {
         /** @var ProductFeatureValue $featureValue */
-        $featureValue = ProductFeatureValue
-            ::factory()
+        $featureValue = ProductFeatureValue::factory()
             ->for(ProductFeature::factory(), 'productFeature')
             ->create();
 
         $featureValue->update(['name' => $updatedName = collect([
-            'en' => $featureValue->translate('name'). '-edited',
+            'en' => $featureValue->translate('name').'-edited',
         ])]);
 
         $this->assertDatabaseHas((new ProductFeatureValue)->getTable(), [
@@ -52,8 +50,7 @@ class ProductFeatureValueTest extends TestCase
     public function can_delete_product_feature_value()
     {
         /** @var ProductFeatureValue $featureValue */
-        $featureValue = ProductFeatureValue
-            ::factory()
+        $featureValue = ProductFeatureValue::factory()
             ->for(ProductFeature::factory(), 'productFeature')
             ->create();
 
@@ -67,8 +64,7 @@ class ProductFeatureValueTest extends TestCase
     /** @test */
     public function can_update_all_product_feature_value_positions()
     {
-        $productFeatureValues = ProductFeatureValue
-            ::factory(10)
+        $productFeatureValues = ProductFeatureValue::factory(10)
             ->for(ProductFeature::factory(), 'productFeature')
             ->create()
             ->each(function ($featureValue) {
@@ -78,6 +74,6 @@ class ProductFeatureValueTest extends TestCase
             });
 
         $this->assertDatabaseCount((new ProductFeatureValue)->getTable(), 10);
-        $this->assertEquals(range(1,10), $productFeatureValues->pluck('position')->toArray());
+        $this->assertEquals(range(1, 10), $productFeatureValues->pluck('position')->toArray());
     }
 }

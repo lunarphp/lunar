@@ -15,6 +15,7 @@ class ProductFeatureFactory extends Factory
     public function definition(): array
     {
         $name = $this->faker->name;
+
         return [
             'handle' => Str::slug($name),
             'name' => [
