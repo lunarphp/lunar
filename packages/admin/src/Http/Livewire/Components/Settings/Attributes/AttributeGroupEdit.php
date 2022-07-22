@@ -7,6 +7,7 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Collection as CollectionModel;
+use GetCandy\Models\CollectionGroup;
 use GetCandy\Models\ProductFeature;
 use GetCandy\Models\ProductOption;
 use Illuminate\Support\Collection;
@@ -83,27 +84,24 @@ class AttributeGroupEdit extends Component
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getModelsCollectionProperty(): Collection
-    {
-        return collect([
-            '--' => 'Select a model',
-            'collection' => CollectionModel::class,
-            //'features' => ProductFeature::class,
-            'options' => ProductOption::class,
-        ]);
-    }
+public function getModelsCollectionProperty(): Collection
+{
+    return collect([
+        '--' => 'Select a model',
+        'collection' => CollectionModel::class,
+        //'features' => ProductFeature::class,
+        'options' => ProductOption::class,
+    ]);
+}
 
     /**
-     * Return the collection types.
+     * Return all collection groups.
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getCollectionTypesProperty(): Collection
+    public function getCollectionGroupsProperty(): Collection
     {
-        return collect([
-            'categories' => 'Categories',
-            'brands' => 'Brands',
-        ]);
+        return CollectionGroup::pluck('name', 'handle');
     }
 
     /**

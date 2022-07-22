@@ -50,8 +50,8 @@
     :error="$errors->first('attributeGroup.type')"
   >
     <x-hub::input.select wire:model="attributeGroup.source">
-      @foreach($this->collectionTypes as $collectionType)
-        <option value="{{ \GetCandy\Models\Collection::class.'::'.$collectionType }}">{{ $collectionType }}</option>
+      @foreach($this->collectionGroups as $collectionGroup)
+        <option value="{{ \GetCandy\Models\Collection::class.'::'.$collectionGroup }}">{{ $collectionGroup }}</option>
       @endforeach
     </x-hub::input.select>
   </x-hub::input.group>
