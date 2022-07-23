@@ -4,7 +4,6 @@ namespace GetCandy\Base\Traits;
 
 use GetCandy\Base\ModelFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Traits\ForwardsCalls;
 
 trait InteractsWithEloquentModel
@@ -21,7 +20,7 @@ trait InteractsWithEloquentModel
     public function __call($method, $parameters)
     {
         $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
-        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || !$this->forwardCallsWhen($method, $model)) {
+        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || ! $this->forwardCallsWhen($method, $model)) {
             return parent::__call($method, $parameters);
         }
 
