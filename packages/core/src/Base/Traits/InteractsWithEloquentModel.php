@@ -24,11 +24,11 @@ trait InteractsWithEloquentModel
         }
 
         $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
+
         return $this->forwardCallTo($model, $method, $parameters);
     }
 
     /**
-     *
      * Exclude when method matches builder or livewire hooks.
      *
      * @param  string  $method
