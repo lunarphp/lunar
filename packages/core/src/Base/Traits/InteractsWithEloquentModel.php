@@ -18,11 +18,12 @@ trait InteractsWithEloquentModel
      */
     public function __call($method, $parameters)
     {
-        if (!in_array(get_called_class(), ModelFactory::getBaseModelClasses())) {
+        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses())) {
             return parent::__call($method, $parameters);
         }
 
         $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
+
         return $this->forwardCallTo($model, $method, $parameters);
     }
 }

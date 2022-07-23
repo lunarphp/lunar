@@ -64,7 +64,7 @@ class ModelFactory
      */
     public static function getBaseModelClasses(): array
     {
-        if (!static::$models) {
+        if (! static::$models) {
             static::validateModelsRegistered();
         }
 
@@ -74,8 +74,9 @@ class ModelFactory
     /**
      * Validate models have been registered.
      *
-     * @throws \InvalidArgumentException
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     private static function validateModelsRegistered(): void
     {
@@ -86,8 +87,9 @@ class ModelFactory
      * Validate class is an eloquent model.
      *
      * @param  string  $class
-     * @throws \InvalidArgumentException
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     private static function validateClassIsEloquentModel(string $class): void
     {
@@ -100,8 +102,9 @@ class ModelFactory
      * Validate base class interacts with eloquent model trait.
      *
      * @param  string  $baseClass
-     * @throws \InvalidArgumentException
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     private static function validateInteractsWithEloquent(string $baseClass): void
     {
