@@ -65,22 +65,10 @@ class ModelFactory
     public static function getBaseModelClasses(): array
     {
         if (! static::$models) {
-            static::validateModelsRegistered();
+            return [];
         }
 
         return array_keys(static::$models);
-    }
-
-    /**
-     * Validate models have been registered.
-     *
-     * @return void
-     *
-     * @throws \InvalidArgumentException
-     */
-    private static function validateModelsRegistered(): void
-    {
-        throw new \InvalidArgumentException('No models have been registered in any of your service providers.');
     }
 
     /**
