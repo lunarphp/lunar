@@ -3,6 +3,7 @@
 namespace GetCandy\Base\Traits;
 
 use GetCandy\Base\ModelFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Traits\ForwardsCalls;
 
@@ -19,36 +20,30 @@ trait InteractsWithEloquentModel
      */
     public function __call($method, $parameters)
     {
-        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || $this->excludeWhen($method)) {
+        $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
+        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || !$this->forwardCallsWhen($method, $model)) {
             return parent::__call($method, $parameters);
         }
 
-        $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
         return $this->forwardCallTo($model, $method, $parameters);
     }
 
     /**
-     *
-     * Exclude when method matches builder or livewire hooks.
+     * Forward a method call to the model only when calling a method on the model.
      *
      * @param  string  $method
      * @return bool
      */
-    protected function excludeWhen(string $method): bool
+    protected function forwardCallsWhen(string $method, Model $model): bool
     {
-        $builderMethods = get_class_methods(new Builder($this->getConnection()));
-        $livewireHooks = [
-            'boot',
-            'hydrate',
-            'mount',
-            'booted',
-            'updating',
-            'updated',
-            'rendering',
-            'rendered',
-            'dehydrate',
-        ];
+        $reflect = new \ReflectionClass($model);
+        $methods = [];
+        foreach ($reflect->getMethods() as $m) {
+            if ($m->class == get_class($model)) {
+                $methods[] = $m->name;
+            }
+        }
 
-        return in_array($method, array_merge($builderMethods, $livewireHooks));
+        return in_array($method, $methods);
     }
 }

@@ -54,7 +54,7 @@ class ModelFactory
      */
     public static function getRegisteredModel(string $baseModelClass): Model
     {
-        return app(static::$models[$baseModelClass]);
+        return app(static::$models[$baseModelClass] ?? $baseModelClass);
     }
 
     /**
