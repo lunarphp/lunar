@@ -63,7 +63,7 @@ However, if you're not used to working with monorepo's and setting them up insid
 ::: tip Development Guide
 Here's a guide on how to set-up your development environent ready for contributing to GetCandy.
 
-[Setting Up GetCandy For Local Development](/local-development)
+[Setting Up GetCandy For Local Development](/local-development.html)
 :::
 
 ## Making a Pull Request
