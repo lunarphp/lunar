@@ -12,13 +12,13 @@ You will need a Laravel application to run GetCandy in. You can either use a fre
 
 ## Set-Up
 
-In the root folder of your Laravel applcation, create a "packages" folder.
+In the root folder of your Laravel application, create a "packages" folder.
 
 ```sh
 mkdir packages && cd packages
 ````
 
-Add the "packages" folder to your `.gitignore` file so the folder is not commited to your Git repo.
+Add the "packages" folder to your `.gitignore` file so the folder is not committed to your Git repository.
 
 ```
 ...
@@ -33,7 +33,7 @@ Fork and then clone the [monorepo](https://github.com/getcandy/getcandy) to the 
 git clone https://github.com/YOUR-USERNAME/getcandy
 ````
 
-Update your `composer.json` file similar to the following. Note we are targetting `getcandy/getcandy` and not `getcandy/admin`.
+Update your `composer.json` file similar to the following. Note we are targeting `getcandy/getcandy` and not `getcandy/admin`.
 
 ```json
     "repositories": [{
