@@ -18,7 +18,7 @@ class StaffShow extends Component
     {
         return view('adminhub::livewire.pages.settings.staff.show')
             ->layout('adminhub::layouts.settings', [
-                'title' => 'Edit User',
+                'menu' => 'settings',
             ]);
     }
 }

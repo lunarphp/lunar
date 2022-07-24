@@ -5,6 +5,7 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasAttributes;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasPersonalDetails;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
@@ -18,6 +19,7 @@ class Customer extends BaseModel
     use HasPersonalDetails;
     use HasTranslations;
     use Searchable;
+    use HasMacros;
 
     /**
      * Define our base filterable attributes.

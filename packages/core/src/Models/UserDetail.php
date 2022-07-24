@@ -3,6 +3,7 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Database\Factories\UserDetailFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserDetail extends BaseModel
 {
     use HasFactory;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Feature request
-    url: https://github.com/getcandy/getcandy/discussions/categories/ideas
-    about: 'For ideas or feature requests, start a new discussion'
   - name: Support Questions & Other
     url: https://github.com/getcandy/getcandy/discussions
     about: 'If you have a question, or need some support from the community'
