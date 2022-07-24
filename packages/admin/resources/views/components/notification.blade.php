@@ -3,11 +3,7 @@
     level: '{{ $level }}',
     timeout: null,
 }"
-     x-on:notify.window="
-        let message = $event.detail.message
-        level = $event.detail.level
-        messages.push(message)
-    "
+     x-on:notify.window="let message = $event.detail.message; level = $event.detail.level; messages.push(message)"
      x-init="$watch('messages', () => {
          clearTimeout(timeout)
          timeout = setTimeout(() => messages.shift(), 2000)
