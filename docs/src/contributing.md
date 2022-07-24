@@ -40,7 +40,7 @@ Even better would be a pull request with a test that fails demonstrating the bug
 
 ## Proposing a Feature
 
-Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/getcandy/getcandy/discussions) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into GetCandy.
+Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/getcandy/getcandy/issues/new/choose) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into GetCandy.
 
 However, you're more than welcome to code away on your idea if you think it will help the discussion. 
 
@@ -63,7 +63,7 @@ However, if you're not used to working with monorepo's and setting them up insid
 ::: tip Development Guide
 Here's a guide on how to set-up your development environent ready for contributing to GetCandy.
 
-[Setting Up GetCandy For Local Development](http://ss.com)
+[Setting Up GetCandy For Local Development](/local-development)
 :::
 
 ## Making a Pull Request
