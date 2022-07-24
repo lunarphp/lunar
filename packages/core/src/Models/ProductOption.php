@@ -3,6 +3,7 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
@@ -15,6 +16,7 @@ class ProductOption extends BaseModel
     use HasMedia;
     use HasTranslations;
     use Searchable;
+    use HasMacros;
 
     /**
      * Define our base filterable attributes.

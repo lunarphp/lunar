@@ -15,7 +15,7 @@ class StaffCreate extends Component
     {
         return view('adminhub::livewire.pages.settings.staff.create')
             ->layout('adminhub::layouts.settings', [
-                'title' => 'Create Staff Member',
+                'menu' => 'settings',
             ]);
     }
 }

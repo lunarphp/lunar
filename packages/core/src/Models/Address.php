@@ -4,12 +4,13 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\Addressable;
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Database\Factories\AddressFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Address extends BaseModel implements Addressable
 {
-    use HasFactory;
+    use HasFactory, HasMacros;
 
     /**
      * Return a new factory instance for the model.

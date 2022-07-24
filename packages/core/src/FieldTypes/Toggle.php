@@ -64,7 +64,7 @@ class Toggle implements FieldType, JsonSerializable
             throw new FieldTypeException(self::class.' value must be a string or boolean.');
         }
 
-        $this->value = $value;
+        $this->value = $value ?: false;
     }
 
     /**
