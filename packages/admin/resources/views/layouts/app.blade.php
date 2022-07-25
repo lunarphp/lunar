@@ -19,7 +19,7 @@
     @if ($styles = \GetCandy\Hub\GetCandyHub::styles())
         <!-- Package Styles -->
         @foreach ($styles as $asset)
-            <link href=="{!! $asset->url() !!}" rel="stylesheet">
+            <link href="{!! $asset->url() !!}" rel="stylesheet">
         @endforeach
     @endif
 
