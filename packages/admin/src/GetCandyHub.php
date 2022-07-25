@@ -3,6 +3,7 @@
 namespace GetCandy\Hub;
 
 use GetCandy\Hub\Assets\Script;
+use GetCandy\Hub\Assets\Style;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -16,6 +17,13 @@ class GetCandyHub
     public static $scripts = [];
 
     /**
+     * Registered styles.
+     *
+     * @var array<string, \GetCandy\Hub\Assets\Style>
+     */
+    public static $styles = [];
+
+    /**
      * Get scripts that should be registered.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -24,6 +32,17 @@ class GetCandyHub
     public static function scripts(): array
     {
         return static::$scripts;
+    }
+
+    /**
+     * Get styles that should be registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, \GetCandy\Hub\Assets\Script>
+     */
+    public static function styles(): array
+    {
+        return static::$styles;
     }
 
     /**
@@ -36,6 +55,20 @@ class GetCandyHub
     public static function script(string $name, string $path): static
     {
         static::$scripts[] = new Script($name, $path);
+
+        return new static();
+    }
+
+    /**
+     * Register style with Getcandy.
+     *
+     * @param  string  $name
+     * @param  string  $path
+     * @return static
+     */
+    public static function style(string $name, string $path): static
+    {
+        static::$styles[] = new Style($name, $path);
 
         return new static();
     }
