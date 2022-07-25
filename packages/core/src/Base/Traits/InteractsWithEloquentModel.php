@@ -4,12 +4,9 @@ namespace GetCandy\Base\Traits;
 
 use GetCandy\Base\ModelFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Traits\ForwardsCalls;
 
 trait InteractsWithEloquentModel
 {
-    use ForwardsCalls;
-
     /**
      * Handle dynamic and static method calls into the model.
      *
@@ -20,6 +17,7 @@ trait InteractsWithEloquentModel
     public function __call($method, $parameters)
     {
         $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
+
         if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || ! $this->forwardCallsWhen($method, $model)) {
             return parent::__call($method, $parameters);
         }
@@ -36,13 +34,10 @@ trait InteractsWithEloquentModel
     protected function forwardCallsWhen(string $method, Model $model): bool
     {
         $reflect = new \ReflectionClass($model);
-        $methods = [];
-        foreach ($reflect->getMethods() as $m) {
-            if ($m->class == get_class($model)) {
-                $methods[] = $m->name;
-            }
-        }
+        $methods = collect($reflect->getMethods())
+            ->filter(fn ($method) => $method->class == get_class($model))
+            ->map(fn ($method) => $method->name);
 
-        return in_array($method, $methods);
+        return $methods->contains($method);
     }
 }
