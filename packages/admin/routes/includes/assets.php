@@ -12,5 +12,5 @@ Route::group(['prefix' => 'scripts'], function () {
 });
 
 Route::group(['prefix' => 'styles'], function () {
-    Route::get('/styles/{style}', StylesController::class)->name('hub.assets.styles');
+    Route::get('/{style}', StylesController::class)->name('hub.assets.styles');
 });
