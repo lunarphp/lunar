@@ -23,8 +23,7 @@ class InteractsWithEloquentModelTest extends TestCase
             ProductOption::class => \GetCandy\Tests\Stubs\Models\ProductOption::class,
         ]);
 
-        ProductOption
-            ::factory()
+        ProductOption::factory()
             ->has(ProductOptionValue::factory()->count(3), 'values')
             ->create([
                 'name' => [
