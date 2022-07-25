@@ -6,10 +6,10 @@
 
 When you are developing a package for the admin hub, it comes in handy to be able to register your own scripts and styles.
 
-You can register your own compiled assets as well as external ones. 
+You can register your compiled assets as well as external ones. 
 It is recommended to register compiled scripts as it limits the possibility of external scripts not loading.
 
-## Registering package assets
+## Registering Package Assets
 
 Here is an example of how you would register assets in the `boot` method of your package service provider.
 
