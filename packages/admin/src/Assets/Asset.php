@@ -13,24 +13,25 @@ abstract class Asset implements Responsable
      *
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Path of the Asset.
      *
      * @var string|null
      */
-    protected $path;
+    protected string $path;
 
     /**
      * Construct a new Asset instance.
      *
-     * @param  string|self  $name
-     * @param  string|null  $path
+     * @param  string  $name
+     * @param  string  $path
      */
-    public function __construct($name, $path)
+    public function __construct(string $name, string $path)
     {
         $this->name = $name;
+
         $this->path = $path;
     }
 
