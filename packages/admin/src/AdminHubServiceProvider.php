@@ -59,6 +59,9 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Features\FeatureEdit;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Features\FeaturesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Features\FeatureValueEdit;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Options\OptionEdit;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Options\OptionsIndex;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Product\Options\OptionValueEdit;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
@@ -341,6 +344,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.product.features.index', FeaturesIndex::class);
         Livewire::component('hub.components.settings.product.feature-edit', FeatureEdit::class);
         Livewire::component('hub.components.settings.product.feature-value-edit', FeatureValueEdit::class);
+
+        // Product Options
+        Livewire::component('hub.components.settings.product.options.index', OptionsIndex::class);
+        Livewire::component('hub.components.settings.product.option-edit', OptionEdit::class);
+        Livewire::component('hub.components.settings.product.option-value-edit', OptionValueEdit::class);
     }
 
     /**

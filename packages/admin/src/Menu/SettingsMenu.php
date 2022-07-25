@@ -102,21 +102,13 @@ class SettingsMenu
                  ->icon('clipboard-list');
         });
 
-        // $productSection->addItem(function (MenuLink $item) {
-        //     $item->name('Options')
-        //          ->handle('hub.product.options')
-        //          ->route('hub.product.options.index')
-        //          ->gate('settings:core')
-        //          ->icon('clipboard-list');
-        // });
-        //
-        // $productSection->addItem(function (MenuLink $item) {
-        //     $item->name('Types')
-        //          ->handle('hub.product.types')
-        //          ->route('hub.product.types.index')
-        //          ->gate('settings:core')
-        //          ->icon('pencil');
-        // });
+        $productSection->addItem(function (MenuLink $item) {
+            $item->name('Options')
+                 ->handle('hub.product.options')
+                 ->route('hub.product.options.index')
+                 ->gate('settings:core')
+                 ->icon('clipboard-list');
+        });
     }
 
     /**

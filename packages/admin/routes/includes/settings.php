@@ -15,6 +15,7 @@ use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Product\Features\FeaturesIndex;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionsIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
@@ -116,4 +117,14 @@ Route::group([
     'prefix'     => 'product',
 ], function () {
     Route::get('features', FeaturesIndex::class)->name('hub.product.features.index');
+});
+
+/**
+ * Product options routes.
+ */
+Route::group([
+    'middleware' => 'can:settings:core',
+    'prefix'     => 'product',
+], function () {
+    Route::get('options', OptionsIndex::class)->name('hub.product.options.index');
 });
