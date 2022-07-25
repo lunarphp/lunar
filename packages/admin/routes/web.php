@@ -1,6 +1,5 @@
 <?php
 
-use GetCandy\Hub\Http\Controllers\ScriptsController;
 use GetCandy\Hub\Http\Livewire\Hub;
 use GetCandy\Hub\Http\Livewire\Pages\Account;
 use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
@@ -59,9 +58,7 @@ Route::group([
         ], __DIR__.'/includes/customers.php');
 
         Route::group([
-            'prefix' => 'scripts',
-        ], function () {
-            Route::get('/{script}', ScriptsController::class);
-        });
+            'prefix' => 'assets',
+        ], __DIR__.'/includes/assets.php');
     });
 });
