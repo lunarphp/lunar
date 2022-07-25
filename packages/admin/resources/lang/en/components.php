@@ -224,4 +224,36 @@ return [
     'feature.value.edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
     'feature.value.edit.cancel_btn'              => 'Cancel',
     'feature.value.edit.save_feature.value.btn'  => 'Save Feature value',
+    /**
+     * Option value edit.
+     */
+    'option.value.edit.create_title'            => 'Create option value',
+    'option.value.edit.update_title'            => 'Update option value',
+    'option.value.edit.system_locked'           => 'This option value is required by the system so some fields are disabled.',
+    'option.value.edit.name.placeholder'        => 'e.g. Name',
+    'option.value.edit.required.instructions'   => 'Is this option value required when editing/creating?',
+    'option.value.edit.searchable.instructions' => 'Should users be able to search via this option.value.',
+    'option.value.edit.filterable.instructions' => 'Should users be able to filter results based on this option.value.',
+    'option.value.edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
+    'option.value.edit.cancel_btn'              => 'Cancel',
+    'option.value.edit.save_feature.value.btn'  => 'Save option value',
+    /**
+     * Option value show.
+     */
+    'option.create_group_btn'               => 'Create option',
+    'option.create_option_value'            => 'Create option value',
+    'option.edit_group_btn'                 => 'Edit option',
+    'option.edit_option.value.btn'          => 'Edit option value',
+    'option.delete_group_btn'               => 'Delete option',
+    'option.edit_title'                     => 'Edit option',
+    'option.create_title'                   => 'Create option',
+    'option.delete_title'                   => 'Delete option',
+    'option.delete_warning'                 => 'Removing this option will also remove all option values associated to it. This action cannot be reversed.',
+    'option.group_protected'                => 'This group contains option values required by the system so cannot be removed.',
+    'option.no_option values_text'          => 'No option values exist, either drag existing option values or add new ones here.',
+    'option.delete_option.value.btn'        => 'Delete option value',
+    'option.delete_option.value.title'      => 'Delete Feature value',
+    'option.delete_option.value.warning'    => 'Are you sure you want to remove this option value?',
+    'option.delete_option.value.protected'  => 'You cannot delete a system option.value.',
+    'option.no_groups'                      => 'No options found, add your first one before you can add option values to it.',
 ];

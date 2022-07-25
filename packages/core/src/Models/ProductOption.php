@@ -9,8 +9,9 @@ use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductOptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
-class ProductOption extends BaseModel
+class ProductOption extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
     use HasMedia;
@@ -74,7 +75,7 @@ class ProductOption extends BaseModel
 
     public function values()
     {
-        return $this->hasMany(ProductOptionValue::class);
+        return $this->hasMany(ProductOptionValue::class)->orderBy('position');
     }
 
     /**

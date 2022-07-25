@@ -8,8 +8,9 @@ use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\ProductOptionValueFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
-class ProductOptionValue extends BaseModel
+class ProductOptionValue extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
     use HasMedia;

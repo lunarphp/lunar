@@ -8,6 +8,7 @@ use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductOptionValue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 
 class OptionsIndex extends Component
@@ -230,6 +231,19 @@ class OptionsIndex extends Component
         $this->optionValueToDelete = null;
         $this->valueCreateOptionId = null;
         $this->editOptionValueId = null;
+        $this->refreshGroups();
+    }
+
+    public function deleteOption()
+    {
+        Schema::disableForeignKeyConstraints();
+        Db::transaction(function () {
+            $this->optionToDelete->values()->delete();
+            $this->optionToDelete->delete();
+        });
+        Schema::enableForeignKeyConstraints();
+
+        $this->deleteOptionId = null;
         $this->refreshGroups();
     }
 
