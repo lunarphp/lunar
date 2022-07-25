@@ -7,5 +7,10 @@ use Illuminate\Support\Facades\Route;
 /**
  * Assets routes.
  */
-Route::get('/{script}', ScriptsController::class)->name('hub.assets.scripts');
-Route::get('/{style}', StylesController::class)->name('hub.assets.styles');
+Route::group(['prefix' => 'scripts'], function () {
+    Route::get('/{script}', ScriptsController::class)->name('hub.assets.scripts');
+});
+
+Route::group(['prefix' => 'styles'], function () {
+    Route::get('/styles/{style}', StylesController::class)->name('hub.assets.styles');
+});
