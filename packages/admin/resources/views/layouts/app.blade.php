@@ -16,6 +16,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}" rel="stylesheet">
 
+    @if ($styles = \GetCandy\Hub\GetCandyHub::styles())
+        <!-- Package Styles -->
+        @foreach ($styles as $asset)
+            <link href=="{!! $asset->url() !!}" rel="stylesheet">
+        @endforeach
+    @endif
+
+
     <style>
     .filepond--credits {
         display:none!important;
