@@ -4,6 +4,7 @@ namespace GetCandy\Hub\Assets;
 
 use DateTime;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class Asset implements Responsable
@@ -23,16 +24,42 @@ abstract class Asset implements Responsable
     protected string $path;
 
     /**
+     * Determine wether Asset is remote or not.
+     *
+     * @var bool
+     */
+    protected $remote;
+
+
+    /**
      * Construct a new Asset instance.
      *
      * @param  string  $name
      * @param  string  $path
+     * @param  bool|null  $remote
      */
-    public function __construct(string $name, string $path)
+    public function __construct(string $name, string $path, $remote = null)
     {
+        if (is_null($remote)) {
+            $remote = Str::startsWith($path, ['http://', 'https://', '://']);
+        }
+
         $this->name = $name;
 
         $this->path = $path;
+
+        $this->remote = $remote;
+    }
+
+    /**
+     * Make a remote URL.
+     *
+     * @param  string  $path
+     * @return static
+     */
+    public static function remote(string $path): static
+    {
+        return new static(md5($path), $path, true);
     }
 
     /**
@@ -48,11 +75,21 @@ abstract class Asset implements Responsable
     /**
      * Get asset path.
      *
-     * @return string|null
+     * @return string
      */
-    public function path(): ?string
+    public function path(): string
     {
         return $this->path;
+    }
+
+    /**
+     * Determine if URL is remote.
+     *
+     * @return bool
+     */
+    public function isRemote(): bool
+    {
+        return $this->remote;
     }
 
     /**
