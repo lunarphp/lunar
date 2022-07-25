@@ -65,7 +65,7 @@ class GetCandyHub
      * @param  string  $path
      * @return static
      */
-    public static function remoteScript($path)
+    public static function remoteScript($path): static
     {
         return static::script(Script::remote($path), $path);
     }
@@ -90,12 +90,12 @@ class GetCandyHub
      * @param  string  $path
      * @return static
      */
-    public static function remoteStyle($path)
+    public static function remoteStyle($path): static
     {
         return static::style(Style::remote($path), $path);
     }
 
-    public static function icon($icon, $attrs = null, $style = 'outline')
+    public static function icon($icon, $attrs = null, $style = 'outline'): static
     {
         if ($attrs) {
             $attrs = " class=\"{$attrs}\"";
@@ -105,19 +105,19 @@ class GetCandyHub
             return str_replace('<svg', sprintf('<svg%s', $attrs), $icon);
         }
 
-        $iconPath = __DIR__ . "/../resources/icons/{$style}/$icon.svg";
+        $iconPath = __DIR__."/../resources/icons/{$style}/$icon.svg";
 
-        if (!File::exists($iconPath)) {
+        if (! File::exists($iconPath)) {
             return;
         }
 
         return str_replace('<svg', sprintf('<svg%s', $attrs), File::get($iconPath));
     }
 
-    public static function paymentIcons()
+    public static function paymentIcons(): string
     {
         return File::get(
-            __DIR__ . '/../resources/icons/payment_icons.svg'
+            __DIR__.'/../resources/icons/payment_icons.svg'
         );
     }
 }
