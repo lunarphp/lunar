@@ -34,12 +34,20 @@ abstract class Asset implements Responsable
     /**
      * Construct a new Asset instance.
      *
-     * @param  string  $name
+     * @param  string|self  $name
      * @param  string  $path
      * @param  bool|null  $remote
      */
-    public function __construct(string $name, string $path, $remote = null)
+    public function __construct(string|self $name, string $path, $remote = null)
     {
+        if ($name instanceof self) {
+            $this->name = $name->name();
+            $this->path = $name->path();
+            $this->remote = $name->isRemote();
+
+            return;
+        }
+
         if (is_null($remote)) {
             $remote = Str::startsWith($path, ['http://', 'https://', '://']);
         }

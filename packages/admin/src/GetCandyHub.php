@@ -49,10 +49,10 @@ class GetCandyHub
      * Register script with Getcandy.
      *
      * @param  string  $name
-     * @param  string  $path
+     * @param  string|Script  $path
      * @return static
      */
-    public static function script(string $name, string $path): static
+    public static function script(string|Script $name, string $path): static
     {
         static::$scripts[] = new Script($name, $path);
 
@@ -60,17 +60,40 @@ class GetCandyHub
     }
 
     /**
-     * Register style with Getcandy.
+     * Register remote script with Getcandy.
      *
-     * @param  string  $name
      * @param  string  $path
      * @return static
      */
-    public static function style(string $name, string $path): static
+    public static function remoteScript($path)
+    {
+        return static::script(Script::remote($path), $path);
+    }
+
+
+    /**
+     * Register style with Getcandy.
+     *
+     * @param  string  $name
+     * @param  string|Style  $path
+     * @return static
+     */
+    public static function style(string|Style $name, string $path): static
     {
         static::$styles[] = new Style($name, $path);
 
         return new static();
+    }
+
+    /**
+     * Register remote style with Getcandy.
+     *
+     * @param  string  $path
+     * @return static
+     */
+    public static function remoteStyle($path)
+    {
+        return static::style(Style::remote($path), $path);
     }
 
     public static function icon($icon, $attrs = null, $style = 'outline')
