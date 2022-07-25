@@ -11,9 +11,7 @@ class Script extends Asset
      */
     public function url(): string
     {
-        $prefix = config('getcandy-hub.system.path', 'hub');
-
-        return "/{$prefix}/scripts/{$this->name}";
+        return route('hub.assets.scripts', $this->name);
     }
 
     /**
