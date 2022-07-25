@@ -11,7 +11,11 @@ class Style extends Asset
      */
     public function url(): string
     {
-        return route('hub.assets.styles', $this->name);
+        if (!$this->isRemote()) {
+            return route('hub.assets.styles', $this->name);
+        }
+
+        return $this->path;
     }
 
     /**

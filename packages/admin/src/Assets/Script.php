@@ -11,7 +11,11 @@ class Script extends Asset
      */
     public function url(): string
     {
-        return route('hub.assets.scripts', $this->name);
+        if (!$this->isRemote()) {
+            return route('hub.assets.scripts', $this->name);
+        }
+
+        return $this->path;
     }
 
     /**
