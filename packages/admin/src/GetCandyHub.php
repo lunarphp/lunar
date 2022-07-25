@@ -95,7 +95,7 @@ class GetCandyHub
         return static::style(Style::remote($path), $path);
     }
 
-    public static function icon($icon, $attrs = null, $style = 'outline'): static
+    public static function icon($icon, $attrs = null, $style = 'outline')
     {
         if ($attrs) {
             $attrs = " class=\"{$attrs}\"";
@@ -114,7 +114,7 @@ class GetCandyHub
         return str_replace('<svg', sprintf('<svg%s', $attrs), File::get($iconPath));
     }
 
-    public static function paymentIcons(): string
+    public static function paymentIcons()
     {
         return File::get(
             __DIR__.'/../resources/icons/payment_icons.svg'
