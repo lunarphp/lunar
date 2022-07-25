@@ -30,7 +30,6 @@ abstract class Asset implements Responsable
      */
     protected $remote;
 
-
     /**
      * Construct a new Asset instance.
      *

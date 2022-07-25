@@ -8,4 +8,3 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/{script}', ScriptsController::class)->name('hub.assets.scripts');
 Route::get('/{style}', StylesController::class)->name('hub.assets.styles');
-
