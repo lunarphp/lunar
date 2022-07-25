@@ -256,4 +256,10 @@ return [
     'option.delete_option.value.warning'    => 'Are you sure you want to remove this option value?',
     'option.delete_option.value.protected'  => 'You cannot delete a system option.value.',
     'option.no_groups'                      => 'No options found, add your first one before you can add option values to it.',
+    /**
+     * Option value edit.
+     */
+    'option-edit.create_btn'                   => 'Create feature',
+    'option-edit.update_btn'                   => 'Update feature',
+    'option.value.edit.save_option.value.btn'  => 'Save Option value',
 ];

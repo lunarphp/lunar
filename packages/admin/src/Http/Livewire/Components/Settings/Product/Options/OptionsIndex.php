@@ -236,12 +236,10 @@ class OptionsIndex extends Component
 
     public function deleteOption()
     {
-        Schema::disableForeignKeyConstraints();
         Db::transaction(function () {
             $this->optionToDelete->values()->delete();
             $this->optionToDelete->delete();
         });
-        Schema::enableForeignKeyConstraints();
 
         $this->deleteOptionId = null;
         $this->refreshGroups();

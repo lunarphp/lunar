@@ -4,8 +4,8 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\Product\Options;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\ProductFeature;
-use GetCandy\Models\ProductFeatureValue;
+use GetCandy\Models\ProductOption;
+use GetCandy\Models\ProductOptionValue;
 use Livewire\Component;
 
 class OptionValueEdit extends Component
@@ -14,28 +14,28 @@ class OptionValueEdit extends Component
     use Notifies;
 
     /**
-     * The feature instance.
+     * The option instance.
      *
-     * @var \GetCandy\Models\ProductFeature
+     * @var \GetCandy\Models\ProductOption
      */
-    public ?ProductFeature $feature = null;
+    public ?ProductOption $option = null;
 
     /**
-     * The feature value instance.
+     * The option value instance.
      *
-     * @var \GetCandy\Models\ProductFeatureValue
+     * @var \GetCandy\Models\ProductOptionValue
      */
-    public ?ProductFeatureValue $featureValue = null;
+    public ?ProductOptionValue $optionValue = null;
 
     /**
      * {@inheritDoc}
      */
     public function mount()
     {
-        $this->featureValue = $this->featureValue ?: new ProductFeatureValue;
+        $this->optionValue = $this->optionValue ?: new ProductOptionValue;
 
-        if ($this->featureValue->id) {
-            $this->feature = $this->featureValue->feature;
+        if ($this->optionValue->id) {
+            $this->option = $this->optionValue->option;
         }
     }
 
@@ -48,14 +48,14 @@ class OptionValueEdit extends Component
     {
         $rules = [];
         foreach ($this->languages as $language) {
-            $rules["featureValue.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
+            $rules["optionValue.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
         }
 
         return $rules;
     }
 
     /**
-     * Save the featureValue.
+     * Save the optionValue.
      *
      * @return void
      */
@@ -63,30 +63,30 @@ class OptionValueEdit extends Component
     {
         $this->validate();
 
-        if (! $this->featureValue->id) {
-            $this->featureValue->position = ProductFeatureValue::whereProductFeatureId(
-                $this->feature->id
+        if (! $this->optionValue->id) {
+            $this->optionValue->position = ProductOptionValue::whereProductOptionId(
+                $this->option->id
             )->count() + 1;
 
             // @todo Not sure why this is not working here?
-            // $this->featureValue->increment('position');
+            // $this->optionValue->increment('position');
 
-            $this->featureValue->productFeature()->associate($this->feature);
-            $this->featureValue->save();
+            $this->optionValue->productOption()->associate($this->option);
+            $this->optionValue->save();
             $this->notify(
                 __('adminhub::notifications.attribute-edit.created')
             );
-            $this->emit('feature-value-edit.created', $this->featureValue->id);
+            $this->emit('option-value-edit.created', $this->optionValue->id);
 
             return;
         }
 
-        $this->featureValue->save();
+        $this->optionValue->save();
 
         $this->notify(
             __('adminhub::notifications.attribute-edit.updated')
         );
-        $this->emit('feature-value-edit.updated', $this->featureValue->id);
+        $this->emit('option-value-edit.updated', $this->optionValue->id);
     }
 
     /**
@@ -96,7 +96,7 @@ class OptionValueEdit extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.product.features.feature-value-edit')
+        return view('adminhub::livewire.components.settings.product.options.option-value-edit')
             ->layout('adminhub::layouts.base');
     }
 }
