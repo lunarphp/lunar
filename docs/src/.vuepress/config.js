@@ -118,6 +118,7 @@ module.exports = {
         collapsable: false, // optional, defaults to true
         children: [
           '/extending/admin-hub',
+          '/extending/assets',
           '/extending/cart-modifiers',
           '/extending/field-types',
           '/extending/models',
