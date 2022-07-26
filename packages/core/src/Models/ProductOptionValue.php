@@ -7,6 +7,7 @@ use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\ProductOptionValueFactory;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
@@ -16,6 +17,15 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
     use HasMedia;
     use HasTranslations;
     use HasMacros;
+
+    /**
+     * Define which attributes should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'name' => AsCollection::class,
+    ];
 
     /**
      * Return a new factory instance for the model.

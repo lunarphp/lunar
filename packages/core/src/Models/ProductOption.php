@@ -8,6 +8,7 @@ use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductOptionFactory;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
@@ -33,6 +34,15 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $sortable = [
         'name',
+    ];
+
+    /**
+     * Define which attributes should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'name' => AsCollection::class,
     ];
 
     /**
