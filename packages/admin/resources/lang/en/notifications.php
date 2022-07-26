@@ -18,6 +18,8 @@ return [
     'collection-groups.deleted'         => 'Collection group deleted',
     'option-values.created'             => 'Created option value',
     'product-options.created'           => 'Product option created',
+    'product-options.deleted'           => 'Product option deleted',
+    'product-options.not.deleted'       => 'Product option could not be deleted as there are values associated with it',
     'customer.updated'                  => 'Customer Updated',
     'password-reset.invalid_token'      => 'Reset token is invalid',
     'password-reset.password_updated'   => 'Password updated',

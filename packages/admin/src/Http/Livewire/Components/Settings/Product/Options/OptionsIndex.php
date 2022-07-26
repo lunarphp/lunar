@@ -235,10 +235,19 @@ class OptionsIndex extends Component
 
     public function deleteOption()
     {
-        Db::transaction(function () {
-            $this->optionToDelete->values()->delete();
-            $this->optionToDelete->delete();
-        });
+        $level = 'error';
+        $notificationText = 'product-options.not.deleted';
+        if ($this->optionToDelete->values->isEmpty()) {
+            $notificationText = 'product-options.deleted';
+            $level = 'success';
+            Db::transaction(function () {
+                $this->optionToDelete->delete();
+            });
+        }
+
+        $this->notify(
+            __('adminhub::notifications.'.$notificationText), null, [], $level
+        );
 
         $this->deleteOptionId = null;
         $this->refreshGroups();
