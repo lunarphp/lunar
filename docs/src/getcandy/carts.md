@@ -80,7 +80,7 @@ We've also tried to make Carts extendable as much as possible so, depending on w
 $cart = $cart->getManager()->getCart();
 ```
 
-This will return a "hydrated" version of your cart will the following:
+This will return a "hydrated" version of your cart with the following:
 
 ::: tip
 All values will return a `GetCandy\Datatypes\Price` object. So you have access to the following: `value`, `formatted`, `decimal`
