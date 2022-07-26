@@ -116,7 +116,7 @@ class ProductOptionTest extends TestCase
 
         $this->assertDatabaseCount((new ProductOptionValue)->getTable(), 1);
         $this->assertCount(1, ProductOptionValue::whereRelation(
-            'productOption',
+            'option',
             'product_option_id',
             $productOption->id)->get(),
         );
