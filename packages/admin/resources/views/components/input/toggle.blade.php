@@ -9,6 +9,11 @@
       this.checked = this.checked == this.onValue ? this.offValue : this.onValue
     }
   }"
+  x-init="
+    if (!checked) {
+      checked = offValue
+    }
+  "
 >
   <button
     {{ $attributes->except(['disabled', 'wire:model']) }}
@@ -25,6 +30,7 @@
     @if($attributes->wire('model')->value())
       <input type="checkbox" x-model="checked" class="hidden" value="{{ $onValue }}" />
     @endif
+
     <span
       aria-hidden="true"
       :class="{
