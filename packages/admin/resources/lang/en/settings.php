@@ -126,12 +126,6 @@ return [
      */
     'activity_log.index.title' => 'Activity Log',
     /*
-     * Product Features
-     */
-    'product.features.index.title'                 => 'Features',
-    'product.features.index.create_btn'            => 'Create Feature',
-    'product.features.index.table_row_action_text' => 'Edit Feature',
-    /*
      * Product Options
      */
     'product.options.index.title'                 => 'Options',

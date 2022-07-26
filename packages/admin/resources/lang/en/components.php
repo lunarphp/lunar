@@ -179,51 +179,6 @@ return [
     'activity-log.orders.capture'                   => 'Payment of :amount on card ending :last_four',
     'activity-log.orders.authorized'                   => 'Authorized of :amount on card ending :last_four',
     'activity-log.orders.refund'                   => 'refund of :amount on card ending :last_four',
-
-    /**
-     * Product Features.
-     */
-    'product.features.no_feature_value_text' => 'No feature values exist, either drag existing feature value or add new ones here.',
-
-    /**
-     * Product feature create.
-     */
-    'feature-edit.name.placeholder'     => 'e.g. Additional Details',
-    'feature-edit.create_btn'           => 'Create feature',
-    'feature-edit.update_btn'           => 'Update feature',
-    'feature-edit.non_unique_handle'    => 'This name has been already been taken',
-    /**
-     * Feature show.
-     */
-    'feature.create_group_btn'               => 'Create feature',
-    'feature.create_feature_value'           => 'Create feature value',
-    'feature.edit_group_btn'                 => 'Edit feature',
-    'feature.edit_feature.value.btn'         => 'Edit feature value',
-    'feature.delete_group_btn'               => 'Delete feature',
-    'feature.edit_title'                     => 'Edit feature',
-    'feature.create_title'                   => 'Create feature',
-    'feature.delete_title'                   => 'Delete feature',
-    'feature.delete_warning'                 => 'Removing this feature will also remove all feature values associated to it. This action cannot be reversed.',
-    'feature.group_protected'                => 'This group contains feature values required by the system so cannot be removed.',
-    'feature.no_feature values_text'         => 'No feature values exist, either drag existing feature values or add new ones here.',
-    'feature.delete_feature.value.btn'       => 'Delete feature value',
-    'feature.delete_feature.value.title'     => 'Delete Feature value',
-    'feature.delete_feature.value.warning'   => 'Are you sure you want to remove this feature value?',
-    'feature.delete_feature.value.protected' => 'You cannot delete a system feature.value.',
-    'feature.no_groups'                      => 'No features found, add your first one before you can add feature values to it.',
-    /**
-     * Feature value edit.
-     */
-    'feature.value.edit.create_title'            => 'Create feature value',
-    'feature.value.edit.update_title'            => 'Update feature value',
-    'feature.value.edit.system_locked'           => 'This feature value is required by the system so some fields are disabled.',
-    'feature.value.edit.name.placeholder'        => 'e.g. Name',
-    'feature.value.edit.required.instructions'   => 'Is this feature value required when editing/creating?',
-    'feature.value.edit.searchable.instructions' => 'Should users be able to search via this feature.value.',
-    'feature.value.edit.filterable.instructions' => 'Should users be able to filter results based on this feature.value.',
-    'feature.value.edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
-    'feature.value.edit.cancel_btn'              => 'Cancel',
-    'feature.value.edit.save_feature.value.btn'  => 'Save Feature value',
     /**
      * Option value edit.
      */
@@ -259,7 +214,7 @@ return [
     /**
      * Option value edit.
      */
-    'option-edit.create_btn'                   => 'Create feature',
-    'option-edit.update_btn'                   => 'Update feature',
+    'option-edit.create_btn'                   => 'Create option',
+    'option-edit.update_btn'                   => 'Update option',
     'option.value.edit.save_option.value.btn'  => 'Save Option value',
 ];

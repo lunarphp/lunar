@@ -4,7 +4,7 @@
       <x-hub::input.text
               wire:model="optionValue.name.{{ $this->defaultLanguage->code }}"
               :error="$errors->first('optionValue.name.' . $this->defaultLanguage->code)"
-              :placeholder="__('adminhub::components.option-edit.name.placeholder')"
+              :placeholder="__('adminhub::components.option.value.edit.name.placeholder')"
       />
       @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
         <x-slot :name="$language['code']">

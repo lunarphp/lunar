@@ -95,14 +95,6 @@ class SettingsMenu
         $productSection = $this->slot->section('product')->name('Product');
 
         $productSection->addItem(function (MenuLink $item) {
-            $item->name('Features')
-                 ->handle('hub.product.features')
-                 ->route('hub.product.features.index')
-                 ->gate('settings:core')
-                 ->icon('clipboard-list');
-        });
-
-        $productSection->addItem(function (MenuLink $item) {
             $item->name('Options')
                  ->handle('hub.product.options')
                  ->route('hub.product.options.index')

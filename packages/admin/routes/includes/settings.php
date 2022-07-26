@@ -110,16 +110,6 @@ Route::group([
 });
 
 /**
- * Product features routes.
- */
-Route::group([
-    'middleware' => 'can:settings:core',
-    'prefix'     => 'product',
-], function () {
-    Route::get('features', FeaturesIndex::class)->name('hub.product.features.index');
-});
-
-/**
  * Product options routes.
  */
 Route::group([
