@@ -6,19 +6,13 @@
          }">
         <a href="{{ route('hub.index') }}"
            class="flex items-center w-full h-16 px-4">
-            <img src="https://markmead.dev/gc-logo.svg"
+            <img src="https://getcandy.io/hub/getcandy_logo.svg"
                  alt="GetCandy Logo"
                  class="w-auto h-10"
-                 x-show="showExpandedMenu && !darkMode"
+                 x-show="showExpandedMenu"
                  x-cloak />
 
-            <img src="https://markmead.dev/gc-logo-white.svg"
-                 alt="GetCandy Logo"
-                 class="w-auto h-10"
-                 x-show="showExpandedMenu && darkMode"
-                 x-cloak />
-
-            <img src="https://markmead.dev/gc-favicon.svg"
+            <img src="https://getcandy.io/assets/imgs/logos/favicon.svg"
                  alt="GetCandy Logo"
                  class="w-8 h-8 mx-auto"
                  x-show="!showExpandedMenu"
