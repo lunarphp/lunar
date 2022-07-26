@@ -323,7 +323,13 @@
                         </x-hub::table.cell>
 
                         <x-hub::table.cell>
-                            {{ $order->billingAddress->first_name }}
+                            {{ $order->billingAddress->fullName }}
+                            @if($order->billingAddress->company_name)
+                              <span class="text-xs text-gray-500 block">
+                                {{ $order->billingAddress->company_name }}
+                              </span>
+                            @endif
+
                         </x-hub::table.cell>
 
                         <x-hub::table.cell>
