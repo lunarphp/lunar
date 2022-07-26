@@ -28,6 +28,12 @@
 
   <div class="grid grid-cols-2 gap-2 px-4 py-3 border-b">
     <dt class="font-medium text-gray-500">{{ __('adminhub::partials.orders.details.date_placed') }}</dt>
-    <dd class="text-right">{{ $order->placed_at->format('Y-m-d h:ia') }}</dd>
+    <dd class="text-right">
+      @if($order->placed_at)
+        {{ $order->placed_at->format('Y-m-d h:ia') }}
+      @else
+        -
+      @endif
+    </dd>
   </div>
 </dl>

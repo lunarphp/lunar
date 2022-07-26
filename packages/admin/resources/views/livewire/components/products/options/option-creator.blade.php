@@ -8,7 +8,7 @@
           :placeholder="__('adminhub::components.products.option-creator.option_placeholder')"
         />
         @foreach($languages->filter(fn ($lang) => !$lang->default) as $language)
-          <x-slot :name="$language->code">
+          <x-slot :name="$language['code']">
             <x-hub::input.text wire:model="name.{{ $language->code }}" />
           </x-slot>
         @endforeach
@@ -40,7 +40,7 @@
                   :placeholder="__('adminhub::components.products.option-creator.value_placeholder')"
                 />
                 @foreach($languages->filter(fn ($lang) => !$lang->default) as $language)
-                  <x-slot :name="$language->code">
+                  <x-slot :name="$language['code']">
                     <x-hub::input.text
                       wire:model="values.{{ $key }}.name.{{ $language->code }}"
                       :error="$errors->first('values.'.$loop->index.'.name.'.$language->code)"

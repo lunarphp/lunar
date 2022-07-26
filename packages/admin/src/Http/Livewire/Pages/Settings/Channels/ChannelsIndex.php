@@ -15,7 +15,7 @@ class ChannelsIndex extends Component
     {
         return view('adminhub::livewire.pages.settings.channels.index')
             ->layout('adminhub::layouts.settings', [
-                'title' => 'Channels',
+                'menu' => 'settings',
             ]);
     }
 }

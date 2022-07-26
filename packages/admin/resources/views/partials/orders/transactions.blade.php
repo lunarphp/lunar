@@ -21,15 +21,17 @@
             </svg>
           </div>
 
-          <p class="text-sm text-gray-600">
-            <span class="inline-block -translate-y-px">
-              &lowast;&lowast;&lowast;&lowast; &lowast;&lowast;&lowast;&lowast; &lowast;&lowast;&lowast;&lowast;
-            </span>
+          @if($transaction->last_four)
+            <p class="text-sm text-gray-600">
+              <span class="inline-block -translate-y-px">
+                &lowast;&lowast;&lowast;&lowast; &lowast;&lowast;&lowast;&lowast; &lowast;&lowast;&lowast;&lowast;
+              </span>
 
-            <span class="font-medium">
-              {{ (string) $transaction->last_four }}
-            </span>
-          </p>
+              <span class="font-medium">
+                {{ (string) $transaction->last_four }}
+              </span>
+            </p>
+          @endif
         </div>
 
         <strong class="text-sm @if($transaction->type == 'refund') text-orange-500 @else text-gray-900 @endif">

@@ -22,7 +22,7 @@
             :disabled="$this->isLocked"
           />
           @foreach($this->languages as $language)
-            <x-slot :name="$language->code">
+            <x-slot :name="$language['code']">
               <x-hub::input.text wire:model="attribute.name.{{ $language->code }}" />
             </x-slot>
           @endforeach

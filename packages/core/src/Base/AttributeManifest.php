@@ -3,6 +3,7 @@
 namespace GetCandy\Base;
 
 use GetCandy\Models\Collection as ModelsCollection;
+use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductVariant;
@@ -22,6 +23,7 @@ class AttributeManifest
         Product::class,
         ProductVariant::class,
         ModelsCollection::class,
+        Customer::class,
         // Order::class,
     ];
 

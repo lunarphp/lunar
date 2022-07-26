@@ -117,6 +117,7 @@ module.exports = {
         title: 'Extending GetCandy',
         collapsable: false, // optional, defaults to true
         children: [
+          '/extending/activity-log',
           '/extending/admin-hub',
           '/extending/assets',
           '/extending/cart-modifiers',

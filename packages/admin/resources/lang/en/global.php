@@ -129,4 +129,11 @@ return [
     'reach_out'               => 'Feel free to reach out on our',
     'discord_server'          => 'Discord server',
     'for_updates'             => 'for updates.',
+    'restore' => 'Restore',
+    'export'    => 'Export',
+    'brand' => 'Brand',
+    'stock' => 'Stock',
+    'show_deleted' => 'Show Deleted',
+    'delivery_instructions' => 'Delivery Instructions',
+    'not_provided' => 'Not Provided',
 ];

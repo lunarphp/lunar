@@ -6,6 +6,7 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasChannels;
 use GetCandy\Base\Traits\HasCustomerGroups;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\HasUrls;
@@ -27,6 +28,7 @@ class Collection extends BaseModel implements SpatieHasMedia
         HasChannels,
         HasUrls,
         HasCustomerGroups,
+        HasMacros,
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
     }

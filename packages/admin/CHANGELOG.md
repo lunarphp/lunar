@@ -3,6 +3,50 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+### [Unreleased]
+
+## Changed
+
+- The activity log timeline is now extendable.
+- Partial card number will now only appear if last four is populated on a transaction.
+
+## Added
+
+- Migrations are now publishable under the tag `getcandy-migrations`
+- Added current and purchase stock level to order lines
+
+### 2.0-beta13.2 - 2022-06-23
+
+## Fixed
+
+- Order screens will now handle null `placed_at` columns.
+- Switched to using array access on dynamic scopes for Laravel 9 support
+- Scoped the `FilePond` reference it's component to sort browser quirks
+
+## Changed
+
+- Cart/Order modifiers now require `$next` in pipeline usage.
+
+### 2.0-beta13 - 2022-05-19
+
+## Added
+
+- Added functionality to restore soft deleted products from the listing view.
+- Added functionality to filter products based on status and whether they are soft deleted.
+
+## Fixed
+
+- The Quill editor now has some added spacing between elements such as Paragraphs.
+- If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
+- When deleting a collection with descendants, their relationships will now be factored in. [#292](https://github.com/getcandy/getcandy/issues/292)
+- When deleting a collection, their URLs will now also be removed.
+
+## Changed
+
+- Collection tree now uses a Livewire approach for loading, which should reduce the load on the browser. [#274](https://github.com/getcandy/getcandy/pull/274)
+
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta12...2.0-beta13)
+
 ## 2.0-beta12 - 2022-04-08
 
 ## Fixed

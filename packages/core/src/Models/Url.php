@@ -3,12 +3,14 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Database\Factories\UrlFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Url extends BaseModel
 {
     use HasFactory;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

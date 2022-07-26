@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasDefaultRecord;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CurrencyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,8 @@ class Currency extends BaseModel
     use HasFactory;
     use LogsActivity;
     use HasDefaultRecord;
+    use HasMacros;
+
     /**
      * Define which attributes should be
      * protected from mass assignment.
@@ -45,6 +48,10 @@ class Currency extends BaseModel
          *
          * E.g. For two decimal places, we need to divide by 100.
          */
+        if ($this->decimal_places < 1) {
+            return 1;
+        }
+
         return sprintf("1%0{$this->decimal_places}d", 0);
     }
 }

@@ -85,7 +85,7 @@ If you decide to delete an attribute, this will cause the association to be drop
 :::
 
 ### Retrieving the product type relationship
-If you have a product, you can fetch its product type like like so:
+If you have a product, you can fetch its product type like so:
 
 ```php
 $product->productType;

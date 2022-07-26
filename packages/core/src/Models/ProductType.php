@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasAttributes;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Database\Factories\ProductTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -11,6 +12,7 @@ class ProductType extends BaseModel
 {
     use HasAttributes;
     use HasFactory;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

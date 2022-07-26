@@ -132,11 +132,11 @@ $myModel->urls; // Collection
 
 You can tell GetCandy to generate URLs for models that use the `HasUrls` trait automatically by setting the `generator` config option in `config/getcandy/urls.php`.
 
-By default this is set to `null` which means no URLs will be generated. To enable this, set the config like below:
+By default this is set to `GetCandy\Generators\UrlGenerator::class` which means URLs will be generated. To disable this, set the config like below:
 
 ```php
 return [
-    'generator' => GetCandy\Generators\UrlGenerator::class
+    'generator' => null
 ];
 ```
 

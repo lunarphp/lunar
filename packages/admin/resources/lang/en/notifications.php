@@ -14,6 +14,7 @@ return [
     'collections.deleted'               => 'Collection deleted',
     'collections.reordered'             => 'Collections reordered',
     'collections.added'                 => 'Collection added',
+    'collection-groups.updated'         => 'Collection group updated',
     'collection-groups.deleted'         => 'Collection group deleted',
     'option-values.created'             => 'Created option value',
     'product-options.created'           => 'Product option created',
@@ -46,4 +47,5 @@ return [
     'search-results.none'               => 'We were unable to find any results based on your search.',
     'addon.not_licensed'                => 'This addon has not been licensed, please check the config for this addon.',
     'product.no-images-associated'      => 'Product does not have any images associated',
+    'products.product_restored'         => 'Product restored',
 ];
