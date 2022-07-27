@@ -4,7 +4,6 @@ namespace GetCandy\Actions\Carts;
 
 use GetCandy\Actions\Orders\GenerateOrderReference;
 use GetCandy\Base\OrderModifiers;
-use GetCandy\Base\OrderReferenceGenerator;
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Currency;

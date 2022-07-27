@@ -2,7 +2,6 @@
 
 namespace GetCandy\Base;
 
-use Closure;
 use GetCandy\Models\Order;
 use Illuminate\Support\Facades\DB;
 

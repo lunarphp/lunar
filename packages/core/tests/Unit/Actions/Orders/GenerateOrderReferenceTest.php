@@ -62,7 +62,7 @@ class SortProductsByPriceTest extends TestCase
 
         $result = app(GenerateOrderReference::class)->execute($order);
 
-        $this->assertEquals('reference-' . $order->id, $result);
+        $this->assertEquals('reference-'.$order->id, $result);
     }
 
     /** @test */

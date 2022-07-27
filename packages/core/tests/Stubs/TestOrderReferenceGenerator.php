@@ -14,6 +14,6 @@ class TestOrderReferenceGenerator implements OrderReferenceGeneratorInterface
      */
     public function generate(Order $order): string
     {
-        return 'reference-' . $order->id;
+        return 'reference-'.$order->id;
     }
 }
