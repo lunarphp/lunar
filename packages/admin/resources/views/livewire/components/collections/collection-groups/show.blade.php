@@ -117,7 +117,7 @@
                         @if ($showCollectionSearchResults)
                             <div class="absolute w-full overflow-y-scroll bg-white rounded-b shadow max-h-64">
                                 @foreach ($this->searchedCollections as $collection)
-                                    <button class="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
+                                    <button class="flex gap-1.5 items-center w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
                                             type="button"
                                             wire:click.prevent="setMoveTarget('{{ $collection->id }}')">
                                         <span class="text-gray-500">
