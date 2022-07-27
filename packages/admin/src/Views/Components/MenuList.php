@@ -8,12 +8,13 @@ use Illuminate\View\Component;
 class MenuList extends Component
 {
     /**
+     * @param  string  $menuType
      * @param  \Illuminate\Support\Collection  $sections
      * @param  \Illuminate\Support\Collection  $items
      * @param  string  $active
      */
     public function __construct(
-        public string $type,
+        public string $menuType,
         public Collection $sections,
         public Collection $items,
         public string $active

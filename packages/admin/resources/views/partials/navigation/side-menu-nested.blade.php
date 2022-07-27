@@ -2,7 +2,7 @@
     <x-hub::menu handle="{{ $menu }}"
                  current="{{ request()->route()->getName() }}">
         <x-hub::menu-list
-                type="sub_menu"
+                menuType="sub_menu"
                 :sections="$component->sections"
                 :items="$component->items"
                 :active="$component->attributes->get('current')" />

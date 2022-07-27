@@ -1,4 +1,4 @@
-<div class="space-y-4" x-data="{ type: '{{ $type }}' }">
+<div class="space-y-4" x-data="{ menuType: '{{ $menuType }}' }">
     @if (count($items))
         <div>
             <ul class="ml-1 space-y-2">
@@ -17,7 +17,7 @@
 
                             <span class="text-sm font-medium"
                                   x-cloak
-                                  x-show="type == 'main_menu' && showExpandedMenu">
+                                  x-show="menuType == 'main_menu' && showExpandedMenu">
                                 {{ $item->name }}
                             </span>
 
@@ -39,11 +39,11 @@
             <div>
                 <header class="text-sm font-semibold text-gray-600"
                         x-cloak
-                        x-show="type == 'main_menu' && showExpandedMenu || type == 'sub_menu'">
+                        x-show="menuType == 'main_menu' && showExpandedMenu || menuType == 'sub_menu'">
                     {{ $section->name }}
                 </header>
 
-                <ul class="ml-1 space-y-2 flex flex-col">
+                <ul class="ml-1 mt-2 space-y-2 flex flex-col">
                     @foreach ($section->getItems() as $item)
                         <li :class="{ 'items-center': !showExpandedMenu }">
                             <a href="{{ route($item->route) }}"
@@ -59,7 +59,7 @@
 
                                 <span class="text-sm font-medium"
                                       x-cloak
-                                      x-show="type == 'sub_menu' || showExpandedMenu">
+                                      x-show="menuType == 'sub_menu' || showExpandedMenu">
                                     {{ $item->name }}
                                 </span>
 
