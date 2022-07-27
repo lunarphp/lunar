@@ -1,36 +1,10 @@
 <div>
     <x-hub::menu handle="sidebar"
                  current="{{ request()->route()->getName() }}">
-        <ul class="flex flex-col space-y-2"
-            :class="{ 'items-center': !showExpandedMenu }">
-            @foreach ($component->items as $item)
-                <li>
-                    <a href="{{ route($item->route) }}"
-                       @class([
-                           'menu-link',
-                           'menu-link--active' => $item->isActive(
-                               $component->attributes->get('current')
-                           ),
-                           'menu-link--inactive' => !$item->isActive(
-                               $component->attributes->get('current')
-                           ),
-                       ])
-                       :class="{ 'group': !showExpandedMenu }">
-                        {!! $item->renderIcon('w-5 h-5') !!}
-
-                        <span x-cloak
-                              x-show="showExpandedMenu"
-                              class="text-sm font-medium">
-                            {{ $item->name }}
-                        </span>
-
-                        <span class="invisible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
-                            {{ $item->name }}
-                        </span>
-                    </a>
-                </li>
-            @endforeach
-        </ul>
+        <x-hub::menu-list type="main_menu"
+                          :sections="$component->sections"
+                          :items="$component->items"
+                          :active="$component->attributes->get('current')" />
     </x-hub::menu>
 
     @if (Auth::user()->can('settings'))
@@ -51,7 +25,8 @@
                     {{ __('adminhub::global.settings') }}
                 </span>
 
-                <span class="invisible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
+                <span
+                      class="invisible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>
