@@ -45,7 +45,7 @@
 
                 <ul class="ml-1 mt-2 space-y-2 flex flex-col">
                     @foreach ($section->getItems() as $item)
-                        <li :class="{ 'items-center': !showExpandedMenu }">
+                        <li>
                             <a href="{{ route($item->route) }}"
                                x-data="{ showTooltip: false }"
                                x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
