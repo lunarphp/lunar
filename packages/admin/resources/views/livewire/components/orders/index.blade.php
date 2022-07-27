@@ -298,10 +298,6 @@
                     {{ __('adminhub::global.date') }}
                 </x-hub::table.heading>
 
-                <x-hub::table.heading>
-                    {{ __('adminhub::global.time') }}
-                </x-hub::table.heading>
-
                 <x-hub::table.heading></x-hub::table.heading>
             </x-slot>
 
@@ -346,17 +342,13 @@
 
                         <x-hub::table.cell>
                             @if ($order->placed_at)
-                                {{ $order->placed_at->format('jS M Y') }}
+                                {{ $order->placed_at->format(
+                                  config('getcandy-hub.orders.date_format', 'jS M Y')
+                                ) }}
                             @else
-                                {{ $order->created_at->format('jS M Y') }}
-                            @endif
-                        </x-hub::table.cell>
-
-                        <x-hub::table.cell>
-                            @if ($order->placed_at)
-                                {{ $order->placed_at->format('h:ia') }}
-                            @else
-                                {{ $order->created_at->format('h:ia') }}
+                                {{ $order->created_at->format(
+                                  config('getcandy-hub.orders.date_format', 'jS M Y')
+                                ) }}
                             @endif
                         </x-hub::table.cell>
 

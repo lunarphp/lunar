@@ -40,6 +40,12 @@ Here you can set up the statuses you wish to use for your orders.
     ],
 ```
 
+`getcandy-hub/orders.php`
+
+```php
+    'date_format' => 'jS M Y h:ia',
+```
+
 
 ### Media
 
