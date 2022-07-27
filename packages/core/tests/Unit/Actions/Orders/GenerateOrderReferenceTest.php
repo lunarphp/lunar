@@ -1,18 +1,20 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base;
+namespace GetCandy\Tests\Unit\Actions\Orders;
 
-use GetCandy\Base\OrderReferenceGenerator;
+use GetCandy\Actions\Orders\GenerateOrderReference;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
+use GetCandy\Tests\Stubs\TestOrderReferenceGenerator;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 
 /**
- * @group reference
+ * @group getcandy.actions
  */
-class OrderReferenceGeneratorTest extends TestCase
+class SortProductsByPriceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -41,32 +43,42 @@ class OrderReferenceGeneratorTest extends TestCase
 
         $this->assertNull($order->reference);
 
-        $result = app(OrderReferenceGenerator::class)->generate($order);
+        $result = app(GenerateOrderReference::class)->execute($order);
 
         $this->assertEquals($order->created_at->format('Y-m').'-0001', $result);
     }
 
-    /** @test  */
-    public function can_increment_order_reference_by_default()
+    /** @test */
+    public function can_override_generator_via_config()
     {
-        $orderA = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
-
-        $orderA->update([
-            'reference' => app(OrderReferenceGenerator::class)->generate($orderA),
-        ]);
-
-        $this->assertEquals($orderA->created_at->format('Y-m').'-0001', $orderA->reference);
-
         $order = Order::factory()->create([
             'reference' => null,
             'placed_at' => now(),
         ]);
 
-        $result = app(OrderReferenceGenerator::class)->generate($order);
+        Config::set('getcandy.orders.reference_generator', TestOrderReferenceGenerator::class);
 
-        $this->assertEquals($order->created_at->format('Y-m').'-0002', $result);
+        $this->assertNull($order->reference);
+
+        $result = app(GenerateOrderReference::class)->execute($order);
+
+        $this->assertEquals('reference-' . $order->id, $result);
+    }
+
+    /** @test */
+    public function can_set_generator_to_null()
+    {
+        $order = Order::factory()->create([
+            'reference' => null,
+            'placed_at' => now(),
+        ]);
+
+        Config::set('getcandy.orders.reference_generator', null);
+
+        $this->assertNull($order->reference);
+
+        $result = app(GenerateOrderReference::class)->execute($order);
+
+        $this->assertNull($result);
     }
 }

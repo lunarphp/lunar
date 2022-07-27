@@ -2,8 +2,9 @@
 
 namespace GetCandy\Actions\Carts;
 
+use GetCandy\Actions\Orders\GenerateOrderReference;
 use GetCandy\Base\OrderModifiers;
-use GetCandy\Base\OrderReferenceGeneratorInterface;
+use GetCandy\Base\OrderReferenceGenerator;
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Currency;
@@ -13,13 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class CreateOrder
 {
-    protected $referenceGenerator;
-
-    public function __construct(OrderReferenceGeneratorInterface $generator)
-    {
-        $this->referenceGenerator = $generator;
-    }
-
     /**
      * Execute the action.
      *
@@ -68,7 +62,7 @@ class CreateOrder
             ]);
 
             $order->update([
-                'reference' => $this->referenceGenerator->generate($order),
+                'reference' => app(GenerateOrderReference::class)->execute($order),
             ]);
 
             $orderLines = $cart->lines->map(function ($line) {

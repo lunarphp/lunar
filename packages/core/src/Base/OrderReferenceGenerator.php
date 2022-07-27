@@ -9,21 +9,10 @@ use Illuminate\Support\Facades\DB;
 class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
 {
     /**
-     * The override generator.
-     *
-     * @var \Closure
-     */
-    protected ?Closure $overrideCallback = null;
-
-    /**
      * {@inheritDoc}
      */
     public function generate(Order $order): string
     {
-        if ($this->overrideCallback) {
-            return call_user_func($this->overrideCallback, $order);
-        }
-
         $year = $order->created_at->year;
 
         $month = $order->created_at->format('m');
@@ -48,18 +37,5 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
         }
 
         return $year.'-'.$month.'-'.str_pad($increment, 4, 0, STR_PAD_LEFT);
-    }
-
-    /**
-     * Override the current method of generating a reference.
-     *
-     * @param  Closure  $callback
-     * @return self
-     */
-    public function override(Closure $callback)
-    {
-        $this->overrideCallback = $callback;
-
-        return $this;
     }
 }
