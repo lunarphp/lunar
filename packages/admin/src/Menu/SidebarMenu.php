@@ -6,6 +6,8 @@ use GetCandy\Hub\Facades\Menu;
 
 class SidebarMenu
 {
+    protected MenuSlot $slot;
+
     /**
      * Make menu.
      *
@@ -14,8 +16,7 @@ class SidebarMenu
     public static function make()
     {
         (new static())
-            ->makeTopLevel()
-            ->addSections();
+            ->makeTopLevel();
     }
 
     /**
@@ -25,9 +26,9 @@ class SidebarMenu
      */
     protected function makeTopLevel()
     {
-        $slot = Menu::slot('sidebar');
+        $this->slot = Menu::slot('sidebar');
 
-        $slot->addItem(function ($item) {
+        $this->slot->addItem(function ($item) {
             $item->name(
                 __('adminhub::menu.sidebar.index')
             )->handle('hub.index')
@@ -35,23 +36,24 @@ class SidebarMenu
             ->icon('chart-square-bar');
         });
 
+        $this->makeCatalogueSection();
+        $this->makeOrdersSection();
+
         return $this;
     }
 
     /**
-     * Add our menu sections.
+     * Make the catalogue section.
      *
-     * @return static
+     * @return void
      */
-    protected function addSections()
+    protected function makeCatalogueSection(): void
     {
-        $slot = Menu::slot('sidebar');
+        $catalogue = $this->slot->section('catalogue-manager')->name(
+            __('adminhub::menu.sidebar.catalogue.group')
+        );
 
-        // $catalogueManager = $slot->section('catalogue-manager')->name(
-        //     __('adminhub::menu.sidebar.catalogue-manager')
-        // );
-
-        $slot->addItem(function ($item) {
+        $catalogue->addItem(function ($item) {
             $item->name(
                 __('adminhub::menu.sidebar.products')
             )->handle('hub.products')
@@ -59,7 +61,7 @@ class SidebarMenu
             ->icon('shopping-bag');
         });
 
-        $slot->addItem(function ($item) {
+        $catalogue->addItem(function ($item) {
             $item->name(
                 __('adminhub::menu.sidebar.product-types')
             )->handle('hub.product-type')
@@ -67,34 +69,40 @@ class SidebarMenu
             ->icon('pencil');
         });
 
-        $slot->addItem(function ($item) {
+        $catalogue->addItem(function ($item) {
             $item->name(
                 __('adminhub::menu.sidebar.collections')
             )->handle('hub.collection')
             ->route('hub.collection-groups.index')
             ->icon('collection');
         }, 'products');
+    }
 
-        // $orders = $slot->section('order-processing')->name(
-        //     __('adminhub::menu.sidebar.order-processing')
-        // );
+    /**
+     * Make the orders section.
+     *
+     * @return void
+     */
+    protected function makeOrdersSection(): void
+    {
+        $orders = $this->slot->section('order-processing')->name(
+            __('adminhub::menu.sidebar.orders.group')
+        );
 
-        $slot->addItem(function ($item) {
+        $orders->addItem(function ($item) {
             $item->name(
                 __('adminhub::menu.sidebar.orders')
             )->handle('hub.orders')
-            ->route('hub.orders.index')
-            ->icon('cash');
+                 ->route('hub.orders.index')
+                 ->icon('cash');
         });
 
-        $slot->addItem(function ($item) {
+        $orders->addItem(function ($item) {
             $item->name(
                 __('adminhub::menu.sidebar.customers')
             )->handle('hub.customers')
-            ->route('hub.customers.index')
-            ->icon('users');
+                 ->route('hub.customers.index')
+                 ->icon('users');
         });
-
-        return $this;
     }
 }

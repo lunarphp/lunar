@@ -2,12 +2,12 @@
 
 return [
     'sidebar.index'             => 'Dashboard',
-    'sidebar.catalogue-manager' => 'Catalogue Manager',
+    'sidebar.catalogue.group'   => 'Catalogue',
     'sidebar.products'          => 'Products',
     'sidebar.product-types'     => 'Product Types',
     'sidebar.collections'       => 'Collections',
-    'sidebar.order-processing'  => 'Order Processing',
-    'sidebar.orders'            => 'Orders',
+    'sidebar.orders.group'      => 'Orders',
+    'sidebar.orders'            => 'Orders List',
     'sidebar.customers'         => 'Customers',
     /**
      * Product side menu.

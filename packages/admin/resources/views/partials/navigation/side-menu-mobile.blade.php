@@ -17,24 +17,11 @@
     <div class="mt-8">
         <x-hub::menu handle="sidebar"
                      current="{{ request()->route()->getName() }}">
-            <ul class="space-y-2">
-                @foreach ($component->items as $item)
-                    <li x-data="{ showAccordionMenu: false }">
-                        <a href="{{ route($item->route) }}"
-                           @class([
-                               'menu-link',
-                               'menu-link--active' => request()->routeIs($item->route),
-                               'menu-link--inactive' => !request()->routeIs($item->route),
-                           ])>
-                            {!! $item->renderIcon('w-5 h-5 shrink-0') !!}
-
-                            <span class="text-sm font-medium">
-                                {{ $item->name }}
-                            </span>
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
+            <x-hub::menu-list
+                    type="main_menu"
+                    :sections="$component->sections"
+                    :items="$component->items"
+                    :active="$component->attributes->get('current')" />
         </x-hub::menu>
 
         <div class="pt-4 mt-4 border-t border-gray-100">

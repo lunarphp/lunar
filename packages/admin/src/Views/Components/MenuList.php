@@ -2,23 +2,22 @@
 
 namespace GetCandy\Hub\Views\Components;
 
+use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
 class MenuList extends Component
 {
-    public $sections;
-
-    public $items;
-
-    public $active;
-
-    public function __construct($sections = null, $items, $active)
-    {
-        $this->sections = $sections;
-
-        $this->items = $items;
-
-        $this->active = $active;
+    /**
+     * @param  \Illuminate\Support\Collection  $sections
+     * @param  \Illuminate\Support\Collection  $items
+     * @param  string  $active
+     */
+    public function __construct(
+        public string $type,
+        public Collection $sections,
+        public Collection $items,
+        public string $active
+    ) {
     }
 
     /**
