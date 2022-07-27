@@ -120,6 +120,14 @@
                                     <button class="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
                                             type="button"
                                             wire:click.prevent="setMoveTarget('{{ $collection->id }}')">
+                                        <span class="text-gray-500">
+                                            {{ $collection->group->name }}
+                                        </span>
+
+                                        <x-hub::icon ref="chevron-right"
+                                                     class="w-4 h-4 text-gray-500"
+                                                     style="solid" />
+
                                         {{ $collection->translateAttribute('name') }}
                                     </button>
                                 @endforeach
