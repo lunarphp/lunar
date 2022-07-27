@@ -97,6 +97,57 @@ $cart->getManager()->canCreateOrder();
 
 This essentially does the same as above, except we already catch the exceptions for you and just return false if any are caught.
 
+## Order Reference Generating
+
+By default GetCandy will generate a new order reference for you when you create an order from a cart. The format for this is:
+
+```
+{year}-{month}-{0..0}{orderId}
+```
+
+`{0..0}` indicates the order id will be padded with up to four `0`'s for example:
+
+```
+2022-01-0001
+2022-01-0011
+2022-01-0111
+2022-01-1111
+```
+
+### Custom Generators
+
+If your store has a specific requirement for how references are generated, you can easily swap out the GetCandy one for your own:
+
+`config/getcandy/orders.php`
+
+```php
+return [
+    'reference_generator' => App\Generators\MyCustomGenerator::class,
+];
+```
+
+Or, if you don't want references at all (not recommended) you can simply set it to `null`
+
+Here's the underlying class for the custom generator:
+
+```php
+namespace App\Generators;
+
+use GetCandy\Models\Order;
+
+class MyCustomGenerator implements OrderReferenceGeneratorInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function generate(Order $order): string
+    {
+        // ...
+        return 'my-custom-reference';
+    }
+}
+```
+
 ## Modifying Orders
 
 If you need to programmatically change the Order values or add in new behaviour, you will want to extend the Order system.
