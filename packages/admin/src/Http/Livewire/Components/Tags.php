@@ -14,14 +14,14 @@ class Tags extends Component
     use Notifies;
 
     /**
-     * The tags to attach
+     * The tags to attach.
      *
      * @var string
      */
     public array $tags = [];
 
     /**
-     * The model to associate tags to
+     * The model to associate tags to.
      *
      * @var Model
      */
@@ -50,10 +50,9 @@ class Tags extends Component
     }
 
     /**
-     * Adds a new tag into the array
+     * Adds a new tag into the array.
      *
-     * @param string $tag
-     *
+     * @param  string  $tag
      * @return void
      */
     public function addTag($tag)
@@ -68,7 +67,7 @@ class Tags extends Component
             $databaseTags = Tag::whereIn('value', $this->tags)->get();
 
             $newTags = collect($this->tags)->filter(function ($value) use ($databaseTags) {
-                return !$databaseTags->pluck('value')->contains($value);
+                return ! $databaseTags->pluck('value')->contains($value);
             });
 
             $this->taggable->tags()->sync($databaseTags);
@@ -87,7 +86,7 @@ class Tags extends Component
     }
 
     /**
-     * Return the available tags based on search
+     * Return the available tags based on search.
      *
      * @return Collection
      */
@@ -95,12 +94,12 @@ class Tags extends Component
     {
         $tagTable = (new Tag)->getTable();
 
-        if (!$this->searchTerm) {
+        if (! $this->searchTerm) {
             return collect();
         }
 
         return DB::table(
-            config('getcandy.database.table_prefix') . 'taggables'
+            config('getcandy.database.table_prefix').'taggables'
         )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
         ->whereTaggableType(
             get_class($this->taggable)
@@ -109,7 +108,7 @@ class Tags extends Component
         ->where('value', 'LIKE', "%{$this->searchTerm}%")
         ->pluck('value')
         ->filter(function ($value) {
-            return !in_array($value, $this->tags);
+            return ! in_array($value, $this->tags);
         });
     }
 
