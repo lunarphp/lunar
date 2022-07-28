@@ -18,9 +18,18 @@
             @endif
             <div class="flex grow">
               <div class="grow">
-                <span class="rounded px-2 mr-1 bg-blue-50 text-blue-700 dark:bg-gray-800 dark:text-white">{{ $collection['group_name'] }}</span>
-                {{ $collection['name'] }}
-                <div class="flex text-xs text-gray-400">
+                <strong class="inline-block rounded mr-0.5 px-1.5 py-0.5 bg-blue-50 text-xs text-blue-600">
+                  {{ $collection['group_name'] }}
+                </strong>
+
+                <span>
+                  {{ $collection['name'] }}
+                </span>
+
+                <div @class([
+                  "mt-0.5" => $collection['breadcrumb'],
+                  "flex text-xs text-gray-400"
+                  ])>
                   <span>{{ $collection['breadcrumb'] }}</span>
                 </div>
               </div>
