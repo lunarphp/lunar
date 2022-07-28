@@ -18,6 +18,7 @@
             @endif
             <div class="flex grow">
               <div class="grow">
+                <span class="rounded px-2 mr-1 bg-blue-50 text-blue-700 dark:bg-gray-800 dark:text-white">{{ $collection['group_name'] }}</span>
                 {{ $collection['name'] }}
                 <div class="flex text-xs text-gray-400">
                   <span>{{ $collection['breadcrumb'] }}</span>
