@@ -117,21 +117,26 @@
                         @if ($showCollectionSearchResults)
                             <div class="absolute w-full overflow-y-scroll bg-white rounded-b shadow max-h-64 z-10">
                                 @foreach ($this->searchedCollections as $collection)
-                                    <button class="flex gap-1.5 items-center w-full px-4 py-2 text-gray-800 text-sm text-left hover:bg-gray-100"
+                                    <button class="flex gap-1.5 items-center w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
                                             type="button"
                                             wire:click.prevent="setMoveTarget('{{ $collection->id }}')">
-                                        <span class="rounded mr-2 px-2 bg-blue-50 text-blue-700 dark:bg-gray-800 dark:text-white;">
+                                        <strong class="rounded px-1.5 py-0.5 bg-blue-50 text-xs text-blue-600">
                                             {{ $collection->group->name }}
-                                        </span>
+                                        </strong>
 
-                                        @foreach($collection->ancestors as $ancestor)
-                                            {{$ancestor->translateAttribute('name')}}
+                                        @foreach ($collection->ancestors as $ancestor)
+                                            <span class="text-gray-500 font-medium">
+                                                {{ $ancestor->translateAttribute('name') }}
+                                            </span>
+
                                             <x-hub::icon ref="chevron-right"
-                                                     class="w-4 h-4 text-gray-500"
-                                                     style="solid" />
+                                                         class="w-4 h-4 text-gray-500"
+                                                         style="solid" />
                                         @endforeach
 
-                                        {{ $collection->translateAttribute('name') }}
+                                        <strong class="text-gray-700">
+                                            {{ $collection->translateAttribute('name') }}
+                                        </strong>
                                     </button>
                                 @endforeach
                             </div>
@@ -151,7 +156,6 @@
                 <x-slot name="footer">
                     <x-hub::button type="button"
                                    wire:click="moveCollection"
-                                   class="z-0"
                                    :disabled="!$this->targetCollection">
                         {{ __('adminhub::catalogue.collections.groups.move.btn') }}
                     </x-hub::button>
