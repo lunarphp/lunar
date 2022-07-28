@@ -115,18 +115,21 @@
                                                'adminhub::catalogue.collections.groups.move.search_placeholder',
                                            )" />
                         @if ($showCollectionSearchResults)
-                            <div class="absolute w-full overflow-y-scroll bg-white rounded-b shadow max-h-64">
+                            <div class="absolute w-full overflow-y-scroll bg-white rounded-b shadow max-h-64 z-10">
                                 @foreach ($this->searchedCollections as $collection)
-                                    <button class="flex gap-1.5 items-center w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
+                                    <button class="flex gap-1.5 items-center w-full px-4 py-2 text-gray-800 text-sm text-left hover:bg-gray-100"
                                             type="button"
                                             wire:click.prevent="setMoveTarget('{{ $collection->id }}')">
-                                        <span class="text-gray-500">
+                                        <span class="rounded mr-2 px-2 bg-blue-50 text-blue-700 dark:bg-gray-800 dark:text-white;">
                                             {{ $collection->group->name }}
                                         </span>
 
-                                        <x-hub::icon ref="chevron-right"
+                                        @foreach($collection->ancestors as $ancestor)
+                                            {{$ancestor->translateAttribute('name')}}
+                                            <x-hub::icon ref="chevron-right"
                                                      class="w-4 h-4 text-gray-500"
                                                      style="solid" />
+                                        @endforeach
 
                                         {{ $collection->translateAttribute('name') }}
                                     </button>
@@ -148,6 +151,7 @@
                 <x-slot name="footer">
                     <x-hub::button type="button"
                                    wire:click="moveCollection"
+                                   class="z-0"
                                    :disabled="!$this->targetCollection">
                         {{ __('adminhub::catalogue.collections.groups.move.btn') }}
                     </x-hub::button>
