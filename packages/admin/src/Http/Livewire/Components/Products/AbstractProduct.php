@@ -553,7 +553,7 @@ abstract class AbstractProduct extends Component
                     'position' => $collection->pivot->position,
                     'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
                         return $ancestor->translateAttribute('name');
-                    })->join(' > '),
+                    }),
                 ];
             });
 

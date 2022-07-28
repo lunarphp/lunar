@@ -17,21 +17,24 @@
             <span class="flex-shrink-0 block w-12 mr-4"><img src="{{ $collection['thumbnail'] }}" class="rounded"></span>
             @endif
             <div class="flex grow">
-              <div class="grow">
-                <strong class="inline-block rounded mr-0.5 px-1.5 py-0.5 bg-blue-50 text-xs text-blue-600">
+              <div class="grow flex gap-1.5 items-center">
+                <strong class="rounded px-1.5 py-0.5 bg-blue-50 text-xs text-blue-600">
                   {{ $collection['group_name'] }}
                 </strong>
 
-                <span>
-                  {{ $collection['name'] }}
-                </span>
+                @foreach ($collection['breadcrumb'] as $breadcrumb)
+                    <span class="text-gray-500 font-medium">
+                        {{ $breadcrumb }}
+                    </span>
 
-                <div @class([
-                  "mt-0.5" => $collection['breadcrumb'],
-                  "flex text-xs text-gray-400"
-                  ])>
-                  <span>{{ $collection['breadcrumb'] }}</span>
-                </div>
+                    <x-hub::icon ref="chevron-right"
+                                    class="w-4 h-4 text-gray-500"
+                                    style="solid" />
+                @endforeach
+
+                <strong class="text-gray-700">
+                  {{ $collection['name'] }}
+                </strong>
               </div>
               <div class="flex items-center">
                 <x-hub::dropdown minimal>
