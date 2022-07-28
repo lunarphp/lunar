@@ -41,7 +41,7 @@ class CustomersIndex extends Component
     }
 
     /**
-     * Return the available attributes for customers
+     * Return the available attributes for customers.
      *
      * @return Collection
      */
