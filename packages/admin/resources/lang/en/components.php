@@ -139,6 +139,7 @@ return [
     'orders.show.partially_refunded' => 'This order has been partially refunded.',
     'orders.show.refunded' => 'This order has been refunded.',
     'orders.show.view_customer' => 'View customer',
+    'orders.show.tags_header' => 'Tags',
     /**
      * Order Refund.
      */

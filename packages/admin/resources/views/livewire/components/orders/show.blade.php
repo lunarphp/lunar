@@ -101,6 +101,18 @@
         </div>
 
         <div class="space-y-4">
+        <section class="p-4 bg-white rounded-lg shadow">
+            <header>
+                <strong class="text-gray-700">
+                  {{ __('adminhub::components.orders.show.tags_header') }}
+                </strong>
+            </header>
+            @livewire('hub.components.tags', [
+              'taggable' => $order,
+              'independant' => true,
+            ])
+            {{-- <x-hub::input.tags id="tags"/> --}}
+        </section>
             @if ($order->customer)
                 <header class="flex items-center justify-between">
                     <strong class="text-gray-700 truncate">
@@ -147,6 +159,8 @@
             </section>
 
             <section class="p-4 bg-white rounded-lg shadow">
+
+
                 <header>
                     <strong class="text-gray-700">
                         {{ __('adminhub::components.orders.show.additional_fields_header') }}
@@ -171,6 +185,9 @@
                     @endforeach
                 </dl>
             </section>
+
+
+
 
             @foreach($this->getSlotsByPosition('bottom') as $slot)
              <div id="{{ $slot->handle }}">

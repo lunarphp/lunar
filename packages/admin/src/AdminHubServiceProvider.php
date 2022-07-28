@@ -61,6 +61,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
+use GetCandy\Hub\Http\Livewire\Components\Tags;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
@@ -213,6 +214,8 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.account', Account::class);
         Livewire::component('hub.components.avatar', Avatar::class);
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
+
+        Livewire::component('hub.components.tags', Tags::class);
     }
 
     /**

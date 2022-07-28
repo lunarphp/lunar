@@ -50,4 +50,5 @@ return [
     'products.product_restored'         => 'Product restored',
     'clipboard.copied'                  => 'Copied to clipboard',
     'clipboard.failed_copy'             => 'Unable to copy to clipboard',
+    'tags.updated'                      => 'Tags updated',
 ];

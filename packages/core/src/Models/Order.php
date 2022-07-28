@@ -6,6 +6,7 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
 use GetCandy\Base\Traits\HasMacros;
+use GetCandy\Base\Traits\HasTags;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\OrderFactory;
@@ -15,6 +16,7 @@ class Order extends BaseModel
 {
     use HasFactory,
         Searchable,
+        HasTags,
         LogsActivity,
         HasMacros;
 
@@ -305,6 +307,8 @@ class Order extends BaseModel
 
             $data["{$address->type}_country"] = optional($address->country)->name;
         }
+
+        $data['tags'] = $this->tags->pluck('value')->toArray();
 
         return $data;
     }
