@@ -36,7 +36,14 @@ class CollectionGroupShow extends Component
      *
      * @var bool
      */
-    public bool $showDeleteConfirm = false;
+    public bool $showDeleteConfirm = true;
+
+    /**
+     * Failsafe confirmation in order to delete the collection group.
+     *
+     * @var bool
+     */
+    public bool $deletionConfirm = false;
 
     /**
      * The ID of the collection we want to remove.
@@ -104,6 +111,7 @@ class CollectionGroupShow extends Component
         $rules = [
             'group.name'      => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
             'collection.name' => 'required|string|max:255',
+            'deletionConfirm' => 'nullable|boolean',
         ];
 
         if ($this->slugIsRequired) {
@@ -144,6 +152,16 @@ class CollectionGroupShow extends Component
         $this->group->handle = Str::slug($this->group->name);
         $this->group->save();
         $this->notify(__('adminhub::notifications.collection-groups.updated'));
+    }
+
+    /**
+     * Watcher for when the show delete confirm is updated.
+     *
+     * @return void
+     */
+    public function updatedShowDeleteConfirm()
+    {
+        $this->deletionConfirm = false;
     }
 
     /**
