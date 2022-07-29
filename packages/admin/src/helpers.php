@@ -36,12 +36,20 @@ if (!function_exists('get_validation')) {
 
         $rules = $defaults;
 
-        $keyPos = array_search('required', $config, true);
-        if ($keyPos !== false) {
-            $config['required'] = true;
-            unset($config[$keyPos]);
+        if (is_string($config) && strpos($config, '|')) {
+            $config = explode('|', $config);
         }
 
+        $specialRules = ['required', 'unique'];
+
+        foreach ($specialRules as $rule) {
+            $keyPos = array_search($rule, $config, true);
+
+            if ($keyPos !== false) {
+                $config[$rule] = true;
+                unset($config[$keyPos]);
+            }
+        }
 
         $rules[] = !empty($config['required']) ? 'required' : 'nullable';
 
@@ -56,7 +64,7 @@ if (!function_exists('get_validation')) {
         }
 
         collect($config)
-            ->except(['unique', 'required'])
+            ->except($specialRules)
             ->each(function ($rule, $ruleKey) use (&$rules, $model) {
                 if (is_bool($rule) && $rule) {
                     $rules[] = $ruleKey;
