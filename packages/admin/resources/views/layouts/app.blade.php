@@ -13,8 +13,6 @@
           type="image/png"
           href="https://cdn.getcandy.io/hub/favicon.svg">
     <link rel="stylesheet"
-          href="https://unpkg.com/trix@1.2.3/dist/trix.css" />
-    <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css"
           rel="stylesheet" />
