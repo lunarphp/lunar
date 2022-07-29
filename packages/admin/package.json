@@ -16,6 +16,7 @@
     "production": "mix --production"
   },
   "dependencies": {
+    "flatpickr": "^4.6.13",
     "fs": "^0.0.1-security",
     "laravel-mix": "^6.0.39",
     "sortablejs": "^1.14.0"

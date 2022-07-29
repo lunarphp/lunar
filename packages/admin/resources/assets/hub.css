@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'flatpickr';
+
 p > code {
     @apply font-mono text-sm bg-gray-100 text-purple-600;
 }

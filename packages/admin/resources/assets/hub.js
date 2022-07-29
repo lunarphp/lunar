@@ -1,5 +1,7 @@
 import Sortable from 'sortablejs';
 
+require('flatpickr')
+
 if (typeof window.livewire === 'undefined') {
     throw 'Livewire Sortable Plugin: window.livewire is undefined. Make sure @livewireScripts is placed above this script include';
 }
