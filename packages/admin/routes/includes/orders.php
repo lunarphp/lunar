@@ -21,13 +21,9 @@ Route::group([
         Route::get('/', OrderShow::class)->name('hub.orders.show');
 
         Route::get('/pdf', function (Order $order, Request $request) {
-            return view('adminhub::pdf.order', [
+            return Pdf::loadView('adminhub::pdf.order', [
                 'order' => $order,
-            ]);
-            $pdf = Pdf::loadView('adminhub::pdf.order', [
-                'order' => $order,
-            ]);
-            return $pdf->stream("Order-{$order->reference}.pdf");
+            ])->stream("Order-{$order->reference}.pdf");
         })->name('hub.orders.pdf');
     });
 });
