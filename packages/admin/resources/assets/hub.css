@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'flatpickr';
+@import 'filepond/dist/filepond.css';
+@import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+@import 'quill/dist/quill.snow.css';
+
 p > code {
     @apply font-mono text-sm bg-gray-100 text-purple-600;
 }
