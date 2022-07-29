@@ -1,10 +1,10 @@
 import Sortable from 'sortablejs';
 
 require('flatpickr');
+
+window.ApexCharts = require('apexcharts');
 window.Quill = require('quill');
-
 window.FilePond = require('filepond');
-
 window.FilePondPluginImagePreview = require('filepond-plugin-image-preview')
 window.FilePondPluginFileValidateSize = require('filepond-plugin-file-validate-size');
 window.FilePondPluginFileValidateType = require('filepond-plugin-file-validate-size');
