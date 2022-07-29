@@ -73,7 +73,7 @@ if (! function_exists('impersonate_link')) {
     {
         $class = config('getcandy-hub.customers.impersonate');
 
-        if (!$class) {
+        if (! $class) {
             return null;
         }
 
