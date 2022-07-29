@@ -16,6 +16,10 @@
     "production": "mix --production"
   },
   "dependencies": {
+    "filepond": "^4.30.4",
+    "filepond-plugin-file-validate-size": "^2.2.7",
+    "filepond-plugin-file-validate-type": "^1.2.8",
+    "filepond-plugin-image-preview": "^4.6.11",
     "flatpickr": "^4.6.13",
     "fs": "^0.0.1-security",
     "laravel-mix": "^6.0.39",
