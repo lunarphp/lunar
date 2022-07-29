@@ -1,11 +1,11 @@
 <?php
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use GetCandy\Hub\Http\Livewire\Pages\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Pages\Orders\OrdersIndex;
-use Illuminate\Support\Facades\Route;
-use Barryvdh\DomPDF\Facade\Pdf;
 use GetCandy\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Channel routes.
