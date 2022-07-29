@@ -1,6 +1,7 @@
 import Sortable from 'sortablejs';
 
 require('flatpickr');
+window.Quill = require('quill');
 
 window.FilePond = require('filepond');
 

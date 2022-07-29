@@ -23,6 +23,7 @@
     "flatpickr": "^4.6.13",
     "fs": "^0.0.1-security",
     "laravel-mix": "^6.0.39",
+    "quill": "^1.3.7",
     "sortablejs": "^1.14.0"
   },
   "devDependencies": {

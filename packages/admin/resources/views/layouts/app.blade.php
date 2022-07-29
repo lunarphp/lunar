@@ -13,9 +13,6 @@
           type="image/png"
           href="https://cdn.getcandy.io/hub/favicon.svg">
 
-
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
-          rel="stylesheet">
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
     <link rel="preconnect"
@@ -32,7 +29,6 @@
         }
     </style>
 
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script defer
             src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer
