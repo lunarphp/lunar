@@ -36,7 +36,7 @@ class CollectionGroupShow extends Component
      *
      * @var bool
      */
-    public bool $showDeleteConfirm = true;
+    public bool $showDeleteConfirm = false;
 
     /**
      * Failsafe confirmation in order to delete the collection group.
