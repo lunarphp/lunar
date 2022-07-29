@@ -68,6 +68,49 @@ $customer->customerGroups()->attach($customerGroup);
 $customer->customerGroups()->sync([4,5,6]);
 ```
 
+## Impersonating users
+
+When a customer needs help with their account, it's useful to be able to log in as that user so you can help diagnose the issue they're having. 
+GetCandy allows you to specify your own method of how you want to impersonate users, usually this is in the form of a signed URL an admin can go to in order to log in as the user.
+
+### Creating the impersonate class
+
+```php
+<?php
+
+namespace App\Auth;
+
+use GetCandy\Hub\Auth\Impersonate as GetCandyImpersonate;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\URL;
+
+class Impersonate extends GetCandyImpersonate
+{
+    /**
+     * Return the URL for impersonation.
+     *
+     * @return string
+     */
+    public function getUrl(Authenticatable $authenticatable): string
+    {
+        return URL::temporarySignedRoute('impersonate.link', now()->addMinutes(5), [
+            'user' => $authenticatable->getAuthIdentifier(),
+        ]);
+    }
+}
+```
+
+Then you need to register this in `config/getcandy-hub/customers.php`.
+
+```php
+return [
+    'impersonate' => App\Auth\Impersonate::class,
+    // ...
+];
+```
+
+Once added you will see an option to impersonate the user when viewing a customer. This will then go to the URL specified in your class where you will be able to handle the impersonation logic.
+
 ## Customer Groups
 
 Default `retail`
