@@ -246,8 +246,9 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->withAttributesValidationRules(),
-            $this->hasUrlsValidationRules(! $this->product->id),
-            $this->withAttributesValidationRules()
+            $this->hasUrlsValidationRules(!$this->product->id),
+            $this->withAttributesValidationRules(),
+            get_extended_validation('products'),
         );
     }
 
@@ -845,6 +846,8 @@ abstract class AbstractProduct extends Component
                 'id'         => 'collections',
                 'hidden'     => false,
                 'has_errors' => $this->errorBag->hasAny([
+                    'collections',
+                    'collections.*'
                 ]),
             ],
         ])->reject(fn ($item) => ($item['hidden'] ?? false));
