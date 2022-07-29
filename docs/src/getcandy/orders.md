@@ -280,3 +280,14 @@ In the meantime, you can absolutely still get a storefront working, at the end o
 In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table, the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier for you as laid out above.
 
 And as always, if you have any questions you can reach out on our Discord!
+
+
+## Order Invoice PDF
+
+By default when you click "Download PDF" in the hub when viewing an order, you will get a basic PDF generated for you to download. You can publish the view that powers this to create your own PDF template.
+
+```bash
+php artisan vendor:publish --tag=getcandy-hub-views
+```
+
+This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely customise the PDF you want displayed on download.
