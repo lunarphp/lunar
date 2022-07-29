@@ -16,6 +16,7 @@
     "production": "mix --production"
   },
   "dependencies": {
+    "apexcharts": "^3.35.4",
     "filepond": "^4.30.4",
     "filepond-plugin-file-validate-size": "^2.2.7",
     "filepond-plugin-file-validate-type": "^1.2.8",
