@@ -140,6 +140,8 @@ return [
     'orders.show.refunded' => 'This order has been refunded.',
     'orders.show.view_customer' => 'View customer',
     'orders.show.tags_header' => 'Tags',
+    'orders.show.download_pdf' => 'Download PDF',
+
     /**
      * Order Refund.
      */

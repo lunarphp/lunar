@@ -13,6 +13,7 @@ return [
     'collections.groups.delete.title'            => 'Delete collection group',
     'collections.groups.delete.strapline'        => 'Are you sure you want to delete this collection group?',
     'collections.groups.delete.warning'          => 'All collections within this group will also be removed.',
+    'collections.groups.delete.confirm'          => 'Confirm you want to delete the collection group and all associated collections',
     'collections.groups.delete.btn'              => 'Delete collection group',
     'collections.groups.move.title'              => 'Move Collection',
     'collections.groups.move.search_placeholder' => 'Search for a collection to use for parent',
