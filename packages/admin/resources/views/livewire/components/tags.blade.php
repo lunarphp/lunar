@@ -4,7 +4,7 @@
          value: @entangle('searchTerm'),
      
          addTag(newTag) {
-             let trimTag = newTag.toLowerCase().trim();
+             let trimTag = newTag.toUpperCase().trim();
      
              if (!this.tags.includes(trimTag)) {
                  this.tags.push(trimTag);
