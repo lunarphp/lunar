@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Changed
 
 - The activity log timeline is now extendable.
+- Partial card number will now only appear if last four is populated on a transaction.
 
 ## Added
 

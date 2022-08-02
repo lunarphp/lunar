@@ -41,12 +41,18 @@
             <x-hub::modal.dialog wire:model="showDeleteConfirm"
                                  form="deleteGroup">
                 <x-slot name="title">
-                    {{ __('adminhub::catalogue.collections.groups.delete.title') }}
+                  {{ __('adminhub::catalogue.collections.groups.delete.strapline') }}
                 </x-slot>
                 <x-slot name="content">
-                    <p>{{ __('adminhub::catalogue.collections.groups.delete.strapline') }}
-                    <p>
-                    <p>{{ __('adminhub::catalogue.collections.groups.delete.warning') }}</p>
+                  <div class="space-y-4">
+                    <x-hub::alert level="danger">
+                      {{ __('adminhub::catalogue.collections.groups.delete.warning') }}
+                    </x-hub::alert>
+
+                    <x-hub::input.group :label="__('adminhub::catalogue.collections.groups.delete.confirm')" for="confirmation">
+                      <x-hub::input.toggle wire:model="deletionConfirm" id="confirmation" />
+                    </x-hub::input.group>
+                  </div>
                 </x-slot>
                 <x-slot name="footer">
                     <x-hub::button type="button"
@@ -55,7 +61,8 @@
                         {{ __('adminhub::global.cancel') }}
                     </x-hub::button>
                     <x-hub::button type="submit"
-                                   theme="danger">
+                                   theme="danger"
+                                   :disabled="!$deletionConfirm">
                         {{ __('adminhub::catalogue.collections.groups.delete.btn') }}
                     </x-hub::button>
                 </x-slot>
