@@ -36,7 +36,8 @@
         "php": "^8.0",
         "getcandy/core": "self.version",
         "livewire/livewire": "^2.0",
-        "getcandy/licensing": "dev-main"
+        "getcandy/licensing": "dev-main",
+        "barryvdh/laravel-dompdf": "^2.0"
     },
     "require-dev": {
         "orchestra/testbench": "^6.0|^7.0",

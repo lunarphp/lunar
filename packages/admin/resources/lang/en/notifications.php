@@ -50,4 +50,6 @@ return [
     'products.product_restored'         => 'Product restored',
     'tax_class.saved'                   => 'Tax class saved',
     'tax_class.deleted'                 => 'Tax class deleted',
+    'clipboard.copied'                  => 'Copied to clipboard',
+    'clipboard.failed_copy'             => 'Unable to copy to clipboard',
 ];
