@@ -49,3 +49,40 @@ p > code {
         @apply text-gray-500 hover:bg-blue-50 hover:text-blue-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white;
     }
 }
+
+html.expanded #sidemenu {
+    @apply w-64
+}
+
+html.expanded #sidemenu .chevron {
+    @apply -rotate-180
+}
+
+html.expanded #sidemenu #sidemenu-favicon {
+    @apply hidden
+}
+
+html:not(.expanded) #sidemenu #sidemenu-logo {
+    @apply hidden
+}
+
+html:not(.expanded) #sidemenu {
+    @apply w-20
+}
+
+html:not(.expanded) #sidemenu .sidebar-title {
+    @apply hidden
+}
+
+html:not(.expanded) #sidemenu .sidebar-container {
+    @apply items-center
+}
+
+html:not(.expanded) #sidemenu .menu-link:hover .sidebar-title-tooltip {
+    @apply visible opacity-100
+}
+
+#sidemenu .menu-link .sidebar-title-tooltip {
+    transition: visibility 0s, opacity 0.5s linear;
+    @apply invisible opacity-0
+}

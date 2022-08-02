@@ -3,9 +3,9 @@
       class="h-full">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+          content="width=device-width, initial-scale=1.0"/>
 
     <title>{{ $title ?? 'Hub' }} | {{ config('app.name') }}</title>
 
@@ -22,22 +22,49 @@
         .filepond--credits {
             display: none !important;
         }
+
+        .reduced #sidebar {
+            width: 40px
+        }
+
+        #sidebar.w-20 .sidebar-cloak {
+            display: none !important;
+        }
     </style>
 
     <script defer
-            src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
-    <script defer
             src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
+
+    <script>
+        function sideMenu() {
+            return {
+                init() { !('showExpandedMenu' in localStorage) ? localStorage.showExpandedMenu = false : null;this.toggleExpandedMenu(localStorage.showExpandedMenu) },
+                toggleClass() { Boolean(localStorage.showExpandedMenu) && JSON.parse(localStorage.showExpandedMenu) ? document.documentElement.classList.add('expanded') : document.documentElement.classList.remove('expanded') },
+                toggleExpandedMenu(state) { typeof state !== 'undefined' && (typeof state === 'boolean' || (state === 'true' || state === 'false')) ? localStorage.showExpandedMenu = JSON.parse(state) : localStorage.showExpandedMenu = !JSON.parse(localStorage.showExpandedMenu);this.toggleClass() },
+            }
+        };
+
+        function darkMode() {
+            return {
+                init() { !('darkMode' in localStorage) ? localStorage.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches : null;this.toggleDarkMode(localStorage.darkMode) },
+                toggleClass() { Boolean(localStorage.darkMode) && JSON.parse(localStorage.darkMode) ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark') },
+                toggleDarkMode(state) { typeof state !== 'undefined' && (typeof state === 'boolean' || (state === 'true' || state === 'false')) ? localStorage.darkMode = JSON.parse(state) : localStorage.darkMode = !JSON.parse(localStorage.darkMode);this.toggleClass() }
+            }
+        }
+
+        (function () {
+            sideMenu().init();
+            // To use when dark mode is ready
+            // darkMode().init();
+        })()
+    </script>
+
     @livewireStyles
 </head>
 
 <body class="h-full overflow-hidden antialiased bg-gray-50 dark:bg-gray-900"
-      :class="{ 'dark': darkMode }"
-      x-data="{
-          showExpandedMenu: $persist(false),
-          showMobileMenu: false,
-          darkMode: $persist(false),
-      }">
+      x-data="{ showMobileMenu: false }">
+
     {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
 
     <div class="flex h-full">
@@ -66,7 +93,7 @@
         </div>
     </div>
 
-    <x-hub::notification />
+    <x-hub::notification/>
 
     @livewire('hub-license')
 
