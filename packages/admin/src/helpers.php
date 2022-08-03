@@ -13,48 +13,15 @@ if (! function_exists('max_upload_filesize')) {
 }
 
 if (!function_exists('get_validation')) {
-    function get_validation($reference, $field, $defaults = [], Model $model = null): array
+    function get_validation($reference, $field, $defaults = [], Model $model = null)
     {
         $config = config("getcandy-hub.{$reference}.{$field}", []);
 
-        return evaluate_validation_config($field, $config, $defaults, $model);
-    }
-
-    function get_extended_validation($reference): array
-    {
-        $config = config("getcandy-hub.{$reference}.validation", []);
-
-        return collect($config)
-            ->map(fn ($rule) => evaluate_validation_config(null, $rule))
-            ->toArray();
-    }
-
-    function evaluate_validation_config($field, $config, $defaults = [], Model $model = null): array
-    {
-        if (blank($config)) {
-            return $defaults;
-        }
-
         $rules = $defaults;
-
-        if (is_string($config) && strpos($config, '|')) {
-            $config = explode('|', $config);
-        }
-
-        $specialRules = ['required', 'unique'];
-
-        foreach ($specialRules as $rule) {
-            $keyPos = array_search($rule, $config, true);
-
-            if ($keyPos !== false) {
-                $config[$rule] = true;
-                unset($config[$keyPos]);
-            }
-        }
 
         $rules[] = !empty($config['required']) ? 'required' : 'nullable';
 
-        if (($config['unique'] ?? false) && $model && $field) {
+        if (($config['unique'] ?? false) && $model) {
             $rule = 'unique:' . get_class($model) . ',' . $field;
 
             if ($model->id) {
@@ -63,18 +30,6 @@ if (!function_exists('get_validation')) {
 
             $rules[] = $rule;
         }
-
-        collect($config)
-            ->except($specialRules)
-            ->each(function ($rule, $ruleKey) use (&$rules, $model) {
-                if (is_bool($rule) && $rule) {
-                    $rules[] = $ruleKey;
-
-                    return;
-                }
-
-                $rules[] = $rule;
-            });
 
         return $rules;
     }

@@ -39,15 +39,4 @@ return [
         'required' => false,
         'unique'   => false,
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Extend validation rules
-    |--------------------------------------------------------------------------
-    |
-    | Here you can specify certain validation rules to override or add more
-    | validation to product.
-    |
-    */
-    'validation' => [],
 ];
