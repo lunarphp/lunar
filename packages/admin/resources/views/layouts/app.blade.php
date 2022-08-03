@@ -31,8 +31,20 @@
 
     <script defer
             src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+
     <script defer
             src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
+
+    <script>
+        JSON.parse(localStorage.getItem('_x_showExpandedMenu')) ?
+            document.documentElement.classList.add('app-sidemenu-expanded') :
+            document.documentElement.classList.remove('app-sidemenu-expanded');
+
+        document.addEventListener('alpine:init', () => {
+            document.documentElement.classList.remove('app-sidemenu-expanded');
+        })
+    </script>
+
     @livewireStyles
 </head>
 
