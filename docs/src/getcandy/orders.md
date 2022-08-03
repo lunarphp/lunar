@@ -283,8 +283,7 @@ And as always, if you have any questions you can reach out on our Discord!
 
 ## Order Notifications
 
-GetCandy allows you to specific what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `getcandy/orders` config file and are defined like so:
-
+GetCandy allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `getcandy/orders` config file and are defined like so:
 
 ```php
 'statuses'     => [
@@ -301,7 +300,7 @@ GetCandy allows you to specific what Laravel mailers/notifications should be ava
 ],
 ```
 
-Now when you update an order's status in the hub, you will have these mailers available if the new status is `awaiting-payment`. You can then choose the email addresses which should be sent out and also add an additional email address if required.
+Now when you update an order's status in the hub, you will have these mailers available if the new status is `awaiting-payment`. You can then choose the email addresses which the email should be sent to and also add an additional email address if required.
 
 Once updated, GetCandy will keep a render of the email sent out in the activity log so you have a clear history of what's been sent out.
 
