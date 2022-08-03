@@ -159,6 +159,7 @@ abstract class AbstractProduct extends Component
     {
         return array_merge([
             'useProductOptions'             => 'setOptions',
+            'updatedAttributes',
             'productOptionCreated'          => 'resetOptionView',
             'option-manager.selectedValues' => 'setOptionValues',
             'urlSaved'                      => 'refreshUrls',

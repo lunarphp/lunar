@@ -21,6 +21,7 @@ use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
+use GetCandy\Hub\Http\Livewire\Components\FieldTypes\FileFieldtype;
 use GetCandy\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -202,6 +203,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerSettingsComponents();
         $this->registerOrderComponents();
         $this->registerCustomerComponents();
+        $this->registerFieldtypeComponents();
 
         // Blade Components
         Blade::componentNamespace('GetCandy\\Hub\\Views\\Components', 'hub');
@@ -353,6 +355,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.create', TaxZoneCreate::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
+    }
+
+    protected function registerFieldtypeComponents()
+    {
+        Livewire::component('hub.components.fieldtypes.file', FileFieldtype::class);
     }
 
     /**

@@ -8,6 +8,7 @@ use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Language;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
 
 trait WithAttributes
 {
@@ -225,6 +226,22 @@ trait WithAttributes
         }
 
         return $messages;
+    }
+
+    public function updatedAttributes($event)
+    {
+        $key = str_replace(
+            'attributeMapping.',
+            '',
+            str_replace('.data', '', $event['path'])
+        );
+
+        $field = $this->attributeMapping[$key];
+
+        $field['data'] = $event['data'];
+
+        $this->attributeMapping->put($key, $field);
+        // dd($data);
     }
 
     /**
