@@ -128,6 +128,11 @@ Finally, you will need to define a dynamic relationship if your service provider
 });
 ```
 
+### Removal of `override` method for OrderReferenceGenerator - Medium Impact
+
+If you're using the `override` method to generator your own order references, this has been removed in favour of a config based approach. 
+You should update your code to reflect this, see [Orders](/getcandy/orders#order-reference-generating)
+
 ## 2.0-beta13.2
 
 ### Changes to modifiers - High Impact
