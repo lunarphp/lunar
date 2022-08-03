@@ -40,7 +40,7 @@ class Text implements FieldType, JsonSerializable
      */
     public function __toString()
     {
-        return $this->getValue();
+        return $this->getValue() ?? '';
     }
 
     /**
