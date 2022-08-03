@@ -15,9 +15,7 @@
                                $component->attributes->get('current')
                            ),
                        ])
-                       x-data="{ showTooltip: false }"
-                       x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
-                       x-on:mouseleave="showTooltip = false">
+                       :class="{ 'group': showExpandedMenu }">
                         {!! $item->renderIcon('w-5 h-5') !!}
 
                         <span x-cloak
@@ -26,10 +24,8 @@
                             {{ $item->name }}
                         </span>
 
-                        <span x-cloak
-                              x-transition
-                              x-show="showTooltip"
-                              class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                        <span
+                              class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full invisible group-hover:visible">
                             {{ $item->name }}
                         </span>
                     </a>
@@ -47,9 +43,7 @@
                    'menu-link--active' => Str::contains(request()->url(), 'settings'),
                    'menu-link--inactive' => !Str::contains(request()->url(), 'settings'),
                ])
-               x-data="{ showTooltip: false }"
-               x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
-               x-on:mouseleave="showTooltip = false">
+               :class="{ 'group': showExpandedMenu }">
                 {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-5 h-5') !!}
 
                 <span x-cloak
@@ -58,10 +52,8 @@
                     {{ __('adminhub::global.settings') }}
                 </span>
 
-                <span x-cloak
-                      x-transition
-                      x-show="showTooltip"
-                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                <span
+                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full invisible group-hover:visible">
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>
