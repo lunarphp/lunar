@@ -98,7 +98,6 @@ class TaxClassesIndex extends Component
             return false;
         }
 
-
         $existingDefault = TaxClass::whereDefault(true)
             ->first();
 
