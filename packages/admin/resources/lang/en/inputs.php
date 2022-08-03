@@ -89,4 +89,5 @@ return [
     'text'                                   => 'Text',
     'richtext'                               => 'Richtext',
     'transaction.label' => 'Transaction',
+    'tag.label' => 'Tag',
 ];
