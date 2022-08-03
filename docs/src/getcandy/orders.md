@@ -332,6 +332,56 @@ In terms of an order, all it's worried about is whether or not the `placed_at` c
 
 And as always, if you have any questions you can reach out on our Discord!
 
+## Order Notifications
+
+GetCandy allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `getcandy/orders` config file and are defined like so:
+
+```php
+'statuses'     => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
+        'mailers' => [
+            App\Mail\MyMailer::class,
+            App\Mail\MyOtherMailer::class,
+        ],
+        'notifications' => [],
+    ],
+    // ...
+],
+```
+
+Now when you update an order's status in the hub, you will have these mailers available if the new status is `awaiting-payment`. You can then choose the email addresses which the email should be sent to and also add an additional email address if required.
+
+Once updated, GetCandy will keep a render of the email sent out in the activity log so you have a clear history of what's been sent out.
+
+:::tip
+These email notifications do not get sent out automatically if you update the status outside of the hub.
+:::
+
+### Mailer template
+
+When building out the template for your mailer, you should assume you have access to the `$order` model. When the status is updated this is passed through to the view data for the mailer, along with any additional content entered.
+Since you may not always have additional content when sending out the mailer, you should check the existence first.
+
+Here's an example of what the template could look like:
+
+```html
+<h1>It's on the way!</h1>
+
+<p>Your order with reference {{ $order->reference }} has been dispatched!</p>
+
+<p>{{ $order->total->formatted() }}</p>
+
+@if($content ?? null)
+    <h2>Additional notes</h2>
+    <p>{{ $content }}</p>
+@endif
+
+@foreach($order->lines as $line)
+    <!--  -->
+@endforeach
+```
 
 ## Order Invoice PDF
 

@@ -79,6 +79,7 @@ module.exports = {
           '/configuration',
           ['/upgrading', 'Upgrade Guide'],
           ['/securing-your-site', 'Security'],
+          ['/contributing', 'Contributing'],
         ]
       },
       {
