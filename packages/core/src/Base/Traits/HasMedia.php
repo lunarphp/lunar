@@ -27,28 +27,28 @@ trait HasMedia
         $transforms = config('getcandy.media.transformations');
 
         // if (str_contains('image', $media->mime_type)) {
-            collect($transforms)->each(function ($transform, $handle) {
-                $conversion = $this->addMediaConversion($handle)
+        collect($transforms)->each(function ($transform, $handle) {
+            $conversion = $this->addMediaConversion($handle)
                     ->fit(
                         $transform['fit'] ?? Manipulations::FIT_FILL,
                         $transform['width'],
                         $transform['height']
                     );
 
-                if ($collections = ($transform['collections'] ?? null)) {
-                    $conversion->collections($collections);
-                }
+            if ($collections = ($transform['collections'] ?? null)) {
+                $conversion->collections($collections);
+            }
 
-                if ($border = ($transform['border'] ?? null)) {
-                    $conversion->border(
+            if ($border = ($transform['border'] ?? null)) {
+                $conversion->border(
                         $border['size'],
                         $border['color'],
                         $border['type']
                     );
-                }
+            }
 
-                $conversion->keepOriginalImageFormat();
-            });
+            $conversion->keepOriginalImageFormat();
+        });
         // }
     }
 }

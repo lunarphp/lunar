@@ -3,10 +3,9 @@
 namespace GetCandy\Hub\Http\Livewire\Components\FieldTypes;
 
 use GetCandy\Models\Asset;
-use Livewire\Component;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class FileFieldtype extends Component
 {
@@ -52,7 +51,6 @@ class FileFieldtype extends Component
         $this->showUploader = false;
         // dd($this->signature);
     }
-
 
     public function getAssetsProperty()
     {

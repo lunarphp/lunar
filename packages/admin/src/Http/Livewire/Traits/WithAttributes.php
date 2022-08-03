@@ -8,7 +8,6 @@ use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Models\AttributeGroup;
 use GetCandy\Models\Language;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Arr;
 
 trait WithAttributes
 {
