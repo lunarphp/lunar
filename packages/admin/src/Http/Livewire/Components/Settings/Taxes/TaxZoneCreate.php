@@ -22,10 +22,11 @@ class TaxZoneCreate extends AbstractTaxZone
             'selectedCountries' => 'array|required_if:taxZone.zone_type,country',
             'selectedStates' => 'array|required_if:taxZone.zone_type,states',
             'taxRates' => 'array|min:1',
+            'taxRates.*.priority' => 'required|numeric|min:1',
             'taxRates.*.name' => 'required|string',
-            // 'taxRateAmounts' => 'array',
-            // 'taxRateAmounts.*.percentage' => 'numeric',
-            // 'taxRateAmounts.*.tax_class_id' => 'required',
+            'taxRates.*.amounts.*.percentage' => 'numeric|min:0',
+            'customerGroups' => 'array',
+            'customerGroups.*.linked' => 'boolean|nullable',
         ];
     }
 

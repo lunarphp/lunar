@@ -138,7 +138,7 @@
                 <x-hub::input.text wire:model="taxRates.{{ $taxRateIndex }}.name" />
               </x-hub::input.group>
 
-              <x-hub::input.group :label="__('adminhub::inputs.priority.label')" for="priority">
+              <x-hub::input.group :label="__('adminhub::inputs.priority.label')" for="priority" :error="$errors->first('taxRates.'.$taxRateIndex.'.priority')">
                 <x-hub::input.text type="number" wire:model="taxRates.{{ $taxRateIndex }}.priority" />
               </x-hub::input.group>
             </div>

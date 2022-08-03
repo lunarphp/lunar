@@ -40,6 +40,8 @@ class TaxZoneShow extends AbstractTaxZone
      */
     public function save()
     {
+        $this->validate();
+
         $this->taxZone->save();
 
         $this->saveDetails();
