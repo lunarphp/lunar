@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Saved carts have been removed from the core
 - Removed macro functionality from the `BaseModel` into it's own trait.
 - The `last_four` column on transactions is now nullable.
+- The `override` method for Order reference generators has been removed in favour of a config based approach.
 
 ## 2.0-beta13 - 2022-05-19
 
