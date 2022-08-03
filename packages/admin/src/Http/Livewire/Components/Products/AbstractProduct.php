@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products;
 
+use GetCandy\Hub\Http\Livewire\Traits\CanExtendValidation;
 use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
 use GetCandy\Hub\Http\Livewire\Traits\HasImages;
@@ -42,6 +43,7 @@ abstract class AbstractProduct extends Component
     use HasUrls;
     use HasTags;
     use HasSlots;
+    use CanExtendValidation;
 
     /**
      * The current product we are editing.
@@ -248,7 +250,9 @@ abstract class AbstractProduct extends Component
             $this->withAttributesValidationRules(),
             $this->hasUrlsValidationRules(!$this->product->id),
             $this->withAttributesValidationRules(),
-            get_extended_validation('products'),
+            $this->getExtendValidation([
+                'product' => $this->product,
+            ]),
         );
     }
 
