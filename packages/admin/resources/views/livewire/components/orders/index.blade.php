@@ -240,6 +240,17 @@
                             </x-hub::input.select>
                         </x-hub::input.group>
 
+                        <x-hub::input.group :label="__('adminhub::inputs.tag.label')"
+                                            for="status">
+                            <x-hub::input.select wire:model="filters.tags">
+                                <option value>{{ __('adminhub::global.any') }}</option>
+
+                                @foreach ($this->tags as $handle => $tag)
+                                    <option value="{{ $tag }}">{{ $tag }}</option>
+                                @endforeach
+                            </x-hub::input.select>
+                        </x-hub::input.group>
+
                         @foreach ($this->availableFilters as $filter)
                             <x-hub::input.group :label="$filter->heading"
                                                 for="{{ $filter->field }}">

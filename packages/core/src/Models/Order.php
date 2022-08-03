@@ -30,6 +30,7 @@ class Order extends BaseModel
         'status',
         'created_at',
         'placed_at',
+        'tags',
     ];
 
     /**

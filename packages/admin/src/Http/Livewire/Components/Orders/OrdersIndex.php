@@ -7,6 +7,8 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithSavedSearches;
 use GetCandy\Hub\Search\OrderSearch;
 use GetCandy\Models\Order;
+use GetCandy\Models\Tag;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -91,6 +93,7 @@ class OrdersIndex extends Component
             'status' => null,
             'to' => null,
             'from' => null,
+            'tags' => null,
         ], $this->filters);
     }
 
@@ -226,6 +229,20 @@ class OrdersIndex extends Component
     public function getStatusesProperty()
     {
         return config('getcandy.orders.statuses', []);
+    }
+
+    public function getTagsProperty()
+    {
+        $tagTable = (new Tag())->getTable();
+
+        return DB::table(
+            config('getcandy.database.table_prefix').'taggables'
+        )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
+        ->whereTaggableType(
+            Order::class
+        )
+        ->distinct()
+        ->pluck('value');
     }
 
     /**
