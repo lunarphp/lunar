@@ -134,6 +134,7 @@ return [
     'brand' => 'Brand',
     'stock' => 'Stock',
     'show_deleted' => 'Show Deleted',
+    'preview' => 'Preview',
     'delivery_instructions' => 'Delivery Instructions',
     'not_provided' => 'Not Provided',
     'billing_email' => 'Billing Email',

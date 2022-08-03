@@ -110,6 +110,7 @@ class OrderShow extends Component
                 'captureSuccess',
                 'refundSuccess',
                 'cancelRefund',
+                'refreshOrder',
             ],
             $this->getHasSlotsListeners()
         );
@@ -159,6 +160,16 @@ class OrderShow extends Component
         $this->shippingAddress = $this->order->shippingAddress ?: new OrderAddress();
 
         $this->billingAddress = $this->order->billingAddress ?: new OrderAddress();
+    }
+
+    /**
+     * Refresh the current order in the database.
+     *
+     * @return void
+     */
+    public function refreshOrder()
+    {
+        $this->order = $this->order->refresh();
     }
 
     /**

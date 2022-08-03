@@ -13,12 +13,7 @@
           type="image/png"
           href="https://cdn.getcandy.io/hub/favicon.svg">
 
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700;900&display=swap"
+    <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
     <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
@@ -31,8 +26,20 @@
 
     <script defer
             src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+
     <script defer
             src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
+
+    <script>
+        JSON.parse(localStorage.getItem('_x_showExpandedMenu')) ?
+            document.documentElement.classList.add('app-sidemenu-expanded') :
+            document.documentElement.classList.remove('app-sidemenu-expanded');
+
+        document.addEventListener('alpine:init', () => {
+            document.documentElement.classList.remove('app-sidemenu-expanded');
+        })
+    </script>
+
     @livewireStyles
 </head>
 

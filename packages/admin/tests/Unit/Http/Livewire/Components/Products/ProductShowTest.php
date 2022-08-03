@@ -560,8 +560,9 @@ class ProductShowTest extends TestCase
                 'id' => $collection->id,
                 'name' => $collection->translateAttribute('name'),
                 'group_id' => $collection->collection_group_id,
+                'group_name' => $collection->group->name,
                 'thumbnail' => null,
-                'breadcrumb' => 'Foo > Bar',
+                'breadcrumb' => ['Foo', 'Bar'],
                 'position' => 1,
             ]]))->call('save')->assertHasNoErrors();
 

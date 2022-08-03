@@ -52,7 +52,7 @@
             </button>
         </header>
 
-        <nav class="mt-4 space-y-2">
+        <nav class="mt-4 space-y-2 flex flex-col">
             @forelse($this->collectionGroups as $group)
                 <a href="{{ route('hub.collection-groups.show', $group->id) }}"
                    @class([

@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Base\ActivityLog;
 
 use GetCandy\Hub\Base\ActivityLog\Orders\Capture;
+use GetCandy\Hub\Base\ActivityLog\Orders\EmailNotification;
 use GetCandy\Hub\Base\ActivityLog\Orders\Intent;
 use GetCandy\Hub\Base\ActivityLog\Orders\StatusUpdate;
 use GetCandy\Models\Order;
@@ -21,6 +22,7 @@ class Manifest
             StatusUpdate::class,
             Capture::class,
             Intent::class,
+            EmailNotification::class,
         ],
     ];
 
