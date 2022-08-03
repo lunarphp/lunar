@@ -9,7 +9,11 @@
 
 @if($attribute->configuration['richtext'] ?? false)
   <div class="space-y-4 mt-4">
-    <p class="text-sm">RichText fields use <a href="https://quilljs.com/docs/configuration/" class="text-blue-500">Quilljs</a>, you can you enter any available configuration below.</p>
+    <p class="text-sm">
+      {!! __('adminhub::fieldtypes.richtext.config', [
+        'url' => '<a href="https://quilljs.com/docs/configuration/" target="_blank" rel="nofollow" class="text-blue-500">Quilljs</a>'
+      ]) !!}
+    </p>
     @if($errors->count())
       <x-hub::alert level="danger">
         @foreach ($errors->all() as $error)
