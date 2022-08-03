@@ -15,7 +15,7 @@
                                $component->attributes->get('current')
                            ),
                        ])
-                       :class="{ 'group': showExpandedMenu }">
+                       :class="{ 'group': !showExpandedMenu }">
                         {!! $item->renderIcon('w-5 h-5') !!}
 
                         <span x-cloak
