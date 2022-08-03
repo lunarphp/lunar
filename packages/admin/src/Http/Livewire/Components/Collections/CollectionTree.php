@@ -187,8 +187,7 @@ class CollectionTree extends Component
     /**
      * Refresh the tree with a new set of nodes.
      *
-     * @param array $nodes
-     *
+     * @param  array  $nodes
      * @return void
      */
     public function refreshTree(array $nodes)
