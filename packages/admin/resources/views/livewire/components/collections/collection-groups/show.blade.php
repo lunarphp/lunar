@@ -41,25 +41,30 @@
             <x-hub::modal.dialog wire:model="showDeleteConfirm"
                                  form="deleteGroup">
                 <x-slot name="title">
-                  {{ __('adminhub::catalogue.collections.groups.delete.strapline') }}
+                    {{ __('adminhub::catalogue.collections.groups.delete.strapline') }}
                 </x-slot>
-                <x-slot name="content">
-                  <div class="space-y-4">
-                    <x-hub::alert level="danger">
-                      {{ __('adminhub::catalogue.collections.groups.delete.warning') }}
-                    </x-hub::alert>
 
-                    <x-hub::input.group :label="__('adminhub::catalogue.collections.groups.delete.confirm')" for="confirmation">
-                      <x-hub::input.toggle wire:model="deletionConfirm" id="confirmation" />
-                    </x-hub::input.group>
-                  </div>
+                <x-slot name="content">
+                    <div class="space-y-4">
+                        <x-hub::alert level="danger">
+                            {{ __('adminhub::catalogue.collections.groups.delete.warning') }}
+                        </x-hub::alert>
+
+                        <x-hub::input.group :label="__('adminhub::catalogue.collections.groups.delete.confirm')"
+                                            for="confirmation">
+                            <x-hub::input.toggle wire:model="deletionConfirm"
+                                                 id="confirmation" />
+                        </x-hub::input.group>
+                    </div>
                 </x-slot>
+
                 <x-slot name="footer">
                     <x-hub::button type="button"
                                    wire:click.prevent="$set('showDeleteConfirm', false)"
                                    theme="gray">
                         {{ __('adminhub::global.cancel') }}
                     </x-hub::button>
+
                     <x-hub::button type="submit"
                                    theme="danger"
                                    :disabled="!$deletionConfirm">
@@ -67,6 +72,7 @@
                     </x-hub::button>
                 </x-slot>
             </x-hub::modal.dialog>
+
             <x-hub::modal.dialog wire:model="showCreateForm"
                                  form="createCollection">
                 <x-slot name="title">
@@ -78,6 +84,7 @@
                         {{ __('adminhub::catalogue.collections.create.root.title') }}
                     @endif
                 </x-slot>
+
                 <x-slot name="content">
                     <div class="space-y-4">
                         <x-hub::input.group :label="__('adminhub::inputs.name')"
@@ -99,12 +106,14 @@
                         @endif
                     </div>
                 </x-slot>
+
                 <x-slot name="footer">
                     <x-hub::button type="button"
                                    wire:click.prevent="$set('showCreateForm', false)"
                                    theme="gray">
                         {{ __('adminhub::global.cancel') }}
                     </x-hub::button>
+
                     <x-hub::button type="submit">
                         {{ __('adminhub::catalogue.collections.create.btn') }}
                     </x-hub::button>
@@ -115,6 +124,7 @@
                 <x-slot name="title">
                     {{ __('adminhub::catalogue.collections.groups.move.title') }}
                 </x-slot>
+
                 <x-slot name="content">
                     <div class="relative">
                         <x-hub::input.text wire:model="searchTerm"
@@ -122,12 +132,44 @@
                                                'adminhub::catalogue.collections.groups.move.search_placeholder',
                                            )" />
                         @if ($showCollectionSearchResults)
-                            <div class="absolute w-full overflow-y-scroll bg-white rounded-b shadow max-h-64">
+                            <div class="absolute w-full overflow-y-scroll bg-white rounded-b shadow max-h-64 z-10">
                                 @foreach ($this->searchedCollections as $collection)
-                                    <button class="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
-                                            type="button"
+                                    <button type="button"
+                                            class="flex gap-1.5 items-center flex-wrap w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
                                             wire:click.prevent="setMoveTarget('{{ $collection->id }}')">
-                                        {{ $collection->translateAttribute('name') }}
+                                        <strong class="rounded px-1.5 py-0.5 bg-blue-50 text-xs text-blue-600">
+                                            {{ $collection->group->name }}
+                                        </strong>
+
+                                        @if (count($collection->breadcrumb))
+                                            <span class="text-gray-500 flex gap-1.5 items-center">
+                                                <span class="font-medium">
+                                                    {{ $collection->breadcrumb->first() }}
+                                                </span>
+
+                                                <x-hub::icon ref="chevron-right"
+                                                             class="w-4 h-4"
+                                                             style="solid" />
+                                            </span>
+                                        @endif
+
+                                        @if (count($collection->breadcrumb) > 1)
+                                            <span class="text-gray-500 flex gap-1.5 items-center"
+                                                  title="{{ $collection->breadcrumb->implode(' > ') }}">
+                                                <span class="font-medium cursor-help">
+                                                    ...
+                                                </span>
+
+                                                <x-hub::icon ref="chevron-right"
+                                                             class="w-4 h-4"
+                                                             style="solid" />
+                                            </span>
+                                        @endif
+
+                                        <strong class="text-gray-700 max-w-[40ch] truncate"
+                                                title="{{ $collection->translateAttribute('name') }}">
+                                            {{ $collection->translateAttribute('name') }}
+                                        </strong>
                                     </button>
                                 @endforeach
                             </div>
@@ -144,6 +186,7 @@
                         </div>
                     @endif
                 </x-slot>
+
                 <x-slot name="footer">
                     <x-hub::button type="button"
                                    wire:click="moveCollection"
@@ -159,6 +202,7 @@
                     <x-slot name="title">
                         {{ __('adminhub::catalogue.collections.delete.title') }}
                     </x-slot>
+
                     <x-slot name="content">
                         @if ($childCount = $this->collectionToRemove->children->count())
                             <x-hub::alert level="danger">
@@ -170,6 +214,7 @@
                             <p>{{ __('adminhub::catalogue.collections.delete.root.warning') }}</p>
                         @endif
                     </x-slot>
+
                     <x-slot name="footer">
                         <div class="flex justify-between">
                             <x-hub::button type="button"
@@ -177,6 +222,7 @@
                                            theme="gray">
                                 {{ __('adminhub::global.cancel') }}
                             </x-hub::button>
+
                             <x-hub::button type="submit"
                                            theme="danger">
                                 {{ __('adminhub::catalogue.collections.delete.btn') }}

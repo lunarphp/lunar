@@ -540,18 +540,20 @@ abstract class AbstractProduct extends Component
 
     protected function syncCollections()
     {
-        $this->collections = $this->product->collections->map(function ($collection) {
-            return [
-                'id' => $collection->id,
-                'group_id' => $collection->collection_group_id,
-                'name' => $collection->translateAttribute('name'),
-                'thumbnail' => optional($collection->thumbnail)->getUrl(),
-                'position' => $collection->pivot->position,
-                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
-                    return $ancestor->translateAttribute('name');
-                })->join(' > '),
-            ];
-        });
+        $this->collections = $this->product->collections()
+            ->with(['group', 'thumbnail'])
+            ->get()
+            ->map(function ($collection) {
+                return [
+                    'id' => $collection->id,
+                    'group_id' => $collection->collection_group_id,
+                    'group_name' => $collection->group->name,
+                    'name' => $collection->translateAttribute('name'),
+                    'thumbnail' => optional($collection->thumbnail)->getUrl(),
+                    'position' => $collection->pivot->position,
+                    'breadcrumb' => $collection->breadcrumb,
+                ];
+            });
 
         $this->collectionsToDetach = collect();
     }
@@ -582,18 +584,17 @@ abstract class AbstractProduct extends Component
             return [
                 'id' => $collection->id,
                 'group_id' => $collection->collection_group_id,
+                'group_name' => $collection->group->name,
                 'name' => $collection->translateAttribute('name'),
                 'thumbnail' => optional($collection->thumbnail)->getUrl(),
                 'position' => optional($collection->pivot)->position,
-                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
-                    return $ancestor->translateAttribute('name');
-                })->join(' > '),
+                'breadcrumb' => $collection->breadcrumb,
             ];
         });
 
-        $this->collections = $this->collections->count() ?
-            $this->collections->merge($selectedCollections) :
-            $selectedCollections;
+        $this->collections = $this->collections->count()
+            ? $this->collections->merge($selectedCollections)
+            : $selectedCollections;
     }
 
     /**
