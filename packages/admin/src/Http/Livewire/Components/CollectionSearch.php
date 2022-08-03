@@ -60,13 +60,7 @@ class CollectionSearch extends Component
      */
     public function getSelectedModelsProperty()
     {
-        return ModelsCollection::whereIn('id', $this->selected)->get()->map(function ($collection) {
-            $collection->breadcrumb = $collection->ancestors->map(function ($ancestor) {
-                return $ancestor->translateAttribute('name');
-            })->join(' > ');
-
-            return $collection;
-        });
+        return ModelsCollection::whereIn('id', $this->selected)->get();
     }
 
     /**
@@ -125,22 +119,13 @@ class CollectionSearch extends Component
             return null;
         }
 
-        $items = ModelsCollection::search($this->searchTerm)->paginate($this->maxResults);
-
-        $items->getCollection()->transform(function ($collection) {
-            $collection->breadcrumb = $collection->ancestors->map(function ($ancestor) {
-                return $ancestor->translateAttribute('name');
-            })->join(' > ');
-
-            return $collection;
-        });
-
-        return $items;
+        return ModelsCollection::search($this->searchTerm)->paginate($this->maxResults);
     }
 
     public function triggerSelect()
     {
         $this->emit('collectionSearch.selected', $this->selected);
+
         $this->showBrowser = false;
     }
 

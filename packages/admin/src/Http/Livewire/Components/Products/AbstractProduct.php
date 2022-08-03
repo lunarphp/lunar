@@ -551,9 +551,7 @@ abstract class AbstractProduct extends Component
                     'name' => $collection->translateAttribute('name'),
                     'thumbnail' => optional($collection->thumbnail)->getUrl(),
                     'position' => $collection->pivot->position,
-                    'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
-                        return $ancestor->translateAttribute('name');
-                    }),
+                    'breadcrumb' => $collection->breadcrumb,
                 ];
             });
 
@@ -586,18 +584,17 @@ abstract class AbstractProduct extends Component
             return [
                 'id' => $collection->id,
                 'group_id' => $collection->collection_group_id,
+                'group_name' => $collection->group->name,
                 'name' => $collection->translateAttribute('name'),
                 'thumbnail' => optional($collection->thumbnail)->getUrl(),
                 'position' => optional($collection->pivot)->position,
-                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
-                    return $ancestor->translateAttribute('name');
-                })->join(' > '),
+                'breadcrumb' => $collection->breadcrumb,
             ];
         });
 
-        $this->collections = $this->collections->count() ?
-            $this->collections->merge($selectedCollections) :
-            $selectedCollections;
+        $this->collections = $this->collections->count()
+            ? $this->collections->merge($selectedCollections)
+            : $selectedCollections;
     }
 
     /**
