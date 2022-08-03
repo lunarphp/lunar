@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^6.1|^7.0",
         "doctrine/dbal": "^3.3",
         "getcandy/licensing": "dev-main",
@@ -28,7 +29,8 @@
     },
     "autoload": {
         "files": [
-            "packages/admin/src/helpers.php"
+            "packages/admin/src/helpers.php",
+            "packages/core/src/helpers.php"
         ],
         "psr-4": {
             "GetCandy\\": "packages/core/src",

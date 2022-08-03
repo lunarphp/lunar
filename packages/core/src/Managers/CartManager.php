@@ -73,7 +73,7 @@ class CartManager
                 $this->getModifiers()->toArray()
             );
 
-        $pipeline->via('calculating')->thenReturn();
+        $this->cart = $pipeline->via('calculating')->thenReturn();
 
         $lines = $this->calculateLines();
 
@@ -124,7 +124,7 @@ class CartManager
             ];
         });
 
-        $pipeline->via('calculated')->thenReturn();
+        $this->cart = $pipeline->via('calculated')->thenReturn();
 
         return $this;
     }
@@ -169,7 +169,8 @@ class CartManager
         $existing = $this->cart->load('lines')->lines->first(function ($line) use ($purchasable, $meta) {
             return $line->purchasable_id == $purchasable->id &&
             $line->purchasable_type == get_class($purchasable) &&
-            json_encode($line->meta ?: []) == json_encode($meta ?: []);
+            array_diff((array) ($line->meta ?? []), $meta ?? []) == [] &&
+            array_diff($meta ?? [], (array) ($line->meta ?? [])) == [];
         });
 
         if ($existing) {
@@ -186,6 +187,25 @@ class CartManager
             'quantity'         => $quantity,
             'meta'             => $meta,
         ]);
+
+        return true;
+    }
+
+    /**
+     * Add cart lines.
+     *
+     * @param  iterable  $lines
+     * @return bool
+     */
+    public function addLines(iterable $lines)
+    {
+        collect($lines)->each(function ($line) {
+            $this->add(
+                $line['purchasable'],
+                $line['quantity'],
+                $line['meta'] ?? null
+            );
+        });
 
         return true;
     }
@@ -270,7 +290,7 @@ class CartManager
 
         CartLine::whereId($id)->update([
             'quantity' => $quantity,
-            'meta'     => $meta,
+            'meta'     => (array) $meta,
         ]);
     }
 

@@ -69,22 +69,4 @@ class OrderReferenceGeneratorTest extends TestCase
 
         $this->assertEquals($order->created_at->format('Y-m').'-0002', $result);
     }
-
-    /** @test */
-    public function can_override_reference_generator()
-    {
-        $order = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
-
-        $this->assertNull($order->reference);
-
-        $result = app(OrderReferenceGenerator::class)
-            ->override(function ($order) {
-                return 'hello-'.$order->id;
-            })->generate($order);
-
-        $this->assertEquals('hello-'.$order->id, $result);
-    }
 }

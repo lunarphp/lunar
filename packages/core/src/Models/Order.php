@@ -5,6 +5,7 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\OrderFactory;
@@ -14,7 +15,8 @@ class Order extends BaseModel
 {
     use HasFactory,
         Searchable,
-        LogsActivity;
+        LogsActivity,
+        HasMacros;
 
     /**
      * Define our base filterable attributes.

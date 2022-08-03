@@ -221,7 +221,7 @@ If you are charging the card straight away, set the type to `capture`.
 ```php
 Transaction::create([
     //...
-    'type' => 'intent',
+    'type' => 'capture',
 ]);
 ```
 

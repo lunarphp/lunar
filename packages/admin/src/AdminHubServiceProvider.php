@@ -3,8 +3,10 @@
 namespace GetCandy\Hub;
 
 use GetCandy\Hub\Auth\Manifest;
+use GetCandy\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
 use GetCandy\Hub\Base\OrdersTableInterface;
 use GetCandy\Hub\Console\Commands\InstallHub;
+use GetCandy\Hub\Facades\ActivityLog;
 use GetCandy\Hub\Http\Livewire\Components\Account;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
@@ -13,15 +15,18 @@ use GetCandy\Hub\Http\Livewire\Components\Avatar;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
+use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionTree;
 use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
 use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionValueCreateModal;
 use GetCandy\Hub\Http\Livewire\Components\Products\Editing\CustomerGroups;
@@ -112,6 +117,10 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->app->singleton(OrdersTableInterface::class, function ($app) {
             return $app->make(Orders::class);
         });
+
+        $this->app->singleton(ActivityLog::class, function () {
+            return new ActivityLogManifest();
+        });
     }
 
     /**
@@ -144,6 +153,14 @@ class AdminHubServiceProvider extends ServiceProvider
                     "{$this->root}/config/$config.php" => config_path("getcandy-hub/$config.php"),
                 ], 'getcandy');
             });
+
+            $this->publishes([
+                __DIR__.'/../database/migrations/' => database_path('migrations'),
+            ], 'getcandy-migrations');
+
+            $this->publishes([
+                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
+            ], 'getcandy-hub-views');
 
             $this->commands([
                 InstallHub::class,
@@ -221,6 +238,8 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.show', OrderShow::class);
         Livewire::component('hub.components.orders.refund', OrderRefund::class);
         Livewire::component('hub.components.orders.capture', OrderCapture::class);
+        Livewire::component('hub.components.orders.status', OrderStatus::class);
+        Livewire::component('hub.components.orders.emil-notification', EmailNotification::class);
     }
 
     protected function registerCustomerComponents()
@@ -267,6 +286,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.collections.collection-groups.index', CollectionGroupsIndex::class);
         Livewire::component('hub.components.collections.collection-groups.show', CollectionGroupShow::class);
         Livewire::component('hub.components.collections.show', CollectionShow::class);
+        Livewire::component('hub.components.collections.collection-tree', CollectionTree::class);
     }
 
     /**

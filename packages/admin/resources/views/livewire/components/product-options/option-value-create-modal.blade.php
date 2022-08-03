@@ -16,7 +16,7 @@
                 placeholder="Blue, Small, Plastic, Metal etc..."
               />
               @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
-                <x-slot :name="$language->code">
+                <x-slot :name="$language['code']">
                   <x-hub::input.text
                     wire:model="name.{{ $language->code }}"
                     :error="$errors->first('name.'.$language->code)"

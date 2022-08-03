@@ -2,8 +2,8 @@
 
 namespace GetCandy\Actions\Carts;
 
+use GetCandy\Actions\Orders\GenerateOrderReference;
 use GetCandy\Base\OrderModifiers;
-use GetCandy\Base\OrderReferenceGeneratorInterface;
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Currency;
@@ -13,13 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class CreateOrder
 {
-    protected $referenceGenerator;
-
-    public function __construct(OrderReferenceGeneratorInterface $generator)
-    {
-        $this->referenceGenerator = $generator;
-    }
-
     /**
      * Execute the action.
      *
@@ -41,7 +34,7 @@ class CreateOrder
                     $this->getModifiers()->toArray()
                 );
 
-            $pipeline->via('creating')->thenReturn();
+            $cart = $pipeline->via('creating')->thenReturn();
 
             $order = Order::create([
                 'user_id'            => $cart->user_id,
@@ -68,7 +61,7 @@ class CreateOrder
             ]);
 
             $order->update([
-                'reference' => $this->referenceGenerator->generate($order),
+                'reference' => app(GenerateOrderReference::class)->execute($order),
             ]);
 
             $orderLines = $cart->lines->map(function ($line) {
@@ -147,9 +140,7 @@ class CreateOrder
 
             $cart->save();
 
-            $pipeline->send($order)->via('created')->thenReturn();
-
-            return $order;
+            return $pipeline->send($order)->via('created')->thenReturn();
         });
     }
 

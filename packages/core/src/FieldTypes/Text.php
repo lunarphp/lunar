@@ -100,6 +100,14 @@ class Text implements FieldType, JsonSerializable
             'view'    => 'adminhub::field-types.text',
             'options' => [
                 'richtext' => 'nullable',
+                'options' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if (! json_decode($value, true)) {
+                            $fail('Must be valid json');
+                        }
+                    },
+                ],
             ],
         ];
     }

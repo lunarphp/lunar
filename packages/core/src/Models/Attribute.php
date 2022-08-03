@@ -3,6 +3,7 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\AttributeFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,6 +18,7 @@ class Attribute extends BaseModel
 {
     use HasFactory;
     use HasTranslations;
+    use HasMacros;
 
     public static function boot()
     {

@@ -15,7 +15,7 @@ class CurrenciesIndex extends Component
     {
         return view('adminhub::livewire.pages.settings.currencies.index')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.currencies.index.title'),
+                'menu' => 'settings',
             ]);
     }
 }

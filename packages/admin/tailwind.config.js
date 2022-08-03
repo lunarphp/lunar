@@ -1,33 +1,34 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
-    content: [
-        './resources/views/components/**/*.blade.php',
-        './resources/views/layouts/**/*.blade.php',
-        './resources/views/livewire/**/*.blade.php',
-        './resources/views/partials/**/*.blade.php',
-        './resources/assets/**/*.js',
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/**/*.blade.php',
-        './vendor/livewire-ui/modal/resources/views/**/*.blade.php',
+    darkMode: 'class',
+    content: ['./resources/assets/**/*.js', './resources/views/**/*.blade.php', './resources/views/**/**/*.blade.php'],
+    safelist: [
+        {
+            pattern: /justify-(start|between|end)/,
+            variants: ['sm', 'md', 'lg'],
+        },
+        {
+            pattern: /items-(start|center|end)/,
+            variants: ['sm', 'md', 'lg'],
+        },
+        {
+            pattern: /flex-(1|auto|initial|none)/,
+            variants: ['sm', 'md', 'lg'],
+        },
+        {
+            pattern: /hidden/,
+            variants: ['sm', 'md', 'lg'],
+        },
     ],
     theme: {
-        fontFamily: {
-            sans: ['Nunito', 'ui-sans-serif', 'system-ui'],
-            serif: ['ui-serif', 'Georgia'],
-            mono: ['ui-monospace', 'SFMono-Regular'],
-        },
         extend: {
+            fontFamily: {
+                sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+            },
             zIndex: {
                 75: 75,
             },
-            cursor: {
-                grab: 'grab',
-            },
-        },
-    },
-    variants: {
-        extend: {
-            opacity: ['disabled'],
-            cursor: ['disabled'],
-            backgroundColor: ['even'],
         },
     },
     plugins: [

@@ -79,6 +79,7 @@ module.exports = {
           '/configuration',
           ['/upgrading', 'Upgrade Guide'],
           ['/securing-your-site', 'Security'],
+          ['/contributing', 'Contributing'],
         ]
       },
       {
@@ -117,6 +118,7 @@ module.exports = {
         title: 'Extending GetCandy',
         collapsable: false, // optional, defaults to true
         children: [
+          '/extending/activity-log',
           '/extending/admin-hub',
           '/extending/cart-modifiers',
           '/extending/field-types',

@@ -22,20 +22,23 @@ public function boot(OrderModifiers $orderModifiers)
 ```php
 namespace App\Modifiers;
 
+use Closure;
 use GetCandy\Base\OrderModifier;
 use GetCandy\Models\Cart;
 use GetCandy\Models\Order;
 
 class CustomOrderModifier extends OrderModifier
 {
-    public function creating(Cart $cart)
+    public function creating(Cart $cart, Closure $next): Cart
     {
-        //
+        //...
+        return $next($cart);
     }
 
-    public function created(Order $order)
+    public function created(Order $order, Closure $next): Order
     {
-        //
+        //...
+        return $next($order);
     }
 }
 

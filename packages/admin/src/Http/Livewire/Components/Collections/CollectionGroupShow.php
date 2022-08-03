@@ -3,8 +3,8 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Collections;
 
 use GetCandy\FieldTypes\TranslatedText;
+use GetCandy\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Jobs\Collections\RebuildCollectionTree;
 use GetCandy\Models\Collection;
 use GetCandy\Models\CollectionGroup;
 use GetCandy\Models\Language;
@@ -15,7 +15,7 @@ use Livewire\Component;
 
 class CollectionGroupShow extends Component
 {
-    use Notifies;
+    use Notifies, MapsCollectionTree;
 
     /**
      * The current collection group.
@@ -37,6 +37,13 @@ class CollectionGroupShow extends Component
      * @var bool
      */
     public bool $showDeleteConfirm = false;
+
+    /**
+     * Failsafe confirmation in order to delete the collection group.
+     *
+     * @var bool
+     */
+    public bool $deletionConfirm = false;
 
     /**
      * The ID of the collection we want to remove.
@@ -85,6 +92,15 @@ class CollectionGroupShow extends Component
 
     public $slug = null;
 
+    public array $tree = [];
+
+    protected $listeners = [
+        'moveToRoot',
+        'addCollection',
+        'removeCollection',
+        'moveCollection' => 'setMoveState',
+    ];
+
     /**
      * Return the validation rules.
      *
@@ -95,6 +111,7 @@ class CollectionGroupShow extends Component
         $rules = [
             'group.name'      => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
             'collection.name' => 'required|string|max:255',
+            'deletionConfirm' => 'nullable|boolean',
         ];
 
         if ($this->slugIsRequired) {
@@ -102,6 +119,26 @@ class CollectionGroupShow extends Component
         }
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mount()
+    {
+        $this->loadTree();
+    }
+
+    /**
+     * Load the tree.
+     *
+     * @return void
+     */
+    public function loadTree()
+    {
+        $this->tree = $this->mapCollections(
+            $this->group->collections()->withCount('children')->whereIsRoot()->defaultOrder()->get()
+        );
     }
 
     /**
@@ -115,6 +152,16 @@ class CollectionGroupShow extends Component
         $this->group->handle = Str::slug($this->group->name);
         $this->group->save();
         $this->notify(__('adminhub::notifications.collection-groups.updated'));
+    }
+
+    /**
+     * Watcher for when the show delete confirm is updated.
+     *
+     * @return void
+     */
+    public function updatedShowDeleteConfirm()
+    {
+        $this->deletionConfirm = false;
     }
 
     /**
@@ -137,6 +184,17 @@ class CollectionGroupShow extends Component
     {
         $this->newCollectionParent = $parent;
         $this->showCreateForm = true;
+    }
+
+    /**
+     * Set the collection id to remove.
+     *
+     * @param  string  $nodeId
+     * @return void
+     */
+    public function removeCollection($nodeId)
+    {
+        $this->collectionToRemoveId = $nodeId;
     }
 
     /**
@@ -172,7 +230,20 @@ class CollectionGroupShow extends Component
 
         $collection->makeRoot()->save();
 
+        $this->emit('collectionMoved', $id);
+
         $this->notify(__('adminhub::notifications.collections.moved_root'));
+    }
+
+    /**
+     * Set the state to ready collection moving.
+     *
+     * @param  string  $collectionId
+     * @return void
+     */
+    public function setMoveState($collectionId)
+    {
+        $this->collectionMove['source'] = $collectionId;
     }
 
     /**
@@ -196,6 +267,9 @@ class CollectionGroupShow extends Component
                 'target' => $this->targetCollection->translateAttribute('name'),
             ])
         );
+
+        $this->emit('collectionsChanged', $this->sourceCollection->parent_id);
+        $this->emit('collectionsChanged', $this->targetCollection->parent_id);
 
         $this->collectionMove = [
             'source' => null,
@@ -297,14 +371,27 @@ class CollectionGroupShow extends Component
      */
     public function deleteCollection()
     {
-        $this->collectionToRemove->products()->detach();
-        $this->collectionToRemove->customerGroups()->detach();
-        $this->collectionToRemove->channels()->detach();
-        $this->collectionToRemove->forceDelete();
-        $this->collectionToRemoveId = null;
-        $this->notify(
-            __('adminhub::notifications.collections.deleted')
-        );
+        DB::transaction(function () {
+            foreach ($this->collectionToRemove->descendants()->get() as $descendant) {
+                $descendant->products()->detach();
+                $descendant->customerGroups()->detach();
+                $descendant->channels()->detach();
+                $descendant->urls()->delete();
+                $descendant->forceDelete();
+            }
+            $this->collectionToRemove->products()->detach();
+            $this->collectionToRemove->customerGroups()->detach();
+            $this->collectionToRemove->channels()->detach();
+            $this->collectionToRemove->urls()->delete();
+            $this->collectionToRemove->forceDelete();
+            $this->collectionToRemoveId = null;
+
+            $this->emit('collectionsChanged', $this->collectionToRemove->parent_id);
+
+            $this->notify(
+                __('adminhub::notifications.collections.deleted')
+            );
+        });
     }
 
     /**
@@ -341,6 +428,11 @@ class CollectionGroupShow extends Component
         $this->slug = null;
 
         $this->showCreateForm = false;
+
+        $this->loadTree();
+
+        $this->emit('refreshTree', $this->tree);
+
         $this->notify(
             __('adminhub::notifications.collections.added')
         );
@@ -354,33 +446,6 @@ class CollectionGroupShow extends Component
     public function getCollectionTree()
     {
         return $this->group->load('collections')->collections()->defaultOrder()->get()->toTree();
-    }
-
-    /**
-     * Sort the collections.
-     *
-     * @param  array  $payload
-     * @return void
-     */
-    public function sort($payload)
-    {
-        $parent = null;
-
-        $nodes = $payload['items'];
-
-        if ($parentId = ($nodes[0]['parent'] ?? false)) {
-            $parent = Collection::find($parentId);
-        }
-
-        RebuildCollectionTree::dispatch(
-            $nodes,
-            $this->getCollectionTree()->toArray(),
-            $parent
-        );
-
-        $this->notify(
-            __('adminhub::notifications.collections.reordered')
-        );
     }
 
     /**

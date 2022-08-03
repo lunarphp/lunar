@@ -30,7 +30,178 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-[Unreleased]
+## 2.0-beta14
+
+### Removal of Macro functionality from BaseModel - Low Impact
+
+If you have custom models that extend the GetCandy `BaseModel` and are using macros, you will need to implement the new `HasMacros` trait.
+
+```php
+<?php
+
+namespace App\Models;
+
+use GetCandy\Base\Traits\HasMacros;
+use GetCandy\Base\BaseModel;
+
+class CustomModel extends BaseModel
+{
+    use HasMacros;
+
+    // ...
+}
+```
+
+### Removal of Saved Carts - Medium Impact
+
+Saved Carts have now been removed as they aren't a necessity to the function of a storefront.
+If you currently use this feature, you will need to either publish the migrations before updating or add the migration to your own app:
+
+```php
+<?php
+
+use GetCandy\Base\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSavedCartsTable extends Migration
+{
+    public function up()
+    {
+        $table = $this->prefix.'saved_carts';
+
+        if (!Schema::hasTable($table)) {
+            Schema::create($table, function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->foreignId('cart_id')->nullable()->constrained($this->prefix.'carts');
+                $table->string('name');
+                $table->timestamps();
+            });
+        }
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists($this->prefix.'saved_carts');
+    }
+}
+```
+
+Next you should create a `SavedCart` model.
+
+```php
+<?php
+
+namespace App\Models;
+
+use GetCandy\Base\BaseModel;
+use GetCandy\Models\Cart;
+
+class SavedCart extends BaseModel
+{
+    /**
+     * Define which attributes should be
+     * protected from mass assignment.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
+     * Return the cart relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
+}
+```
+
+Finally, you will need to define a dynamic relationship if your service provider.
+
+```php
+
+\GetCandy\Models\Cart::resolveRelationshipUsing('savedCart', function ($cartModel) {
+    return $cartModel->hasOne(SavedCart::class);
+});
+```
+
+### Removal of `override` method for OrderReferenceGenerator - Medium Impact
+
+If you're using the `override` method to generator your own order references, this has been removed in favour of a config based approach. 
+You should update your code to reflect this, see [Orders](/getcandy/orders#order-reference-generating)
+
+## 2.0-beta13.2
+
+### Changes to modifiers - High Impact
+
+If you're using custom modifiers, you will need to update the methods like so:
+
+CartLineModifier
+
+```php
+/**
+ * Called just before cart totals are calculated.
+ *
+ * @return CartLine
+ */
+public function calculating(CartLine $cartLine, Closure $next): CartLine
+{
+    return $next($cartLine);
+}
+
+/**
+ * Called just after cart totals are calculated.
+ *
+ * @return CartLine
+ */
+public function calculated(CartLine $cartLine, Closure $next): CartLine
+{
+    return $next($cartLine);
+}
+```
+
+CartLineModifier
+
+```php
+    /**
+ * Called just before cart totals are calculated.
+ *
+ * @return void
+ */
+public function calculating(Cart $cart, Closure $next): Cart
+{
+    return $next($cart);
+}
+
+/**
+ * Called just after cart totals are calculated.
+ *
+ * @return void
+ */
+public function calculated(Cart $cart, Closure $next): Cart
+{
+    return $next($cart);
+}
+```
+
+OrderModifier
+
+```php
+public function creating(Cart $cart, Closure $next): Cart
+{
+    return $next($cart);
+}
+
+public function created(Order $order, Closure $next): Order
+{
+    return $next($order);
+}
+```
+
+## 2.0-beta13
 
 ### Additional Scout configuration
 

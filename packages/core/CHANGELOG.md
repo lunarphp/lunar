@@ -4,16 +4,37 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-[Unreleased]
+### [Unreleased]
+
+### Added
+
+- Migrations are now publishable under the tag `getcandy-migrations`
 
 ### Changed
+
+- Saved carts have been removed from the core
+- Removed macro functionality from the `BaseModel` into it's own trait.
+- The `last_four` column on transactions is now nullable.
+- The `override` method for Order reference generators has been removed in favour of a config based approach.
+
+## 2.0-beta13 - 2022-05-19
 
 ### Added
 
 - Added support to allow the scout driver to be defined per model.
-- `savedCart` relationship has been added to the `Cart` model.
+- Added `addLines` method to the `CartManager` that allows for multiple items to be added to the cart.
 
 ### Fixed
+
+- If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
+- `savedCart` relationship has been added to the `Cart` model.
+- Incorrect price when currency has zero decimal places.
+- The `last_four` column has been changed to a `VARCHAR` ([#282](https://github.com/getcandy/getcandy/issues/282)).
+- When adding a purchasable to the cart, a potential difference in key order for meta is taken into account. [#271](https://github.com/getcandy/getcandy/pull/271)
+
+### Changed
+
+[View Changes](https://github.com/getcandy/core/compare/2.0-beta12...2.0-beta13)
 
 ## 2.0-beta12 - 2022-04-08
 
