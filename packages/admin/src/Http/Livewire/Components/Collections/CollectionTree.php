@@ -38,6 +38,7 @@ class CollectionTree extends Component
     protected $listeners = [
         'collectionMoved',
         'collectionsChanged',
+        'refreshTree',
     ];
 
     /**
@@ -181,6 +182,18 @@ class CollectionTree extends Component
                 Collection::whereParentId($nodeMatched['parent_id'])->withCount('children')->defaultOrder()->get()
             );
         }
+    }
+
+    /**
+     * Refresh the tree with a new set of nodes.
+     *
+     * @param array $nodes
+     *
+     * @return void
+     */
+    public function refreshTree(array $nodes)
+    {
+        $this->nodes = $nodes;
     }
 
     /**

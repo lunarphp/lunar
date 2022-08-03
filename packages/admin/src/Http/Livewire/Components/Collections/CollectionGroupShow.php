@@ -429,7 +429,9 @@ class CollectionGroupShow extends Component
 
         $this->showCreateForm = false;
 
-        $this->emit('collectionsChanged', $collection->parent_id);
+        $this->loadTree();
+
+        $this->emit('refreshTree', $this->tree);
 
         $this->notify(
             __('adminhub::notifications.collections.added')
