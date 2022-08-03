@@ -1,6 +1,7 @@
 <?php
 
 use GetCandy\DataTypes\Price;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -64,5 +65,18 @@ if (! function_exists('price')) {
     function price($value, $currency, $unitQty = 1)
     {
         return new Price($value, $currency, $unitQty);
+    }
+}
+
+if (! function_exists('impersonate_link')) {
+    function impersonate_link(Authenticatable $authenticatable)
+    {
+        $class = config('getcandy-hub.customers.impersonate');
+
+        if (! $class) {
+            return null;
+        }
+
+        return app($class)->getUrl($authenticatable);
     }
 }
