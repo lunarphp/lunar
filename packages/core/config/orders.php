@@ -1,6 +1,18 @@
 <?php
 
+use GetCandy\Base\OrderReferenceGenerator;
+
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Order Reference Generator
+    |--------------------------------------------------------------------------
+    |
+    | Here you can specify how you want your order references to be generated
+    | when you create an order from a cart.
+    |
+    */
+    'reference_generator' => OrderReferenceGenerator::class,
     /*
     |--------------------------------------------------------------------------
     | Draft Status
