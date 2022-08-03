@@ -24,7 +24,7 @@
                             {{ $item->name }}
                         </span>
 
-                        <span class="transition invisible opacity-0 group-hover:opacity-100 group-hover:visible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                        <span class="invisible group-hover:visible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
                             {{ $item->name }}
                         </span>
                     </a>
@@ -51,7 +51,7 @@
                     {{ __('adminhub::global.settings') }}
                 </span>
 
-                <span class="transition invisible opacity-0 group-hover:opacity-100 group-hover:visible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                <span class="invisible group-hover:visible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>
