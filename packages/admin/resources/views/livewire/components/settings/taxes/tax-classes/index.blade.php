@@ -34,7 +34,7 @@
 
 
               <x-hub::input.group label="Default" for="default">
-                <x-hub::input.toggle :on="$taxClass->default" wire:click="toggleDefault"/>
+                <x-hub::input.toggle :on="$taxClass->default" wire:click="toggleDefault" :disabled="$this->shouldDisableDefault"/>
               </x-hub::input.group>
             </div>
           @endif

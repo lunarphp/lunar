@@ -88,6 +88,24 @@ class TaxClassesIndex extends Component
     }
 
     /**
+     * Whether we should disable the default toggle.
+     *
+     * @return bool
+     */
+    public function getShouldDisableDefaultProperty()
+    {
+        if (! $this->taxClass || ! $this->taxClass->id) {
+            return false;
+        }
+
+
+        $existingDefault = TaxClass::whereDefault(true)
+            ->first();
+
+        return $this->taxClass->default && $existingDefault?->id == $this->taxClass->id;
+    }
+
+    /**
      * Save the TaxClass.
      *
      * @return void
