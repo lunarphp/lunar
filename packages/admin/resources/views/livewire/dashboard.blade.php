@@ -136,7 +136,7 @@
         <div class="col-span-2 h-96 rounded-lg bg-white p-8 lg:col-span-3">
             <h3 class="text-lg font-semibold text-gray-900">
                 {{ __('adminhub::catalogue.orders.dashboard.recent_orders') }}</h3>
-            <div class="overflow-x-scroll">
+            <div class="overflow-x-scroll lg:overflow-auto">
                 <table class="font-sm mt-8 w-full min-w-[40rem] table-auto">
                     <thead>
                     <tr class="border-b">
