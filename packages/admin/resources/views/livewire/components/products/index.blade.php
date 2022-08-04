@@ -11,7 +11,9 @@
         </div>
     </div>
 
-    <x-hub::table>
+    {{ $this->table }}
+
+    {{-- <x-hub::table>
         <x-slot name="toolbar">
             <div class="p-4 space-y-4 border-b"
                  x-data="{ filtersVisible: false }">
@@ -218,9 +220,9 @@
                 </x-hub::table.no-results>
             @endforelse
         </x-slot>
-    </x-hub::table>
+    </x-hub::table> --}}
 
-    <div>
+    {{-- <div>
         {{ $products->links() }}
-    </div>
+    </div> --}}
 </div>

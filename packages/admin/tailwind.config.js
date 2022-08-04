@@ -1,8 +1,15 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors')
 
 module.exports = {
     darkMode: 'class',
-    content: ['./resources/assets/**/*.js', './resources/views/**/*.blade.php', './resources/views/**/**/*.blade.php'],
+    content: [
+      './resources/assets/**/*.js',
+      './resources/views/**/*.blade.php',
+      './resources/views/**/**/*.blade.php',
+      './vendor/filament/**/*.blade.php'
+    ],
+
     safelist: [
         {
             pattern: /justify-(start|between|end)/,
@@ -28,6 +35,12 @@ module.exports = {
             },
             zIndex: {
                 75: 75,
+            },
+            colors: {
+                danger: colors.rose,
+                primary: colors.blue,
+                success: colors.green,
+                warning: colors.yellow,
             },
         },
     },
