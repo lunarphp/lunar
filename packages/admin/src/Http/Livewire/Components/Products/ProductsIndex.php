@@ -2,19 +2,17 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
-use GetCandy\Models\Product;
-use Livewire\Component;
-use Livewire\WithPagination;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Illuminate\Contracts\Database\Query\Builder;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ViewColumn;
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
 use GetCandy\Hub\Tables\Columns\AttributeColumn;
 use GetCandy\Hub\Tables\Columns\StatusColumn;
 use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
+use GetCandy\Models\Product;
+use Illuminate\Contracts\Database\Query\Builder;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class ProductsIndex extends Component implements HasTable
 {

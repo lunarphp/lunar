@@ -1,13 +1,13 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
-const colors = require('tailwindcss/colors')
+const colors = require('tailwindcss/colors');
 
 module.exports = {
     darkMode: 'class',
     content: [
-      './resources/assets/**/*.js',
-      './resources/views/**/*.blade.php',
-      './resources/views/**/**/*.blade.php',
-      './vendor/filament/**/*.blade.php'
+        './resources/assets/**/*.js',
+        './resources/views/**/*.blade.php',
+        './resources/views/**/**/*.blade.php',
+        './vendor/filament/**/*.blade.php',
     ],
 
     safelist: [
