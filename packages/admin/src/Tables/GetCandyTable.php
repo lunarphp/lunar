@@ -3,21 +3,21 @@
 namespace GetCandy\Hub\Tables;
 
 use Filament\Tables\Columns\BadgeColumn;
-use Livewire\Component;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use GetCandy\Hub\Tables\Columns\AttributeColumn;
 use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
 use Illuminate\Contracts\Database\Query\Builder;
-use Filament\Tables\Filters\TernaryFilter;
+use Livewire\Component;
 
 abstract class GetCandyTable extends Component implements HasTable
 {
     use InteractsWithTable;
 
     /**
-     * The extra columns to add to the table
+     * The extra columns to add to the table.
      *
      * @var array
      */
@@ -45,30 +45,29 @@ abstract class GetCandyTable extends Component implements HasTable
     public static $extraBulkActions = [];
 
     /**
-     * The table columns to use instead of the default
+     * The table columns to use instead of the default.
      *
      * @var array
      */
     public static $columnsOverride = null;
 
     /**
-     * {@inerhitDoc}
+     * {@inerhitDoc}.
      */
     protected $queryString = [
         'tableFilters',
-        'tableSearchQuery' => ['except' => '', 'as' => 'query']
+        'tableSearchQuery' => ['except' => '', 'as' => 'query'],
     ];
 
     /**
-     * Add a column to the table
+     * Add a column to the table.
      *
-     * @param Column|array $column
-     *
+     * @param  Column|array  $column
      * @return void
      */
     final public static function addColumn($column, $position = null)
     {
-        if (!is_array($column)) {
+        if (! is_array($column)) {
             $column = [$column];
         }
 
@@ -79,15 +78,14 @@ abstract class GetCandyTable extends Component implements HasTable
     }
 
     /**
-     * Add a filter to the table
+     * Add a filter to the table.
      *
-     * @param Filter|array $filter
-     *
+     * @param  Filter|array  $filter
      * @return void
      */
     final public static function addFilter($filter)
     {
-        if (!is_array($filter)) {
+        if (! is_array($filter)) {
             $filter = [$filter];
         }
 
@@ -95,15 +93,14 @@ abstract class GetCandyTable extends Component implements HasTable
     }
 
     /**
-     * Add a filter to the table
+     * Add a filter to the table.
      *
-     * @param Filter|array $filter
-     *
+     * @param  Filter|array  $filter
      * @return void
      */
     final public static function addAction($action)
     {
-        if (!is_array($action)) {
+        if (! is_array($action)) {
             $action = [$action];
         }
 
@@ -111,15 +108,14 @@ abstract class GetCandyTable extends Component implements HasTable
     }
 
     /**
-     * Add a filter to the table
+     * Add a filter to the table.
      *
-     * @param Filter|array $filter
-     *
+     * @param  Filter|array  $filter
      * @return void
      */
     final public static function addBulkAction($bulkAction)
     {
-        if (!is_array($bulkAction)) {
+        if (! is_array($bulkAction)) {
             $bulkAction = [$bulkAction];
         }
 
@@ -129,8 +125,7 @@ abstract class GetCandyTable extends Component implements HasTable
     /**
      * Explicitly set the columns available.
      *
-     * @param array $columns
-     *
+     * @param  array  $columns
      * @return void
      */
     final public static function setColumns(array $columns)
@@ -139,7 +134,7 @@ abstract class GetCandyTable extends Component implements HasTable
     }
 
     /**
-     * {@inhertDoc}
+     * {@inhertDoc}.
      */
     protected function getTableFilters(): array
     {
@@ -185,16 +180,16 @@ abstract class GetCandyTable extends Component implements HasTable
         $extraColumns = static::$extraColumns;
 
         foreach ($extraColumns as $column) {
-            if (!$position = $column['position']) {
+            if (! $position = $column['position']) {
                 $columns = $columns->merge($column['column']);
                 continue;
             }
 
             $index = $columns->search(function ($column) use ($position) {
-               return $column->getName() == $position;
+                return $column->getName() == $position;
             });
 
-            if ($index === FALSE) {
+            if ($index === false) {
                 continue;
             }
 
@@ -205,10 +200,9 @@ abstract class GetCandyTable extends Component implements HasTable
     }
 
     /**
-     * Return a column for status
+     * Return a column for status.
      *
-     * @param string $column
-     *
+     * @param  string  $column
      * @return BadgeColumn
      */
     public function statusColumn($column = 'status')
@@ -226,8 +220,7 @@ abstract class GetCandyTable extends Component implements HasTable
     /**
      * Return a status filter for the table.
      *
-     * @param string $column
-     *
+     * @param  string  $column
      * @return SelectFilter
      */
     public function statusFilter($column = 'status')
@@ -259,10 +252,9 @@ abstract class GetCandyTable extends Component implements HasTable
     }
 
     /**
-     * Return a column for thumbnail
+     * Return a column for thumbnail.
      *
-     * @param string $column
-     *
+     * @param  string  $column
      * @return ThumbnailColumn
      */
     public function thumbnailColumn($column = 'thumbnail')
@@ -271,10 +263,9 @@ abstract class GetCandyTable extends Component implements HasTable
     }
 
     /**
-     * Return a column for an attribute
+     * Return a column for an attribute.
      *
-     * @param string $attribute
-     *
+     * @param  string  $attribute
      * @return AttributeColumn
      */
     public function attributeColumn($attribute)

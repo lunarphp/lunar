@@ -2,16 +2,16 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Models\Product;
-use Illuminate\Contracts\Database\Query\Builder;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\RestoreAction;
-use Filament\Tables\Actions\EditAction;
-use GetCandy\Hub\Tables\Columns\SkuColumn;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\SelectFilter;
+use GetCandy\Hub\Tables\Columns\SkuColumn;
 use GetCandy\Hub\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
+use GetCandy\Models\Product;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Collection;
 
 class ProductsIndex extends GetCandyTable
@@ -55,7 +55,7 @@ class ProductsIndex extends GetCandyTable
             $this->attributeColumn('name')->url(fn (Product $record): string => route('hub.products.show', ['product' => $record])),
             TextColumn::make('brand'),
             TextColumn::make('productType.name'),
-            SkuColumn::make('sku')->label('SKU')
+            SkuColumn::make('sku')->label('SKU'),
         ];
     }
 
@@ -68,7 +68,7 @@ class ProductsIndex extends GetCandyTable
             ActionGroup::make([
                 RestoreAction::make(),
                 EditAction::make()->url(fn (Product $record): string => route('hub.products.show', ['product' => $record])),
-            ])
+            ]),
         ];
     }
 
@@ -79,7 +79,7 @@ class ProductsIndex extends GetCandyTable
     {
         return [
             BulkAction::make('delete')
-            ->action(fn (Collection $records) => $records->each->delete())
+            ->action(fn (Collection $records) => $records->each->delete()),
         ];
     }
 
@@ -91,7 +91,7 @@ class ProductsIndex extends GetCandyTable
         return [
             SelectFilter::make('brand')->options(
                 Product::distinct()->pluck('brand')->mapWithKeys(function ($brand) {
-                   return [$brand => $brand];
+                    return [$brand => $brand];
                 }),
             ),
             $this->statusFilter(),
