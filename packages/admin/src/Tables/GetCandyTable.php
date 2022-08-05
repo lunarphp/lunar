@@ -215,8 +215,8 @@ abstract class GetCandyTable extends Component implements HasTable
     {
         return BadgeColumn::make($column)
         ->enum([
-            'unpublished' => 'Unpublished',
-            'published' => 'Published',
+            'unpublished' => __('adminhub::tables.unpublished'),
+            'published' => __('adminhub::tables.published'),
         ])->colors([
             'danger' => 'unpublished',
             'success' => 'published',
@@ -234,17 +234,23 @@ abstract class GetCandyTable extends Component implements HasTable
     {
         return SelectFilter::make($column)
             ->options([
-                'published' => 'Published',
-                'unpublished' => 'Unpublished',
+                'published' => __('adminhub::tables.published'),
+                'unpublished' => __('adminhub::tables.unpublished'),
             ]);
     }
 
     public function trashedFilter()
     {
         return TernaryFilter::make('trashed')
-        ->placeholder('Without trashed records')
-        ->trueLabel('With trashed records')
-        ->falseLabel('Only trashed records')
+        ->placeholder(
+            __('adminhub::tables.without_trashed')
+        )
+        ->trueLabel(
+            __('adminhub::tables.with_trashed')
+        )
+        ->falseLabel(
+            __('adminhub::tables.only_trashed')
+        )
         ->queries(
             true: fn (Builder $query) => $query->withTrashed(),
             false: fn (Builder $query) => $query->onlyTrashed(),
