@@ -2,10 +2,12 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithSavedSearches;
 use GetCandy\Hub\Tables\Columns\OrderStatusColumn;
@@ -13,9 +15,7 @@ use GetCandy\Hub\Tables\Columns\PriceColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\Order;
 use Illuminate\Contracts\Database\Query\Builder;
-use Filament\Tables\Actions\BulkAction;
 use Illuminate\Support\Collection;
-use Filament\Forms\Components\Select;
 
 class OrdersIndex extends GetCandyTable
 {
@@ -94,7 +94,7 @@ class OrdersIndex extends GetCandyTable
                     ->label('Status')
                     ->options($statuses->toArray())
                     ->required(),
-            ])->deselectRecordsAfterCompletion()
+            ])->deselectRecordsAfterCompletion(),
         ];
     }
 
@@ -109,14 +109,14 @@ class OrdersIndex extends GetCandyTable
             SelectFilter::make('status')->options(
                 Order::distinct()->pluck('status')->mapWithKeys(function ($status) use ($statuses) {
                     return [
-                       $status => $statuses[$status]['label'] ?? $status,
+                        $status => $statuses[$status]['label'] ?? $status,
                     ];
                 }),
             ),
             Filter::make('created_at')
             ->form([
                 DatePicker::make('created_from')
-                    ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ->placeholder(fn ($state): string => 'Dec 18, '.now()->subYear()->format('Y')),
                 DatePicker::make('created_until')
                     ->placeholder(fn ($state): string => now()->format('M d, Y')),
             ])
@@ -130,7 +130,7 @@ class OrdersIndex extends GetCandyTable
                         $data['created_until'],
                         fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                     );
-            })
+            }),
         ];
     }
 
