@@ -6,9 +6,11 @@ use Filament\Tables\Columns\BadgeColumn;
 use Livewire\Component;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Filters\SelectFilter;
 use GetCandy\Hub\Tables\Columns\AttributeColumn;
 use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
 use Illuminate\Contracts\Database\Query\Builder;
+use Filament\Tables\Filters\TernaryFilter;
 
 abstract class GetCandyTable extends Component implements HasTable
 {
@@ -219,6 +221,35 @@ abstract class GetCandyTable extends Component implements HasTable
             'danger' => 'unpublished',
             'success' => 'published',
         ]);
+    }
+
+    /**
+     * Return a status filter for the table.
+     *
+     * @param string $column
+     *
+     * @return SelectFilter
+     */
+    public function statusFilter($column = 'status')
+    {
+        return SelectFilter::make($column)
+            ->options([
+                'published' => 'Published',
+                'unpublished' => 'Unpublished',
+            ]);
+    }
+
+    public function trashedFilter()
+    {
+        return TernaryFilter::make('trashed')
+        ->placeholder('Without trashed records')
+        ->trueLabel('With trashed records')
+        ->falseLabel('Only trashed records')
+        ->queries(
+            true: fn (Builder $query) => $query->withTrashed(),
+            false: fn (Builder $query) => $query->onlyTrashed(),
+            blank: fn (Builder $query) => $query->withoutTrashed(),
+        );
     }
 
     /**

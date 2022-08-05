@@ -2,8 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Hub\Tables\Columns\AttributeColumn;
-use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
 use GetCandy\Models\Product;
 use Illuminate\Contracts\Database\Query\Builder;
 use Filament\Tables\Actions\ActionGroup;
@@ -12,7 +10,6 @@ use Filament\Tables\Actions\EditAction;
 use GetCandy\Hub\Tables\Columns\SkuColumn;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use GetCandy\Hub\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
 use Illuminate\Support\Collection;
@@ -97,20 +94,8 @@ class ProductsIndex extends GetCandyTable
                    return [$brand => $brand];
                 }),
             ),
-            SelectFilter::make('status')
-            ->options([
-                'published' => 'Published',
-                'unpublished' => 'Unpublished',
-            ]),
-            TernaryFilter::make('trashed')
-            ->placeholder('Without trashed records')
-            ->trueLabel('With trashed records')
-            ->falseLabel('Only trashed records')
-            ->queries(
-                true: fn (Builder $query) => $query->withTrashed(),
-                false: fn (Builder $query) => $query->onlyTrashed(),
-                blank: fn (Builder $query) => $query->withoutTrashed(),
-            )
+            $this->statusFilter(),
+            $this->trashedFilter(),
         ];
     }
 
