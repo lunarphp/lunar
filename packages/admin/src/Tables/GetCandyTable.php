@@ -2,9 +2,12 @@
 
 namespace GetCandy\Hub\Tables;
 
+use Filament\Tables\Columns\BadgeColumn;
 use Livewire\Component;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
+use GetCandy\Hub\Tables\Columns\AttributeColumn;
+use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
 use Illuminate\Contracts\Database\Query\Builder;
 
 abstract class GetCandyTable extends Component implements HasTable
@@ -197,6 +200,49 @@ abstract class GetCandyTable extends Component implements HasTable
         }
 
         return $columns->values()->toArray();
+    }
+
+    /**
+     * Return a column for status
+     *
+     * @param string $column
+     *
+     * @return BadgeColumn
+     */
+    public function statusColumn($column = 'status')
+    {
+        return BadgeColumn::make($column)
+        ->enum([
+            'unpublished' => 'Unpublished',
+            'published' => 'Published',
+        ])->colors([
+            'danger' => 'unpublished',
+            'success' => 'published',
+        ]);
+    }
+
+    /**
+     * Return a column for thumbnail
+     *
+     * @param string $column
+     *
+     * @return ThumbnailColumn
+     */
+    public function thumbnailColumn($column = 'thumbnail')
+    {
+        return ThumbnailColumn::make($column)->label('Thumbnail');
+    }
+
+    /**
+     * Return a column for an attribute
+     *
+     * @param string $attribute
+     *
+     * @return AttributeColumn
+     */
+    public function attributeColumn($attribute)
+    {
+        return AttributeColumn::make($attribute);
     }
 
     /**
