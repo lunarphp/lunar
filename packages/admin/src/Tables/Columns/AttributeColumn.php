@@ -2,8 +2,6 @@
 
 namespace GetCandy\Hub\Tables\Columns;
 
-use Filament\Tables\Columns\TextColumn;
-
 class AttributeColumn extends TextColumn
 {
     /**
