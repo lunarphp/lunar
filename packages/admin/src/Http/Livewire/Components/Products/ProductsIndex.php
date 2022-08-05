@@ -2,32 +2,42 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Products;
 
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
 use GetCandy\Hub\Tables\Columns\AttributeColumn;
-use GetCandy\Hub\Tables\Columns\StatusColumn;
 use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
 use GetCandy\Models\Product;
 use Illuminate\Contracts\Database\Query\Builder;
-use Livewire\Component;
-use Livewire\WithPagination;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\RestoreAction;
+use Filament\Tables\Actions\EditAction;
+use GetCandy\Hub\Tables\Columns\SkuColumn;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
+use GetCandy\Hub\Tables\Columns\TextColumn;
+use GetCandy\Hub\Tables\GetCandyTable;
+use Illuminate\Support\Collection;
 
-class ProductsIndex extends Component implements HasTable
+class ProductsIndex extends GetCandyTable
 {
-    use InteractsWithTable;
-
+    /**
+     * {@inheritDoc}
+     */
     public function isTableSearchable(): bool
     {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function getTableQuery(): Builder
     {
         return Product::query();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function applySearchToTableQuery(Builder $query): Builder
     {
         if (filled($searchQuery = $this->getTableSearchQuery())) {
@@ -37,103 +47,72 @@ class ProductsIndex extends Component implements HasTable
         return $query;
     }
 
-    public function getTableColumns(): array
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBaseTableColumns(): array
     {
         return [
-            StatusColumn::make('status'),
-            ThumbnailColumn::make('thumbnail')->label(''),
-            AttributeColumn::make('name'),
+            $this->statusColumn(),
+            $this->thumbnailColumn(),
+            $this->attributeColumn('name')->url(fn (Product $record): string => route('hub.products.show', ['product' => $record])),
+            TextColumn::make('brand'),
+            TextColumn::make('productType.name'),
+            SkuColumn::make('sku')->label('SKU')
         ];
     }
 
-//     use WithPagination;
-//     use SearchesProducts;
-//     use Notifies;
-//
-//     public $selectPage = false;
-//     public $selectAll = false;
-//     public $selected = [];
-//
-//     /**
-//      * The search term.
-//      *
-//      * @var string
-//      */
-//     public $search = '';
-//
-//     /**
-//      * The search filters.
-//      *
-//      * @var array
-//      */
-//     public $filters = [
-//         'status' => null,
-//         'soft_deleted' => false,
-//     ];
-//
-//     /**
-//      * Define what to track in the query string.
-//      *
-//      * @var array
-//      */
-//     protected $queryString = ['search', 'filters'];
-//
-//     public function updatedSelectPage($value)
-//     {
-//         $this->selected = $value
-//             ? $this->products->pluck('id')->map(fn ($id) => (string) $id)
-//             : [];
-//     }
-//
-//     public function selectAll()
-//     {
-//         $this->selectAll = true;
-//     }
-//
-//     public function getProductsProperty()
-//     {
-//         $query = Product::search($this->search);
-//
-//         if ($this->filters['soft_deleted']) {
-//             $query->onlyTrashed();
-//         }
-//
-//         if ($status = $this->filters['status'] ?? null) {
-//             $query->where('status', $status);
-//         }
-//
-//         return tap($query->paginate(50), function ($products) {
-//             return $products->load(['thumbnail', 'productType', 'variants']);
-//         });
-//     }
-//
-//     /**
-//      * Get the listing thumbnail for a product.
-//      *
-//      * @param  Product  $product
-//      * @return void
-//      */
-//     public function getThumbnail($product)
-//     {
-//         if ($product->thumbnail) {
-//             return $product->thumbnail;
-//         }
-//
-//         $variant = $product->variants->first(function ($variant) {
-//             return $variant->thumbnail;
-//         });
-//
-//         return $variant?->thumbnail;
-//     }
-//
-//     public function restoreProduct($productId)
-//     {
-//         Product::onlyTrashed()->find($productId)->restore();
-//
-//         $this->notify(
-//             __('adminhub::notifications.products.product_restored')
-//         );
-//     }
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBaseTableActions(): array
+    {
+        return [
+            ActionGroup::make([
+                RestoreAction::make(),
+                EditAction::make()->url(fn (Product $record): string => route('hub.products.show', ['product' => $record])),
+            ])
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBaseTableBulkActions(): array
+    {
+        return [
+            BulkAction::make('delete')
+            ->action(fn (Collection $records) => $records->each->delete())
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBaseTableFilters(): array
+    {
+        return [
+            SelectFilter::make('brand')->options(
+                Product::distinct()->pluck('brand')->mapWithKeys(function ($brand) {
+                   return [$brand => $brand];
+                }),
+            ),
+            SelectFilter::make('status')
+            ->options([
+                'published' => 'Published',
+                'unpublished' => 'Unpublished',
+            ]),
+            TernaryFilter::make('trashed')
+            ->placeholder('Without trashed records')
+            ->trueLabel('With trashed records')
+            ->falseLabel('Only trashed records')
+            ->queries(
+                true: fn (Builder $query) => $query->withTrashed(),
+                false: fn (Builder $query) => $query->onlyTrashed(),
+                blank: fn (Builder $query) => $query->withoutTrashed(),
+            )
+        ];
+    }
 
     /**
      * Render the livewire component.
