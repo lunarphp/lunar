@@ -5,7 +5,7 @@
         </strong>
 
         <div class="mt-4 space-x-2 md:mt-0">
-            <x-hub::button theme="gray"
+            {{-- <x-hub::button theme="gray"
                            size="sm"
                            wire:click="export">
 
@@ -29,11 +29,11 @@
                         {{ __('adminhub::orders.index.update_status.btn') }}
                     </div>
                 </x-hub::button>
-            @endif
+            @endif --}}
         </div>
     </div>
 
-    <x-hub::modal.dialog form="updateStatus"
+    {{-- <x-hub::modal.dialog form="updateStatus"
                          wire:model="showUpdateStatus">
         <x-slot name="title">
             {{ __('adminhub::orders.index.update_status.title') }}
@@ -69,7 +69,7 @@
             </x-hub::button>
         </x-slot>
     </x-hub::modal.dialog>
-
+ --}}
     <x-hub::modal.dialog form="deleteSavedSearch"
                          wire:model="savedSearchToDelete">
         <x-slot name="title">
@@ -168,7 +168,16 @@
             </div>
         @endif
 
-        <x-hub::table>
+        @if ($this->hasCustomFilters && !$this->activeSavedSearch)
+          <x-hub::button wire:click.prevent="$set('showSaveSearch', true)" class="inline-flex items-center">
+            <x-hub::icon ref="bookmark" style="solid" class="w-4 mr-1" />
+            {{ __('adminhub::global.save') }}
+          </x-hub::button>
+        @endif
+
+        {{ $this->table }}
+
+        {{-- <x-hub::table>
             <x-slot name="toolbar">
                 <div class="p-4 space-y-4 border-b"
                      x-data="{ filtersVisible: false }">
@@ -379,6 +388,6 @@
 
         <div>
             {{ $this->orders->items->links() }}
-        </div>
+        </div> --}}
     </div>
 </div>
