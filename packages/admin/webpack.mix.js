@@ -12,4 +12,6 @@ mix.postCss("resources/assets/hub.css", "public/app.css", [
   require("tailwindcss"),
 ]);
 
-mix.js("resources/assets/hub.js", "public/app.js");
+mix.js("resources/assets/body.js", "public/body.js");
+
+mix.js("resources/assets/head.js", "public/head.js");

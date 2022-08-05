@@ -16,6 +16,11 @@
     "production": "mix --production"
   },
   "dependencies": {
+    "@alpinejs/focus": "^3.10.3",
+    "@alpinejs/persist": "^3.10.3",
+    "@tailwindcss/typography": "^0.5.4",
+    "alpine": "^0.2.1",
+    "alpinejs": "^3.10.3",
     "apexcharts": "^3.35.4",
     "filepond": "^4.30.4",
     "filepond-plugin-file-validate-size": "^2.2.7",
