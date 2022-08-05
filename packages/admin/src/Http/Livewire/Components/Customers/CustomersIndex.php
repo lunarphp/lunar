@@ -2,62 +2,80 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 
+use Filament\Tables\Columns\TextColumn;
+use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\Attribute;
 use GetCandy\Models\Customer;
+use Illuminate\Contracts\Database\Query\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class CustomersIndex extends Component
+class CustomersIndex extends GetCandyTable
 {
-    use WithPagination;
-
     /**
-     * The search term.
-     *
-     * @var string
+     * {@inheritDoc}
      */
-    public $search = '';
-
-    /**
-     * Define what to track in the query string.
-     *
-     * @var array
-     */
-    protected $queryString = ['search'];
-
-    public function updatedSearch()
+    public function isTableSearchable(): bool
     {
-        $this->setPage(1);
+        return true;
     }
 
     /**
-     * Computed method to return customers.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * {@inheritDoc}
      */
-    public function getCustomersProperty()
+    protected function getTableQuery(): Builder
     {
-        return Customer::search($this->search)->paginate(50);
+        return Customer::query();
     }
 
     /**
-     * Return the available attributes for customers.
-     *
-     * @return Collection
+     * {@inheritDoc}
      */
-    public function getAttributesProperty()
+    protected function applySearchToTableQuery(Builder $query): Builder
     {
-        return Attribute::whereAttributeType(Customer::class)->get();
+        if (filled($searchQuery = $this->getTableSearchQuery())) {
+            $query->whereIn('id', Customer::search($searchQuery)->keys());
+        }
+
+        return $query;
     }
 
     /**
-     * Computed method to return meta fields.
-     *
-     * @return \Illuminate\Support\Collection
+     * {@inheritDoc}
      */
-    public function getMetaFieldsProperty()
+    protected function getBaseTableColumns(): array
     {
-        return collect(config('getcandy-hub.customers.searchable_meta'));
+        return [
+            TextColumn::make('fullName')->url(fn (Customer $record): string => route('hub.customers.show', ['customer' => $record])),
+            TextColumn::make('company_name'),
+            TextColumn::make('vat_no'),
+            TextColumn::make('orders_count')->counts('orders'),
+            TextColumn::make('users_count')->counts('users')
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBaseTableActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBaseTableBulkActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBaseTableFilters(): array
+    {
+        return [];
     }
 
     /**
