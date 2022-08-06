@@ -33,10 +33,9 @@ trait CanRegisterLivewireComponentDirectories
                     ->replace(['/', '.php'], ['\\', '']);
             })
             ->filter(function (string $class): bool {
-                return is_subclass_of($class, Component::class) && ( ! (new ReflectionClass($class))->isAbstract());
+                return is_subclass_of($class, Component::class) && (! (new ReflectionClass($class))->isAbstract());
             })
             ->each(callback: function (string $class) use ($namespace, $aliasPrefix): void {
-
                 $classNamespace = (new ReflectionClass($class))->getNamespaceName();
                 $namespace = (string) Str::of($classNamespace)->replace($namespace, '')->after('\\');
                 $namespace = collect(explode('.', str_replace(['/', '\\'], '.', $namespace)))
@@ -58,7 +57,7 @@ trait CanRegisterLivewireComponentDirectories
     protected function findAliasFromComponent(string $aliasPrefix, string $namespace, string $class): string
     {
         $alias = Str::of($class)
-            ->after($namespace . '\\')
+            ->after($namespace.'\\')
             ->replace(['/', '\\'], '.')
             ->prepend($aliasPrefix)
             ->replace($aliasPrefix, '')

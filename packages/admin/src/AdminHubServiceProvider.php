@@ -196,7 +196,6 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerLivewireComponents()
     {
-
         $this->registerLivewireComponentDirectory(
             directory: __DIR__.'/Http/Livewire/Components',
             namespace: 'GetCandy\\Hub\\Http\\Livewire\\Components', aliasPrefix: 'hub.components',
@@ -214,7 +213,6 @@ class AdminHubServiceProvider extends ServiceProvider
         // Blade Components
         Blade::componentNamespace('GetCandy\\Hub\\Views\\Components', 'hub');
     }
-
 
     /**
      * Register global components.
@@ -397,7 +395,7 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         Gate::after(function ($user, $ability) {
             // Are we trying to authorize something within the hub?
-            $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn($permission
+            $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission
             ) => $permission->handle === $ability);
             if ($permission) {
                 return $user->admin || $user->authorize($ability);
@@ -405,10 +403,8 @@ class AdminHubServiceProvider extends ServiceProvider
         });
     }
 
-
-
     /**
-     * This list is dynamically updated when new components are added in order to work with IDE completion
+     * This list is dynamically updated when new components are added in order to work with IDE completion.
      *
      * @note Please do not manually register components here
      *
