@@ -8,6 +8,8 @@ use Livewire\WithPagination;
 
 class TaxZonesIndex extends Component
 {
+    protected static $overrideComponentAlias = 'tax-zones.index';
+
     use WithPagination;
 
     /**

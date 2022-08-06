@@ -17,6 +17,8 @@ class CollectionGroupShow extends Component
 {
     use Notifies, MapsCollectionTree;
 
+    protected static $overrideComponentAlias = 'collection-groups.show';
+
     /**
      * The current collection group.
      *

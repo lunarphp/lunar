@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 class TaxZoneShow extends AbstractTaxZone
 {
+    protected static $overrideComponentAlias = 'tax-zones.show';
+
     /**
      * The ID of the tax zone we want to remove.
      *
