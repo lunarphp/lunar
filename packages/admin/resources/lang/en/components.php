@@ -139,6 +139,7 @@ return [
     'orders.show.partially_refunded' => 'This order has been partially refunded.',
     'orders.show.refunded' => 'This order has been refunded.',
     'orders.show.view_customer' => 'View customer',
+    'orders.show.download_pdf' => 'Download PDF',
     /**
      * Order Refund.
      */
@@ -170,6 +171,26 @@ return [
     'orders.capture.no_intents'                      => 'There are no transactions available for capture',
     'orders.capture.select_transaction'              => 'Select a transaction',
     'orders.capture.capture_btn'                      => 'Capture payment',
+    /**
+     * Order Status.
+     */
+    'orders.status.update_btn' => 'Update Status',
+    'orders.status.select_new' => 'Select a new status',
+    'orders.status.preview.title' => 'Preview template',
+    'orders.status.preview.alert' => 'This is a preview of how your email will look.',
+    'orders.status.no_status_selected_alert' => 'Select an order status to see available mailers.',
+    'orders.status.additional-content.label' => 'Additional content',
+    'orders.status.additional-content.instructions' => 'If supported, add an additional message to the notification or mailer.',
+    'orders.status.mailers.label' => 'Mailers',
+    'orders.status.mailers.instructions' => 'Select which mailers you would like to send.',
+    'orders.status.mailers.empty' => 'There are no mailers available for this status.',
+    'orders.status.notifications.label' => 'Notifications',
+    'orders.status.notifications.instructions' => 'Select which notifications you would like to send.',
+    'orders.status.notifications.empty' => 'There are no notifications available for this status.',
+    'orders.status.email_addresses.label' => 'Email Addresses',
+    'orders.status.email_addresses.instructions' => 'Select which email addresses you want to use',
+    'orders.status.additional_email.label' => 'Additional email address',
+    'orders.status.additional_email.instructions' => 'If you need to use a custom email address, enter it here.',
     /**
      * Activity Log.
      */

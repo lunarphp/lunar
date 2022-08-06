@@ -20,16 +20,25 @@
 
   <div class="grid grid-cols-3 gap-4 pt-4 mt-4 border-t">
     <div class="col-span-2">
-      <article>
-        <strong>{{ __('adminhub::global.notes') }}:</strong>
+      <article class="space-y-2">
+        @if($deliveryInstructions = $this->shippingAddress?->delivery_instructions)
+          <div>
+            <strong>{{ __('adminhub::global.delivery_instructions') }}:</strong>
 
-        <p class="text-sm mt-1 {{ !$order->notes ? 'text-gray-500' : '' }}">
-          @if ($order->notes)
-            {{ $order->notes }}
-          @else
-            {{ __('adminhub::partials.orders.totals.notes_empty') }}
-          @endif
-        </p>
+            <p class="text-sm mt-1">{{ $deliveryInstructions }}</p>
+          </div>
+        @endif
+        <div>
+          <strong>{{ __('adminhub::global.notes') }}:</strong>
+
+          <p class="text-sm mt-1 {{ !$order->notes ? 'text-gray-500' : '' }}">
+            @if ($order->notes)
+              {{ $order->notes }}
+            @else
+              {{ __('adminhub::partials.orders.totals.notes_empty') }}
+            @endif
+          </p>
+        </div>
       </article>
     </div>
 

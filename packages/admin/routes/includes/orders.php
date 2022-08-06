@@ -1,7 +1,10 @@
 <?php
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use GetCandy\Hub\Http\Livewire\Pages\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Pages\Orders\OrdersIndex;
+use GetCandy\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -16,5 +19,11 @@ Route::group([
         'prefix' => '{order}',
     ], function () {
         Route::get('/', OrderShow::class)->name('hub.orders.show');
+
+        Route::get('/pdf', function (Order $order, Request $request) {
+            return Pdf::loadView('adminhub::pdf.order', [
+                'order' => $order,
+            ])->stream("Order-{$order->reference}.pdf");
+        })->name('hub.orders.pdf');
     });
 });

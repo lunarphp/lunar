@@ -97,6 +97,57 @@ $cart->getManager()->canCreateOrder();
 
 This essentially does the same as above, except we already catch the exceptions for you and just return false if any are caught.
 
+## Order Reference Generating
+
+By default GetCandy will generate a new order reference for you when you create an order from a cart. The format for this is:
+
+```
+{year}-{month}-{0..0}{orderId}
+```
+
+`{0..0}` indicates the order id will be padded with up to four `0`'s for example:
+
+```
+2022-01-0001
+2022-01-0011
+2022-01-0111
+2022-01-1111
+```
+
+### Custom Generators
+
+If your store has a specific requirement for how references are generated, you can easily swap out the GetCandy one for your own:
+
+`config/getcandy/orders.php`
+
+```php
+return [
+    'reference_generator' => App\Generators\MyCustomGenerator::class,
+];
+```
+
+Or, if you don't want references at all (not recommended) you can simply set it to `null`
+
+Here's the underlying class for the custom generator:
+
+```php
+namespace App\Generators;
+
+use GetCandy\Models\Order;
+
+class MyCustomGenerator implements OrderReferenceGeneratorInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function generate(Order $order): string
+    {
+        // ...
+        return 'my-custom-reference';
+    }
+}
+```
+
 ## Modifying Orders
 
 If you need to programmatically change the Order values or add in new behaviour, you will want to extend the Order system.
@@ -280,3 +331,64 @@ In the meantime, you can absolutely still get a storefront working, at the end o
 In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table, the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier for you as laid out above.
 
 And as always, if you have any questions you can reach out on our Discord!
+
+## Order Notifications
+
+GetCandy allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `getcandy/orders` config file and are defined like so:
+
+```php
+'statuses'     => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
+        'mailers' => [
+            App\Mail\MyMailer::class,
+            App\Mail\MyOtherMailer::class,
+        ],
+        'notifications' => [],
+    ],
+    // ...
+],
+```
+
+Now when you update an order's status in the hub, you will have these mailers available if the new status is `awaiting-payment`. You can then choose the email addresses which the email should be sent to and also add an additional email address if required.
+
+Once updated, GetCandy will keep a render of the email sent out in the activity log so you have a clear history of what's been sent out.
+
+:::tip
+These email notifications do not get sent out automatically if you update the status outside of the hub.
+:::
+
+### Mailer template
+
+When building out the template for your mailer, you should assume you have access to the `$order` model. When the status is updated this is passed through to the view data for the mailer, along with any additional content entered.
+Since you may not always have additional content when sending out the mailer, you should check the existence first.
+
+Here's an example of what the template could look like:
+
+```html
+<h1>It's on the way!</h1>
+
+<p>Your order with reference {{ $order->reference }} has been dispatched!</p>
+
+<p>{{ $order->total->formatted() }}</p>
+
+@if($content ?? null)
+    <h2>Additional notes</h2>
+    <p>{{ $content }}</p>
+@endif
+
+@foreach($order->lines as $line)
+    <!--  -->
+@endforeach
+```
+
+## Order Invoice PDF
+
+By default when you click "Download PDF" in the hub when viewing an order, you will get a basic PDF generated for you to download. You can publish the view that powers this to create your own PDF template.
+
+```bash
+php artisan vendor:publish --tag=getcandy-hub-views
+```
+
+This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely customise the PDF you want displayed on download.
