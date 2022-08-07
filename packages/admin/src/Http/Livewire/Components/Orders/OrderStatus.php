@@ -13,6 +13,8 @@ class OrderStatus extends Component
 {
     use Notifies;
 
+    protected static $overrideComponentAlias = 'status';
+
     /**
      * Whether to show the status select modal.
      *

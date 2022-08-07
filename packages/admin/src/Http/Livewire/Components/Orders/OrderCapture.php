@@ -11,6 +11,8 @@ class OrderCapture extends Component
 {
     use Notifies;
 
+    protected static $overrideComponentAlias = 'capture';
+
     /**
      * The amount to refund.
      *

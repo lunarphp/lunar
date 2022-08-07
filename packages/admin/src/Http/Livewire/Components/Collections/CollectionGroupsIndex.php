@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class CollectionGroupsIndex extends Component
 {
-    protected static $overrideComponentAlias = 'collections-groups.index';
+    protected static $overrideComponentAlias = 'collection-groups.index';
 
     /**
      * Render the livewire component.
