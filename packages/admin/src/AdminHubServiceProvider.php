@@ -201,8 +201,10 @@ class AdminHubServiceProvider extends ServiceProvider
             namespace: 'GetCandy\\Hub\\Http\\Livewire\\Components', aliasPrefix: 'hub.components',
         );
 
+        // @todo We should be able to autoload these components, otherwise update the alias for these ones.
         $this->registerGlobalComponents();
-        // $this->registerAuthenticationComponents();
+        $this->registerAuthenticationComponents();
+
         // $this->registerProductComponents();
         // $this->registerCollectionComponents();
         // $this->registerReportingComponents();
