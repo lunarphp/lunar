@@ -16,17 +16,39 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Support\Collection;
 use Filament\Forms\Components\Select;
+use GetCandy\Models\Customer;
 
 class OrdersTable extends GetCandyTable
 {
     use WithSavedSearches, Notifies;
 
     /**
+     * Restrict records to a customer.
+     *
+     * @var Customer|null
+     */
+    public ?Customer $customer = null;
+
+    /**
+     * Whether the table should be searchable.
+     *
+     * @var bool
+     */
+    public bool $searchable = true;
+
+    /**
+     * Whether to show saved searches.
+     *
+     * @var bool
+     */
+    public bool $showSavedSearches = true;
+
+    /**
      * {@inheritDoc}
      */
     public function isTableSearchable(): bool
     {
-        return true;
+        return $this->searchable;
     }
 
     /**
@@ -34,7 +56,13 @@ class OrdersTable extends GetCandyTable
      */
     protected function getTableQuery(): Builder
     {
-        return Order::query()->orderBy('created_at', 'desc');
+        $query = Order::query();
+
+        if ($this->customer) {
+            $query = Order::whereCustomerId($this->customer->id);
+        }
+
+        return $query->orderBy('created_at', 'desc');
     }
 
     /**
