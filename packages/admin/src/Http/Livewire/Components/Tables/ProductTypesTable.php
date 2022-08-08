@@ -3,17 +3,11 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Tables;
 
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\RestoreAction;
-use Filament\Tables\Filters\SelectFilter;
-use GetCandy\Hub\Tables\Columns\SkuColumn;
 use GetCandy\Hub\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use Illuminate\Contracts\Database\Query\Builder;
-use Illuminate\Support\Collection;
 
 class ProductTypesTable extends GetCandyTable
 {
@@ -39,7 +33,7 @@ class ProductTypesTable extends GetCandyTable
     protected function applySearchToTableQuery(Builder $query): Builder
     {
         if (filled($searchQuery = $this->getTableSearchQuery())) {
-            $query->where('name', 'LIKE', '%' . $searchQuery . '%');
+            $query->where('name', 'LIKE', '%'.$searchQuery.'%');
         }
 
         return $query;
@@ -53,7 +47,7 @@ class ProductTypesTable extends GetCandyTable
         return [
             TextColumn::make('name')->url(fn (ProductType $record): string => route('hub.product-type.show', ['productType' => $record])),
             TextColumn::make('mapped_attributes_count')->counts('mappedAttributes'),
-            TextColumn::make('products_count')->counts('products')
+            TextColumn::make('products_count')->counts('products'),
         ];
     }
 
@@ -86,8 +80,6 @@ class ProductTypesTable extends GetCandyTable
         return [
         ];
     }
-
-
 
     /**
      * Render the livewire component.
