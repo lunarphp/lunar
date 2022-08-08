@@ -3,8 +3,8 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Tables;
 
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\TextColumn;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tables\Columns\GravatarColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
@@ -79,7 +79,6 @@ class StaffTable extends GetCandyTable
     {
         return [];
     }
-
 
     /**
      * Render the livewire component.
