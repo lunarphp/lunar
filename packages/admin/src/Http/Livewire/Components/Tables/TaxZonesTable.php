@@ -2,14 +2,13 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Tables;
 
-use GetCandy\Hub\Tables\Columns\TextColumn;
-use GetCandy\Hub\Tables\GetCandyTable;
-use Illuminate\Contracts\Database\Query\Builder;
-use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\EditAction;
-use GetCandy\Models\Currency;
+use Filament\Tables\Columns\BooleanColumn;
+use GetCandy\Hub\Tables\Columns\TextColumn;
+use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\TaxZone;
+use Illuminate\Contracts\Database\Query\Builder;
 
 class TaxZonesTable extends GetCandyTable
 {

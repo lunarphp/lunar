@@ -2,9 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Models\TaxZone;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class TaxZonesIndex extends Component
 {
