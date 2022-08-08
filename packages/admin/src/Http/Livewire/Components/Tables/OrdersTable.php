@@ -16,7 +16,7 @@ use GetCandy\Hub\Tables\Columns\PriceColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\Customer;
 use GetCandy\Models\Order;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class OrdersTable extends GetCandyTable

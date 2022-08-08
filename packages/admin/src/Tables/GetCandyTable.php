@@ -9,7 +9,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use GetCandy\Hub\Tables\Columns\AttributeColumn;
 use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
 abstract class GetCandyTable extends Component implements HasTable

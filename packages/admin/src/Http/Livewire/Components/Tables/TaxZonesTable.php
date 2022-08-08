@@ -8,7 +8,7 @@ use Filament\Tables\Columns\BooleanColumn;
 use GetCandy\Hub\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\TaxZone;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class TaxZonesTable extends GetCandyTable
 {

@@ -8,7 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tables\Columns\GravatarColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class StaffTable extends GetCandyTable
 {

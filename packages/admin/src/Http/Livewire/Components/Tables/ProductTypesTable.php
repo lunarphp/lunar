@@ -7,7 +7,7 @@ use Filament\Tables\Actions\EditAction;
 use GetCandy\Hub\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\ProductType;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductTypesTable extends GetCandyTable
 {
