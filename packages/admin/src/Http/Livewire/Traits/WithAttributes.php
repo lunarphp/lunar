@@ -36,7 +36,7 @@ trait WithAttributes
     public function updatedProductProductTypeId()
     {
         $this->mapAttributes();
-        
+
         $this->variantAttributes = $this->parseAttributes(
             $this->availableVariantAttributes,
             $this->variantAttributes,
