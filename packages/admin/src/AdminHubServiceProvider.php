@@ -73,6 +73,7 @@ use GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\ProductsTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\ProductTypesTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\StaffTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\TaxZonesTable;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
@@ -370,6 +371,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.tables.product-types-table', ProductTypesTable::class);
         Livewire::component('hub.components.tables.channels-table', ChannelsTable::class);
         Livewire::component('hub.components.tables.currencies-table', CurrenciesTable::class);
+        Livewire::component('hub.components.tables.tax-zones-table', TaxZonesTable::class);
     }
 
     /**
