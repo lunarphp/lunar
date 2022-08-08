@@ -11,10 +11,14 @@ If you're unfamiliar with the table package by Filamentphp, it's worth a read to
 On top of everything that Filament offers, we also have added some helpers so you can fully extend the tables which are available in GetCandy.
 
 
+### Available tables
+
+- `\GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable`
+
 ### Adding Columns
 
 ```php
-OrdersIndex::addColumn(
+OrdersTable::addColumn(
     column: \Filament\Tables\Columns\TextColumn::make('custom_column'),
     after: 'id',
 );
@@ -27,7 +31,7 @@ See [Filamentphp Columns](https://filamentphp.com/docs/2.x/tables/columns#gettin
 If instead of adding extra columns, you can completely change what columns are shown on the table.
 
 ```php
-OrdersIndex::setColumns([
+OrdersTable::setColumns([
     \Filament\Tables\Columns\TextColumn::make('column_a'),
     \Filament\Tables\Columns\TextColumn::make('column_b'),
     \Filament\Tables\Columns\TextColumn::make('column_c'),
@@ -37,7 +41,7 @@ OrdersIndex::setColumns([
 ### Adding Filters
 
 ```php
-OrdersIndex::addFilter(
+OrdersTable::addFilter(
     \Filament\Tables\Filters\Filter::make('status')
 );
 ```
@@ -47,7 +51,7 @@ See [Filamentphp Filters](https://filamentphp.com/docs/2.x/tables/filters#gettin
 ### Adding Actions
 
 ```php
-OrdersIndex::addAction(
+OrdersTable::addAction(
     \Filament\Tables\Actions\Action::make('myAction')
 );
 ```
@@ -57,7 +61,7 @@ See [Filamentphp Actions](https://filamentphp.com/docs/2.x/tables/actions#gettin
 ### Adding Bulk Actions
 
 ```php
-OrdersIndex::addBulkAction(
+OrdersTable::addBulkAction(
     \Filament\Tables\Actions\Action::make('myAction')
 );
 ```
