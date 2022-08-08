@@ -2,13 +2,13 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Tables;
 
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\BooleanColumn;
 use GetCandy\Hub\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\Channel;
 use Illuminate\Contracts\Database\Query\Builder;
-use Filament\Tables\Columns\BooleanColumn;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\EditAction;
 
 class ChannelsTable extends GetCandyTable
 {
@@ -37,7 +37,7 @@ class ChannelsTable extends GetCandyTable
             BooleanColumn::make('default'),
             TextColumn::make('name')->url(fn (Channel $record): string => route('hub.channels.show', ['channel' => $record])),
             TextColumn::make('handle'),
-            TextColumn::make('url')
+            TextColumn::make('url'),
         ];
     }
 

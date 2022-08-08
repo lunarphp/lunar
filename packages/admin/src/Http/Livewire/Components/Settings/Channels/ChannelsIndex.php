@@ -2,9 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Channels;
 
-use GetCandy\Models\Channel;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class ChannelsIndex extends Component
 {
