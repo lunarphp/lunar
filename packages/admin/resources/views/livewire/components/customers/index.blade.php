@@ -5,7 +5,5 @@
         </strong>
     </div>
 
-    <div class="space-y-4">
-        {{ $this->table }}
-    </div>
+    @livewire('hub.components.tables.customers-table', key())
 </div>
