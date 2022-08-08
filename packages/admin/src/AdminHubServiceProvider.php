@@ -373,7 +373,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.tables.channels-table', ChannelsTable::class);
         Livewire::component('hub.components.tables.currencies-table', CurrenciesTable::class);
         Livewire::component('hub.components.tables.tax-zones-table', TaxZonesTable::class);
-            Livewire::component('hub.components.tables.customers-table', CustomersTable::class);
+        Livewire::component('hub.components.tables.customers-table', CustomersTable::class);
     }
 
     /**
