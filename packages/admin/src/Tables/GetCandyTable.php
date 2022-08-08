@@ -281,7 +281,10 @@ abstract class GetCandyTable extends Component implements HasTable
     /**
      * {@inheritDoc}
      */
-    abstract protected function applySearchToTableQuery(Builder $query): Builder;
+    protected function applySearchToTableQuery(Builder $query): Builder
+    {
+        return $query;
+    }
 
     /**
      * Return the base filters GetCandy requires.
