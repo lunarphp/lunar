@@ -2,8 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithSavedSearches;
 use Livewire\Component;
 
 class OrdersIndex extends Component

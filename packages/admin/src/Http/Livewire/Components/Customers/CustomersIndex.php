@@ -4,11 +4,9 @@ namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 
 use Filament\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\Models\Attribute;
 use GetCandy\Models\Customer;
 use Illuminate\Contracts\Database\Query\Builder;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class CustomersIndex extends GetCandyTable
 {
@@ -50,7 +48,7 @@ class CustomersIndex extends GetCandyTable
             TextColumn::make('company_name'),
             TextColumn::make('vat_no'),
             TextColumn::make('orders_count')->counts('orders'),
-            TextColumn::make('users_count')->counts('users')
+            TextColumn::make('users_count')->counts('users'),
         ];
     }
 
