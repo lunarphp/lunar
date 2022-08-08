@@ -125,39 +125,16 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-8 bg-white rounded-lg h-96">
+                <div class="p-8 bg-white rounded-lg">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.orders.dashboard.recent_orders') }}</h3>
-                    <table class="w-full mt-8 table-auto font-sm">
-                        <thead>
-                            <tr class="border-b">
-                                <th class="pb-2 text-sm font-normal text-left">{{ __('adminhub::global.order_ref') }}
-                                </th>
-                                <th class="pb-2 text-sm font-normal text-center">
-                                    {{ __('adminhub::global.customer') }}</th>
-                                <th class="pb-2 text-sm font-normal text-center">
-                                    {{ __('adminhub::global.no_items') }}</th>
-                                <th class="pb-2 text-sm font-normal text-center">
-                                    {{ __('adminhub::global.placed_at') }}</th>
-                                <th class="pb-2 text-sm font-normal text-right">{{ __('adminhub::global.total') }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($this->recentOrders as $order)
-                                <tr>
-                                    <td class="pt-4 text-sm"><a href="#"
-                                           class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">{{ $order->reference }}</a>
-                                    </td>
-                                    <td class="pt-4 text-sm text-center">{{ $order->billingAddress->full_name }}</td>
-                                    <td class="pt-4 text-sm text-center">{{ $order->lines_count }}</td>
-                                    <td class="pt-4 text-sm text-center">
-                                        {{ optional($order->placed_at)->format('jS F Y h:ma') }}</td>
-                                    <td class="pt-4 text-sm text-right">{{ $order->total->formatted }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+
+
+                    @livewire('hub.components.tables.orders-table', [
+                      'searchable' => false,
+                      'filterable' => false,
+                      'query' => $this->recentOrders,
+                    ], key())
                 </div>
             </div>
             <div class="basis-1/3">

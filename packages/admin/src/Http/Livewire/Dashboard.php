@@ -239,8 +239,7 @@ class Dashboard extends Component
     {
         return Order::withCount(['lines'])
             ->orderBy('placed_at', 'desc')
-            ->take(6)
-            ->get();
+            ->take(5);
     }
 
     /**
