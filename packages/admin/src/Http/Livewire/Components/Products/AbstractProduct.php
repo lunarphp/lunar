@@ -735,7 +735,13 @@ abstract class AbstractProduct extends Component
      */
     public function getVariantAttributeGroupsProperty()
     {
-        $groupIds = $this->variantAttributes->pluck('group_id')->unique();
+        $groupIds = $this->availableVariantAttributes->pluck('attribute_group_id')->unique();
+        
+        $this->variantAttributes = $this->parseAttributes(
+            $this->availableVariantAttributes,
+            $this->variant->attribute_data,
+            'variantAttributes',
+        );
 
         return AttributeGroup::whereIn('id', $groupIds)
             ->orderBy('position')
