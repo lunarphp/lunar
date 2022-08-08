@@ -8,6 +8,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use GetCandy\Hub\Exporters\OrderExporter;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithSavedSearches;
 use GetCandy\Hub\Tables\Columns\OrderStatusColumn;
@@ -118,6 +119,12 @@ class OrdersTable extends GetCandyTable
         });
 
         return [
+            BulkAction::make('export')->action(function (Collection $records) {
+                return $this->exportUsing(
+                    OrderExporter::class,
+                    $records->pluck('id')->toArray()
+                );
+            })->deselectRecordsAfterCompletion(),
             BulkAction::make('updateStatus')
             ->action(function (Collection $records, array $data): void {
                 Order::whereIn('id', $records->pluck('id')->toArray())->update([

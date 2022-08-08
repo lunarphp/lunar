@@ -251,6 +251,11 @@ abstract class GetCandyTable extends Component implements HasTable
         );
     }
 
+    protected function exportUsing($classname, $ids)
+    {
+        return app($classname)->export($ids);
+    }
+
     /**
      * Return a column for thumbnail.
      *
