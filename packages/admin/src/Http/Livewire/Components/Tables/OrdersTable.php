@@ -44,6 +44,13 @@ class OrdersTable extends GetCandyTable
     public bool $showSavedSearches = true;
 
     /**
+     * Whether to show filters.
+     *
+     * @var bool
+     */
+    public bool $filterable = true;
+
+    /**
      * {@inheritDoc}
      */
     public function isTableSearchable(): bool
@@ -131,6 +138,10 @@ class OrdersTable extends GetCandyTable
      */
     protected function getBaseTableFilters(): array
     {
+        if (!$this->filterable) {
+            return [];
+        }
+
         $statuses = config('getcandy.orders.statuses', []);
 
         return [
