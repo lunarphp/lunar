@@ -12,6 +12,7 @@ class OrderStatusColumn extends TextColumn
     protected function getStateFromRecord()
     {
         $record = $this->getRecord();
+
         return $record->status;
     }
 }
