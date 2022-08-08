@@ -13,6 +13,7 @@ On top of everything that Filament offers, we also have added some helpers so yo
 
 ### Available tables
 
+- `\GetCandy\Hub\Http\Livewire\Components\Tables\ChannelsTable`
 - `\GetCandy\Hub\Http\Livewire\Components\Tables\ProductsTable`
 - `\GetCandy\Hub\Http\Livewire\Components\Tables\ProductTypesTable`
 - `\GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable`
