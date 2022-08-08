@@ -51,13 +51,6 @@ class StaffTable extends GetCandyTable
             TextColumn::make('firstname'),
             TextColumn::make('lastname'),
             TextColumn::make('email'),
-            // OrderStatusColumn::make('status'),
-            // TextColumn::make('reference')->url(fn (Order $record): string => route('hub.orders.show', ['order' => $record])),
-            // TextColumn::make('billingAddress.fullName')->label('Customer'),
-            // TextColumn::make('billingAddress.company_name')->label('Company Name'),
-            // TextColumn::make('billingAddress.contact_email')->label('Billing Email'),
-            // PriceColumn::make('total')->label('Total'),
-            // TextColumn::make('placed_at')->dateTime(),
         ];
     }
 
