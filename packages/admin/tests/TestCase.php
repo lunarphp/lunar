@@ -3,8 +3,12 @@
 namespace GetCandy\Hub\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
+use Filament\Forms\FormsServiceProvider;
+use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
+use Filament\Tables\TablesServiceProvider;
 use GetCandy\GetCandyServiceProvider;
 use GetCandy\Hub\AdminHubServiceProvider;
 use GetCandy\Tests\Stubs\TestUrlGenerator;
@@ -13,11 +17,7 @@ use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
-use Filament\Tables\TablesServiceProvider;
-use Filament\Forms\FormsServiceProvider;
-use Filament\Notifications\NotificationsServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
-use BladeUI\Icons\BladeIconsServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

@@ -99,8 +99,6 @@ class ProductsTable extends GetCandyTable
         ];
     }
 
-
-
     /**
      * Render the livewire component.
      *
