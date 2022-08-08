@@ -118,9 +118,7 @@ trait WithSavedSearches
     {
         $this->tableSearchQuery = null;
 
-        foreach ($this->tableFilters as $key => $filter) {
-            $this->tableFilters[$key] = null;
-        }
+        $this->tableFilters = [];
     }
 
     /**
