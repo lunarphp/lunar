@@ -67,6 +67,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
@@ -202,6 +203,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerSettingsComponents();
         $this->registerOrderComponents();
         $this->registerCustomerComponents();
+        $this->registerTableComponents();
 
         // Blade Components
         Blade::componentNamespace('GetCandy\\Hub\\Views\\Components', 'hub');
@@ -353,6 +355,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.create', TaxZoneCreate::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
+    }
+
+    public function registerTableComponents()
+    {
+        Livewire::component('hub.components.tables.orders-table', OrdersTable::class);
     }
 
     /**
