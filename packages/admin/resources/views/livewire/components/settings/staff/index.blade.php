@@ -12,21 +12,10 @@
         </div>
     </header>
 
-    <div class="grid items-center grid-cols-8 gap-2">
-        <div class="col-span-5 md:col-span-6">
-            <x-hub::input.text wire:model.debounce.300ms="search"
-                               placeholder="{{ __('adminhub::settings.staff.index.search_placeholder') }}" />
-        </div>
-        <div class="col-span-3 text-right md:col-span-2">
-            <x-hub::input.checkbox-button wire:model="showInactive">
-                {{ __('adminhub::settings.staff.index.active_filter') }}
-            </x-hub::input.checkbox-button>
-        </div>
+    @livewire('hub.components.tables.staff-table')
 
 
-    </div>
-
-    <x-hub::table>
+    {{-- <x-hub::table>
         <x-slot name="head">
             <x-hub::table.heading></x-hub::table.heading>
             <x-hub::table.heading>{{ __('adminhub::global.active') }}</x-hub::table.heading>
@@ -66,5 +55,5 @@
     </x-hub::table>
     <div>
         {{ $staff->links() }}
-    </div>
+    </div> --}}
 </div>
