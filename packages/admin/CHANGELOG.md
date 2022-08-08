@@ -3,17 +3,50 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-### [Unreleased]
+### 2.0-beta14 - 2022-08-03
 
 ## Changed
 
 - The activity log timeline is now extendable.
 - Partial card number will now only appear if last four is populated on a transaction.
+- Collection searching in the hub will now return the breadcrumb, making it more obvious on the choice.
+- Hub assets have been taken off CDN as much as possible in favour of being bundled with the hub assets
+- Transactions UI on orders has been tweaked to include more relevant information.
+- Swapped out the meta fields on the customers table in favour of showing attributes.
+- Saved cart functionality has been removed.
+- Complete refactor on the activity log display.
 
 ## Added
 
-- Migrations are now publishable under the tag `getcandy-migrations`
-- Added current and purchase stock level to order lines
+- Migrations are now publishable under the tag `getcandy-migrations`.
+- Added current and purchase stock level to order lines.
+- Added order notifications to order status updates.
+- Added Tax Management screens.
+- It's now possible for developers to extend Rich text configuration per attribute.
+- Order status updates has been improved and now supports notifications
+- Initial groundwork has been added to allow staff members to impersonate users on the store
+- Added ability to download an order as a PDF
+- Added an extra check when deleting a collection group to prevent mistakes.
+- Billing details should now be visible on the orders table in the listing.
+- Added a copy to clipboard button for order reference and customer reference when viewing an order.
+- The full name and company of the customer has been added to the order table listing.
+- Delivery instructions should be visible on orders, when they are present on the address.
+- Variant slots will now appear on product editing when only one variant is present.
+- Datepicker component now supports passing whole array of config.
+- The stock level on order lines will show if present in the meta.
+- Slots have been added to the order screen.
+- Migrations are now publishable under the tag `getcandy-migrations`.
+- UI update across the board.
+
+## Fixed
+
+- The side menu will now load correctly depending on whether expanded or collapsed without flickering.
+- When adding a collection to a group it will now display the correct node tree afterwards.
+- Fixed an error in Alpine caused by syntax issues for the settings menu.
+- Order addresses will now display the contact phone and email address.
+- The Toggle fieldtype will now correctly set to `false` when conditions are met instead of `null`.
+- The `last_four` column on the transactions table now allows `null`.
+- Improved the add-on manifest to correctly fetch add-ons which are installed.
 
 ### 2.0-beta13.2 - 2022-06-23
 

@@ -25,8 +25,8 @@
         @endswitch
       </div>
     </div>
-    <div class="flex-1 ml-3 md:flex md:justify-between">
-      <p
+    <div class="flex-1 ml-3 md:flex md:justify-between w-full">
+      <div
         @class([
           'text-sm',
           'text-yellow-700' => $level == 'warning',
@@ -35,7 +35,7 @@
         ])
       >
         {{ $slot }}
-      </p>
+      </div>
     </div>
   </div>
 </div>

@@ -4,7 +4,8 @@
          :class="{
              'w-64': showExpandedMenu,
              'w-20': !showExpandedMenu
-         }">
+         }"
+         data-ref="layout-sidemenu">
         <a href="{{ route('hub.index') }}"
            class="flex items-center w-full h-16 px-4">
             <img src="https://getcandy.io/hub/getcandy_logo.svg"

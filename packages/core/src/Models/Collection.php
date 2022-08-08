@@ -130,6 +130,18 @@ class Collection extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Get the translated name of ancestor collections.
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getBreadcrumbAttribute()
+    {
+        return $this->ancestors->map(function ($ancestor) {
+            return $ancestor->translateAttribute('name');
+        });
+    }
+
+    /**
      * Return the customer groups relationship.
      *
      * @return BelongsToMany
