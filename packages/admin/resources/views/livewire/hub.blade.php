@@ -1,6 +1,3 @@
 <div>
-
-
     @livewire('dashboard')
-
 </div>

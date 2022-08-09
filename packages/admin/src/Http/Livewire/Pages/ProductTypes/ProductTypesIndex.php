@@ -1,10 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Products\ProductTypes;
+namespace GetCandy\Hub\Http\Livewire\Pages\ProductTypes;
 
+use GetCandy\Hub\Http\Livewire\PageComponent;
 use Livewire\Component;
 
-class ProductTypeIndex extends Component
+class ProductTypesIndex extends PageComponent
 {
     /**
      * Render the livewire component.
@@ -13,7 +14,7 @@ class ProductTypeIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.pages.products.product-types.index')
+        return view('adminhub::livewire.pages.product-types.index')
             ->layout('adminhub::layouts.app', [
                 'title' => 'Product Types',
             ]);

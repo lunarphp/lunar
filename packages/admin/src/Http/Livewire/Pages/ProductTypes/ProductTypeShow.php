@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Products\ProductTypes;
+namespace GetCandy\Hub\Http\Livewire\Pages\ProductTypes;
 
 use GetCandy\Models\ProductType;
 use Livewire\Component;
@@ -21,7 +21,7 @@ class ProductTypeShow extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.pages.products.product-types.show')
+        return view('adminhub::livewire.pages.product-types.show')
             ->layout('adminhub::layouts.app', [
                 'title' => 'Edit Product',
             ]);

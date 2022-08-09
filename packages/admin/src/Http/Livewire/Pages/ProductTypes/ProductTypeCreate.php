@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Products\ProductTypes;
+namespace GetCandy\Hub\Http\Livewire\Pages\ProductTypes;
 
 use Livewire\Component;
 
@@ -13,7 +13,7 @@ class ProductTypeCreate extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.pages.products.product-types.create')
+        return view('adminhub::livewire.pages.product-types.create')
             ->layout('adminhub::layouts.app', [
                 'title' => 'Create Product Type',
             ]);

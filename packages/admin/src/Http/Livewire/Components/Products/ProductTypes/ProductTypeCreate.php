@@ -65,7 +65,7 @@ class ProductTypeCreate extends AbstractProductType
      */
     public function render()
     {
-        return view('adminhub::livewire.components.products.product-types.create')
+        return view('adminhub::livewire.components.product-types.create')
             ->layout('adminhub::layouts.base');
     }
 }

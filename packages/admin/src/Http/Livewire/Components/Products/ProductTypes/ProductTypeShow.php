@@ -111,7 +111,7 @@ class ProductTypeShow extends AbstractProductType
      */
     public function render()
     {
-        return view('adminhub::livewire.components.products.product-types.show')
+        return view('adminhub::livewire.components.product-types.show')
             ->layout('adminhub::layouts.base');
     }
 }

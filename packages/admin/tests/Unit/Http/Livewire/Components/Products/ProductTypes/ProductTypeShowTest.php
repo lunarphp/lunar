@@ -2,7 +2,7 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
+use GetCandy\Hub\Http\Livewire\Components\ProductTypes\ProductTypeShow;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Attribute;

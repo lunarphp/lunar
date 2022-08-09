@@ -2,20 +2,12 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\Products;
 
-use Livewire\Component;
-
-class ProductCreate extends Component
+class ProductCreate extends Resource
 {
-    /**
-     * Render the livewire component.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function render()
+    protected static string $view = 'products.create';
+
+    public function mount()
     {
-        return view('adminhub::livewire.pages.products.create')
-            ->layout('adminhub::layouts.app', [
-                'title' => 'Create Product',
-            ]);
+        static::setTitle('Create Product');
     }
 }

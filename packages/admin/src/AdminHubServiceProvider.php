@@ -35,9 +35,9 @@ use GetCandy\Hub\Http\Livewire\Components\Products\Options\OptionSelector;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductCreate;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductShow;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
+use GetCandy\Hub\Http\Livewire\Components\ProductTypes\ProductTypeCreate;
+use GetCandy\Hub\Http\Livewire\Components\ProductTypes\ProductTypeShow;
+use GetCandy\Hub\Http\Livewire\Components\ProductTypes\ProductTypesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
 use GetCandy\Hub\Http\Livewire\Components\ProductSearch;
@@ -263,9 +263,9 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.products.show', ProductShow::class);
         Livewire::component('hub.components.products.create', ProductCreate::class);
 
-        Livewire::component('hub.components.products.product-types.index', ProductTypesIndex::class);
-        Livewire::component('hub.components.products.product-types.show', ProductTypeShow::class);
-        Livewire::component('hub.components.products.product-types.create', ProductTypeCreate::class);
+        Livewire::component('hub.components.product-types.index', ProductTypesIndex::class);
+        Livewire::component('hub.components.product-types.show', ProductTypeShow::class);
+        Livewire::component('hub.components.product-types.create', ProductTypeCreate::class);
 
         Livewire::component('hub.components.products.editing.customer-groups', CustomerGroups::class);
 

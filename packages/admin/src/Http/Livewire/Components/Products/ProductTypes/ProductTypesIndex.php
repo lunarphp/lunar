@@ -56,7 +56,7 @@ class ProductTypesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.products.product-types.index', [
+        return view('adminhub::livewire.components.product-types.index', [
             'productTypes' => $this->productTypes,
         ])->layout('adminhub::layouts.base');
     }
