@@ -1,8 +1,8 @@
 <?php
 
 use GetCandy\Hub\Http\Livewire\Pages\ProductTypes\ProductTypeCreate;
-use GetCandy\Hub\Http\Livewire\Pages\ProductTypes\ProductTypesIndex;
 use GetCandy\Hub\Http\Livewire\Pages\ProductTypes\ProductTypeShow;
+use GetCandy\Hub\Http\Livewire\Pages\ProductTypes\ProductTypesIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
