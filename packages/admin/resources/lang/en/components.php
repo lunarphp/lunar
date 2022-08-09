@@ -158,6 +158,8 @@ return [
     'products.index.published'                  => 'Published',
     'products.index.deleted'                    => 'Deleted',
     'products.index.only_deleted_visible'       => 'Only deleted products are currently being shown',
+    'products.index.select_all_btn' => 'Select all',
+    'products.index.deselect_all_btn' => 'Deselect all',
 
     /**
      * Order Capture.
