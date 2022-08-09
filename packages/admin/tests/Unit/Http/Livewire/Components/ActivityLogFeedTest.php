@@ -2,17 +2,13 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Account;
 use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Country;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 
@@ -58,7 +54,6 @@ class ActivityLogFeedTest extends TestCase
             'admin' => true,
         ]);
 
-
         Livewire::actingAs($staff, 'staff')->test(ActivityLogFeed::class, [
             'subject' => $order,
         ]);
@@ -83,7 +78,6 @@ class ActivityLogFeedTest extends TestCase
         $staff = Staff::factory()->create([
             'admin' => true,
         ]);
-
 
         Livewire::actingAs($staff, 'staff')->test(ActivityLogFeed::class, [
             'subject' => $order,
