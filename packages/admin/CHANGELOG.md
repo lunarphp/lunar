@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Fixed
 
 - When variants are disabled, editing a product type will not longer display tabs for variant attributes.
+- Fixed an issue where adding a comment to the activity log would error.
+- Comments should now show correctly on product editing pages.
 
 ### 2.0-beta14 - 2022-08-03
 
