@@ -11,6 +11,8 @@ class OrderRefund extends Component
 {
     use Notifies;
 
+    protected static $overrideComponentAlias = 'refund';
+
     /**
      * The amount to refund.
      *

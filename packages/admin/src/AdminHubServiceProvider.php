@@ -70,12 +70,12 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
+use GetCandy\Hub\Http\Livewire\Traits\CanRegisterLivewireComponentDirectories;
 use GetCandy\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use GetCandy\Hub\Menu\MenuRegistry;
 use GetCandy\Hub\Menu\OrderActionsMenu;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
-use GetCandy\Hub\Menu\SlotRegistry;
 use GetCandy\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
@@ -87,6 +87,8 @@ use Livewire\Livewire;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
+    use CanRegisterLivewireComponentDirectories;
+
     protected $configFiles = ['products', 'customers', 'system'];
 
     protected $root = __DIR__.'/..';
@@ -194,14 +196,21 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerLivewireComponents()
     {
+        $this->registerLivewireComponentDirectory(
+            directory: __DIR__.'/Http/Livewire/Components',
+            namespace: 'GetCandy\\Hub\\Http\\Livewire\\Components', aliasPrefix: 'hub.components',
+        );
+
+        // @todo We should be able to autoload these components, otherwise update the alias for these ones.
         $this->registerGlobalComponents();
         $this->registerAuthenticationComponents();
-        $this->registerProductComponents();
-        $this->registerCollectionComponents();
-        $this->registerReportingComponents();
-        $this->registerSettingsComponents();
-        $this->registerOrderComponents();
-        $this->registerCustomerComponents();
+
+        // $this->registerProductComponents();
+        // $this->registerCollectionComponents();
+        // $this->registerReportingComponents();
+        // $this->registerSettingsComponents();
+        // $this->registerOrderComponents();
+        // $this->registerCustomerComponents();
 
         // Blade Components
         Blade::componentNamespace('GetCandy\\Hub\\Views\\Components', 'hub');
@@ -388,10 +397,24 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         Gate::after(function ($user, $ability) {
             // Are we trying to authorize something within the hub?
-            $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
+            $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission
+            ) => $permission->handle === $ability);
             if ($permission) {
                 return $user->admin || $user->authorize($ability);
             }
         });
+    }
+
+    /**
+     * This list is dynamically updated when new components are added in order to work with IDE completion.
+     *
+     * @note Please do not manually register components here
+     *
+     * @return void
+     */
+    private function _cachedLivewireComponents(): void
+    {
+        // @todo Supports Laravel Idea (livewire component ide support - needs to be moved to a separate service provider class
+        //Livewire::component('hub.components.products.index', \GetCandy\Hub\Http\Livewire\Components\Products\ProductsIndex::class);
     }
 }

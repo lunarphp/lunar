@@ -12,6 +12,8 @@ class TaxClassesIndex extends Component
 {
     use WithPagination, Notifies;
 
+    protected static $overrideComponentAlias = 'tax-classes.index';
+
     /**
      * The TaxClass to edit.
      *

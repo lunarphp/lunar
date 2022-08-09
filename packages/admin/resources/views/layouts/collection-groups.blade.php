@@ -2,7 +2,7 @@
 
 @section('menu')
     <x-hub::layout.side-menu>
-        @livewire('hub.components.collections.sidemenu', [
+        @livewire('hub.components.collections.side-menu', [
             'currentGroup' => $group ?? null,
         ])
     </x-hub::layout.side-menu>
@@ -26,7 +26,7 @@
             </div>
 
             <x-hub::slideover-simple target="showGroupSlideover">
-                @livewire('hub.components.collections.sidemenu', [
+                @livewire('hub.components.collections.side-menu', [
                     'currentGroup' => $group ?? null,
                 ])
             </x-hub::slideover-simple>
