@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\ProductTypes;
+namespace GetCandy\Hub\Http\Livewire\Pages\ProductTypes;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
@@ -10,10 +10,9 @@ use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Collection;
-use Livewire\Component;
 use Livewire\WithPagination;
 
-abstract class AbstractProductType extends Component
+abstract class AbstractProductType extends ProductTypesResource
 {
     use Notifies;
     use WithPagination;
@@ -24,7 +23,7 @@ abstract class AbstractProductType extends Component
      *
      * @var string
      */
-    public $view = 'products';
+    public $currentView = 'products';
 
     /**
      * Instance of the parent product.

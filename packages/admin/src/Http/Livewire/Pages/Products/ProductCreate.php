@@ -2,12 +2,53 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\Products;
 
-class ProductCreate extends Resource
+use GetCandy\Models\Product;
+use GetCandy\Models\ProductType;
+use GetCandy\Models\ProductVariant;
+use GetCandy\Models\TaxClass;
+
+class ProductCreate extends AbstractProduct
 {
     protected static string $view = 'products.create';
 
+    /**
+     * Called when the component is mounted.
+     *
+     * @return void
+     */
     public function mount()
     {
         static::setTitle('Create Product');
+
+        $this->product = new Product([
+            'status'          => 'draft',
+            'product_type_id' => ProductType::first()->id,
+        ]);
+
+        $this->options = collect();
+        $this->variantsEnabled = $this->getVariantsCount() > 1;
+        $this->variant = new ProductVariant([
+            'purchasable'   => 'always',
+            'tax_class_id'  => TaxClass::getDefault()?->id,
+            'shippable'     => true,
+            'stock'         => 0,
+            'unit_quantity' => 1,
+            'backorder'     => 0,
+        ]);
+
+        $this->variantAttributes = $this->parseAttributes(
+            $this->availableVariantAttributes,
+            $this->variant->attribute_data,
+            'variantAttributes',
+        );
+
+        $this->syncAvailability();
+        $this->syncAssociations();
+        $this->syncCollections();
+    }
+
+    protected function getSlotContexts()
+    {
+        return ['product.all', 'product.create'];
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Products;
+namespace GetCandy\Hub\Http\Livewire\Pages\ProductTypes;
 
 use GetCandy\Hub\Http\Livewire\PageComponent;
 
-abstract class Resource extends PageComponent
+abstract class ProductTypesResource extends PageComponent
 {
-    protected static string $navigationLabel = 'Products';
+    protected static string $navigationLabel = 'Product Types';
 
     protected static string $navigationIcon = 'shopping-cart';
 
@@ -14,7 +14,7 @@ abstract class Resource extends PageComponent
 
     public function mount()
     {
-        static::setTitle('Products');
+        static::setTitle('Product Types');
         static::setParams([
             'filters' => [],
         ]);

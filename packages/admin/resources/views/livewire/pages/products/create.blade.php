@@ -1,3 +1,3 @@
 <div class="flex-col space-y-4">
-  @livewire('hub.components.products.create')
+    @include('adminhub::partials.products.editing.sections')
 </div>

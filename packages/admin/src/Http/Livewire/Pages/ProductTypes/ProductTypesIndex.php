@@ -2,13 +2,8 @@
 
 namespace GetCandy\Hub\Http\Livewire\Pages\ProductTypes;
 
-use GetCandy\Hub\Http\Livewire\PageComponent;
-use Livewire\Component;
-
-class ProductTypesIndex extends PageComponent
+class ProductTypesIndex extends AbstractProductType
 {
-    protected static $overrideComponentAlias = 'collection-groups.index';
-
     /**
      * Render the livewire component.
      *

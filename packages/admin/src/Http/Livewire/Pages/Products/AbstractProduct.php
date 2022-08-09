@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace GetCandy\Hub\Http\Livewire\Pages\Products;
 
 use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
@@ -25,10 +25,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
-abstract class AbstractProduct extends Component
+abstract class AbstractProduct extends ProductsResource
 {
     use Notifies;
     use WithFileUploads;
@@ -906,5 +905,5 @@ abstract class AbstractProduct extends Component
      *
      * @return \Illuminate\View\View
      */
-    abstract public function render();
+    //abstract public function render();
 }
