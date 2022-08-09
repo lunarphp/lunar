@@ -12,7 +12,10 @@ use GetCandy\Hub\Tests\TestCase;
  */
 class GetCandyHubTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
     public function can_register_scripts_by_providing_name_and_path()
     {
         $name = 'local-script';
@@ -25,7 +28,10 @@ class GetCandyHubTest extends TestCase
         $this->assertEquals(GetCandyHub::scripts()[0]->path(), $path);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
     public function can_register_remote_scripts()
     {
         $path = 'https://example.com/script.js';
@@ -47,7 +53,10 @@ class GetCandyHubTest extends TestCase
         $this->assertEquals(GetCandyHub::scripts()[1]->isRemote(), true);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
     public function can_register_styles_by_providing_name_and_path()
     {
         $name = 'local-style';
@@ -60,7 +69,10 @@ class GetCandyHubTest extends TestCase
         $this->assertEquals(GetCandyHub::styles()[0]->path(), $path);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
     public function can_register_remote_styles()
     {
         $path = 'https://example.com/style.css';
