@@ -61,14 +61,16 @@ class ScriptsControllerTest extends TestCase
 
         $name = 'local-script';
         $path = __DIR__.'/local-script.js';
+        $content = "console.log('hello');";
 
         GetCandyHub::script($name, $path);
 
         // Create the file
-        file_put_contents($path, 'console.log("hello");');
+        file_put_contents($path, $content);
 
         $this->get(route('hub.assets.scripts', ['script' => $name]))
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertSee($content, false);
 
         // Remove the file after test
         unlink($path);

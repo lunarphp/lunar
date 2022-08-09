@@ -61,14 +61,16 @@ class StylesControllerTest extends TestCase
 
         $name = 'local-style';
         $path = __DIR__.'/local-style.css';
+        $content = 'body { color: red; }';
 
         GetCandyHub::style($name, $path);
 
         // Create the file
-        file_put_contents($path, 'body { color: red; }');
+        file_put_contents($path, $content);
 
         $this->get(route('hub.assets.styles', ['style' => $name]))
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertSee($content);
 
         // Remove the file after test
         unlink($path);
