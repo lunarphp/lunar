@@ -72,7 +72,7 @@ use GetCandy\Hub\Http\Livewire\Components\Tables\CurrenciesTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\CustomersTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\ProductsTable;
-use GetCandy\Hub\Http\Livewire\Components\Tables\ProductTypesTable;
+use GetCandy\Hub\Http\Livewire\Components\ProductTypes\ProductTypesTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\StaffTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\TaxZonesTable;
 use GetCandy\Hub\Http\Livewire\Dashboard;
@@ -205,6 +205,11 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerLivewireComponents()
     {
         $this->registerLivewireComponentDirectory(
+            directory: __DIR__.'/Http/Livewire/Pages',
+            namespace: 'GetCandy\\Hub\\Http\\Livewire\\Pages', aliasPrefix: 'hub.pages',
+        );
+
+        $this->registerLivewireComponentDirectory(
             directory: __DIR__.'/Http/Livewire/Components',
             namespace: 'GetCandy\\Hub\\Http\\Livewire\\Components', aliasPrefix: 'hub.components',
         );
@@ -212,6 +217,7 @@ class AdminHubServiceProvider extends ServiceProvider
         // @todo We should be able to autoload these components, otherwise update the alias for these ones.
         $this->registerGlobalComponents();
         $this->registerAuthenticationComponents();
+        $this->registerTableComponents();
 
         // $this->registerProductComponents();
         // $this->registerCollectionComponents();
@@ -276,13 +282,7 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerProductComponents()
     {
-        Livewire::component('hub.components.products.index', ProductsIndex::class);
-        Livewire::component('hub.components.products.show', ProductShow::class);
         Livewire::component('hub.components.products.create', ProductCreate::class);
-
-        Livewire::component('hub.components.product-types.index', ProductTypesIndex::class);
-        Livewire::component('hub.components.product-types.show', ProductTypeShow::class);
-        Livewire::component('hub.components.product-types.create', ProductTypeCreate::class);
 
         Livewire::component('hub.components.products.editing.customer-groups', CustomerGroups::class);
 
