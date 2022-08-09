@@ -71,16 +71,6 @@ class ProductTypeShow extends AbstractProductType
     }
 
     /**
-     * Return whether variants are disabled.
-     *
-     * @return bool
-     */
-    public function getVariantsDisabledProperty()
-    {
-        return config('getcandy-hub.products.disable_variants', false);
-    }
-
-    /**
      * Returns whether this is the only Product type in the system.
      *
      * @return bool
