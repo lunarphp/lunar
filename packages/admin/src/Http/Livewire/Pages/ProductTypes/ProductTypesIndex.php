@@ -7,6 +7,8 @@ use Livewire\Component;
 
 class ProductTypesIndex extends PageComponent
 {
+    protected static $overrideComponentAlias = 'collection-groups.index';
+
     /**
      * Render the livewire component.
      *
