@@ -105,9 +105,9 @@ class GetCandyHub
             return str_replace('<svg', sprintf('<svg%s', $attrs), $icon);
         }
 
-        $iconPath = __DIR__ . "/../resources/icons/{$style}/$icon.svg";
+        $iconPath = __DIR__."/../resources/icons/{$style}/$icon.svg";
 
-        if (!File::exists($iconPath)) {
+        if (! File::exists($iconPath)) {
             return;
         }
 
@@ -117,7 +117,7 @@ class GetCandyHub
     public static function paymentIcons()
     {
         return File::get(
-            __DIR__ . '/../resources/icons/payment_icons.svg'
+            __DIR__.'/../resources/icons/payment_icons.svg'
         );
     }
 }
