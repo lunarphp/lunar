@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Tables;
+namespace GetCandy\Hub\Http\Livewire\Components\Products;
 
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkAction;

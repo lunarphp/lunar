@@ -71,7 +71,7 @@ use GetCandy\Hub\Http\Livewire\Components\Tables\ChannelsTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\CurrenciesTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\CustomersTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable;
-use GetCandy\Hub\Http\Livewire\Components\Tables\ProductsTable;
+use GetCandy\Hub\Http\Livewire\Components\Products\ProductsTable;
 use GetCandy\Hub\Http\Livewire\Components\ProductTypes\ProductTypesTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\StaffTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\TaxZonesTable;
