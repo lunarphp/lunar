@@ -6,7 +6,6 @@ use GetCandy\Hub\GetCandyHub;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * @group hub.assets
