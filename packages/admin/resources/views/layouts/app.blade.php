@@ -24,11 +24,7 @@
         }
     </style>
 
-    <script defer
-            src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
-
-    <script defer
-            src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
+    <script src="{{ asset('vendor/getcandy/admin-hub/head.js') }}" defer></script>
 
     <script>
         JSON.parse(localStorage.getItem('_x_showExpandedMenu')) ?
@@ -84,7 +80,7 @@
 
     @livewireScripts
 
-    <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>
+    <script src="{{ asset('vendor/getcandy/admin-hub/body.js') }}"></script>
 </body>
 
 </html>

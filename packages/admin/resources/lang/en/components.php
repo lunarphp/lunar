@@ -154,15 +154,11 @@ return [
      */
     'products.index.title' => 'Products',
     'products.index.create_product' => 'Create Product',
-    'products.index.selected_products' => 'You have selected :count products, do you want to select all',
-    'products.index.you_have_selected_all' => 'You have selected all :count products.',
-    'products.index.select_all_btn' => 'Select all',
-    'products.index.deselect_all_btn' => 'Deselect all',
     'products.index.draft'                      => 'Draft',
-    'products.index.published'                      => 'Published',
+    'products.index.published'                  => 'Published',
     'products.index.deleted'                    => 'Deleted',
-    'products.index.only_deleted_visible'               => 'Only deleted products are currently being shown',
-    'products.index.products_empty' => 'Unable to find products matching search/filters.',
+    'products.index.only_deleted_visible'       => 'Only deleted products are currently being shown',
+
     /**
      * Order Capture.
      */

@@ -2,7 +2,13 @@
 
 namespace GetCandy\Hub\Tests;
 
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
+use Filament\Forms\FormsServiceProvider;
+use Filament\Notifications\NotificationsServiceProvider;
+use Filament\Support\SupportServiceProvider;
+use Filament\Tables\TablesServiceProvider;
 use GetCandy\GetCandyServiceProvider;
 use GetCandy\Hub\AdminHubServiceProvider;
 use GetCandy\Tests\Stubs\TestUrlGenerator;
@@ -37,6 +43,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
             MediaLibraryServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            BladeHeroiconsServiceProvider::class,
+            SupportServiceProvider::class,
+            FormsServiceProvider::class,
+            NotificationsServiceProvider::class,
+            TablesServiceProvider::class,
         ];
     }
 

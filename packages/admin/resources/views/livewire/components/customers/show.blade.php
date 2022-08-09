@@ -140,11 +140,22 @@
     </div>
 
     <div>
-        <div x-data="{ tab: 'purchase_history' }">
+        <div x-data="{ tab: 'order_history' }">
             <div>
                 <div class="hidden sm:block">
                     <nav class="flex space-x-4"
                          aria-label="Tabs">
+
+                        <button type="button"
+                               x-on:click.prevent="tab = 'order_history'"
+                               class="px-3 py-2 text-sm font-medium rounded-md "
+                               :class="{
+                                   'bg-white shadow': tab == 'order_history',
+                                   'hover:text-gray-700 text-gray-500': tab != 'order_history'
+                               }">
+                           {{ __('adminhub::components.customers.show.order_history') }}
+                        </button>
+
                         <button type="button"
                                 x-on:click.prevent="tab = 'purchase_history'"
                                 class="px-3 py-2 text-sm font-medium rounded-md "
@@ -155,15 +166,7 @@
                             {{ __('adminhub::components.customers.show.purchase_history') }}
                         </button>
 
-                        <button type="button"
-                                x-on:click.prevent="tab = 'order_history'"
-                                class="px-3 py-2 text-sm font-medium rounded-md "
-                                :class="{
-                                    'bg-white shadow': tab == 'order_history',
-                                    'hover:text-gray-700 text-gray-500': tab != 'order_history'
-                                }">
-                            {{ __('adminhub::components.customers.show.order_history') }}
-                        </button>
+
 
                         <button type="button"
                                 x-on:click.prevent="tab = 'users'"
@@ -206,7 +209,9 @@
                         {{ __('adminhub::components.customers.show.no_order_history') }}
                     </div>
                 @else
-                    @include('adminhub::partials.customers.order-history')
+                  @livewire('hub.components.tables.orders-table', [
+                    'customer' => $this->customer
+                  ], key())
                 @endif
             </div>
 

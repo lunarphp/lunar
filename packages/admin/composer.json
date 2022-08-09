@@ -37,7 +37,8 @@
         "getcandy/core": "self.version",
         "livewire/livewire": "^2.0",
         "getcandy/licensing": "dev-main",
-        "barryvdh/laravel-dompdf": "^2.0"
+        "barryvdh/laravel-dompdf": "^2.0",
+        "filament/tables": "^2.0"
     },
     "require-dev": {
         "orchestra/testbench": "^6.0|^7.0",

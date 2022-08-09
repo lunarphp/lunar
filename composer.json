@@ -12,6 +12,7 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^6.1|^7.0",
         "doctrine/dbal": "3.3.7",
+        "filament/tables": "^2.0",
         "getcandy/licensing": "dev-main",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.0|^9.0",

@@ -69,7 +69,7 @@ trait WithSavedSearches
     public function getActiveSavedSearchProperty()
     {
         return $this->savedSearches->first(function ($search) {
-            return $search->term == $this->search && $search->filters == $this->filters;
+            return $search->term == $this->tableSearchQuery && $search->filters == $this->tableFilters;
         });
     }
 
@@ -80,8 +80,8 @@ trait WithSavedSearches
      */
     public function saveSearch()
     {
-        $this->savedSearch->term = $this->search;
-        $this->savedSearch->filters = $this->filters;
+        $this->savedSearch->term = $this->tableSearchQuery;
+        $this->savedSearch->filters = $this->tableFilters;
         $this->savedSearch->component = $this->getName();
 
         auth()->user()->savedSearches()->save($this->savedSearch);
@@ -105,8 +105,8 @@ trait WithSavedSearches
             fn ($search) => $search->id == $id
         );
 
-        $this->filters = $savedSearch->filters;
-        $this->search = $savedSearch->term;
+        $this->tableFilters = $savedSearch->filters;
+        $this->tableSearchQuery = $savedSearch->term;
     }
 
     /**
@@ -116,11 +116,9 @@ trait WithSavedSearches
      */
     public function resetSearch()
     {
-        $this->search = null;
+        $this->tableSearchQuery = null;
 
-        foreach ($this->filters as $key => $filter) {
-            $this->filters[$key] = null;
-        }
+        $this->tableFilters = [];
     }
 
     /**
@@ -130,12 +128,12 @@ trait WithSavedSearches
      */
     public function getHasCustomFiltersProperty()
     {
-        if ($this->search) {
+        if ($this->tableSearchQuery) {
             return true;
         }
 
-        foreach ($this->filters as $filter) {
-            if ($filter) {
+        foreach ($this->tableFilters as $filter) {
+            if ($filter['value'] ?? null) {
                 return true;
             }
         }

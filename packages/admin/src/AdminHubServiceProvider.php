@@ -67,6 +67,14 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Tables\ChannelsTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\CurrenciesTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\CustomersTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\ProductsTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\ProductTypesTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\StaffTable;
+use GetCandy\Hub\Http\Livewire\Components\Tables\TaxZonesTable;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
@@ -362,6 +370,18 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.create', TaxZoneCreate::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
+    }
+
+    public function registerTableComponents()
+    {
+        Livewire::component('hub.components.tables.orders-table', OrdersTable::class);
+        Livewire::component('hub.components.tables.staff-table', StaffTable::class);
+        Livewire::component('hub.components.tables.products-table', ProductsTable::class);
+        Livewire::component('hub.components.tables.product-types-table', ProductTypesTable::class);
+        Livewire::component('hub.components.tables.channels-table', ChannelsTable::class);
+        Livewire::component('hub.components.tables.currencies-table', CurrenciesTable::class);
+        Livewire::component('hub.components.tables.tax-zones-table', TaxZonesTable::class);
+        Livewire::component('hub.components.tables.customers-table', CustomersTable::class);
     }
 
     /**
