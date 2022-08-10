@@ -122,53 +122,6 @@ class OrderShowTest extends TestCase
     }
 
     /** @test */
-    public function can_add_comment()
-    {
-        $staff = Staff::factory()->create([
-            'admin' => true,
-        ]);
-
-        $order = Order::factory()->create([
-            'user_id'   => null,
-            'placed_at' => now(),
-            'status' => 'awaiting-payment',
-            'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
-                'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
-        ]);
-
-        $this->assertCount(0, $order->lines);
-
-        OrderLine::factory()->create([
-            'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
-            'order_id' => $order->id,
-        ]);
-
-        LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order,
-        ])->assertSet('order.status', $order->status)
-        ->set('comment', 'Testing 123')
-        ->call('addComment')
-        ->assertHasNoErrors();
-
-        $this->assertDatabaseHas((new Activity)->getTable(), [
-            'event' => 'comment',
-            'subject_id' => $order->id,
-            'subject_type' => Order::class,
-            'causer_id' => $staff->id,
-            'properties' => json_encode([
-                'content' => 'Testing 123',
-            ]),
-        ]);
-    }
-
-    /** @test */
     public function billing_address_visibility_is_correct()
     {
         $staff = Staff::factory()->create([
