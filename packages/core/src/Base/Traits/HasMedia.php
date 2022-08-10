@@ -26,7 +26,7 @@ trait HasMedia
     {
         $transforms = config('getcandy.media.transformations');
 
-        if (str_contains('image', $media->mime_type)) {
+        if (str_contains('image', $media?->mime_type)) {
             collect($transforms)->each(function ($transform, $handle) {
                 $conversion = $this->addMediaConversion($handle)
                         ->fit(
