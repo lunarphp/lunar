@@ -230,8 +230,7 @@ trait WithAttributes
     /**
      * Handle attributes updated event.
      *
-     * @param array $event
-     *
+     * @param  array  $event
      * @return void
      */
     public function updatedAttributes($event)
