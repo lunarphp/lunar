@@ -54,7 +54,7 @@ class CustomModel extends BaseModel
 
 ### Removal of Saved Carts - Medium Impact
 
-Saved Carts have now been removed as they aren't a necessity to the function of a storefront.
+Saved Carts have now been removed as they are not a necessity to the function of a storefront.
 If you currently use this feature, you will need to either publish the migrations before updating or add the migration to your own app:
 
 ```php
@@ -130,7 +130,7 @@ Finally, you will need to define a dynamic relationship if your service provider
 
 ### Removal of `override` method for OrderReferenceGenerator - Medium Impact
 
-If you're using the `override` method to generator your own order references, this has been removed in favour of a config based approach. 
+If you are using the `override` method to generator your own order references, this has been removed in favour of a config based approach. 
 You should update your code to reflect this, see [Orders](/getcandy/orders#order-reference-generating)
 
 ## 2.0-beta13.2

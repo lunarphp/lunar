@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-### [Unreleased]
+### 2.0-beta14 - 2022-08-03
 
 ### Added
 
 - Migrations are now publishable under the tag `getcandy-migrations`
+
+### Fixed
+
+- FieldTypes which have an empty value will now return suitable defaults.
+- Issues with floating point rounding on prices should now be resolved.
+- `$meta` will now be casted to an `array` correctly when updating a `CartLine`.
+- `macros` on models now reference the correct class to prevent side effects.
 
 ### Changed
 
@@ -16,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Removed macro functionality from the `BaseModel` into it's own trait.
 - The `last_four` column on transactions is now nullable.
 - The `override` method for Order reference generators has been removed in favour of a config based approach.
+- The OrderReferenceGenerator has now been moved into the config to be more inline with future releases
 
 ## 2.0-beta13 - 2022-05-19
 
