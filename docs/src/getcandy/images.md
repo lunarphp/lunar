@@ -66,7 +66,7 @@ class StorefrontConversions
 
 For the full reference on what's possible, see [Defining Conversions](https://spatie.be/docs/laravel-medialibrary/v10/converting-images/defining-conversions).
 
-Afterwards, simply replace the conversion class we provide with your own.
+Afterwards, simply add your conversion class to the `conversions` array, if you have no use for the standard ones we provide, simply remove the `StandardMediaConversions` reference.
 
 ```php
 <?php
