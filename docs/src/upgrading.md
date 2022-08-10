@@ -30,7 +30,7 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-## [Unreleased]
+### 2.0-beta15
 
 ## Removal of config based media conversions
 
