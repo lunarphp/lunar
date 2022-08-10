@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+### [Unreleased]
+
+### Changed
+
+- You can now specify how media conversions will work via a class in the config.
+
 ### 2.0-beta14 - 2022-08-03
 
 ### Added
