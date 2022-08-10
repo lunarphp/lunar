@@ -4,6 +4,6 @@ use GetCandy\Base\StandardMediaConversions;
 
 return [
     'conversions' => [
-        StandardMediaConversions::class
+        StandardMediaConversions::class,
     ],
 ];
