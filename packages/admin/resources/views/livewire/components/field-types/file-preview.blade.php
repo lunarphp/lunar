@@ -1,3 +1,0 @@
-<div>
-  File preview
-</div>

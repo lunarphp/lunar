@@ -1,6 +1,6 @@
 <div class="space-y-4">
   <x-hub::input.group
-    label="Max files"
+    :label="__('adminhub::fieldtypes.file.max_files.label')"
     for="max_files"
     :error="$errors->first('attribute.configuration.max_files')"
     :disabled="!!$attribute->system"

@@ -64,7 +64,6 @@
                 </label>
 
                 @forelse($this->assets as $asset)
-                    {{-- @if (!str_starts_with('image', $media->mime_type)) --}}
                     <label @class([
                         'border rounded-md cursor-pointer p-6 hover:border-blue-500',
                         'border-blue-500' => in_array($asset->id, $selected),
@@ -88,9 +87,8 @@
                                class="hidden"
                                value="{{ $asset->id }}" />
                     </label>
-                    {{-- @endif --}}
                 @empty
-                    Files you upload will appear here.
+                    {{ __('adminhub::fieldtypes.file.uploads_empty') }}
                 @endforelse
             </div>
         </x-slot>
@@ -106,7 +104,7 @@
                 <x-hub::button type="button"
                                :disabled="!count($selected)"
                                wire:click.prevent="process">
-                    Select files
+                    {{ __('adminhub::fieldtypes.file.select_files') }}
                 </x-hub::button>
             </div>
         </x-slot>

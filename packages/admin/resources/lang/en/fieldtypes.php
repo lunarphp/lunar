@@ -19,4 +19,8 @@ return [
     'youtube.label'              => 'YouTube Video',
     'richtext.config'            => 'You can you enter any available configuration below supported by :url.',
     'file.label'                 => 'File Upload',
+    'file.max_files.label'      => 'Max Files',
+    'file.choose_assets'        => 'Choose Assets',
+    'file.uploads_empty'        => 'Files you upload will appear here.',
+    'file.select_files'         => 'Select files',
 ];

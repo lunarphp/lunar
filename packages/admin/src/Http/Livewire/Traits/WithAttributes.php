@@ -227,6 +227,13 @@ trait WithAttributes
         return $messages;
     }
 
+    /**
+     * Handle attributes updated event.
+     *
+     * @param array $event
+     *
+     * @return void
+     */
     public function updatedAttributes($event)
     {
         $key = str_replace(
@@ -240,7 +247,6 @@ trait WithAttributes
         $field['data'] = $event['data'];
 
         $this->attributeMapping->put($key, $field);
-        // dd($data);
     }
 
     /**

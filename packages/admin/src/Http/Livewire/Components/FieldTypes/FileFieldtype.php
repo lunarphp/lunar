@@ -11,16 +11,44 @@ class FileFieldtype extends Component
 {
     use WithFileUploads;
 
+    /**
+     * Whether to show the uploader
+     *
+     * @var bool
+     */
     public $showUploader = false;
 
+    /**
+     * The file to upload.
+     *
+     * @var UploadedFile
+     */
     public $file = null;
 
+    /**
+     * Maximum number of files to upload.
+     *
+     * @var int
+     */
     public $maxFiles = 1;
 
+    /**
+     * Array of selected assets
+     *
+     * @var array
+     */
     public array $selected = [];
 
+    /**
+     * The unique signature for the component.
+     *
+     * @var string
+     */
     public $signature;
 
+    /**
+     * {@inheritDoc}
+     */
     public function rules()
     {
         return [
@@ -28,6 +56,11 @@ class FileFieldtype extends Component
         ];
     }
 
+    /**
+     * Listener for when the file is updated.
+     *
+     * @return void
+     */
     public function updatedFile()
     {
         DB::transaction(function () {
@@ -41,6 +74,11 @@ class FileFieldtype extends Component
         });
     }
 
+    /**
+     * Process the file upload.
+     *
+     * @return void
+     */
     public function process()
     {
         $this->emit('updatedAttributes', [
@@ -49,14 +87,23 @@ class FileFieldtype extends Component
         ]);
 
         $this->showUploader = false;
-        // dd($this->signature);
     }
 
+    /**
+     * Return the available assets.
+     *
+     * @return Collection
+     */
     public function getAssetsProperty()
     {
         return Asset::get();
     }
 
+    /**
+     * Return the asset models that have been selected.
+     *
+     * @return Colletion
+     */
     public function getSelectedModelsProperty()
     {
         return Asset::with(['file'])->findMany(
@@ -64,6 +111,13 @@ class FileFieldtype extends Component
         );
     }
 
+    /**
+     * Remove the selected asset.
+     *
+     * @param int $id
+     *
+     * @return void
+     */
     public function removeSelected($id)
     {
         $index = collect($this->selected)->search($id);
