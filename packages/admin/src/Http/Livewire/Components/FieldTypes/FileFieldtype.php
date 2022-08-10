@@ -12,7 +12,7 @@ class FileFieldtype extends Component
     use WithFileUploads;
 
     /**
-     * Whether to show the uploader
+     * Whether to show the uploader.
      *
      * @var bool
      */
@@ -33,7 +33,7 @@ class FileFieldtype extends Component
     public $maxFiles = 1;
 
     /**
-     * Array of selected assets
+     * Array of selected assets.
      *
      * @var array
      */
@@ -114,8 +114,7 @@ class FileFieldtype extends Component
     /**
      * Remove the selected asset.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return void
      */
     public function removeSelected($id)
