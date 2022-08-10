@@ -535,29 +535,6 @@ class OrderShow extends Component
     }
 
     /**
-     * Add a comment to the order.
-     *
-     * @return void
-     */
-    public function addComment()
-    {
-        activity()
-            ->performedOn($this->order)
-            ->causedBy(
-                auth()->user()
-            )
-            ->event('comment')
-            ->withProperties(['content' => $this->comment])
-            ->log('comment');
-
-        $this->notify(
-            __('adminhub::notifications.order.comment_added')
-        );
-
-        $this->comment = '';
-    }
-
-    /**
      * Render the livewire component.
      *
      * @return \Illuminate\View\View
