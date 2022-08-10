@@ -42,7 +42,9 @@ The way media conversions are defined and used has changed, you should update yo
 use GetCandy\Base\StandardMediaConversions;
 
 return [
-    'conversions' => StandardMediaConversions::class,
+    'conversions' => [
+        StandardMediaConversions::class
+    ],
 ];
 ```
 

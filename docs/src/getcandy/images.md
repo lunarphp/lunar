@@ -43,7 +43,9 @@ For more information on what's available, see [Retrieving media](https://spatie.
 GetCandy provides some useful conversions which come ready out the box. This is provided in the config `getcandy/media`.
 
 ```php
-'conversions' => \GetCandy\Base\StandardMediaConversions::class,
+'conversions' => [
+    \GetCandy\Base\StandardMediaConversions::class,
+],
 ```
 
 You are free to use your own class to define your own conversions, just remember we will still apply our own `small` conversion as we need it in the hub.
@@ -67,7 +69,14 @@ For the full reference on what's possible, see [Defining Conversions](https://sp
 Afterwards, simply replace the conversion class we provide with your own.
 
 ```php
-'conversions' => \App\Media\Conversions\StorefrontConversions::class,
+<?php
+
+return [
+    'conversions' => [
+        \GetCandy\Base\StandardMediaConversions::class,
+        \App\Media\Conversions\StorefrontConversions::class
+    ],
+];
 ```
 
 To regenerate conversions, e.g. if you have changed the configuration, you can run the following command.
