@@ -6,7 +6,6 @@ use GetCandy\Base\StandardMediaConversions;
 use GetCandy\Models\Product;
 use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Http\UploadedFile;
 
 /**
