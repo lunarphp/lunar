@@ -24,7 +24,7 @@ trait HasMedia
 
     public function registerMediaConversions(Media $media = null): void
     {
-        $conversionClass = config('getcandy.media.conversions');
+        $conversionClass = config('getcandy.media.conversions', null);
 
         if ($conversionClass) {
             app($conversionClass)->apply($this);
