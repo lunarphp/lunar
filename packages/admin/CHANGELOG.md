@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Comments should now show correctly on product editing pages.
 - Sortable is now attached to the browser window so it's globally available.
 - Fixed an issue where incorrect attributes were showing when changing product types
+- `doctrine/dbal` locked to `3.3.7` due to issue with Sqlite
 
 ### 2.0-beta14 - 2022-08-03
 

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 2.0-beta15 - 2022-08-10
 
+### Fixed
+
+- `doctrine/dbal` locked to `3.3.7` due to issue with Sqlite
+
 ### Changed
 
 - You can now specify how media conversions will work via a class in the config.
