@@ -52,21 +52,6 @@ class ProductTest extends TestCase
     }
 
     /** @test */
-    public function has_image_transformations_loaded_from_config()
-    {
-        $collection = Product::factory()->create();
-        $collection->registerAllMediaConversions();
-
-        $conversions = $collection->mediaConversions;
-
-        $this->assertIsArray($conversions);
-
-        $transforms = config('getcandy.media.transformations');
-
-        $this->assertCount(count($transforms), $conversions);
-    }
-
-    /** @test */
     public function new_product_has_channel_associations()
     {
         Channel::factory(4)->create();
