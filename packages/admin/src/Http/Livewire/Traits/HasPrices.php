@@ -9,9 +9,9 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Price;
 use GetCandy\Models\TaxClass;
 use GetCandy\Rules\MaxDecimalPlaces;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Collection;
 
 trait HasPrices
 {
@@ -84,11 +84,10 @@ trait HasPrices
     }
 
     /**
-     * Save pricing
+     * Save pricing.
      *
-     * @param Collection|null $basePrices
-     * @param Collecton|null $tierPrices
-     *
+     * @param  Collection|null  $basePrices
+     * @param  Collecton|null  $tierPrices
      * @return void
      */
     public function savePricing(Collection $basePrices = null, Collection $tierPrices = null)

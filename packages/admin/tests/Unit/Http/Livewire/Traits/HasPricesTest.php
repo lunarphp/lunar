@@ -93,7 +93,6 @@ class HasPricesTest extends TestCase
             ];
         }
 
-
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
                 'product' => $product,
