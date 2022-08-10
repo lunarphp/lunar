@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### [Unreleased]
 
+## Changed
+
+- `savePricing` on the `GetCandy\Hub\Http\Livewire\Traits\HasPrices` trait now supports `basePrices` and `tierPrices` parameters.
+
 ## Fixed
 
 - When variants are disabled, editing a product type will not longer display tabs for variant attributes.
