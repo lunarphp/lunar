@@ -84,24 +84,26 @@ trait HasPrices
     }
 
     /**
-     * Method to save pricing.
+     * Save pricing.
      *
+     * @param  Collection|null  $basePrices
+     * @param  Collecton|null  $tierPrices
      * @return void
      */
-    public function savePricing()
+    public function savePricing(Collection $basePrices = null, Collection $tierPrices = null)
     {
         $model = $this->getPricedModel();
 
-        DB::transaction(function () use ($model) {
+        DB::transaction(function () use ($model, $basePrices) {
             app(UpdatePrices::class)->execute(
                 $model,
-                $this->basePrices
+                $basePrices ?: $this->basePrices
             );
         });
 
         $this->tieredPrices = app(UpdateTieredPricing::class)->execute(
             $model,
-            $this->tieredPrices
+            $tierPrices ?: $this->tieredPrices
         );
 
         DB::transaction(function () use ($model) {
