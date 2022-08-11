@@ -32,12 +32,20 @@ class ProductsTableTest extends TestCase
     public function can_see_base_columns()
     {
         $products = Product::factory(10)->create();
-        Livewire::test(ProductsTable::class)
-            ->assertCanRenderTableColumn('status')
-            ->assertCanRenderTableColumn('thumbnail')
-            ->assertCanRenderTableColumn('name')
-            ->assertCanRenderTableColumn('brand')
-            ->assertCanRenderTableColumn('productType.name')
-            ->assertCanRenderTableColumn('sku');
+
+        $columns = [
+          'status',
+          'thumbnail',
+          'name',
+          'brand',
+          'productType.name',
+          'sku'
+        ];
+
+        $table = Livewire::test(ProductsTable::class);
+
+        foreach ($columns as $column) {
+            $table->assertCanRenderTableColumn($column);
+        }
     }
 }
