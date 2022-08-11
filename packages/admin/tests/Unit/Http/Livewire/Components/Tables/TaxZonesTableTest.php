@@ -34,10 +34,10 @@ class TaxZonesTableTest extends TestCase
         TaxZone::factory(10)->create();
 
         $columns = [
-          'default',
-          'name',
-          'zone_type',
-          'active',
+            'default',
+            'name',
+            'zone_type',
+            'active',
         ];
 
         $table = Livewire::test(TaxZonesTable::class);
