@@ -68,7 +68,15 @@ class SettingsMenu
                  ->icon('currency-pound');
         });
 
-        $storeSection->addItem(function (MenuLink $item) {
+        $storeSection->addItem(function ($item) {
+            $item->name('Taxes')
+                ->handle('hub.taxes')
+                ->route('hub.taxes.index')
+                ->gate('settings:core')
+                ->icon('receipt-tax');
+        });
+
+        $storeSection->addItem(function ($item) {
             $item->name('Languages')
                  ->handle('hub.languages')
                  ->route('hub.languages.index')

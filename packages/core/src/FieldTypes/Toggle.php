@@ -40,7 +40,7 @@ class Toggle implements FieldType, JsonSerializable
      */
     public function __toString()
     {
-        return $this->getValue();
+        return $this->getValue() ?? '';
     }
 
     /**
@@ -64,7 +64,7 @@ class Toggle implements FieldType, JsonSerializable
             throw new FieldTypeException(self::class.' value must be a string or boolean.');
         }
 
-        $this->value = $value;
+        $this->value = $value ?: false;
     }
 
     /**

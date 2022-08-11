@@ -285,6 +285,10 @@
                 </x-hub::table.heading>
 
                 <x-hub::table.heading>
+                    {{ __('adminhub::global.billing_email') }}
+                </x-hub::table.heading>
+
+                <x-hub::table.heading>
                     {{ __('adminhub::global.total') }}
                 </x-hub::table.heading>
 
@@ -323,7 +327,16 @@
                         </x-hub::table.cell>
 
                         <x-hub::table.cell>
-                            {{ $order->billingAddress->first_name }}
+                            {{ $order->billingAddress->fullName }}
+                            @if($order->billingAddress->company_name)
+                              <span class="text-xs text-gray-500 block">
+                                {{ $order->billingAddress->company_name }}
+                              </span>
+                            @endif
+                        </x-hub::table.cell>
+
+                        <x-hub::table.cell>
+                          {{ $order->billingAddress->contact_email }}
                         </x-hub::table.cell>
 
                         <x-hub::table.cell>

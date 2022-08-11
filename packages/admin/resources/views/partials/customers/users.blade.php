@@ -24,6 +24,12 @@
               <x-hub::dropdown.button wire:click="$set('userIdToRemove', {{ $user->id }})">
                 Remove User
               </x-hub::dropdown.button>
+
+              @if(impersonate_link($user))
+                <x-hub::dropdown.link href="{{ impersonate_link($user) }}" target="_blank" nofollow>
+                  Impersonate
+                </x-hub::dropdown.link>
+              @endif
             </x-slot>
           </x-hub::dropdown>
         </div>

@@ -20,6 +20,10 @@ use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagsIndex;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxClassesIndex;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneCreate;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneShow;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZonesIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -108,6 +112,7 @@ Route::group([
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
 });
 
+
 /**
  * Product features routes.
  */
@@ -116,4 +121,17 @@ Route::group([
     'prefix'     => 'product',
 ], function () {
     Route::get('features', FeaturesIndex::class)->name('hub.product.features.index');
+});
+
+/**
+ * Taxes.
+ */
+Route::group([
+   'middleware' => 'can:settings:core',
+   'prefix'     => 'taxes',
+], function () {
+   Route::get('/tax-zones', TaxZonesIndex::class)->name('hub.taxes.index');
+   Route::get('/tax-zones/create', TaxZoneCreate::class)->name('hub.taxes.create');
+   Route::get('/tax-zones/{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
+   Route::get('/tax-classes', TaxClassesIndex::class)->name('hub.taxes.tax-classes.index');
 });

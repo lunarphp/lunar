@@ -17,4 +17,5 @@ return [
     'toggle.on_label'            => 'On Value',
     'toggle.off_label'           => 'Off Value',
     'youtube.label'              => 'YouTube Video',
+    'richtext.config'            => 'You can you enter any available configuration below supported by :url.',
 ];
