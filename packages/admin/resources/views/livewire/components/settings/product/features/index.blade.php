@@ -95,9 +95,6 @@
                                                  class="mr-2 text-gray-400 hover:text-gray-700" />
                                 </div>
                                 <span class="truncate grow">{{ $featureValue->translate('name') }}</span>
-                                <div class="mr-4 text-xs text-gray-500">
-                                    {{ class_basename($featureValue->type) }}
-                                </div>
                                 <div>
                                     <x-hub::dropdown minimal>
                                         <x-slot name="options">
