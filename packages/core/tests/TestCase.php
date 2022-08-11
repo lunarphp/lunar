@@ -9,6 +9,8 @@ use GetCandy\Tests\Stubs\User;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
+use Spatie\LaravelBlink\BlinkServiceProvider;
+use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -30,6 +32,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ActivitylogServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
+            BlinkServiceProvider::class,
         ];
     }
 

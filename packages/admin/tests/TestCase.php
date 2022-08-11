@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
+use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -37,6 +38,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             MediaLibraryServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
+            BlinkServiceProvider::class,
         ];
     }
 
