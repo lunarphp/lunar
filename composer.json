@@ -19,7 +19,7 @@
         "livewire/livewire": "^2.0",
         "php": "^8.0",
         "spatie/laravel-activitylog": "^4.4",
-        "spatie/laravel-blink": "^1.6.*",
+        "spatie/laravel-blink": "^1.6",
         "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
         "yab/laravel-scout-mysql-driver": "^5.0"
     },
