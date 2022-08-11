@@ -38,56 +38,55 @@ $product->getMedia();
 ```
 For more information on what's available, see [Retrieving media](https://spatie.be/docs/laravel-medialibrary/v9/basic-usage/retrieving-media)
 
-## Transformations
+## Conversions
 
-We will automatically generate optimised versions of the uploaded image in pre-defined transformations.
+GetCandy provides some useful conversions which come ready out the box. This is provided in the config `getcandy/media`.
 
-To regenerate transformations, e.g. if you have changed the configuration, you can run the following command.
+```php
+'conversions' => [
+    \GetCandy\Base\StandardMediaConversions::class,
+],
+```
 
+You are free to use your own class to define your own conversions, just remember we will still apply our own `small` conversion as we need it in the hub.
+
+Your own class could look something like:
+
+```
+namespace App\Media\Conversions;
+
+class StorefrontConversions
+{
+    public function apply($model)
+    {
+        // .. Register spatie media conversions here...
+    }
+}
+```
+
+For the full reference on what's possible, see [Defining Conversions](https://spatie.be/docs/laravel-medialibrary/v10/converting-images/defining-conversions).
+
+Afterwards, simply add your conversion class to the `conversions` array, if you have no use for the standard ones we provide, simply remove the `StandardMediaConversions` reference.
+
+```php
+<?php
+
+return [
+    'conversions' => [
+        \GetCandy\Base\StandardMediaConversions::class,
+        \App\Media\Conversions\StorefrontConversions::class
+    ],
+];
+```
+
+To regenerate conversions, e.g. if you have changed the configuration, you can run the following command.
 
 ```sh
 php artisan media-library:regenerate
-
 ```
 
 This will create queue jobs for each media entry to be re-processed. More information can be found on the [medialibrary website](https://spatie.be/docs/laravel-medialibrary/v9/converting-images/regenerating-images)
 
-
-GetCandy has their own set of transformations which are used throughout the system, stored in `config/getcandy/media.php`.
-
-### Available options
-Each transformation definition accepts the following options
-
-|Key|Type|Description|Example|Default|
-|:-|:-|:-|:-|:-|
-|`width`|`integer`|The width of the transformation.|`500`|`null`
-|`height`|`integer`|The height of the transformation.|`400`|`null`
-|`collections`|`array`|An array of collections to limit the transformations to, by default they run across all of them.|`['images']`|`null`
-|`border`|`array`|If you want to add a border to the image, define that here. For more information on the types available, see the [medialibrary website](https://spatie.be/docs/image/v1/image-manipulations/image-canvas#border)|See below|`null`
-|`fit`|`string`|Specify how you want the image transformation to fit within the given width/height see [medialibrary website](https://spatie.be/docs/image/v1/image-manipulations/resizing-images#fit) for more info|See below|`FIT_CONTAIN`
-
-```php
-'transformations' => [
-    'zoom' => [
-        // ...
-        'border' => [
-            'size' => 10,
-            'color' => 'black', // Can also be any HEX value
-            'type' => \Spatie\Image\Manipulations::BORDER_OVERLAY
-        ],
-        'fit' => \Spatie\Image\Manipulations::FIT_CONTAIN
-    ],
-    'large' => [
-        // ...
-    ],
-    'medium' => [
-        // ...
-    ],
-    'small' => [
-        // ...
-    ],
-],
-```
 
 ## Extending
 

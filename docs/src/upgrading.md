@@ -30,6 +30,24 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
+### 2.0-beta15
+
+## Removal of config based media conversions
+
+The way media conversions are defined and used has changed, you should update your `getcandy/media.php` config file to the following:
+
+```php
+<?php
+
+use GetCandy\Base\StandardMediaConversions;
+
+return [
+    'conversions' => [
+        StandardMediaConversions::class
+    ],
+];
+```
+
 ## 2.0-beta14
 
 ### Removal of Macro functionality from BaseModel - Low Impact
@@ -130,7 +148,7 @@ Finally, you will need to define a dynamic relationship if your service provider
 
 ### Removal of `override` method for OrderReferenceGenerator - Medium Impact
 
-If you are using the `override` method to generator your own order references, this has been removed in favour of a config based approach. 
+If you are using the `override` method to generator your own order references, this has been removed in favour of a config based approach.
 You should update your code to reflect this, see [Orders](/getcandy/orders#order-reference-generating)
 
 ## 2.0-beta13.2
