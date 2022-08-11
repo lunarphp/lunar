@@ -38,6 +38,7 @@
         "laravel/framework": "^8.0|^9.0",
         "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
         "spatie/laravel-activitylog": "^4.4",
+        "spatie/laravel-blink": "^1.6.*",
         "laravel/scout": "^9.4",
         "cartalyst/converter": "^6.1|^7.0",
         "yab/laravel-scout-mysql-driver": "^5.0",
