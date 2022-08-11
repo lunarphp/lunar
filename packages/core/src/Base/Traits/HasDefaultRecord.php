@@ -26,7 +26,8 @@ trait HasDefaultRecord
     public static function getDefault()
     {
         $key = 'getcandy_default_'.Str::snake(self::class);
-        return Blink::once($key, function() {
+
+        return Blink::once($key, function () {
             return self::query()->default(true)->first();
         });
     }
