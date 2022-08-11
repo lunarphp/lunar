@@ -3,7 +3,7 @@
 namespace GetCandy\Base\Traits;
 
 use Illuminate\Support\Str;
-use Spatie\LaravelBlink\BlinkFacade as Blink;
+use Spatie\Blink\Blink;
 
 trait HasDefaultRecord
 {
@@ -27,7 +27,7 @@ trait HasDefaultRecord
     {
         $key = 'getcandy_default_'.Str::snake(self::class);
 
-        return Blink::once($key, function () {
+        return (new Blink)->once($key, function () {
             return self::query()->default(true)->first();
         });
     }
