@@ -79,6 +79,7 @@ class ProductsTable extends GetCandyTable
     {
         return [
             BulkAction::make('delete')
+            ->requiresConfirmation()
             ->action(fn (Collection $records) => $records->each->delete()),
         ];
     }
