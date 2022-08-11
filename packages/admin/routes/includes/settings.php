@@ -112,7 +112,6 @@ Route::group([
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
 });
 
-
 /**
  * Product features routes.
  */
@@ -127,11 +126,11 @@ Route::group([
  * Taxes.
  */
 Route::group([
-   'middleware' => 'can:settings:core',
-   'prefix'     => 'taxes',
+    'middleware' => 'can:settings:core',
+    'prefix'     => 'taxes',
 ], function () {
-   Route::get('/tax-zones', TaxZonesIndex::class)->name('hub.taxes.index');
-   Route::get('/tax-zones/create', TaxZoneCreate::class)->name('hub.taxes.create');
-   Route::get('/tax-zones/{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
-   Route::get('/tax-classes', TaxClassesIndex::class)->name('hub.taxes.tax-classes.index');
+    Route::get('/tax-zones', TaxZonesIndex::class)->name('hub.taxes.index');
+    Route::get('/tax-zones/create', TaxZoneCreate::class)->name('hub.taxes.create');
+    Route::get('/tax-zones/{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
+    Route::get('/tax-classes', TaxClassesIndex::class)->name('hub.taxes.tax-classes.index');
 });
