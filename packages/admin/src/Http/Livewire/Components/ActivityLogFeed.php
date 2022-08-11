@@ -3,14 +3,14 @@
 namespace GetCandy\Hub\Http\Livewire\Components;
 
 use GetCandy\Hub\Facades\ActivityLog;
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogFeed extends Component
 {
-    use WithPagination;
+    use WithPagination, Notifies;
 
     /**
      * The log subject to get activity for.
@@ -18,6 +18,46 @@ class ActivityLogFeed extends Component
      * @var \Illuminate\Database\Eloquent\Model
      */
     public Model $subject;
+
+    /**
+     * The new comment for the subject.
+     *
+     * @var string|null
+     */
+    public ?string $comment = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rules()
+    {
+        return [
+            'comment' => 'string|required',
+        ];
+    }
+
+    /**
+     * Add a comment to the order.
+     *
+     * @return void
+     */
+    public function addComment()
+    {
+        activity()
+            ->performedOn($this->subject)
+            ->causedBy(
+                auth()->user()
+            )
+            ->event('comment')
+            ->withProperties(['content' => $this->comment])
+            ->log('comment');
+
+        $this->notify(
+            __('adminhub::notifications.order.comment_added')
+        );
+
+        $this->comment = null;
+    }
 
     /**
      * Returns the activity log for the order.
