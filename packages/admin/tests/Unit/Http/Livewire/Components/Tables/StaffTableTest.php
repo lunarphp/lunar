@@ -2,11 +2,9 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Tables\ProductTypesTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\StaffTable;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\ProductType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
