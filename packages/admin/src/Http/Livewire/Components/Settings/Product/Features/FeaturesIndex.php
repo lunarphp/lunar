@@ -194,7 +194,7 @@ class FeaturesIndex extends Component
     /**
      * Return the feature value to edit.
      *
-     * @return \GetCandy\Models\Attribute
+     * @return \GetCandy\Models\ProductFeatureValue
      */
     public function getFeatureValueToEditProperty()
     {
@@ -218,7 +218,9 @@ class FeaturesIndex extends Component
      */
     public function resetGroupEdit()
     {
+        $this->deleteFeatureId = null;
         $this->editFeatureId = null;
+        $this->refreshGroups();
     }
 
     /**
@@ -230,6 +232,7 @@ class FeaturesIndex extends Component
     {
         $this->featureValueToDelete = null;
         $this->valueCreateFeatureId = null;
+        $this->deleteFeatureValueId = null;
         $this->editFeatureValueId = null;
         $this->refreshGroups();
     }
@@ -250,6 +253,25 @@ class FeaturesIndex extends Component
         );
 
         $this->resetFeatureValueEdit();
+    }
+
+    /**
+     * Delete the feature value.
+     *
+     * @return void
+     */
+    public function deleteFeature()
+    {
+        DB::transaction(function () {
+            $this->featureToDelete->values()->delete();
+            $this->featureToDelete->delete();
+        });
+
+        $this->notify(
+            __('adminhub::notifications.attributes.deleted')
+        );
+
+        $this->resetGroupEdit();
     }
 
     /**
