@@ -34,12 +34,12 @@ class ProductsTableTest extends TestCase
         $products = Product::factory(10)->create();
 
         $columns = [
-          'status',
-          'thumbnail',
-          'name',
-          'brand',
-          'productType.name',
-          'sku'
+            'status',
+            'thumbnail',
+            'name',
+            'brand',
+            'productType.name',
+            'sku',
         ];
 
         $table = Livewire::test(ProductsTable::class);

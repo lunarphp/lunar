@@ -2,12 +2,9 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Tables\ChannelsTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\CustomersTable;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Customer;
-use GetCandy\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -37,11 +34,11 @@ class CustomersTableTest extends TestCase
         Customer::factory(10)->create();
 
         $columns = [
-          'fullName',
-          'company_name',
-          'vat_no',
-          'orders_count',
-          'users_count',
+            'fullName',
+            'company_name',
+            'vat_no',
+            'orders_count',
+            'users_count',
         ];
 
         $table = Livewire::test(CustomersTable::class);

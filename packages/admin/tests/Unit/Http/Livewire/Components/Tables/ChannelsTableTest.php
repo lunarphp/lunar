@@ -5,7 +5,6 @@ namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
 use GetCandy\Hub\Http\Livewire\Components\Tables\ChannelsTable;
 use GetCandy\Hub\Tests\TestCase;
 use GetCandy\Models\Channel;
-use GetCandy\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -35,10 +34,10 @@ class ChannelsTableTest extends TestCase
         Channel::factory(10)->create();
 
         $columns = [
-          'default',
-          'name',
-          'handle',
-          'url',
+            'default',
+            'name',
+            'handle',
+            'url',
         ];
 
         $table = Livewire::test(ChannelsTable::class);

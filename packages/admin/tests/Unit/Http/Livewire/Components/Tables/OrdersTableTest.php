@@ -2,11 +2,9 @@
 
 namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Tables\ChannelsTable;
 use GetCandy\Hub\Http\Livewire\Components\Tables\OrdersTable;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\Order;
@@ -60,13 +58,13 @@ class OrdersTableTest extends TestCase
         Order::factory(10)->create();
 
         $columns = [
-          'status',
-          'reference',
-          'billingAddress.fullName',
-          'billingAddress.company_name',
-          'billingAddress.contact_email',
-          'total',
-          'placed_at',
+            'status',
+            'reference',
+            'billingAddress.fullName',
+            'billingAddress.company_name',
+            'billingAddress.contact_email',
+            'total',
+            'placed_at',
         ];
 
         $staff = Staff::factory()->create([
