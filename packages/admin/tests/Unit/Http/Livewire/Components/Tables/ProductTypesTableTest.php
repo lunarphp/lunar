@@ -34,9 +34,9 @@ class ProductTypesTableTest extends TestCase
         ProductType::factory(10)->create();
 
         $columns = [
-          'name',
-          'mapped_attributes_count',
-          'products_count',
+            'name',
+            'mapped_attributes_count',
+            'products_count',
         ];
 
         $table = Livewire::test(ProductTypesTable::class);
