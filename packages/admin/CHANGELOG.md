@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+### 2.0-beta15.1 - 2022-08-12
+
+### Fixed
+
+- Moved the activity log on product variants outside the form element as this was conflicting.
+- ProductVariants now have comments enabled.
+
 ### 2.0-beta15 - 2022-08-10
 
 ## Changed
