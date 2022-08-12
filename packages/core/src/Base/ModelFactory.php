@@ -41,7 +41,6 @@ class ModelFactory
     {
         foreach ($models as $baseModelClass => $modelClass) {
             static::validateInteractsWithEloquent($baseModelClass);
-            static::validateClassIsEloquentModel($modelClass);
             static::$models[$baseModelClass] = $modelClass;
         }
     }
@@ -69,21 +68,6 @@ class ModelFactory
         }
 
         return array_keys(static::$models);
-    }
-
-    /**
-     * Validate class is an eloquent model.
-     *
-     * @param  string  $class
-     * @return void
-     *
-     * @throws \InvalidArgumentException
-     */
-    private static function validateClassIsEloquentModel(string $class): void
-    {
-        if (! is_subclass_of($class, Model::class)) {
-            throw new \InvalidArgumentException(sprintf('Given [%s] is not a subclass of [%s].', $class, Model::class));
-        }
     }
 
     /**
