@@ -30,8 +30,8 @@ trait InteractsWithEloquentModel
 
     /**
      * Swap the model implementation.
-     * @param  \Illuminate\Database\Eloquent\Model|null  $model
      *
+     * @param  \Illuminate\Database\Eloquent\Model|null  $model
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function swap(Model $model = null): Model
@@ -41,8 +41,8 @@ trait InteractsWithEloquentModel
 
     /**
      * Swap the model implementation via static method.
-     * @param  \Illuminate\Database\Eloquent\Model|null  $model
      *
+     * @param  \Illuminate\Database\Eloquent\Model|null  $model
      * @return \Illuminate\Database\Eloquent\Model
      */
     public static function swapStatic(Model $model = null): Model
