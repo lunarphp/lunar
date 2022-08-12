@@ -75,13 +75,13 @@ class InteractsWithEloquentModelTest extends TestCase
     public function can_swap_scout_call_with_extended_model()
     {
         $product = Product::find(1);
-        $this->assertFalse($product->swap()->shouldBeSearchable());
+        $this->assertTrue($product->swap()->shouldBeSearchable());
     }
 
     /** @test */
     public function can_swap_static_call_with_extended_model()
     {
-        $this->assertFalse(Product::swapStatic()->shouldBeSearchable());
+        $this->assertTrue(Product::swapStatic()->shouldBeSearchable());
     }
 
     /** @test */
