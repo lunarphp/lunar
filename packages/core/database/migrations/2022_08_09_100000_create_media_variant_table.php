@@ -1,7 +1,6 @@
 <?php
 
 use GetCandy\Base\Migration;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
