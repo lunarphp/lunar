@@ -16,13 +16,38 @@ trait InteractsWithEloquentModel
      */
     public function __call($method, $parameters)
     {
-        $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
+        if (str_starts_with($method, '__')) {
+            $method = substr($method, 2);
+        }
 
+        $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
         if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || ! $this->forwardCallsWhen($method, $model)) {
             return parent::__call($method, $parameters);
         }
 
         return $this->forwardCallTo($model, $method, $parameters);
+    }
+
+    /**
+     * Swap the model implementation.
+     * @param  \Illuminate\Database\Eloquent\Model|null  $model
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function swap(Model $model = null): Model
+    {
+        return $model ?? ModelFactory::getInstance()->getRegisteredModel(get_called_class());
+    }
+
+    /**
+     * Swap the model implementation via static method.
+     * @param  \Illuminate\Database\Eloquent\Model|null  $model
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public static function swapStatic(Model $model = null): Model
+    {
+        return $model ?? ModelFactory::getInstance()->getRegisteredModel(get_called_class());
     }
 
     /**
