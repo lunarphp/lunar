@@ -16,10 +16,10 @@ use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 use Spatie\Activitylog\Facades\LogBatch;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 
@@ -239,10 +239,9 @@ class VariantShow extends Component
                 $media->save();
 
                 $imagesToSync[$media->id] = [
-                    'primary' => $image['primary']
+                    'primary' => $image['primary'],
                 ];
             }
-
 
             $this->variant->images()->sync($imagesToSync);
 
