@@ -21,6 +21,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Livewire\TemporaryUploadedFile;
 use Spatie\Activitylog\Facades\LogBatch;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 
 class VariantShow extends Component
 {
@@ -46,34 +47,6 @@ class VariantShow extends Component
      * @var \GetCandy\Models\ProductVariant
      */
     public ProductVariant $variant;
-
-    /**
-     * The new image we want to use for the variant.
-     *
-     * @var null|\Spatie\MediaLibrary\MediaCollections\Models\Media|\Livewire\TemporaryUploadedFile
-     */
-    public $image = null;
-
-    /**
-     * The image we want to select from product images.
-     *
-     * @var null|string
-     */
-    public $imageToSelect = null;
-
-    /**
-     * Determines whether the image select modal is visible.
-     *
-     * @var bool
-     */
-    public $showImageSelectModal = false;
-
-    /**
-     * Whether the image should be removed on save.
-     *
-     * @var bool
-     */
-    public $removeImage = false;
 
     /**
      * Whether or not to show the delete confirm modal.
@@ -328,6 +301,16 @@ class VariantShow extends Component
     public function getHasDimensionsModel()
     {
         return $this->variant;
+    }
+
+    /**
+     * Return the product images.
+     *
+     * @return MediaCollection
+     */
+    public function getProductImagesProperty()
+    {
+        return $this->variant->product->media()->where('mime_type', 'LIKE', 'image%')->get();
     }
 
     /**
