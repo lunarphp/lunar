@@ -12,7 +12,6 @@ trait InteractsWithEloquentModel
      *
      * @param  array  $attributes
      * @param  bool  $exists
-     *
      * @return static|\Illuminate\Database\Eloquent\Model
      */
     public function newInstance($attributes = [], $exists = false): Model
@@ -23,6 +22,7 @@ trait InteractsWithEloquentModel
         }
 
         $model = ModelFactory::getInstance()->getRegisteredModel(get_class($model));
+
         return $model;
     }
 
