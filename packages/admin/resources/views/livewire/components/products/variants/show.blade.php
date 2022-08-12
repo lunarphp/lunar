@@ -192,6 +192,7 @@
             'existing' => $images,
             'wireModel' => 'imageUploadQueue',
             'filetypes' => ['image/*'],
+            'chooseFrom' => $this->productImages,
         ])
 
         @include('adminhub::partials.products.variants.identifiers')
