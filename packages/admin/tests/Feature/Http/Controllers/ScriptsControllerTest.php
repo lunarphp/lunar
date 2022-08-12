@@ -48,6 +48,8 @@ class ScriptsControllerTest extends TestCase
 
         $this->get(route('hub.assets.scripts', ['script' => $name]))
             ->assertStatus(500);
+
+        GetCandyHub::$scripts = [];
     }
 
     /** @test */
@@ -74,5 +76,7 @@ class ScriptsControllerTest extends TestCase
 
         // Remove the file after test
         unlink($path);
+
+        GetCandyHub::$scripts = [];
     }
 }

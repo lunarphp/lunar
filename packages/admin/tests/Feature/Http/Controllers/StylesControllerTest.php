@@ -48,6 +48,8 @@ class StylesControllerTest extends TestCase
 
         $this->get(route('hub.assets.styles', ['style' => $name]))
             ->assertStatus(500);
+
+        GetCandyHub::$styles = [];
     }
 
     /** @test */
@@ -74,5 +76,7 @@ class StylesControllerTest extends TestCase
 
         // Remove the file after test
         unlink($path);
+
+        GetCandyHub::$styles = [];
     }
 }

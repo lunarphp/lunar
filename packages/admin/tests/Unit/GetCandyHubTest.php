@@ -12,10 +12,12 @@ use GetCandy\Hub\Tests\TestCase;
  */
 class GetCandyHubTest extends TestCase
 {
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    public function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    /** @test */
     public function can_register_scripts_by_providing_name_and_path()
     {
         $name = 'local-script';
@@ -26,12 +28,11 @@ class GetCandyHubTest extends TestCase
         $this->assertContainsOnlyInstancesOf(Script::class, GetCandyHub::scripts());
         $this->assertEquals(GetCandyHub::scripts()[0]->name(), $name);
         $this->assertEquals(GetCandyHub::scripts()[0]->path(), $path);
+
+        GetCandyHub::$scripts = [];
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    /** @test */
     public function can_register_remote_scripts()
     {
         $path = 'https://example.com/script.js';
@@ -51,12 +52,11 @@ class GetCandyHubTest extends TestCase
         $this->assertEquals(GetCandyHub::scripts()[1]->name(), $name);
         $this->assertEquals(GetCandyHub::scripts()[1]->path(), $path2);
         $this->assertEquals(GetCandyHub::scripts()[1]->isRemote(), true);
+
+        GetCandyHub::$scripts = [];
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    /** @test */
     public function can_register_styles_by_providing_name_and_path()
     {
         $name = 'local-style';
@@ -67,12 +67,11 @@ class GetCandyHubTest extends TestCase
         $this->assertContainsOnlyInstancesOf(Style::class, GetCandyHub::styles());
         $this->assertEquals(GetCandyHub::styles()[0]->name(), $name);
         $this->assertEquals(GetCandyHub::styles()[0]->path(), $path);
+
+        GetCandyHub::$styles = [];
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    /** @test */
     public function can_register_remote_styles()
     {
         $path = 'https://example.com/style.css';
@@ -92,5 +91,7 @@ class GetCandyHubTest extends TestCase
         $this->assertEquals(GetCandyHub::styles()[1]->name(), $name);
         $this->assertEquals(GetCandyHub::styles()[1]->path(), $path2);
         $this->assertEquals(GetCandyHub::styles()[1]->isRemote(), true);
+
+        GetCandyHub::$styles = [];
     }
 }
