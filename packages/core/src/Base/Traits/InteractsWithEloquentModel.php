@@ -8,6 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 trait InteractsWithEloquentModel
 {
     /**
+     * Create a new instance of the given model.
+     *
+     * @param  array  $attributes
+     * @param  bool  $exists
+     *
+     * @return static|\Illuminate\Database\Eloquent\Model
+     */
+    public function newInstance($attributes = [], $exists = false): Model
+    {
+        $model = parent::newInstance($attributes, $exists);
+        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses())) {
+            return $model;
+        }
+
+        $model = ModelFactory::getInstance()->getRegisteredModel(get_class($model));
+        return $model;
+    }
+
+    /**
      * Handle dynamic and static method calls into the model.
      *
      * @param  string  $method
@@ -16,10 +35,6 @@ trait InteractsWithEloquentModel
      */
     public function __call($method, $parameters)
     {
-        if (str_starts_with($method, '__')) {
-            $method = substr($method, 2);
-        }
-
         $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
         if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || ! $this->forwardCallsWhen($method, $model)) {
             return parent::__call($method, $parameters);

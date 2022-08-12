@@ -13,6 +13,6 @@ class Product extends \GetCandy\Models\Product
      */
     public function shouldBeSearchable()
     {
-        return false;
+        return true;
     }
 }

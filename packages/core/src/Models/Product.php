@@ -240,4 +240,9 @@ class Product extends BaseModel implements SpatieHasMedia
             'ends_at',
         ])->withTimestamps();
     }
+
+    public function canThisBeMethodBeOverridden(): bool
+    {
+        return false;
+    }
 }

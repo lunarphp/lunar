@@ -25,7 +25,7 @@ class InteractsWithEloquentModelTest extends TestCase
             ProductOption::class => \GetCandy\Tests\Stubs\Models\ProductOption::class,
         ]);
 
-        Product::factory()->create();
+        Product::factory()->count(20)->create();
 
         ProductOption::factory()
             ->has(ProductOptionValue::factory()->count(3), 'values')
@@ -85,9 +85,9 @@ class InteractsWithEloquentModelTest extends TestCase
     }
 
     /** @test */
-    public function can_swap_scout_call_double_underscore_with_extended_model()
+    public function can_method_be_overridden_on_runtime()
     {
         $product = Product::find(1);
-        $this->assertFalse($product->__shouldBeSearchable());
+        $this->assertTrue($product->shouldBeSearchable());
     }
 }

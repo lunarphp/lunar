@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 trait SizesTrait
 {
-    protected function extendedSizes(): Collection
+    public function extendedSizes(): Collection
     {
         return collect(['xl', 'xxl']);
     }

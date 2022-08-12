@@ -9,7 +9,7 @@ class ProductOption extends \GetCandy\Models\ProductOption
 {
     use SizesTrait;
 
-    protected function sizes(): HasMany
+    public function sizes(): HasMany
     {
         return $this->values()->where('id', 1);
     }

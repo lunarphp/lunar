@@ -4,7 +4,7 @@ namespace GetCandy\Tests\Stubs\Models;
 
 trait SearchableTrait
 {
-    protected function shouldBeSomethingElseSearchable(): bool
+    public function shouldBeSomethingElseSearchable(): bool
     {
         return false;
     }
