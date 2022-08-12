@@ -12,7 +12,7 @@ class CreateMediaVariantTable extends Migration
         Schema::create($this->prefix.'media_product_variant', function (Blueprint $table) {
             $table->id();
             $table->foreignId('media_id')->constrained()->onDelete('cascade');
-            $table->foreignIdFor(ProductVariant::class)->constrained()->onDelete('cascade');
+            $table->foreignId('product_variant_id')->constrained($this->prefix.'product_variants')->onDelete('cascade');
             $table->boolean('primary')->default(false)->index();
             $table->timestamps();
         });
@@ -20,8 +20,6 @@ class CreateMediaVariantTable extends Migration
 
     public function down()
     {
-        // Schema::table($this->prefix.'transactions', function ($table) {
-        //     $table->smallInteger('last_four')->nullable(false)->change();
-        // });
+        Schema::dropIfExists($this->prefix.'media_product_variant');
     }
 }

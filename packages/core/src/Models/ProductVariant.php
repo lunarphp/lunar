@@ -7,19 +7,17 @@ use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\Traits\HasDimensions;
 use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasPrices;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\ProductVariantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
-use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
+class ProductVariant extends BaseModel implements Purchasable
 {
     use HasFactory;
-    use HasMedia;
     use HasPrices;
     use LogsActivity;
     use HasDimensions;
@@ -166,19 +164,15 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
         return $this->sku;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public function images()
+    {
+        $prefix = config('getcandy.database.table_prefix');
+
+        return $this->belongsToMany(Media::class, "{$prefix}media_product_variant")->withPivot('primary');
+    }
+
     public function getThumbnail()
     {
-        if ($variantThumbnail = $this->thumbnail) {
-            return $variantThumbnail->getUrl('small');
-        }
-
-        if ($thumbnail = $this->product?->thumbnail) {
-            return $thumbnail->getUrl();
-        }
-
-        return null;
+        return $this->images()->wherePivot('primary', true)?->first();
     }
 }

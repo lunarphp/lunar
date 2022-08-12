@@ -13,7 +13,7 @@
                    ])
                    aria-current="page">
                     <div class="shrink-0">
-                        @if ($media = $v->media->first())
+                        @if ($media = $v->getThumbnail())
                             <img class="block object-cover w-6 h-6 rounded shadow"
                                  src="{{ $media->getFullUrl('small') }}">
                         @else
@@ -141,7 +141,7 @@
                        ])
                        aria-current="page">
                         <div class="shrink-0">
-                            @if ($media = $v->media->first())
+                            @if ($media = $v->images->first())
                                 <img class="block object-cover w-6 h-6 rounded shadow"
                                      src="{{ $media->getFullUrl('small') }}">
                             @else
@@ -188,7 +188,11 @@
 
         @include('adminhub::partials.pricing')
 
-        @include('adminhub::partials.products.variants.image')
+        @include('adminhub::partials.image-manager', [
+            'existing' => $images,
+            'wireModel' => 'imageUploadQueue',
+            'filetypes' => ['image/*'],
+        ])
 
         @include('adminhub::partials.products.variants.identifiers')
 
@@ -255,9 +259,9 @@
         </x-hub::modal.dialog>
 
         <div class="pt-12 mt-12 border-t">
-            @livewire('hub.components.activity-log-feed', [
+            {{-- @livewire('hub.components.activity-log-feed', [
                 'subject' => $variant,
-            ])
+            ]) --}}
         </div>
     </div>
 </form>

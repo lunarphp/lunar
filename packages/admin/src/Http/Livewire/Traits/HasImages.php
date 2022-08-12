@@ -102,6 +102,7 @@ trait HasImages
             return;
         }
 
+
         if ($this->errorBag->count()) {
             unset($this->imageUploadQueue[0]);
 

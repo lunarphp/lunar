@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants;
 
 use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
+use GetCandy\Hub\Http\Livewire\Traits\HasImages;
 use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
 use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
@@ -16,9 +17,10 @@ use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
-use Livewire\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Str;
+use Livewire\TemporaryUploadedFile;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class VariantShow extends Component
 {
@@ -29,6 +31,7 @@ class VariantShow extends Component
     use WithAttributes;
     use HasDimensions;
     use HasSlots;
+    use HasImages;
 
     /**
      * Instance of the parent product.
@@ -94,6 +97,25 @@ class VariantShow extends Component
     public array $newValues = [];
 
     /**
+     * {@inheritDoc}
+     */
+    public function mountHasImages()
+    {
+        $this->images = $this->variant->images->map(function ($media) {
+            return [
+                'id'        => $media->id,
+                'sort_key'  => Str::random(),
+                'thumbnail' => $media->getFullUrl('medium'),
+                'original'  => $media->getFullUrl(),
+                'preview'   => false,
+                'caption'   => $media->getCustomProperty('caption'),
+                'primary'   => $media->pivot->primary,
+                'position'  => $media->getCustomProperty('position', 1),
+            ];
+        })->sortBy('position')->values()->toArray();
+    }
+
+    /**
      * Define the listeners.
      *
      * @var array
@@ -103,7 +125,8 @@ class VariantShow extends Component
         return array_merge([
             'option-value-create-modal.value-created' => 'refreshAndSelectOption',
         ],
-            $this->getHasSlotsListeners()
+            $this->getHasSlotsListeners(),
+            $this->getHasImagesListeners()
         );
     }
 
@@ -143,9 +166,7 @@ class VariantShow extends Component
     protected function rules()
     {
         return array_merge([
-            // 'images.*' => 'image',
             'newValues'             => 'array',
-            'image'                 => 'nullable',
             'variant.stock'         => 'numeric|max:10000000',
             'variant.tax_class_id'  => 'required',
             'variant.length_value'  => 'numeric|nullable',
@@ -179,39 +200,7 @@ class VariantShow extends Component
                 'string',
                 'max:255',
             ], $this->variant),
-        ], $this->hasPriceValidationRules());
-    }
-
-    /**
-     * Computed property for existing thumbnail.
-     *
-     * @return null|string
-     */
-    public function getExistingThumbnailProperty()
-    {
-        $image = $this->variant->media()->first();
-        if (! $image) {
-            return;
-        }
-
-        return $image->getFullUrl('large');
-    }
-
-    /**
-     * Computed property for if we are uploading a new image
-     * or selecting an existing product image.
-     *
-     * @return string|void
-     */
-    public function getThumbnailProperty()
-    {
-        if ($this->image instanceof Media) {
-            return $this->image->getFullUrl('large');
-        }
-
-        if ($this->image instanceof TemporaryUploadedFile) {
-            return $this->image->temporaryUrl();
-        }
+        ], $this->hasPriceValidationRules(), $this->hasImagesValidationRules());
     }
 
     /**
@@ -223,29 +212,6 @@ class VariantShow extends Component
     {
         $this->validate(null, $this->getValidationMessages());
 
-        if ($this->image) {
-            if ($this->image instanceof Media) {
-                $this->image->copy($this->variant, 'variants');
-                $this->image->setCustomProperty('primary', true);
-                $this->image->save();
-            }
-            if ($this->image instanceof TemporaryUploadedFile) {
-                $this->validateOnly('image', ['image' => 'image']);
-                $media = $this->variant->addMedia($this->image->getRealPath())
-                    ->preservingOriginal()
-                    ->toMediaCollection('variants');
-                $media->setCustomProperty('primary', true);
-                $media->save();
-            }
-        }
-
-        if ($this->removeImage) {
-            $image = $this->variant->media()->first();
-            if ($image) {
-                $image->forceDelete();
-            }
-        }
-
         if (! $this->manualVolume) {
             $this->variant->volume_unit = null;
             $this->variant->volume_value = null;
@@ -256,13 +222,59 @@ class VariantShow extends Component
 
         $this->variant->save();
         $this->savePricing();
-        $this->image = null;
-        // $this->variant->refresh();
-        $this->removeImage = false;
+        $this->updateImages();
 
         $this->updateSlots();
 
         $this->notify('Variant updated');
+    }
+
+    public function updateImages()
+    {
+        DB::transaction(function () {
+            LogBatch::startBatch();
+
+            $owner = $this->variant->product;
+
+            $imagesToSync = [];
+
+            foreach ($this->images as $key => $image) {
+                if (empty($image['id'])) {
+                    $file = TemporaryUploadedFile::createFromLivewire(
+                        $image['filename']
+                    );
+                    $media = $owner->addMedia($file->getRealPath())
+                        ->toMediaCollection('products');
+
+                    activity()
+                    ->performedOn($this->variant)
+                    ->withProperties(['media' => $media->toArray()])
+                    ->event('added_image')
+                    ->useLog('getcandy')
+                    ->log('added_image');
+
+                    // Add ID for future and processing now.
+                    $this->images[$key]['id'] = $media->id;
+                    $image['id'] = $media->id;
+                }
+
+                $media = app(config('media-library.media_model'))::find($image['id']);
+
+                $media->setCustomProperty('caption', $image['caption']);
+                $media->setCustomProperty('primary', false);
+                $media->setCustomProperty('position', $image['position']);
+                $media->save();
+
+                $imagesToSync[$media->id] = [
+                    'primary' => $image['primary']
+                ];
+            }
+
+
+            $this->variant->images()->sync($imagesToSync);
+
+            LogBatch::endBatch();
+        });
     }
 
     /**
@@ -412,6 +424,14 @@ class VariantShow extends Component
         return ProductType::find(
             $this->variant->product->product_type_id
         )->variantAttributes->sortBy('position')->values();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMediaModel()
+    {
+        return $this->variant;
     }
 
     /**
