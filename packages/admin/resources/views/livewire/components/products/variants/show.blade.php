@@ -260,9 +260,9 @@
         </x-hub::modal.dialog>
 
         <div class="pt-12 mt-12 border-t">
-            {{-- @livewire('hub.components.activity-log-feed', [
+            @livewire('hub.components.activity-log-feed', [
                 'subject' => $variant,
-            ]) --}}
+            ])
         </div>
     </div>
 </form>
