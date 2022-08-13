@@ -22,6 +22,7 @@ trait InteractsWithEloquentModel
         }
 
         $model = ModelFactory::getInstance()->getRegisteredModel(get_class($model));
+
         return $model->newInstance($attributes, $exists);
     }
 
