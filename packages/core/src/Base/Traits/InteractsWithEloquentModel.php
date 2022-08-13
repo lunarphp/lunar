@@ -55,20 +55,10 @@ trait InteractsWithEloquentModel
     }
 
     /**
-     * Swap the model implementation via static method.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model|null  $model
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public static function swapStatic(Model $model = null): Model
-    {
-        return $model ?? ModelFactory::getInstance()->getRegisteredModel(get_called_class());
-    }
-
-    /**
      * Forward a method call to the model only when calling a method on the model.
      *
      * @param  string  $method
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return bool
      */
     protected function forwardCallsWhen(string $method, Model $model): bool

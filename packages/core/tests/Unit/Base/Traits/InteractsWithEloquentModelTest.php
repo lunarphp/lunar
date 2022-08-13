@@ -50,8 +50,8 @@ class InteractsWithEloquentModelTest extends TestCase
     {
         $sizeOption = ProductOption::with('sizes')->find(1);
 
-        $this->assertInstanceOf(Collection::class, $sizeOption->values);
-        $this->assertCount(3, $sizeOption->values);
+        $this->assertInstanceOf(Collection::class, $sizeOption->sizes);
+        $this->assertCount(1, $sizeOption->sizes);
     }
 
     /** @test */
@@ -65,29 +65,23 @@ class InteractsWithEloquentModelTest extends TestCase
     }
 
     /** @test */
-    public function can_and_new_scout_call_with_extended_model()
+    public function can_add_new_scout_call_via_extended_model_trait()
     {
         $product = Product::find(1);
         $this->assertFalse($product->shouldBeSomethingElseSearchable());
     }
 
     /** @test */
+    public function can_method_be_overridden_with_new_instance_on_runtime()
+    {
+        $product = Product::find(1);
+        $this->assertFalse($product->shouldBeSearchable());
+    }
+
+    /** @test */
     public function can_swap_scout_call_with_extended_model()
     {
         $product = Product::find(1);
-        $this->assertTrue($product->swap()->shouldBeSearchable());
-    }
-
-    /** @test */
-    public function can_swap_static_call_with_extended_model()
-    {
-        $this->assertTrue(Product::swapStatic()->shouldBeSearchable());
-    }
-
-    /** @test */
-    public function can_method_be_overridden_on_runtime()
-    {
-        $product = Product::find(1);
-        $this->assertTrue($product->shouldBeSearchable());
+        $this->assertFalse($product->swap()->shouldBeSearchable());
     }
 }
