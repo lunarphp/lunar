@@ -84,4 +84,18 @@ class InteractsWithEloquentModelTest extends TestCase
         $product = Product::find(1);
         $this->assertFalse($product->swap()->shouldBeSearchable());
     }
+
+    /** @test */
+    public function new_instance_matches_core_model()
+    {
+        $data = Product::factory()->make();
+        $product = Product::create($data->toArray());
+
+        $this->assertEquals($data->toArray(), [
+            'product_type_id' => $product->id,
+            'status' => $product->status,
+            'brand' => $product->brand,
+            'attribute_data' => $product->attribute_data->toArray(),
+        ]);
+    }
 }
