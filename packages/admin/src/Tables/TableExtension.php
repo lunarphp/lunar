@@ -84,9 +84,8 @@ class TableExtension
     /**
      * Add multiple columns to the table.
      *
-     * @param array $columns
-     * @param string|null $after
-     *
+     * @param  array  $columns
+     * @param  string|null  $after
      * @return self
      */
     public function addColumns(array $columns, $after = null): self
@@ -94,6 +93,7 @@ class TableExtension
         foreach ($columns as $column) {
             $this->addColumn($column, $after);
         }
+
         return $this;
     }
 
