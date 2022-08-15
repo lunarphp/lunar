@@ -28,11 +28,9 @@ class CartSessionManager implements CartSessionInterface
      */
     public function current()
     {
-        return Blink::once('getcandy_current_cart', function () {
-            return $this->fetchOrCreate(
-                config('getcandy.cart.auto_create', false)
-            );
-        });
+        return $this->fetchOrCreate(
+            config('getcandy.cart.auto_create', false)
+        );
     }
 
     /**
@@ -40,7 +38,6 @@ class CartSessionManager implements CartSessionInterface
      */
     public function forget()
     {
-        Blink::forget('getcandy_current_cart');
         $this->sessionManager->forget(
             $this->getSessionKey()
         );
