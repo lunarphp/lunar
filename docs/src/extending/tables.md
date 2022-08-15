@@ -24,7 +24,7 @@ On top of everything that Filament offers, we also have added some helpers so yo
 ### Adding Columns
 
 ```php
-OrdersTable::addColumn(
+\GetCandy\Hub\Facades\Table::on(OrdersTable)->addColumn(
     column: \Filament\Tables\Columns\TextColumn::make('custom_column'),
     after: 'id',
 );
@@ -32,22 +32,10 @@ OrdersTable::addColumn(
 
 See [Filamentphp Columns](https://filamentphp.com/docs/2.x/tables/columns#getting-started) for more information
 
-### Replacing Columns
-
-If instead of adding extra columns, you can completely change what columns are shown on the table.
-
-```php
-OrdersTable::setColumns([
-    \Filament\Tables\Columns\TextColumn::make('column_a'),
-    \Filament\Tables\Columns\TextColumn::make('column_b'),
-    \Filament\Tables\Columns\TextColumn::make('column_c'),
-]);
-```
-
 ### Adding Filters
 
 ```php
-OrdersTable::addFilter(
+\GetCandy\Hub\Facades\Table::on(OrdersTable)->addFilter(
     \Filament\Tables\Filters\Filter::make('status')
 );
 ```
@@ -57,7 +45,7 @@ See [Filamentphp Filters](https://filamentphp.com/docs/2.x/tables/filters#gettin
 ### Adding Actions
 
 ```php
-OrdersTable::addAction(
+\GetCandy\Hub\Facades\Table::on(OrdersTable)->addAction(
     \Filament\Tables\Actions\Action::make('myAction')
 );
 ```
@@ -67,7 +55,7 @@ See [Filamentphp Actions](https://filamentphp.com/docs/2.x/tables/actions#gettin
 ### Adding Bulk Actions
 
 ```php
-OrdersTable::addBulkAction(
+\GetCandy\Hub\Facades\Table::on(OrdersTable)->addBulkAction(
     \Filament\Tables\Actions\Action::make('myAction')
 );
 ```

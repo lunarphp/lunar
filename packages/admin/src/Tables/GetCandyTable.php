@@ -7,6 +7,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use GetCandy\Hub\Facades\Table;
 use GetCandy\Hub\Tables\Columns\AttributeColumn;
 use GetCandy\Hub\Tables\Columns\ThumbnailColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,41 +18,6 @@ abstract class GetCandyTable extends Component implements HasTable
     use InteractsWithTable;
 
     /**
-     * The extra columns to add to the table.
-     *
-     * @var array
-     */
-    public static $extraColumns = [];
-
-    /**
-     * The extra filters to add to the table.
-     *
-     * @var array
-     */
-    public static $extraFilters = [];
-
-    /**
-     * The extra actions to add to the table.
-     *
-     * @var array
-     */
-    public static $extraActions = [];
-
-    /**
-     * The extra bulk actions to add to the table.
-     *
-     * @var array
-     */
-    public static $extraBulkActions = [];
-
-    /**
-     * The table columns to use instead of the default.
-     *
-     * @var array
-     */
-    public static $columnsOverride = null;
-
-    /**
      * {@inerhitDoc}.
      */
     protected $queryString = [
@@ -60,87 +26,24 @@ abstract class GetCandyTable extends Component implements HasTable
     ];
 
     /**
-     * Add a column to the table.
-     *
-     * @param  Column|array  $column
-     * @return void
-     */
-    final public static function addColumn($column, $position = null)
-    {
-        if (! is_array($column)) {
-            $column = [$column];
-        }
-
-        self::$extraColumns[] = [
-            'position' => $position,
-            'column' => $column,
-        ];
-    }
-
-    /**
-     * Add a filter to the table.
-     *
-     * @param  Filter|array  $filter
-     * @return void
-     */
-    final public static function addFilter($filter)
-    {
-        if (! is_array($filter)) {
-            $filter = [$filter];
-        }
-
-        self::$extraFilters = array_merge(self::$extraFilters, $filter);
-    }
-
-    /**
-     * Add a filter to the table.
-     *
-     * @param  Filter|array  $filter
-     * @return void
-     */
-    final public static function addAction($action)
-    {
-        if (! is_array($action)) {
-            $action = [$action];
-        }
-
-        self::$extraActions = array_merge(self::$extraActions, $action);
-    }
-
-    /**
-     * Add a filter to the table.
-     *
-     * @param  Filter|array  $filter
-     * @return void
-     */
-    final public static function addBulkAction($bulkAction)
-    {
-        if (! is_array($bulkAction)) {
-            $bulkAction = [$bulkAction];
-        }
-
-        self::$extraActions = array_merge(self::$extraBulkActions, $bulkAction);
-    }
-
-    /**
-     * Explicitly set the columns available.
-     *
-     * @param  array  $columns
-     * @return void
-     */
-    final public static function setColumns(array $columns)
-    {
-        self::$columnsOverride = $columns;
-    }
-
-    /**
      * {@inhertDoc}.
      */
     protected function getTableFilters(): array
     {
+        $extensions = Table::getExtensions(static::class);
+
+        $extraFilters = [];
+
+        foreach ($extensions as $extension) {
+            $extraFilters = array_merge(
+                $extension->getFilters(),
+                $extraFilters
+            );
+        }
+
         return array_merge(
             $this->getBaseTableFilters(),
-            self::$extraFilters
+            $extraFilters
         );
     }
 
@@ -149,9 +52,20 @@ abstract class GetCandyTable extends Component implements HasTable
      */
     protected function getTableActions(): array
     {
+        $extensions = Table::getExtensions(static::class);
+
+        $extraActions = [];
+
+        foreach ($extensions as $extension) {
+            $extraActions = array_merge(
+                $extension->getActions(),
+                $extraActions
+            );
+        }
+
         return array_merge(
             $this->getBaseTableActions(),
-            self::$extraActions
+            $extraActions
         );
     }
 
@@ -160,9 +74,20 @@ abstract class GetCandyTable extends Component implements HasTable
      */
     protected function getTableBulkActions(): array
     {
+        $extensions = Table::getExtensions(static::class);
+
+        $extraBulkActions = [];
+
+        foreach ($extensions as $extension) {
+            $extraBulkActions = array_merge(
+                $extension->getActions(),
+                $extraBulkActions
+            );
+        }
+
         return array_merge(
             $this->getBaseTableBulkActions(),
-            self::$extraBulkActions
+            $extraBulkActions
         );
     }
 
@@ -171,29 +96,27 @@ abstract class GetCandyTable extends Component implements HasTable
      */
     public function getTableColumns(): array
     {
-        if (self::$columnsOverride) {
-            return self::$columnsOverride;
-        }
+        $extensions = Table::getExtensions(static::class);
 
         $columns = collect($this->getBaseTableColumns());
 
-        $extraColumns = static::$extraColumns;
+        foreach ($extensions as $extension) {
+            foreach ($extension->getColumns() as $column) {
+                if (! $after = $column['after']) {
+                    $columns = $columns->merge([$column['column']]);
+                    continue;
+                }
 
-        foreach ($extraColumns as $column) {
-            if (! $position = $column['position']) {
-                $columns = $columns->merge($column['column']);
-                continue;
+                $index = $columns->search(function ($column) use ($after) {
+                    return $column->getName() == $after;
+                });
+
+                if ($index === false) {
+                    continue;
+                }
+
+                $columns->splice($index + 1, 0, $column['column']);
             }
-
-            $index = $columns->search(function ($column) use ($position) {
-                return $column->getName() == $position;
-            });
-
-            if ($index === false) {
-                continue;
-            }
-
-            $columns->splice($index + 1, 0, $column['column']);
         }
 
         return $columns->values()->toArray();
