@@ -2,10 +2,10 @@
 
 namespace GetCandy\Hub\Tables;
 
-use Filament\Tables\Columns\Column;
-use Filament\Tables\Filters\BaseFilter;
 use Filament\Support\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Filters\BaseFilter;
 
 class TableExtension
 {
@@ -45,9 +45,9 @@ class TableExtension
     protected array $bulkActions = [];
 
     /**
-     * Initialise the extension
+     * Initialise the extension.
      *
-     * @param string $tableName
+     * @param  string  $tableName
      */
     public function __construct($tableName)
     {
@@ -65,11 +65,10 @@ class TableExtension
     }
 
     /**
-     * Add a column to the table
+     * Add a column to the table.
      *
-     * @param Column $column
-     * @param type $after
-     *
+     * @param  Column  $column
+     * @param  type  $after
      * @return self
      */
     public function addColumn(Column $column, $after = null): self
@@ -95,8 +94,7 @@ class TableExtension
     /**
      * Add a new filter to the table.
      *
-     * @param BaseFilter $filter
-     *
+     * @param  BaseFilter  $filter
      * @return self
      */
     public function addFilter(BaseFilter $filter): self
@@ -119,8 +117,7 @@ class TableExtension
     /**
      * Add a new action to the table.
      *
-     * @param Action $action
-     *
+     * @param  Action  $action
      * @return self
      */
     public function addAction(Action $action): self
@@ -143,8 +140,7 @@ class TableExtension
     /**
      * Add a new action to the table.
      *
-     * @param Action $action
-     *
+     * @param  Action  $action
      * @return self
      */
     public function addBulkAction(BulkAction $action): self
