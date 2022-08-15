@@ -3,7 +3,6 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Tables;
 
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\SelectFilter;
@@ -12,7 +11,6 @@ use GetCandy\Hub\Tables\Columns\TextColumn;
 use GetCandy\Hub\Tables\GetCandyTable;
 use GetCandy\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 
 class ProductsTable extends GetCandyTable
 {
@@ -77,11 +75,7 @@ class ProductsTable extends GetCandyTable
      */
     protected function getBaseTableBulkActions(): array
     {
-        return [
-            BulkAction::make('delete')
-            ->requiresConfirmation()
-            ->action(fn (Collection $records) => $records->each->delete()),
-        ];
+        return [];
     }
 
     /**
