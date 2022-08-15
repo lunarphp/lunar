@@ -14,10 +14,9 @@ class TableRegistry
     public $tables = [];
 
     /**
-     * Set and return the table extension
+     * Set and return the table extension.
      *
-     * @param string $tableClass
-     *
+     * @param  string  $tableClass
      * @return TableExtension
      */
     public function on($tableClass)
@@ -32,8 +31,7 @@ class TableRegistry
     /**
      * Return the extensions for a given table.
      *
-     * @param string $table
-     *
+     * @param  string  $table
      * @return Collection
      */
     public function getExtensions($table)
