@@ -82,6 +82,22 @@ class TableExtension
     }
 
     /**
+     * Add multiple columns to the table.
+     *
+     * @param array $columns
+     * @param string|null $after
+     *
+     * @return self
+     */
+    public function addColumns(array $columns, $after = null): self
+    {
+        foreach ($columns as $column) {
+            $this->addColumn($column, $after);
+        }
+        return $this;
+    }
+
+    /**
      * Return the extensions table columns.
      *
      * @return array
