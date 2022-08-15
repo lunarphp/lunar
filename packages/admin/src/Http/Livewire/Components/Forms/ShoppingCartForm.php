@@ -2,8 +2,8 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Forms;
 
-use GetCandy\Hub\Forms\GetCandyForm;
 use GetCandy\Hub\Forms;
+use GetCandy\Hub\Forms\GetCandyForm;
 
 class ShoppingCartForm extends GetCandyForm
 {
@@ -12,11 +12,11 @@ class ShoppingCartForm extends GetCandyForm
     protected bool $showDeleteDangerZone = true;
 
     protected array $translatable = [
-      'name',
+        'name',
     ];
 
     protected array $loadWithRelations = [
-      //'thumbnail'
+        //'thumbnail'
     ];
 
     protected function schema(): array
