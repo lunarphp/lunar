@@ -3,7 +3,6 @@
 namespace GetCandy\Tests\Unit;
 
 use GetCandy\Tests\TestCase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 /**
@@ -17,8 +16,8 @@ class MigrationTest extends TestCase
         $this->artisan('migrate');
 
         $migrationsList = collect(File::allFiles(
-            __DIR__ . '/../../database/migrations'
-        ))->map(fn($file) => pathinfo($file->getFilename(), PATHINFO_FILENAME));
+            __DIR__.'/../../database/migrations'
+        ))->map(fn ($file) => pathinfo($file->getFilename(), PATHINFO_FILENAME));
 
         foreach ($migrationsList as $migration) {
             $this->assertDatabaseHas('migrations', [
@@ -33,7 +32,7 @@ class MigrationTest extends TestCase
     public function each_migration_can_run_and_rollback()
     {
         $migrationsList = collect(File::allFiles(
-            __DIR__ . '/../../database/migrations'
+            __DIR__.'/../../database/migrations'
         ));
 
         foreach ($migrationsList as $migration) {
