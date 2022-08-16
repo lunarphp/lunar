@@ -4,7 +4,7 @@
                  'lg:w-[calc(100vw_-_16rem)]': showExpandedMenu,
                  'lg:w-[calc(100vw_-_5rem)]': !showExpandedMenu
              }">
-        <form wire:submit.prevent="update">
+        <form wire:submit.prevent="{{ $submitAction }}">
             <div class="flex justify-end">
                 <x-hub::button type="submit">
                     {{ __('adminhub::global.save') }}

@@ -2,6 +2,8 @@
 
 namespace GetCandy\Hub\Forms\Traits;
 
+use Illuminate\Support\Str;
+
 trait CanCreateModel
 {
     /**
@@ -18,15 +20,13 @@ trait CanCreateModel
      */
     public function create()
     {
-        if (! $this->canDelete) {
-            return;
-        }
+        $this->validate();
+        $this->model->save();
 
-        $this->model->create();
-
+        $routeName = Str::of(class_basename($this->model))->plural()->lower();
         $this->notify(
-            __('adminhub::notifications.brands.created'),
-            'hub.brands.index'
+            __('adminhub::notifications.model.created', ['model' => class_basename($this->model)]),
+            "hub.$routeName.index"
         );
     }
 }

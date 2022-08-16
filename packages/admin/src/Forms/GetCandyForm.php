@@ -18,12 +18,20 @@ abstract class GetCandyForm extends Component
 
     protected string $view = 'adminhub::livewire.components.forms.base-form';
 
+    protected bool $showDeleteDangerZone = false;
+
     public function render()
     {
         return view($this->view, [
             'schema' => $this->schema(),
             'showDeleteDangerZone' => $this->showDeleteDangerZone,
+            'submitAction' => $this->getSubmitAction(),
         ])->layout($this->layout);
+    }
+
+    protected function getSubmitAction(): string
+    {
+        return $this->model->exists ? 'update' : 'create';
     }
 
     abstract protected function schema(): array;

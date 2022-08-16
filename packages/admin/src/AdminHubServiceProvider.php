@@ -21,7 +21,7 @@ use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
-use GetCandy\Hub\Http\Livewire\Components\Forms\BrandForm;
+use GetCandy\Hub\Http\Livewire\Components\Forms\ChannelForm;
 use GetCandy\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -359,7 +359,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
     public function registerFormComponents()
     {
-        Livewire::component('hub.components.forms.brand-form', BrandForm::class);
+        Livewire::component('hub.components.forms.channel-form', ChannelForm::class);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace GetCandy\Hub\Forms\Traits;
 
+use Illuminate\Support\Str;
+
 trait CanDeleteModel
 {
     /**
@@ -24,9 +26,10 @@ trait CanDeleteModel
 
         $this->model->delete();
 
+        $routeName = Str::of(class_basename($this->model))->plural()->lower();
         $this->notify(
-            __('adminhub::notifications.brands.deleted'),
-            'hub.brands.index'
+            __('adminhub::notifications.model.deleted', ['model' => class_basename($this->model)]),
+            "hub.$routeName.index"
         );
     }
 

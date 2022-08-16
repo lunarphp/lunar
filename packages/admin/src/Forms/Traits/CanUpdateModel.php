@@ -2,16 +2,13 @@
 
 namespace GetCandy\Hub\Forms\Traits;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 trait CanUpdateModel
 {
     use Notifies;
-    use HasImages;
-    use HasUrls;
 
     /**
      * Defines the confirmation text when deleting a model.
@@ -48,9 +45,10 @@ trait CanUpdateModel
             $this->saveUrls();
         }
 
+        $routeName = Str::of(class_basename($this->model))->plural()->lower();
         $this->notify(
-            __('adminhub::notifications.model.updated'),
-            'hub.brands.index'
+            __('adminhub::notifications.model.updated', ['model' => class_basename($this->model)]),
+            "hub.$routeName.index"
         );
     }
 }

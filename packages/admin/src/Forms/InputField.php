@@ -12,9 +12,9 @@ abstract class InputField extends Component
 
     public string $modelName;
 
-    protected string $label;
+    public string $label;
 
-    protected bool $required = false;
+    public bool $required = false;
 
     public function __construct(string $name)
     {

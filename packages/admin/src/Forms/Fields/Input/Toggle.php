@@ -37,11 +37,16 @@ class Toggle extends InputField
     /**
      * Create the component instance.
      *
-     * @param  bool  $on
-     * @param  bool  $disabled
+     * @param  string  $name
+     * @param $on
+     * @param $disabled
+     * @param $onValue
+     * @param $offValue
      */
-    public function __construct($on = false, $disabled = false, $onValue = 1, $offValue = 0)
+    public function __construct(string $name, $on = false, $disabled = false, $onValue = 1, $offValue = 0)
     {
+        parent::__construct($name);
+
         $this->on = $on;
         $this->disabled = $disabled;
         $this->onValue = $onValue;

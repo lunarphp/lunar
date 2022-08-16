@@ -5,9 +5,9 @@
         </h1>
     </header>
 
-    <form action="#"
-          method="POST"
-          wire:submit.prevent="create">
-        @include('adminhub::partials.forms.channel')
-    </form>
+    <div class="space-y-4">
+        <div class="overflow-hidden shadow sm:rounded-md">
+            @livewire('hub.components.forms.channel-form', ['model' => $channel])
+        </div>
+    </div>
 </div>
