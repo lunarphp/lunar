@@ -32,8 +32,7 @@ class ChannelForm extends GetCandyForm
             Forms\Fields\Input\Text::make('name')->required(),
             Forms\Fields\Input\Text::make('handle')->required(),
             Forms\Fields\Input\Text::make('url')->required(),
-            Forms\Fields\Input\Toggle
-                ::make('default')
+            Forms\Fields\Input\Toggle::make('default')
                 ->label('adminhub::inputs.default.label')
                 ->required(),
         ];
