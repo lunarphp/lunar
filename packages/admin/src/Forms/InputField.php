@@ -6,19 +6,20 @@ use Illuminate\View\Component;
 
 abstract class InputField extends Component
 {
-    protected string $field;
+    use Traits\CanResolveFromContainer;
+
+    public string $name;
+
+    public string $modelName;
 
     protected string $label;
 
     protected bool $required = false;
 
-    public function make(string $name): static
+    public function __construct(string $name)
     {
-        $this->field = $name;
-
-        // @todo Add default label translation
-
-        return resolve(static::class, ['name' => $name]);
+        $this->modelName = 'model.'.$name;
+        $this->name = $name;
     }
 
     public function required(bool $condition = true): static

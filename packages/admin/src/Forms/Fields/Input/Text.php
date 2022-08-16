@@ -18,8 +18,10 @@ class Text extends InputField
      *
      * @param  bool  $error
      */
-    public function __construct($error = false)
+    public function __construct(string $name, $error = false)
     {
+        parent::__construct($name);
+
         $this->error = $error;
     }
 
