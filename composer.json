@@ -37,7 +37,6 @@
             "GetCandy\\Database\\Factories\\": "packages/core/database/factories",
             "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
             "GetCandy\\Database\\State\\": "packages/core/database/state",
-            "GetCandy\\Discounts\\": "packages/pro/discounts/src",
             "GetCandy\\Discounts\\Database\\Factories\\": "packages/pro/discounts/database/factories",
             "GetCandy\\Hub\\": "packages/admin/src",
             "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
@@ -55,7 +54,6 @@
         "laravel": {
             "providers": [
                 "GetCandy\\Hub\\AdminHubServiceProvider",
-                "GetCandy\\Discounts\\DiscountsServiceProvider",
                 "GetCandy\\GetCandyServiceProvider"
             ]
         },
