@@ -30,9 +30,7 @@ class AttributeShow extends Component
     {
         return view('adminhub::livewire.pages.settings.attributes.show')
             ->layout('adminhub::layouts.settings', [
-                'title' => __('adminhub::settings.attributes.show.title', [
-                    'type' => $this->type,
-                ]),
+                'menu' => 'settings',
             ]);
     }
 }

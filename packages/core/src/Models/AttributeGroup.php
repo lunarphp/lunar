@@ -3,6 +3,7 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\AttributeGroupFactory;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
@@ -12,6 +13,7 @@ class AttributeGroup extends BaseModel
 {
     use HasFactory;
     use HasTranslations;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

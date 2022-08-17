@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Address;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartFactory;
 use GetCandy\DataTypes\Price;
@@ -17,6 +18,7 @@ class Cart extends BaseModel
 {
     use HasFactory;
     use LogsActivity;
+    use HasMacros;
 
     /**
      * The cart total.
@@ -163,16 +165,6 @@ class Cart extends BaseModel
     public function order()
     {
         return $this->belongsTo(Order::class);
-    }
-
-    /**
-     * Return the saved cart relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function savedCart()
-    {
-        return $this->hasOne(SavedCart::class);
     }
 
     /**

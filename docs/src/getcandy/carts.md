@@ -80,7 +80,7 @@ We've also tried to make Carts extendable as much as possible so, depending on w
 $cart = $cart->getManager()->getCart();
 ```
 
-This will return a "hydrated" version of your cart will the following:
+This will return a "hydrated" version of your cart with the following:
 
 ::: tip
 All values will return a `GetCandy\Datatypes\Price` object. So you have access to the following: `value`, `formatted`, `decimal`
@@ -311,23 +311,3 @@ $cart->billingAddress;
 ## Handling User Login
 When a user logs in, you will likely want to check if they have a cart associated to their account and use that, or if they have started a cart as a guest and logged in, you will likely want to be able to handle this. GetCandy takes the pain out of this by listening to the authentication events and responding automatically by associating any previous guest cart they may have had and, depending on your `auth_policy` merge or override the basket on their account.
 
-## Saved Carts
-
-```php
-GetCandy\Models\SavedCart
-```
-
-|Field|Description|
-|:-|:-|
-|id||
-|cart_id||
-|name|Reference name for the saved cart.|
-|created_at||
-|updated_at||
-
-```php
-$savedCart = new SavedCart([
-    'cart_id' => 4567,
-    'name' => 'Shed Project',
-]);
-```

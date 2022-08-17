@@ -13,8 +13,6 @@ use GetCandy\Base\DiscountManagerInterface;
 use GetCandy\Base\FieldTypeManifest;
 use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
-use GetCandy\Base\OrderReferenceGenerator;
-use GetCandy\Base\OrderReferenceGeneratorInterface;
 use GetCandy\Base\PaymentManagerInterface;
 use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\ShippingManifest;
@@ -120,10 +118,6 @@ class GetCandyServiceProvider extends ServiceProvider
             return $app->make(ShippingManifest::class);
         });
 
-        $this->app->singleton(OrderReferenceGeneratorInterface::class, function ($app) {
-            return $app->make(OrderReferenceGenerator::class);
-        });
-
         $this->app->singleton(AttributeManifestInterface::class, function ($app) {
             return $app->make(AttributeManifest::class);
         });
@@ -176,6 +170,10 @@ class GetCandyServiceProvider extends ServiceProvider
                     "{$this->root}/config/$config.php" => config_path("getcandy/$config.php"),
                 ], 'getcandy');
             });
+
+            $this->publishes([
+                __DIR__.'/../database/migrations/' => database_path('migrations'),
+            ], 'getcandy-migrations');
 
             $this->commands([
                 InstallGetCandy::class,

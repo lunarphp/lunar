@@ -3,6 +3,7 @@
 namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\ProductOptionValueFactory;
@@ -13,6 +14,7 @@ class ProductOptionValue extends BaseModel
     use HasFactory;
     use HasMedia;
     use HasTranslations;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.

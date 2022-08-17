@@ -34,6 +34,13 @@ class CalculateLine
             $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
         }
 
+        $unitPrice = (int) round(
+            (($price->decimal / $purchasable->getUnitQuantity())
+                * $cart->currency->factor),
+            $cart->currency->decimal_places);
+
+        $subTotal = $unitPrice * $cartLine->quantity;
+
         $taxBreakDown = Taxes::setShippingAddress($shippingAddress)
             ->setBillingAddress($billingAddress)
             ->setCurrency($cart->currency)

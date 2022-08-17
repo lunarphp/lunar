@@ -138,4 +138,8 @@ return [
     'ends_at' => 'Ends At',
     'priority' => 'Priority',
     'stop' => 'Stop',
+    'preview' => 'Preview',
+    'delivery_instructions' => 'Delivery Instructions',
+    'not_provided' => 'Not Provided',
+    'billing_email' => 'Billing Email',
 ];

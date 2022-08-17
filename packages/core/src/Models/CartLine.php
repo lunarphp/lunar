@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\DataTransferObjects\TaxBreakdown;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\CartLineFactory;
 use GetCandy\DataTypes\Price;
@@ -13,6 +14,7 @@ class CartLine extends BaseModel
 {
     use HasFactory;
     use LogsActivity;
+    use HasMacros;
 
     /**
      * The cart line total.

@@ -1,24 +1,37 @@
 @extends('adminhub::layouts.app')
 
-@section('main')
-  <div class="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-    <div class="grid items-center grid-cols-2 mb-6 md:mb-8">
-      <div>
-          <strong class="text-xl font-bold md:text-2xl">
-            {{ __('adminhub::catalogue.collections.index.title') }}
-          </strong>
-      </div>
-    </div>
-    <div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
-      <aside class="hidden px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3 md:block">
+@section('menu')
+    <x-hub::layout.side-menu>
         @livewire('hub.components.collections.sidemenu', [
-          'currentGroup' => $group ?? null,
+            'currentGroup' => $group ?? null,
         ])
-      </aside>
+    </x-hub::layout.side-menu>
+@stop
 
-      <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
+@section('main')
+    <div class="space-y-6">
+        <div x-data="{ showGroupSlideover: false }">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold md:text-xl">
+                    {{ __('adminhub::catalogue.collections.index.title') }}
+                </h1>
+
+                <div class="block lg:hidden">
+                    <x-hub::button type="button"
+                                   theme="gray"
+                                   x-on:click="showGroupSlideover = !showGroupSlideover">
+                        {{ __('View Collection Groups') }}
+                    </x-hub::button>
+                </div>
+            </div>
+
+            <x-hub::slideover-simple target="showGroupSlideover">
+                @livewire('hub.components.collections.sidemenu', [
+                    'currentGroup' => $group ?? null,
+                ])
+            </x-hub::slideover-simple>
+        </div>
+
         {{ $slot }}
-      </div>
     </div>
-  </div>
 @stop

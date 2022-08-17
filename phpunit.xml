@@ -33,5 +33,6 @@
     <env name="DB_CONNECTION" value="testing"/>
     <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
     <env name="APP_ENV" value="testing"/>
+    <env name="MAIL_MAILER" value="log" />
   </php>
 </phpunit>

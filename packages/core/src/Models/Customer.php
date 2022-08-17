@@ -5,6 +5,7 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\AsAttributeData;
 use GetCandy\Base\Traits\HasAttributes;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasPersonalDetails;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\Searchable;
@@ -18,6 +19,7 @@ class Customer extends BaseModel
     use HasPersonalDetails;
     use HasTranslations;
     use Searchable;
+    use HasMacros;
 
     /**
      * Define our base filterable attributes.
@@ -79,7 +81,7 @@ class Customer extends BaseModel
      */
     public function getSearchableAttributes()
     {
-        $metaFields = config('getcandy-hub.customers.searchable_meta', []);
+        $metaFields = (array) $this->meta;
 
         $data = [
             'id'           => $this->id,
@@ -88,8 +90,8 @@ class Customer extends BaseModel
             'vat_no'       => $this->vat_no,
         ];
 
-        foreach ($metaFields as $field) {
-            $data[$field] = optional($this->meta)->{$field};
+        foreach ($metaFields as $key => $value) {
+            $data[$key] = $value;
         }
 
         foreach ($this->attribute_data ?? [] as $field => $value) {

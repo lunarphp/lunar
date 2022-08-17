@@ -14,6 +14,7 @@ return [
     'collections.deleted'               => 'Collection deleted',
     'collections.reordered'             => 'Collections reordered',
     'collections.added'                 => 'Collection added',
+    'collection-groups.updated'         => 'Collection group updated',
     'collection-groups.deleted'         => 'Collection group deleted',
     'option-values.created'             => 'Created option value',
     'product-options.created'           => 'Product option created',
@@ -47,4 +48,8 @@ return [
     'addon.not_licensed'                => 'This addon has not been licensed, please check the config for this addon.',
     'product.no-images-associated'      => 'Product does not have any images associated',
     'products.product_restored'         => 'Product restored',
+    'tax_class.saved'                   => 'Tax class saved',
+    'tax_class.deleted'                 => 'Tax class deleted',
+    'clipboard.copied'                  => 'Copied to clipboard',
+    'clipboard.failed_copy'             => 'Unable to copy to clipboard',
 ];

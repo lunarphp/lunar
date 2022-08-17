@@ -4,6 +4,7 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
+use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\LogsActivity;
 use GetCandy\Database\Factories\TransactionFactory;
 use GetCandy\Facades\Payments;
@@ -13,6 +14,7 @@ class Transaction extends BaseModel
 {
     use HasFactory;
     use LogsActivity;
+    use HasMacros;
 
     /**
      * {@inheritDoc}

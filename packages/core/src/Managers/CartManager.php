@@ -292,7 +292,7 @@ class CartManager
 
         CartLine::whereId($id)->update([
             'quantity' => $quantity,
-            'meta'     => $meta,
+            'meta'     => (array) $meta,
         ]);
     }
 
