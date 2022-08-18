@@ -19,7 +19,6 @@
         @forelse($sortedAttributeGroups as $group)
             <div wire:key="group_{{ $group->id }}"
                  x-data="{ expanded: {{ $group->attributes->count() <= 4 ? 'true' : 'false' }} }"
-                 x-cloak
                  sort.item="groups"
                  sort.id="{{ $group->id }}">
                 <div class="flex items-center">
@@ -80,6 +79,7 @@
                     </div>
                 </div>
                 <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
+                     x-cloak
                      @if ($group->attributes->count()) x-show="expanded" @endif>
                     <div class="space-y-2"
                          wire:sort
