@@ -19,6 +19,7 @@
         @forelse($sortedAttributeGroups as $group)
             <div wire:key="group_{{ $group->id }}"
                  x-data="{ expanded: {{ $group->attributes->count() <= 4 ? 'true' : 'false' }} }"
+                 x-cloak
                  sort.item="groups"
                  sort.id="{{ $group->id }}">
                 <div class="flex items-center">
