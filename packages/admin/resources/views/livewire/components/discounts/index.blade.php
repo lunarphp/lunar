@@ -5,7 +5,7 @@
     </strong>
 
     <div class="text-right">
-      <x-hub::button tag="a" href="{{ route('hub.products.create') }}">{{ __('adminhub::components.discounts.index.create_discount') }}</x-hub::button>
+      <x-hub::button tag="a" href="{{ route('hub.discounts.create') }}">{{ __('adminhub::components.discounts.index.create_discount') }}</x-hub::button>
     </div>
   </div>
 

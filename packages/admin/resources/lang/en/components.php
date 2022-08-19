@@ -205,4 +205,7 @@ return [
      */
     'discounts.index.title' => 'Discounts',
     'discounts.index.create_discount' => 'Create Discount',
+    'discounts.create.title' => 'Create Discount',
+    'discounts.create_btn' => 'Create Discount',
+    'discounts.save_btn' => 'Save Discount',
 ];

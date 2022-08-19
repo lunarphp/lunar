@@ -1,5 +1,5 @@
 <div class="space-y-4">
-    <x-hub::input.group for="min_qty" label="Purchase amount" instructions="When there are X items in the cart, the discount applies">
+    {{-- <x-hub::input.group for="min_qty" label="Purchase amount" instructions="When there are X items in the cart, the discount applies">
         <x-hub::input.text type="number" id="min_qty" wire:model="discount.data.min_qty" />
     </x-hub::input.group>
 
@@ -17,7 +17,6 @@
                 'existing' => collect(),
                 'ref' => 'discount-conditions',
                 'showBtn' => true,
-                {{-- 'exclude' => [$product->id] --}}
             ])
         </div>
     </header>
@@ -50,7 +49,6 @@
                 'existing' => collect(),
                 'ref' => 'discount-rewards',
                 'showBtn' => true,
-                {{-- 'exclude' => [$product->id] --}}
             ])
         </div>
     </header>
@@ -75,5 +73,5 @@
 
     <x-hub::alert>
         If one or more items are in the cart, the cheapest item will be discounted.
-    </x-hub::alert>
+    </x-hub::alert> --}}
 </div>

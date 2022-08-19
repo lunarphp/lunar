@@ -3,38 +3,49 @@
 namespace GetCandy\Hub\Http\Livewire\Components\Discounts\Types;
 
 use GetCandy\Models\Currency;
-use GetCandy\Models\Discount;
 use Illuminate\Database\Eloquent\Collection;
-use Livewire\Component;
+use Illuminate\Support\Str;
 
-class Coupon extends Component
+class Coupon extends AbstractDiscountType
 {
-    /**
-     * The instance of the discount.
-     *
-     * @var Discount
-     */
-    public Discount $discount;
-
     /**
      * {@ineheritDoc}.
      */
     public function rules()
     {
-        return [
+        $rules = [
             'discount.data' => 'array',
             'discount.data.coupon' => 'required',
-            'discount.data.value' => 'required|numeric',
+            'discount.data.percentage' => 'nullable|numeric',
+            'discount.data.fixed_values' => 'array|min:0',
+            'discount.data.fixed_value' => 'boolean',
         ];
+
+        foreach ($this->currencies as $currency) {
+            $rules["discount.data.fixed_values.{$currency->code}"] = 'nullable|numeric';
+        }
+
+        return $rules;
     }
 
     /**
-     * Handle when the discount data is updated.
+     * Listen to when the coupon is updated and emit the data change.
+     *
+     * @param string $val
      *
      * @return void
      */
-    public function updatedDiscount()
+    public function updatedDiscountDataCoupon($val)
     {
+        $data = (array) $this->discount->data;
+
+        $data['coupon'] = strtoupper(
+            Str::snake(
+                strtolower($val)
+            )
+        );
+
+        $this->discount->data = $data;
         $this->emitUp('discountData.updated', $this->discount->data);
     }
 

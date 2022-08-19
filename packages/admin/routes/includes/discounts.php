@@ -1,10 +1,8 @@
 <?php
 
+use GetCandy\Hub\Http\Livewire\Pages\Discounts\DiscountCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Discounts\DiscountShow;
 use GetCandy\Hub\Http\Livewire\Pages\Discounts\DiscountsIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Products\ProductCreate;
-use GetCandy\Hub\Http\Livewire\Pages\Products\ProductShow;
-use GetCandy\Hub\Http\Livewire\Pages\Products\Variants\VariantShow;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -14,7 +12,9 @@ Route::group([
     // 'middleware' => 'can:catalogue:manage-discounts',
 ], function () {
     Route::get('/', DiscountsIndex::class)->name('hub.discounts.index');
+    Route::get('create', DiscountCreate::class)->name('hub.discounts.create');
     Route::get('{discount}', DiscountShow::class)->name('hub.discounts.show');
+
 //     Route::get('create', ProductCreate::class)->name('hub.products.create');
 //
 //     Route::group([

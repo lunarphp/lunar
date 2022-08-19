@@ -14,6 +14,8 @@ class Discount extends BaseModel
     use HasFactory,
         HasTranslations;
 
+    protected $guarded = [];
+
     /**
      * Define which attributes should be cast.
      *
@@ -55,7 +57,7 @@ class Discount extends BaseModel
         return $this->hasMany(DiscountPurchasable::class)->whereType('reward');
     }
 
-    public function type()
+    public function getType()
     {
         return app($this->type)->with($this);
     }
