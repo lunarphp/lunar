@@ -56,10 +56,38 @@ class Coupon extends AbstractDiscountType
             new CartDiscount($cartLine, $this->discount)
         );
 
+        if ($data['fixed_value']) {
+            return $this->applyFixedValue(
+                values: $data['fixed_values'],
+                cartLine: $cartLine
+            );
+        }
+
         return $this->applyPercentage(
-            value: $data['value'],
+            value: $data['percentage'],
             cartLine: $cartLine
         );
+    }
+
+    private function applyFixedValue(array $values, CartLine $cartLine): CartLine
+    {
+        $currency = $cartLine->cart->currency;
+
+        $value = $values[$currency->code] ?? 0;
+
+        if (!$value) {
+            return $cartLine;
+        }
+
+        $amount = (int) (round($value / $cartLine->cart->lines->count(), 2) * 100);
+
+        $cartLine->discountTotal = new Price(
+            $amount,
+            $currency,
+            1
+        );
+
+        return $cartLine;
     }
 
     /**

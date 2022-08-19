@@ -64,7 +64,7 @@ class DiscountManager implements DiscountManagerInterface
         }
 
         foreach ($this->discounts as $discount) {
-            $cartLine = $discount->type()->execute($cartLine);
+            $cartLine = $discount->getType()->execute($cartLine);
         }
 
         return $cartLine;
