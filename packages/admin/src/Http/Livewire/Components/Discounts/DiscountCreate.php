@@ -25,6 +25,8 @@ class DiscountCreate extends AbstractDiscount
             'starts_at' => now()->startOfHour(),
             'data' => [],
         ]);
+
+        $this->syncCollections();
     }
 
     /**

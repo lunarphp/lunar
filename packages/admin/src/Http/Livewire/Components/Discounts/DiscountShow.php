@@ -28,11 +28,6 @@ class DiscountShow extends AbstractDiscount
         ], $this->getDiscountComponent()->rules());
     }
 
-    public function mount()
-    {
-        $this->syncCollections();
-    }
-
     /**
      * Render the livewire component.
      *

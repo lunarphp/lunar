@@ -29,6 +29,23 @@ class Coupon extends AbstractDiscountType
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function mount()
+    {
+        if ($this->discount->id) {
+            $this->discount = $this->discount->refresh();
+        }
+
+        if (empty($this->discount->data)) {
+            $this->discount->data = [
+                'coupon' => null,
+                'fixed_value' => false,
+            ];
+        }
+    }
+
+    /**
      * Listen to when the coupon is updated and emit the data change.
      *
      * @param  string  $val

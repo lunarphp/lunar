@@ -42,6 +42,11 @@ abstract class AbstractDiscount extends Component
         'collectionSearch.selected' => 'selectCollections',
     ];
 
+    public function mount()
+    {
+        $this->syncCollections();
+    }
+
     /**
      * Map and add the selected collections.
      *

@@ -24,23 +24,6 @@ abstract class AbstractDiscountType extends Component
     /**
      * {@inheritDoc}
      */
-    public function mount()
-    {
-        if ($this->discount->id) {
-            $this->discount = $this->discount->refresh();
-        }
-
-        if (empty($this->discount->data)) {
-            $this->discount->data = [
-                'coupon' => null,
-                'fixed_value' => true,
-            ];
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function parentComponentErrorBag($errorBag)
     {
         $this->setErrorBag($errorBag);
