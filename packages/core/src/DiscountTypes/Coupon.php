@@ -7,25 +7,9 @@ use GetCandy\DataTypes\Price;
 use GetCandy\Facades\Discounts;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Collection;
-use GetCandy\Models\Discount;
 
-class Coupon
+class Coupon extends AbstractDiscountType
 {
-    protected Discount $discount;
-
-    /**
-     * Set the data for the discount to user.
-     *
-     * @param  array  $data
-     * @return self
-     */
-    public function with(Discount $discount): self
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-
     /**
      * Return the name of the discount.
      *

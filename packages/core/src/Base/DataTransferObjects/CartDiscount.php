@@ -8,7 +8,7 @@ use GetCandy\Models\Discount;
 class CartDiscount
 {
     public function __construct(
-        public CartLine $name,
+        public CartLine $cartLine,
         public Discount $discount
     ) {
         //

@@ -2,6 +2,7 @@
 
 namespace GetCandy\Database\Factories;
 
+use GetCandy\DiscountTypes\Coupon;
 use GetCandy\Models\Discount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -16,7 +17,8 @@ class DiscountFactory extends Factory
 
         return [
             'name' => $name,
-            'handle' => Str::slug($name),
+            'handle' => Str::snake($name),
+            'type' => Coupon::class,
             'starts_at' => now(),
         ];
     }
