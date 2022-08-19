@@ -20,6 +20,11 @@ class DiscountCollection extends BaseModel
     protected $casts = [];
 
     /**
+     * {@inheritDoc}
+     */
+    protected $guarded = [];
+
+    /**
      * Return a new factory instance for the model.
      *
      * @return DiscountFactory
@@ -37,5 +42,10 @@ class DiscountCollection extends BaseModel
     public function discount()
     {
         return $this->belongsTo(Discount::class);
+    }
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class);
     }
 }
