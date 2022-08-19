@@ -107,7 +107,7 @@ class CouponTest extends TestCase
                 'fixed_value' => true,
                 'fixed_values' => [
                     $currency->code => 10,
-                ]
+                ],
             ],
         ]);
 
@@ -125,9 +125,9 @@ class CouponTest extends TestCase
     }
 
     /**
-    * @test
-    * @group this
-    */
+     * @test
+     * @group this
+     */
     public function can_apply_fixed_amount_to_multiple_lines()
     {
         $currency = Currency::factory()->create();
@@ -139,7 +139,7 @@ class CouponTest extends TestCase
             ],
         ]);
 
-        for ($i = 0; $i < 3; $i ++) {
+        for ($i = 0; $i < 3; $i++) {
             $purchasable = ProductVariant::factory()->create();
 
             Price::factory()->create([
@@ -165,12 +165,11 @@ class CouponTest extends TestCase
                 'fixed_value' => true,
                 'fixed_values' => [
                     $currency->code => 10,
-                ]
+                ],
             ],
         ]);
 
         $manager = new CartManager($cart);
-
 
         $this->assertNull($cart->total);
         $this->assertNull($cart->taxTotal);

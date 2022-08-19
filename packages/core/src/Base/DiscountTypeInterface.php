@@ -16,8 +16,7 @@ interface DiscountTypeInterface
     /**
      * Execute and apply the discount if conditions are met.
      *
-     * @param CartLine $cartLine
-     *
+     * @param  CartLine  $cartLine
      * @return CartLine
      */
     public function execute(CartLine $cartLine): CartLine;
