@@ -4,7 +4,6 @@ namespace GetCandy\Actions\Carts;
 
 use GetCandy\Base\Addressable;
 use GetCandy\DataTypes\Price;
-use GetCandy\Facades\Pricing;
 use GetCandy\Facades\Taxes;
 use GetCandy\Models\CartLine;
 use Illuminate\Support\Collection;
