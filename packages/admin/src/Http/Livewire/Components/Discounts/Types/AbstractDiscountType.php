@@ -33,7 +33,7 @@ abstract class AbstractDiscountType extends Component
         if (empty($this->discount->data)) {
             $this->discount->data = [
                 'coupon' => null,
-                'fixed_value' => true
+                'fixed_value' => true,
             ];
         }
     }

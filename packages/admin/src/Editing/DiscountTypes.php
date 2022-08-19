@@ -18,7 +18,7 @@ class DiscountTypes
     {
         $component = $this->mapping[$type] ?? null;
 
-        if (!$component) {
+        if (! $component) {
             return null;
         }
 

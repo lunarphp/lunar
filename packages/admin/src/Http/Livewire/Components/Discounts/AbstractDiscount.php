@@ -46,7 +46,7 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
-     * Return the available discount types
+     * Return the available discount types.
      *
      * @return array
      */
@@ -68,8 +68,7 @@ abstract class AbstractDiscount extends Component
     /**
      * Sync the discount data with what's provided.
      *
-     * @param array $data
-     *
+     * @param  array  $data
      * @return void
      */
     public function syncDiscountData(array $data)

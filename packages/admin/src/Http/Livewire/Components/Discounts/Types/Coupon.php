@@ -31,8 +31,7 @@ class Coupon extends AbstractDiscountType
     /**
      * Listen to when the coupon is updated and emit the data change.
      *
-     * @param string $val
-     *
+     * @param  string  $val
      * @return void
      */
     public function updatedDiscountDataCoupon($val)
