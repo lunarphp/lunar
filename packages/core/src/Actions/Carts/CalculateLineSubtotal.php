@@ -42,10 +42,11 @@ class CalculateLineSubtotal
             );
         }
 
-        $unitPrice = (int) (round(
-            $price->decimal / $purchasable->getUnitQuantity(),
+        $unitPrice = (int) round(
+            (($price->decimal / $purchasable->getUnitQuantity())
+            * $cart->currency->factor),
             $cart->currency->decimal_places
-        ) * $cart->currency->factor);
+        );
 
         $cartLine->subTotal = new Price($unitPrice * $cartLine->quantity, $cart->currency, $unitQuantity);
         $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);

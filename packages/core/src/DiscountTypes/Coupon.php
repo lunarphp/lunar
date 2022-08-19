@@ -73,13 +73,13 @@ class Coupon extends AbstractDiscountType
     {
         $currency = $cartLine->cart->currency;
 
-        $value = $values[$currency->code] ?? 0;
+        $value = ($values[$currency->code] ?? 0) * 100;
 
         if (! $value) {
             return $cartLine;
         }
 
-        $amount = (int) (round($value / $cartLine->cart->lines->count(), 2) * 100);
+        $amount = (int) (round($value / $cartLine->cart->lines->count(), 2));
 
         $cartLine->discountTotal = new Price(
             $amount,

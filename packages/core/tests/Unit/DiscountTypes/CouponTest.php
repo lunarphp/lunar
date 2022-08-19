@@ -23,7 +23,9 @@ class CouponTest extends TestCase
     /** @test */
     public function can_apply_percentage_discount()
     {
-        $currency = Currency::factory()->create();
+        $currency = Currency::factory()->create([
+            'code' => 'GBP',
+        ]);
 
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
@@ -35,7 +37,7 @@ class CouponTest extends TestCase
         $purchasable = ProductVariant::factory()->create();
 
         Price::factory()->create([
-            'price'          => 100,
+            'price'          => 1000,
             'tier'           => 1,
             'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasable),
@@ -66,15 +68,20 @@ class CouponTest extends TestCase
 
         $cart = $manager->getCart();
 
-        $this->assertEquals(10, $cart->discountTotal->value);
+        $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(18, $cart->taxTotal->value);
-        $this->assertEquals(118, $cart->total->value);
+        $this->assertEquals(108, $cart->total->value);
     }
 
-    /** @test */
+    /**
+    * @test
+    * @group this
+    */
     public function can_apply_fixed_amount_discount()
     {
-        $currency = Currency::factory()->create();
+        $currency = Currency::factory()->create([
+            'code' => 'GBP',
+        ]);
 
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
@@ -86,7 +93,7 @@ class CouponTest extends TestCase
         $purchasable = ProductVariant::factory()->create();
 
         Price::factory()->create([
-            'price'          => 100,
+            'price'          => 2000,
             'tier'           => 1,
             'currency_id'    => $currency->id,
             'priceable_type' => get_class($purchasable),
@@ -119,14 +126,13 @@ class CouponTest extends TestCase
 
         $cart = $manager->getCart();
 
-        $this->assertEquals(10, $cart->discountTotal->value);
-        $this->assertEquals(18, $cart->taxTotal->value);
-        $this->assertEquals(118, $cart->total->value);
+        $this->assertEquals(1000, $cart->discountTotal->value);
+        $this->assertEquals(200, $cart->taxTotal->value);
+        $this->assertEquals(1200, $cart->total->value);
     }
 
     /**
      * @test
-     * @group this
      */
     public function can_apply_fixed_amount_to_multiple_lines()
     {

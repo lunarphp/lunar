@@ -82,6 +82,7 @@ class CartManager
         // Get the line subtotals and add together.
         $subTotal = $lines->sum('subTotal.value');
         $discountTotal = $lines->sum('discountTotal.value');
+
         $taxTotal = $lines->sum('taxAmount.value');
         $total = $lines->sum('total.value');
         $taxBreakDownAmounts = $lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
