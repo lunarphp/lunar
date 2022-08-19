@@ -110,7 +110,7 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
-     * Sync the discount collections with the UI
+     * Sync the discount collections with the UI.
      *
      * @return void
      */
@@ -149,7 +149,7 @@ abstract class AbstractDiscount extends Component
      */
     public function save()
     {
-        $redirect = !$this->discount->id;
+        $redirect = ! $this->discount->id;
 
         $this->validate();
         $this->discount->save();
@@ -157,13 +157,13 @@ abstract class AbstractDiscount extends Component
         $existing = $this->discount->collections()->get();
 
         $collectionsToRemove = $existing->filter(function ($collection) {
-            return !$this->collections->pluck('id')->contains($collection->collection_id);
+            return ! $this->collections->pluck('id')->contains($collection->collection_id);
         })->pluck('collection_id');
 
         $this->discount->collections()->whereIn('collection_id', $collectionsToRemove->toArray())->delete();
 
         $newCollections = $this->collections->filter(function ($collection) use ($existing) {
-            return !$existing->pluck('collection_id')->contains($collection['id']);
+            return ! $existing->pluck('collection_id')->contains($collection['id']);
         })->map(function ($collection) {
             return [
                 'collection_id' => $collection['id'],

@@ -75,7 +75,7 @@ class Coupon extends AbstractDiscountType
 
         $value = $values[$currency->code] ?? 0;
 
-        if (!$value) {
+        if (! $value) {
             return $cartLine;
         }
 
