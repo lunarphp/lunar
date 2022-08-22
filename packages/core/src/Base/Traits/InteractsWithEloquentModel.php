@@ -34,6 +34,7 @@ trait InteractsWithEloquentModel
     public function getMorphClass(): string
     {
         $morphClass = ModelFactory::getInstance()->getBaseMorphMappedModel(get_class($this));
+
         return $this->morphClass ?: ($morphClass ?? parent::getMorphClass());
     }
 

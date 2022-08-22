@@ -66,6 +66,7 @@ class ModelFactory
     public static function getBaseMorphMappedModel(string $morphClass): ?string
     {
         $inverse = array_flip(static::$models);
+
         return $inverse[$morphClass] ?? null;
     }
 
