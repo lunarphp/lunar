@@ -27,6 +27,17 @@ trait InteractsWithEloquentModel
     }
 
     /**
+     * Get the class name of the parent model.
+     *
+     * @return string
+     */
+    public function getMorphClass(): string
+    {
+        $morphClass = ModelFactory::getInstance()->getBaseMorphMappedModel(get_class($this));
+        return $this->morphClass ?: ($morphClass ?? parent::getMorphClass());
+    }
+
+    /**
      * Handle dynamic and static method calls into the model.
      *
      * @param  string  $method

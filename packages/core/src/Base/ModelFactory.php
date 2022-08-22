@@ -58,6 +58,18 @@ class ModelFactory
     }
 
     /**
+     * Get the base morph mapped model.
+     *
+     * @param  string  $morphClass
+     * @return string|null
+     */
+    public static function getBaseMorphMappedModel(string $morphClass): ?string
+    {
+        $inverse = array_flip(static::$models);
+        return $inverse[$morphClass] ?? null;
+    }
+
+    /**
      * Get list of registered base model classes.
      *
      * @return array
