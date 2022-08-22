@@ -69,13 +69,12 @@ class CouponTest extends TestCase
         $cart = $manager->getCart();
 
         $this->assertEquals(100, $cart->discountTotal->value);
-        $this->assertEquals(18, $cart->taxTotal->value);
-        $this->assertEquals(108, $cart->total->value);
+        $this->assertEquals(180, $cart->taxTotal->value);
+        $this->assertEquals(1080, $cart->total->value);
     }
 
     /**
     * @test
-    * @group this
     */
     public function can_apply_fixed_amount_discount()
     {
