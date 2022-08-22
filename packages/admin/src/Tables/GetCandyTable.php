@@ -115,7 +115,7 @@ abstract class GetCandyTable extends Component implements HasTable
                     continue;
                 }
 
-                $columns->splice($index + 1, 0, $column['column']);
+                $columns->splice($index + 1, 0, [$column['column']]);
             }
         }
 
