@@ -27,6 +27,7 @@
     aria-orientation="vertical"
     aria-labelledby="menu-button"
     tabindex="-1"
+    x-cloak
     x-show="menuOpen"
     x-transition:enter="ease-out duration-100"
     x-transition:enter-start="opacity-0 scale-95"
