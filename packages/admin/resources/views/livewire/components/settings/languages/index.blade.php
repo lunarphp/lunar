@@ -35,7 +35,7 @@
                     <x-hub::table.cell class="text-right">
                         <a href="{{ route('hub.languages.show', $language->id) }}"
                            class="text-indigo-500 hover:underline">
-                            {{ __('adminhub::settings.staff.index.table_row_action_text') }}
+                            {{ __('adminhub::settings.languages.index.table_row_action_text') }}
                         </a>
                     </x-hub::table.cell>
                 </x-hub::table.row>
