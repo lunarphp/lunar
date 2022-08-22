@@ -1,7 +1,6 @@
 <?php
 
 use GetCandy\Base\Migration;
-use GetCandy\Models\Currency;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
