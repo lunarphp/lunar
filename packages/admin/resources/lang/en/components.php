@@ -208,4 +208,6 @@ return [
     'discounts.create.title' => 'Create Discount',
     'discounts.create_btn' => 'Create Discount',
     'discounts.save_btn' => 'Save Discount',
+    'discounts.show.danger_zone.label' => 'Delete discount',
+    'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
 ];

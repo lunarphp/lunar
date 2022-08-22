@@ -53,4 +53,5 @@ return [
     'clipboard.copied'                  => 'Copied to clipboard',
     'clipboard.failed_copy'             => 'Unable to copy to clipboard',
     'discount.saved'                    => 'Discount saved',
+    'discount.deleted'                  => 'Discount deleted',
 ];
