@@ -58,6 +58,9 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Settings\CustomerGroups\CustomerGroupCreate;
+use GetCandy\Hub\Http\Livewire\Components\Settings\CustomerGroups\CustomerGroupShow;
+use GetCandy\Hub\Http\Livewire\Components\Settings\CustomerGroups\CustomerGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
@@ -324,10 +327,15 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.channels.show', ChannelShow::class);
         Livewire::component('hub.components.settings.channels.create', ChannelCreate::class);
 
-        // Users
+        // Staff
         Livewire::component('hub.components.settings.staff.index', StaffIndex::class);
         Livewire::component('hub.components.settings.staff.show', StaffShow::class);
         Livewire::component('hub.components.settings.staff.create', StaffCreate::class);
+
+        // Customer Groups
+        Livewire::component('hub.components.settings.customer-groups.index', CustomerGroupsIndex::class);
+        Livewire::component('hub.components.settings.customer-groups.show', CustomerGroupShow::class);
+        Livewire::component('hub.components.settings.customer-groups.create', CustomerGroupCreate::class);
 
         // Languages
         Livewire::component('hub.components.settings.languages.index', LanguagesIndex::class);

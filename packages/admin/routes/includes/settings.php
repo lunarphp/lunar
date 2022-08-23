@@ -14,6 +14,9 @@ use GetCandy\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupCreate;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupShow;
+use GetCandy\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
@@ -64,6 +67,17 @@ Route::group([
     Route::get('staff', StaffIndex::class)->name('hub.staff.index');
     Route::get('staff/create', StaffCreate::class)->name('hub.staff.create');
     Route::get('staff/{staff}', StaffShow::class)->withTrashed()->name('hub.staff.show');
+});
+
+/**
+ * Customer Groups.
+ */
+Route::group([
+    'middleware' => 'can:settings:manage-staff',
+], function () {
+    Route::get('customer-groups', CustomerGroupsIndex::class)->name('hub.customer-groups.index');
+    Route::get('customer-groups/create', CustomerGroupCreate::class)->name('hub.customer-groups.create');
+    Route::get('customer-groups/{customerGroup}', CustomerGroupShow::class)->withTrashed()->name('hub.customer-groups.show');
 });
 
 /*

@@ -99,6 +99,14 @@ class SettingsMenu
         });
 
         $adminSection->addItem(function ($item) {
+            $item->name('Customer Groups')
+                 ->handle('hub.customer-groups')
+                 ->route('hub.customer-groups.index')
+                 ->gate('settings:manage-staff')
+                 ->icon('user');
+        });
+
+        $adminSection->addItem(function ($item) {
             $item->name('Staff')
                 ->handle('hub.staff')
                 ->route('hub.staff.index')
