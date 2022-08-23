@@ -6,7 +6,9 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasDefaultRecord;
 use GetCandy\Base\Traits\HasMacros;
 use GetCandy\Base\Traits\HasMedia;
+use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Database\Factories\CustomerGroupFactory;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CustomerGroup extends BaseModel
@@ -15,6 +17,14 @@ class CustomerGroup extends BaseModel
     use HasMedia;
     use HasDefaultRecord;
     use HasMacros;
+    use HasTranslations;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $casts = [
+        'name' => AsCollection::class,
+    ];
 
     /**
      * {@inheritDoc}
