@@ -98,7 +98,7 @@
         @foreach($this->customerGroups as $group)
           <div wire:key="group_price_{{ $group->id }}">
             <div class="grid items-center grid-cols-2 gap-4">
-              {{ $group->name }}
+              {{ $group->translate('name') }}
               <x-hub::input.group
                 :label="null"
                 for="customerGroupPrices"
@@ -153,7 +153,7 @@
                         <x-hub::input.select wire:model='tieredPrices.{{ $index }}.customer_group_id' :disabled="!$this->currency->default">
                           <option value="*">{{ __('adminhub::global.any') }}</option>
                           @foreach($this->customerGroups as $group)
-                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                            <option value="{{ $group->id }}">{{ $group->translate('name') }}</option>
                           @endforeach
                         </x-hub::input.select>
 

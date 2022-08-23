@@ -53,7 +53,7 @@
                                        wire:key="group_{{ $group->id }}">
                                     <x-hub::input.checkbox wire:model.debounce.500ms="syncedGroups"
                                                            value="{{ $group->id }}" /> <span
-                                          class="ml-2">{{ $group->name }}</span>
+                                          class="ml-2">{{ $group->translate('name') }}</span>
                                 </label>
                             @endforeach
                         </div>
