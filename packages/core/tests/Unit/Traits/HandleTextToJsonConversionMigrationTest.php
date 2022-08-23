@@ -23,7 +23,8 @@ class HandleTextToJsonConversionMigrationTest extends TestCase
     {
         parent::setUp();
 
-        $this->customerGroupMigration = new class extends Migration {
+        $this->customerGroupMigration = new class extends Migration
+        {
             use HandleTextToJsonConversionMigration;
 
             public function __construct()
@@ -46,7 +47,8 @@ class HandleTextToJsonConversionMigrationTest extends TestCase
     /** @test */
     public function throw_exception_if_table_and_field_are_not_set()
     {
-        $migration = new class {
+        $migration = new class
+        {
             use HandleTextToJsonConversionMigration;
         };
 
@@ -58,7 +60,8 @@ class HandleTextToJsonConversionMigrationTest extends TestCase
     /** @test */
     public function throw_exception_if_table_does_not_exist()
     {
-        $migration = new class extends Migration {
+        $migration = new class extends Migration
+        {
             use HandleTextToJsonConversionMigration;
 
             public function __construct()

@@ -20,6 +20,7 @@ trait HandleTextToJsonConversionMigration
 
     /**
      * @return void
+     *
      * @throws \Exception
      */
     public function setup()
@@ -30,7 +31,7 @@ trait HandleTextToJsonConversionMigration
             throw new \Exception('Both table and field names must be set.');
         }
 
-        if (!Schema::hasTable($this->prefix.$this->table)) {
+        if (! Schema::hasTable($this->prefix.$this->table)) {
             throw new \Exception('Table does not exist.');
         }
     }
