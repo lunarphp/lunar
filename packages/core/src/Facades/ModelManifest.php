@@ -7,8 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class ModelManifest
- * @package GetCandy\Facades
+ * Class ModelManifest.
  *
  * @method static \Illuminate\Support\Collection register(Collection $models)
  * @method static \Illuminate\Database\Eloquent\Model getRegisteredModel(string $baseModelClass)
