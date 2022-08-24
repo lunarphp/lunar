@@ -6,10 +6,10 @@ use GetCandy\Facades\ModelManifest;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionClass;
 
-trait InteractsWithModelManifest
+trait InteractsWithExtendableModels
 {
     /**
-     * Create a new instance of the given model.
+     * Get new instance of the registered model.
      *
      * @param  array  $attributes
      * @param  bool  $exists
@@ -25,18 +25,6 @@ trait InteractsWithModelManifest
         $model = ModelManifest::getRegisteredModel(get_class($model));
 
         return $model->newInstance($attributes, $exists);
-    }
-
-    /**
-     * Get the class name of the parent model.
-     *
-     * @return string
-     */
-    public function getMorphClass(): string
-    {
-        $morphClass = ModelManifest::getMorphClassBaseModel(get_class($this));
-
-        return $this->morphClass ?: ($morphClass ?? parent::getMorphClass());
     }
 
     /**
@@ -66,6 +54,18 @@ trait InteractsWithModelManifest
     public function swap(Model $model = null): Model
     {
         return $model ?? ModelManifest::getRegisteredModel(get_called_class());
+    }
+
+    /**
+     * Get the class name of the parent model.
+     *
+     * @return string
+     */
+    public function getMorphClass(): string
+    {
+        $morphClass = ModelManifest::getMorphClassBaseModel(get_class($this));
+
+        return $this->morphClass ?: ($morphClass ?? parent::getMorphClass());
     }
 
     /**
