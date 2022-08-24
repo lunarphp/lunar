@@ -2,10 +2,11 @@
 
 namespace GetCandy\Base\Traits;
 
-use GetCandy\Base\ModelFactory;
+use GetCandy\Facades\ModelManifest;
 use Illuminate\Database\Eloquent\Model;
+use ReflectionClass;
 
-trait InteractsWithEloquentModel
+trait InteractsWithModelManifest
 {
     /**
      * Create a new instance of the given model.
@@ -17,11 +18,11 @@ trait InteractsWithEloquentModel
     public function newInstance($attributes = [], $exists = false): Model
     {
         $model = parent::newInstance($attributes, $exists);
-        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses())) {
+        if (!ModelManifest::getBaseModelClasses()->contains(get_called_class())) {
             return $model;
         }
 
-        $model = ModelFactory::getInstance()->getRegisteredModel(get_class($model));
+        $model = ModelManifest::getRegisteredModel(get_class($model));
 
         return $model->newInstance($attributes, $exists);
     }
@@ -33,7 +34,7 @@ trait InteractsWithEloquentModel
      */
     public function getMorphClass(): string
     {
-        $morphClass = ModelFactory::getInstance()->getBaseMorphMappedModel(get_class($this));
+        $morphClass = ModelManifest::getMorphClassBaseModel(get_class($this));
 
         return $this->morphClass ?: ($morphClass ?? parent::getMorphClass());
     }
@@ -47,8 +48,9 @@ trait InteractsWithEloquentModel
      */
     public function __call($method, $parameters)
     {
-        $model = ModelFactory::getInstance()->getRegisteredModel(get_called_class());
-        if (! in_array(get_called_class(), ModelFactory::getBaseModelClasses()) || ! $this->forwardCallsWhen($method, $model)) {
+        $model = ModelManifest::getRegisteredModel(get_called_class());
+
+        if (!ModelManifest::getBaseModelClasses()->contains(get_called_class()) || ! $this->forwardCallsWhen($method, $model)) {
             return parent::__call($method, $parameters);
         }
 
@@ -63,7 +65,7 @@ trait InteractsWithEloquentModel
      */
     public function swap(Model $model = null): Model
     {
-        return $model ?? ModelFactory::getInstance()->getRegisteredModel(get_called_class());
+        return $model ?? ModelManifest::getRegisteredModel(get_called_class());
     }
 
     /**
@@ -75,10 +77,11 @@ trait InteractsWithEloquentModel
      */
     protected function forwardCallsWhen(string $method, Model $model): bool
     {
-        $reflect = new \ReflectionClass($model);
+        $reflect = new ReflectionClass($model);
         $methods = collect($reflect->getMethods())
             ->filter(fn ($method) => $method->class == get_class($model))
             ->map(fn ($method) => $method->name);
+
 
         return $methods->contains($method);
     }

@@ -2,12 +2,12 @@
 
 namespace GetCandy\Base;
 
-use GetCandy\Base\Traits\InteractsWithEloquentModel;
+use GetCandy\Base\Traits\InteractsWithModelManifest;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseModel extends Model
 {
-    use InteractsWithEloquentModel;
+    use InteractsWithModelManifest;
 
     /**
      * Create a new instance of the Model.

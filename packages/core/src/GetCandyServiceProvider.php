@@ -11,7 +11,11 @@ use GetCandy\Base\CartModifiers;
 use GetCandy\Base\CartSessionInterface;
 use GetCandy\Base\FieldTypeManifest;
 use GetCandy\Base\FieldTypeManifestInterface;
+use GetCandy\Base\ModelManifest;
+use GetCandy\Base\ModelManifestInterface;
 use GetCandy\Base\OrderModifiers;
+use GetCandy\Base\OrderReferenceGenerator;
+use GetCandy\Base\OrderReferenceGeneratorInterface;
 use GetCandy\Base\PaymentManagerInterface;
 use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\ShippingManifest;
@@ -116,12 +120,20 @@ class GetCandyServiceProvider extends ServiceProvider
             return $app->make(ShippingManifest::class);
         });
 
+        $this->app->singleton(OrderReferenceGeneratorInterface::class, function ($app) {
+            return $app->make(OrderReferenceGenerator::class);
+        });
+
         $this->app->singleton(AttributeManifestInterface::class, function ($app) {
             return $app->make(AttributeManifest::class);
         });
 
         $this->app->singleton(FieldTypeManifestInterface::class, function ($app) {
             return $app->make(FieldTypeManifest::class);
+        });
+
+        $this->app->singleton(ModelManifestInterface::class, function ($app) {
+            return $app->make(ModelManifest::class);
         });
 
         $this->app->bind(PricingManagerInterface::class, function ($app) {
@@ -154,7 +166,7 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->registerObservers();
         $this->registerBlueprintMacros();
 
-        if (! $this->app->environment('testing')) {
+        if (!$this->app->environment('testing')) {
             $this->registerStateListeners();
         }
 
@@ -271,19 +283,19 @@ class GetCandyServiceProvider extends ServiceProvider
 
             if ($type == 'uuid') {
                 $this->foreignUuId($field_name)
-                    ->nullable($nullable)
-                    ->constrained(
-                        (new $userModel())->getTable()
-                    );
+                     ->nullable($nullable)
+                     ->constrained(
+                         (new $userModel())->getTable()
+                     );
             } elseif ($type == 'int') {
                 $this->unsignedInteger($field_name)->nullable($nullable);
                 $this->foreign($field_name)->references('id')->on('users');
             } else {
                 $this->foreignId($field_name)
-                    ->nullable($nullable)
-                    ->constrained(
-                        (new $userModel())->getTable()
-                    );
+                     ->nullable($nullable)
+                     ->constrained(
+                         (new $userModel())->getTable()
+                     );
             }
         });
     }
