@@ -9,7 +9,7 @@
         </header>
         <div class="space-y-4">
           @foreach($group['fields'] as $attIndex => $field)
-            <div wire:key="{{ $field['handle'] }}">
+            <div wire:key="attributes_{{ $field['handle'] }}">
               <x-hub::input.group
                 :label="$field['name']"
                 :for="$field['handle']"

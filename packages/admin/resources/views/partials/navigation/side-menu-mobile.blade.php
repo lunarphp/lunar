@@ -3,7 +3,7 @@
         <a href="{{ route('hub.index') }}"
            class="block">
             <img class="w-8 h-8"
-                 src="https://markmead.dev/gc-favicon.svg"
+                 src="https://getcandy.io/assets/imgs/logos/favicon.svg"
                  alt="GetCandy Logo">
         </a>
 
@@ -40,7 +40,7 @@
         <div class="pt-4 mt-4 border-t border-gray-100">
             @if (Auth::user()->can('settings'))
                 <div x-data="{ showSettingsMenu: false }"
-                     x-init="showSettingsMenu = {{ Str::contains(request()->url(), 'settings') ? 'true' : 'false' }}">
+                     x-init="showSettingsMenu = '{{ Str::contains(request()->url(), 'settings') }}'">
                     <a href="{{ route('hub.settings') }}"
                        class="justify-between menu-link menu-link--inactive">
                         <div class="flex gap-2">

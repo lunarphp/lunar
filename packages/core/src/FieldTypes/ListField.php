@@ -40,7 +40,7 @@ class ListField implements FieldType, JsonSerializable
      */
     public function getValue()
     {
-        return json_decode($this->value);
+        return json_decode($this->value ?? '[]');
     }
 
     /**

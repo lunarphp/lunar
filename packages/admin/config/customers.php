@@ -13,4 +13,5 @@ return [
     |
     */
     'searchable_meta' => [],
+    'impersonate' => null,
 ];
