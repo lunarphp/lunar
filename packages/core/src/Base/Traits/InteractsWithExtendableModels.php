@@ -18,7 +18,7 @@ trait InteractsWithExtendableModels
     public function newInstance($attributes = [], $exists = false): Model
     {
         $model = parent::newInstance($attributes, $exists);
-        if (!ModelManifest::getBaseModelClasses()->contains(get_called_class())) {
+        if (! ModelManifest::getBaseModelClasses()->contains(get_called_class())) {
             return $model;
         }
 
@@ -38,7 +38,7 @@ trait InteractsWithExtendableModels
     {
         $model = ModelManifest::getRegisteredModel(get_called_class());
 
-        if (!ModelManifest::getBaseModelClasses()->contains(get_called_class()) || ! $this->forwardCallsWhen($method, $model)) {
+        if (! ModelManifest::getBaseModelClasses()->contains(get_called_class()) || ! $this->forwardCallsWhen($method, $model)) {
             return parent::__call($method, $parameters);
         }
 
@@ -81,7 +81,6 @@ trait InteractsWithExtendableModels
         $methods = collect($reflect->getMethods())
             ->filter(fn ($method) => $method->class == get_class($model))
             ->map(fn ($method) => $method->name);
-
 
         return $methods->contains($method);
     }
