@@ -83,6 +83,7 @@ trait HasUrls
                 if ($index != $urlIndex) {
                     $url['default'] = false;
                 }
+
                 return $url;
             })->toArray();
         }
