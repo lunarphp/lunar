@@ -31,21 +31,21 @@ class HasUrlsTraitTest extends TestCase
         ]);
     }
 
-    /** @test
-     * public function can_generate_urls()
-     * {
-     * Language::factory()->create(['default' => true]);
-     *
-     * Config::set('getcandy.urls.generator', UrlGenerator::class);
-     *
-     * $product = Product::factory()->create();
-     *
-     * $this->assertCount(1, $product->refresh()->urls);
-     *
-     * $this->assertDatabaseHas((new Url)->getTable(), [
-     * 'element_type' => Product::class,
-     * 'element_id' => $product->id,
-     * 'slug' => Str::slug($product->translateAttribute('name')),
-     * ]);
-     * }*/
+    /** @test **/
+    public function can_generate_urls()
+    {
+        Language::factory()->create(['default' => true]);
+
+        Config::set('getcandy.urls.generator', UrlGenerator::class);
+
+        $product = Product::factory()->create();
+
+        $this->assertCount(1, $product->refresh()->urls);
+
+        $this->assertDatabaseHas((new Url)->getTable(), [
+            'element_type' => Product::class,
+            'element_id' => $product->id,
+            'slug' => Str::slug($product->translateAttribute('name')),
+        ]);
+    }
 }
