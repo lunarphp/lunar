@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### [ Unreleased ]
+
 ## Fixed
 - When migrating fresh, the transaction table migrations were out of order.  Changed the type when making nullable.
+- Added `wire:key` to URL management
+- When setting a new `default` URL whilst editing, other existing `default` values are set to `false`
 
 ### 2.0-beta15 - 2022-08-10
 
