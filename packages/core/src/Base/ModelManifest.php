@@ -46,8 +46,7 @@ class ModelManifest implements ModelManifestInterface
      */
     public function getRegisteredModel(string $baseModelClass): Model
     {
-        return app($this->models[$baseModelClass] ?? $baseModelClass);
-        //return app($this->models->get($baseModelClass) ?? $baseModelClass);
+        return app($this->models->get($baseModelClass) ?? $baseModelClass);
     }
 
     /**
@@ -71,6 +70,16 @@ class ModelManifest implements ModelManifestInterface
     public function getBaseModelClasses(): Collection
     {
         return $this->models->keys();
+    }
+
+    /**
+     * Get list of all registered models
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getRegisteredModels(): Collection
+    {
+        return $this->models;
     }
 
     /**
