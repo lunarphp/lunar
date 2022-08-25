@@ -3,6 +3,7 @@
 namespace GetCandy\Hub\Listeners;
 
 use Illuminate\Routing\Events\RouteMatched;
+use Illuminate\Support\Str;
 
 class SetStaffAuthMiddlewareListener
 {
@@ -14,19 +15,32 @@ class SetStaffAuthMiddlewareListener
      */
     public function handle(RouteMatched $event)
     {
-        // Is this a livewire route and are we looking for a hub component.
-        $routeName = $event->route->getName();
-
-        $isLivewire = str_contains($routeName, 'livewire');
-        $isHubComponent = str_contains($routeName, 'hub');
-        $isModal = str_contains($routeName, 'livewire-ui-modal');
-        $isLoginComponent = str_contains($routeName, 'login');
-        $isPasswordReset = str_contains($routeName, 'password-reset');
-
-        if ($isLivewire && ($isHubComponent || $isModal) && ! $isLoginComponent & ! $isPasswordReset) {
+        if ($this->isLivewireRoute($event->route->getName()) || $this->allowMiddleware($event->route->name)) {
             $event->route->middleware(
                 array_merge($event->route->middleware(), ['auth:staff'])
             );
         }
+    }
+
+    /**
+     * Matches livewire route which use dot separator.
+     *
+     * @param $routeName
+     * @return bool
+     */
+    protected function isLivewireRoute(string $routeName): bool
+    {
+        return str_starts_with($routeName, 'livewire.');
+    }
+
+    /**
+     * Matches routes which are allowed to use with auth:staff middleware.
+     *
+     * @param $routeName
+     * @return bool
+     */
+    protected function allowMiddleware(mixed $routeName): bool
+    {
+        return Str::of($routeName)->contains(['hub', 'livewire-ui-modal']);
     }
 }
