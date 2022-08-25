@@ -73,7 +73,7 @@ class ModelManifest implements ModelManifestInterface
     }
 
     /**
-     * Get list of all registered models
+     * Get list of all registered models.
      *
      * @return \Illuminate\Support\Collection
      */
