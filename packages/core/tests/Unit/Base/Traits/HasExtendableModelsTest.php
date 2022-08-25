@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
 
-class InteractsWithExtendableModelsTest extends ExtendableTestCase
+class HasExtendableModelsTest extends ExtendableTestCase
 {
     use RefreshDatabase;
     use WithFaker;

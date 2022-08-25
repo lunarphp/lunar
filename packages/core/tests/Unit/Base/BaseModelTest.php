@@ -3,7 +3,7 @@
 namespace GetCandy\Tests\Unit\Base;
 
 use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\InteractsWithExtendableModels;
+use GetCandy\Base\Traits\HasExtendableModels;
 use GetCandy\Models\Collection as ModelsCollection;
 use GetCandy\Models\Product;
 use GetCandy\Models\Url;
@@ -82,6 +82,6 @@ class BaseModelTest extends TestCase
     public function base_model_includes_trait()
     {
         $uses = class_uses_recursive(BaseModel::class);
-        $this->assertTrue(in_array(InteractsWithExtendableModels::class, $uses));
+        $this->assertTrue(in_array(HasExtendableModels::class, $uses));
     }
 }
