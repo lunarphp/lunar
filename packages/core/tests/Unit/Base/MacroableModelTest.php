@@ -33,7 +33,8 @@ class MacroableModelTest extends TestCase
     /** @test */
     public function can_register_a_new_macro_and_be_invoked()
     {
-        $this->model::macro('newMethod', new class() {
+        $this->model::macro('newMethod', new class()
+        {
             public function __invoke()
             {
                 return 'newValue';
