@@ -25,7 +25,8 @@
     "require-dev": {
         "orchestra/testbench": "^6.0|^7.0",
         "phpunit/phpunit": "^9.5",
-        "symplify/monorepo-builder": "^10.0"
+        "symplify/monorepo-builder": "^10.0",
+        "laravel/pint": "^1.1"
     },
     "autoload": {
         "files": [
