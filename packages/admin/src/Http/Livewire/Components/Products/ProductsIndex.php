@@ -15,7 +15,9 @@ class ProductsIndex extends Component
     use Notifies;
 
     public $selectPage = false;
+
     public $selectAll = false;
+
     public $selected = [];
 
     /**

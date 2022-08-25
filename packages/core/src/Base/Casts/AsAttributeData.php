@@ -18,8 +18,7 @@ class AsAttributeData implements Castable
      */
     public static function castUsing(array $arguments)
     {
-        return new class() implements CastsAttributes
-        {
+        return new class() implements CastsAttributes {
             public function get($model, $key, $value, $attributes)
             {
                 if (! isset($attributes[$key])) {
