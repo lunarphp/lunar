@@ -56,11 +56,12 @@ class ModelManifestTest extends TestCase
             Product::class => \GetCandy\Tests\Stubs\Models\Product::class,
         ]));
 
-        $product = \GetCandy\Tests\Stubs\Models\Product::query()->create(
-            Product::factory()->raw()
-        );
+        $customModels = ModelManifest::getRegisteredModels()->flip();
 
-        $this->assertEquals(Product::class, $product->getMorphClass());
+        $this->assertEquals(
+            expected: Product::class,
+            actual: $customModels->get(\GetCandy\Tests\Stubs\Models\Product::class),
+        );
     }
 
     /** @test */
