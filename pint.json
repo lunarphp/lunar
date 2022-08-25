@@ -4,7 +4,7 @@
         "braces": false,
         "binary_operator_spaces": false,
         "curly_braces_position": false,
-        "simplified_null_return": true,
+        "simplified_null_return": false,
         "no_unused_imports": false
     }
 }
