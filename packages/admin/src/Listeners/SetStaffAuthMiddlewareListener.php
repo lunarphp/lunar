@@ -25,10 +25,10 @@ class SetStaffAuthMiddlewareListener
     /**
      * Matches livewire route which use dot separator.
      *
-     * @param $routeName
+     * @param  string|null  $routeName
      * @return bool
      */
-    protected function isLivewireRoute(string $routeName): bool
+    protected function isLivewireRoute(?string $routeName): bool
     {
         return str_starts_with($routeName, 'livewire.');
     }
@@ -36,10 +36,10 @@ class SetStaffAuthMiddlewareListener
     /**
      * Matches routes which are allowed to use with auth:staff middleware.
      *
-     * @param $routeName
+     * @param  string|null  $routeName
      * @return bool
      */
-    protected function allowMiddleware(mixed $routeName): bool
+    protected function allowMiddleware(?string $routeName): bool
     {
         return Str::of($routeName)->contains(['hub', 'livewire-ui-modal']);
     }
