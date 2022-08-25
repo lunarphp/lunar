@@ -17,27 +17,17 @@ class HasExtendableModelsTest extends ExtendableTestCase
     /** @test */
     public function can_get_new_instance_of_the_registered_model()
     {
-        $this->expectNotToPerformAssertions();
-    }
+        $product = Product::find(1);
 
-    /** @test */
-    public function new_instance_matches_core_model()
-    {
-        $data = Product::factory()->make();
-        $product = Product::create($data->toArray());
-
-        $this->assertEquals($data->toArray(), [
-            'product_type_id' => $product->id,
-            'status' => $product->status,
-            'brand' => $product->brand,
-            'attribute_data' => $product->attribute_data->toArray(),
-        ]);
+        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\Product::class, $product);
     }
 
     /** @test */
     public function can_forward_calls_to_extended_model()
     {
         $sizeOption = ProductOption::with('sizes')->find(1);
+
+        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\ProductOption::class, $sizeOption);
 
         $this->assertInstanceOf(Collection::class, $sizeOption->sizes);
         $this->assertCount(1, $sizeOption->sizes);
@@ -46,6 +36,7 @@ class HasExtendableModelsTest extends ExtendableTestCase
     /** @test */
     public function can_forward_static_method_calls_to_extended_model()
     {
+        /** @see \GetCandy\Tests\Stubs\Models\ProductOption::getSizesStatic() */
         $newStaticMethod = ProductOption::getSizesStatic();
 
         $this->assertInstanceOf(Collection::class, $newStaticMethod);
@@ -55,12 +46,24 @@ class HasExtendableModelsTest extends ExtendableTestCase
     /** @test */
     public function can_swap_registered_model_implementation()
     {
-        $this->expectNotToPerformAssertions();
+        /** @var Product $product */
+        $product = Product::find(1);
+
+        $newProductModel = $product->swap(
+            \GetCandy\Tests\Stubs\Models\ProductSwapModel::class
+        );
+
+        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\Product::class, $product);
+        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\ProductSwapModel::class, $newProductModel);
     }
 
     /** @test */
-    public function can_get_morph_class_base_model()
+    public function can_get_base_model_morph_class_name()
     {
-        $this->expectNotToPerformAssertions();
+        $product = \GetCandy\Tests\Stubs\Models\Product::query()->create(
+            Product::factory()->raw()
+        );
+
+        $this->assertEquals(Product::class, $product->getMorphClass());
     }
 }

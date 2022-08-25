@@ -48,16 +48,23 @@ trait HasExtendableModels
     /**
      * Swap the model implementation.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|null  $model
+     * @param  string|null  $model
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function swap(Model $model = null): Model
+    public function swap(string $model = null): Model
     {
-        return $model ?? ModelManifest::getRegisteredModel(get_called_class());
+        if (! $model) {
+            return ModelManifest::getRegisteredModel(get_called_class());
+        }
+
+        /** @var \Illuminate\Database\Eloquent\Model $model */
+        $model = resolve($model);
+
+        return $model->newInstance($this->attributesToArray(), $this->exists);
     }
 
     /**
-     * Get the class name of the parent model.
+     * Get the class name of the base model.
      *
      * @return string
      */
