@@ -23,7 +23,7 @@ class SetStaffAuthMiddlewareListener
     {
         $this->event = $event;
 
-        if (!$this->routeAlreadyHasStaffMiddleware() && $this->shouldApplyStaffMiddleware()) {
+        if (! $this->routeAlreadyHasStaffMiddleware() && $this->shouldApplyStaffMiddleware()) {
             $event->route->middleware(
                 array_merge($event->route->middleware(), ['auth:staff'])
             );
@@ -47,7 +47,7 @@ class SetStaffAuthMiddlewareListener
      */
     protected function shouldApplyStaffMiddleware(): bool
     {
-        return $this->isLivewireRoute() && ($this->onlyHubRoutes() && !$this->disallowRoutes());
+        return $this->isLivewireRoute() && ($this->onlyHubRoutes() && ! $this->disallowRoutes());
     }
 
     /**
