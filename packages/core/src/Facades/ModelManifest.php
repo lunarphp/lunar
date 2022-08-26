@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Illuminate\Support\Collection register(Collection $models)
  * @method static \Illuminate\Support\Collection getRegisteredModels()
  * @method static \Illuminate\Database\Eloquent\Model getRegisteredModel(string $baseModelClass)
+ * @method static void removeModel(string $baseModelClass)
+ * @method static void swapModel(string $currentModelClass, string $newModelClass)
  * @method static string getMorphClassBaseModel(string $morphClass)
  * @method static \Illuminate\Support\Collection getBaseModelClasses()
  *

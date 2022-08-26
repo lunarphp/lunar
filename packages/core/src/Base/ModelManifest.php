@@ -34,6 +34,7 @@ class ModelManifest implements ModelManifestInterface
         foreach ($models as $baseModelClass => $modelClass) {
             $this->validateInteractsWithEloquent($baseModelClass);
             $this->validateClassIsEloquentModel($modelClass);
+
             $this->models->put($baseModelClass, $modelClass);
         }
     }
@@ -47,6 +48,31 @@ class ModelManifest implements ModelManifestInterface
     public function getRegisteredModel(string $baseModelClass): Model
     {
         return app($this->models->get($baseModelClass) ?? $baseModelClass);
+    }
+
+    /**
+     * Removes model from manifest.
+     *
+     * @param  string  $baseModelClass
+     * @return void
+     */
+    public function removeModel(string $baseModelClass): void
+    {
+        $this->models = $this->models->flip()->forget($baseModelClass);
+    }
+
+    /**
+     * Swap the model implementation.
+     *
+     * @param  string  $currentModelClass
+     * @param  string  $newModelClass
+     * @return void
+     */
+    public function swapModel(string $currentModelClass, string $newModelClass): void
+    {
+        $baseModelClass = $this->models->flip()->get($currentModelClass);
+
+        $this->models->put($baseModelClass, $newModelClass);
     }
 
     /**

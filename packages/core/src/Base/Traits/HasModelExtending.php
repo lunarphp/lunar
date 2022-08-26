@@ -48,19 +48,16 @@ trait HasModelExtending
     /**
      * Swap the model implementation.
      *
-     * @param  string|null  $model
+     * @param  string  $model
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function swap(string $model = null): Model
+    public function swap(string $newModelClass): Model
     {
-        if (! $model) {
-            return ModelManifest::getRegisteredModel(get_called_class());
-        }
+        ModelManifest::swapModel(get_class($this), $newModelClass);
 
-        /** @var \Illuminate\Database\Eloquent\Model $model */
-        $model = resolve($model);
-
-        return $model->newInstance($this->attributesToArray(), $this->exists);
+        /** @var Model $newModelClass */
+        $newModelClass = resolve($newModelClass);
+        return $newModelClass->newInstance($this->attributesToArray(), $this->exists);
     }
 
     /**
