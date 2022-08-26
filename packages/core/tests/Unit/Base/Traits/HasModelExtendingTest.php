@@ -6,13 +6,11 @@ use GetCandy\Models\Product;
 use GetCandy\Models\ProductOption;
 use GetCandy\Tests\Unit\Base\Extendable\ExtendableTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
 
-class HasExtendableModelsTest extends ExtendableTestCase
+class HasModelExtendingTest extends ExtendableTestCase
 {
     use RefreshDatabase;
-    use WithFaker;
 
     /** @test */
     public function can_get_new_instance_of_the_registered_model()

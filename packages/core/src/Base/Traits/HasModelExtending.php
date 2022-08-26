@@ -6,7 +6,7 @@ use GetCandy\Facades\ModelManifest;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionClass;
 
-trait HasExtendableModels
+trait HasModelExtending
 {
     /**
      * Get new instance of the registered model.

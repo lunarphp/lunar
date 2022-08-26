@@ -2,7 +2,7 @@
 
 namespace GetCandy\Base;
 
-use GetCandy\Base\Traits\HasExtendableModels;
+use GetCandy\Base\Traits\HasModelExtending;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -108,8 +108,8 @@ class ModelManifest implements ModelManifestInterface
     private function validateInteractsWithEloquent(string $baseClass): void
     {
         $uses = class_uses_recursive($baseClass);
-        if (! isset($uses[HasExtendableModels::class])) {
-            throw new \InvalidArgumentException(sprintf("Given [%s] doesn't use [%s] trait.", $baseClass, HasExtendableModels::class));
+        if (! isset($uses[HasModelExtending::class])) {
+            throw new \InvalidArgumentException(sprintf("Given [%s] doesn't use [%s] trait.", $baseClass, HasModelExtending::class));
         }
     }
 }
