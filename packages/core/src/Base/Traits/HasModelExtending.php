@@ -57,6 +57,7 @@ trait HasModelExtending
 
         /** @var Model $newModelClass */
         $newModelClass = resolve($newModelClass);
+
         return $newModelClass->newInstance($this->attributesToArray(), $this->exists);
     }
 
