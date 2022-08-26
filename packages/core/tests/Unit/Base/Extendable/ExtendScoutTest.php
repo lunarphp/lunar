@@ -3,6 +3,7 @@
 namespace GetCandy\Tests\Unit\Base\Extendable;
 
 use GetCandy\Models\Product;
+use GetCandy\Tests\Stubs\Models\ProductSwapModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExtendScoutTest extends ExtendableTestCase
@@ -27,6 +28,6 @@ class ExtendScoutTest extends ExtendableTestCase
     public function can_swap_scout_call_with_extended_model()
     {
         $product = Product::find(1);
-        $this->assertFalse($product->swap()->shouldBeSearchable());
+        $this->assertFalse($product->swap(ProductSwapModel::class)->shouldBeSearchable());
     }
 }
