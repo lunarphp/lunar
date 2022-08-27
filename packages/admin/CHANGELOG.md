@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+### [ Unreleased ]
+## Fixed
+- When migrating fresh, the transaction table migrations were out of order.  Changed the type when making nullable.
+
 ### 2.0-beta15 - 2022-08-10
 
 ## Changed
@@ -16,7 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Comments should now show correctly on product editing pages.
 - Sortable is now attached to the browser window so it's globally available.
 - Fixed an issue where incorrect attributes were showing when changing product types
-- `doctrine/dbal` locked to `3.3.7` due to issue with Sqlite
+- `doctrine/dbal` locked to `3.3.7` due to issue with Sqlite 
 
 ### 2.0-beta14 - 2022-08-03
 
