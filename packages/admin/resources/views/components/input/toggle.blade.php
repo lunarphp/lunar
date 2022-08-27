@@ -25,6 +25,7 @@
     x-on:click="toggle"
     :class="{
         'bg-green-500': checked == onValue,
+        'bg-gray-200': checked == offValue,
     }"
   >
     @if($attributes->wire('model')->value())
@@ -33,10 +34,11 @@
 
     <span
       aria-hidden="true"
+      class="{{ $on ? 'translate-x-5' : 'translate-x-0' }} pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition ease-in-out duration-200"
       :class="{
         'translate-x-5': checked == onValue,
+        'translate-x-0': checked == offValue,
       }"
-      class="{{ $on ? 'translate-x-5' : 'translate-x-0' }} pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition ease-in-out duration-200"
     ></span>
   </button>
 </div>
