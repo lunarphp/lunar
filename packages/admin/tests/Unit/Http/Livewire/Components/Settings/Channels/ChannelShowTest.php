@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Settings\Channels;
 
 use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelShow;
 use GetCandy\Hub\Tests\Stubs\User;
