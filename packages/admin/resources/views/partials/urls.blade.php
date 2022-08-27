@@ -36,7 +36,7 @@
             </div>
 
             <div class="flex items-center w-32 space-x-4">
-              <x-hub::input.toggle wire:model.defer="urls.{{ $loop->index }}.default" />
+              <x-hub::input.toggle wire:model.defer="urls.{{ $loop->index }}.default" :on="$url['default']"/>
 
               <button class="text-gray-400" wire:click.prevent="removeUrl('{{ $loop->index }}')">
                 <x-hub::icon ref="trash" style="solid" />
