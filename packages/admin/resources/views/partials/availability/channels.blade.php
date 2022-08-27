@@ -85,6 +85,7 @@
     <div class="col-span-3">
       <x-hub::input.toggle
         wire:model="availability.channels.{{ $channel->id }}.enabled"
+        :on="$availability['channels'][$channel->id]['enabled']"
       />
     </div>
   </div>
