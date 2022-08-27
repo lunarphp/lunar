@@ -182,7 +182,8 @@ abstract class AbstractProduct extends Component
         return array_merge(
             [],
             $this->hasPriceValidationMessages(),
-            $this->withAttributesValidationMessages()
+            $this->withAttributesValidationMessages(),
+            $this->getExtendedValidationMessages(),
         );
     }
 
@@ -247,10 +248,10 @@ abstract class AbstractProduct extends Component
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            $this->withAttributesValidationRules(),
+            // $this->withAttributesValidationRules(),
             $this->hasUrlsValidationRules(!$this->product->id),
             $this->withAttributesValidationRules(),
-            $this->getExtendValidation([
+            $this->getExtendedValidationRules([
                 'product' => $this->product,
             ]),
         );
@@ -786,6 +787,7 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.availability'),
                 'id'         => 'availability',
                 'has_errors' => $this->errorBag->hasAny([
+                    'availability.*',
                 ]),
             ],
             [

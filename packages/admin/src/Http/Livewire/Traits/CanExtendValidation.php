@@ -10,14 +10,17 @@ trait CanExtendValidation
 
     public static array $extendedValidationRules = [];
 
+    public static array $extendedValidationMessages = [];
+
     /**
      * Extend validation rules
      *
      * @return void
      */
-    public static function extendValidation(array $validations): void
+    public static function extendValidation(array $rules, array $messages = []): void
     {
-        self::$extendedValidationRules = $validations;
+        self::$extendedValidationRules = $rules;
+        self::$extendedValidationMessages = $messages;
     }
 
     /**
@@ -25,7 +28,7 @@ trait CanExtendValidation
      *
      * @return array
      */
-    protected function getExtendValidation($parameters): array
+    protected function getExtendedValidationRules($parameters): array
     {
         return collect(self::$extendedValidationRules)
             ->map(function ($rules) use ($parameters) {
@@ -44,5 +47,15 @@ trait CanExtendValidation
 
                 return $rules;
             })->toArray();
+    }
+
+    /**
+     * Get extended validation messages
+     *
+     * @return array
+     */
+    protected function getExtendedValidationMessages(): array
+    {
+        return self::$extendedValidationMessages;
     }
 }
