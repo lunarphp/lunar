@@ -8,7 +8,7 @@
         <p class="text-sm text-gray-500">{{ __('adminhub::partials.products.variants.strapline') }}</p>
       </div>
       <div>
-        <x-hub::input.toggle wire:model="variantsEnabled" />
+        <x-hub::input.toggle wire:model="variantsEnabled" :on="$variantsEnabled"/>
       </div>
     </header>
       @if($this->getVariantsCount() <= 1)
