@@ -47,14 +47,12 @@
                     @foreach ($section->getItems() as $item)
                         <li>
                             <a href="{{ route($item->route) }}"
-                               x-data="{ showTooltip: false }"
-                               x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
-                               x-on:mouseleave="showTooltip = false"
                                @class([
                                    'flex items-center gap-2 p-2 rounded text-gray-500',
                                    'bg-blue-50 text-blue-700 hover:text-blue-600' => $item->isActive($active),
                                    'hover:bg-blue-50 hover:text-blue-700' => !$item->isActive($active),
-                               ])>
+                               ])
+                               :class="{ 'group': !showExpandedMenu }">
                                 {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
 
                                 <span class="text-sm font-medium"
@@ -63,12 +61,16 @@
                                     {{ $item->name }}
                                 </span>
 
-                                <span x-cloak
-                                      x-transition
-                                      x-show="showTooltip"
-                                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                                <span class="invisible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
                                     {{ $item->name }}
                                 </span>
+
+{{--                                <span x-cloak--}}
+{{--                                      x-transition--}}
+{{--                                      x-show="showTooltip"--}}
+{{--                                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">--}}
+{{--                                    {{ $item->name }}--}}
+{{--                                </span>--}}
                             </a>
                         </li>
                     @endforeach
