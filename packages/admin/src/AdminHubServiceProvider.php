@@ -164,8 +164,13 @@ class AdminHubServiceProvider extends ServiceProvider
             ], 'getcandy-migrations');
 
             $this->publishes([
+                __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/branding'),
                 __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
             ], 'getcandy-hub-views');
+
+            $this->publishes([
+                __DIR__.'/../resources/lang' => resource_path('lang/vendor/adminhub'),
+            ], 'getcandy-hub-translations');
 
             $this->commands([
                 InstallHub::class,

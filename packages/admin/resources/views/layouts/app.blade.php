@@ -90,6 +90,13 @@
 
     @livewire('hub-license')
 
+    <footer class="fixed inset-x-0 bottom-0 p-2 bg-white shadow-2xl">
+        <div class="flex justify-center">
+            <x-hub::get-candy.stamp class="w-3 mr-1" />
+            <span class="text-xs font-medium text-gray-600">GetCandy <span class="text-gray-400">{{ config('getcandy-hub.system.version') }}</span></span>
+        </div>
+    </footer>
+
     @livewireScripts
 
     @if ($scripts = \GetCandy\Hub\GetCandyHub::scripts())
