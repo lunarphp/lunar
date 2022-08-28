@@ -3,7 +3,7 @@
         <a href="{{ route('hub.index') }}"
            class="block">
             <img class="w-8 h-8"
-                 src="https://markmead.dev/gc-favicon.svg"
+                 src="https://getcandy.io/assets/imgs/logos/favicon.svg"
                  alt="GetCandy Logo">
         </a>
 
