@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 
+use GetCandy\Models\Attribute;
 use GetCandy\Models\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -37,6 +38,16 @@ class CustomersIndex extends Component
     public function getCustomersProperty()
     {
         return Customer::search($this->search)->paginate(50);
+    }
+
+    /**
+     * Return the available attributes for customers.
+     *
+     * @return Collection
+     */
+    public function getAttributesProperty()
+    {
+        return Attribute::whereAttributeType(Customer::class)->get();
     }
 
     /**

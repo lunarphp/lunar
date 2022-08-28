@@ -86,6 +86,16 @@ abstract class AbstractProductType extends Component
     }
 
     /**
+     * Return whether variants are disabled.
+     *
+     * @return bool
+     */
+    public function getVariantsDisabledProperty()
+    {
+        return config('getcandy-hub.products.disable_variants', false);
+    }
+
+    /**
      * Return attributes for a group.
      *
      * @param  string|int  $groupId

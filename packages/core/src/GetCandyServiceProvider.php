@@ -12,8 +12,6 @@ use GetCandy\Base\CartSessionInterface;
 use GetCandy\Base\FieldTypeManifest;
 use GetCandy\Base\FieldTypeManifestInterface;
 use GetCandy\Base\OrderModifiers;
-use GetCandy\Base\OrderReferenceGenerator;
-use GetCandy\Base\OrderReferenceGeneratorInterface;
 use GetCandy\Base\PaymentManagerInterface;
 use GetCandy\Base\PricingManagerInterface;
 use GetCandy\Base\ShippingManifest;
@@ -116,10 +114,6 @@ class GetCandyServiceProvider extends ServiceProvider
 
         $this->app->singleton(ShippingManifestInterface::class, function ($app) {
             return $app->make(ShippingManifest::class);
-        });
-
-        $this->app->singleton(OrderReferenceGeneratorInterface::class, function ($app) {
-            return $app->make(OrderReferenceGenerator::class);
         });
 
         $this->app->singleton(AttributeManifestInterface::class, function ($app) {

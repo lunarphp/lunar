@@ -32,10 +32,10 @@
                     {{ __('adminhub::global.vat_no') }}
                 </x-hub::table.heading>
 
-                @foreach ($this->metaFields as $field)
-                    <x-hub::table.heading>
-                        {{ __('customers.listing.' . $field) }}
-                    </x-hub::table.heading>
+                @foreach ($this->attributes as $attribute)
+                    <x-hub::table.cell>
+                        {{ $attribute->translate('name') }}
+                    </x-hub::table.cell>
                 @endforeach
 
                 <x-hub::table.heading></x-hub::table.heading>
@@ -56,9 +56,9 @@
                             {{ $customer->vat_no }}
                         </x-hub::table.cell>
 
-                        @foreach ($this->metaFields as $field)
+                        @foreach ($this->attributes as $attribute)
                             <x-hub::table.cell>
-                                {{ $customer->meta?->{$field} }}
+                                {{ $customer->translateAttribute($attribute->handle) }}
                             </x-hub::table.cell>
                         @endforeach
 

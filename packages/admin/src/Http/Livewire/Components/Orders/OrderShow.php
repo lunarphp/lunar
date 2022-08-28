@@ -110,6 +110,7 @@ class OrderShow extends Component
                 'captureSuccess',
                 'refundSuccess',
                 'cancelRefund',
+                'refreshOrder',
             ],
             $this->getHasSlotsListeners()
         );
@@ -159,6 +160,16 @@ class OrderShow extends Component
         $this->shippingAddress = $this->order->shippingAddress ?: new OrderAddress();
 
         $this->billingAddress = $this->order->billingAddress ?: new OrderAddress();
+    }
+
+    /**
+     * Refresh the current order in the database.
+     *
+     * @return void
+     */
+    public function refreshOrder()
+    {
+        $this->order = $this->order->refresh();
     }
 
     /**
@@ -521,29 +532,6 @@ class OrderShow extends Component
     public function getMetaFieldsProperty()
     {
         return (array) $this->order->meta;
-    }
-
-    /**
-     * Add a comment to the order.
-     *
-     * @return void
-     */
-    public function addComment()
-    {
-        activity()
-            ->performedOn($this->order)
-            ->causedBy(
-                auth()->user()
-            )
-            ->event('comment')
-            ->withProperties(['content' => $this->comment])
-            ->log('comment');
-
-        $this->notify(
-            __('adminhub::notifications.order.comment_added')
-        );
-
-        $this->comment = '';
     }
 
     /**

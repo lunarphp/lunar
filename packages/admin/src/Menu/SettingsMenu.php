@@ -69,6 +69,14 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function (MenuLink $item) {
+            $item->name('Taxes')
+                ->handle('hub.taxes')
+                ->route('hub.taxes.index')
+                ->gate('settings:core')
+                ->icon('receipt-tax');
+        });
+
+        $storeSection->addItem(function ($item) {
             $item->name('Languages')
                  ->handle('hub.languages')
                  ->route('hub.languages.index')
