@@ -9,9 +9,7 @@
 
     <title>{{ $title ?? 'Hub' }} | {{ config('app.name') }}</title>
 
-    <link rel="icon"
-          type="image/png"
-          href="https://cdn.getcandy.io/hub/favicon.svg">
+    <x-hub::branding.fav-icon />
 
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
