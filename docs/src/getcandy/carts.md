@@ -56,7 +56,7 @@ GetCandy\Models\CartLine
 |meta|JSON data for saving any custom information.|
 
 ```php
-$cartLine = new CartLine([
+$cartLine = new GetCandy\Models\CartLine([
     'cart_id' => 1,
     'purchasable_type' => ProductVariant::class,
     'purchasable_id' => 123,
