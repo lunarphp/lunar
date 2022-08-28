@@ -8,6 +8,14 @@ The admin hub is designed to be extended so you can add your own screens.
 
 You should develop your additional functionality using Laravel Livewire using the same approach as the core admin hub screens.
 
+## Brand Customisation
+
+You can now modify the hub logo and fav icon, please publish views using the command below.
+
+```bash
+php artisan vendor:publish --tag=getcandy-hub-views
+```
+
 ## Adding to Menus
 
 GetCandy uses dynamic menus in the UI which you can extend to add further links.
