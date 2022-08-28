@@ -32,7 +32,7 @@ GetCandy\Models\Cart
 ### Creating a cart
 
 ```php
-$cart = Cart::create([
+$cart = GetCandy\Models\Cart::create([
     'currency_id' => 1,
     'channel_id' => 2,
 ]);
