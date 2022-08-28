@@ -7,7 +7,7 @@ use Illuminate\View\Component;
 class Logo extends Component
 {
     /**
-     * Determine if we should display only the logo icon
+     * Determine if we should display only the logo icon.
      *
      * @var bool
      */
