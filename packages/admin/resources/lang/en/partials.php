@@ -183,6 +183,8 @@ return [
      */
     'forms.channel.delete_channel'                    => 'Delete channel',
     'forms.channel.channel_name_delete'               => 'Enter the name of the channel to delete it',
+    'forms.brand_delete_brand'                        => 'Delete brand',
+    'forms.brand_name_delete'                         => 'Enter the name of the brand to delete it',
     /**
      * Transactions.
      */

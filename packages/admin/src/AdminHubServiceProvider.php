@@ -12,6 +12,8 @@ use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
 use GetCandy\Hub\Http\Livewire\Components\Avatar;
+use GetCandy\Hub\Http\Livewire\Components\Brands\BrandShow;
+use GetCandy\Hub\Http\Livewire\Components\Brands\BrandsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -197,6 +199,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerGlobalComponents();
         $this->registerAuthenticationComponents();
         $this->registerProductComponents();
+        $this->registerBrandComponents();
         $this->registerCollectionComponents();
         $this->registerReportingComponents();
         $this->registerSettingsComponents();
@@ -277,6 +280,17 @@ class AdminHubServiceProvider extends ServiceProvider
 
         Livewire::component('hub.components.product-options.option-manager', OptionManager::class);
         Livewire::component('hub.components.product-options.option-value-create-modal', OptionValueCreateModal::class);
+    }
+
+    /**
+     * Register the components used in the brands area.
+     *
+     * @return void
+     */
+    protected function registerBrandComponents()
+    {
+        Livewire::component('hub.components.brands.index', BrandsIndex::class);
+        Livewire::component('hub.components.brands.show', BrandShow::class);
     }
 
     /**
