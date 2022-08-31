@@ -26,6 +26,7 @@ use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
+use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersTable;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
 use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionValueCreateModal;
@@ -76,6 +77,7 @@ use GetCandy\Hub\Menu\OrderActionsMenu;
 use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
 use GetCandy\Hub\Menu\SlotRegistry;
+use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
 use GetCandy\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
@@ -118,12 +120,16 @@ class AdminHubServiceProvider extends ServiceProvider
             return new \GetCandy\Hub\Editing\ProductSection();
         });
 
-        $this->app->singleton(OrdersTableInterface::class, function ($app) {
-            return $app->make(Orders::class);
-        });
+        // $this->app->singleton(OrdersTableInterface::class, function ($app) {
+        //     return $app->make(Orders::class);
+        // });
 
         $this->app->singleton(ActivityLog::class, function () {
             return new ActivityLogManifest();
+        });
+
+        $this->app->singleton(OrdersTableBuilder::class, function ($app) {
+            return new OrdersTableBuilder;
         });
     }
 
@@ -244,6 +250,8 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.capture', OrderCapture::class);
         Livewire::component('hub.components.orders.status', OrderStatus::class);
         Livewire::component('hub.components.orders.emil-notification', EmailNotification::class);
+
+            Livewire::component('hub.components.orders.table', OrdersTable::class);
     }
 
     protected function registerCustomerComponents()

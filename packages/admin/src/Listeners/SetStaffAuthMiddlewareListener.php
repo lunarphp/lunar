@@ -60,6 +60,7 @@ class SetStaffAuthMiddlewareListener
         return Str::of($this->event->route->name)->contains([
             'hub.pages',
             'hub.components',
+            'get-candy',
         ]);
     }
 

@@ -126,7 +126,9 @@
         </x-slot>
     </x-hub::modal.dialog>
 
-    <div class="space-y-4">
+    @livewire('hub.components.orders.table')
+
+    {{-- <div class="space-y-4">
         @if ($this->savedSearches->count())
             <div class="sm:block">
                 <nav class="flex pb-4 space-x-4 overflow-x-auto"
@@ -379,6 +381,6 @@
 
         <div>
             {{ $this->orders->items->links() }}
-        </div>
+        </div> --}}
     </div>
 </div>
