@@ -72,7 +72,7 @@ class SidebarMenu
                 __('adminhub::menu.sidebar.brands')
             )->handle('hub.brands')
                  ->route('hub.brands.index')
-                 ->icon('view-list');
+                 ->icon('view-grid');
         });
 
         $slot->addItem(function ($item) {
