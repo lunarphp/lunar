@@ -34,7 +34,6 @@ class Status extends Component
      */
     public function __construct($record)
     {
-
         $statuses = config('getcandy.orders.statuses');
 
         $match = $statuses[$record->status] ?? null;
