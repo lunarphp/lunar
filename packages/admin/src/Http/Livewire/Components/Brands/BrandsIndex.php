@@ -27,7 +27,6 @@ class BrandsIndex extends Component
      */
     public $showCreateForm = false;
 
-
     /**
      * {@inheritDoc}
      */
