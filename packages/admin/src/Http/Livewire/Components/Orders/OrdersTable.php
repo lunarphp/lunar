@@ -2,6 +2,8 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
+use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
 use GetCandy\LivewireTables\Components\Table;
 use GetCandy\LivewireTables\Components\Columns\TextColumn;
@@ -13,6 +15,8 @@ use Illuminate\Support\Collection;
 
 class OrdersTable extends Table
 {
+    use Notifies;
+
     /**
      * {@inheritDoc}
      */
@@ -21,6 +25,10 @@ class OrdersTable extends Table
     public $searchable = true;
 
     public bool $canSaveSearches = true;
+
+    protected $listeners = [
+        'saveSearch' => 'handleSaveSearch',
+    ];
 
     public function build()
     {
@@ -55,6 +63,31 @@ class OrdersTable extends Table
         $this->tableBuilder->addBulkAction(
             BulkAction::make('export')->label('Export orders')
         );
+    }
+
+    public function deleteSavedSearch($id)
+    {
+        SavedSearch::destroy($id);
+    }
+
+    public function saveSearch()
+    {
+        $this->validateOnly('savedSearchName', [
+            'savedSearchName' => 'required',
+        ]);
+
+        auth()->getUser()->savedSearches()->create([
+            'name' => $this->savedSearchName,
+            'term' => $this->query,
+            'component' => $this->getName(),
+            'filters' => $this->filters,
+        ]);
+
+        $this->notify('Search saved');
+
+        $this->savedSearchName = null;
+
+        $this->emit('savedSearch');
     }
 
     /**
