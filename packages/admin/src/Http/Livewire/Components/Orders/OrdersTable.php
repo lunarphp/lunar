@@ -5,11 +5,11 @@ namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
-use GetCandy\LivewireTables\Components\Table;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Filters\SelectFilter;
 use GetCandy\LivewireTables\Components\Actions\Action;
 use GetCandy\LivewireTables\Components\Actions\BulkAction;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
+use GetCandy\LivewireTables\Components\Filters\SelectFilter;
+use GetCandy\LivewireTables\Components\Table;
 use GetCandy\Models\Order;
 use Illuminate\Support\Collection;
 
@@ -47,7 +47,8 @@ class OrdersTable extends Table
                 $statuses = collect(
                     config('getcandy.orders.statuses'),
                     []
-                )->mapWithKeys(fn($status, $key) => [$key => $status['label']]);
+                )->mapWithKeys(fn ($status, $key) => [$key => $status['label']]);
+
                 return collect([
                     null => 'All Statuses',
                 ])->merge($statuses);

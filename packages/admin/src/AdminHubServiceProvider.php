@@ -251,7 +251,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.status', OrderStatus::class);
         Livewire::component('hub.components.orders.emil-notification', EmailNotification::class);
 
-            Livewire::component('hub.components.orders.table', OrdersTable::class);
+        Livewire::component('hub.components.orders.table', OrdersTable::class);
     }
 
     protected function registerCustomerComponents()
