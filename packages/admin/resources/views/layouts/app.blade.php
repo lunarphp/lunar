@@ -13,6 +13,9 @@
           type="image/png"
           href="https://cdn.getcandy.io/hub/favicon.svg">
 
+    <script defer
+          src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js"></script>
+
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
     <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}"

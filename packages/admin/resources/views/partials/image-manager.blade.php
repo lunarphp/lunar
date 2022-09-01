@@ -41,9 +41,60 @@
                                     <img src="{{ $image['thumbnail'] }}"
                                          class="w-8 overflow-hidden rounded-md" />
                                 </button>
-                                <x-hub::modal wire:model="images.{{ $loop->index }}.preview">
-                                    <img src="{{ $image['original'] }}">
-                                </x-hub::modal>
+
+                                @if($images[$loop->index]['preview'] )
+                                    <x-hub::modal wire:model="images.{{ $loop->index }}.preview">
+                                        <img src="{{ $image['original'] }}">
+                                    </x-hub::modal>
+                                @endif
+
+                                @if($images[$loop->index]['edit'])
+                                    <x-hub::modal wire:model="images.{{ $loop->index }}.edit" max-width="5xl">
+                                        <div
+                                            x-data="{
+                                                filerobotImageEditor: null,
+
+                                                init() {
+                                                    const { TABS, TOOLS } = FilerobotImageEditor;
+
+                                                    const config = {
+                                                        source: '{{ $image['original'] }}',
+                                                        Rotate: { angle: 45, componentType: 'slider' },
+                                                        theme: {
+                                                            typography: {
+                                                              fontFamily: 'Nunito, Arial',
+                                                            },
+                                                        }
+                                                    }
+
+                                                    filerobotImageEditor = new FilerobotImageEditor($el, config);
+
+                                                    filerobotImageEditor.render({
+                                                        onClose: (closingReason) => {
+                                                            @this.set('images.{{ $loop->index }}.edit', false)
+
+                                                            filerobotImageEditor.terminate();
+                                                        },
+                                                        onBeforeSave: (imageFileInfo) => false,
+                                                        onSave: (imageData, imageDesignState) => {
+                                                            fetch(imageData.imageBase64)
+                                                                .then(res => res.blob())
+                                                                .then(blob => {
+                                                                    const file = new File([blob], imageData.fullName,{ type: imageData.mimeType })
+
+                                                                    @this.upload('images.{{ $loop->index }}.file', file)
+
+                                                                    @this.set('images.{{ $loop->index }}.edit', false)
+                                                                })
+                                                        }
+                                                    });
+                                                }
+                                            }"
+
+                                        >
+                                        </div>
+                                    </x-hub::modal>
+                                @endif
                             </div>
 
                             <div class="w-full">
@@ -65,16 +116,23 @@
                                                 type="button">
                                             <x-hub::icon ref="refresh"
                                                          style="solid"
-                                                         class="text-gray-400 hover:text-indigo-500 hover:underline" />
+                                                         class="text-gray-400 hover:text-indigo-500" />
                                         </button>
                                     </x-hub::tooltip>
                                 @endif
 
                                 <button type="button"
-                                        wire:click.prevent="removeImage('{{ $image['sort_key'] }}')"
-                                        class="text-gray-400 hover:text-red-500 ">
+                                    wire:click="$set('images.{{ $loop->index }}.edit', true)">
+                                    <x-hub::icon ref="pencil"
+                                                 style="solid"
+                                                 class="text-gray-400 hover:text-indigo-500" />
+                                </button>
+
+                                <button type="button"
+                                        wire:click.prevent="removeImage('{{ $image['sort_key'] }}')">
                                     <x-hub::icon ref="trash"
-                                                 style="solid" />
+                                                 style="solid"
+                                                 class="text-gray-400 hover:text-red-500" />
                                 </button>
 
                             </div>

@@ -5,6 +5,8 @@
 @import 'flatpickr';
 @import 'filepond/dist/filepond.css';
 @import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+@import 'filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css';
+
 @import 'quill/dist/quill.snow.css';
 
 p > code {
@@ -52,4 +54,84 @@ p > code {
     .menu-link--inactive {
         @apply text-gray-500 hover:bg-blue-50 hover:text-blue-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white;
     }
+}
+
+button.SfxButton-root{
+    @apply !font-sans border border-transparent rounded-lg shadow-sm focus:outline-none;
+}
+
+div.FIE_topbar{
+    @apply h-14;
+}
+
+div.FIE_topbar-save-wrapper{
+    @apply pl-1 w-auto;
+}
+
+button.FIE_topbar-save-button{
+    @apply p-2 h-9 w-full bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-2 focus:ring-2;
+}
+
+button.FIE_topbar-save-button .SfxButton-Label{
+    @apply  !text-base;
+}
+
+.SfxButton-Label{
+    @apply !font-sans;
+}
+
+div.FIE_tabs{
+    @apply pl-1 pt-1;
+}
+
+div.FIE_tab{
+    @apply hover:ring-2;
+}
+
+div.FIE_canvas-container .konvajs-content{
+    @apply min-h-[480px];
+}
+
+div.FIE_topbar-center-options label, div.FIE_tools-bar label{
+    @apply text-base;
+}
+
+div.FIE_tabs label{
+    @apply text-xs;
+}
+
+div.FIE_topbar-history-buttons{
+    @apply flex items-center ml-2;
+}
+
+div.FIE_topbar-history-buttons button, div.FIE_topbar-history-buttons svg, button.FIE_topbar-close-button, button.FIE_topbar-close-button svg{
+    @apply h-4 w-4;
+}
+
+button.FIE_topbar-reset-button{
+    @apply pt-2;
+}
+
+button.FIE_topbar-reset-button, .FIE_topbar-reset-button svg{
+    @apply !w-6 !h-6;
+}
+
+div.FIE_watermark-add-wrapper{
+    @apply h-9;
+}
+
+button.FIE_watermark-add-button span, button.FIE_resize-reset-button span{
+    @apply !text-base;
+}
+
+div.FIE_watermark-add-wrapper button{
+    @apply ml-2 first-of-type:px-4;
+}
+
+button.FIE_resize-reset-button{
+    @apply px-4 py-1;
+}
+
+div.FIE_resize-tool-options .SfxInput-root{
+    @apply text-lg h-8 w-24;
 }
