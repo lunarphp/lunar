@@ -4,7 +4,6 @@ namespace GetCandy\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\TemporaryUploadedFile;
 use Spatie\Activitylog\Facades\LogBatch;

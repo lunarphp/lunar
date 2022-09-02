@@ -5,7 +5,6 @@
 @import 'flatpickr';
 @import 'filepond/dist/filepond.css';
 @import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-@import 'filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css';
 
 @import 'quill/dist/quill.snow.css';
 
@@ -56,6 +55,7 @@ p > code {
     }
 }
 
+/* FIE styling start */
 button.SfxButton-root{
     @apply !font-sans border border-transparent rounded-lg shadow-sm focus:outline-none;
 }
@@ -135,3 +135,4 @@ button.FIE_resize-reset-button{
 div.FIE_resize-tool-options .SfxInput-root{
     @apply text-lg h-8 w-24;
 }
+/* FIE styling end */

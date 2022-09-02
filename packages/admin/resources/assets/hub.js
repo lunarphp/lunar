@@ -8,7 +8,6 @@ window.FilePond = require('filepond');
 window.FilePondPluginImagePreview = require('filepond-plugin-image-preview');
 window.FilePondPluginFileValidateSize = require('filepond-plugin-file-validate-size');
 window.FilePondPluginFileValidateType = require('filepond-plugin-file-validate-size');
-window.FilePondPluginImageEdit = require('filepond-plugin-image-edit');
 
 window.Sortable = Sortable;
 
