@@ -3,8 +3,8 @@
 namespace GetCandy\Hub\Views\Components\GetCandy;
 
 use Composer\InstalledVersions;
-use Illuminate\View\Component;
 use Illuminate\Support\Str;
+use Illuminate\View\Component;
 
 class Version extends Component
 {
