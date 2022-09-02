@@ -35,7 +35,7 @@ class Version extends Component
 
         $isSemver = Str::contains($candyVersion, $semverKeys);
 
-        $this->installedVersion = !$isSemver
+        $this->installedVersion = ! $isSemver
             ? $candyVersion
             : config('getcandy-hub.system.version_fallback');
     }
