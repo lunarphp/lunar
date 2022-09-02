@@ -2,10 +2,9 @@
 
 namespace GetCandy\Hub\Views\Components\GetCandy;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
+use Composer\InstalledVersions;
 use Illuminate\View\Component;
+use Illuminate\Support\Str;
 
 class Version extends Component
 {
@@ -13,31 +12,17 @@ class Version extends Component
 
     public function __construct()
     {
-        try {
-            $packageManifest = json_decode(File::get(base_path('vendor/composer/installed.json')));
+        $installedVersion = InstalledVersions::getPrettyVersion('getcandy/getcandy');
 
-            $installedPackages = is_array($packageManifest)
-                ? collect($packageManifest)
-                : collect($packageManifest->packages);
-        } catch (FileNotFoundException $e) {
-            $this->installedVersion = config('getcandy-hub.system.version_fallback');
-
-            return;
-        }
-
-        $candyVersion = $installedPackages->first(function ($installedPackage) {
-            return $installedPackage->name === 'getcandy/getcandy';
-        })->version;
-
-        $semverKeys = [
+        $prettyVersion = Str::contains($installedVersion, [
             'dev',
-        ];
+            'feat',
+            'fix',
+            'hotfix',
+            'update',
+        ]) ? '2.0-beta' : $installedVersion;
 
-        $isSemver = Str::contains($candyVersion, $semverKeys);
-
-        $this->installedVersion = ! $isSemver
-            ? $candyVersion
-            : config('getcandy-hub.system.version_fallback');
+        $this->installedVersion = $prettyVersion;
     }
 
     /**
