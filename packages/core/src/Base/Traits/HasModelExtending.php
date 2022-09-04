@@ -133,6 +133,7 @@ trait HasModelExtending
         }
 
         $name = ModelManifest::getMorphClassBaseModel(static::class) ?? static::class;
+
         return ! empty($result) ? $result : static::$dispatcher->{$method}(
             "eloquent.{$event}: {$name}", $this
         );
