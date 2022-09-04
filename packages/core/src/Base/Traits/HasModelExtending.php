@@ -89,4 +89,75 @@ trait HasModelExtending
 
         return $methods->contains($method);
     }
+
+    /**
+     * Register a model event with the dispatcher.
+     *
+     * @param  string  $event
+     * @param  \Illuminate\Events\QueuedClosure|\Closure|string  $callback
+     * @return void
+     */
+    protected static function registerModelEvent($event, $callback)
+    {
+        if (isset(static::$dispatcher)) {
+            $name = ModelManifest::getMorphClassBaseModel(static::class) ?? static::class;
+
+            static::$dispatcher->listen("eloquent.{$event}: {$name}", $callback);
+        }
+    }
+
+    /**
+     * Fire the given event for the model.
+     *
+     * @param  string  $event
+     * @param  bool  $halt
+     * @return mixed
+     */
+    protected function fireModelEvent($event, $halt = true)
+    {
+        if (! isset(static::$dispatcher)) {
+            return true;
+        }
+
+        // First, we will get the proper method to call on the event dispatcher, and then we
+        // will attempt to fire a custom, object based event for the given event. If that
+        // returns a result we can return that result, or we'll call the string events.
+        $method = $halt ? 'until' : 'dispatch';
+
+        $result = $this->filterModelEventResults(
+            $this->fireCustomModelEvent($event, $method)
+        );
+
+        if ($result === false) {
+            return false;
+        }
+
+        $name = ModelManifest::getMorphClassBaseModel(static::class) ?? static::class;
+        return ! empty($result) ? $result : static::$dispatcher->{$method}(
+            "eloquent.{$event}: {$name}", $this
+        );
+    }
+
+    /**
+     * Remove all the event listeners for the model.
+     *
+     * @return void
+     */
+    public static function flushEventListeners()
+    {
+        if (! isset(static::$dispatcher)) {
+            return;
+        }
+
+        $instance = new static;
+
+        $name = ModelManifest::getMorphClassBaseModel(static::class) ?? static::class;
+        foreach ($instance->getObservableEvents() as $event) {
+            static::$dispatcher->forget("eloquent.{$event}: {$name}");
+        }
+
+        foreach (array_values($instance->dispatchesEvents) as $event) {
+            static::$dispatcher->forget($event);
+        }
+    }
 }
