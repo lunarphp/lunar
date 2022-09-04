@@ -91,6 +91,7 @@ class ActivityLogFeed extends Component
     public function getRenderersProperty()
     {
         $subjectClass = ModelManifest::getMorphClassBaseModel(get_class($this->subject)) ?? get_class($this->subject);
+
         return ActivityLog::getItems($subjectClass);
     }
 
