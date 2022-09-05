@@ -64,7 +64,7 @@ class TranslatedText implements FieldType, JsonSerializable
         }
 
         foreach ($value as $key => $item) {
-            if (is_string($item)) {
+            if (is_string($item) || is_numeric($item) || is_bool($item)) {
                 $item = new Text($item);
                 $value[$key] = $item;
             }
