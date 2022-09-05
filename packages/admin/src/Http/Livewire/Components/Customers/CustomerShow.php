@@ -127,6 +127,7 @@ class CustomerShow extends Component
                 'customer.first_name'   => 'string|required',
                 'customer.last_name'    => 'string|required',
                 'customer.company_name' => 'nullable|string',
+                'customer.account_ref'  => 'nullable|string',
                 'customer.vat_no'       => 'nullable|string',
                 'address'               => 'nullable',
                 'address.postcode' => 'required|string|max:255',
