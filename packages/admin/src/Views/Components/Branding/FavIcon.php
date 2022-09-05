@@ -4,7 +4,7 @@ namespace GetCandy\Hub\Views\Components\Branding;
 
 use Illuminate\View\Component;
 
-class FavIcon extends Component
+class Favicon extends Component
 {
     /**
      * Get the view / contents that represent the component.
@@ -13,6 +13,6 @@ class FavIcon extends Component
      */
     public function render()
     {
-        return view('adminhub::components.branding.fav-icon');
+        return view('adminhub::components.branding.favicon');
     }
 }

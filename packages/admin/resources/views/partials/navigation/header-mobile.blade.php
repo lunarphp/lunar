@@ -2,7 +2,7 @@
     <div class="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-100 sm:px-6 lg:px-8">
         <a href="{{ route('hub.index') }}"
            class="block">
-           <x-hub::branding.logo :icon-only="true" />
+            <x-hub::branding.logo iconOnly />
         </a>
 
         <div class="flex items-center gap-4">

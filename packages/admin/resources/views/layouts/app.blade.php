@@ -9,7 +9,7 @@
 
     <title>{{ $title ?? 'Hub' }} | {{ config('app.name') }}</title>
 
-    <x-hub::branding.fav-icon />
+    <x-hub::branding.favicon />
 
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
@@ -87,13 +87,6 @@
     <x-hub::notification />
 
     @livewire('hub-license')
-
-    <footer class="fixed inset-x-0 bottom-0 p-2 bg-white shadow-2xl">
-        <div class="flex justify-center">
-            <x-hub::get-candy.stamp class="w-3 mr-1" />
-            <span class="text-xs font-medium text-gray-600">GetCandy <span class="text-gray-400">{{ config('getcandy-hub.system.version') }}</span></span>
-        </div>
-    </footer>
 
     @livewireScripts
 

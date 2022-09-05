@@ -1,25 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-50">
-  <head>
+<html lang="en"
+      class="h-full bg-gray-50">
+
+<head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
     <title>{{ $title ?? 'Hub' }} | {{ config('app.name') }}</title>
 
-    <x-hub::branding.fav-icon />
+    <x-hub::branding.favicon />
 
-    <link href="https://fonts.bunny.net/css2?family=Nunito&display=swap" rel="stylesheet">
-    <link href="{{ asset('vendor/getcandy/admin-hub/app.css') }}" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css2?family=Nunito&display=swap"
+          rel="stylesheet">
+    <link href="{{ asset('vendor/getcandy/admin-hub/app.css') }}"
+          rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js"
+            defer></script>
 
     @livewireStyles
-  </head>
-  <body>
+</head>
+
+<body>
 
     {{ $slot }}
 
     <script></script>
 
     @livewireScripts
-  </body>
+</body>
+
 </html>
