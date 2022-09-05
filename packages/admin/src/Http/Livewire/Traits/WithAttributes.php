@@ -166,6 +166,7 @@ trait WithAttributes
                     $newValue[$language->code] = $value;
                 }
                 $value = $newValue;
+
                 continue;
             }
 
@@ -224,6 +225,7 @@ trait WithAttributes
                 if ($attribute['type'] == TranslatedText::class) {
                     $messages["attributeMapping.{$index}.data.{$this->defaultLanguage->code}.required"] =
                         __('adminhub::validation.generic_required');
+
                     continue;
                 }
                 $messages["attributeMapping.{$index}.data.required"] = __('adminhub::validation.generic_required');

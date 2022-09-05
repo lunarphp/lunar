@@ -31,7 +31,7 @@ class HasUrlsTraitTest extends TestCase
         ]);
     }
 
-    /** @test */
+    /** @test **/
     public function can_generate_urls()
     {
         Language::factory()->create(['default' => true]);

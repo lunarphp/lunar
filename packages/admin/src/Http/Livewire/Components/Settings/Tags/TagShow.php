@@ -10,6 +10,7 @@ use Livewire\Component;
 class TagShow extends Component
 {
     public Tag $tag;
+
     use Notifies;
 
     /**
