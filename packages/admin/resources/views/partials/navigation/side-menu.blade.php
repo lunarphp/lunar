@@ -1,6 +1,5 @@
 <div class="hidden lg:flex lg:flex-shrink-0">
     <div class="relative flex flex-col bg-white border-r border-gray-100 dark:bg-gray-900 dark:border-gray-800"
-         x-data="{ showExpandedMenu: '{{ !Str::contains(request()->url(), 'settings') }}' }"
          :class="{
              'w-64': showExpandedMenu,
              'w-20': !showExpandedMenu

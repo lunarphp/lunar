@@ -1,9 +1,11 @@
-<div class="space-y-4" x-data="{ menuType: '{{ $menuType }}' }">
+<div class="space-y-4"
+     x-data="{ menuType: '{{ $menuType }}' }">
     @if (count($items))
         <div>
-            <ul class="space-y-2">
+            <ul class="flex flex-col space-y-2"
+                :class="{ 'items-center': !showExpandedMenu }">
                 @foreach ($items as $item)
-                    <li class="relative">
+                    <li>
                         <a href="{{ route($item->route) }}"
                            x-data="{ showTooltip: false }"
                            x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
@@ -13,20 +15,16 @@
                                'menu-link--active' => $item->isActive($active),
                                'menu-link--inactive' => !$item->isActive($active),
                            ])>
-                            <span :class="{ 'm-auto': !showExpandedMenu }">
-                                {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
-                            </span>
+                            {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
 
-                            <span class="text-sm font-medium"
-                                  x-cloak
-                                  x-show="menuType == 'main_menu' && showExpandedMenu">
+                            <span x-cloak
+                                  x-show="menuType == 'main_menu' && showExpandedMenu"
+                                  class="text-sm font-medium">
                                 {{ $item->name }}
                             </span>
 
-                            <span x-cloak
-                                  x-transition
-                                  x-show="showTooltip"
-                                  class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">
+                            <span
+                                  class="absolute z-10 invisible p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
                                 {{ $item->name }}
                             </span>
                         </a>
@@ -39,42 +37,35 @@
     @forelse ($sections as $section)
         @if (count($section->getItems()))
             <div>
-                <header class="text-sm font-semibold text-gray-600"
-                        x-cloak
-                        x-show="menuType == 'main_menu' && showExpandedMenu || menuType == 'sub_menu'">
+                <header x-cloak
+                        x-show="menuType == 'main_menu' && showExpandedMenu || menuType == 'sub_menu'"
+                        class="text-sm font-semibold text-gray-600">
                     {{ $section->name }}
                 </header>
 
-                <ul class="mt-2 space-y-2 flex flex-col">
+                <ul class="flex flex-col mt-2 space-y-2"
+                    :class="{ 'items-center': !showExpandedMenu }">
                     @foreach ($section->getItems() as $item)
-                        <li class="relative">
+                        <li>
                             <a href="{{ route($item->route) }}"
                                @class([
-                                   'flex items-center gap-2 p-2 rounded text-gray-500',
-                                   'bg-blue-50 text-blue-700 hover:text-blue-600' => $item->isActive($active),
-                                   'hover:bg-blue-50 hover:text-blue-700' => !$item->isActive($active),
+                                   'menu-link',
+                                   'menu-link--active' => $item->isActive($active),
+                                   'menu-link--inactive' => !$item->isActive($active),
                                ])
                                :class="{ 'group': !showExpandedMenu }">
-                                <span :class="{ 'm-auto': !showExpandedMenu }">
-                                    {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
-                                </span>
+                                {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
 
-                                <span class="text-sm font-medium"
-                                      x-cloak
-                                      x-show="menuType == 'sub_menu' || showExpandedMenu">
+                                <span x-cloak
+                                      x-show="menuType == 'sub_menu' || showExpandedMenu"
+                                      class="text-sm font-medium">
                                     {{ $item->name }}
                                 </span>
 
-                                <span class="invisible absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
+                                <span
+                                      class="absolute z-10 invisible p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
                                     {{ $item->name }}
                                 </span>
-
-{{--                                <span x-cloak--}}
-{{--                                      x-transition--}}
-{{--                                      x-show="showTooltip"--}}
-{{--                                      class="absolute z-10 p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full">--}}
-{{--                                    {{ $item->name }}--}}
-{{--                                </span>--}}
                             </a>
                         </li>
                     @endforeach
