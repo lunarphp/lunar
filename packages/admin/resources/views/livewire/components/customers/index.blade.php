@@ -6,6 +6,7 @@
     </div>
 
     <div class="space-y-4">
+      @livewire('hub.components.customers.table')
         <x-hub::table>
             <x-slot name="toolbar">
                 <div class="p-4 space-y-4 border-b">

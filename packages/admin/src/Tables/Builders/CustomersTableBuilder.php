@@ -4,7 +4,6 @@ namespace GetCandy\Hub\Tables\Builders;
 
 use GetCandy\Hub\Tables\TableBuilder;
 use GetCandy\Models\Customer;
-use GetCandy\Models\Order;
 
 class CustomersTableBuilder extends TableBuilder
 {
