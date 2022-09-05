@@ -4,7 +4,6 @@ namespace GetCandy\Hub;
 
 use GetCandy\Hub\Auth\Manifest;
 use GetCandy\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
-use GetCandy\Hub\Base\OrdersTableInterface;
 use GetCandy\Hub\Console\Commands\InstallHub;
 use GetCandy\Hub\Facades\ActivityLog;
 use GetCandy\Hub\Http\Livewire\Components\Account;
@@ -78,7 +77,6 @@ use GetCandy\Hub\Menu\SettingsMenu;
 use GetCandy\Hub\Menu\SidebarMenu;
 use GetCandy\Hub\Menu\SlotRegistry;
 use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
-use GetCandy\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -119,10 +117,6 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
             return new \GetCandy\Hub\Editing\ProductSection();
         });
-
-        // $this->app->singleton(OrdersTableInterface::class, function ($app) {
-        //     return $app->make(Orders::class);
-        // });
 
         $this->app->singleton(ActivityLog::class, function () {
             return new ActivityLogManifest();

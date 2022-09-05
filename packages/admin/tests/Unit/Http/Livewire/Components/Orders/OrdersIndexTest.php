@@ -35,24 +35,6 @@ class OrdersIndexTest extends TestCase
         Language::factory()->create([
             'default' => true,
         ]);
-
-        $this->mockedSearch = Mockery::mock(OrderSearch::class, function ($mock) {
-            $mock->shouldReceive('search')->andReturn(
-                new SearchResults(
-                    new LengthAwarePaginator(
-                        collect(),
-                        100,
-                        10
-                    ),
-                    new Facets(collect())
-                )
-            );
-        });
-
-        $this->app->instance(
-            OrderSearch::class,
-            $this->mockedSearch
-        );
     }
 
     /** @test */

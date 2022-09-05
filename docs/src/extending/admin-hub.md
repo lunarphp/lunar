@@ -227,48 +227,6 @@ Rendered on the product creation screen
 |`top`|Displayed at the top of both the product variant editing sections
 |`bottom`|Displayed at the bottom of both the product variant editing sections
 
-
-## Customising Tables
-
-Throughout GetCandy there are a number of data tables on pages, such as product, orders etc. We want to make these flexible and allow you to extend them by adding functionality such as additional columns and filters.
-
-We'll be working towards adding this functionality across as many data tables as possible, but for now the supported tables are:
-
-- `GetCandy\Facades\OrdersTable`
-
-### Adding Columns
-
-The signature for adding a column is below, the closure will receive and instance of the `Model` for that row.
-
-```php
-addColumn(string $header, bool $sortable = false, Closure $callback = null): TableColumn
-```
-
-```php
-OrdersTable::addColumn('Delivery Area', false, function (Order $order) {
-  return 'Worldwide';
-});
-```
-
-### Adding Filters
-
-The signature for adding a filter is below, the closure will receive the value of the filter when looping through the available options. e.g. If we're filtering by `status` we'd receive `awaiting-payment`. Whatever is returned from the closure will be the value in the dropdown.
-
-```php
-addFilter(string $header, string $attribute, Closure $formatter = null): TableFilter
-```
-
-::: warning
-The column should be an attribute that appears in the search index. For example if you wanted to filter on `status`
-then that attribute must be indexed in either Meilisearch or Algolia and be enabled for filtering.
-:::
-
-```php
-OrdersTable::addFilter('Status', 'status', function ($value) {
-  return Str::slug($value);
-});
-```
-
 ### Exporting Records
 
 GetCandy comes with basic exporter for each supported table. You're free to add your own, here's what it could look like:
@@ -330,10 +288,4 @@ class OrderExporter
         ])->join(',');
     }
 }
-```
-
-Then just tell the table to use it:
-
-```php
-OrdersTable::exportUsing(OrderExporter::class);
 ```
