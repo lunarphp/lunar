@@ -14,7 +14,12 @@ trait HasUrls
 
     public function mountHasUrls()
     {
-        $this->urls = $this->getHasUrlsModel()->urls->toArray();
+        $this->urls = $this->getHasUrlsModel()->urls->map(function ($url) {
+            return array_merge(
+                $url->toArray(),
+                ['key' => $url->id]
+            );
+        })->toArray();
     }
 
     /**
@@ -51,6 +56,7 @@ trait HasUrls
     {
         $this->urls[] = [
             'slug'        => null,
+            'key'         => Str::random(),
             'default'     => ! collect($this->urls)->count(),
             'language_id' => $this->defaultLanguage->id,
         ];
@@ -69,6 +75,19 @@ trait HasUrls
      */
     public function updatedUrls($value, $key)
     {
+        [$index, $field] = explode('.', $key);
+
+        if ($field == 'default' && $value) {
+            // Make sure other defaults are unchecked...
+            $this->urls = collect($this->urls)->map(function ($url, $urlIndex) use ($index) {
+                if ($index != $urlIndex) {
+                    $url['default'] = false;
+                }
+
+                return $url;
+            })->toArray();
+        }
+
         Arr::set($this->urls, $key, Str::slug($value));
     }
 
@@ -136,7 +155,9 @@ trait HasUrls
 
             foreach ($this->urls as $index => $url) {
                 $urlModel = ($url['id'] ?? false) ? Url::find($url['id']) : new Url();
-                $urlModel->fill($url);
+                $urlModel->default = $url['default'];
+                $urlModel->language_id = $url['language_id'];
+                $urlModel->slug = $url['slug'];
                 $urlModel->element_type = get_class($model);
                 $urlModel->element_id = $model->id;
                 $urlModel->save();

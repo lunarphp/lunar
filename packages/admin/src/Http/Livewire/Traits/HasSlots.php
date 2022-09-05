@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 trait HasSlots
 {
     protected $slotsForOutput;
+
     public $slotStore = [];
 
     public function getHasSlotsListeners()

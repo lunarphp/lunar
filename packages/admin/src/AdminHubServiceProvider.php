@@ -41,6 +41,7 @@ use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
+use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantSideMenu;
 use GetCandy\Hub\Http\Livewire\Components\ProductSearch;
 use GetCandy\Hub\Http\Livewire\Components\Reporting\ApexChart;
 use GetCandy\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
@@ -276,6 +277,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.products.options.option-creator', OptionCreator::class);
         Livewire::component('hub.components.products.options.option-selector', OptionSelector::class);
 
+        Livewire::component('hub.components.products.variants.side-menu', VariantSideMenu::class);
         Livewire::component('hub.components.products.variants.show', VariantShow::class);
         Livewire::component('hub.components.products.variants.editing.inventory', Inventory::class);
 
