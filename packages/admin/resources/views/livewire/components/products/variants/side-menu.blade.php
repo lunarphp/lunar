@@ -12,7 +12,7 @@
                ])
                aria-current="page">
                 <div class="shrink-0">
-                    @if ($media = $v->media->first())
+                    @if ($media = $v->images->first())
                         <img class="block object-cover w-6 h-6 rounded shadow"
                              src="{{ $media->getFullUrl('small') }}">
                     @else

@@ -135,3 +135,21 @@ Once you've made the FieldType, you need to register it. Typically this could do
   ColourFieldType::class
 );
 ```
+
+## Registering FieldType Assets
+
+If you need to register styles or scripts, you can do so in a service provider. More on this topic in [registering assets](/extending/assets).
+
+```php
+// Register compiled script
+GetCandyHub::script('getcandy-package', __DIR__.'/../dist/getcandy-package.js');
+
+// Register remote script
+GetCandyHub::remoteScript('https://example.com/script.js');
+
+// Register compiled styles
+GetCandyHub::style('getcandy-package', __DIR__.'/../dist/getcandy-package.css');
+
+// Register remote styles
+GetCandyHub::remoteStyle('https://example.com/style.css');
+```
