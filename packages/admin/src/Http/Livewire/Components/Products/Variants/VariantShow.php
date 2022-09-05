@@ -81,6 +81,7 @@ class VariantShow extends Component
                 'thumbnail' => $media->getFullUrl('medium'),
                 'original'  => $media->getFullUrl(),
                 'preview'   => false,
+                'edit'      => false,
                 'caption'   => $media->getCustomProperty('caption'),
                 'primary'   => $media->pivot->primary,
                 'position'  => $media->getCustomProperty('position', 1),
@@ -95,9 +96,10 @@ class VariantShow extends Component
      */
     protected function getListeners()
     {
-        return array_merge([
-            'option-value-create-modal.value-created' => 'refreshAndSelectOption',
-        ],
+        return array_merge(
+            [
+                'option-value-create-modal.value-created' => 'refreshAndSelectOption',
+            ],
             $this->getHasSlotsListeners(),
             $this->getHasImagesListeners()
         );
@@ -185,7 +187,7 @@ class VariantShow extends Component
     {
         $this->validate(null, $this->getValidationMessages());
 
-        if (! $this->manualVolume) {
+        if (!$this->manualVolume) {
             $this->variant->volume_unit = null;
             $this->variant->volume_value = null;
         }
@@ -211,31 +213,87 @@ class VariantShow extends Component
 
             $imagesToSync = [];
 
+            $variants = $owner->variants->load('images');
+
             foreach ($this->images as $key => $image) {
-                if (empty($image['id'])) {
-                    $file = TemporaryUploadedFile::createFromLivewire(
-                        $image['filename']
-                    );
+                $file = null;
+                $imageEdited = false;
+                $previousMediaId = false;
+
+                // edited image
+                if ($image['file'] ?? false && $image['file'] instanceof TemporaryUploadedFile) {
+                    /** @var TemporaryUploadedFile $file */
+                    $file = $image['file'];
+
+                    if (isset($image['id'])) {
+                        $previousMediaId = $image['id'];
+                    }
+
+                    unset($this->images[$key]['file']);
+
+                    $imageEdited = true;
+                }
+
+                if (empty($image['id']) || $imageEdited) {
+                    if (!$imageEdited) {
+                        $file = TemporaryUploadedFile::createFromLivewire(
+                            $image['filename']
+                        );
+                    }
+
+                    // after editing few times the name will get longer and eventually failed to upload
+                    $filename = Str::of($file->getFilename())
+                        ->beforeLast('.')
+                        ->substr(0, 128)
+                        ->append('.', $file->getClientOriginalExtension());
+
                     $media = $owner->addMedia($file->getRealPath())
+                        ->usingFileName($filename)
                         ->toMediaCollection('products');
 
                     activity()
-                    ->performedOn($this->variant)
-                    ->withProperties(['media' => $media->toArray()])
-                    ->event('added_image')
-                    ->useLog('getcandy')
-                    ->log('added_image');
+                        ->performedOn($this->variant)
+                        ->withProperties(['media' => $media->toArray()])
+                        ->event('added_image')
+                        ->useLog('getcandy')
+                        ->log('added_image');
 
                     // Add ID for future and processing now.
+
                     $this->images[$key]['id'] = $media->id;
+                    // reset image thumbnail
+                    if ($imageEdited) {
+                        $this->images[$key]['thumbnail'] = $media->getFullUrl('medium');
+                        $this->images[$key]['original'] = $media->getFullUrl();
+
+                        // link other variants image to the new media
+                        if ($previousMediaId) {
+                            $variants->each(function ($variant) use ($previousMediaId, $media) {
+                                if ($this->variant->id == $variant->id) {
+                                    return;
+                                }
+
+                                $variantMedia = $variant->images->where('id', $previousMediaId)->first();
+                                if ($variantMedia) {
+                                    $variant->images()->attach($media, [
+                                        'primary' => $variantMedia->pivot->primary,
+                                    ]);
+                                }
+                            });
+
+                            $owner->media()->find($previousMediaId)->delete();
+                        }
+                    }
+
                     $image['id'] = $media->id;
                 }
 
                 $media = app(config('media-library.media_model'))::find($image['id']);
 
-                $media->setCustomProperty('caption', $image['caption']);
-                $media->setCustomProperty('primary', false);
-                $media->setCustomProperty('position', $image['position']);
+                // this is affecting product main images properties
+                // $media->setCustomProperty('caption', $image['caption']);
+                // $media->setCustomProperty('primary', false);
+                // $media->setCustomProperty('position', $image['position']);
                 $media->save();
 
                 $imagesToSync[$media->id] = [
@@ -362,8 +420,8 @@ class VariantShow extends Component
         $messages = [];
 
         foreach ($this->variantOptions() as $option) {
-            $rules['newValues.'.$option->id] = 'required';
-            $messages['newValues.'.$option->id.'.required'] = __('adminhub::validation.variant_option_required');
+            $rules['newValues.' . $option->id] = 'required';
+            $messages['newValues.' . $option->id . '.required'] = __('adminhub::validation.variant_option_required');
         }
 
         $this->validate($rules, $messages);

@@ -193,9 +193,12 @@ trait HasImages
                 $media->forceDelete();
             });
 
+            $variants = $owner->variants->load('images');
+
             foreach ($this->images as $key => $image) {
                 $file = null;
                 $imageEdited = false;
+                $previousMediaId = false;
 
                 // edited image
                 if ($image['file'] ?? false && $image['file'] instanceof TemporaryUploadedFile) {
@@ -203,7 +206,7 @@ trait HasImages
                     $file = $image['file'];
 
                     if (isset($image['id'])) {
-                        $owner->media()->find($image['id'])->delete();
+                        $previousMediaId = $image['id'];
                     }
 
                     unset($this->images[$key]['file']);
@@ -218,7 +221,14 @@ trait HasImages
                         );
                     }
 
+                    // after editing few times the name will get longer and eventually failed to upload
+                    $filename = Str::of($file->getFilename())
+                        ->beforeLast('.')
+                        ->substr(0, 128)
+                        ->append('.', $file->getClientOriginalExtension());
+
                     $media = $owner->addMedia($file->getRealPath())
+                        ->usingFileName($filename)
                         ->toMediaCollection('products');
 
                     activity()
@@ -235,6 +245,21 @@ trait HasImages
                     if ($imageEdited) {
                         $this->images[$key]['thumbnail'] = $media->getFullUrl('medium');
                         $this->images[$key]['original'] = $media->getFullUrl();
+
+                        // link variants image to the new media
+                        if ($previousMediaId) {
+                            $variants->each(function ($variant) use ($previousMediaId, $media) {
+                                $variantMedia = $variant->images->where('id', $previousMediaId)->first();
+
+                                if ($variantMedia) {
+                                    $variant->images()->attach($media, [
+                                        'primary' => $variantMedia->pivot->primary,
+                                    ]);
+                                }
+                            });
+
+                            $owner->media()->find($previousMediaId)->delete();
+                        }
                     }
 
                     $image['id'] = $media->id;
@@ -317,6 +342,7 @@ trait HasImages
                 'caption'   => null,
                 'position'  => $media->getCustomProperty('position'),
                 'preview'   => false,
+                'edit'   => false,
                 'primary'   => false,
             ];
         }
