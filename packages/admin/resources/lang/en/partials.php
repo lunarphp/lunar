@@ -78,6 +78,8 @@ return [
     'image-manager.no_results'                       => 'No images exist for this product, add your first image above.',
     'image-manager.upload_file'                      => 'Upload a file or drag and drop',
     'image-manager.file_format'                      => 'PNG, JPG, GIF up to 10MB',
+    'image-manager.select_images'                    => 'Select images',
+    'image-manager.select_images_btn'                 => 'Select images',
     /**
      * Product Collections.
      */
