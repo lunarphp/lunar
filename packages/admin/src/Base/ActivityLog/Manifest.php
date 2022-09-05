@@ -8,6 +8,7 @@ use GetCandy\Hub\Base\ActivityLog\Orders\Intent;
 use GetCandy\Hub\Base\ActivityLog\Orders\StatusUpdate;
 use GetCandy\Models\Order;
 use GetCandy\Models\Product;
+use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Collection;
 
 class Manifest
@@ -26,6 +27,9 @@ class Manifest
             EmailNotification::class,
         ],
         Product::class => [
+            Comment::class,
+        ],
+        ProductVariant::class => [
             Comment::class,
         ],
     ];

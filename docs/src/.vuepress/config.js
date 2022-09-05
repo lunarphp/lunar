@@ -120,6 +120,7 @@ module.exports = {
         children: [
           '/extending/activity-log',
           '/extending/admin-hub',
+          '/extending/assets',
           '/extending/cart-modifiers',
           '/extending/field-types',
           '/extending/models',
