@@ -134,7 +134,6 @@ This should be the unique handle for your Slot.
 
 This method allows you to set any initial values on your slot before rendering.
 
-
 #### `getSlotPosition`
 
 Each page that supports slots will have different positions available where they can be placed. Return the position you want it to appear here.
@@ -155,6 +154,22 @@ Called before `updateSlotModel` so you can save any data you need to the databas
 
 Standard Livewire method to render the component view.
 
+#### `saveSlotData`
+
+This method allows you to store your data in the page and pass it to `handleSlotSave` on save
+
+```php
+public function yourLivewireMethod(){
+    // do something here
+    $this->saveSlotData(['foo' => 'bar']);
+}
+
+public function handleSlotSave($model, $data)
+{
+    $foo = $data['foo'];
+    // do your thing
+}
+```
 
 ### Registering the Slot
 

@@ -3,12 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-### 2.0-beta15.1 - 2022-08-12
+### [ Unreleased ]
 
-### Fixed
-
+## Fixed
+- When migrating fresh, the transaction table migrations were out of order.  Changed the type when making nullable.
+- Added `wire:key` to URL management
+- When setting a new `default` URL whilst editing, other existing `default` values are set to `false`
 - Moved the activity log on product variants outside the form element as this was conflicting.
 - ProductVariants now have comments enabled.
+
 
 ### 2.0-beta15 - 2022-08-10
 
@@ -23,7 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Comments should now show correctly on product editing pages.
 - Sortable is now attached to the browser window so it's globally available.
 - Fixed an issue where incorrect attributes were showing when changing product types
-- `doctrine/dbal` locked to `3.3.7` due to issue with Sqlite
+- `doctrine/dbal` locked to `3.3.7` due to issue with Sqlite 
 
 ### 2.0-beta14 - 2022-08-03
 
