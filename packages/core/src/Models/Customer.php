@@ -88,6 +88,7 @@ class Customer extends BaseModel
             'name'         => $this->fullName,
             'company_name' => $this->company_name,
             'vat_no'       => $this->vat_no,
+            'account_ref'  => $this->account_ref,
         ];
 
         foreach ($metaFields as $key => $value) {
