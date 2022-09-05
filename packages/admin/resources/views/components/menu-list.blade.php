@@ -1,7 +1,7 @@
 <div class="space-y-4" x-data="{ menuType: '{{ $menuType }}' }">
     @if (count($items))
         <div>
-            <ul class="ml-1 space-y-2">
+            <ul class="space-y-2">
                 @foreach ($items as $item)
                     <li>
                         <a href="{{ route($item->route) }}"
@@ -13,7 +13,9 @@
                                'menu-link--active' => $item->isActive($active),
                                'menu-link--inactive' => !$item->isActive($active),
                            ])>
-                            {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
+                            <span :class="{ 'm-auto': !showExpandedMenu }">
+                                {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
+                            </span>
 
                             <span class="text-sm font-medium"
                                   x-cloak
@@ -43,7 +45,7 @@
                     {{ $section->name }}
                 </header>
 
-                <ul class="ml-1 mt-2 space-y-2 flex flex-col">
+                <ul class="mt-2 space-y-2 flex flex-col">
                     @foreach ($section->getItems() as $item)
                         <li>
                             <a href="{{ route($item->route) }}"
@@ -53,7 +55,9 @@
                                    'hover:bg-blue-50 hover:text-blue-700' => !$item->isActive($active),
                                ])
                                :class="{ 'group': !showExpandedMenu }">
-                                {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
+                                <span :class="{ 'm-auto': !showExpandedMenu }">
+                                    {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
+                                </span>
 
                                 <span class="text-sm font-medium"
                                       x-cloak
