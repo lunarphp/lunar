@@ -43,31 +43,34 @@
       <x-hub::slideover-simple target="showVariantSlideover">
         <nav class="space-y-2">
           @foreach ($product->variants as $v)
-            <a href="{{ route('hub.products.variants.show', [
-              'product' => $product,
-              'variant' => $v,
-            ]) }}"
+            <a
+              href="{{ route('hub.products.variants.show', [
+                'product' => $product,
+                'variant' => $v,
+              ]) }}"
               @class([
-                 'p-2 rounded text-gray-500 flex items-center gap-2',
-                 'bg-blue-50 text-blue-700 hover:text-blue-600' => $variant->id == $v->id,
-                 'hover:bg-blue-50 hover:text-blue-700' => $variant->id != $v->id,
+                'p-2 rounded text-gray-500 flex items-center gap-2',
+                'bg-blue-50 text-blue-700 hover:text-blue-600' => $variant->id == $v->id,
+                'hover:bg-blue-50 hover:text-blue-700' => $variant->id != $v->id,
               ])
               aria-current="page">
-              <div class="shrink-0">
-                @if ($media = $v->media->first())
-                  <img class="block object-cover w-6 h-6 rounded shadow" src="{{ $media->getFullUrl('small') }}">
-                @else
-                  <x-hub::icon ref="photograph" class="w-6 h-6" />
-                @endif
-              </div>
+                <div class="shrink-0">
+                    @if ($media = $v->images->first())
+                      <img class="block object-cover w-6 h-6 rounded shadow"
+                             src="{{ $media->getFullUrl('small') }}">
+                    @else
+                      <x-hub::icon ref="photograph"
+                                     class="w-6 h-6" />
+                    @endif
+                </div>
 
-              <div class="flex-1">
-                <span class="block text-sm font-medium truncate w-44">
-                  @foreach ($v->values as $value)
-                    {{ $value->translate('name') }} {{ !$loop->last ? '/' : null }}
-                  @endforeach
-                </span>
-              </div>
+                <div class="flex-1">
+                  <span class="block text-sm font-medium truncate w-44">
+                    @foreach ($v->values as $value)
+                      {{ $value->translate('name') }} {{ !$loop->last ? '/' : null }}
+                    @endforeach
+                  </span>
+                </div>
             </a>
           @endforeach
         </nav>
@@ -97,9 +100,14 @@
         @include('adminhub::partials.attributes')
       </div>
 
-      @include('adminhub::partials.pricing')
+        @include('adminhub::partials.image-manager', [
+            'existing' => $images,
+            'wireModel' => 'imageUploadQueue',
+            'filetypes' => ['image/*'],
+            'chooseFrom' => $this->productImages,
+        ])
 
-      @include('adminhub::partials.products.variants.image')
+      @include('adminhub::partials.pricing')
 
       @include('adminhub::partials.products.variants.identifiers')
 
