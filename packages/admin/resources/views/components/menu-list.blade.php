@@ -3,7 +3,7 @@
         <div>
             <ul class="space-y-2">
                 @foreach ($items as $item)
-                    <li>
+                    <li class="relative">
                         <a href="{{ route($item->route) }}"
                            x-data="{ showTooltip: false }"
                            x-on:mouseover="showTooltip = showExpandedMenu ? false : true"
@@ -47,7 +47,7 @@
 
                 <ul class="mt-2 space-y-2 flex flex-col">
                     @foreach ($section->getItems() as $item)
-                        <li>
+                        <li class="relative">
                             <a href="{{ route($item->route) }}"
                                @class([
                                    'flex items-center gap-2 p-2 rounded text-gray-500',
