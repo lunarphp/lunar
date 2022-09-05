@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix'     => config('getcandy-hub.system.path', 'hub'),
+    'prefix' => config('getcandy-hub.system.path', 'hub'),
     'middleware' => ['web'],
 ], function () {
     Route::post('logout', function () {
@@ -60,5 +60,9 @@ Route::group([
         Route::group([
             'prefix' => 'brands',
         ], __DIR__.'/includes/brands.php');
+        
+        Route::group([
+            'prefix' => 'assets',
+        ], __DIR__.'/includes/assets.php');
     });
 });
