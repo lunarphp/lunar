@@ -8,6 +8,13 @@ use GetCandy\Models\Order;
 class OrdersTableBuilder extends TableBuilder
 {
     /**
+     * The field to sort using.
+     *
+     * @var string|null
+     */
+    public ?string $sortField = 'placed_at';
+
+    /**
      * Return the query data.
      *
      * @param string|null $searchTerm
@@ -17,25 +24,25 @@ class OrdersTableBuilder extends TableBuilder
      *
      * @return LengthAwarePaginator
      */
-    public function getData($searchTerm = null, $filters = [], $sortField = 'placed_at', $sortDir = 'desc')
+    public function getData(): iterable
     {
         $query = Order::with([
             'shippingLines',
             'billingAddress',
             'currency',
             'customer'
-        ])->orderBy($sortField, $sortDir);
+        ])->orderBy($this->sortField, $this->sortDir);
 
-        if ($searchTerm) {
-            $query->whereIn('id', Order::search($searchTerm)->keys());
+        if ($this->searchTerm) {
+            $query->whereIn('id', Order::search($this->searchTerm)->keys());
         }
 
-        $filters = collect($filters)->filter(function ($value) {
+        $filters = collect($this->queryStringFilters)->filter(function ($value) {
             return !!$value;
         });
 
         foreach ($this->queryExtenders as $qe) {
-            call_user_func($qe, $query, $searchTerm, $filters);
+            call_user_func($qe, $query, $this->searchTerm, $filters);
         }
 
         // Get the table filters we want to apply.
@@ -48,6 +55,6 @@ class OrdersTableBuilder extends TableBuilder
             call_user_func($filter->getQuery(), $filters, $query);
         }
 
-        return $query->paginate(25);
+        return $query->paginate($this->perPage);
     }
 }

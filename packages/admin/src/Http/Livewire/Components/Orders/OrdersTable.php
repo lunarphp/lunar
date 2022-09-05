@@ -181,11 +181,13 @@ class OrdersTable extends Table
             }
         }
 
-        return $this->tableBuilder->getData(
-            $query,
-            $filters,
-            $this->sortField ?: 'placed_at',
-            $this->sortDir ?: 'desc',
-        );
+        return $this->tableBuilder
+            ->searchTerm($query)
+            ->queryStringFilters($filters)
+            ->perPage($this->perPage)
+            ->sort(
+                $this->sortField ?: 'placed_at',
+                $this->sortDir ?: 'desc',
+            )->getData();
     }
 }
