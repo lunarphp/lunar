@@ -21,7 +21,7 @@
         </div>
       </div>
       @foreach($urls as $url)
-        <div>
+        <div wire:key="url_{{ $url['key'] }}">
           <div class="flex items-center space-x-4" wire:key="url_{{ $loop->index }}">
             <div class="w-64">
               <x-hub::input.select wire:model="urls.{{ $loop->index }}.language_id">
