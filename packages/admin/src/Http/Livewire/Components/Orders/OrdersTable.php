@@ -22,25 +22,57 @@ class OrdersTable extends Table
      */
     protected $tableBuilderBinding = OrdersTableBuilder::class;
 
+    /**
+     * {@inheritDoc}
+     */
     public $searchable = true;
 
+    /**
+     * {@inheritDoc}
+     */
     public bool $canSaveSearches = true;
 
+    /**
+     * {@inheritDoc}
+     */
     protected $listeners = [
         'saveSearch' => 'handleSaveSearch',
     ];
 
+    /**
+     * {@inheritDoc}
+     */
     public function build()
     {
-        $this->tableBuilder->addColumn(
+        $this->tableBuilder->baseColumns([
+            TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status'),
             TextColumn::make('reference')->value(function ($record) {
                 return $record->reference;
+            })->url(function ($record) {
+                return route('hub.orders.show', $record->id);
             }),
-        );
-
-        $this->tableBuilder->addColumn(
-            TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status')
-        );
+            TextColumn::make('customer_reference')->heading('Customer Reference')->value(function ($record) {
+                return $record->customer_reference;
+            }),
+            TextColumn::make('customer')->value(function ($record) {
+                return $record->billingAddress?->fullName;
+            }),
+            TextColumn::make('postcode')->value(function ($record) {
+                return $record->billingAddress?->postcode;
+            }),
+            TextColumn::make('email')->value(function ($record) {
+                return $record->billingAddress?->contact_email;
+            }),
+            TextColumn::make('phone')->value(function ($record) {
+                return $record->billingAddress?->contact_phone;
+            }),
+            TextColumn::make('total')->value(function ($record) {
+                return $record->total->formatted;
+            }),
+            TextColumn::make('date')->value(function ($record) {
+                return $record->placed_at?->format('Y/m/d @ H:ma');
+            }),
+        ]);
 
         $this->tableBuilder->addFilter(
             SelectFilter::make('status')->options(function () {
@@ -52,25 +84,45 @@ class OrdersTable extends Table
                 return collect([
                     null => 'All Statuses',
                 ])->merge($statuses);
+            })->query(function ($filters, $query) {
+                $value = $filters->get('status');
+
+                if ($value) {
+                    $query->whereStatus($value);
+                }
             })
         );
 
         $this->tableBuilder->addAction(
-            Action::make('view')->label('View product')->url(function ($record) {
+            Action::make('view')->label('View Order')->url(function ($record) {
                 return route('hub.products.show', $record->id);
             })
         );
-
-        $this->tableBuilder->addBulkAction(
-            BulkAction::make('export')->label('Export orders')
-        );
     }
 
+    /**
+     * Remove a saved search record.
+     *
+     * @param int $id
+     *
+     * @return void
+     */
     public function deleteSavedSearch($id)
     {
         SavedSearch::destroy($id);
+
+        $this->resetSavedSearch();
+
+        $this->notify(
+            __('adminhub::notifications.saved_searches.deleted')
+        );
     }
 
+    /**
+     * Save a search.
+     *
+     * @return void
+     */
     public function saveSearch()
     {
         $this->validateOnly('savedSearchName', [
@@ -104,12 +156,36 @@ class OrdersTable extends Table
             return [
                 'key' => $savedSearch->id,
                 'label' => $savedSearch->name,
+                'filters' => $savedSearch->filters,
+                'query' => $savedSearch->term,
             ];
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getData()
     {
-        return Order::paginate(50);
+        $filters = $this->filters;
+        $query = $this->query;
+
+        if ($this->savedSearch) {
+            $search = $this->savedSearches->first(function ($search) {
+                return $search['key'] == $this->savedSearch;
+            });
+
+            if ($search) {
+                $filters = $search['filters'];
+                $query = $search['query'];
+            }
+        }
+
+        return $this->tableBuilder->getData(
+            $query,
+            $filters,
+            $this->sortField ?: 'placed_at',
+            $this->sortDir ?: 'desc',
+        );
     }
 }
