@@ -14,7 +14,8 @@
                                'menu-link',
                                'menu-link--active' => $item->isActive($active),
                                'menu-link--inactive' => !$item->isActive($active),
-                           ])>
+                           ])
+                           :class="{ 'group': !showExpandedMenu || settingsPanelOpen }">
                             {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
 
                             <span x-cloak
