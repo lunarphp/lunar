@@ -3,7 +3,7 @@
     @if (count($items))
         <div>
             <ul class="flex flex-col space-y-2"
-                :class="{ 'items-center': !showExpandedMenu }">
+                :class="{ 'items-center': !showExpandedMenu && menuType === 'main_menu' }">
                 @foreach ($items as $item)
                     <li>
                         <a href="{{ route($item->route) }}"
@@ -44,7 +44,7 @@
                 </header>
 
                 <ul class="flex flex-col mt-2 space-y-2"
-                    :class="{ 'items-center': !showExpandedMenu }">
+                    :class="{ 'items-center': !showExpandedMenu && menuType === 'main_menu' }">
                     @foreach ($section->getItems() as $item)
                         <li>
                             <a href="{{ route($item->route) }}"
