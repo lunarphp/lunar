@@ -19,6 +19,12 @@ class CustomersTableBuilder extends TableBuilder
      */
     public function getData(): iterable
     {
-        return Customer::paginate($this->perPage);
+        $query = Customer::query();
+
+        if ($this->searchTerm) {
+            $query->whereIn('id', Customer::search($this->searchTerm)->keys());
+        }
+
+        return $query->paginate($this->perPage);
     }
 }
