@@ -32,15 +32,15 @@ class Status extends Component
      *
      * @param  string  $email
      */
-    public function __construct($record)
+    public function __construct($record = null, $status = null)
     {
         $statuses = config('getcandy.orders.statuses');
 
-        $match = $statuses[$record->status] ?? null;
+        $match = $statuses[$record?->status ?: $status] ?? null;
 
         $this->label = $match['label'] ?? $status;
         $this->color = $match['color'] ?? '#7C7C7C';
-        $this->status = $record->status;
+        $this->status = $record?->status ?: $status;
     }
 
     /**
