@@ -109,9 +109,6 @@
 
       @include('adminhub::partials.pricing')
 
-
-      @include('adminhub::partials.products.variants.image')
-
       @include('adminhub::partials.products.variants.identifiers')
 
       @include('adminhub::partials.products.variants.inventory')
