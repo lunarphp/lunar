@@ -10,18 +10,18 @@
 
     @if (Auth::user()->can('settings'))
         <div class="flex flex-col w-full pt-4 mt-4 border-t border-gray-100 dark:border-gray-800"
-             :class="{ 'items-center': !showExpandedMenu }">
+             :class="{ 'items-center': !showExpandedMenu || settingsPanelOpen }">
             <a href="{{ route('hub.settings') }}"
                @class([
                    'menu-link',
                    'menu-link--active' => Str::contains(request()->url(), 'settings'),
                    'menu-link--inactive' => !Str::contains(request()->url(), 'settings'),
                ])
-               :class="{ 'group': !showExpandedMenu }">
+               :class="{ 'group': !showExpandedMenu || settingsPanelOpen }">
                 {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-5 h-5') !!}
 
                 <span x-cloak
-                      x-show="showExpandedMenu"
+                      x-show="showExpandedMenu && !settingsPanelOpen"
                       class="text-sm font-medium">
                     {{ __('adminhub::global.settings') }}
                 </span>

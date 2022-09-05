@@ -3,7 +3,7 @@
     @if (count($items))
         <div>
             <ul class="flex flex-col space-y-2"
-                :class="{ 'items-center': !showExpandedMenu && menuType === 'main_menu' }">
+                :class="{ 'items-center': (!showExpandedMenu || settingsPanelOpen) && menuType === 'main_menu' }">
                 @foreach ($items as $item)
                     <li>
                         <a href="{{ route($item->route) }}"
@@ -18,7 +18,7 @@
                             {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
 
                             <span x-cloak
-                                  x-show="menuType == 'main_menu' && showExpandedMenu"
+                                  x-show="menuType == 'main_menu' && (showExpandedMenu && !settingsPanelOpen)"
                                   class="text-sm font-medium">
                                 {{ $item->name }}
                             </span>
@@ -38,13 +38,13 @@
         @if (count($section->getItems()))
             <div>
                 <header x-cloak
-                        x-show="menuType == 'main_menu' && showExpandedMenu || menuType == 'sub_menu'"
+                        x-show="menuType == 'main_menu' && (showExpandedMenu && !settingsPanelOpen) || menuType == 'sub_menu'"
                         class="text-sm font-semibold text-gray-600">
                     {{ $section->name }}
                 </header>
 
                 <ul class="flex flex-col mt-2 space-y-2"
-                    :class="{ 'items-center': !showExpandedMenu && menuType === 'main_menu' }">
+                    :class="{ 'items-center': (!showExpandedMenu || settingsPanelOpen) && menuType === 'main_menu' }">
                     @foreach ($section->getItems() as $item)
                         <li>
                             <a href="{{ route($item->route) }}"
@@ -53,11 +53,11 @@
                                    'menu-link--active' => $item->isActive($active),
                                    'menu-link--inactive' => !$item->isActive($active),
                                ])
-                               :class="{ 'group': !showExpandedMenu }">
+                               :class="{ 'group': !showExpandedMenu || settingsPanelOpen }">
                                 {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
 
                                 <span x-cloak
-                                      x-show="menuType == 'sub_menu' || showExpandedMenu"
+                                      x-show="menuType == 'sub_menu' || (showExpandedMenu && !settingsPanelOpen)"
                                       class="text-sm font-medium">
                                     {{ $item->name }}
                                 </span>

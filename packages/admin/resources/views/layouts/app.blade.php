@@ -55,6 +55,7 @@
       :class="{ 'dark': darkMode }"
       x-data="{
           showExpandedMenu: $persist(false),
+          settingsPanelOpen: '{{ request()->segment(2) === 'settings' }}',
           showMobileMenu: false,
           darkMode: $persist(false),
       }">
