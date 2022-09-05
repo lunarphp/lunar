@@ -22,4 +22,9 @@ class CartLineModifiers
     {
         $this->modifiers->push($modifier);
     }
+
+    public function remove($modifier)
+    {
+        $this->modifiers->forget($modifier);
+    }
 }
