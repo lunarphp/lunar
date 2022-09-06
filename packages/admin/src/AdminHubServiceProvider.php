@@ -40,6 +40,7 @@ use GetCandy\Hub\Http\Livewire\Components\Products\ProductsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Products\Tables\ProductTypesTable;
 use GetCandy\Hub\Http\Livewire\Components\Products\Tables\ProductVariantsTable;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
@@ -65,6 +66,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
@@ -274,6 +276,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.products.product-types.index', ProductTypesIndex::class);
         Livewire::component('hub.components.products.product-types.show', ProductTypeShow::class);
         Livewire::component('hub.components.products.product-types.create', ProductTypeCreate::class);
+        Livewire::component('hub.components.products.product-types.table', ProductTypesTable::class);
 
         Livewire::component('hub.components.products.editing.customer-groups', CustomerGroups::class);
 
@@ -328,6 +331,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.attributes.show', AttributeShow::class);
         Livewire::component('hub.components.settings.attributes.attribute-group-edit', AttributeGroupEdit::class);
         Livewire::component('hub.components.settings.attributes.attribute-edit', AttributeEdit::class);
+        Livewire::component('hub.components.settings.attributes.table', AttributesTable::class);
 
         // Channels
         Livewire::component('hub.components.settings.channels.index', ChannelsIndex::class);
