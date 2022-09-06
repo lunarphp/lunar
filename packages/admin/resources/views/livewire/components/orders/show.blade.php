@@ -48,7 +48,7 @@
                     </ul>
                 </div>
 
-                @if ($this->physicalLines->count() > $maxLines)
+                @if ($this->physicalAndDigitalLines->count() > $maxLines)
                     <div class="mt-4 text-center">
                         @if (!$allLinesVisible)
                             <div class="relative">
@@ -57,7 +57,7 @@
                                 <div class="relative">
                                     <span class="px-2 text-xs font-medium text-red-600 bg-white">
                                         {{ __('adminhub::components.orders.show.additional_lines_text', [
-                                            'count' => $this->physicalLines->count() - $maxLines,
+                                            'count' => $this->physicalAndDigitalLines->count() - $maxLines,
                                         ]) }}
                                     </span>
                                 </div>

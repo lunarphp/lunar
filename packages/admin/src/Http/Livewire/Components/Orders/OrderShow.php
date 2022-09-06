@@ -219,7 +219,7 @@ class OrderShow extends Component
      */
     public function getVisibleLinesProperty()
     {
-        return $this->physicalLines->take($this->allLinesVisible ? null : $this->maxLines);
+        return $this->physicalAndDigitalLines->take($this->allLinesVisible ? null : $this->maxLines);
     }
 
     /**
@@ -231,6 +231,18 @@ class OrderShow extends Component
     {
         return $this->order->lines->filter(function ($line) {
             return $line->type == 'physical';
+        });
+    }
+    
+    /**
+     * Return the physical and digital order lines.
+     *
+     * @return void
+     */
+    public function getPhysicalAndDigitalLinesProperty()
+    {
+        return $this->order->lines->filter(function ($line) {
+            return $line->type == 'physical' || $line->type == 'digital';
         });
     }
 
