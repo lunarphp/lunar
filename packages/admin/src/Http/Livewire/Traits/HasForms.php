@@ -39,15 +39,13 @@ trait HasForms
      * @param  string  $handle
      * @param  string  $uiComponent
      * @param  array  $settings
-     *
      * @return void
      */
     public function triggerForm(
         string $handle,
         string $uiComponent = 'modal',
         array $settings = []
-    ): void
-    {
+    ): void {
         $formProperties = [
             'show' => true,
             'handle' => $handle,
