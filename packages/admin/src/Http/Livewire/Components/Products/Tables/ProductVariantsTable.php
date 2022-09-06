@@ -7,6 +7,7 @@ use GetCandy\Hub\Tables\Builders\ProductVariantsTableBuilder;
 use GetCandy\LivewireTables\Components\Table;
 use GetCandy\Models\Product;
 use GetCandy\LivewireTables\Components\Columns\TextColumn;
+use GetCandy\LivewireTables\Components\Columns\ImageColumn;
 
 class ProductVariantsTable extends Table
 {
@@ -40,6 +41,13 @@ class ProductVariantsTable extends Table
     public function build()
     {
         $this->tableBuilder->baseColumns([
+            ImageColumn::make('thumbnail', function ($record) {
+                if (!$thumbnail = $record->getThumbnail()) {
+                    return null;
+                }
+
+                return $thumbnail->getUrl('small');
+            })->heading(false),
             TextColumn::make('options', function ($record) {
                 return $record->values->map(function ($value) {
                     return $value->translate('name');
