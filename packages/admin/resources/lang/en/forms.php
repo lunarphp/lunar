@@ -15,6 +15,7 @@ return [
     ],
     /**
      * Important these need to match up with field names and relations.
+     *
      * @see \GetCandy\Models\Customer
      */
     'customer' => [
@@ -30,6 +31,7 @@ return [
     ],
     /**
      * Important these need to match up with field names and relations.
+     *
      * @see \GetCandy\Models\Order
      */
     'order' => [

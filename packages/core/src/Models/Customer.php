@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Customer
- * @package GetCandy\Models
  *
  * @property int $id
  * @property string $title
