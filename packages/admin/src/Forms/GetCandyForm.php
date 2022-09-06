@@ -53,6 +53,7 @@ abstract class GetCandyForm extends Component
     protected function getRouteName(): string
     {
         $entity = Str::of(class_basename($this->model))->plural()->lower();
+
         return 'hub.'.$entity.'.'.($this->model->exists ? 'show' : 'create');
     }
 
@@ -64,6 +65,7 @@ abstract class GetCandyForm extends Component
     protected function getRouteParams(): array
     {
         $entity =  Str::of(class_basename($this->model))->lower()->__toString();
+
         return $this->model->exists ? [$entity => $this->model] : [];
     }
 
