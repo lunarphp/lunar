@@ -24,10 +24,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $company_name
  * @property string $vat_no
  * @property string $meta
- *
  * @property \GetCandy\Models\Language $language
  * @property \Illuminate\Database\Eloquent\Collection $customerGroups
- *
  */
 class Customer extends BaseModel
 {
