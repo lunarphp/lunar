@@ -72,7 +72,7 @@ class ProductsTable extends Table
             })->heading(
                 __('adminhub::tables.headings.name')
             ),
-            TextColumn::make('brand.name')->heading(
+            TextColumn::make('brand')->heading(
                 __('adminhub::tables.headings.brand')
             ),
             TextColumn::make('sku', function ($record) {
