@@ -5,13 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### [ Unreleased ]
 
+### Added
+
+- Added `account_ref` to customers.
+
 ## Fixed
 - When migrating fresh, the transaction table migrations were out of order.  Changed the type when making nullable.
 - Added `wire:key` to URL management
 - When setting a new `default` URL whilst editing, other existing `default` values are set to `false`
 - Moved the activity log on product variants outside the form element as this was conflicting.
 - ProductVariants now have comments enabled.
-
 
 ### 2.0-beta15 - 2022-08-10
 
