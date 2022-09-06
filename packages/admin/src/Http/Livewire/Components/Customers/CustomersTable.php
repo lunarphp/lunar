@@ -5,11 +5,7 @@ namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\CustomersTableBuilder;
-use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
-use GetCandy\LivewireTables\Components\Actions\Action;
-use GetCandy\LivewireTables\Components\Actions\BulkAction;
 use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Filters\SelectFilter;
 use GetCandy\LivewireTables\Components\Table;
 use Illuminate\Support\Collection;
 
@@ -49,8 +45,18 @@ class CustomersTable extends Table
                 return $record->fullName;
             })->url(function ($record) {
                 return route('hub.customers.show', $record->id);
-            }),
-            TextColumn::make('company_name'),
+            })->heading(
+                __('adminhub::tables.headings.name')
+            ),
+            TextColumn::make('company_name')->heading(
+                __('adminhub::tables.headings.company_name')
+            ),
+            TextColumn::make('vat_no')->heading(
+                __('adminhub::tables.headings.vat_no')
+            ),
+            TextColumn::make('account_ref')->heading(
+                __('adminhub::tables.headings.account_ref')
+            ),
         ]);
     }
 
