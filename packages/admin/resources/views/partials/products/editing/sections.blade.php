@@ -35,13 +35,13 @@
 <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
     <div class="space-y-6 lg:flex-1">
         <div class="space-y-6">
-            <div>
-                @if (!$this->hasChannelAvailability)
+            @if (!$this->hasChannelAvailability)
+                <div>
                     <x-hub::alert level="danger">
                         {{ __('adminhub::catalogue.products.show.no_channel_availability') }}
                     </x-hub::alert>
-                @endif
-            </div>
+                </div>
+            @endif
 
             @foreach ($this->getSlotsByPosition('top') as $slot)
                 <div id="{{ $slot->handle }}">
