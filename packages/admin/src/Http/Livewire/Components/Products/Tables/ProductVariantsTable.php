@@ -48,17 +48,18 @@ class ProductVariantsTable extends Table
 
                 return $thumbnail->getUrl('small');
             })->heading(false),
-            TextColumn::make('options', function ($record) {
-                return $record->values->map(function ($value) {
-                    return $value->translate('name');
-                })->join(' / ');
-            }),
             TextColumn::make('sku')->url(function ($record) {
                 return route('hub.products.variants.show', [
                     'product' => $this->product,
                     'variant' => $record,
                 ]);
             }),
+            TextColumn::make('options', function ($record) {
+                return $record->values->map(function ($value) {
+                    return $value->translate('name');
+                })->join(' / ');
+            }),
+
             TextColumn::make('price', function ($record) {
                 $price = $record->basePrices->first(fn($price) => $price->currency->default);
                 return $price->price->formatted;
