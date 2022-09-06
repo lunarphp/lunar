@@ -242,7 +242,7 @@ class OrderShow extends Component
     public function getPhysicalAndDigitalLinesProperty()
     {
         return $this->order->lines->filter(function ($line) {
-            return $line->type == 'physical' || $line->type == 'digital';
+            return in_array($line->type, ['physical', 'digital']);
         });
     }
 
