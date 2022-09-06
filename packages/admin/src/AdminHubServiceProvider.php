@@ -21,7 +21,7 @@ use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersTable;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductsTable;
+use GetCandy\Hub\Http\Livewire\Components\Products\Tables\ProductsTable;
 use GetCandy\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -40,6 +40,7 @@ use GetCandy\Hub\Http\Livewire\Components\Products\ProductsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
 use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Products\Tables\ProductVariantsTable;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
 use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantSideMenu;
@@ -281,6 +282,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         Livewire::component('hub.components.products.variants.side-menu', VariantSideMenu::class);
         Livewire::component('hub.components.products.variants.show', VariantShow::class);
+        Livewire::component('hub.components.products.variants.table', ProductVariantsTable::class);
         Livewire::component('hub.components.products.variants.editing.inventory', Inventory::class);
 
         Livewire::component('hub.components.product-options.option-manager', OptionManager::class);
