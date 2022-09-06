@@ -7,6 +7,7 @@ use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Models\Brand;
+use GetCandy\Models\Product;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -102,6 +103,11 @@ class BrandShow extends Component
             return;
         }
 
+        if ($this->brand->products()->count() > 0) {
+            $this->brand->products()->each(
+                fn (Product $product) => $product->brand()->dissociate()->saveQuietly()
+            );
+        }
         $this->brand->delete();
 
         $this->notify(

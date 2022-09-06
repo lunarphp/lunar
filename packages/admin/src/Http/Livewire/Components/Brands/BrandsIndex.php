@@ -110,7 +110,7 @@ class BrandsIndex extends Component
     public function render()
     {
         return view('adminhub::livewire.components.brands.index', [
-            'brands' => Brand::paginate(20),
+            'brands' => Brand::query()->latest()->paginate(20),
         ])->layout('adminhub::layouts.base');
     }
 }
