@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace GetCandy\Hub\Http\Livewire\Components\Products\Tables;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
