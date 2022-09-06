@@ -5,6 +5,7 @@ namespace GetCandy\Hub\Http\Livewire\Components\Customers;
 use Carbon\CarbonPeriod;
 use Exception;
 use GetCandy\DataTypes\Price;
+use GetCandy\Hub\Http\Livewire\Traits\HasForms;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
@@ -29,6 +30,7 @@ class CustomerShow extends Component
     use WithPagination;
     use WithCountries;
     use WithLanguages;
+    use HasForms;
 
     /**
      * The current customer in view.

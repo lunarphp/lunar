@@ -239,6 +239,14 @@
         </div>
     </div>
 
+    <div class="ui-sideover-forms">
+        @each('adminhub::partials.ui.slideover', $this->slideoverForms ?? [], 'slideoverForm')
+    </div>
+
+    <div class="ui-modal-forms">
+        @each('adminhub::partials.ui.modal', $this->modalForms ?? [], 'modalForm')
+    </div>
+
     <x-hub::slideover wire:model="addressIdToEdit"
                       form="saveAddress">
         @include('adminhub::partials.forms.address', [
