@@ -6,8 +6,8 @@ return [
     'sidebar.products'          => 'Products',
     'sidebar.product-types'     => 'Product Types',
     'sidebar.collections'       => 'Collections',
-    'sidebar.orders.group'      => 'Orders',
-    'sidebar.orders'            => 'Orders List',
+    'sidebar.sales.group'       => 'Sales',
+    'sidebar.orders'            => 'Orders',
     'sidebar.customers'         => 'Customers',
     /**
      * Product side menu.

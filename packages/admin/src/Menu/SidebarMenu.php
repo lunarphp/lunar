@@ -86,7 +86,7 @@ class SidebarMenu
     protected function makeOrdersSection(): void
     {
         $orders = $this->slot->section('order-processing')->name(
-            __('adminhub::menu.sidebar.orders.group')
+            __('adminhub::menu.sidebar.sales.group')
         );
 
         $orders->addItem(function ($item) {
