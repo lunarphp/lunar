@@ -12,6 +12,24 @@ use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Customer
+ * @package GetCandy\Models
+ *
+ * @property int $id
+ * @property string $title
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $newsletter
+ * @property string $company_name
+ * @property string $vat_no
+ * @property string $meta
+ *
+ * @property \GetCandy\Models\Language $language
+ * @property \Illuminate\Database\Eloquent\Collection $customerGroups
+ *
+ */
 class Customer extends BaseModel
 {
     use HasAttributes;

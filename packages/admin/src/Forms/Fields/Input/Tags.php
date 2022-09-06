@@ -20,8 +20,10 @@ class Tags extends InputField
      *
      * @param  bool  $error
      */
-    public function __construct($error = false, $tags = [])
+    public function __construct(string $name, $error = false, $tags = [])
     {
+        parent::__construct($name);
+
         $this->error = $error;
         $this->tags = $tags;
     }

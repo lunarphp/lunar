@@ -14,13 +14,29 @@ class Select extends InputField
     public bool $error = false;
 
     /**
+     * The options for the select.
+     *
+     * @var array
+     */
+    public array $options = [];
+
+    /**
      * Initialise the component.
      *
      * @param  bool  $error
      */
-    public function __construct($error = false)
+    public function __construct(string $name, $error = false)
     {
+        parent::__construct($name);
+
         $this->error = $error;
+    }
+
+    public function options(array $options, bool $relationship = false): static
+    {
+        $this->options = $options;
+
+        return $this;
     }
 
     /**

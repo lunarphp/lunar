@@ -23,6 +23,7 @@ abstract class GetCandyForm extends Component
     public function render()
     {
         return view($this->view, [
+            'model' => $this->model,
             'schema' => $this->schema(),
             'showDeleteDangerZone' => $this->showDeleteDangerZone,
             'submitAction' => $this->getSubmitAction(),
@@ -33,6 +34,8 @@ abstract class GetCandyForm extends Component
     {
         return $this->model->exists ? 'update' : 'create';
     }
+
+    abstract protected function rules(): array;
 
     abstract protected function schema(): array;
 }

@@ -14,7 +14,7 @@ class ChannelForm extends GetCandyForm
      *
      * @return array
      */
-    protected function rules()
+    protected function rules(): array
     {
         $table = $this->model->getTable();
 
