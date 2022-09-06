@@ -102,6 +102,12 @@ class BrandsIndex extends Component
         $this->redirectRoute('hub.brands.index');
     }
 
+    public function resetForm(): void
+    {
+        $this->showCreateForm = false;
+        $this->reset();
+    }
+
     /**
      * Render the livewire component.
      *

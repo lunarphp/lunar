@@ -72,7 +72,7 @@
 
         <x-slot name="footer">
             <x-hub::button type="button"
-                           wire:click.prevent="$set('showCreateForm', false)"
+                           wire:click.prevent="resetForm"
                            theme="gray">
                 {{ __('adminhub::global.cancel') }}
             </x-hub::button>
