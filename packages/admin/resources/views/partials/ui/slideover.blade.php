@@ -1,5 +1,6 @@
-<x-hub::slideover wire:model="slideoverForms.{{ $slideoverForm['handle'] }}.show">
-
+<x-hub::slideover
+        wire:model="slideoverForms.{{ $slideoverForm['handle'] }}.show"
+        form="{{ $slideoverForm['submitAction'] }}">
     <div class="space-y-4">
         <div class="overflow-hidden shadow sm:rounded-md">
             @livewire($slideoverForm['component'], ['model' => $slideoverForm['model']])
@@ -15,5 +16,4 @@
             {{ __('adminhub::global.save') }}
         </x-hub::button>
     </x-slot>
-    
 </x-hub::slideover>

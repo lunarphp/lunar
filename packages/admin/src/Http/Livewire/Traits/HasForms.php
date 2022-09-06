@@ -54,6 +54,8 @@ trait HasForms
             'settings' => $settings,
         ];
 
+        $formProperties['submitAction'] = $this->getSubmitAction($formProperties['model']);
+
         match ($uiComponent) {
             'modal' => $this->modalForms->put($handle, $formProperties),
             'slideover' => $this->slideoverForms->put($handle, $formProperties),
@@ -71,5 +73,36 @@ trait HasForms
         $modelProperty = Str::of($handle)->before('-');
 
         return $this->$modelProperty ?? null;
+    }
+
+    /**
+     * Get the submit action.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|null  $model
+     * @return string
+     */
+    protected function getSubmitAction(?Model $model): string
+    {
+        return $model?->exists ? 'update' : 'create';
+    }
+
+    /**
+     * Dispatch the create form event.
+     *
+     * @return void
+     */
+    public function create()
+    {
+        $this->emit('onCreateForm');
+    }
+
+    /**
+     * Dispatch the update form event.
+     *
+     * @return void
+     */
+    public function update()
+    {
+        $this->emit('onUpdateForm');
     }
 }

@@ -25,7 +25,7 @@ return [
         'email' => 'Email',
         'language' => 'Language',
         'newsletter' => 'Newsletter',
-        'company' => 'Company name',
+        'company_name' => 'Company name',
         'vat_no' => 'VAT number',
         'customer_groups' => 'Customer groups',
     ],

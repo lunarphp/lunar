@@ -45,10 +45,10 @@ trait CanUpdateModel
             $this->saveUrls();
         }
 
-        $routeName = Str::of(class_basename($this->model))->plural()->lower();
         $this->notify(
-            __('adminhub::notifications.model.updated', ['model' => class_basename($this->model)]),
-            "hub.$routeName.index"
+            message: __('adminhub::notifications.model.updated', ['model' => class_basename($this->model)]),
+            route: $this->getRouteName(),
+            routeParams: $this->getRouteParams(),
         );
     }
 }

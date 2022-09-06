@@ -1,7 +1,7 @@
 <x-hub::input.group
         for="{{ $field->name }}"
         :label="__($field->label ?? 'adminhub::forms.'.strtolower(class_basename($model)).'.'.Str::snake($field->name))"
-        :error="$errors->first('model.'.$field->name.($this->defaultLanguage ? '.'.$this->defaultLanguage->code : ''))">
+        :error="$errors->first('model.'.$field->name.($field->translatable ?? false ? '.'.$this->defaultLanguage->code : ''))">
     @switch(class_basename($field))
         @case('Text')
             <x-hub::input.text
