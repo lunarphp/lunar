@@ -21,6 +21,7 @@ use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersTable;
+use GetCandy\Hub\Http\Livewire\Components\Products\ProductsTable;
 use GetCandy\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -265,6 +266,7 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerProductComponents()
     {
         Livewire::component('hub.components.products.index', ProductsIndex::class);
+        Livewire::component('hub.components.products.table', ProductsTable::class);
         Livewire::component('hub.components.products.show', ProductShow::class);
         Livewire::component('hub.components.products.create', ProductCreate::class);
 
