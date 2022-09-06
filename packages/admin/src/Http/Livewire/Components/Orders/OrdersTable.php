@@ -25,12 +25,19 @@ class OrdersTable extends Table
     /**
      * {@inheritDoc}
      */
-    public $searchable = true;
+    public bool $searchable = true;
 
     /**
      * {@inheritDoc}
      */
     public bool $canSaveSearches = true;
+
+    /**
+     * The customer ID to hard filter results by.
+     *
+     * @var string|int
+     */
+    public $customerId = null;
 
     /**
      * {@inheritDoc}
@@ -95,7 +102,7 @@ class OrdersTable extends Table
 
         $this->tableBuilder->addAction(
             Action::make('view')->label('View Order')->url(function ($record) {
-                return route('hub.products.show', $record->id);
+                return route('hub.orders.show', $record->id);
             })
         );
     }
@@ -169,6 +176,11 @@ class OrdersTable extends Table
     {
         $filters = $this->filters;
         $query = $this->query;
+
+        if ($this->customerId) {
+            return Order::whereCustomerId($this->customerId)
+                ->paginate($this->perPage);
+        }
 
         if ($this->savedSearch) {
             $search = $this->savedSearches->first(function ($search) {

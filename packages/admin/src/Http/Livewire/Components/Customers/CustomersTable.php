@@ -21,7 +21,7 @@ class CustomersTable extends Table
     /**
      * {@inheritDoc}
      */
-    public $searchable = true;
+    public bool $searchable = true;
 
     /**
      * {@inheritDoc}

@@ -145,20 +145,11 @@
     </div>
 
     <div>
-        <div x-data="{ tab: 'purchase_history' }">
+        <div x-data="{ tab: 'order_history' }">
             <div>
                 <div class="hidden sm:block">
                     <nav class="flex space-x-4"
                          aria-label="Tabs">
-                        <button type="button"
-                                x-on:click.prevent="tab = 'purchase_history'"
-                                class="px-3 py-2 text-sm font-medium rounded-md "
-                                :class="{
-                                    'bg-white shadow': tab == 'purchase_history',
-                                    'hover:text-gray-700 text-gray-500': tab != 'purchase_history'
-                                }">
-                            {{ __('adminhub::components.customers.show.purchase_history') }}
-                        </button>
 
                         <button type="button"
                                 x-on:click.prevent="tab = 'order_history'"
@@ -168,6 +159,16 @@
                                     'hover:text-gray-700 text-gray-500': tab != 'order_history'
                                 }">
                             {{ __('adminhub::components.customers.show.order_history') }}
+                        </button>
+
+                        <button type="button"
+                                x-on:click.prevent="tab = 'purchase_history'"
+                                class="px-3 py-2 text-sm font-medium rounded-md "
+                                :class="{
+                                    'bg-white shadow': tab == 'purchase_history',
+                                    'hover:text-gray-700 text-gray-500': tab != 'purchase_history'
+                                }">
+                            {{ __('adminhub::components.customers.show.purchase_history') }}
                         </button>
 
                         <button type="button"
@@ -193,6 +194,22 @@
                 </div>
             </div>
 
+            <div x-show="tab == 'order_history'"
+                 class="mt-4">
+                @if (!$this->orders->count())
+                    <div class="w-full mt-12 text-sm text-center text-gray-500">
+                        {{ __('adminhub::components.customers.show.no_order_history') }}
+                    </div>
+                @else
+                    @livewire('hub.components.orders.table', [
+                        'searchable' => false,
+                        'canSaveSearches' => false,
+                        'filterable' => false,
+                        'customerId' => $this->customer->id,
+                    ])
+                @endif
+            </div>
+
             <div x-show="tab == 'purchase_history'"
                  class="mt-4">
                 @if (!$this->purchaseHistory->count())
@@ -201,17 +218,6 @@
                     </div>
                 @else
                     @include('adminhub::partials.customers.purchase-history')
-                @endif
-            </div>
-
-            <div x-show="tab == 'order_history'"
-                 class="mt-4">
-                @if (!$this->orders->count())
-                    <div class="w-full mt-12 text-sm text-center text-gray-500">
-                        {{ __('adminhub::components.customers.show.no_order_history') }}
-                    </div>
-                @else
-                    @include('adminhub::partials.customers.order-history')
                 @endif
             </div>
 
