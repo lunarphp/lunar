@@ -137,7 +137,7 @@ class OrderShow extends Component
             'shippingAddress.delivery_instructions' => 'nullable|string|max:255',
             'shippingAddress.contact_email' => 'nullable|email|max:255',
             'shippingAddress.contact_phone' => 'nullable|string|max:255',
-            'shippingAddress.country_id'   => 'required',
+            'shippingAddress.country_id' => 'required',
             'billingAddress.postcode' => 'required|string|max:255',
             'billingAddress.title' => 'nullable|string|max:255',
             'billingAddress.first_name' => 'nullable|string|max:255',
@@ -151,7 +151,7 @@ class OrderShow extends Component
             'billingAddress.delivery_instructions' => 'nullable|string|max:255',
             'billingAddress.contact_email' => 'nullable|email|max:255',
             'billingAddress.contact_phone' => 'nullable|string|max:255',
-            'billingAddress.country_id'   => 'required',
+            'billingAddress.country_id' => 'required',
         ];
     }
 
@@ -219,7 +219,7 @@ class OrderShow extends Component
      */
     public function getVisibleLinesProperty()
     {
-        return $this->physicalLines->take($this->allLinesVisible ? null : $this->maxLines);
+        return $this->physicalAndDigitalLines->take($this->allLinesVisible ? null : $this->maxLines);
     }
 
     /**
@@ -231,6 +231,18 @@ class OrderShow extends Component
     {
         return $this->order->lines->filter(function ($line) {
             return $line->type == 'physical';
+        });
+    }
+
+    /**
+     * Return the physical and digital order lines.
+     *
+     * @return void
+     */
+    public function getPhysicalAndDigitalLinesProperty()
+    {
+        return $this->order->lines->filter(function ($line) {
+            return in_array($line->type, ['physical', 'digital']);
         });
     }
 
