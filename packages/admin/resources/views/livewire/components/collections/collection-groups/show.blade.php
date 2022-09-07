@@ -6,13 +6,15 @@
 
     <div wire:loading.remove
          wire:target="deleteGroup">
-        <div class="flex items-center justify-between">
-            <div class="w-full">
+        <div class="flex items-center justify-between gap-4">
+            <div class="flex-1">
                 <input wire:model.lazy="group.name"
                        @class([
-                           'w-full px-3 py-2 bg-transparent border border-dashed border-gray-300 rounded',
+                           'w-full px-3 py-2 bg-transparent border border-dashed border-gray-300 dark:border-gray-800 transition text-gray-700 dark:text-gray-200 rounded',
                            'border-red-500' => $errors->first('group.name'),
-                           'hover:border-gray-400' => !$errors->first('group.name'),
+                           'hover:border-gray-400 dark:hover:border-gray-700' => !$errors->first(
+                               'group.name'
+                           ),
                        ]) />
 
                 <span class="text-sm text-red-500">
@@ -20,14 +22,14 @@
                 </span>
             </div>
 
-            <div class="ml-4 w-80">
-                <div class="flex justify-end w-full space-x-4">
+            <div class="shrink-0">
+                <div class="flex justify-end gap-4">
                     <x-hub::button wire:click.prevent="addCollection">
                         {{ __('adminhub::catalogue.collections.groups.add_collection_btn') }}
                     </x-hub::button>
 
                     <button type="button"
-                            class="text-gray-400 hover:text-red-600"
+                            class="text-gray-400 transition dark:text-gray-300 dark:hover:text-red-500 hover:text-red-600"
                             wire:click.prevent="$set('showDeleteConfirm', true)">
 
                         <x-hub::icon ref="trash"
@@ -132,7 +134,7 @@
                                                'adminhub::catalogue.collections.groups.move.search_placeholder',
                                            )" />
                         @if ($showCollectionSearchResults)
-                            <div class="absolute w-full overflow-y-scroll bg-white rounded-b shadow max-h-64 z-10">
+                            <div class="absolute z-10 w-full overflow-y-scroll bg-white rounded-b shadow max-h-64">
                                 @foreach ($this->searchedCollections as $collection)
                                     <button type="button"
                                             class="flex gap-1.5 items-center flex-wrap w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
@@ -175,6 +177,7 @@
                             </div>
                         @endif
                     </div>
+
                     @if ($this->sourceCollection && $this->targetCollection)
                         <div class="mt-4">
                             <x-hub::alert>
@@ -231,6 +234,7 @@
                     </x-slot>
                 </x-hub::modal.dialog>
             @endif
+
             <div class="mt-4 space-y-2">
                 @livewire(
                     'hub.components.collections.collection-tree',

@@ -4,19 +4,19 @@
             'group' => $collection->group,
             'collection' => $collection->parent_id,
         ]) }}"
-           class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+           class="inline-flex items-center justify-center w-8 h-8 text-gray-700 transition rounded bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-200"
            title="{{ __('adminhub::catalogue.products.show.back_link_title') }}">
             <x-hub::icon ref="chevron-left"
                          style="solid"
-                         class="w-8 h-8" />
+                         class="w-5 h-5" />
         </a>
 
-        <h1 class="text-xl font-bold md:text-xl">
+        <h1 class="text-xl font-bold text-gray-900 md:text-xl dark:text-white">
             {{ $collection->translateAttribute('name') }}
         </h1>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
+    <div class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-white/90 dark:border-gray-900/90 lg:left-auto bg-white/75 dark:bg-gray-900/75"
          :class="{
              'lg:w-[calc(100vw_-_16rem)]': showExpandedMenu,
              'lg:w-[calc(100vw_-_5rem)]': !showExpandedMenu
@@ -60,9 +60,10 @@
 
             <div class="shadow sm:rounded-md"
                  id="products">
-                <div class="flex-col px-4 py-5 space-y-4 bg-white rounded sm:p-6">
+                <div
+                     class="flex-col px-4 py-5 space-y-4 bg-white border border-white rounded dark:bg-gray-800 dark:border-gray-700 sm:p-6">
                     <header class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                             {{ __('adminhub::menu.products') }}
                         </h3>
 
@@ -160,9 +161,10 @@
 
             <div class="shadow sm:rounded-md"
                  id="collections">
-                <div class="flex-col px-4 py-5 space-y-4 bg-white rounded sm:p-6">
+                <div
+                     class="flex-col px-4 py-5 space-y-4 bg-white border border-white rounded dark:bg-gray-800 dark:border-gray-700 sm:p-6">
                     <header class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                             {{ __('adminhub::menu.collections') }}
                         </h3>
                     </header>
@@ -170,7 +172,7 @@
                     <div class="space-y-2">
                         @forelse($collection->children as $child)
                             <div
-                                 class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded">
+                                 class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border border-white rounded dark:bg-gray-800 dark:border-gray-700">
                                 {{ $child->translateAttribute('name') }}
 
                                 <a href="{{ route('hub.collections.show', [
@@ -199,7 +201,7 @@
                 @foreach ($this->sideMenu as $item)
                     <a href="#{{ $item['id'] }}"
                        @class([
-                           'flex items-center gap-2 p-2 rounded text-gray-500',
+                           'flex items-center gap-2 p-2 rounded text-gray-500 dark:text-gray-400',
                            'hover:bg-blue-50 hover:text-blue-700' => empty($item['has_errors']),
                            'text-red-600 bg-red-50' => !empty($item['has_errors']),
                        ])

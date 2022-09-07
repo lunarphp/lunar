@@ -1,13 +1,15 @@
-<div class="bg-white shadow sm:rounded-md">
-    <div class="flex-col px-4 py-5 space-y-4 sm:p-6">
+<div class="bg-white border border-white shadow sm:rounded-md dark:bg-gray-800 dark:border-gray-700">
+    <div class="px-4 py-5 space-y-4 sm:p-6">
         <header class="flex items-center justify-between">
-            <h3 class="text-lg font-medium leading-6 text-gray-900">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                 {{ __('adminhub::partials.image-manager.heading') }}
             </h3>
 
-            @if(!empty($chooseFrom))
+            @if (!empty($chooseFrom))
                 <div>
-                    <x-hub::button theme="gray" type="button" wire:click="$set('showImageSelectModal', true)">
+                    <x-hub::button theme="gray"
+                                   type="button"
+                                   wire:click="$set('showImageSelectModal', true)">
                         {{ __('adminhub::partials.image-manager.select_images_btn') }}
                     </x-hub::button>
 
@@ -15,48 +17,54 @@
                         <x-slot name="title">
                             {{ __('adminhub::partials.image-manager.select_images') }}
                         </x-slot>
+
                         <x-slot name="content">
-                          <div class="grid grid-cols-4 gap-4 overflow-y-auto max-h-96">
-                            @forelse($chooseFrom as $productImage)
-                              <label
-                                @class([
-                                    'cursor-pointer' => !in_array($productImage->id, $this->currentImageIds),
-                                    'opacity-50 cursor-not-allowed' => in_array($productImage->id, $this->currentImageIds)
-                                ]) wire:key="product_image_{{ $productImage->id }}">
-                                <input
-                                    wire:model="selectedImages"
-                                    name="selectedImages"
-                                    value="{{ $productImage->id }}"
-                                    class="sr-only peer"
-                                    type="checkbox"
-                                    @if(in_array($productImage->id, $this->currentImageIds)) disabled @endif
-                                >
-                                <img src="{{ $productImage->getFullUrl('small') }}" class="border-2 border-transparent rounded-lg shadow-sm peer-checked:border-blue-500">
-                              </label>
-                            @empty
-                              <div class="col-span-3">
-                                <x-hub::alert>{{ __('adminhub::notifications.product.no-images-associated') }}</x-hub::alert>
-                              </div>
-                            @endforelse
-                          </div>
+                            <div class="grid grid-cols-4 gap-4 overflow-y-auto max-h-96">
+                                @forelse($chooseFrom as $productImage)
+                                    <label @class([
+                                        'cursor-pointer' => !in_array($productImage->id, $this->currentImageIds),
+                                        'opacity-50 cursor-not-allowed' => in_array(
+                                            $productImage->id,
+                                            $this->currentImageIds
+                                        ),
+                                    ])
+                                           wire:key="product_image_{{ $productImage->id }}">
+                                        <input wire:model="selectedImages"
+                                               name="selectedImages"
+                                               value="{{ $productImage->id }}"
+                                               class="sr-only peer"
+                                               type="checkbox"
+                                               @if (in_array($productImage->id, $this->currentImageIds)) disabled @endif>
+                                        <img src="{{ $productImage->getFullUrl('small') }}"
+                                             class="border-2 border-transparent rounded-lg shadow-sm peer-checked:border-blue-500">
+                                    </label>
+                                @empty
+                                    <div class="col-span-3">
+                                        <x-hub::alert>
+                                            {{ __('adminhub::notifications.product.no-images-associated') }}
+                                        </x-hub::alert>
+                                    </div>
+                                @endforelse
+                            </div>
                         </x-slot>
+
                         <x-slot name="footer">
-                          <div class="flex justify-end space-x-4">
-                            <x-hub::button type="button" theme="gray" wire:click="$set('showImageSelectModal', false)">{{ __('adminhub::global.cancel') }}</x-hub::button>
-                            <x-hub::button
-                              type="button"
-                              :disabled="!count($selectedImages)"
-                              wire:click.prevent="selectImages"
-                            >
-                                {{ __('adminhub::partials.image-manager.select_images_btn') }}
-                            </x-hub::button>
-                          </div>
+                            <div class="flex justify-end space-x-4">
+                                <x-hub::button type="button"
+                                               theme="gray"
+                                               wire:click="$set('showImageSelectModal', false)">
+                                    {{ __('adminhub::global.cancel') }}
+                                </x-hub::button>
+
+                                <x-hub::button type="button"
+                                               :disabled="!count($selectedImages)"
+                                               wire:click.prevent="selectImages">
+                                    {{ __('adminhub::partials.image-manager.select_images_btn') }}
+                                </x-hub::button>
+                            </div>
                         </x-slot>
-
-                      </x-hub::modal.dialog>
+                    </x-hub::modal.dialog>
                 </div>
-
-
             @endif
         </header>
 
@@ -65,8 +73,10 @@
                                      :filetypes="$filetypes"
                                      multiple />
         </div>
+
         @if ($errors->has($wireModel . '*'))
-            <x-hub::alert level="danger">{{ __('adminhub::partials.image-manager.generic_upload_error') }}
+            <x-hub::alert level="danger">
+                {{ __('adminhub::partials.image-manager.generic_upload_error') }}
             </x-hub::alert>
         @endif
 
@@ -75,7 +85,7 @@
                  sort.options='{group: "images", method: "sort"}'
                  class="relative mt-4 space-y-2">
                 @foreach ($this->images as $image)
-                    <div class="flex items-center justify-between p-4 bg-white border rounded-md shadow-sm"
+                    <div class="flex items-center justify-between p-4 bg-white border border-white rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700"
                          sort.item="images"
                          sort.id="{{ $image['sort_key'] }}"
                          wire:key="image_{{ $image['sort_key'] }}">
@@ -95,6 +105,7 @@
                                     <img src="{{ $image['thumbnail'] }}"
                                          class="w-8 overflow-hidden rounded-md" />
                                 </button>
+
                                 <x-hub::modal wire:model="images.{{ $loop->index }}.preview">
                                     <img src="{{ $image['original'] }}">
                                 </x-hub::modal>
@@ -105,7 +116,7 @@
                                                    placeholder="Enter Alt. text" />
                             </div>
 
-                            <div class="flex items-center ml-4 space-x-4">
+                            <div class="flex items-center gap-4 ml-4">
                                 <x-hub::tooltip text="Make primary">
                                     <x-hub::input.toggle :disabled="$image['primary']"
                                                          :on="$image['primary']"
@@ -130,7 +141,6 @@
                                     <x-hub::icon ref="trash"
                                                  style="solid" />
                                 </button>
-
                             </div>
                         </div>
                     </div>

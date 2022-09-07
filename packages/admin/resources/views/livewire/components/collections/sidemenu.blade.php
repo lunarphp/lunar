@@ -31,7 +31,7 @@
 
     <div>
         <header class="flex items-center justify-between">
-            <header class="text-sm font-semibold text-gray-600">
+            <header class="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 {{ __('adminhub::catalogue.collections.sidemenu.menu_title') }}
             </header>
 
@@ -52,7 +52,7 @@
             </button>
         </header>
 
-        <nav class="mt-4 space-y-2 flex flex-col">
+        <nav class="flex flex-col mt-4 space-y-2">
             @forelse($this->collectionGroups as $group)
                 <a href="{{ route('hub.collection-groups.show', $group->id) }}"
                    @class([
