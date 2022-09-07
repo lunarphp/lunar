@@ -104,10 +104,16 @@ class BrandShow extends Component
         }
 
         if ($this->brand->products()->count() > 0) {
-            $this->brand->products()->each(
-                fn (Product $product) => $product->brand()->dissociate()->saveQuietly()
+            $this->notify(
+                __('adminhub::notifications.brands.delete_protected'),
+                'hub.brands.index',
+                [],
+                'error'
             );
+
+            return;
         }
+
         $this->brand->delete();
 
         $this->notify(
