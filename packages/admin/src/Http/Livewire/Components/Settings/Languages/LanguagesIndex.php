@@ -2,7 +2,6 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Languages;
 
-use GetCandy\Models\Language;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -17,8 +16,7 @@ class LanguagesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.languages.index', [
-            'languages' => Language::paginate(5),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.languages.index')
+            ->layout('adminhub::layouts.base');
     }
 }

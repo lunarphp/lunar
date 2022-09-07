@@ -69,6 +69,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\LanguagesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\TaxZonesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
@@ -352,6 +353,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Languages
         Livewire::component('hub.components.settings.languages.index', LanguagesIndex::class);
+        Livewire::component('hub.components.settings.languages.table', LanguagesTable::class);
         Livewire::component('hub.components.settings.languages.create', LanguageCreate::class);
         Livewire::component('hub.components.settings.languages.show', LanguageShow::class);
 
@@ -373,7 +375,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.index', TaxZonesIndex::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.show', TaxZoneShow::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.create', TaxZoneCreate::class);
-            Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
+        Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
     }
