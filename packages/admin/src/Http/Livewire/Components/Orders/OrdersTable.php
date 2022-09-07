@@ -6,9 +6,9 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
 use GetCandy\LivewireTables\Components\Actions\Action;
-use GetCandy\LivewireTables\Components\Actions\BulkAction;
 use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Filters\SelectFilter;
+use GetCandy\LivewireTables\Components\Filters\DateFilter;
 use GetCandy\LivewireTables\Components\Table;
 use GetCandy\Models\Order;
 use Illuminate\Support\Collection;
@@ -51,6 +51,8 @@ class OrdersTable extends Table
      */
     public function build()
     {
+        $this->filters['placed_at'] = $this->filters['placed_at'] ?? null;
+
         $this->tableBuilder->baseColumns([
             TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status'),
             TextColumn::make('reference')->value(function ($record) {
@@ -98,6 +100,32 @@ class OrdersTable extends Table
                     $query->whereStatus($value);
                 }
             })
+        );
+
+        $this->tableBuilder->addFilter(
+            DateFilter::make('placed_at')
+                ->heading('Placed at')
+                ->query(function ($filters, $query) {
+                    $value = $filters->get('placed_at');
+
+                    if (!$value) {
+                        return $query;
+                    }
+
+                    $parts = explode(' to ', $value);
+
+                    if (empty($parts[1])) {
+                        return $query;
+                    }
+
+                    $query->whereBetween('placed_at', [
+                        $parts[0],
+                        $parts[1]
+                    ]);
+
+                    // [$from, $to] = explode(' to ', $value);
+                    // dd($from, $to);
+                })
         );
 
         $this->tableBuilder->addAction(

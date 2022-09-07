@@ -52,7 +52,9 @@ class OrdersTableBuilder extends TableBuilder
 
 
         foreach ($tableFilters as $filter) {
-            call_user_func($filter->getQuery(), $filters, $query);
+            if ($closure = $filter->getQuery()) {
+                call_user_func($filter->getQuery(), $filters, $query);
+            }
         }
 
         return $query->paginate($this->perPage);
