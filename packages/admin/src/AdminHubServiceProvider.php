@@ -70,6 +70,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\LanguagesTable;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\TagsTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\TaxZonesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
@@ -359,6 +360,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Tags
         Livewire::component('hub.components.settings.tags.index', TagsIndex::class);
+        Livewire::component('hub.components.settings.tags.table', TagsTable::class);
         Livewire::component('hub.components.settings.tags.show', TagShow::class);
 
         // Currencies

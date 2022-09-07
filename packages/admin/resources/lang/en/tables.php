@@ -30,5 +30,6 @@ return [
     'headings.code' => 'Code',
     'headings.exchange_rate' => 'Exchange Rate',
     'headings.enabled' => 'Enabled',
+    'headings.value' => 'Value',
 ];
 
