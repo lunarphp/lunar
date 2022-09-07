@@ -240,7 +240,7 @@ class VariantShow extends Component
                 if ($newImage) {
                     $media->setCustomProperty('caption', $image['caption']);
                     $media->setCustomProperty('primary', false);
-                    $media->setCustomProperty('position', $image['position']);
+                    $media->setCustomProperty('position', $owner->media()->count() + 1);
                     $media->save();
                 }
 
