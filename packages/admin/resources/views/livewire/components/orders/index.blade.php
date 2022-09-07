@@ -1,10 +1,10 @@
-<div class="flex-col space-y-4">
-    <div class="items-center justify-between md:flex">
-        <strong class="block text-lg font-bold md:text-2xl">
+<div class="space-y-4">
+    <div class="md:items-center md:justify-between md:flex">
+        <h1 class="block text-lg font-bold text-gray-900 md:text-2xl dark:text-white">
             {{ __('adminhub::orders.index.title') }}
-        </strong>
+        </h1>
 
-        <div class="mt-4 space-x-2 md:mt-0">
+        <div class="gap-4 mt-4 md:mt-0">
             <x-hub::button theme="gray"
                            size="sm"
                            wire:click="export">
@@ -129,14 +129,17 @@
     <div class="space-y-4">
         @if ($this->savedSearches->count())
             <div class="sm:block">
-                <nav class="flex pb-4 space-x-4 overflow-x-auto"
+                <div class="flex pb-4 space-x-4 overflow-x-auto"
                      aria-label="Tabs">
                     <button type="button"
                             wire:click.prevent="resetSearch"
-                            class="text-sm font-medium px-3 flex-shrink-0 rounded p-2
-            @if (!$this->activeSavedSearch && !$this->hasCustomFilters) bg-blue-500 text-white
-            @else
-              text-gray-500 border hover:bg-white @endif">
+                            @class([
+                                'text-sm font-medium px-3 flex-shrink-0 rounded p-2',
+                                'text-gray-500 border hover:bg-white' =>
+                                    $this->activeSavedSearch && $this->hasCustomFilters,
+                                'bg-blue-500 text-white' =>
+                                    !$this->activeSavedSearch && !$this->hasCustomFilters,
+                            ])>
                         {{ __('adminhub::orders.index.all_orders') }}
                     </button>
 
@@ -145,17 +148,27 @@
                              wire:key="saved_search_{{ $savedSearch->id }}">
                             <button type="button"
                                     wire:click.prevent="applySavedSearch({{ $savedSearch->id }})"
-                                    class="
-                  text-sm font-medium px-3 rounded rounded-r-none
-                  @if ($this->activeSavedSearch && $this->activeSavedSearch->id == $savedSearch->id) bg-blue-500 text-white
-                  @else
-                    text-gray-500 border hover:bg-white @endif">
+                                    @class([
+                                        'text-sm font-medium px-3 rounded rounded-r-none',
+                                        'bg-blue-500 text-white' =>
+                                            $this->activeSavedSearch &&
+                                            $this->activeSavedSearch->id == $savedSearch->id,
+                                        'text-gray-500 border hover:bg-white' =>
+                                            !$this->activeSavedSearch &&
+                                            $this->activeSavedSearch->id != $savedSearch->id,
+                                    ])>
                                 {{ $savedSearch->name }}
                             </button>
-                            <button class="px-2 border border-l-0 rounded-r
-                  @if ($this->activeSavedSearch && $this->activeSavedSearch->id == $savedSearch->id) text-white bg-blue-400 hover:bg-blue-600 hover:text-white border-none
-                  @else
-                    text-gray-500 hover:bg-gray-200 @endif"
+
+                            <button @class([
+                                'px-2 border border-l-0 rounded-r',
+                                'text-white bg-blue-400 hover:bg-blue-600 hover:text-white border-none' =>
+                                    $this->activeSavedSearch &&
+                                    $this->activeSavedSearch->id == $savedSearch->id,
+                                'text-gray-500 hover:bg-gray-200' =>
+                                    !$this->activeSavedSearch &&
+                                    $this->activeSavedSearch->id != $savedSearch->id,
+                            ])
                                     type="button"
                                     wire:click.prevent="$set('savedSearchToDelete', {{ $savedSearch->id }})">
                                 <x-hub::icon ref="x"
@@ -164,65 +177,60 @@
                             </button>
                         </div>
                     @endforeach
-                </nav>
+                </div>
             </div>
         @endif
 
         <x-hub::table>
             <x-slot name="toolbar">
-                <div class="p-4 space-y-4 border-b"
-                     x-data="{ filtersVisible: false }">
-                    <div class="items-center space-x-4 md:flex">
-                        <div class="items-center w-full md:space-x-4 md:flex">
-                            <div class="w-full md:grow">
-                                <x-hub::input.text :placeholder="__('adminhub::orders.index.search_placeholder')"
-                                                   class="py-2"
-                                                   wire:model.debounce.400ms="search" />
-                            </div>
+                <div x-data="{ filtersVisible: false }"
+                     class="mb-4">
+                    <div class="md:items-center md:gap-4 md:flex">
+                        <div class="w-full md:grow">
+                            <x-hub::input.text :placeholder="__('adminhub::orders.index.search_placeholder')"
+                                               class="py-2"
+                                               wire:model.debounce.400ms="search" />
+                        </div>
 
-                            <div class="items-center mt-4 space-x-4 md:flex md:justify-end md:mt-0">
+                        <div class="items-center mt-4 md:gap-4 md:flex md:justify-end md:mt-0">
+                            <x-hub::button theme="gray"
+                                           class="relative inline-flex items-center"
+                                           ::class="{ 'bg-gray-100 hover:bg-gray-100 shadow-inner': filtersVisible }"
+                                           x-on:click.prevent="filtersVisible = !filtersVisible">
+                                <x-hub::icon ref="filter"
+                                             style="solid"
+                                             class="w-4 mr-1" />
+
+                                {{ __('adminhub::global.filter') }}
+
+                                @if ($this->hasFiltersApplied)
+                                    <span class="absolute block w-3 h-3 bg-red-500 rounded-full -right-1 -top-1"></span>
+                                @endif
+                            </x-hub::button>
+
+                            @if ($this->hasCustomFilters)
                                 <x-hub::button theme="gray"
-                                               class="relative inline-flex items-center"
-                                               ::class="{
-                                                   'bg-gray-100 hover:bg-gray-100 shadow-inner': filtersVisible
-                                               }"
-                                               @click.prevent="filtersVisible = !filtersVisible">
-
-                                    <x-hub::icon ref="filter"
+                                               class="inline-flex items-center"
+                                               type="button"
+                                               wire:click.prevent="resetSearch">
+                                    <x-hub::icon ref="trash"
                                                  style="solid"
                                                  class="w-4 mr-1" />
-                                    {{ __('adminhub::global.filter') }}
 
-                                    @if ($this->hasFiltersApplied)
-                                        <span
-                                              class="absolute block w-3 h-3 bg-red-500 rounded-full -right-1 -top-1"></span>
-                                    @endif
+                                    {{ __('adminhub::global.clear') }}
                                 </x-hub::button>
 
-                                @if ($this->hasCustomFilters)
-                                    <x-hub::button theme="gray"
-                                                   class="inline-flex items-center"
-                                                   type="button"
-                                                   wire:click.prevent="resetSearch">
-
-                                        <x-hub::icon ref="trash"
+                                @if (!$this->activeSavedSearch)
+                                    <x-hub::button wire:click.prevent="$set('showSaveSearch', true)"
+                                                   class="inline-flex items-center">
+                                        <x-hub::icon ref="bookmark"
                                                      style="solid"
                                                      class="w-4 mr-1" />
-                                        {{ __('adminhub::global.clear') }}
+
+                                        {{ __('adminhub::global.save') }}
                                     </x-hub::button>
-
-                                    @if (!$this->activeSavedSearch)
-                                        <x-hub::button wire:click.prevent="$set('showSaveSearch', true)"
-                                                       class="inline-flex items-center">
-
-                                            <x-hub::icon ref="bookmark"
-                                                         style="solid"
-                                                         class="w-4 mr-1" />
-                                            {{ __('adminhub::global.save') }}
-                                        </x-hub::button>
-                                    @endif
                                 @endif
-                            </div>
+                            @endif
                         </div>
                     </div>
 
@@ -328,15 +336,16 @@
 
                         <x-hub::table.cell>
                             {{ $order->billingAddress->fullName }}
-                            @if($order->billingAddress->company_name)
-                              <span class="text-xs text-gray-500 block">
-                                {{ $order->billingAddress->company_name }}
-                              </span>
+
+                            @if ($order->billingAddress->company_name)
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $order->billingAddress->company_name }}
+                                </span>
                             @endif
                         </x-hub::table.cell>
 
                         <x-hub::table.cell>
-                          {{ $order->billingAddress->contact_email }}
+                            {{ $order->billingAddress->contact_email }}
                         </x-hub::table.cell>
 
                         <x-hub::table.cell>
@@ -369,7 +378,9 @@
 
                         <x-hub::table.cell>
                             <a href="{{ route('hub.orders.show', $order->id) }}"
-                               class="text-indigo-500 hover:underline">View</a>
+                               class="text-indigo-500 hover:underline">
+                                View
+                            </a>
                         </x-hub::table.cell>
                     </x-hub::table.row>
                 @empty
