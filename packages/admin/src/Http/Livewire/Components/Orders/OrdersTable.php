@@ -33,6 +33,11 @@ class OrdersTable extends Table
     public bool $canSaveSearches = true;
 
     /**
+     * {@inheritDoc}
+     */
+    public ?string $poll = '2s';
+
+    /**
      * The customer ID to hard filter results by.
      *
      * @var string|int
