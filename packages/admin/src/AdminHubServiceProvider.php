@@ -67,6 +67,9 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\TaxZonesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
@@ -86,6 +89,7 @@ use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -144,6 +148,8 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'adminhub');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
+
+        Config::set('livewire-tables.translate_namespace', 'adminhub');
 
         Auth::resolved(function ($auth) {
             $auth->extend('getcandyhub', function ($app, $name, array $config) {
@@ -335,6 +341,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Channels
         Livewire::component('hub.components.settings.channels.index', ChannelsIndex::class);
+        Livewire::component('hub.components.settings.channels.table', ChannelsTable::class);
         Livewire::component('hub.components.settings.channels.show', ChannelShow::class);
         Livewire::component('hub.components.settings.channels.create', ChannelCreate::class);
 
@@ -354,6 +361,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Currencies
         Livewire::component('hub.components.settings.currencies.index', CurrenciesIndex::class);
+        Livewire::component('hub.components.settings.currencies.table', CurrenciesTable::class);
         Livewire::component('hub.components.settings.currencies.show', CurrencyShow::class);
         Livewire::component('hub.components.settings.currencies.create', CurrencyCreate::class);
 
@@ -365,6 +373,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.index', TaxZonesIndex::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.show', TaxZoneShow::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.create', TaxZoneCreate::class);
+            Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
     }
