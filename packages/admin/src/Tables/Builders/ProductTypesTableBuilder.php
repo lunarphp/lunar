@@ -17,11 +17,11 @@ class ProductTypesTableBuilder extends TableBuilder
         $query = ProductType::query()->withCount(['products', 'mappedAttributes']);
 
         if ($this->searchTerm) {
-            $query->where('name', 'LIKE', '%' . $this->searchTerm . '%');
+            $query->where('name', 'LIKE', '%'.$this->searchTerm.'%');
         }
 
         $filters = collect($this->queryStringFilters)->filter(function ($value) {
-            return !!$value;
+            return (bool) $value;
         });
 
         foreach ($this->queryExtenders as $qe) {
@@ -32,7 +32,6 @@ class ProductTypesTableBuilder extends TableBuilder
         $tableFilters = $this->getFilters()->filter(function ($filter) use ($filters) {
             return $filters->has($filter->field);
         });
-
 
         foreach ($tableFilters as $filter) {
             call_user_func($filter->getQuery(), $filters, $query);

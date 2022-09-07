@@ -37,7 +37,7 @@ class AttributesTable extends Table
             ),
             TextColumn::make('attribute_count')->heading(
                 __('adminhub::tables.headings.attributes')
-            )
+            ),
         ]);
     }
 
@@ -57,7 +57,7 @@ class AttributesTable extends Table
                 'attribute_count' => Attribute::whereIn(
                     'attribute_group_id',
                     $groups->pluck('id')->toArray()
-                )->count()
+                )->count(),
             ];
         });
     }

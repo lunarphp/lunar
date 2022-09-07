@@ -2,13 +2,13 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
 
+use GetCandy\Addons\Manifest;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Columns\StatusColumn;
-use Spatie\Activitylog\Models\Activity;
-use GetCandy\Addons\Manifest;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Activity;
 
 class AddonsTable extends GetCandyTable
 {

@@ -63,8 +63,7 @@ class CustomersTable extends Table
     /**
      * Remove a saved search record.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return void
      */
     public function deleteSavedSearch($id)

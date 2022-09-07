@@ -6,7 +6,6 @@ use Livewire\Component;
 
 class ProductTypesIndex extends Component
 {
-
     /**
      * Render the livewire component.
      *

@@ -4,10 +4,10 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\Tables;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Tables\Builders\ProductVariantsTableBuilder;
+use GetCandy\LivewireTables\Components\Columns\ImageColumn;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Table;
 use GetCandy\Models\Product;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Columns\ImageColumn;
 
 class ProductVariantsTable extends Table
 {
@@ -42,7 +42,7 @@ class ProductVariantsTable extends Table
     {
         $this->tableBuilder->baseColumns([
             ImageColumn::make('thumbnail', function ($record) {
-                if (!$thumbnail = $record->getThumbnail()) {
+                if (! $thumbnail = $record->getThumbnail()) {
                     return null;
                 }
 
@@ -61,7 +61,8 @@ class ProductVariantsTable extends Table
             }),
 
             TextColumn::make('price', function ($record) {
-                $price = $record->basePrices->first(fn($price) => $price->currency->default);
+                $price = $record->basePrices->first(fn ($price) => $price->currency->default);
+
                 return $price->price->formatted;
             }),
             TextColumn::make('stock'),

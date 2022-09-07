@@ -41,4 +41,3 @@ return [
     'headings.latest_version' => 'Latest Version',
     'headings.author' => 'Author',
 ];
-

@@ -10,11 +10,10 @@ class CustomersTableBuilder extends TableBuilder
     /**
      * Return the query data.
      *
-     * @param string|null $searchTerm
-     * @param Array $filters
-     * @param string $sortField
-     * @param string $sortDir
-     *
+     * @param  string|null  $searchTerm
+     * @param  array  $filters
+     * @param  string  $sortField
+     * @param  string  $sortDir
      * @return LengthAwarePaginator
      */
     public function getData(): iterable

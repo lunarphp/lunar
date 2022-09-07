@@ -7,8 +7,8 @@ use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
 use GetCandy\LivewireTables\Components\Actions\Action;
 use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Filters\SelectFilter;
 use GetCandy\LivewireTables\Components\Filters\DateFilter;
+use GetCandy\LivewireTables\Components\Filters\SelectFilter;
 use GetCandy\LivewireTables\Components\Table;
 use GetCandy\Models\Order;
 use Illuminate\Support\Collection;
@@ -113,7 +113,7 @@ class OrdersTable extends Table
                 ->query(function ($filters, $query) {
                     $value = $filters->get('placed_at');
 
-                    if (!$value) {
+                    if (! $value) {
                         return $query;
                     }
 
@@ -125,7 +125,7 @@ class OrdersTable extends Table
 
                     $query->whereBetween('placed_at', [
                         $parts[0],
-                        $parts[1]
+                        $parts[1],
                     ]);
 
                     // [$from, $to] = explode(' to ', $value);
@@ -143,8 +143,7 @@ class OrdersTable extends Table
     /**
      * Remove a saved search record.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return void
      */
     public function deleteSavedSearch($id)

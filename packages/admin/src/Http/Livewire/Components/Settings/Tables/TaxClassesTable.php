@@ -4,8 +4,8 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Columns\StatusColumn;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\Models\TaxClass;
 
 class TaxClassesTable extends GetCandyTable

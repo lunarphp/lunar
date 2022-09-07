@@ -5,9 +5,9 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\Tables;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\ProductsTableBuilder;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Columns\ImageColumn;
 use GetCandy\LivewireTables\Components\Columns\BadgeColumn;
+use GetCandy\LivewireTables\Components\Columns\ImageColumn;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Table;
 use Illuminate\Support\Collection;
 
@@ -45,13 +45,13 @@ class ProductsTable extends Table
         $this->tableBuilder->baseColumns([
             BadgeColumn::make('status', function ($record) {
                 return __(
-                    'adminhub::components.products.index.' . ($record->deleted_at ? 'deleted' : $record->status)
+                    'adminhub::components.products.index.'.($record->deleted_at ? 'deleted' : $record->status)
                 );
             })->states(function ($record) {
                 return [
-                    'success' => $record->status == 'published' && !$record->deleted_at,
-                    'warning' => $record->status == 'draft' && !$record->deleted_at,
-                    'danger' => !!$record->deleted_at,
+                    'success' => $record->status == 'published' && ! $record->deleted_at,
+                    'warning' => $record->status == 'draft' && ! $record->deleted_at,
+                    'danger' => (bool) $record->deleted_at,
                 ];
             }),
             ImageColumn::make('thumbnail', function ($record) {
@@ -100,8 +100,7 @@ class ProductsTable extends Table
     /**
      * Remove a saved search record.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return void
      */
     public function deleteSavedSearch($id)

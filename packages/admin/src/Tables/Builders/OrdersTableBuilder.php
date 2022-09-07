@@ -17,11 +17,10 @@ class OrdersTableBuilder extends TableBuilder
     /**
      * Return the query data.
      *
-     * @param string|null $searchTerm
-     * @param Array $filters
-     * @param string $sortField
-     * @param string $sortDir
-     *
+     * @param  string|null  $searchTerm
+     * @param  array  $filters
+     * @param  string  $sortField
+     * @param  string  $sortDir
      * @return LengthAwarePaginator
      */
     public function getData(): iterable
@@ -30,7 +29,7 @@ class OrdersTableBuilder extends TableBuilder
             'shippingLines',
             'billingAddress',
             'currency',
-            'customer'
+            'customer',
         ])->orderBy($this->sortField, $this->sortDir);
 
         if ($this->searchTerm) {
@@ -38,7 +37,7 @@ class OrdersTableBuilder extends TableBuilder
         }
 
         $filters = collect($this->queryStringFilters)->filter(function ($value) {
-            return !!$value;
+            return (bool) $value;
         });
 
         foreach ($this->queryExtenders as $qe) {
@@ -49,7 +48,6 @@ class OrdersTableBuilder extends TableBuilder
         $tableFilters = $this->getFilters()->filter(function ($filter) use ($filters) {
             return $filters->has($filter->field);
         });
-
 
         foreach ($tableFilters as $filter) {
             if ($closure = $filter->getQuery()) {

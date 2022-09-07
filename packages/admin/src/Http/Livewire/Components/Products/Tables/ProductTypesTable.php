@@ -5,9 +5,9 @@ namespace GetCandy\Hub\Http\Livewire\Components\Products\Tables;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\ProductTypesTableBuilder;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Columns\ImageColumn;
 use GetCandy\LivewireTables\Components\Columns\BadgeColumn;
+use GetCandy\LivewireTables\Components\Columns\ImageColumn;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Table;
 use Illuminate\Support\Collection;
 
@@ -45,10 +45,9 @@ class ProductTypesTable extends Table
                 return $record->mapped_attributes_count;
             })->heading(
                 __('adminhub::tables.headings.mapped_attributes_count')
-            )
+            ),
         ]);
     }
-
 
     /**
      * {@inheritDoc}

@@ -1,6 +1,7 @@
 <?php
 
 namespace GetCandy\Hub\Http\Livewire\Components\Settings\Addons;
+
 use Livewire\Component;
 use Livewire\WithPagination;
 

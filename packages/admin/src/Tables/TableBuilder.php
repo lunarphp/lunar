@@ -28,8 +28,7 @@ class TableBuilder extends LivewireTableBuilder
     /**
      * Add a query extender to the table.
      *
-     * @param Closure $closure
-     *
+     * @param  Closure  $closure
      * @return void
      */
     public function extendQuery(Closure $closure)

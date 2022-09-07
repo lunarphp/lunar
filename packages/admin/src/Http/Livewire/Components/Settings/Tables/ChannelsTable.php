@@ -4,8 +4,8 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
 
 use GetCandy\Facades\AttributeManifest;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Columns\StatusColumn;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Table;
 use GetCandy\Models\Attribute;
 use GetCandy\Models\AttributeGroup;

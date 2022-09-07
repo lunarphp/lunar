@@ -5,9 +5,9 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\Staff;
 use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Columns\StatusColumn;
 use GetCandy\LivewireTables\Components\Columns\AvatarColumn;
+use GetCandy\LivewireTables\Components\Columns\StatusColumn;
+use GetCandy\LivewireTables\Components\Columns\TextColumn;
 
 class StaffTable extends GetCandyTable
 {
@@ -30,7 +30,7 @@ class StaffTable extends GetCandyTable
                 return $record->email;
             })->gravatar()->heading(false),
             StatusColumn::make('active', function ($record) {
-                return !$record->deleted_at;
+                return ! $record->deleted_at;
             }),
             TextColumn::make('name', function ($record) {
                 return $record->fullName;
