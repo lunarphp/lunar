@@ -1,21 +1,15 @@
-<div class="flex-col space-y-4">
-    <div class="flex items-center justify-between">
-        <strong class="text-xl font-bold md:text-2xl">
-            {{ __('adminhub::catalogue.customers.index.title') }}
-        </strong>
-    </div>
+<div class="space-y-4">
+    <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
+        {{ __('adminhub::catalogue.customers.index.title') }}
+    </h1>
 
     <div class="space-y-4">
         <x-hub::table>
             <x-slot name="toolbar">
-                <div class="p-4 space-y-4 border-b">
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center w-full space-x-4">
-                            <x-hub::input.text :placeholder="__('adminhub::catalogue.customers.index.placeholder')"
-                                               class="py-2"
-                                               wire:model.debounce.400ms="search" />
-                        </div>
-                    </div>
+                <div class="mb-4">
+                    <x-hub::input.text :placeholder="__('adminhub::catalogue.customers.index.placeholder')"
+                                       class="py-2"
+                                       wire:model.debounce.400ms="search" />
                 </div>
             </x-slot>
 

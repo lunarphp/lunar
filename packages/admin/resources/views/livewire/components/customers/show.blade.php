@@ -1,13 +1,12 @@
-<div class="flex-col space-y-4">
-    <div class="flex items-center justify-between">
-        <strong class="text-lg font-bold md:text-2xl">
-            {{ $customer->fullName }}
-        </strong>
-    </div>
+<div class="space-y-4">
+    <h1 class="text-lg font-bold text-gray-900 md:text-2xl dark:text-white">
+        {{ $customer->fullName }}
+    </h1>
 
-    <div class="space-y-4 xl:space-y-0 xl:flex xl:flex-row-reverse gap-x-4">
-        <div class="xl:w-1/3">
-            <div class="bg-white rounded shadow">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div class="lg:order-last">
+            <div
+                 class="overflow-hidden bg-white border border-white rounded shadow dark:bg-gray-800 dark:border-gray-700">
                 <div class="p-4 space-y-4">
                     <div class="grid grid-cols-3 gap-4">
                         <div>
@@ -47,18 +46,21 @@
                         <x-hub::input.text wire:model.defer="customer.vat_no" />
                     </x-hub::input.group>
 
-                    <header>
+                    <strong class="block text-gray-800 dark:text-gray-100">
                         {{ __('adminhub::components.customers.show.customer_groups') }}
-                    </header>
+                    </strong>
 
                     <div class="space-y-2">
                         <div class="space-y-2 overflow-y-auto max-h-48">
                             @foreach ($this->customerGroups as $group)
-                                <label class="flex items-center p-2 text-sm border rounded cursor-pointer"
+                                <label class="flex items-center gap-2 p-2 border border-gray-100 rounded cursor-pointer dark:border-gray-700"
                                        wire:key="group_{{ $group->id }}">
                                     <x-hub::input.checkbox wire:model.debounce.500ms="syncedGroups"
-                                                           value="{{ $group->id }}" /> <span
-                                          class="ml-2">{{ $group->name }}</span>
+                                                           value="{{ $group->id }}" />
+
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ $group->name }}
+                                    </span>
                                 </label>
                             @endforeach
                         </div>
@@ -69,10 +71,9 @@
                     </div>
                 </div>
 
-                <div class="p-4 text-right rounded-b bg-gray-50">
+                <div class="p-4 text-right bg-black/5 dark:bg-white/5">
                     <x-hub::button type="button"
                                    wire:click="save">
-
                         <div wire:loading
                              wire:target="save">
                             <div>
@@ -103,37 +104,47 @@
             </div>
         </div>
 
-        <div class="space-y-4 xl:w-2/3">
+        <div class="space-y-4 lg:col-span-2">
             <div>
-                <dl class="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
+                <dl class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div
+                         class="px-4 py-5 overflow-hidden bg-white border border-white rounded-lg shadow dark:bg-gray-800 sm:p-6 dark:border-gray-700">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
                             {{ __('adminhub::components.customers.show.metrics.total_orders') }}
                         </dt>
 
-                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ $this->ordersCount }}</dd>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
+                            {{ $this->ordersCount }}
+                        </dd>
                     </div>
 
-                    <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
+                    <div
+                         class="px-4 py-5 overflow-hidden bg-white border border-white rounded-lg shadow dark:bg-gray-800 sm:p-6 dark:border-gray-700">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
                             {{ __('adminhub::components.customers.show.metrics.avg_spend') }}
                         </dt>
 
-                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ $this->avgSpend->formatted }}</dd>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
+                            {{ $this->avgSpend->formatted }}
+                        </dd>
                     </div>
 
-                    <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
+                    <div
+                         class="px-4 py-5 overflow-hidden bg-white border border-white rounded-lg shadow dark:bg-gray-800 sm:p-6 dark:border-gray-700">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
                             {{ __('adminhub::components.customers.show.metrics.total_spend') }}
                         </dt>
 
-                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ $this->totalSpend->formatted }}</dd>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
+                            {{ $this->totalSpend->formatted }}
+                        </dd>
                     </div>
                 </dl>
             </div>
 
-            <div class="bg-white rounded shadow">
-                <header class="px-4 py-4 font-bold border-b">
+            <div class="bg-white border border-white rounded shadow dark:bg-gray-800 dark:border-gray-700">
+                <header
+                        class="p-4 font-bold text-gray-900 border-b border-gray-100 dark:text-white dark:border-gray-700">
                     {{ __('adminhub::components.customers.show.year_spending') }}
                 </header>
 
@@ -145,47 +156,56 @@
     </div>
 
     <div>
-        <div x-data="{ tab: 'purchase_history' }">
+        <div x-data="{ activeTab: 'purchases' }"
+             x-init="activeTab = window.location.hash ? window.location.hash.replace('#', '') : 'purchases'">
             <div>
                 <div class="hidden sm:block">
                     <nav class="flex space-x-4"
                          aria-label="Tabs">
-                        <button type="button"
-                                x-on:click.prevent="tab = 'purchase_history'"
-                                class="px-3 py-2 text-sm font-medium rounded-md "
-                                :class="{
-                                    'bg-white shadow': tab == 'purchase_history',
-                                    'hover:text-gray-700 text-gray-500': tab != 'purchase_history'
-                                }">
-                            {{ __('adminhub::components.customers.show.purchase_history') }}
-                        </button>
-
-                        <button type="button"
-                                x-on:click.prevent="tab = 'order_history'"
-                                class="px-3 py-2 text-sm font-medium rounded-md "
-                                :class="{
-                                    'bg-white shadow': tab == 'order_history',
-                                    'hover:text-gray-700 text-gray-500': tab != 'order_history'
-                                }">
-                            {{ __('adminhub::components.customers.show.order_history') }}
-                        </button>
-
-                        <button type="button"
-                                x-on:click.prevent="tab = 'users'"
-                                class="px-3 py-2 text-sm font-medium rounded-md "
-                                :class="{
-                                    'bg-white shadow': tab == 'users',
-                                    'hover:text-gray-700 text-gray-500': tab != 'users'
-                                }">
-                            {{ __('adminhub::components.customers.show.users') }}
-                        </button>
-
-                        <a href="#"
-                           x-on:click.prevent="tab = 'addresses'"
-                           class="px-3 py-2 text-sm font-medium rounded-md "
+                        <a href="#purchases"
+                           x-on:click="activeTab = 'purchases'"
+                           class="px-3 py-2 text-sm font-medium border border-white rounded-md dark:border-gray-700"
                            :class="{
-                               'bg-white shadow': tab == 'addresses',
-                               'hover:text-gray-700 text-gray-500': tab != 'addresses'
+                               'bg-white shadow dark:bg-gray-800 text-gray-700 dark:text-white': activeTab ==
+                                   'purchases',
+                               'hover:text-gray-600 text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 !border-transparent': activeTab !=
+                                   'purchases'
+                           }">
+                            {{ __('adminhub::components.customers.show.purchase_history') }}
+                        </a>
+
+                        <a href="#orders"
+                           x-on:click="activeTab = 'orders'"
+                           class="px-3 py-2 text-sm font-medium border border-white rounded-md dark:border-gray-700"
+                           :class="{
+                               'bg-white shadow dark:bg-gray-800 text-gray-700 dark:text-white': activeTab ==
+                                   'orders',
+                               'hover:text-gray-600 text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 !border-transparent': activeTab !=
+                                   'orders'
+                           }">
+                            {{ __('adminhub::components.customers.show.order_history') }}
+                        </a>
+
+                        <a href="#users"
+                           x-on:click="activeTab = 'users'"
+                           class="px-3 py-2 text-sm font-medium border border-white rounded-md dark:border-gray-700"
+                           :class="{
+                               'bg-white shadow dark:bg-gray-800 text-gray-700 dark:text-white': activeTab ==
+                                   'users',
+                               'hover:text-gray-600 text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 !border-transparent': activeTab !=
+                                   'users'
+                           }">
+                            {{ __('adminhub::components.customers.show.users') }}
+                        </a>
+
+                        <a href="#addresses"
+                           x-on:click="activeTab = 'addresses'"
+                           class="px-3 py-2 text-sm font-medium border border-white rounded-md dark:border-gray-700"
+                           :class="{
+                               'bg-white shadow dark:bg-gray-800 text-gray-700 dark:text-white': activeTab ==
+                                   'addresses',
+                               'hover:text-gray-600 text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 !border-transparent': activeTab !=
+                                   'addresses'
                            }">
                             {{ __('adminhub::components.customers.show.addresses') }}
                         </a>
@@ -193,10 +213,10 @@
                 </div>
             </div>
 
-            <div x-show="tab == 'purchase_history'"
+            <div x-show="activeTab == 'purchases'"
                  class="mt-4">
                 @if (!$this->purchaseHistory->count())
-                    <div class="w-full mt-12 text-sm text-center text-gray-500">
+                    <div class="w-full mt-12 text-sm text-center text-gray-500 dark:text-gray-400">
                         {{ __('adminhub::components.customers.show.no_purchase_history') }}
                     </div>
                 @else
@@ -204,10 +224,10 @@
                 @endif
             </div>
 
-            <div x-show="tab == 'order_history'"
+            <div x-show="activeTab == 'orders'"
                  class="mt-4">
                 @if (!$this->orders->count())
-                    <div class="w-full mt-12 text-sm text-center text-gray-500">
+                    <div class="w-full mt-12 text-sm text-center text-gray-500 dark:text-gray-400">
                         {{ __('adminhub::components.customers.show.no_order_history') }}
                     </div>
                 @else
@@ -215,10 +235,10 @@
                 @endif
             </div>
 
-            <div x-show="tab == 'users'"
+            <div x-show="activeTab == 'users'"
                  class="mt-4">
                 @if (!$this->users->count())
-                    <div class="w-full mt-12 text-sm text-center text-gray-500">
+                    <div class="w-full mt-12 text-sm text-center text-gray-500 dark:text-gray-400">
                         {{ __('adminhub::components.customers.show.no_users') }}
                     </div>
                 @else
@@ -226,10 +246,10 @@
                 @endif
             </div>
 
-            <div x-show="tab == 'addresses'"
+            <div x-show="activeTab == 'addresses'"
                  class="mt-4">
                 @if (!$this->addresses->count())
-                    <div class="w-full mt-12 text-sm text-center text-gray-500">
+                    <div class="w-full mt-12 text-sm text-center text-gray-500 dark:text-gray-400">
                         {{ __('adminhub::components.customers.show.no_addresses') }}
                     </div>
                 @else
