@@ -6,7 +6,7 @@
 
         <form class="relative w-full"
               wire:submit.prevent="addComment">
-            <textarea class="w-full pl-4 pr-32 pt-5 border border-gray-200 rounded-lg h-[58px] sm:text-sm form-text"
+            <textarea class="w-full pl-4 pr-32 pt-5 border border-gray-200 dark:border-gray-700 dark:bg-gray-800 bg-white rounded-lg h-[58px] sm:text-sm form-text align-bottom resize-none dark:text-gray-200 text-gray-700"
                       type="text"
                       placeholder="Add a comment"
                       wire:model.defer="comment"
@@ -31,14 +31,14 @@
     </div>
 
     <div class="relative pt-8 -ml-[5px]">
-        <span class="absolute inset-y-0 left-5 w-[2px] bg-gray-200 rounded-full"></span>
+        <span class="absolute inset-y-0 left-5 w-[2px] bg-gray-200 dark:bg-gray-700 rounded-full"></span>
 
         <div class="flow-root">
             <ul class="-my-8 divide-y-2 divide-gray-200"
                 role="list">
                 @foreach ($this->activityLog as $log)
                     <li class="relative py-8 ml-5">
-                        <p class="ml-8 font-bold text-gray-900">
+                        <p class="ml-8 font-bold text-gray-900 dark:text-white">
                             {{ $log['date']->format('F jS, Y') }}
                         </p>
 
@@ -52,14 +52,16 @@
                                     ])>
                                         @if ($item['log']->causer)
                                             <x-hub::gravatar :email="$item['log']->causer->email"
-                                                             class="w-6 h-6 rounded-full ring-4 ring-gray-200" />
+                                                             class="w-6 h-6 rounded-full ring-4 ring-gray-200 dark:ring-gray-700" />
                                         @else
                                             <span @class([
-                                                'absolute w-4 h-4 rounded-full ring-4 bg-gray-300 ring-gray-200',
-                                                '!bg-blue-500 !ring-blue-100' => $item['log']->description == 'created',
-                                                '!bg-purple-500 !ring-purple-100' =>
+                                                'absolute w-4 h-4 rounded-full ring-4 bg-gray-300 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700',
+                                                '!bg-blue-500 !ring-blue-100 dark:!ring-blue-400' =>
+                                                    $item['log']->description == 'created',
+                                                '!bg-purple-500 !ring-purple-100 dark:!ring-purple-400' =>
                                                     $item['log']->description == 'status-update',
-                                                '!bg-teal-500 !ring-teal-100' => $item['log']->description == 'updated',
+                                                '!bg-teal-500 !ring-teal-100 dark:!ring-teal-400' =>
+                                                    $item['log']->description == 'updated',
                                             ])>
                                             </span>
                                         @endif
@@ -71,7 +73,7 @@
                                         'pt-[1px]' => !$item['log']->causer,
                                     ])>
                                         <div>
-                                            <div class="text-xs font-medium text-gray-500">
+                                            <div class="text-xs font-medium text-gray-500 dark:text-gray-400">
                                                 @if (!$item['log']->causer)
                                                     {{ __('adminhub::components.activity-log.system') }}
                                                 @else
@@ -80,7 +82,7 @@
                                             </div>
 
                                             @if (count($item['renderers']))
-                                                <div class="mt-2 text-sm font-medium text-gray-700">
+                                                <div class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-200">
                                                     @foreach ($item['renderers'] as $class)
                                                         {{ $class->render($item['log']) }}
                                                     @endforeach
@@ -88,7 +90,8 @@
                                             @endif
                                         </div>
 
-                                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
+                                        <time
+                                              class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 dark:text-gray-400 font-medium">
                                             {{ $item['log']->created_at->format('h:ia') }}
                                         </time>
                                     </div>

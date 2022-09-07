@@ -1,13 +1,11 @@
 <section>
-    <header class="flex items-center">
-        <h1 class="text-lg font-bold text-gray-900 md:text-2xl">
-            <span class="text-gray-500">
-                {{ __('adminhub::components.orders.show.title') }} //
-            </span>
+    <h1 class="text-lg font-bold text-gray-900 dark:text-white md:text-2xl">
+        <span class="text-gray-500 dark:text-gray-400">
+            {{ __('adminhub::components.orders.show.title') }} //
+        </span>
 
-            #{{ $order->id }}
-        </h1>
-    </header>
+        #{{ $order->id }}
+    </h1>
 
     <div class="grid grid-cols-1 gap-8 mt-8 lg:items-start lg:grid-cols-3">
         <div class="lg:col-span-2">
@@ -19,7 +17,7 @@
                 </div>
             @endif
 
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center gap-2">
                 @include('adminhub::partials.orders.actions')
             </div>
 
@@ -41,9 +39,9 @@
                 @endif
             </div>
 
-            <div class="p-6 mt-4 bg-white rounded-lg shadow">
+            <div class="p-6 mt-4 bg-white border border-white rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <div class="flow-root">
-                    <ul class="divide-y divide-gray-100">
+                    <ul class="divide-y divide-gray-100 dark:divide-gray-700">
                         @include('adminhub::partials.orders.lines')
                     </ul>
                 </div>
@@ -52,19 +50,19 @@
                     <div class="mt-4 text-center">
                         @if (!$allLinesVisible)
                             <div class="relative">
-                                <hr class="absolute block w-full border-red-200 top-3 border-b-1 transparent" />
+                                <hr
+                                    class="absolute block w-full h-px mt-px -translate-y-1/2 bg-gray-100 border-none rounded-full dark:bg-gray-700 top-1/2" />
 
-                                <div class="relative">
-                                    <span class="px-2 text-xs font-medium text-red-600 bg-white">
-                                        {{ __('adminhub::components.orders.show.additional_lines_text', [
-                                            'count' => $this->physicalAndDigitalLines->count() - $maxLines,
-                                        ]) }}
-                                    </span>
-                                </div>
+                                <span
+                                      class="relative inline-block h-6 px-2 text-xs font-medium leading-6 text-gray-700 bg-white rounded dark:text-white dark:bg-gray-700">
+                                    {{ __('adminhub::components.orders.show.additional_lines_text', [
+                                        'count' => $this->physicalAndDigitalLines->count() - $maxLines,
+                                    ]) }}
+                                </span>
                             </div>
                         @endif
 
-                        <button class="px-3 py-1 mt-1 text-xs text-blue-800 border rounded shadow-sm"
+                        <button class="px-3 py-1 mt-4 text-xs border rounded shadow-sm dark:bg-gray-700 dark:text-white dark:border-gray-600"
                                 wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
                                 type="button">
                             @if (!$allLinesVisible)
@@ -90,7 +88,7 @@
             </div>
 
             <div class="mt-4">
-                <header class="my-6 font-medium">
+                <header class="sr-only">
                     {{ __('adminhub::components.orders.show.timeline_header') }}
                 </header>
 
@@ -103,8 +101,9 @@
         <div class="space-y-4">
             @if ($order->customer)
                 <header class="flex items-center justify-between">
-                    <strong class="text-gray-700 truncate">
+                    <strong class="text-gray-700 dark:text-gray-200">
                         {{ $order->customer->first_name }}
+
                         @if ($order->customer->last_name)
                             {{ $order->customer->last_name }}
                         @endif
@@ -117,17 +116,19 @@
                 </header>
             @endif
 
-            @foreach($this->getSlotsByPosition('top') as $slot)
-             <div id="{{ $slot->handle }}">
-              <div>@livewire($slot->component, ['slotModel' => $order], key("top-slot-{{ $slot->handle }}"))</div>
-             </div>
+            @foreach ($this->getSlotsByPosition('top') as $slot)
+                <div id="{{ $slot->handle }}">
+                    <div>
+                        @livewire($slot->component, ['slotModel' => $order], key('top-slot-{{ $slot->handle }}'))
+                    </div>
+                </div>
             @endforeach
 
-            <section class="bg-white rounded-lg shadow">
+            <section class="bg-white border border-white rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 @include('adminhub::partials.orders.details')
             </section>
 
-            <section class="p-4 bg-white rounded-lg shadow">
+            <section class="p-4 bg-white border border-white rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 @include('adminhub::partials.orders.address', [
                     'heading' => __('adminhub::components.orders.show.shipping_header'),
                     'editTrigger' => 'showShippingAddressEdit',
@@ -136,7 +137,7 @@
                 ])
             </section>
 
-            <section class="p-4 bg-white rounded-lg shadow">
+            <section class="p-4 bg-white border border-white rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 @include('adminhub::partials.orders.address', [
                     'heading' => __('adminhub::components.orders.show.billing_header'),
                     'editTrigger' => 'showBillingAddressEdit',
@@ -146,36 +147,39 @@
                 ])
             </section>
 
-            <section class="p-4 bg-white rounded-lg shadow">
+            <section
+                     class="p-4 space-y-4 bg-white border border-white rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <header>
-                    <strong class="text-gray-700">
+                    <strong class="text-gray-600 dark:text-gray-100">
                         {{ __('adminhub::components.orders.show.additional_fields_header') }}
                     </strong>
                 </header>
 
-                <dl class="mt-4 space-y-2 text-sm text-gray-600">
-                    @foreach ($this->metaFields as $key => $value)
-                        <div class="grid grid-cols-3 gap-2">
-                            <dt class="font-medium text-gray-700">
-                                {{ $key }}:
-                            </dt>
+                @if (count($this->metaFields))
+                    <dl class="space-y-2 text-sm text-gray-600 dark:text-gray-100">
+                        @foreach ($this->metaFields as $key => $value)
+                            <div class="grid grid-cols-3 gap-2">
+                                <dt class="font-medium text-gray-700">
+                                    {{ $key }}:
+                                </dt>
 
-                            <dd class="col-span-2">
-                                @if (!is_string($value))
-                                    <pre class="font-mono">{{ json_encode($value) }}</pre>
-                                @else
-                                    {{ $value }}
-                                @endif
-                            </dd>
-                        </div>
-                    @endforeach
-                </dl>
+                                <dd class="col-span-2">
+                                    @if (!is_string($value))
+                                        <pre class="font-mono">{{ json_encode($value) }}</pre>
+                                    @else
+                                        {{ $value }}
+                                    @endif
+                                </dd>
+                            </div>
+                        @endforeach
+                    </dl>
+                @endif
             </section>
 
-            @foreach($this->getSlotsByPosition('bottom') as $slot)
-             <div id="{{ $slot->handle }}">
-              <div>@livewire($slot->component, ['slotModel' => $order], key("bottom-slot-{{ $slot->handle }}"))</div>
-             </div>
+            @foreach ($this->getSlotsByPosition('bottom') as $slot)
+                <div id="{{ $slot->handle }}">
+                    <div>@livewire($slot->component, ['slotModel' => $order], key('bottom-slot-{{ $slot->handle }}'))</div>
+                </div>
             @endforeach
         </div>
 
