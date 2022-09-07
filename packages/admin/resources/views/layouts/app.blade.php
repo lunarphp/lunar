@@ -21,7 +21,8 @@
     @if ($styles = \GetCandy\Hub\GetCandyHub::styles())
         <!-- Package Styles -->
         @foreach ($styles as $asset)
-            <link href="{!! $asset->url() !!}" rel="stylesheet">
+            <link href="{!! $asset->url() !!}"
+                  rel="stylesheet">
         @endforeach
     @endif
 
@@ -56,7 +57,7 @@
       x-data="{
           showExpandedMenu: $persist(false),
           showMobileMenu: false,
-          darkMode: $persist(false),
+          darkMode: {{ config('getcandy-hub.system.dark_mode') ? '$persist(false)' : 'false' }},
       }">
     {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
 
@@ -98,7 +99,7 @@
             <script src="{!! $asset->url() !!}"></script>
         @endforeach
     @endif
-    
+
     <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>
 </body>
 
