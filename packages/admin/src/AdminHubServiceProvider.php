@@ -67,6 +67,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\ActivityLogTable;
+use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\AddonsTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
@@ -373,6 +374,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         // Addons
         Livewire::component('hub.components.settings.addons.index', AddonsIndex::class);
+        Livewire::component('hub.components.settings.addons.table', AddonsTable::class);
         Livewire::component('hub.components.settings.addons.show', AddonShow::class);
 
         // Taxes

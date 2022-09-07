@@ -35,5 +35,10 @@ return [
     'headings.subject_id' => 'Subject ID',
     'headings.subject_type' => 'Subject Type',
     'headings.causer.email' => 'Performed By',
+    'headings.verified' => 'Verified',
+    'headings.licensed' => 'Licensed',
+    'headings.version' => 'Version',
+    'headings.latest_version' => 'Latest Version',
+    'headings.author' => 'Author',
 ];
 
