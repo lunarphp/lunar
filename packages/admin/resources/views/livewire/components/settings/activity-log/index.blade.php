@@ -5,7 +5,9 @@
         </h1>
     </header>
 
-    <x-hub::table>
+    @livewire('hub.components.settings.activity-log.table')
+
+    {{-- <x-hub::table>
         <x-slot name="head">
             <x-hub::table.heading>Event</x-hub::table.heading>
             <x-hub::table.heading>Subject ID</x-hub::table.heading>
@@ -32,5 +34,5 @@
     </x-hub::table>
     <div>
         {{ $logs->links() }}
-    </div>
+    </div> --}}
 </div>

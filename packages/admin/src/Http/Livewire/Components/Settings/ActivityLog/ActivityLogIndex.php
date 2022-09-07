@@ -4,7 +4,6 @@ namespace GetCandy\Hub\Http\Livewire\Components\Settings\ActivityLog;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogIndex extends Component
 {
@@ -17,8 +16,7 @@ class ActivityLogIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.activity-log.index', [
-            'logs' => Activity::whereLogName('getcandy')->with('causer')->orderBy('created_at', 'desc')->paginate(25),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.activity-log.index')
+            ->layout('adminhub::layouts.base');
     }
 }

@@ -31,5 +31,9 @@ return [
     'headings.exchange_rate' => 'Exchange Rate',
     'headings.enabled' => 'Enabled',
     'headings.value' => 'Value',
+    'headings.event' => 'Event',
+    'headings.subject_id' => 'Subject ID',
+    'headings.subject_type' => 'Subject Type',
+    'headings.causer.email' => 'Performed By',
 ];
 
