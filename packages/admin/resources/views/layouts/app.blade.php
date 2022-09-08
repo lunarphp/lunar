@@ -57,7 +57,7 @@
       x-data="{
           showExpandedMenu: $persist(false),
           showMobileMenu: false,
-          darkMode: {{ config('getcandy-hub.system.dark_mode') ? '$persist(false)' : 'false' }},
+          darkMode: $persist(false),
       }">
     {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
 
