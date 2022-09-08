@@ -93,6 +93,16 @@ class BrandShow extends Component
     }
 
     /**
+     * Return the number of products associated to the brand.
+     *
+     * @return int
+     */
+    public function getProductsCountProperty()
+    {
+        return $this->brand->products()->count();
+    }
+
+    /**
      * Soft deletes a brand.
      *
      * @return void
@@ -103,13 +113,13 @@ class BrandShow extends Component
             return;
         }
 
-        if ($this->brand->products()->count() > 0) {
+        if ($this->productsCount > 0) {
             $this->notify(
-                __('adminhub::notifications.brands.delete_protected'),
-                'hub.brands.index',
-                [],
-                'error'
+                message: __('adminhub::notifications.brands.delete_protected'),
+                level: 'error',
             );
+
+            $this->deleteConfirm = null;
 
             return;
         }

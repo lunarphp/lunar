@@ -55,7 +55,7 @@
             </header>
 
             <div class="p-6 text-sm">
-                <div class="grid grid-cols-12 gap-4">
+                <div class="grid grid-cols-12 gap-4 items-center">
                     <div class="col-span-12 md:col-span-6">
                         <strong>{{ __('adminhub::partials.forms.brand_delete_brand') }}</strong>
 
@@ -63,16 +63,24 @@
                             {{ __('adminhub::partials.forms.brand_name_delete') }}</p>
                     </div>
 
-                    <div class="col-span-9 lg:col-span-4">
-                        <x-hub::input.text wire:model="deleteConfirm" />
-                    </div>
+                    @if($this->productsCount > 0)
+                        <div class="col-span-12 md:col-span-6 text-red-600 text-right">
+                            {{ __('adminhub::notifications.brands.delete_protected') }}
+                        </div>
+                    @else
+                        <div class="col-span-9 lg:col-span-4">
+                            <x-hub::input.text wire:model="deleteConfirm" />
+                        </div>
 
-                    <div class="col-span-3 text-right lg:col-span-2">
-                        <x-hub::button :disabled="!$this->canDelete"
-                                       theme="danger"
-                                       wire:click="delete"
-                                       type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
-                    </div>
+                        <div class="col-span-3 text-right lg:col-span-2">
+                            <x-hub::button :disabled="!$this->canDelete"
+                                           theme="danger"
+                                           wire:click="delete"
+                                           type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
+                        </div>
+                    @endif
+
+
                 </div>
             </div>
         </div>

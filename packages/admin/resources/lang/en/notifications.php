@@ -11,7 +11,7 @@ return [
     'brands.added'                      => 'Brand added',
     'brands.updated'                    => 'Brand updated.',
     'brands.deleted'                    => 'Brand deleted.',
-    'brands.delete_protected'           => 'Brand can not be deleted as there are products associated to this brand.',
+    'brands.delete_protected'           => 'This brand can not be deleted as there are products associated.',
     'collections.moved_child'           => 'Collection moved inside :target',
     'collections.moved_root'            => 'Collection moved to the top',
     'collections.added'                 => 'Collection added',
