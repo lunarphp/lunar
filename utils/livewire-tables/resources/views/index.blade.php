@@ -40,7 +40,7 @@
     <div class="lt-overflow-hidden lt-border lt-border-gray-200 lt-rounded-lg">
         <div x-data="{
             showFilters: false,
-            selected: @entangle('selected').defer,
+            selected: @entangle('selected'),
             selectedAll: false,
         }"
              x-init="$watch('selectedAll', function(isChecked) {
@@ -163,7 +163,9 @@
 
                                 <div class="lt-flex lt-flex-wrap lt-gap-4 lt-mt-2">
                                     @foreach ($this->bulkActions as $action)
-                                        {{ $action }}
+                                        @livewire($action->getName(), [
+                                            'label' => $action->label,
+                                        ])
                                     @endforeach
                                 </div>
                             </div>

@@ -2,6 +2,7 @@
 
 namespace GetCandy\LivewireTables;
 
+use GetCandy\LivewireTables\Components\Actions\BulkAction;
 use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Filters\SelectFilter;
 use GetCandy\LivewireTables\Components\Head;
@@ -30,6 +31,7 @@ class LivewireTablesServiceProvider extends ServiceProvider
             TextColumn::class,
             Head::class,
             SelectFilter::class,
+            BulkAction::class,
         ];
 
         foreach ($components as $component) {

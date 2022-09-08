@@ -6,6 +6,7 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
 use GetCandy\LivewireTables\Components\Actions\Action;
+use GetCandy\LivewireTables\Components\Actions\BulkAction;
 use GetCandy\LivewireTables\Components\Filters\DateFilter;
 use GetCandy\LivewireTables\Components\Filters\SelectFilter;
 use GetCandy\LivewireTables\Components\Table;
@@ -34,7 +35,7 @@ class OrdersTable extends Table
     /**
      * {@inheritDoc}
      */
-    public ?string $poll = '2s';
+    public ?string $poll = null;
 
     /**
      * The customer ID to hard filter results by.
@@ -103,6 +104,12 @@ class OrdersTable extends Table
             Action::make('view')->label('View Order')->url(function ($record) {
                 return route('hub.orders.show', $record->id);
             })
+        );
+
+        $this->tableBuilder->addBulkAction(
+            BulkAction::make('update_status')
+                ->label('Update Status')
+                ->livewire('hub.components.tables.actions.update-status')
         );
     }
 

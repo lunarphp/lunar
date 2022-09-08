@@ -92,6 +92,7 @@ class Table extends Component
     {
         return [
             'sort',
+            'bulkAction.reset' => 'resetBulkActions'
         ];
     }
 
@@ -119,6 +120,16 @@ class Table extends Component
     public function build()
     {
         //
+    }
+
+    public function updatedSelected($value)
+    {
+        $this->emit('table.selectedRows', $value);
+    }
+
+    public function resetBulkActions()
+    {
+        $this->selected = [];
     }
 
     /**

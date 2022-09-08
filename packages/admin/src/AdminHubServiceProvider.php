@@ -81,6 +81,7 @@ use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
 use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
+use GetCandy\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use GetCandy\Hub\Http\Livewire\Dashboard;
 use GetCandy\Hub\Http\Livewire\HubLicense;
 use GetCandy\Hub\Http\Livewire\Sidebar;
@@ -260,6 +261,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.refund', OrderRefund::class);
         Livewire::component('hub.components.orders.capture', OrderCapture::class);
         Livewire::component('hub.components.orders.status', OrderStatus::class);
+        Livewire::component('hub.components.tables.actions.update-status', UpdateStatus::class);
         Livewire::component('hub.components.orders.emil-notification', EmailNotification::class);
 
         Livewire::component('hub.components.orders.table', OrdersTable::class);

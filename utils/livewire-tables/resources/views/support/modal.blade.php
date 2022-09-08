@@ -22,7 +22,7 @@ switch ($maxWidth ?? '2xl') {
 @endphp
 
 <div x-data="{
-    show: true,
+    show: @if($attributes->wire('model')->value()) @entangle($attributes->wire('model')) @else true @endif,
     focusables() {
         let selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
 
