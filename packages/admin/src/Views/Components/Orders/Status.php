@@ -11,7 +11,7 @@ class Status extends Component
      *
      * @var string
      */
-    public string $status = '';
+    public ?string $status = '';
 
     /**
      * The status label.

@@ -6,7 +6,6 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Models\SavedSearch;
 use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
 use GetCandy\LivewireTables\Components\Actions\Action;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
 use GetCandy\LivewireTables\Components\Filters\DateFilter;
 use GetCandy\LivewireTables\Components\Filters\SelectFilter;
 use GetCandy\LivewireTables\Components\Table;
@@ -57,36 +56,6 @@ class OrdersTable extends Table
     public function build()
     {
         $this->filters['placed_at'] = $this->filters['placed_at'] ?? null;
-
-        $this->tableBuilder->baseColumns([
-            TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status'),
-            TextColumn::make('reference')->value(function ($record) {
-                return $record->reference;
-            })->url(function ($record) {
-                return route('hub.orders.show', $record->id);
-            }),
-            TextColumn::make('customer_reference')->heading('Customer Reference')->value(function ($record) {
-                return $record->customer_reference;
-            }),
-            TextColumn::make('customer')->value(function ($record) {
-                return $record->billingAddress?->fullName;
-            }),
-            TextColumn::make('postcode')->value(function ($record) {
-                return $record->billingAddress?->postcode;
-            }),
-            TextColumn::make('email')->value(function ($record) {
-                return $record->billingAddress?->contact_email;
-            }),
-            TextColumn::make('phone')->value(function ($record) {
-                return $record->billingAddress?->contact_phone;
-            }),
-            TextColumn::make('total')->value(function ($record) {
-                return $record->total->formatted;
-            }),
-            TextColumn::make('date')->value(function ($record) {
-                return $record->placed_at?->format('Y/m/d @ H:ma');
-            }),
-        ]);
 
         $this->tableBuilder->addFilter(
             SelectFilter::make('status')->options(function () {
