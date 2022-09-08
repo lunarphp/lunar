@@ -12,7 +12,7 @@ class Version extends Component
 
     public function __construct()
     {
-        $installedVersion = InstalledVersions::getPrettyVersion('getcandy/getcandy');
+        $installedVersion = InstalledVersions::getPrettyVersion('getcandy/core');
 
         $prettyVersion = Str::contains($installedVersion, [
             'dev',
