@@ -20,8 +20,7 @@
   </coverage>
   <testsuites>
     <testsuite name="Unit">
-      <directory suffix="Test.php">packages/**/tests</directory>
-      <directory suffix="Test.php">utils/**/tests</directory>
+      <directory suffix="Test.php">tests</directory>
     </testsuite>
     <!-- <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
@@ -32,5 +31,6 @@
     <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
     <env name="APP_ENV" value="testing"/>
     <env name="MAIL_MAILER" value="log" />
+    <env name="APP_DEBUG" value="true" />
   </php>
 </phpunit>

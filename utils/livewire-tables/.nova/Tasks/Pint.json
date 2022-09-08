@@ -1,0 +1,8 @@
+{
+  "actions" : {
+    "clean" : {
+      "enabled" : true,
+      "script" : "vendor\/bin\/pint"
+    }
+  }
+}

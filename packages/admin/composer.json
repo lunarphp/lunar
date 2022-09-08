@@ -35,6 +35,7 @@
     "require": {
         "php": "^8.0",
         "getcandy/core": "self.version",
+        "getcandy/livewire-tables": "*",
         "livewire/livewire": "^2.0",
         "getcandy/licensing": "dev-main",
         "barryvdh/laravel-dompdf": "^2.0"

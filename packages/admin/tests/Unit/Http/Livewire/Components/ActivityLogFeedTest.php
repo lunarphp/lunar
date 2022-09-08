@@ -56,7 +56,7 @@ class ActivityLogFeedTest extends TestCase
 
         Livewire::actingAs($staff, 'staff')->test(ActivityLogFeed::class, [
             'subject' => $order,
-        ]);
+        ])->assertViewIs('adminhub::livewire.components.activity-log-feed');
     }
 
     /** @test */

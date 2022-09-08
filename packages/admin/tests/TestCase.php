@@ -5,6 +5,7 @@ namespace GetCandy\Hub\Tests;
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use GetCandy\GetCandyServiceProvider;
 use GetCandy\Hub\AdminHubServiceProvider;
+use GetCandy\LivewireTables\LivewireTablesServiceProvider;
 use GetCandy\Tests\Stubs\TestUrlGenerator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
@@ -33,6 +34,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         return [
             GetCandyServiceProvider::class,
             LivewireServiceProvider::class,
+            LivewireTablesServiceProvider::class,
             AdminHubServiceProvider::class,
             ActivitylogServiceProvider::class,
             MediaLibraryServiceProvider::class,

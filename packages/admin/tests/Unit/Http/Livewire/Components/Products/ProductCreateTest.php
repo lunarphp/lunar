@@ -59,7 +59,8 @@ class ProductCreateTest extends TestCase
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-            ->test(ProductCreate::class);
+            ->test(ProductCreate::class)
+            ->assertViewIs('adminhub::livewire.components.products.create');
     }
 
     /** @test */

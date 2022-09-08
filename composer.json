@@ -13,6 +13,7 @@
         "cartalyst/converter": "^6.1|^7.0",
         "doctrine/dbal": "3.3.7",
         "getcandy/licensing": "dev-main",
+        "getcandy/livewire-tables": "*",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
@@ -24,10 +25,11 @@
         "yab/laravel-scout-mysql-driver": "^5.0"
     },
     "require-dev": {
+        "laravel/pint": "^1.1",
+        "mockery/mockery": "^1.4.4",
         "orchestra/testbench": "^6.0|^7.0",
         "phpunit/phpunit": "^9.5",
-        "symplify/monorepo-builder": "^10.0",
-        "laravel/pint": "^1.1"
+        "symplify/monorepo-builder": "^10.0"
     },
     "autoload": {
         "files": [
@@ -40,18 +42,24 @@
             "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
             "GetCandy\\Database\\State\\": "packages/core/database/state",
             "GetCandy\\Hub\\": "packages/admin/src",
-            "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
+            "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
+            "GetCandy\\LivewireTables\\": "utils/livewire-tables/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "GetCandy\\Hub\\Tests\\": "packages/admin/tests",
+            "GetCandy\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
             "GetCandy\\Tests\\": "packages/core/tests"
         }
     },
     "extra": {
+        "getcandy": {
+            "name": "Livewire Tables"
+        },
         "laravel": {
             "providers": [
+                "GetCandy\\LivewireTables\\LivewireTablesServiceProvider",
                 "GetCandy\\Hub\\AdminHubServiceProvider",
                 "GetCandy\\GetCandyServiceProvider"
             ]
@@ -59,7 +67,9 @@
     },
     "replace": {
         "getcandy/admin": "self.version",
-        "getcandy/core": "self.version"
+        "getcandy/core": "self.version",
+        "getcandy/livewire-tables": "self.version"
     },
-    "minimum-stability": "beta"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
