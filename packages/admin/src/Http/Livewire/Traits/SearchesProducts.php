@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Traits;
 
+use GetCandy\Models\Brand;
 use GetCandy\Models\Product;
 use GetCandy\Models\ProductType;
 use Illuminate\Support\Collection;
@@ -9,21 +10,13 @@ use Illuminate\Support\Collection;
 trait SearchesProducts
 {
     /**
-     * List of filtered brands.
+     * Method to return computed brands.
      *
-     * @var array
+     * @return \Illuminate\Support\Collection
      */
-    public $brands = [];
-
-    /**
-     * Get brands by a given search term.
-     *
-     * @param  string|null  $term
-     * @return void
-     */
-    public function getBrands($term = null)
+    public function getBrandsProperty(): Collection
     {
-        $this->brands = $term ? $this->searchDistinct('brand', $term) : [];
+        return Brand::get();
     }
 
     /**
