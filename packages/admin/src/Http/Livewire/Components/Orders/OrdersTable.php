@@ -96,9 +96,6 @@ class OrdersTable extends Table
                         $parts[0],
                         $parts[1],
                     ]);
-
-                    // [$from, $to] = explode(' to ', $value);
-                    // dd($from, $to);
                 })
         );
 

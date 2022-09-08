@@ -71,28 +71,28 @@ class OrdersTableTest extends TestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $component->get('rows'));
         $this->assertCount($orders->count(), $component->get('rows'));
     }
-//
-//     /** @test */
-//     public function can_save_search()
-//     {
-//         $staff = Staff::factory()->create([
-//             'admin' => true,
-//         ]);
-//
-//         Livewire::actingAs($staff, 'staff')
-//             ->test(OrdersIndex::class)
-//             ->assertSet('savedSearch.name', '')
-//             ->set('savedSearch.name', 'foobar')
-//             ->call('saveSearch')
-//             ->assertHasNoErrors();
-//
-//         $this->assertDatabaseHas((new SavedSearch)->getTable(), [
-//             'name' => 'foobar',
-//             'staff_id' => $staff->id,
-//         ]);
-//     }
 
-//     /** @test */
+    /** @test */
+    public function can_save_search()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        Livewire::actingAs($staff, 'staff')
+            ->test(OrdersTable::class)
+            ->assertSet('savedSearchName', '')
+            ->set('savedSearchName', 'foobar')
+            ->call('saveSearch')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas((new SavedSearch)->getTable(), [
+            'name' => 'foobar',
+            'staff_id' => $staff->id,
+        ]);
+    }
+
+    /** @test */
 //     public function can_update_order_status()
 //     {
 //         $staff = Staff::factory()->create([
