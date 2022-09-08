@@ -174,7 +174,7 @@
                     </x-hub::table.cell>
 
                     <x-hub::table.cell>
-                        {{ $product->brand }}
+                        {{ $product->brand?->name }}
                     </x-hub::table.cell>
 
                     <x-hub::table.cell>

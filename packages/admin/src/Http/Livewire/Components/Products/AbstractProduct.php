@@ -193,7 +193,7 @@ abstract class AbstractProduct extends Component
     {
         $baseRules = [
             'product.status'          => 'required|string',
-            'product.brand'           => 'nullable|string|max:255',
+            'product.brand_id'        => 'nullable',
             'product.product_type_id' => 'required',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
@@ -759,7 +759,7 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.basic-information'),
                 'id'         => 'basic-information',
                 'has_errors' => $this->errorBag->hasAny([
-                    'product.brand',
+                    'product.brand_id',
                     'product.product_type_id',
                 ]),
             ],
