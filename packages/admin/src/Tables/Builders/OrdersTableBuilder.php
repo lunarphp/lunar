@@ -3,8 +3,8 @@
 namespace GetCandy\Hub\Tables\Builders;
 
 use GetCandy\Hub\Tables\TableBuilder;
-use GetCandy\Models\Order;
 use GetCandy\LivewireTables\Components\Columns\TextColumn;
+use GetCandy\Models\Order;
 use Illuminate\Support\Collection;
 
 class OrdersTableBuilder extends TableBuilder

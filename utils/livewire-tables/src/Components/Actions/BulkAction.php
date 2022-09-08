@@ -39,8 +39,7 @@ class BulkAction extends Action
     /**
      * Set the selected ids
      *
-     * @param array $rows
-     *
+     * @param  array  $rows
      * @return void
      */
     public function setSelected(array $rows)

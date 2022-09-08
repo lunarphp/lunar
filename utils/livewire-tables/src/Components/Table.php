@@ -92,7 +92,7 @@ class Table extends Component
     {
         return [
             'sort',
-            'bulkAction.reset' => 'resetBulkActions'
+            'bulkAction.reset' => 'resetBulkActions',
         ];
     }
 

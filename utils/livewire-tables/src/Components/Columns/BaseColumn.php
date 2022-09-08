@@ -103,7 +103,7 @@ abstract class BaseColumn extends Component
             return $this->record->{$relationName}?->{$relationColumn};
         }
 
-        if (!$this->record) {
+        if (! $this->record) {
             return;
         }
 
