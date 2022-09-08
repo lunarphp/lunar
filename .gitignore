@@ -9,3 +9,4 @@ yarn.lock
 mix-manifest.json
 package-lock.json
 .DS_Store
+.nova
