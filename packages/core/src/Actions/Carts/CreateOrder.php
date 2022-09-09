@@ -50,7 +50,7 @@ class CreateOrder
                     return [
                         'description'       => $tax['description'],
                         'identifier'   => $tax['identifier'],
-                        'percentage' => $tax['amounts']->sum('percentage'),
+                        'percentage' => $tax['amounts']->min('percentage'),
                         'total'      => $tax['total']->value,
                     ];
                 })->values(),
