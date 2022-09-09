@@ -69,6 +69,14 @@ class SidebarMenu
 
         $slot->addItem(function ($item) {
             $item->name(
+                __('adminhub::menu.sidebar.brands')
+            )->handle('hub.brands')
+                 ->route('hub.brands.index')
+                 ->icon('view-grid');
+        });
+
+        $slot->addItem(function ($item) {
+            $item->name(
                 __('adminhub::menu.sidebar.collections')
             )->handle('hub.collection')
             ->route('hub.collection-groups.index')

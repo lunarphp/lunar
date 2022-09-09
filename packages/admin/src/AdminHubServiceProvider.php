@@ -12,6 +12,8 @@ use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
 use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
 use GetCandy\Hub\Http\Livewire\Components\Avatar;
+use GetCandy\Hub\Http\Livewire\Components\Brands\BrandShow;
+use GetCandy\Hub\Http\Livewire\Components\Brands\BrandsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -164,8 +166,13 @@ class AdminHubServiceProvider extends ServiceProvider
             ], 'getcandy-migrations');
 
             $this->publishes([
+                __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
                 __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
             ], 'getcandy-hub-views');
+
+            $this->publishes([
+                __DIR__.'/../resources/lang' => resource_path('lang/vendor/adminhub'),
+            ], 'getcandy-hub-translations');
 
             $this->commands([
                 InstallHub::class,
@@ -198,6 +205,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerGlobalComponents();
         $this->registerAuthenticationComponents();
         $this->registerProductComponents();
+        $this->registerBrandComponents();
         $this->registerCollectionComponents();
         $this->registerReportingComponents();
         $this->registerSettingsComponents();
@@ -279,6 +287,17 @@ class AdminHubServiceProvider extends ServiceProvider
 
         Livewire::component('hub.components.product-options.option-manager', OptionManager::class);
         Livewire::component('hub.components.product-options.option-value-create-modal', OptionValueCreateModal::class);
+    }
+
+    /**
+     * Register the components used in the brands area.
+     *
+     * @return void
+     */
+    protected function registerBrandComponents()
+    {
+        Livewire::component('hub.components.brands.index', BrandsIndex::class);
+        Livewire::component('hub.components.brands.show', BrandShow::class);
     }
 
     /**

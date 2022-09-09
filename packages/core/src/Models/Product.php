@@ -45,7 +45,6 @@ class Product extends BaseModel implements SpatieHasMedia
     protected $filterable = [
         '__soft_deleted',
         'skus',
-        'brand',
         'status',
     ];
 
@@ -58,7 +57,6 @@ class Product extends BaseModel implements SpatieHasMedia
         'name',
         'created_at',
         'updated_at',
-        'brand',
         'skus',
         'status',
     ];
@@ -90,7 +88,6 @@ class Product extends BaseModel implements SpatieHasMedia
      * @var array
      */
     protected $fillable = [
-        'brand',
         'attribute_data',
         'product_type_id',
         'status',
@@ -239,5 +236,15 @@ class Product extends BaseModel implements SpatieHasMedia
             'starts_at',
             'ends_at',
         ])->withTimestamps();
+    }
+
+    /**
+     * Return the brand relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 }
