@@ -30,6 +30,7 @@ use GetCandy\Console\InstallGetCandy;
 use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
 use GetCandy\Database\State\EnsureBrandsAreUpgraded;
 use GetCandy\Database\State\EnsureDefaultTaxClassExists;
+use GetCandy\Database\State\EnsureMediaCollectionsAreRenamed;
 use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Managers\PaymentManager;
@@ -59,6 +60,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -228,11 +230,12 @@ class GetCandyServiceProvider extends ServiceProvider
             ConvertProductTypeAttributesToProducts::class,
             EnsureDefaultTaxClassExists::class,
             EnsureBrandsAreUpgraded::class,
+            EnsureMediaCollectionsAreRenamed::class,
         ];
 
         foreach ($states as $state) {
             Event::listen(
-                MigrationsEnded::class,
+                [MigrationsEnded::class, NoPendingMigrations::class],
                 [$state, 'run']
             );
         }

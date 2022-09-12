@@ -70,7 +70,7 @@ trait HasImages
     {
         $owner = $this->getMediaModel();
 
-        $this->images = $owner->media->map(function ($media) {
+        $this->images = $owner->getMedia('images')->map(function ($media) {
             return [
                 'id'        => $media->id,
                 'sort_key'  => Str::random(),
@@ -183,7 +183,7 @@ trait HasImages
             // Need to find any images that have been deleted.
             // We need to also get a fresh instance of the relationship
             // as we may have changes that Livewire/Eloquent might not be aware of.
-            $owner->refresh()->media->reject(function ($media) {
+            $owner->refresh()->getMedia('images')->reject(function ($media) {
                 $imageIds = collect($this->images)->pluck('id')->toArray();
 
                 return in_array($media->id, $imageIds);
@@ -197,7 +197,7 @@ trait HasImages
                         $image['filename']
                     );
                     $media = $owner->addMedia($file->getRealPath())
-                        ->toMediaCollection('products');
+                        ->toMediaCollection('images');
 
                     activity()
                     ->performedOn($owner)

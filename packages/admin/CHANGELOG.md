@@ -5,11 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### [ Unreleased ]
 
-### Added
+## Added
 
 - Added `account_ref` to customers.
 
+## Changed
+
+- Images now use the `images` media collection name. The hub now only shows images in this collection.
+
 ## Fixed
+
 - When migrating fresh, the transaction table migrations were out of order.  Changed the type when making nullable.
 - Added `wire:key` to URL management
 - When setting a new `default` URL whilst editing, other existing `default` values are set to `false`

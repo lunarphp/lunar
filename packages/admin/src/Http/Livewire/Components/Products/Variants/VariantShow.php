@@ -217,7 +217,7 @@ class VariantShow extends Component
                         $image['filename']
                     );
                     $media = $owner->addMedia($file->getRealPath())
-                        ->toMediaCollection('products');
+                        ->toMediaCollection('images');
 
                     activity()
                     ->performedOn($this->variant)
@@ -274,7 +274,7 @@ class VariantShow extends Component
     public function selectImage()
     {
         $this->image = $this->product
-            ->media
+            ->images
             ->first(fn ($image) => $image->id == $this->imageToSelect);
 
         $this->showImageSelectModal = false;
@@ -309,7 +309,7 @@ class VariantShow extends Component
      */
     public function getProductImagesProperty()
     {
-        return $this->variant->product->media()->where('mime_type', 'LIKE', 'image%')->get();
+        return $this->variant->product->getMedia('images');
     }
 
     /**

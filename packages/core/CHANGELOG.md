@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### [ Unreleased ]
 
-### Added
+## Changed
+
+- Images now use the `images` media collection name.
+
+## Added
 
 - Added `account_ref` to customers.
 

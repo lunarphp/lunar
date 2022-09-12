@@ -24,17 +24,17 @@ If you've used the medialibrary package before you will feel right at home.
 ```php
 $product = \GetCandy\Models\Product::find(123);
 
-$product->addMedia($request->file('image'))->toMediaCollection();
+$product->addMedia($request->file('image'))->toMediaCollection('images');
 ```
 
 For more information on what's available, see [Associating files](https://spatie.be/docs/laravel-medialibrary/v9/basic-usage/associating-files)
 
-## Fetching media
+## Fetching images
 
 ```php
 $product = \GetCandy\Models\Product::find(123);
 
-$product->getMedia();
+$product->getMedia('images');
 ```
 For more information on what's available, see [Retrieving media](https://spatie.be/docs/laravel-medialibrary/v9/basic-usage/retrieving-media)
 

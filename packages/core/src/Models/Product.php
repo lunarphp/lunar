@@ -123,6 +123,16 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Return the product images relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function images()
+    {
+        return $this->media()->where('collection_name', 'images');
+    }
+
+    /**
      * Return the product variants relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

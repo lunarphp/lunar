@@ -28,13 +28,13 @@ class HasMediaTraitTest extends TestCase
 
         $product = Product::factory()->create();
 
-        $product->addMedia($file)->toMediaCollection('tests');
+        $product->addMedia($file)->toMediaCollection('images');
 
-        $media = $product->media->first();
+        $image = $product->images->first();
 
-        $this->assertTrue($media->hasGeneratedConversion('small'));
-        $this->assertTrue($media->hasGeneratedConversion('medium'));
-        $this->assertTrue($media->hasGeneratedConversion('large'));
-        $this->assertTrue($media->hasGeneratedConversion('zoom'));
+        $this->assertTrue($image->hasGeneratedConversion('small'));
+        $this->assertTrue($image->hasGeneratedConversion('medium'));
+        $this->assertTrue($image->hasGeneratedConversion('large'));
+        $this->assertTrue($image->hasGeneratedConversion('zoom'));
     }
 }
