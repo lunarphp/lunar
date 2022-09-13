@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Hub\Views\Components\GetCandy;
+namespace Lunar\Hub\Views\Components\Lunar;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Str;

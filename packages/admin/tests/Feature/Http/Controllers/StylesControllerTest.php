@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Tests\Feature\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Hub\GetCandyHub;
+use Lunar\Hub\LunarHub;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
 
@@ -44,12 +44,12 @@ class StylesControllerTest extends TestCase
         $name = 'non-existing-local-style';
         $path = 'js/non-existing-local-style.css';
 
-        GetCandyHub::style($name, $path);
+        LunarHub::style($name, $path);
 
         $this->get(route('hub.assets.styles', ['style' => $name]))
             ->assertStatus(500);
 
-        GetCandyHub::$styles = [];
+        LunarHub::$styles = [];
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class StylesControllerTest extends TestCase
         $path = __DIR__.'/local-style.css';
         $content = 'body { color: red; }';
 
-        GetCandyHub::style($name, $path);
+        LunarHub::style($name, $path);
 
         // Create the file
         file_put_contents($path, $content);
@@ -77,6 +77,6 @@ class StylesControllerTest extends TestCase
         // Remove the file after test
         unlink($path);
 
-        GetCandyHub::$styles = [];
+        LunarHub::$styles = [];
     }
 }

@@ -142,14 +142,14 @@ If you need to register styles or scripts, you can do so in a service provider. 
 
 ```php
 // Register compiled script
-GetCandyHub::script('lunar-package', __DIR__.'/../dist/lunar-package.js');
+LunarHub::script('lunar-package', __DIR__.'/../dist/lunar-package.js');
 
 // Register remote script
-GetCandyHub::remoteScript('https://example.com/script.js');
+LunarHub::remoteScript('https://example.com/script.js');
 
 // Register compiled styles
-GetCandyHub::style('lunar-package', __DIR__.'/../dist/lunar-package.css');
+LunarHub::style('lunar-package', __DIR__.'/../dist/lunar-package.css');
 
 // Register remote styles
-GetCandyHub::remoteStyle('https://example.com/style.css');
+LunarHub::remoteStyle('https://example.com/style.css');
 ```

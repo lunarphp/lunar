@@ -6,7 +6,7 @@
 
 Search is configured using the [Laravel Scout](https://laravel.com/docs/8.x/scout) package.  Out the box we have configured the Lunar hub to use the community provided [mysql driver](https://github.com/yabhq/laravel-scout-mysql-driver).
 
-Using Scout allows us to provide search out the box but also make it easy for you as the developer to customise and tailor searching to your needs. There is no longer a requirement for Elasticsearch to be installed like it was in previous versions of GetCandy.
+Using Scout allows us to provide search out the box but also make it easy for you as the developer to customise and tailor searching to your needs. There is no longer a requirement for Elasticsearch to be installed like it was in previous versions of Lunar.
 
 ## Initial set up
 

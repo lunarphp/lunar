@@ -16,7 +16,7 @@ Here is an example of how you would register assets in the `boot` method of your
 These assets will get registered to the admin hubs' `app` layout.
 
 ```php
-use Lunar\Hub\GetCandyHub;
+use Lunar\Hub\LunarHub;
 
 /**
  * Bootstrap the application services.
@@ -26,16 +26,16 @@ public function boot()
     // ...
 
     // Register compiled script
-    GetCandyHub::script('lunar-package', __DIR__.'/../dist/lunar-package.js');
+    LunarHub::script('lunar-package', __DIR__.'/../dist/lunar-package.js');
 
     // Register remote script
-    GetCandyHub::remoteScript('https://example.com/script.js');
+    LunarHub::remoteScript('https://example.com/script.js');
 
     // Register compiled styles
-    GetCandyHub::style('lunar-package', __DIR__.'/../dist/lunar-package.css');
+    LunarHub::style('lunar-package', __DIR__.'/../dist/lunar-package.css');
 
     // Register remote styles
-    GetCandyHub::remoteStyle('https://example.com/style.css');
+    LunarHub::remoteStyle('https://example.com/style.css');
 
     // ...
 }

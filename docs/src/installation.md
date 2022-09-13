@@ -11,7 +11,7 @@
 - intl PHP extension (on most systems it will be installed by default)
 - GD PHP extension (used for image manipulation)
 
-## Install GetCandy
+## Install Lunar
 
 ::: warning Beta Software
 Lunar is currently in Public Beta. The software may not be stable enough for a production site and further beta releases may bring breaking changes.
@@ -29,17 +29,17 @@ composer require lunar/admin
 php artisan vendor:publish --tag=lunar
 ```
 
-## Add the `GetCandyUser` Trait
+## Add the `LunarUser` Trait
 
 Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
 
 ```php
-use Lunar\Base\Traits\GetCandyUser;
+use Lunar\Base\Traits\LunarUser;
 // ...
 
 class User extends Authenticatable
 {
-    use GetCandyUser;
+    use LunarUser;
     // ...
 }
 ```
@@ -61,7 +61,7 @@ By default, scout has the setting `soft_delete` set to false. You need to make s
 ### Going with Meilisearch
 
 ::: tip Recommended
-Meilisearch is the recommended search driver for GetCandy.
+Meilisearch is the recommended search driver for Lunar.
 :::
 
 If you're on OSX then you can use [Takeout](https://github.com/tighten/takeout) which makes installing Meilisearch via Docker a breeze.
@@ -178,4 +178,4 @@ If you enjoy our project, please share it with others. The more developers using
 
 Get sharing on Twitter, Reddit, Medium, Dev.to, Laravel News, Slack, Discord, etc.
 
-Go Team GetCandy! 🤟
+Go Team Lunar! 🤟

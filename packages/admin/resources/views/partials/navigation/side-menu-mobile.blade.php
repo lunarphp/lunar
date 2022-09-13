@@ -42,7 +42,7 @@
                     <a href="{{ route('hub.settings') }}"
                        class="justify-between menu-link menu-link--inactive">
                         <div class="flex gap-2">
-                            {!! Lunar\Hub\GetCandyHub::icon('cog', 'w-5 h-5 shrink-0') !!}
+                            {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5 shrink-0') !!}
 
                             <span class="text-sm font-medium">
                                 {{ __('adminhub::global.settings') }}

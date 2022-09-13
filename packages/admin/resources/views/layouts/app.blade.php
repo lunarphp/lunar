@@ -16,7 +16,7 @@
     <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
 
-    @if ($styles = \Lunar\Hub\GetCandyHub::styles())
+    @if ($styles = \Lunar\Hub\LunarHub::styles())
         <!-- Package Styles -->
         @foreach ($styles as $asset)
             <link href="{!! $asset->url() !!}" rel="stylesheet">
@@ -56,7 +56,7 @@
           showMobileMenu: false,
           darkMode: $persist(false),
       }">
-    {!! \Lunar\Hub\GetCandyHub::paymentIcons() !!}
+    {!! \Lunar\Hub\LunarHub::paymentIcons() !!}
 
     <div class="flex h-full">
         @include('adminhub::partials.navigation.side-menu-mobile')
@@ -90,7 +90,7 @@
 
     @livewireScripts
 
-    @if ($scripts = \Lunar\Hub\GetCandyHub::scripts())
+    @if ($scripts = \Lunar\Hub\LunarHub::scripts())
         <!-- Package Scripts -->
         @foreach ($scripts as $asset)
             <script src="{!! $asset->url() !!}"></script>

@@ -242,7 +242,7 @@ class LunarServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the observers used in GetCandy.
+     * Register the observers used in Lunar.
      *
      * @return void
      */

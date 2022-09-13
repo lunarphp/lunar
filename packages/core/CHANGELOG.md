@@ -88,7 +88,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `config/lunar/urls.php` config.
 - You can now specify a URL generator when creating records that use the `HasUrls` trait.
 - You can specify whether URLs are required throughout the system.
-- The database connection can now be specified for GetCandy's models in `lunar/database.php`. By [@ryanmitchell](https://github.com/ryanmitchell)
+- The database connection can now be specified for Lunar's models in `lunar/database.php`. By [@ryanmitchell](https://github.com/ryanmitchell)
 - Added `lunar:search:index` command to reindex models based on options passed. By [@lucasvmds](https://github.com/lucasvmds)
 - Added ability to format prices using different locales via the php NumberFormatter.
 - Added new `clear()` function to the CartManager.
@@ -145,7 +145,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added `Taxes` facade to ensure the `TaxManager` can be easily extended. ([#129](https://github.com/lunarphp/lunar/issues/129))
 - `collections` relationship has been added to the `Product` model. By ([@poppabear8883](https://github.com/poppabear8883))
-- GetCandy's models now support have added macro support. By ([@edcoreweb](https://github.com/edcoreweb))
+- Lunar's models now support have added macro support. By ([@edcoreweb](https://github.com/edcoreweb))
 
 ### Changed
 

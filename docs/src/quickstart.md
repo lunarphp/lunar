@@ -1,6 +1,6 @@
 # Quick Start
 
-If you want to get up and running quickly to review GetCandy, this section is for you.
+If you want to get up and running quickly to review Lunar, this section is for you.
 
 [[toc]]
 
@@ -62,7 +62,7 @@ Run the migrations
 php artisan migrate
 ```
 
-Install GetCandy
+Install Lunar
 
 ```
 php artisan lunar:install
@@ -95,4 +95,4 @@ If you enjoy our project, please share it with others. The more developers using
 
 Get sharing on Twitter, Reddit, Medium, Dev.to, Laravel News, Slack, Discord, etc.
 
-Go Team GetCandy! 🤟
+Go Team Lunar! 🤟

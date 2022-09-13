@@ -28,7 +28,7 @@ class Permission
     public $description;
 
     /**
-     * Whether this is a first party permission, set by GetCandy.
+     * Whether this is a first party permission, set by Lunar.
      *
      * @var bool
      */

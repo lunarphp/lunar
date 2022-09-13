@@ -5,14 +5,14 @@ namespace Lunar\Tests\Stubs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Lunar\Base\Traits\GetCandyUser;
+use Lunar\Base\Traits\LunarUser;
 
 class User extends Authenticatable
 {
-    use GetCandyUser;
+    use LunarUser;
     use HasFactory;
     use Notifiable;
-    use GetCandyUser;
+    use LunarUser;
 
     /**
      * The attributes that are mass assignable.

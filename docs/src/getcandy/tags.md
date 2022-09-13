@@ -4,7 +4,7 @@
 
 ## Overview
 
-Tags serve a simple function in GetCandy, you can add tags to models. This is useful for relating otherwise unrelated models in the system. They will also impact other parts of the system such as Dynamic collections.
+Tags serve a simple function in Lunar, you can add tags to models. This is useful for relating otherwise unrelated models in the system. They will also impact other parts of the system such as Dynamic collections.
 
 For example, you could have two products "Blue T-Shirt" and "Blue Shoes", which in their nature are unrelated, but you could add a `BLUE` tag to each product and then create a Dynamic Collection to include any products with a `BLUE` tag and they will be returned.
 

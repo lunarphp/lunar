@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Str;
-use Lunar\Hub\GetCandyHub;
+use Lunar\Hub\LunarHub;
 
 class MenuLink implements MenuItem
 {
@@ -129,7 +129,7 @@ class MenuLink implements MenuItem
      */
     public function renderIcon($attrs = null)
     {
-        return GetCandyHub::icon($this->icon, $attrs);
+        return LunarHub::icon($this->icon, $attrs);
     }
 
     /**

@@ -6,7 +6,7 @@
 
 Taxation is a tricky business and sometimes what Lunar offers simply won't be enough, and we completely understand. This why Taxation is driver based, so you can add your own logic if you need to.
 
-By default we have a `SystemTaxManager` which will use GetCandy's internal models and database as outlined above. If you need to write our own implementation, or if you're creating an add on for Tax, you can change the driver in the `config/taxes.php` config file.
+By default we have a `SystemTaxManager` which will use Lunar's internal models and database as outlined above. If you need to write our own implementation, or if you're creating an add on for Tax, you can change the driver in the `config/taxes.php` config file.
 
 ```php
 <?php

@@ -1,8 +1,8 @@
-# Welcome to GetCandy!
+# Welcome to Lunar!
 
 We're delighted you are considering Lunar for your project. We've spent a lot of time developing this package to bring headless e-commerce functionality to Laravel.
 
-## What is GetCandy?
+## What is Lunar?
 
 Lunar is a [Laravel e-commerce package](https://lunarphp.io/) which brings functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
 
@@ -20,4 +20,4 @@ Keep an eye on [our roadmap](https://github.com/orgs/lunarphp/projects/5) for fu
 
 ## Get started
 
-Enough waffle! Let's help you [install GetCandy...](/installation.html)
+Enough waffle! Let's help you [install Lunar...](/installation.html)

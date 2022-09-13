@@ -34,7 +34,7 @@ class InstallLunar extends Command
      *
      * @var string
      */
-    protected $description = 'Install the GetCandy';
+    protected $description = 'Install the Lunar';
 
     /**
      * Execute the console command.
@@ -67,7 +67,7 @@ class InstallLunar extends Command
         }
 
         DB::transaction(function () {
-            $this->info('Installing GetCandy...');
+            $this->info('Installing Lunar...');
 
             $this->info('Publishing configuration...');
 

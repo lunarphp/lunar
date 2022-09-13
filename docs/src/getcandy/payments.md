@@ -260,7 +260,7 @@ $order->billingAddress;
 A Shipping Tables addon is planned to make setting up shipping in the admin hub easy for most scenarios.
 :::
 
-To add Shipping Options you will need to [extend GetCandy](/extending/shipping) to add in your own logic.
+To add Shipping Options you will need to [extend Lunar](/extending/shipping) to add in your own logic.
 
 Then in your checkout, or where ever you want, you can fetch these options:
 

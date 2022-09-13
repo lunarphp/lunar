@@ -460,7 +460,7 @@ You can specify which customer group the price applies to by setting the `custom
 
 ### Tiered Pricing
 
-Tiered pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing on GetCandy, this is determined by the `tier` column when creating prices. For example:
+Tiered pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing on Lunar, this is determined by the `tier` column when creating prices. For example:
 
 ```php
 Price::create([

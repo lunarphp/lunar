@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Lunar\Hub\GetCandyHub;
+use Lunar\Hub\LunarHub;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -18,7 +18,7 @@ class StylesController extends Controller
      */
     public function __invoke(string $style)
     {
-        $asset = collect(GetCandyHub::styles())
+        $asset = collect(LunarHub::styles())
             ->filter(function ($asset) use ($style) {
                 return $asset->name() === $style;
             })->first();

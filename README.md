@@ -1,11 +1,11 @@
 <div align="center" height="400">
-    <img src="https://raw.githubusercontent.com/lunar/lunar/main/.github/assets/logo-light.svg#gh-dark-mode-only" alt="GetCandy" width="400">
-    <img src="https://raw.githubusercontent.com/lunar/lunar/main/.github/assets/logo.svg#gh-light-mode-only" alt="GetCandy" width="400">
+    <img src="https://raw.githubusercontent.com/lunar/lunar/main/.github/assets/logo-light.svg#gh-dark-mode-only" alt="Lunar" width="400">
+    <img src="https://raw.githubusercontent.com/lunar/lunar/main/.github/assets/logo.svg#gh-light-mode-only" alt="Lunar" width="400">
 </div>
 
-[GetCandy](https://lunarphp.io) is a set of Laravel packages that bring functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
+[Lunar](https://lunarphp.io) is a set of Laravel packages that bring functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
 
-This repository serves as a monorepo for the main packages that make up GetCandy.
+This repository serves as a monorepo for the main packages that make up Lunar.
 
 ## Requirements
 
@@ -15,11 +15,11 @@ This repository serves as a monorepo for the main packages that make up GetCandy
 
 ## Documentation
 
-- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything GetCandy
+- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything Lunar
 
 ## Community
 
-- [Join our discord server](https://discord.gg/v6qVWaf) and chat to the developers and people using GetCandy.
+- [Join our discord server](https://discord.gg/v6qVWaf) and chat to the developers and people using Lunar.
 - [We have a roadmap](https://github.com/orgs/lunarphp/projects/5) where we will be detailing which features are next.
 
 ## Packages in this monorepo

@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Lunar Admin Hub",
   "main": "index.js",
-  "author": "GetCandy",
+  "author": "Lunar",
   "license": "MIT",
   "private": true,
   "scripts": {

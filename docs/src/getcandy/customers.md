@@ -80,11 +80,11 @@ Lunar allows you to specify your own method of how you want to impersonate users
 
 namespace App\Auth;
 
-use Lunar\Hub\Auth\Impersonate as GetCandyImpersonate;
+use Lunar\Hub\Auth\Impersonate as LunarImpersonate;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\URL;
 
-class Impersonate extends GetCandyImpersonate
+class Impersonate extends LunarImpersonate
 {
     /**
      * Return the URL for impersonation.

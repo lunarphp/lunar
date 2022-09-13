@@ -1,6 +1,6 @@
 <div>
     <section class="relative overflow-hidden bg-white dark:bg-gray-900">
-        <x-hub::get-candy.stamp class="absolute inset-0 w-full h-full scale-150 opacity-10 blur-3xl" />
+        <x-hub::lunar.stamp class="absolute inset-0 w-full h-full scale-150 opacity-10 blur-3xl" />
 
         <main class="grid min-h-screen place-content-center">
             <div class="relative w-screen max-w-lg px-4 py-8 mx-auto sm:px-6 sm:py-12 lg:px-8">

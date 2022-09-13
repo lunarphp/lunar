@@ -15,7 +15,7 @@ use Lunar\FieldTypes\YouTube;
 class FieldTypeManifest
 {
     /**
-     * The FieldTypes available in GetCandy.
+     * The FieldTypes available in Lunar.
      *
      * @var \Illuminate\Support\Collection
      */
@@ -35,7 +35,7 @@ class FieldTypeManifest
     }
 
     /**
-     * Add a FieldType into GetCandy.
+     * Add a FieldType into Lunar.
      *
      * @param  string  $classname
      * @return void

@@ -1,6 +1,6 @@
-<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://lunarphp.io/lunar_logo.svg" width="400" alt="GetCandy"></a></p>
+<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://lunarphp.io/lunar_logo.svg" width="400" alt="Lunar"></a></p>
 
-## About GetCandy
+## About Lunar
 
 Lunar is an open source E-commerce platform which embraces Laravel as it's foundation and uses it to build a highly extensible, robust and feature rich application you can build any store on.
 
@@ -17,7 +17,7 @@ We put developers first and try to ensure your experience is as smooth as possib
 
 ## Documentation
 
-- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything GetCandy
+- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything Lunar
 
 ## License
 

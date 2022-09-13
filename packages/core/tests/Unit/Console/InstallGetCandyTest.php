@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Lunar\Tests\TestCase;
 
-class InstallGetCandyTest extends TestCase
+class InstallLunarTest extends TestCase
 {
     /** @test */
     public function install_command_copies_the_configuration()

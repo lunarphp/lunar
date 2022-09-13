@@ -6,7 +6,7 @@ When you move to production, you will want to make sure you have taken all the s
 
 ## Reporting vulnerabilities
 
-If you find a security issue with GetCandy, please reach out to us privately on Discord or via email [security@lunarphp.io](mailto:security@lunarphp.io) so we can address it and patch with a new release as soon as possible.
+If you find a security issue with Lunar, please reach out to us privately on Discord or via email [security@lunarphp.io](mailto:security@lunarphp.io) so we can address it and patch with a new release as soon as possible.
 
 ## Securing Laravel
 
@@ -24,7 +24,7 @@ Depending on which search driver you are using will depend on how you lock down 
 
 We classify sensitive information as data that contains information about your customers or orders, whether identifiable or not. Information such as addresses, emails, names is likely to be indexed for use in the hub.
 
-### GetCandy's indexes
+### Lunar's indexes
 
 Index names are relative to the `SCOUT_PREFIX` env variable.
 

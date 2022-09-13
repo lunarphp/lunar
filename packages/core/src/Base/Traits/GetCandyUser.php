@@ -4,7 +4,7 @@ namespace Lunar\Base\Traits;
 
 use Lunar\Models\Customer;
 
-trait GetCandyUser
+trait LunarUser
 {
     public function customers()
     {

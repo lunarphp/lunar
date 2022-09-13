@@ -92,7 +92,7 @@ class Manifest
     }
 
     /**
-     * Returns the base permissions which are required by GetCandy.
+     * Returns the base permissions which are required by Lunar.
      *
      * @return array
      */

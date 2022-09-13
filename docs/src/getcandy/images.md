@@ -98,7 +98,7 @@ If you decide to use medialibrary directly, you will not have access to our tran
 
 ### Extending with Lunar
 
-To enable image transformations on your models within GetCandy, simply add the `HasMedia` trait.
+To enable image transformations on your models within Lunar, simply add the `HasMedia` trait.
 
 ```php
 <?php

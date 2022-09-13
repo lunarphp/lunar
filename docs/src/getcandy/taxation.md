@@ -159,5 +159,5 @@ Lunar\Models\TaxRateAmount
 
 Sometimes the standard tax calculations aren't enough, and you may want to implement your own logic, perhaps connecting to a Tax service such as TaxJar.
 
-Lunar allows you to implement your own tax driver, check the [Extending GetCandy](/extending/taxation) section for more information.
+Lunar allows you to implement your own tax driver, check the [Extending Lunar](/extending/taxation) section for more information.
 
