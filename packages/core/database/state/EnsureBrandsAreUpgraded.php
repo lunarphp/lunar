@@ -14,7 +14,7 @@ class EnsureBrandsAreUpgraded
             return;
         }
 
-        $legacyBrands = Product::query()->pluck('brand', 'id');
+        $legacyBrands = Product::query()->pluck('brand', 'id')->filter();
         if ($legacyBrands->isEmpty()) {
             return;
         }
