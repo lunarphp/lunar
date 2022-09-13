@@ -1,5 +1,5 @@
 {
-    "name": "lunar/core",
+    "name": "lunarphp/core",
     "description": "Lunar Laravel e-commerce core functionality.",
     "keywords": ["lunar", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
     "type": "library",

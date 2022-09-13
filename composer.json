@@ -20,7 +20,6 @@
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
         "livewire/livewire": "^2.0",
-        "lunar/licensing": "dev-main",
         "lunarphp/licensing": "dev-main",
         "php": "^8.0",
         "spatie/laravel-activitylog": "^4.4",
@@ -64,7 +63,9 @@
     },
     "replace": {
         "lunar/admin": "self.version",
-        "lunar/core": "self.version"
+        "lunar/core": "self.version",
+        "lunarphp/admin": "self.version",
+        "lunarphp/core": "self.version"
     },
     "minimum-stability": "beta"
 }

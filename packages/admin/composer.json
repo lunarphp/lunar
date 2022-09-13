@@ -1,5 +1,5 @@
 {
-    "name": "lunar/admin",
+    "name": "lunarphp/admin",
     "description": "Admin Hub for GetCandy. A modern headless e-commerce solution for Laravel PHP framework.",
     "keywords": ["lunar", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
     "type": "library",
@@ -34,9 +34,9 @@
     },
     "require": {
         "php": "^8.0",
-        "lunar/core": "self.version",
+        "lunarphp/core": "self.version",
         "livewire/livewire": "^2.0",
-        "lunar/licensing": "dev-main",
+        "lunarphp/licensing": "dev-main",
         "barryvdh/laravel-dompdf": "^2.0"
     },
     "require-dev": {
