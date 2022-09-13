@@ -30,9 +30,16 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-### 2.0-beta15
+## [ Unreleased ]
 
-## Removal of config based media conversions
+### Images now use the `images` media collection name.
+
+The way images are saved and retrieved by the Hub has changed. The Hub now saves images in the `images` collection, and only shows images from that collection.
+If you are using the old collection name `products` in your code, you'll need to update it to the new collection name.
+
+## 2.0-beta15
+
+### Removal of config based media conversions
 
 The way media conversions are defined and used has changed, you should update your `getcandy/media.php` config file to the following:
 
