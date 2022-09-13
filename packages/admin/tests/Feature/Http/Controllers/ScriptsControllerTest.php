@@ -25,7 +25,6 @@ class ScriptsControllerTest extends TestCase
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
-
         $this->actingAs($staff, 'staff');
 
         $this->get(route('hub.assets.scripts', ['script' => 'non-existing-script']))

@@ -58,7 +58,6 @@
         "laravel": {
             "providers": [
                 "Lunar\\Hub\\AdminHubServiceProvider",
-                "Lunar\\GetCandyServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
         }
