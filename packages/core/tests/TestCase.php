@@ -3,7 +3,7 @@
 namespace Lunar\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
-use Lunar\GetCandyServiceProvider;
+use Lunar\LunarServiceProvider;
 use Lunar\Tests\Stubs\TestUrlGenerator;
 use Lunar\Tests\Stubs\User;
 use Illuminate\Support\Facades\Config;
@@ -26,7 +26,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            GetCandyServiceProvider::class,
+            LunarServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ActivitylogServiceProvider::class,
             ConverterServiceProvider::class,

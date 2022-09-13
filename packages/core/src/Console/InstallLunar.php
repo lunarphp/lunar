@@ -323,7 +323,7 @@ class InstallLunar extends Command
     private function publishConfiguration($forcePublish = false): void
     {
         $params = [
-            '--provider' => "Lunar\GetCandyServiceProvider",
+            '--provider' => "Lunar\LunarServiceProvider",
             '--tag'      => 'lunar',
         ];
 
