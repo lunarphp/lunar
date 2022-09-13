@@ -12,7 +12,7 @@ class Version extends Component
 
     public function __construct()
     {
-        $installedVersion = InstalledVersions::getPrettyVersion('getcandy/core');
+        $installedVersion = InstalledVersions::getPrettyVersion('lunar/core');
 
         $prettyVersion = Str::contains($installedVersion, [
             'dev',
@@ -32,6 +32,6 @@ class Version extends Component
      */
     public function render()
     {
-        return view('adminhub::components.getcandy.version');
+        return view('adminhub::components.lunar.version');
     }
 }

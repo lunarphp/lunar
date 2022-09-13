@@ -12,7 +12,7 @@ class AddonsDiscover extends Command
      *
      * @var string
      */
-    protected $signature = 'getcandy:addons:discover';
+    protected $signature = 'lunar:addons:discover';
 
     /**
      * The console command description.

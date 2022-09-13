@@ -12,7 +12,7 @@ GetCandy takes a driver based approach with Payments, meaning you are free to us
 
 ## Configuration
 
-All configuration for payments is located in `config/getcandy/payments.php`. Here you can specify different types of payments and the driver each one should use.
+All configuration for payments is located in `config/lunar/payments.php`. Here you can specify different types of payments and the driver each one should use.
 
 ```php
 <?php

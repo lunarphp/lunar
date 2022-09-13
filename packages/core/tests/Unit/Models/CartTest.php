@@ -15,7 +15,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 /**
- * @group getcandy.carts
+ * @group lunar.carts
  */
 class CartTest extends TestCase
 {

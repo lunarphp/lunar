@@ -57,7 +57,7 @@ class CustomersIndex extends Component
      */
     public function getMetaFieldsProperty()
     {
-        return collect(config('getcandy-hub.customers.searchable_meta'));
+        return collect(config('lunar-hub.customers.searchable_meta'));
     }
 
     /**

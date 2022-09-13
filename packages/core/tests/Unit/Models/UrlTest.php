@@ -33,7 +33,7 @@ class UrlTest extends TestCase
 
         Url::create($data);
 
-        $this->assertDatabaseHas('getcandy_urls', $data);
+        $this->assertDatabaseHas('lunar_urls', $data);
     }
 
     /** @test */

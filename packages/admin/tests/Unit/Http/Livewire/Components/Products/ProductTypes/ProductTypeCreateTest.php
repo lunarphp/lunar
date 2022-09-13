@@ -107,7 +107,7 @@ class ProductTypeCreateTest extends TestCase
             'name' => 'Foobar',
         ]);
 
-        $tablePrefix = config('getcandy.database.table_prefix');
+        $tablePrefix = config('lunar.database.table_prefix');
 
         $productType = ProductType::whereName('Foobar')->first();
 

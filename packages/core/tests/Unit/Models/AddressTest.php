@@ -33,7 +33,7 @@ class AddressTest extends TestCase
 
         Address::create($data);
 
-        $this->assertDatabaseHas('getcandy_addresses', $data);
+        $this->assertDatabaseHas('lunar_addresses', $data);
     }
 
     /** @test */
@@ -67,7 +67,7 @@ class AddressTest extends TestCase
 
         $data['meta'] = json_encode($data['meta']);
 
-        $this->assertDatabaseHas('getcandy_addresses', $data);
+        $this->assertDatabaseHas('lunar_addresses', $data);
 
         $this->assertInstanceOf(Customer::class, $address->customer);
         $this->assertInstanceOf(Country::class, $address->country);

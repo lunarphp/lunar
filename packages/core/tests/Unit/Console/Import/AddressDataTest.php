@@ -73,9 +73,9 @@ class AddressDataTest extends TestCase
             ], 200);
         });
 
-        $this->artisan('getcandy:import:address-data');
+        $this->artisan('lunar:import:address-data');
 
-        $this->assertDatabaseHas('getcandy_countries', [
+        $this->assertDatabaseHas('lunar_countries', [
             'name'      => 'United Kingdom',
             'iso3'      => 'GBR',
             'iso2'      => 'GB',

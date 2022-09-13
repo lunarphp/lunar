@@ -39,7 +39,7 @@ class ProductType extends BaseModel
      */
     public function mappedAttributes()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Attribute::class,

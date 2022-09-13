@@ -29,7 +29,7 @@ class CartSessionManager implements CartSessionInterface
     public function current()
     {
         return $this->fetchOrCreate(
-            config('getcandy.cart.auto_create', false)
+            config('lunar.cart.auto_create', false)
         );
     }
 
@@ -95,7 +95,7 @@ class CartSessionManager implements CartSessionInterface
         }
 
         $this->cart = Cart::with(
-            config('getcandy.cart.eager_load', [])
+            config('lunar.cart.eager_load', [])
         )->find($cartId);
 
         if (! $this->cart) {
@@ -114,7 +114,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getSessionKey()
     {
-        return config('getcandy.cart.session_key');
+        return config('lunar.cart.session_key');
     }
 
     /**

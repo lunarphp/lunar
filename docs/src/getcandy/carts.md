@@ -162,7 +162,7 @@ When building a store, you're going to want an easy way to fetch the cart for th
 
 ### Available config
 
-Configuration for your cart is handled in `getcandy/cart.php`
+Configuration for your cart is handled in `lunar/cart.php`
 
 |Field|Description|Default
 |:-|:-|:-|
@@ -192,7 +192,7 @@ public function __construct(
 $cart = \Lunar\Facades\CartSession::current();
 ```
 
-When you call current, you have two options, you either return `null` if they don't have a cart, or you want to create one straight away. By default, we do not create them initially as this could lead to a ton of cart models being created for no good reason. If you want to enable this functionality, you can adjust the config in `getcandy/cart.php`
+When you call current, you have two options, you either return `null` if they don't have a cart, or you want to create one straight away. By default, we do not create them initially as this could lead to a ton of cart models being created for no good reason. If you want to enable this functionality, you can adjust the config in `lunar/cart.php`
 
 ### Forgetting the cart
 

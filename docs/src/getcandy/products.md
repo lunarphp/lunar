@@ -70,7 +70,7 @@ Lunar\Models\ProductType::create([
 ]);
 ```
 
-Product Types also have [Attributes](/{{route}}/{{version}}/getcandy/attributes) associated to them. These associated attributes will determine what fields are available to products when editing. For example if you had an attribute of `Screen Type` associated to a `TVs` product type, any products with that product type would have access to that attribute when editing.
+Product Types also have [Attributes](/{{route}}/{{version}}/lunar/attributes) associated to them. These associated attributes will determine what fields are available to products when editing. For example if you had an attribute of `Screen Type` associated to a `TVs` product type, any products with that product type would have access to that attribute when editing.
 
 You can associate attributes to a product type like so (it's just a straight forward [Polymorphic relationship](https://laravel.com/docs/8.x/eloquent-relationships#many-to-many-polymorphic-relations)).
 
@@ -119,7 +119,7 @@ European Article numbering code (EAN) is a series of letters and numbers in a un
 
 Depending on your storefront needs, you might not need any of these fields to be required or unique. For this reason you can change this behaviour at a validation level.
 
-`config/getcandy-hub/products.php`
+`config/lunar-hub/products.php`
 
 ```php
     'sku' => [
@@ -216,7 +216,7 @@ width_unit
 
 ### Configuring measurements
 
-You can configure the available UOM's in the `getcandy/shipping.php` config file. Here is an example of what GetCandy provides by default:
+You can configure the available UOM's in the `lunar/shipping.php` config file. Here is an example of what GetCandy provides by default:
 
 **Length**
 

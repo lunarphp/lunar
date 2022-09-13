@@ -10,7 +10,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.models
+ * @group lunar.models
  */
 class CustomerTest extends TestCase
 {
@@ -31,7 +31,7 @@ class CustomerTest extends TestCase
         Customer::create($customer);
 
         $this->assertDatabaseHas(
-            'getcandy_customers',
+            'lunar_customers',
             $customer
         );
     }
@@ -51,7 +51,7 @@ class CustomerTest extends TestCase
         Customer::create($customer);
 
         $this->assertDatabaseHas(
-            'getcandy_customers',
+            'lunar_customers',
             $customer
         );
     }

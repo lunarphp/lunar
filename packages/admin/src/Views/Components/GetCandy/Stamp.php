@@ -13,6 +13,6 @@ class Stamp extends Component
      */
     public function render()
     {
-        return view('adminhub::components.getcandy.stamp');
+        return view('adminhub::components.lunar.stamp');
     }
 }

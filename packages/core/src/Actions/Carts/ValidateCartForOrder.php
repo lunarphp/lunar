@@ -26,14 +26,14 @@ class ValidateCartForOrder
         // Does this cart already have an order?
         if ($cart->order) {
             throw new OrderExistsException(
-                _('getcandy::exceptions.carts.order_exists')
+                _('lunar::exceptions.carts.order_exists')
             );
         }
 
         // Do we have a billing address?
         if (! $cart->billingAddress) {
             throw new BillingAddressMissingException(
-                __('getcandy::exceptions.carts.billing_missing')
+                __('lunar::exceptions.carts.billing_missing')
             );
         }
 
@@ -50,7 +50,7 @@ class ValidateCartForOrder
         if ($cart->getManager()->isShippable()) {
             if (! $cart->shippingAddress) {
                 throw new ShippingAddressMissingException(
-                    __('getcandy::exceptions.carts.shipping_missing')
+                    __('lunar::exceptions.carts.shipping_missing')
                 );
             }
 

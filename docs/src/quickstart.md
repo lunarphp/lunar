@@ -19,7 +19,7 @@ If you would prefer to install GetCandy into your own Laravel application, pleas
 - GD PHP extension (used for image manipulation)
 
 ::: warning
-This demo store uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.getcandy.io/installation.html#search-configuration)
+This demo store uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.lunarphp.io/installation.html#search-configuration)
 :::
 
 
@@ -28,7 +28,7 @@ This demo store uses Meilisearch, for the best experience it is recommended you 
 ### Clone the repo
 
 ```bash
-git clone --depth=1 https://github.com/getcandy/demo-store.git
+git clone --depth=1 https://github.com/lunarphp/demo-store.git
 ```
 
 This will create a shallow clone of the repo, from there you would just need to remove the `.git` folder and reinitialise it to make it your own.
@@ -65,7 +65,7 @@ php artisan migrate
 Install GetCandy
 
 ```
-php artisan getcandy:install
+php artisan lunar:install
 ```
 
 Seed the demo data.
@@ -87,7 +87,7 @@ You are now installed!
 - You can access the storefront at `http://<yoursite>`
 - You can access the admin hub at `http://<yoursite>/hub`
 
-You can review the source code at the GitHub Repository: [https://github.com/getcandy/demo-store](https://github.com/getcandy/demo-store)
+You can review the source code at the GitHub Repository: [https://github.com/lunarphp/demo-store](https://github.com/lunarphp/demo-store)
 
 ## Spread the Word
 

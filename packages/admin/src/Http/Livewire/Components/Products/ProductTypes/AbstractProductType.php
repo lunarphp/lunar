@@ -92,7 +92,7 @@ abstract class AbstractProductType extends Component
      */
     public function getVariantsDisabledProperty()
     {
-        return config('getcandy-hub.products.disable_variants', false);
+        return config('lunar-hub.products.disable_variants', false);
     }
 
     /**

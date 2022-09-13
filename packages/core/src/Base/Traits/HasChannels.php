@@ -32,7 +32,7 @@ trait HasChannels
      */
     public function channels()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Channel::class,

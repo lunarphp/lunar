@@ -419,7 +419,7 @@ class ProductShowTest extends TestCase
 
         $values = ProductOptionValue::get();
 
-        Config::set('getcandy-hub.products.sku.unique', true);
+        Config::set('lunar-hub.products.sku.unique', true);
 
         LiveWire::actingAs($staff, 'staff')
                 ->test(ProductShow::class, [
@@ -716,7 +716,7 @@ class ProductShowTest extends TestCase
      * */
     public function variants_can_be_disabled()
     {
-        Config::set('getcandy-hub.products.disable_variants', true);
+        Config::set('lunar-hub.products.disable_variants', true);
 
         $staff = Staff::factory()->create([
             'admin' => true,
@@ -750,7 +750,7 @@ class ProductShowTest extends TestCase
      * */
     public function variants_arent_generated_when_disabled()
     {
-        Config::set('getcandy-hub.products.disable_variants', true);
+        Config::set('lunar-hub.products.disable_variants', true);
 
         $staff = Staff::factory()->create([
             'admin' => true,
@@ -781,7 +781,7 @@ class ProductShowTest extends TestCase
 
         $values = ProductOptionValue::get();
 
-        Config::set('getcandy-hub.products.sku.unique', true);
+        Config::set('lunar-hub.products.sku.unique', true);
 
         LiveWire::actingAs($staff, 'staff')
                 ->test(ProductShow::class, [

@@ -87,7 +87,7 @@ class Order extends BaseModel
      */
     public function getStatusLabelAttribute()
     {
-        $statuses = config('getcandy.orders.statuses');
+        $statuses = config('lunar.orders.statuses');
 
         return $statuses[$this->status]['label'] ?? $this->status;
     }

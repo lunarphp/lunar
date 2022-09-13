@@ -27,7 +27,7 @@ class InstallGetCandy extends Command
      *
      * @var string
      */
-    protected $signature = 'getcandy:install';
+    protected $signature = 'lunar:install';
 
     /**
      * The console command description.
@@ -55,7 +55,7 @@ class InstallGetCandy extends Command
         $this->warn('* GetCandy accepts no liability for compromised data as a result of your *');
         $this->warn('*  storefront not following guidelines set out by third party providers. *');
         $this->warn('*                                                                        *');
-        $this->warn('*      Find out more: https://docs.getcandy.io/securing-your-site        *');
+        $this->warn('*      Find out more: https://docs.lunarphp.io/securing-your-site        *');
         $this->warn('**************************************************************************');
 
         $confirmed = $this->confirm('I understand, lets do this 🚀');
@@ -71,7 +71,7 @@ class InstallGetCandy extends Command
 
             $this->info('Publishing configuration...');
 
-            if (! $this->configExists('getcandy')) {
+            if (! $this->configExists('lunar')) {
                 $this->publishConfiguration();
             } else {
                 if ($this->shouldOverwriteConfig()) {
@@ -86,7 +86,7 @@ class InstallGetCandy extends Command
 
             if (! Country::count()) {
                 $this->info('Importing countries');
-                $this->call('getcandy:import:address-data');
+                $this->call('lunar:import:address-data');
             }
 
             if (! Channel::whereDefault(true)->exists()) {
@@ -279,7 +279,7 @@ class InstallGetCandy extends Command
             if ($this->confirm('Would you like to show some love by starring the repo?')) {
                 $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';
 
-                exec("{$exec} https://github.com/getcandy/getcandy");
+                exec("{$exec} https://github.com/lunarphp/lunar");
 
                 $this->line("Thanks, you're awesome!");
             }
@@ -324,7 +324,7 @@ class InstallGetCandy extends Command
     {
         $params = [
             '--provider' => "Lunar\GetCandyServiceProvider",
-            '--tag'      => 'getcandy',
+            '--tag'      => 'lunar',
         ];
 
         if ($forcePublish === true) {

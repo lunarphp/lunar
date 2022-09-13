@@ -12,7 +12,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.cartlines
+ * @group lunar.cartlines
  */
 class CartLineTest extends TestCase
 {

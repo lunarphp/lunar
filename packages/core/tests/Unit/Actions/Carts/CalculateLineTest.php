@@ -16,8 +16,8 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.actions
- * @group getcandy.actions.carts
+ * @group lunar.actions
+ * @group lunar.actions.carts
  */
 class CalculateLineTest extends TestCase
 {

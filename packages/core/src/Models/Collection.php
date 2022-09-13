@@ -87,7 +87,7 @@ class Collection extends BaseModel implements SpatieHasMedia
      */
     public function products()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             Product::class,
@@ -148,7 +148,7 @@ class Collection extends BaseModel implements SpatieHasMedia
      */
     public function customerGroups(): BelongsToMany
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             CustomerGroup::class,

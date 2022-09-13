@@ -25,6 +25,6 @@ class TaxManager extends Manager
 
     public function getDefaultDriver()
     {
-        return config('getcandy.taxes.driver', 'system');
+        return config('lunar.taxes.driver', 'system');
     }
 }

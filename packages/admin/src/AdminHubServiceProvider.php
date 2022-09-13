@@ -102,7 +102,7 @@ class AdminHubServiceProvider extends ServiceProvider
     public function register()
     {
         collect($this->configFiles)->each(function ($config) {
-            $this->mergeConfigFrom("{$this->root}/config/$config.php", "getcandy-hub.$config");
+            $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar-hub.$config");
         });
 
         $this->app->singleton(Manifest::class, function () {
@@ -143,7 +143,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
 
         Auth::resolved(function ($auth) {
-            $auth->extend('getcandyhub', function ($app, $name, array $config) {
+            $auth->extend('lunarhub', function ($app, $name, array $config) {
                 return $app->make(\Lunar\Hub\Auth\HubGuard::class);
             });
         });
@@ -157,22 +157,22 @@ class AdminHubServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
                 $this->publishes([
-                    "{$this->root}/config/$config.php" => config_path("getcandy-hub/$config.php"),
-                ], 'getcandy');
+                    "{$this->root}/config/$config.php" => config_path("lunar-hub/$config.php"),
+                ], 'lunar');
             });
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
-            ], 'getcandy-migrations');
+            ], 'lunar-migrations');
 
             $this->publishes([
                 __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
                 __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
-            ], 'getcandy-hub-views');
+            ], 'lunar-hub-views');
 
             $this->publishes([
                 __DIR__.'/../resources/lang' => resource_path('lang/vendor/adminhub'),
-            ], 'getcandy-hub-translations');
+            ], 'lunar-hub-translations');
 
             $this->commands([
                 InstallHub::class,
@@ -384,8 +384,8 @@ class AdminHubServiceProvider extends ServiceProvider
     private function registerPublishables()
     {
         $this->publishes([
-            __DIR__.'/../public' => public_path('vendor/getcandy/admin-hub/'),
-        ], 'getcandy:hub:public');
+            __DIR__.'/../public' => public_path('vendor/lunar/admin-hub/'),
+        ], 'lunar:hub:public');
     }
 
     /**
@@ -396,7 +396,7 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerAuthGuard()
     {
         $this->app['config']->set('auth.guards.staff', [
-            'driver' => 'getcandyhub',
+            'driver' => 'lunarhub',
         ]);
     }
 

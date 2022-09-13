@@ -18,7 +18,7 @@ class ActivityLogIndex extends Component
     public function render()
     {
         return view('adminhub::livewire.components.settings.activity-log.index', [
-            'logs' => Activity::whereLogName('getcandy')->with('causer')->orderBy('created_at', 'desc')->paginate(25),
+            'logs' => Activity::whereLogName('lunar')->with('causer')->orderBy('created_at', 'desc')->paginate(25),
         ])->layout('adminhub::layouts.base');
     }
 }

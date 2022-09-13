@@ -2,8 +2,8 @@
 
 use Lunar\Base\Traits\GetCandyUser;
 
-if (! function_exists('is_getcandy_user')) {
-    function is_getcandy_user($user)
+if (! function_exists('is_lunar_user')) {
+    function is_lunar_user($user)
     {
         $traits = class_uses_recursive($user);
 

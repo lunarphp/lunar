@@ -76,7 +76,7 @@ class ProductVariant extends BaseModel implements Purchasable
      */
     public function values()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             ProductOptionValue::class,
@@ -166,7 +166,7 @@ class ProductVariant extends BaseModel implements Purchasable
 
     public function images()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(Media::class, "{$prefix}media_product_variant")
             ->withPivot(['primary', 'position'])

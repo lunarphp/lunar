@@ -15,7 +15,7 @@ trait HasUrls
     public static function bootHasUrls()
     {
         static::created(function (Model $model) {
-            $generator = config('getcandy.urls.generator', null);
+            $generator = config('lunar.urls.generator', null);
             if ($generator) {
                 app($generator)->handle($model);
             }

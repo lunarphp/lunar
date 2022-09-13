@@ -1,4 +1,4 @@
-<p align="center"><a href="https://getcandy.io/" target="_blank"><img src="https://getcandy.io/getcandy_logo.svg" width="400" alt="GetCandy"></a></p>
+<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://lunarphp.io/lunar_logo.svg" width="400" alt="GetCandy"></a></p>
 
 ## About GetCandy
 
@@ -17,7 +17,7 @@ We put developers first and try to ensure your experience is as smooth as possib
 
 ## Documentation
 
-- [Full documentation](https://docs.getcandy.io/) - Includes in-depth guides on everything GetCandy
+- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything GetCandy
 
 ## License
 

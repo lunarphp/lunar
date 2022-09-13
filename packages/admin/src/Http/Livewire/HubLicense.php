@@ -9,7 +9,7 @@ class HubLicense extends Component
 {
     public function render()
     {
-        $license = LicenseManager::fetch('getcandy/admin-hub', []);
+        $license = LicenseManager::fetch('lunar/admin-hub', []);
 
         // $status = $license->getStatus();
 

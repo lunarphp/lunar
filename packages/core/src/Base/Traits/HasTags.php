@@ -13,7 +13,7 @@ trait HasTags
      */
     public function tags()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Tag::class,

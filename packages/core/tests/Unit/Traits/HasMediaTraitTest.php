@@ -18,7 +18,7 @@ class HasMediaTraitTest extends TestCase
     /** @test */
     public function conversions_are_loaded()
     {
-        $conversions = config('getcandy.media.conversions');
+        $conversions = config('lunar.media.conversions');
 
         $this->assertCount(1, $conversions);
 

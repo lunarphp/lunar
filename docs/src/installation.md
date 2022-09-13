@@ -20,13 +20,13 @@ GetCandy is currently in Public Beta. The software may not be stable enough for 
 ### Composer Require Package
 
 ```sh
-composer require getcandy/admin
+composer require lunar/admin
 ```
 
 ### Publish the Config Files
 
 ```sh
-php artisan vendor:publish --tag=getcandy
+php artisan vendor:publish --tag=lunar
 ```
 
 ## Add the `GetCandyUser` Trait
@@ -123,7 +123,7 @@ Then finally, add this to your `scout.php` config file.
 The admin hub requires some assets to work. Run the following command to publish them to your public directory.
 
 ```sh
-php artisan getcandy:hub:install
+php artisan lunar:hub:install
 ```
 
 ## Run Migrations
@@ -133,7 +133,7 @@ GetCandy uses table prefixes to avoid conflicts with your app's tables. You can 
 :::
 
 ::: warning
-GetCandy assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/getcandy/database.php` to set the correct field type before running the migrations.
+GetCandy assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/lunar/database.php` to set the correct field type before running the migrations.
 :::
 
 As you'd expect, there's quite a few tables GetCandy needs to function, so run the migrations now.
@@ -141,7 +141,7 @@ As you'd expect, there's quite a few tables GetCandy needs to function, so run t
 You can optionally publish these migrations so they're added to your Laravel app.
 
 ```sh
-php artisan vendor:publish --tag=getcandy-migrations
+php artisan vendor:publish --tag=lunar-migrations
 ```
 
 ```sh
@@ -151,7 +151,7 @@ php artisan migrate
 ## Run the Artisan Installer
 
 ```sh
-php artisan getcandy:install
+php artisan lunar:install
 ```
 
 This will take you through a set of questions to configure your GetCandy install. The process includes...
@@ -165,7 +165,7 @@ This will take you through a set of questions to configure your GetCandy install
 If you are using Meilisearch, you just need to do some final configuration. Simply run this command.
 
 ```sh
-php artisan getcandy:meilisearch:setup
+php artisan lunar:meilisearch:setup
 ```
 
 ::: tip Success 🎉

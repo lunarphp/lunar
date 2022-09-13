@@ -225,7 +225,7 @@ class VariantShow extends Component
                     ->performedOn($this->variant)
                     ->withProperties(['media' => $media->toArray()])
                     ->event('added_image')
-                    ->useLog('getcandy')
+                    ->useLog('lunar')
                     ->log('added_image');
 
                     // Add ID for future and processing now.

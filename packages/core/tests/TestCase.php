@@ -19,7 +19,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
         // additional setup
         Config::set('providers.users.model', User::class);
-        Config::set('getcandy.urls.generator', TestUrlGenerator::class);
+        Config::set('lunar.urls.generator', TestUrlGenerator::class);
         activity()->disableLogging();
     }
 

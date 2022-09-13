@@ -274,7 +274,7 @@ class AttributeShow extends AbstractAttribute
             return;
         }
         DB::transaction(function () {
-            DB::table(config('getcandy.database.table_prefix').'attributables')
+            DB::table(config('lunar.database.table_prefix').'attributables')
                 ->whereIn(
                     'attribute_id',
                     $this->attributeGroupToDelete->attributes()->pluck('id')->toArray()
@@ -293,7 +293,7 @@ class AttributeShow extends AbstractAttribute
     public function deleteAttribute()
     {
         DB::transaction(function () {
-            DB::table(config('getcandy.database.table_prefix').'attributables')
+            DB::table(config('lunar.database.table_prefix').'attributables')
                 ->where(
                     'attribute_id',
                     $this->attributeToDelete->id

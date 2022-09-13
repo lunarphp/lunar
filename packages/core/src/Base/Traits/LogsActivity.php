@@ -17,7 +17,7 @@ trait LogsActivity
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->useLogName('getcandy')
+            ->useLogName('lunar')
             ->logAll()
             ->dontSubmitEmptyLogs()
             ->logExcept(['updated_at']);

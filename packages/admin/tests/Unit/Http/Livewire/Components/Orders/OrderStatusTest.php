@@ -101,7 +101,7 @@ class OrderStatusTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
         ->test(OrderStatus::class, [
             'order' => $order,
-        ])->assertSet('statuses', config('getcandy.orders.statuses'))
+        ])->assertSet('statuses', config('lunar.orders.statuses'))
         ->assertSet('showStatusSelect', false)
         ->assertSet('newStatus', null)
         ->assertSet('selectedMailers', [])
@@ -141,7 +141,7 @@ class OrderStatusTest extends TestCase
             'order_id' => $order->id,
         ]);
 
-        Config::set('getcandy.orders.statuses', [
+        Config::set('lunar.orders.statuses', [
             'awaiting-payment' => [
                 'label' => 'Awaiting Payment',
                 'color' => '#848a8c',
@@ -161,7 +161,7 @@ class OrderStatusTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(OrderStatus::class, [
                 'order' => $order,
-            ])->assertSet('statuses', config('getcandy.orders.statuses'))
+            ])->assertSet('statuses', config('lunar.orders.statuses'))
             ->set('newStatus', 'awaiting-payment')
             ->assertCount('availableMailers', 1);
 
@@ -208,7 +208,7 @@ class OrderStatusTest extends TestCase
             'order_id' => $order->id,
         ]);
 
-        Config::set('getcandy.orders.statuses', [
+        Config::set('lunar.orders.statuses', [
             'awaiting-payment' => [
                 'label' => 'Awaiting Payment',
                 'color' => '#848a8c',
@@ -221,7 +221,7 @@ class OrderStatusTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(OrderStatus::class, [
                 'order' => $order,
-            ])->assertSet('statuses', config('getcandy.orders.statuses'))
+            ])->assertSet('statuses', config('lunar.orders.statuses'))
             ->set('newStatus', 'awaiting-payment')
             ->set('previewTemplate', 'test_a_mailer')
             ->assertSet('previewHtml', '<div>Test A Mailer</div>');
@@ -264,7 +264,7 @@ class OrderStatusTest extends TestCase
             'order_id' => $order->id,
         ]);
 
-        Config::set('getcandy.orders.statuses', [
+        Config::set('lunar.orders.statuses', [
             'awaiting-payment' => [
                 'label' => 'Awaiting Payment',
                 'color' => '#848a8c',
@@ -277,7 +277,7 @@ class OrderStatusTest extends TestCase
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(OrderStatus::class, [
                 'order' => $order,
-            ])->assertSet('statuses', config('getcandy.orders.statuses'))
+            ])->assertSet('statuses', config('lunar.orders.statuses'))
             ->set('newStatus', 'awaiting-payment')
             ->set('selectedMailers', [
                 'test_a_mailer',

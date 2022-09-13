@@ -7,7 +7,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.models
+ * @group lunar.models
  */
 class TaxClassTest extends TestCase
 {

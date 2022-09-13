@@ -1,13 +1,13 @@
 {
-    "name": "getcandy/core",
+    "name": "lunar/core",
     "description": "GetCandy Laravel e-commerce core functionality.",
-    "keywords": ["getcandy", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
+    "keywords": ["lunar", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
     "type": "library",
     "license": "MIT",
     "authors": [
         {
           "name": "GetCandy",
-          "homepage": "https://getcandy.io/"
+          "homepage": "https://lunarphp.io/"
         }
     ],
     "autoload": {

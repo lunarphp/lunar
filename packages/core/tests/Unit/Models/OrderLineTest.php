@@ -13,7 +13,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.orderlines
+ * @group lunar.orderlines
  */
 class OrderLineTest extends TestCase
 {

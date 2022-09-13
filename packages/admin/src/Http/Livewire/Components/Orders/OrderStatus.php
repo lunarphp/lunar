@@ -105,7 +105,7 @@ class OrderStatus extends Component
      */
     public function getStatusesProperty()
     {
-        return config('getcandy.orders.statuses', []);
+        return config('lunar.orders.statuses', []);
     }
 
     /**

@@ -21,7 +21,7 @@ class HubGuard extends SessionGuard
         Session $session,
         Request $request = null
     ) {
-        $this->name = 'getcandyhub';
+        $this->name = 'lunarhub';
         $this->session = $session;
         $this->request = $request;
         $this->provider = $provider;

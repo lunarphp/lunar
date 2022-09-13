@@ -25,7 +25,7 @@ class PaymentManager extends Manager
     {
         $originalDriver = $driver;
 
-        $type = config("getcandy.payments.types.{$driver}");
+        $type = config("lunar.payments.types.{$driver}");
 
         $driver = $type['driver'] ?? $originalDriver;
 
@@ -64,6 +64,6 @@ class PaymentManager extends Manager
 
     public function getDefaultDriver()
     {
-        return config('getcandy.payments.default');
+        return config('lunar.payments.default');
     }
 }

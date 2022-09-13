@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 /**
- * @group getcandy.actions
+ * @group lunar.actions
  */
 class SortProductsByPriceTest extends TestCase
 {
@@ -56,7 +56,7 @@ class SortProductsByPriceTest extends TestCase
             'placed_at' => now(),
         ]);
 
-        Config::set('getcandy.orders.reference_generator', TestOrderReferenceGenerator::class);
+        Config::set('lunar.orders.reference_generator', TestOrderReferenceGenerator::class);
 
         $this->assertNull($order->reference);
 
@@ -73,7 +73,7 @@ class SortProductsByPriceTest extends TestCase
             'placed_at' => now(),
         ]);
 
-        Config::set('getcandy.orders.reference_generator', null);
+        Config::set('lunar.orders.reference_generator', null);
 
         $this->assertNull($order->reference);
 

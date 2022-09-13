@@ -36,7 +36,7 @@ class HasUrlsTraitTest extends TestCase
     {
         Language::factory()->create(['default' => true]);
 
-        Config::set('getcandy.urls.generator', UrlGenerator::class);
+        Config::set('lunar.urls.generator', UrlGenerator::class);
 
         $product = Product::factory()->create();
 

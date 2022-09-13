@@ -40,7 +40,7 @@ For more information on what's available, see [Retrieving media](https://spatie.
 
 ## Conversions
 
-GetCandy provides some useful conversions which come ready out the box. This is provided in the config `getcandy/media`.
+GetCandy provides some useful conversions which come ready out the box. This is provided in the config `lunar/media`.
 
 ```php
 'conversions' => [

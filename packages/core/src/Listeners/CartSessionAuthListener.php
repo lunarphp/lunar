@@ -27,7 +27,7 @@ class CartSessionAuthListener
      */
     public function login(Login $event)
     {
-        if (! is_getcandy_user($event->user)) {
+        if (! is_lunar_user($event->user)) {
             return;
         }
 
@@ -37,7 +37,7 @@ class CartSessionAuthListener
             CartSession::associate(
                 $currentCart,
                 $event->user,
-                config('getcandy.cart.auth_policy')
+                config('lunar.cart.auth_policy')
             );
         }
 
@@ -59,7 +59,7 @@ class CartSessionAuthListener
      */
     public function logout(Logout $event)
     {
-        if (! is_getcandy_user($event->user)) {
+        if (! is_lunar_user($event->user)) {
             return;
         }
 

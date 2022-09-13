@@ -12,7 +12,7 @@ Below is a list of available payment drivers.
 
 ### First party
 
-- [Stripe](https://github.com/getcandy/stripe)
+- [Stripe](https://github.com/lunarphp/stripe)
 
 ### Community
 
@@ -170,7 +170,7 @@ Payments::driver('stripe')->withData([
 public function setConfig(array $config): self
 ```
 
-Here you can set up any additional config for this payment driver. By default, this will be called when you register your payment driver and will take any values which are set in `config/getcandy/payments.php` for that type.
+Here you can set up any additional config for this payment driver. By default, this will be called when you register your payment driver and will take any values which are set in `config/lunar/payments.php` for that type.
 
 
 ## Creating transactions

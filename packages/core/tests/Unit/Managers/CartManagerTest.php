@@ -33,7 +33,7 @@ use Mockery;
 use Mockery\MockInterface;
 
 /**
- * @group getcandy.cart-manager
+ * @group lunar.cart-manager
  */
 class CartManagerTest extends TestCase
 {

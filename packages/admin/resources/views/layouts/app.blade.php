@@ -13,7 +13,7 @@
 
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
-    <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}"
+    <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
 
     @if ($styles = \Lunar\Hub\GetCandyHub::styles())
@@ -97,7 +97,7 @@
         @endforeach
     @endif
     
-    <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>
+    <script src="{{ asset('vendor/lunar/admin-hub/app.js') }}"></script>
 </body>
 
 </html>

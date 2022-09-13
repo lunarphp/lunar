@@ -6,7 +6,7 @@ When you move to production, you will want to make sure you have taken all the s
 
 ## Reporting vulnerabilities
 
-If you find a security issue with GetCandy, please reach out to us privately on Discord or via email [security@getcandy.io](mailto:security@getcandy.io) so we can address it and patch with a new release as soon as possible.
+If you find a security issue with GetCandy, please reach out to us privately on Discord or via email [security@lunarphp.io](mailto:security@lunarphp.io) so we can address it and patch with a new release as soon as possible.
 
 ## Securing Laravel
 

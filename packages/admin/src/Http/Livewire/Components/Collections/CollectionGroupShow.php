@@ -349,8 +349,8 @@ class CollectionGroupShow extends Component
      */
     public function getSlugIsRequiredProperty()
     {
-        return config('getcandy.urls.required', false) &&
-            ! config('getcandy.urls.generator', null);
+        return config('lunar.urls.required', false) &&
+            ! config('lunar.urls.generator', null);
     }
 
     /**

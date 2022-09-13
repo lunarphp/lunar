@@ -15,7 +15,7 @@ if (! function_exists('max_upload_filesize')) {
 if (! function_exists('get_validation')) {
     function get_validation($reference, $field, $defaults = [], Model $model = null)
     {
-        $config = config("getcandy-hub.{$reference}.{$field}", []);
+        $config = config("lunar-hub.{$reference}.{$field}", []);
 
         $rules = $defaults;
 
@@ -71,7 +71,7 @@ if (! function_exists('price')) {
 if (! function_exists('impersonate_link')) {
     function impersonate_link(Authenticatable $authenticatable)
     {
-        $class = config('getcandy-hub.customers.impersonate');
+        $class = config('lunar-hub.customers.impersonate');
 
         if (! $class) {
             return null;

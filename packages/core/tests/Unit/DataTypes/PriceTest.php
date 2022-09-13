@@ -9,7 +9,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.datatypes
+ * @group lunar.datatypes
  */
 class PriceTest extends TestCase
 {

@@ -15,7 +15,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.orders
+ * @group lunar.orders
  */
 class OrderTest extends TestCase
 {

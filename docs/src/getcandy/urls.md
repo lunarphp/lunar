@@ -130,7 +130,7 @@ $myModel->urls; // Collection
 
 ## Automatically generating URLs
 
-You can tell GetCandy to generate URLs for models that use the `HasUrls` trait automatically by setting the `generator` config option in `config/getcandy/urls.php`.
+You can tell GetCandy to generate URLs for models that use the `HasUrls` trait automatically by setting the `generator` config option in `config/lunar/urls.php`.
 
 By default this is set to `Lunar\Generators\UrlGenerator::class` which means URLs will be generated. To disable this, set the config like below:
 

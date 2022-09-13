@@ -81,5 +81,5 @@ Data for Countries and States is provided by https://github.com/dr5hn/countries-
 You can use the following command to import countries and states.
 
 ```sh
-php artisan getcandy:import:address-data
+php artisan lunar:import:address-data
 ```

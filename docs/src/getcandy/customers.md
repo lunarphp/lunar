@@ -100,7 +100,7 @@ class Impersonate extends GetCandyImpersonate
 }
 ```
 
-Then you need to register this in `config/getcandy-hub/customers.php`.
+Then you need to register this in `config/lunar-hub/customers.php`.
 
 ```php
 return [

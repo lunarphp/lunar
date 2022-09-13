@@ -24,7 +24,7 @@ class Attribute extends BaseModel
     {
         static::deleting(function (Model $model) {
             DB::table(
-                config('getcandy.database.table_prefix').'attributables'
+                config('lunar.database.table_prefix').'attributables'
             )->where('attribute_id', '=', $model->id)->delete();
         });
         parent::boot();

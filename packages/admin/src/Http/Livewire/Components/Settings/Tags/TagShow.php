@@ -27,7 +27,7 @@ class TagShow extends Component
 
     public function getTaggablesProperty()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return DB::table(
             "{$prefix}taggables"

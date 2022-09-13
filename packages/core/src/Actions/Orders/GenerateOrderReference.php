@@ -16,7 +16,7 @@ class GenerateOrderReference
     public function execute(
         Order $order
     ) {
-        $generator = config('getcandy.orders.reference_generator');
+        $generator = config('lunar.orders.reference_generator');
 
         if (! $generator) {
             return null;

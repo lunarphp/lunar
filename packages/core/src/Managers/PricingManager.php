@@ -51,7 +51,7 @@ class PricingManager implements PricingManagerInterface
 
     public function __construct()
     {
-        if (Auth::check() && is_getcandy_user(Auth::user())) {
+        if (Auth::check() && is_lunar_user(Auth::user())) {
             $this->user = Auth::user();
         }
     }

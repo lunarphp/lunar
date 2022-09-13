@@ -155,7 +155,7 @@ class CartManager
     {
         if ($quantity < 1) {
             throw new InvalidCartLineQuantityException(
-                __('getcandy::exceptions.invalid_cart_line_quantity', [
+                __('lunar::exceptions.invalid_cart_line_quantity', [
                     'quantity' => $quantity,
                 ])
             );
@@ -226,7 +226,7 @@ class CartManager
 
         if (! $line) {
             throw new CartLineIdMismatchException(
-                __('getcandy::exceptions.cart_line_id_mismatch')
+                __('lunar::exceptions.cart_line_id_mismatch')
             );
         }
 
@@ -278,7 +278,7 @@ class CartManager
     {
         if ($quantity < 1) {
             throw new InvalidCartLineQuantityException(
-                __('getcandy::exceptions.invalid_cart_line_quantity', [
+                __('lunar::exceptions.invalid_cart_line_quantity', [
                     'quantity' => $quantity,
                 ])
             );

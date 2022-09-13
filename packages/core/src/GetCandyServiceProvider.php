@@ -92,10 +92,10 @@ class GetCandyServiceProvider extends ServiceProvider
     public function register(): void
     {
         collect($this->configFiles)->each(function ($config) {
-            $this->mergeConfigFrom("{$this->root}/config/$config.php", "getcandy.$config");
+            $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar.$config");
         });
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'getcandy');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
 
         $this->registerAddonManifest();
 
@@ -176,13 +176,13 @@ class GetCandyServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
                 $this->publishes([
-                    "{$this->root}/config/$config.php" => config_path("getcandy/$config.php"),
-                ], 'getcandy');
+                    "{$this->root}/config/$config.php" => config_path("lunar/$config.php"),
+                ], 'lunar');
             });
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
-            ], 'getcandy-migrations');
+            ], 'lunar-migrations');
 
             $this->commands([
                 InstallGetCandy::class,
@@ -201,7 +201,7 @@ class GetCandyServiceProvider extends ServiceProvider
         });
 
         Converter::setMeasurements(
-            config('getcandy.shipping.measurements', [])
+            config('lunar.shipping.measurements', [])
         );
 
         Event::listen(
@@ -220,7 +220,7 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->app->instance(Manifest::class, new Manifest(
             new Filesystem(),
             $this->app->basePath(),
-            $this->app->bootstrapPath().'/cache/getcandy_addons.php'
+            $this->app->bootstrapPath().'/cache/lunar_addons.php'
         ));
     }
 
@@ -284,7 +284,7 @@ class GetCandyServiceProvider extends ServiceProvider
         Blueprint::macro('userForeignKey', function ($field_name = 'user_id', $nullable = false) {
             $userModel = config('auth.providers.users.model');
 
-            $type = config('getcandy.database.users_id_type', 'bigint');
+            $type = config('lunar.database.users_id_type', 'bigint');
 
             if ($type == 'uuid') {
                 $this->foreignUuId($field_name)

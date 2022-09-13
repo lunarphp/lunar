@@ -34,7 +34,7 @@ class Status extends Component
      */
     public function __construct($status)
     {
-        $statuses = config('getcandy.orders.statuses');
+        $statuses = config('lunar.orders.statuses');
 
         $match = $statuses[$status] ?? null;
 

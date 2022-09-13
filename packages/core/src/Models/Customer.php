@@ -117,7 +117,7 @@ class Customer extends BaseModel
      */
     public function customerGroups()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             CustomerGroup::class,
@@ -132,7 +132,7 @@ class Customer extends BaseModel
      */
     public function users()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             config('auth.providers.users.model'),
@@ -162,7 +162,7 @@ class Customer extends BaseModel
      */
     public function mappedAttributes()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Attribute::class,

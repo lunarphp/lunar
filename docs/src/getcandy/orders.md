@@ -118,7 +118,7 @@ By default GetCandy will generate a new order reference for you when you create 
 
 If your store has a specific requirement for how references are generated, you can easily swap out the GetCandy one for your own:
 
-`config/getcandy/orders.php`
+`config/lunar/orders.php`
 
 ```php
 return [
@@ -334,7 +334,7 @@ And as always, if you have any questions you can reach out on our Discord!
 
 ## Order Notifications
 
-GetCandy allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `getcandy/orders` config file and are defined like so:
+GetCandy allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `lunar/orders` config file and are defined like so:
 
 ```php
 'statuses'     => [
@@ -388,7 +388,7 @@ Here's an example of what the template could look like:
 By default when you click "Download PDF" in the hub when viewing an order, you will get a basic PDF generated for you to download. You can publish the view that powers this to create your own PDF template.
 
 ```bash
-php artisan vendor:publish --tag=getcandy-hub-views
+php artisan vendor:publish --tag=lunar-hub-views
 ```
 
 This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely customise the PDF you want displayed on download.

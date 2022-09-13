@@ -46,7 +46,7 @@ class OrderObserver
 
     /**
      * Called when we are setting up the index via
-     * php artisan getcandy:meilisearch:update
+     * php artisan lunar:meilisearch:update
      * */
     public function searchSetup(Order $order)
     {

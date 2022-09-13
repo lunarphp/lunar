@@ -15,7 +15,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.pricing-manager
+ * @group lunar.pricing-manager
  */
 class PricingManagerTest extends TestCase
 {

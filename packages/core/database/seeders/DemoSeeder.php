@@ -23,7 +23,7 @@ class DemoSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
 
         foreach ($this->toTruncate as $table) {
-            \DB::table(config('getcandy.table_prefix').$table)->truncate();
+            \DB::table(config('lunar.table_prefix').$table)->truncate();
         }
 
         Schema::enableForeignKeyConstraints();

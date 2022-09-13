@@ -24,7 +24,7 @@ abstract class AbstractSearch implements SearchInterface
      */
     public function getDriverForModel(string $model): string
     {
-        $engines = config('getcandy.search.engine_map', []);
+        $engines = config('lunar.search.engine_map', []);
         if (isset($engines[$model])) {
             return $engines[$model];
         }

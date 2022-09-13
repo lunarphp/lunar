@@ -34,8 +34,8 @@ trait HasUrls
             'urls' => 'array',
         ];
 
-        $required = config('getcandy.urls.required', true);
-        $generator = config('getcandy.urls.generator', null);
+        $required = config('lunar.urls.required', true);
+        $generator = config('lunar.urls.generator', null);
 
         if (($required && ! $create) || ($required && $create && ! $generator)) {
             $rules['urls'] = 'array|min:1';

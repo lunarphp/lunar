@@ -8,7 +8,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.actions
+ * @group lunar.actions
  */
 class GetTaxZonePostcodeTest extends TestCase
 {

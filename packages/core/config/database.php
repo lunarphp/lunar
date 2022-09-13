@@ -3,7 +3,7 @@
 return [
     'connection' => '',
 
-    'table_prefix' => 'getcandy_',
+    'table_prefix' => 'lunar_',
 
     /*
     |--------------------------------------------------------------------------

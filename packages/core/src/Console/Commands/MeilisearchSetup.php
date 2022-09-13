@@ -14,7 +14,7 @@ class MeilisearchSetup extends Command
      *
      * @var string
      */
-    protected $signature = 'getcandy:meilisearch:setup';
+    protected $signature = 'lunar:meilisearch:setup';
 
     /**
      * The console command description.
@@ -33,7 +33,7 @@ class MeilisearchSetup extends Command
     public function handle(EngineManager $engine)
     {
         // Return the models we want to search on.
-        $searchables = config('getcandy.search.models', []);
+        $searchables = config('lunar.search.models', []);
 
         $this->engine = $engine->createMeilisearchDriver();
 

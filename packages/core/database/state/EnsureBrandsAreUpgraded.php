@@ -30,14 +30,14 @@ class EnsureBrandsAreUpgraded
         });
 
         if (Product::has('brand')->count() === $legacyBrands->count()) {
-            $prefix = config('getcandy.database.table_prefix');
+            $prefix = config('lunar.database.table_prefix');
             Schema::dropColumns("{$prefix}products", ['brand']);
         }
     }
 
     protected function canRun()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return Schema::hasTable("{$prefix}brands");
     }

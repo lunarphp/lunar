@@ -10,7 +10,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.payments
+ * @group lunar.payments
  */
 class PaymentsTest extends TestCase
 {

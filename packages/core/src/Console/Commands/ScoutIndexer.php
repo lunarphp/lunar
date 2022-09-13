@@ -11,7 +11,7 @@ class ScoutIndexer extends Command
      *
      * @var string
      */
-    protected $signature = 'getcandy:search:index 
+    protected $signature = 'lunar:search:index 
                             {models?* : Model or space-separated list of Models for indexing.}
                             {--ignore : If informed, only uses the models listed in the command call for indexing, ignoring the Models present in the config file.}
                             {--refresh : If informed, the records will be delete before indexing. Can\'t be used with the [--flush] option.}
@@ -79,7 +79,7 @@ class ScoutIndexer extends Command
         }
 
         // Return searchable models from config
-        $searchables = config('getcandy.search.models', []);
+        $searchables = config('lunar.search.models', []);
 
         // Checks whether to ignore models pinned to the class
         if ($this->option('ignore')) {

@@ -10,7 +10,7 @@ You can contribute to the project in many different ways. Reporting bugs, fixing
 
 ## Monorepo
 
-GetCandy uses a monorepo [getcandy/getcandy](https://github.com/getcandy/getcandy) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
+GetCandy uses a monorepo [lunar/lunar](https://github.com/lunarphp/lunar) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
 
 ## Repository Branching
 
@@ -22,7 +22,7 @@ The `main` branch hosts the latest stable version of the software and documentat
 
 If you would like to contribute to the documentation you can do easily by following these instructions...
 
-1. Fork the monorepo `getcandy/getcandy`
+1. Fork the monorepo `lunarphp/lunar`
 2. Clone your fork locally
 3. In your terminal change to the `/docs` directory
 4. Run `npm install`
@@ -34,15 +34,15 @@ GetCandy uses [VuePress](https://vuepress.vuejs.org/) for our documentation site
 
 ## Found a Bug?
 
-If you find a bug in the software please raise a GitHub Issue on the [getcandy/getcandy](https://github.com/getcandy/getcandy/issues) repository. 
+If you find a bug in the software please raise a GitHub Issue on the [lunar/lunar](https://github.com/lunar/lunar/issues) repository.
 
 Even better would be a pull request with a test that fails demonstrating the bug.
 
 ## Proposing a Feature
 
-Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/getcandy/getcandy/issues/new/choose) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into GetCandy.
+Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/lunar/lunar/issues/new/choose) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into GetCandy.
 
-However, you're more than welcome to code away on your idea if you think it will help the discussion. 
+However, you're more than welcome to code away on your idea if you think it will help the discussion.
 
 ## Issue Not Getting Attention?
 
@@ -68,7 +68,7 @@ Here's a guide on how to set-up your development environent ready for contributi
 
 ## Making a Pull Request
 
-When making a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), you will want to target the correct branch. 
+When making a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), you will want to target the correct branch.
 
 If you are contributing documentation, the PR should be targeted straight to the `main` branch. However, code contributions should target the `develop` branch.
 

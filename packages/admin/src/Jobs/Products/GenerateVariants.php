@@ -68,7 +68,7 @@ class GenerateVariants implements ShouldQueue
      */
     public function handle()
     {
-        if (config('getcandy-hub.products.disable_variants')) {
+        if (config('lunar-hub.products.disable_variants')) {
             throw new VariantsDisabledException(
                 'Variants are not enabled, check the hub config'
             );
@@ -95,7 +95,7 @@ class GenerateVariants implements ShouldQueue
 
         DB::transaction(function () use ($permutations, $baseVariant) {
             // Validation bits
-            $rules = config('getcandy-hub.products', []);
+            $rules = config('lunar-hub.products', []);
 
             foreach ($permutations as $key => $optionsToCreate) {
                 $variant = new ProductVariant();

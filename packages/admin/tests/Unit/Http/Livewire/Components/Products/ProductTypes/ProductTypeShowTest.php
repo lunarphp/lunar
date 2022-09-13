@@ -111,7 +111,7 @@ class ProductTypeShowTest extends TestCase
 
         $this->assertEquals('Foobar', $productType->refresh()->name);
 
-        $tablePrefix = config('getcandy.database.table_prefix');
+        $tablePrefix = config('lunar.database.table_prefix');
 
         $this->assertDatabaseHas("{$tablePrefix}attributables", [
             'attributable_id'   => $productType->id,

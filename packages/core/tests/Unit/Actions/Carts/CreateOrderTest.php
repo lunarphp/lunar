@@ -22,8 +22,8 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.actions
- * @group getcandy.actions.carts
+ * @group lunar.actions
+ * @group lunar.actions.carts
  */
 class CreateOrderTest extends TestCase
 {
@@ -131,7 +131,7 @@ class CreateOrderTest extends TestCase
         $datacheck = [
             'user_id'            => $this->cart->user_id,
             'channel_id'         => $this->cart->channel_id,
-            'status'             => config('getcandy.orders.draft_status'),
+            'status'             => config('lunar.orders.draft_status'),
             'customer_reference' => null,
             'sub_total'          => $this->cart->subTotal->value,
             'total'              => $this->cart->total->value,

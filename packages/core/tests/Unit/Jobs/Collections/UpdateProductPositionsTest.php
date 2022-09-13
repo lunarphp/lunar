@@ -12,7 +12,7 @@ use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @group getcandy.jobs
+ * @group lunar.jobs
  */
 class NumberTest extends TestCase
 {

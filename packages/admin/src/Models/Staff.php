@@ -66,9 +66,9 @@ class Staff extends Authenticatable
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('getcandy.database.table_prefix').$this->getTable());
+        $this->setTable(config('lunar.database.table_prefix').$this->getTable());
 
-        if ($connection = config('getcandy.database.connection', false)) {
+        if ($connection = config('lunar.database.connection', false)) {
             $this->setConnection($connection);
         }
     }

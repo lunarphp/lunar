@@ -79,7 +79,7 @@ class ProductTest extends TestCase
         $product->scheduleChannel($channel, $publishDate);
 
         $this->assertDatabaseHas(
-            'getcandy_channelables',
+            'lunar_channelables',
             [
                 'channel_id'       => $channel->id,
                 'channelable_type' => Product::class,
@@ -89,7 +89,7 @@ class ProductTest extends TestCase
             ],
         );
 
-        $this->assertCount(1, DB::table('getcandy_channelables')->get());
+        $this->assertCount(1, DB::table('lunar_channelables')->get());
     }
 
     /** @test */
@@ -104,7 +104,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -127,7 +127,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -142,7 +142,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start, $end);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -169,7 +169,7 @@ class ProductTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -184,7 +184,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start, $end);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -211,7 +211,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start, $end);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -228,7 +228,7 @@ class ProductTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 0,

@@ -39,7 +39,7 @@ class CreateOrder
             $order = Order::create([
                 'user_id'            => $cart->user_id,
                 'channel_id'         => $cart->channel_id,
-                'status'             => config('getcandy.orders.draft_status'),
+                'status'             => config('lunar.orders.draft_status'),
                 'reference'          => null,
                 'customer_reference' => null,
                 'sub_total'          => $cart->subTotal->value,

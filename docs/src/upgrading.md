@@ -8,7 +8,7 @@
 Update the package
 
 ```sh
-composer update getcandy/admin
+composer update lunar/admin
 ```
 
 Run any migrations
@@ -21,13 +21,13 @@ php artisan migrate
 Re-publish the admin hub assets
 
 ```sh
-php artisan getcandy:hub:install
+php artisan lunar:hub:install
 ```
 
 If you're using Meilisearch, run the following
 
 ```sh
-php artisan getcandy:meilisearch:setup
+php artisan lunar:meilisearch:setup
 ```
 
 ## [ Unreleased ]
@@ -41,7 +41,7 @@ If you are using the old collection name `products` in your code, you'll need to
 
 ### Removal of config based media conversions
 
-The way media conversions are defined and used has changed, you should update your `getcandy/media.php` config file to the following:
+The way media conversions are defined and used has changed, you should update your `lunar/media.php` config file to the following:
 
 ```php
 <?php
@@ -156,7 +156,7 @@ Finally, you will need to define a dynamic relationship if your service provider
 ### Removal of `override` method for OrderReferenceGenerator - Medium Impact
 
 If you are using the `override` method to generator your own order references, this has been removed in favour of a config based approach.
-You should update your code to reflect this, see [Orders](/getcandy/orders#order-reference-generating)
+You should update your code to reflect this, see [Orders](/lunar/orders#order-reference-generating)
 
 ## 2.0-beta13.2
 
@@ -230,7 +230,7 @@ public function created(Order $order, Closure $next): Order
 
 ### Additional Scout configuration
 
-It's now possible to define which Scout driver should be used on a per model basis. To enable this, add the following to `config/getcandy/search.php`
+It's now possible to define which Scout driver should be used on a per model basis. To enable this, add the following to `config/lunar/search.php`
 
 ```php
 /*
@@ -273,7 +273,7 @@ $pricing = \Lunar\Facades\Pricing::for($variant)->get();
 ```
 
 ### Disabling Variants in the Admin Hub
-There is a new configuration option under `getcandy-hub/products.php` to disable product variants. This is useful if your storefront will never need to generate different product options and you don't want staff members to be able to do it accidentally.
+There is a new configuration option under `lunar-hub/products.php` to disable product variants. This is useful if your storefront will never need to generate different product options and you don't want staff members to be able to do it accidentally.
 
 ```
 'disable_variants' => false,
@@ -303,7 +303,7 @@ use Lunar\Base\Traits\Searchable;
 
 ### Changes to order statuses - High Impact
 
-The way statuses for orders are defined in `config/getcandy/orders.php` has changed. See below for the new definition:
+The way statuses for orders are defined in `config/lunar/orders.php` has changed. See below for the new definition:
 
 #### Old
 
@@ -334,11 +334,11 @@ The way statuses for orders are defined in `config/getcandy/orders.php` has chan
 You must re index and set up Meilisearch indexes due to a breaking change.
 
 ```sh
-php artisan getcandy:search:index
+php artisan lunar:search:index
 ```
 
 ```sh
-php artisan getcandy:meilisearch:setup
+php artisan lunar:meilisearch:setup
 ```
 
 This change removes the `_{locale}` suffix from certain indexes, so those can be removed.
@@ -437,7 +437,7 @@ On install we no longer set `description` to be `system` or `required` as this w
 
 This version adds a new config setting for User ID field types.
 
-Please add the following to your `config/getcandy/database.php` file
+Please add the following to your `config/lunar/database.php` file
 
 ```
     /*
@@ -473,18 +473,18 @@ $product->scheduleChannel($channel, $startAt, $endAt);
 
 ## v2.0-beta5
 
-The composer package to install has now changed to `getcandy/admin`. This is to support our new monorepo [getcandy/getcandy](https://github.com/getcandy/getcandy)
+The composer package to install has now changed to `lunar/admin`. This is to support our new monorepo [lunar/lunar](https://github.com/lunarphp/lunar)
 
 To get this update you need to make a change in your composer file.
 
 From
 ```
-"getcandy/getcandy": "^2.0"
+"lunar/lunar": "^2.0"
 ```
 
 To
 ```
-"getcandy/admin": "^2.0"
+"lunar/admin": "^2.0"
 ```
 
 And then run...
@@ -496,7 +496,7 @@ composer update
 Then re-publish the admin hub assets
 
 ```sh
-php artisan getcandy:hub:install
+php artisan lunar:hub:install
 ```
 
 ## v2.0-beta
