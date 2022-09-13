@@ -1,18 +1,18 @@
 {
-    "name": "getcandy/getcandy",
-    "description": "GetCandy Monorepo",
+    "name": "lunarphp/lunar",
+    "description": "Lunar Monorepo",
     "license": "MIT",
     "authors": [
         {
-            "name": "GetCandy",
-            "homepage": "https://getcandy.io/"
+            "name": "LunarPHP",
+            "homepage": "https://Lunar.io/"
         }
     ],
     "require": {
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^6.1|^7.0",
         "doctrine/dbal": "3.3.7",
-        "getcandy/licensing": "dev-main",
+        "lunar/licensing": "dev-main",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
@@ -35,31 +35,31 @@
             "packages/core/src/helpers.php"
         ],
         "psr-4": {
-            "GetCandy\\": "packages/core/src",
-            "GetCandy\\Database\\Factories\\": "packages/core/database/factories",
-            "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
-            "GetCandy\\Database\\State\\": "packages/core/database/state",
-            "GetCandy\\Hub\\": "packages/admin/src",
-            "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
+            "Lunar\\": "packages/core/src",
+            "Lunar\\Database\\Factories\\": "packages/core/database/factories",
+            "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
+            "Lunar\\Database\\State\\": "packages/core/database/state",
+            "Lunar\\Hub\\": "packages/admin/src",
+            "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "GetCandy\\Hub\\Tests\\": "packages/admin/tests",
-            "GetCandy\\Tests\\": "packages/core/tests"
+            "Lunar\\Hub\\Tests\\": "packages/admin/tests",
+            "Lunar\\Tests\\": "packages/core/tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "GetCandy\\Hub\\AdminHubServiceProvider",
-                "GetCandy\\GetCandyServiceProvider"
+                "Lunar\\Hub\\AdminHubServiceProvider",
+                "Lunar\\LunarServiceProvider"
             ]
         }
     },
     "replace": {
-        "getcandy/admin": "self.version",
-        "getcandy/core": "self.version"
+        "lunar/admin": "self.version",
+        "lunar/core": "self.version"
     },
     "minimum-stability": "beta"
 }
