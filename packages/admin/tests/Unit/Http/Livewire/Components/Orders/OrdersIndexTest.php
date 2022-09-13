@@ -62,7 +62,8 @@ class OrdersIndexTest extends TestCase
             'admin' => true,
         ]);
 
-        Livewire::actingAs($staff, 'staff')->test(OrdersIndex::class);
+        Livewire::actingAs($staff, 'staff')->test(OrdersIndex::class)
+            ->assertViewIs('adminhub::livewire.components.orders.index');
     }
 
     /** @test */
