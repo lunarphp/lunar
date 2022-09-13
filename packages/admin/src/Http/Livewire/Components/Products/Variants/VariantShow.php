@@ -83,7 +83,7 @@ class VariantShow extends Component
                 'preview'   => false,
                 'caption'   => $media->getCustomProperty('caption'),
                 'primary'   => $media->pivot->primary,
-                'position'  => $media->getCustomProperty('position', 1),
+                'position'  => $media->pivot->position,
             ];
         })->sortBy('position')->values()->toArray();
     }
@@ -212,6 +212,8 @@ class VariantShow extends Component
             $imagesToSync = [];
 
             foreach ($this->images as $key => $image) {
+                $newImage = false;
+
                 if (empty($image['id'])) {
                     $file = TemporaryUploadedFile::createFromLivewire(
                         $image['filename']
@@ -229,17 +231,22 @@ class VariantShow extends Component
                     // Add ID for future and processing now.
                     $this->images[$key]['id'] = $media->id;
                     $image['id'] = $media->id;
+
+                    $newImage = true;
                 }
 
                 $media = app(config('media-library.media_model'))::find($image['id']);
 
-                $media->setCustomProperty('caption', $image['caption']);
-                $media->setCustomProperty('primary', false);
-                $media->setCustomProperty('position', $image['position']);
-                $media->save();
+                if ($newImage) {
+                    $media->setCustomProperty('caption', $image['caption']);
+                    $media->setCustomProperty('primary', false);
+                    $media->setCustomProperty('position', $owner->media()->count() + 1);
+                    $media->save();
+                }
 
                 $imagesToSync[$media->id] = [
                     'primary' => $image['primary'],
+                    'position' => $image['position'],
                 ];
             }
 

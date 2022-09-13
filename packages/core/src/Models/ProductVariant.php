@@ -168,7 +168,10 @@ class ProductVariant extends BaseModel implements Purchasable
     {
         $prefix = config('getcandy.database.table_prefix');
 
-        return $this->belongsToMany(Media::class, "{$prefix}media_product_variant")->withPivot('primary')->withTimestamps();
+        return $this->belongsToMany(Media::class, "{$prefix}media_product_variant")
+            ->withPivot(['primary', 'position'])
+            ->orderBy('position')
+            ->withTimestamps();
     }
 
     public function getThumbnail()
