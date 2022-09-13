@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\MissingCurrencyPriceException;
 use Lunar\Facades\Pricing;
 use Lunar\Models\Currency;
@@ -9,7 +10,6 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.models

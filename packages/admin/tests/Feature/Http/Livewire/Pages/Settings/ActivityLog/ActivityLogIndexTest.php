@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Settings\ActivityLog;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group hub.activity-log

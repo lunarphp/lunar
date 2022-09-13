@@ -2,10 +2,10 @@
 
 namespace Lunar\FieldTypes;
 
-use Lunar\Base\FieldType;
-use Lunar\Exceptions\FieldTypeException;
 use Illuminate\Database\Eloquent\Collection;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class TranslatedText implements FieldType, JsonSerializable
 {

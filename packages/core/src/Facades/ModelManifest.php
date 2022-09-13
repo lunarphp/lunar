@@ -2,9 +2,9 @@
 
 namespace Lunar\Facades;
 
-use Lunar\Base\ModelManifestInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\ModelManifestInterface;
 
 /**
  * Class ModelManifest.

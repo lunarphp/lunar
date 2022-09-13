@@ -2,9 +2,9 @@
 
 namespace Lunar\Managers;
 
-use Lunar\PaymentTypes\OfflinePayment;
 use Illuminate\Support\Manager;
 use Illuminate\Support\Str;
+use Lunar\PaymentTypes\OfflinePayment;
 
 class PaymentManager extends Manager
 {

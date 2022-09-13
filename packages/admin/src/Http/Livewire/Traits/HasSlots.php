@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Traits;
 
-use Lunar\Hub\Facades\Slot;
 use Illuminate\Support\Arr;
+use Lunar\Hub\Facades\Slot;
 
 trait HasSlots
 {

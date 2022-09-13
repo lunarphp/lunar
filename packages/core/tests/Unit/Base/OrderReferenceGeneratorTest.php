@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\Base;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group reference

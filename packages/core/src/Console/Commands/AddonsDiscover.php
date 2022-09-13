@@ -2,8 +2,8 @@
 
 namespace Lunar\Console\Commands;
 
-use Lunar\Addons\Manifest;
 use Illuminate\Console\Command;
+use Lunar\Addons\Manifest;
 
 class AddonsDiscover extends Command
 {

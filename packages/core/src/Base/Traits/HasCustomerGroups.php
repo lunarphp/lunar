@@ -3,9 +3,9 @@
 namespace Lunar\Base\Traits;
 
 use DateTime;
-use Lunar\Models\CustomerGroup;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Lunar\Models\CustomerGroup;
 
 trait HasCustomerGroups
 {

@@ -2,11 +2,11 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price as CastsPrice;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\PriceFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Price extends BaseModel
 {

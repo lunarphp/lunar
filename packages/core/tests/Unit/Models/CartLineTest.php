@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
@@ -9,7 +10,6 @@ use Lunar\Models\Channel;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.cartlines

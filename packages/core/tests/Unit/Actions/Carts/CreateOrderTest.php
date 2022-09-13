@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Actions\Carts;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
@@ -19,7 +20,6 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.actions

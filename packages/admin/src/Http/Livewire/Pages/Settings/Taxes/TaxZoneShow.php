@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Settings\Taxes;
 
-use Lunar\Models\TaxZone;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\TaxZone;
 
 class TaxZoneShow extends Component
 {

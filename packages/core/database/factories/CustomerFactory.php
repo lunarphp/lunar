@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\Customer;
 
 class CustomerFactory extends Factory
 {

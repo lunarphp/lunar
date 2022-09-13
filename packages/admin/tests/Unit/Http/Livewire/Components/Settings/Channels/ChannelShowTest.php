@@ -2,13 +2,13 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelShow;
 use Lunar\Hub\Tests\Stubs\User;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Channel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
-use Livewire\Livewire;
 
 class ChannelShowTest extends TestCase
 {

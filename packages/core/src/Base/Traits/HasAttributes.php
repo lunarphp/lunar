@@ -2,8 +2,8 @@
 
 namespace Lunar\Base\Traits;
 
-use Lunar\Models\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Models\Attribute;
 
 trait HasAttributes
 {

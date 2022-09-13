@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Facades;
 
-use Lunar\Hub\Base\ActivityLog\Manifest;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Hub\Base\ActivityLog\Manifest;
 
 class ActivityLog extends Facade
 {

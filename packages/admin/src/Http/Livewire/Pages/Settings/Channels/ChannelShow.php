@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Settings\Channels;
 
-use Lunar\Models\Channel;
 use Livewire\Component;
+use Lunar\Models\Channel;
 
 class ChannelShow extends Component
 {

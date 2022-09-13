@@ -3,6 +3,17 @@
 namespace Lunar;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\NoPendingMigrations;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
 use Lunar\Base\AttributeManifest;
 use Lunar\Base\AttributeManifestInterface;
@@ -56,17 +67,6 @@ use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Auth\Events\Logout;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Events\MigrationsEnded;
-use Illuminate\Database\Events\NoPendingMigrations;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 
 class LunarServiceProvider extends ServiceProvider
 {

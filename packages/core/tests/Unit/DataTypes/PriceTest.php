@@ -2,11 +2,11 @@
 
 namespace Lunar\Tests\Unit\DataTypes;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.datatypes

@@ -2,8 +2,8 @@
 
 namespace Lunar\Tests\Unit\Base\Extendable;
 
-use Lunar\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Product;
 
 class ExtendTraitTest extends ExtendableTestCase
 {

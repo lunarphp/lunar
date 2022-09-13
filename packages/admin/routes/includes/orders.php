@@ -1,11 +1,11 @@
 <?php
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Pages\Orders\OrderShow;
 use Lunar\Hub\Http\Livewire\Pages\Orders\OrdersIndex;
 use Lunar\Models\Order;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 /**
  * Channel routes.

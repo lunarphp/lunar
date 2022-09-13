@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Orders;
 
-use Lunar\Models\Order;
 use Livewire\Component;
+use Lunar\Models\Order;
 
 class OrderShow extends Component
 {

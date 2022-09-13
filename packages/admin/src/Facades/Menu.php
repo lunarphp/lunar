@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Facades;
 
-use Lunar\Hub\Menu\MenuRegistry;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Hub\Menu\MenuRegistry;
 
 class Menu extends Facade
 {

@@ -2,14 +2,14 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
+use Livewire\Component;
+use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Brand;
 use Lunar\Models\Product;
-use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class BrandShow extends Component
 {

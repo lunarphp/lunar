@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Lunar\FieldTypes\Text;
 use Lunar\Hub\Http\Livewire\Components\ProductSearch;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Product;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 
 /**
  * @group hub.components

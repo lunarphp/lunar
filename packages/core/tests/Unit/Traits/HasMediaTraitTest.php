@@ -2,11 +2,11 @@
 
 namespace Lunar\Tests\Unit\Traits;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Lunar\Base\StandardMediaConversions;
 use Lunar\Models\Product;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
 
 /**
  * @group traits

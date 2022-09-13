@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Views\Components;
 
-use Lunar\Models\Language;
 use Illuminate\View\Component;
+use Lunar\Models\Language;
 
 class Translatable extends Component
 {

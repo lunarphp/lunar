@@ -2,8 +2,8 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\Brand;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Brand;
 
 class BrandFactory extends Factory
 {

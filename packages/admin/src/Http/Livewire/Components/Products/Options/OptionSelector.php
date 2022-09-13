@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\Options;
 
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
-use Livewire\Component;
 
 class OptionSelector extends Component
 {

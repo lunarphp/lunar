@@ -2,6 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Validator;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
@@ -13,12 +19,6 @@ use Lunar\Models\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 use Lunar\Models\Tag;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Validator;
-use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class CollectionShow extends Component
 {

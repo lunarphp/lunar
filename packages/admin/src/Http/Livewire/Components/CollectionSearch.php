@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components;
 
-use Lunar\Models\Collection as ModelsCollection;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Lunar\Models\Collection as ModelsCollection;
 
 class CollectionSearch extends Component
 {

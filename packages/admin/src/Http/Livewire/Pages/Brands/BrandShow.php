@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Brands;
 
-use Lunar\Models\Brand;
 use Livewire\Component;
+use Lunar\Models\Brand;
 
 class BrandShow extends Component
 {

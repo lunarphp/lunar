@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Channels;
 
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Channel;
-use Livewire\Component;
 
 class ChannelShow extends Component
 {

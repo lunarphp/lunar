@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Settings\Currencies;
 
-use Lunar\Models\Currency;
 use Livewire\Component;
+use Lunar\Models\Currency;
 
 class CurrencyShow extends Component
 {

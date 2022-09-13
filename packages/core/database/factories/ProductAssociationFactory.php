@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductAssociationFactory extends Factory
 {

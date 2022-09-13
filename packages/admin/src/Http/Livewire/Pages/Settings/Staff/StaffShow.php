@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Settings\Staff;
 
-use Lunar\Hub\Models\Staff;
 use Livewire\Component;
+use Lunar\Hub\Models\Staff;
 
 class StaffShow extends Component
 {

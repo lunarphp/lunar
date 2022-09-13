@@ -2,11 +2,11 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Address;
 use Lunar\Models\Country;
 use Lunar\Models\Customer;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group models

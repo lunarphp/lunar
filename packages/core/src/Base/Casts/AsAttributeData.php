@@ -2,11 +2,11 @@
 
 namespace Lunar\Base\Casts;
 
-use Lunar\Base\FieldType;
-use Lunar\Exceptions\FieldTypeException;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Collection;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class AsAttributeData implements Castable
 {

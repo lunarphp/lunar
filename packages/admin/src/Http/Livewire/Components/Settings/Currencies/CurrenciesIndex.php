@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Currencies;
 
-use Lunar\Models\Currency;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Currency;
 
 class CurrenciesIndex extends Component
 {

@@ -2,6 +2,10 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Arr;
+use Kalnoy\Nestedset\NodeTrait;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasChannels;
@@ -13,10 +17,6 @@ use Lunar\Base\Traits\HasUrls;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CollectionFactory;
 use Lunar\FieldTypes\TranslatedText;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Arr;
-use Kalnoy\Nestedset\NodeTrait;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Collection extends BaseModel implements SpatieHasMedia

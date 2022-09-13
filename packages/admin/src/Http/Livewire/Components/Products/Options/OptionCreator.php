@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\Options;
 
+use Illuminate\Support\Collection;
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
-use Illuminate\Support\Collection;
-use Livewire\Component;
 
 class OptionCreator extends Component
 {

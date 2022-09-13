@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Tags;
 
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Tag;
 
 class TagShow extends Component
 {

@@ -2,12 +2,12 @@
 
 namespace Lunar\Database\Seeders;
 
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Channel;
 use Lunar\Models\ProductType;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 
 class DemoSeeder extends Seeder
 {

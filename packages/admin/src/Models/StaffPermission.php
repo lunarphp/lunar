@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Models;
 
-use Lunar\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Lunar\Base\BaseModel;
 
 class StaffPermission extends BaseModel
 {

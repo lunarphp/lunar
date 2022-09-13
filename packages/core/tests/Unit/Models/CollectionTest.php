@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\FieldTypes\Text;
 use Lunar\Models\Collection;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CollectionTest extends TestCase
 {

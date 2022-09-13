@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use Lunar\Hub\Http\Livewire\Components\Account;
-use Lunar\Hub\Models\Staff;
-use Lunar\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Account;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.account

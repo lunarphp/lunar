@@ -2,9 +2,9 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Support\Collection;
 use Lunar\Jobs\SyncTags;
 use Lunar\Models\Tag;
-use Illuminate\Support\Collection;
 
 trait HasTags
 {

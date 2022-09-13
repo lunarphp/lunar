@@ -2,10 +2,10 @@
 
 namespace Lunar\Database\State;
 
-use Lunar\Models\Product;
-use Lunar\Models\ProductType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
 
 class ConvertProductTypeAttributesToProducts
 {

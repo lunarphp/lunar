@@ -2,9 +2,9 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserPermission extends BaseModel
 {

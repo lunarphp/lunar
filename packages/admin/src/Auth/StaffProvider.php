@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Auth;
 
-use Lunar\Hub\Models\Staff;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
+use Lunar\Hub\Models\Staff;
 
 class StaffProvider extends EloquentUserProvider
 {

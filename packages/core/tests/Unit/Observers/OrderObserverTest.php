@@ -2,11 +2,11 @@
 
 namespace Lunar\Tests\Unit\Observers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Activitylog\Models\Activity;
 
 /**

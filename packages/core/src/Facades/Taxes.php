@@ -2,8 +2,8 @@
 
 namespace Lunar\Facades;
 
-use Lunar\Base\TaxManagerInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\TaxManagerInterface;
 
 class Taxes extends Facade
 {

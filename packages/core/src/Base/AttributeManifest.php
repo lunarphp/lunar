@@ -2,13 +2,13 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class AttributeManifest
 {

@@ -2,6 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
@@ -10,9 +13,6 @@ use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
-use Illuminate\Support\Facades\DB;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 abstract class AbstractTaxZone extends Component
 {

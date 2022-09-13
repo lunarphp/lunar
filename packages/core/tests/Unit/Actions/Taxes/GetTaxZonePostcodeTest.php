@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Unit\Actions\Taxes;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Taxes\GetTaxZonePostcode;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.actions

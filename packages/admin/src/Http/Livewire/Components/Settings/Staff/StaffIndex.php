@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
-use Lunar\Hub\Models\Staff;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Hub\Models\Staff;
 
 class StaffIndex extends Component
 {

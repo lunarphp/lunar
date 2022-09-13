@@ -2,8 +2,8 @@
 
 namespace Lunar\Base;
 
-use Lunar\Base\Traits\HasModelExtending;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Base\Traits\HasModelExtending;
 
 abstract class BaseModel extends Model
 {

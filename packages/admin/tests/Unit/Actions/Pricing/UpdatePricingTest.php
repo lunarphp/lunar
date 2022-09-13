@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Tests\Unit\Actions\Pricing;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Hub\Actions\Pricing\UpdatePrices;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group hub.actions

@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\FieldTypes;
 
+use Illuminate\Support\Collection;
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Tests\TestCase;
-use Illuminate\Support\Collection;
 
 class TranslatedTextTest extends TestCase
 {

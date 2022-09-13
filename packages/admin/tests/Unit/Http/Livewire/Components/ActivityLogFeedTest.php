@@ -2,14 +2,14 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\ActivityLogFeed;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 
 /**

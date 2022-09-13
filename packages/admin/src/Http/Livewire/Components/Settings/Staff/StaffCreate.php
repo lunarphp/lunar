@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
+use Illuminate\Support\Facades\Hash;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Models\Staff;
-use Illuminate\Support\Facades\Hash;
 
 class StaffCreate extends AbstractStaff
 {

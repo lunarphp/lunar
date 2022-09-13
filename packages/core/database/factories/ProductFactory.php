@@ -2,10 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\FieldTypes\Text;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
 {

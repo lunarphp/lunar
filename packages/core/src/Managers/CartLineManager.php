@@ -2,11 +2,11 @@
 
 namespace Lunar\Managers;
 
+use Illuminate\Pipeline\Pipeline;
 use Lunar\Actions\Carts\CalculateLine;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
-use Illuminate\Pipeline\Pipeline;
 
 class CartLineManager
 {

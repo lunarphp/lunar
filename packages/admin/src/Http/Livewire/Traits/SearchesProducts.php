@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Traits;
 
+use Illuminate\Support\Collection;
 use Lunar\Models\Brand;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
-use Illuminate\Support\Collection;
 
 trait SearchesProducts
 {

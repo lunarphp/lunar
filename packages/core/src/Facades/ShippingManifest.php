@@ -2,8 +2,8 @@
 
 namespace Lunar\Facades;
 
-use Lunar\Base\ShippingManifestInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\ShippingManifestInterface;
 
 class ShippingManifest extends Facade
 {

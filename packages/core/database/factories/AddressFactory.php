@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Address;
 use Lunar\Models\Country;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AddressFactory extends Factory
 {

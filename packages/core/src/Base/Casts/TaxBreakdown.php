@@ -2,9 +2,9 @@
 
 namespace Lunar\Base\Casts;
 
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
-use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class TaxBreakdown implements CastsAttributes
 {

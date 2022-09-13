@@ -2,6 +2,9 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Orders;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\Stubs\Mailers\TestAMailer;
@@ -12,9 +15,6 @@ use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Livewire\Livewire;
 
 /**
  * @group hub.orders.status

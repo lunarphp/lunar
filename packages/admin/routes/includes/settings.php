@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
@@ -23,7 +24,6 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxClassesIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZonesIndex;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('hub.channels.index');

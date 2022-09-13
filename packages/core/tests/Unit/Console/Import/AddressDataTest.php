@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Unit\Console;
 
-use Lunar\Models\Country;
-use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Lunar\Models\Country;
+use Lunar\Tests\TestCase;
 
 /**
  * @group commands

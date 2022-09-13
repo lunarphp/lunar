@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Views\Components;
 
-use Lunar\Hub\Facades\Menu as MenuFacade;
 use Illuminate\View\Component;
+use Lunar\Hub\Facades\Menu as MenuFacade;
 
 class Menu extends Component
 {

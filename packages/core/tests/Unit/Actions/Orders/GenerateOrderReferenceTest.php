@@ -2,14 +2,14 @@
 
 namespace Lunar\Tests\Unit\Actions\Orders;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Tests\Stubs\TestOrderReferenceGenerator;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 
 /**
  * @group lunar.actions

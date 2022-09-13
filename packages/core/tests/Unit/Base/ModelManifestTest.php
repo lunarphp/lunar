@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\Base;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\ModelManifestInterface;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group model-manifest

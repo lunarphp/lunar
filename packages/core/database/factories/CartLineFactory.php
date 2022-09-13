@@ -2,10 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\ProductVariant;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CartLineFactory extends Factory
 {

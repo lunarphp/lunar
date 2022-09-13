@@ -2,8 +2,8 @@
 
 namespace Lunar\Tests\Unit\Utils;
 
-use Lunar\Tests\TestCase;
 use Illuminate\Support\Str;
+use Lunar\Tests\TestCase;
 
 /**
  * @group core.utils

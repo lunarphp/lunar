@@ -2,12 +2,12 @@
 
 namespace Lunar\Addons;
 
-use Lunar\Licensing\LicenseManager;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Lunar\Licensing\LicenseManager;
 use ReflectionClass;
 
 /**

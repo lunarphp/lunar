@@ -2,13 +2,13 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Casts\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\OrderLineFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OrderLine extends BaseModel
 {

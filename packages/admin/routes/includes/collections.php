@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Pages\Collections\CollectionGroupShow;
 use Lunar\Hub\Http\Livewire\Pages\Collections\CollectionGroupsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Collections\CollectionShow;
-use Illuminate\Support\Facades\Route;
 
 /**
  * Channel routes.

@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
+use Livewire\Component;
+use Livewire\WithPagination;
 use Lunar\Facades\AttributeManifest;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 class AttributesIndex extends Component
 {

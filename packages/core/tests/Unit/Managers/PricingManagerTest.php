@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Managers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\DataTransferObjects\PricingResponse;
 use Lunar\Managers\PricingManager;
 use Lunar\Models\Currency;
@@ -12,7 +13,6 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.pricing-manager

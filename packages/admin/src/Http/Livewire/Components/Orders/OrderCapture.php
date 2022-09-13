@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
-use Livewire\Component;
 
 class OrderCapture extends Component
 {

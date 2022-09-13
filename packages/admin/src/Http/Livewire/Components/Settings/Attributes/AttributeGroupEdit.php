@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
+use Illuminate\Support\Str;
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\AttributeGroup;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class AttributeGroupEdit extends Component
 {

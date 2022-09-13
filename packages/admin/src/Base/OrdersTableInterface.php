@@ -3,9 +3,9 @@
 namespace Lunar\Hub\Base;
 
 use Closure;
+use Illuminate\Support\Collection;
 use Lunar\Hub\DataTransferObjects\TableColumn;
 use Lunar\Hub\DataTransferObjects\TableFilter;
-use Illuminate\Support\Collection;
 
 interface OrdersTableInterface
 {

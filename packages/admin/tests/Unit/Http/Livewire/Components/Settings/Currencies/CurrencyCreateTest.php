@@ -2,13 +2,13 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Settings\Currencies;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyCreate;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Currency;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
-use Livewire\Livewire;
 
 /**
  * @group hub.currencies

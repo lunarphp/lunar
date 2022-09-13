@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\Console;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\SchedulingException;
 use Lunar\Models\Channel;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.traits

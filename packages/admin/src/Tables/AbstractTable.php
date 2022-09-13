@@ -3,11 +3,11 @@
 namespace Lunar\Hub\Tables;
 
 use Closure;
+use Illuminate\Support\Collection;
 use Lunar\Hub\Base\OrdersTableInterface;
 use Lunar\Hub\DataTransferObjects\TableColumn;
 use Lunar\Hub\DataTransferObjects\TableFilter;
 use Lunar\Hub\Exporters\OrderExporter;
-use Illuminate\Support\Collection;
 
 abstract class AbstractTable implements OrdersTableInterface
 {

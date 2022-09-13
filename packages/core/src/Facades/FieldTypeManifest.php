@@ -2,8 +2,8 @@
 
 namespace Lunar\Facades;
 
-use Lunar\Base\FieldTypeManifestInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\FieldTypeManifestInterface;
 
 class FieldTypeManifest extends Facade
 {

@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Settings\Languages;
 
-use Lunar\Models\Language;
 use Livewire\Component;
+use Lunar\Models\Language;
 
 class LanguageShow extends Component
 {

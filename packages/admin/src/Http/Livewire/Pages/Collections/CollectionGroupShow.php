@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Collections;
 
-use Lunar\Models\CollectionGroup;
 use Livewire\Component;
+use Lunar\Models\CollectionGroup;
 
 class CollectionGroupShow extends Component
 {

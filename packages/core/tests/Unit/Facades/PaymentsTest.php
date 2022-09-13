@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\Facades;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Facades\Payments;
 use Lunar\Tests\Stubs\TestPaymentDriver;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.payments

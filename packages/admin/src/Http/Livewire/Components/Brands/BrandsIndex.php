@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\Brand;
-use Lunar\Models\Language;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Brand;
+use Lunar\Models\Language;
 
 class BrandsIndex extends Component
 {

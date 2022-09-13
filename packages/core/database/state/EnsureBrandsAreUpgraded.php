@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\State;
 
+use Illuminate\Support\Facades\Schema;
 use Lunar\Models\Brand;
 use Lunar\Models\Product;
-use Illuminate\Support\Facades\Schema;
 
 class EnsureBrandsAreUpgraded
 {

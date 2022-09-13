@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PriceFactory extends Factory
 {

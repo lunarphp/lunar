@@ -2,6 +2,8 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Lunar\Managers\CartManager;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
@@ -11,8 +13,6 @@ use Lunar\Models\Order;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 
 /**
  * @group lunar.carts

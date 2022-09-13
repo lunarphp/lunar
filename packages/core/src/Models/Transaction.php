@@ -2,13 +2,13 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TransactionFactory;
 use Lunar\Facades\Payments;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends BaseModel
 {

@@ -2,8 +2,8 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Country;
 
 class CountryFactory extends Factory
 {

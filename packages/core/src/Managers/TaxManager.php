@@ -2,8 +2,8 @@
 
 namespace Lunar\Managers;
 
-use Lunar\Drivers\SystemTaxDriver;
 use Illuminate\Support\Manager;
+use Lunar\Drivers\SystemTaxDriver;
 
 class TaxManager extends Manager
 {

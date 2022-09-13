@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Traits;
 
-use Lunar\Models\Url;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Lunar\Models\Url;
 
 trait HasUrls
 {

@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Database\Factories;
 
-use Lunar\Hub\Models\Staff;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Hub\Models\Staff;
 
 class StaffFactory extends Factory
 {

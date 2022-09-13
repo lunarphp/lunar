@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\Base;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Lunar\Base\AttributeManifest;
 use Lunar\Base\AttributeManifestInterface;
 use Lunar\Models\Channel;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 /**
  * @group core.attribute-manifest

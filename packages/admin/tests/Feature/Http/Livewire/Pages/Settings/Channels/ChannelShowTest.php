@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Channels;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Channel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group channels

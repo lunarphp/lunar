@@ -2,8 +2,8 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\ProductOption;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\ProductOption;
 
 class ProductOptionFactory extends Factory
 {

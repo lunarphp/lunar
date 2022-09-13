@@ -2,10 +2,10 @@
 
 namespace Lunar\Base;
 
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Cart;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Models\Cart;
 
 class ShippingManifest implements ShippingManifestInterface
 {

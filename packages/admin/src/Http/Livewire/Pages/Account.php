@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages;
 
-use Lunar\Hub\Models\Staff;
 use Livewire\Component;
+use Lunar\Hub\Models\Staff;
 
 class Account extends Component
 {

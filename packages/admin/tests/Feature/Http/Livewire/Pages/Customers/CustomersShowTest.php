@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Products;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group hub.customers

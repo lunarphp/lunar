@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components;
 
-use Lunar\Facades\ModelManifest;
-use Lunar\Hub\Facades\ActivityLog;
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Facades\ModelManifest;
+use Lunar\Hub\Facades\ActivityLog;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 
 class ActivityLogFeed extends Component
 {

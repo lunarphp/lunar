@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\Language;
 
 class LanguageFactory extends Factory
 {

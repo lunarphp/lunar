@@ -1,8 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Pages\Customers\CustomerShow;
 use Lunar\Hub\Http\Livewire\Pages\Customers\CustomersIndex;
-use Illuminate\Support\Facades\Route;
 
 /**
  * Channel routes.

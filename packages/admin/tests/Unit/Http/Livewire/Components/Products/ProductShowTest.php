@@ -2,6 +2,9 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Livewire\Livewire;
 use Lunar\FieldTypes\Text;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
 use Lunar\Hub\Models\Staff;
@@ -16,9 +19,6 @@ use Lunar\Models\ProductAssociation;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Livewire\Livewire;
 
 /**
  * @group hub.products

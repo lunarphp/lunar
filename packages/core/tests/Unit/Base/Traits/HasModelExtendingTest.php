@@ -2,11 +2,11 @@
 
 namespace Lunar\Tests\Unit\Base\Traits;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Tests\Unit\Base\Extendable\ExtendableTestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 class HasModelExtendingTest extends ExtendableTestCase
 {

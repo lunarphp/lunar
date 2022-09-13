@@ -2,6 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Validator;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
@@ -21,12 +27,6 @@ use Lunar\Models\ProductAssociation;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Validator;
-use Livewire\Component;
-use Livewire\WithFileUploads;
 
 abstract class AbstractProduct extends Component
 {

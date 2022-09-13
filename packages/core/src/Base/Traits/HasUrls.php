@@ -2,8 +2,8 @@
 
 namespace Lunar\Base\Traits;
 
-use Lunar\Models\Url;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Models\Url;
 
 trait HasUrls
 {

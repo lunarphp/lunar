@@ -2,11 +2,11 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxZoneFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxZone extends BaseModel
 {

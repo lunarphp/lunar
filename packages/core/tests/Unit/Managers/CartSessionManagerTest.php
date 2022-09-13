@@ -2,6 +2,9 @@
 
 namespace Lunar\Tests\Unit\Managers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use Lunar\Facades\CartSession;
 use Lunar\Managers\CartSessionManager;
 use Lunar\Models\Cart;
@@ -10,9 +13,6 @@ use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
 
 /**
  * @group lunar.cart-session-manager

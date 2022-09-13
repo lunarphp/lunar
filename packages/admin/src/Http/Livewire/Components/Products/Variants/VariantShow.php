@@ -2,6 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\Variants;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Livewire\Component;
+use Livewire\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasPrices;
@@ -15,11 +20,6 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Livewire\Component;
-use Livewire\TemporaryUploadedFile;
-use Livewire\WithFileUploads;
 use Spatie\Activitylog\Facades\LogBatch;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 

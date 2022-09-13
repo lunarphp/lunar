@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Actions\Carts;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Carts\MergeCart;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
@@ -11,7 +12,6 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.actions

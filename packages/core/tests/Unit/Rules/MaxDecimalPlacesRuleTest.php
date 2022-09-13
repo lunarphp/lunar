@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Unit\Rules;
 
-use Lunar\Rules\MaxDecimalPlaces;
-use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Rules\MaxDecimalPlaces;
+use Lunar\Tests\TestCase;
 
 /**
  * @group rules

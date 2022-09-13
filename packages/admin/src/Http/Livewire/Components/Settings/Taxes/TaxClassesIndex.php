@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\TaxClass;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\TaxClass;
 
 class TaxClassesIndex extends Component
 {

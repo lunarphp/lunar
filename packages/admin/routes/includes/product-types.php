@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Pages\Products\ProductTypes\ProductTypeCreate;
 use Lunar\Hub\Http\Livewire\Pages\Products\ProductTypes\ProductTypeIndex;
 use Lunar\Hub\Http\Livewire\Pages\Products\ProductTypes\ProductTypeShow;
-use Illuminate\Support\Facades\Route;
 
 Route::group([
     'middleware' => 'can:catalogue:manage-products',

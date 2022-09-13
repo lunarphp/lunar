@@ -2,10 +2,10 @@
 
 namespace Lunar\Base;
 
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 
 interface PricingManagerInterface
 {

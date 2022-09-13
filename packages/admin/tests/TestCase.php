@@ -3,13 +3,13 @@
 namespace Lunar\Hub\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
-use Lunar\LunarServiceProvider;
-use Lunar\Hub\AdminHubServiceProvider;
-use Lunar\Tests\Stubs\TestUrlGenerator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
+use Lunar\Hub\AdminHubServiceProvider;
+use Lunar\LunarServiceProvider;
+use Lunar\Tests\Stubs\TestUrlGenerator;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;

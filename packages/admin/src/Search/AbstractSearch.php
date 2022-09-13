@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Search;
 
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Hub\Base\SearchInterface;
 use Lunar\Hub\DataTransferObjects\Search\SearchResults;
-use Illuminate\Database\Eloquent\Model;
 
 abstract class AbstractSearch implements SearchInterface
 {

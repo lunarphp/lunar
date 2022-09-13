@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Tests\Feature\Http\Controllers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Hub\GetCandyHub;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group hub.assets

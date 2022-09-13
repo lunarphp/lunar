@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Settings\Tags;
 
-use Lunar\Models\Tag;
 use Livewire\Component;
+use Lunar\Models\Tag;
 
 class TagShow extends Component
 {

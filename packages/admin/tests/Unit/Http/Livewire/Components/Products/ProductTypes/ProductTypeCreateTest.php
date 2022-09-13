@@ -2,6 +2,8 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products\ProductTypes;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
@@ -11,8 +13,6 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 
 /**
  * @group hub.product-types

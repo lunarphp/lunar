@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Managers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Base\CartModifiers;
 use Lunar\Base\DataTransferObjects\TaxBreakdown;
@@ -28,7 +29,6 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Tests\Stubs\TestCartLineModifier;
 use Lunar\Tests\Stubs\TestCartModifier;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Mockery\MockInterface;
 

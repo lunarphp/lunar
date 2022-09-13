@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Menu;
 
-use Lunar\Hub\GetCandyHub;
 use Illuminate\Support\Str;
+use Lunar\Hub\GetCandyHub;
 
 class MenuLink implements MenuItem
 {

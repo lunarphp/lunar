@@ -2,10 +2,10 @@
 
 namespace Lunar\Console\Commands\Import;
 
-use Lunar\Models\Country;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Lunar\Models\Country;
 
 class AddressData extends Command
 {

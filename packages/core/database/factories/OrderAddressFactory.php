@@ -2,8 +2,8 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\OrderAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\OrderAddress;
 
 class OrderAddressFactory extends Factory
 {

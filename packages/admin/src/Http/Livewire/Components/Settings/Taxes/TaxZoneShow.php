@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
+use Illuminate\Support\Facades\DB;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
-use Illuminate\Support\Facades\DB;
 
 class TaxZoneShow extends AbstractTaxZone
 {

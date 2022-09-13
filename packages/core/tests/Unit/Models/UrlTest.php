@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 
 /**
  * @group models

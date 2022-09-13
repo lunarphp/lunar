@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
+use Livewire\Component;
+use Livewire\WithPagination;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\SearchesProducts;
 use Lunar\Models\Product;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 class ProductsIndex extends Component
 {

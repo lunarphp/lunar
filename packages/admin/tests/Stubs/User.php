@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Tests\Stubs;
 
-use Lunar\Base\Traits\GetCandyUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lunar\Base\Traits\GetCandyUser;
 
 class User extends Authenticatable
 {

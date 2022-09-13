@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Channels;
 
-use Lunar\Models\Channel;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Channel;
 
 class ChannelsIndex extends Component
 {

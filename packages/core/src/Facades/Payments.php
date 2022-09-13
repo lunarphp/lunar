@@ -2,8 +2,8 @@
 
 namespace Lunar\Facades;
 
-use Lunar\Base\PaymentManagerInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\PaymentManagerInterface;
 
 class Payments extends Facade
 {

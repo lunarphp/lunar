@@ -2,6 +2,9 @@
 
 namespace Lunar\Console;
 
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\Models\Staff;
 use Lunar\Models\Attribute;
@@ -16,9 +19,6 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
 class InstallLunar extends Command
 {

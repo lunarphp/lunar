@@ -2,6 +2,9 @@
 
 namespace Lunar\Hub\Tests\Unit\Jobs\Products;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Validation\ValidationException;
 use Lunar\Hub\Exceptions\InvalidProductValuesException;
 use Lunar\Hub\Exceptions\VariantsDisabledException;
 use Lunar\Hub\Jobs\Products\GenerateVariants;
@@ -10,9 +13,6 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Validation\ValidationException;
 
 /**
  * @group lunarhub.jobs

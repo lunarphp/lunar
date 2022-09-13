@@ -2,6 +2,8 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Customers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Lunar\FieldTypes\Text;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use Lunar\Hub\Models\Staff;
@@ -11,8 +13,6 @@ use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 
 /**
  * @group hub.customers

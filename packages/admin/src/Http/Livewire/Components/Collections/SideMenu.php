@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\CollectionGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\CollectionGroup;
 
 class SideMenu extends Component
 {

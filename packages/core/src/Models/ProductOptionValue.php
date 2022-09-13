@@ -2,12 +2,12 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\ProductOptionValueFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductOptionValue extends BaseModel
 {

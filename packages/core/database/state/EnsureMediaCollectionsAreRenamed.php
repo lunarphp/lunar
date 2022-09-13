@@ -2,10 +2,10 @@
 
 namespace Lunar\Database\State;
 
+use Illuminate\Support\Facades\DB;
 use Lunar\Models\Brand;
 use Lunar\Models\Collection;
 use Lunar\Models\Product;
-use Illuminate\Support\Facades\DB;
 
 class EnsureMediaCollectionsAreRenamed
 {

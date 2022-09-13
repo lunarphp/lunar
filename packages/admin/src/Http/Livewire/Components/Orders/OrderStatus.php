@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\Order;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Order;
 
 class OrderStatus extends Component
 {

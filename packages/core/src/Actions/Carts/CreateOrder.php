@@ -2,14 +2,14 @@
 
 namespace Lunar\Actions\Carts;
 
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\DB;
 use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\Base\OrderModifiers;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Facades\DB;
 
 class CreateOrder
 {

@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\ProductOptions;
 
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
-use Livewire\Component;
 
 class OptionValueCreateModal extends Component
 {

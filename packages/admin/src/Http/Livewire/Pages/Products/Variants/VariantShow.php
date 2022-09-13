@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Products\Variants;
 
+use Livewire\Component;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Livewire\Component;
 
 class VariantShow extends Component
 {

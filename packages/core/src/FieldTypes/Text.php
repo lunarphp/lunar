@@ -2,9 +2,9 @@
 
 namespace Lunar\FieldTypes;
 
+use JsonSerializable;
 use Lunar\Base\FieldType;
 use Lunar\Exceptions\FieldTypeException;
-use JsonSerializable;
 
 class Text implements FieldType, JsonSerializable
 {

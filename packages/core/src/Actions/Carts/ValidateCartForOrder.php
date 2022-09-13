@@ -2,6 +2,7 @@
 
 namespace Lunar\Actions\Carts;
 
+use Illuminate\Support\Facades\Validator;
 use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
 use Lunar\Exceptions\Carts\BillingAddressMissingException;
 use Lunar\Exceptions\Carts\OrderExistsException;
@@ -9,7 +10,6 @@ use Lunar\Exceptions\Carts\ShippingAddressIncompleteException;
 use Lunar\Exceptions\Carts\ShippingAddressMissingException;
 use Lunar\Exceptions\Carts\ShippingOptionMissingException;
 use Lunar\Models\Cart;
-use Illuminate\Support\Facades\Validator;
 
 class ValidateCartForOrder
 {

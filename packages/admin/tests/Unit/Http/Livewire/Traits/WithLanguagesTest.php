@@ -2,6 +2,8 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Traits;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
@@ -10,8 +12,6 @@ use Lunar\Models\Language;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 
 /**
  * @group livewire.traits

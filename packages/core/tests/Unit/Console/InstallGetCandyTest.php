@@ -2,9 +2,9 @@
 
 namespace Lunar\Tests\Unit\Console;
 
-use Lunar\Tests\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Lunar\Tests\TestCase;
 
 class InstallGetCandyTest extends TestCase
 {

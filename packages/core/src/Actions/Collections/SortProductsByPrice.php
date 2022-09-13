@@ -2,9 +2,9 @@
 
 namespace Lunar\Actions\Collections;
 
+use Illuminate\Support\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
-use Illuminate\Support\Collection;
 
 class SortProductsByPrice
 {

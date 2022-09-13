@@ -2,10 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\State;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZoneState;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaxZoneStateFactory extends Factory
 {

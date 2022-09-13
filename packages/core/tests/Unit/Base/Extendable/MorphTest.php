@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Unit\Base\Extendable;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MorphTest extends ExtendableTestCase
 {

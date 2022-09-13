@@ -2,9 +2,9 @@
 
 namespace Lunar\DataTypes;
 
+use Illuminate\Support\Collection;
 use Lunar\Base\Purchasable;
 use Lunar\Models\TaxClass;
-use Illuminate\Support\Collection;
 
 class ShippingOption implements Purchasable
 {

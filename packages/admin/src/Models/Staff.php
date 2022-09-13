@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Models;
 
-use Lunar\Hub\Database\Factories\StaffFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lunar\Hub\Database\Factories\StaffFactory;
 
 class Staff extends Authenticatable
 {

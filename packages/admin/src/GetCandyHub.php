@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub;
 
-use Lunar\Hub\Assets\Script;
-use Lunar\Hub\Assets\Style;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Lunar\Hub\Assets\Script;
+use Lunar\Hub\Assets\Style;
 
 class GetCandyHub
 {

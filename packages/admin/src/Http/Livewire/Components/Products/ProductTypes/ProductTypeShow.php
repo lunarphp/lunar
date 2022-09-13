@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
+use Illuminate\Support\Facades\DB;
 use Lunar\Models\Attribute;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
-use Illuminate\Support\Facades\DB;
 
 class ProductTypeShow extends AbstractProductType
 {

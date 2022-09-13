@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components;
 
-use Lunar\Models\Product;
 use Livewire\Component;
+use Lunar\Models\Product;
 
 class ProductSearch extends Component
 {

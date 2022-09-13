@@ -3,9 +3,9 @@
 namespace Lunar\Base\Traits;
 
 use DateTime;
-use Lunar\Exceptions\SchedulingException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Lunar\Exceptions\SchedulingException;
 
 trait CanScheduleAvailability
 {

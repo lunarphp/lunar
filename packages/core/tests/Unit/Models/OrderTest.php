@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Unit\Models;
 
 use DateTime;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\Language;
@@ -12,7 +13,6 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group lunar.orders

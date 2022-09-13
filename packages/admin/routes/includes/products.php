@@ -1,10 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Pages\Products\ProductCreate;
 use Lunar\Hub\Http\Livewire\Pages\Products\ProductShow;
 use Lunar\Hub\Http\Livewire\Pages\Products\ProductsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Products\Variants\VariantShow;
-use Illuminate\Support\Facades\Route;
 
 /**
  * Channel routes.

@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\State;
 
-use Lunar\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\Order;
 
 class EnsureUserOrdersHaveACustomer
 {

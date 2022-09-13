@@ -2,10 +2,10 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
-use Illuminate\Contracts\Auth\Authenticatable;
 
 interface CartSessionInterface
 {

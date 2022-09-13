@@ -2,8 +2,8 @@
 
 namespace Lunar\Facades;
 
-use Lunar\Base\CartSessionInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\CartSessionInterface;
 
 class CartSession extends Facade
 {

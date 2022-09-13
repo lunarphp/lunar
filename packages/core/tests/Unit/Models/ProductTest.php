@@ -2,6 +2,9 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\CustomerGroup;
@@ -9,9 +12,6 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
 use Lunar\Models\ProductType;
 use Lunar\Tests\TestCase;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @group associations

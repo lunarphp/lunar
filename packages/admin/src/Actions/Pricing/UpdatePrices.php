@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Actions\Pricing;
 
-use Lunar\Models\Currency;
-use Lunar\Models\Price;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
 
 class UpdatePrices
 {

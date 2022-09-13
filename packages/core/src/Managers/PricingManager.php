@@ -2,15 +2,15 @@
 
 namespace Lunar\Managers;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Lunar\Base\DataTransferObjects\PricingResponse;
 use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\Purchasable;
 use Lunar\Exceptions\MissingCurrencyPriceException;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 class PricingManager implements PricingManagerInterface
 {

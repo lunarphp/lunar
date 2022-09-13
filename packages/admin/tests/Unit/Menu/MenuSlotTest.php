@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Tests\Unit\Menu;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Menu\MenuSlot;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group hub.menu

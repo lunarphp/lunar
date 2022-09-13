@@ -2,9 +2,9 @@
 
 namespace Lunar\Generators;
 
-use Lunar\Models\Language;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Models\Language;
 
 class UrlGenerator
 {

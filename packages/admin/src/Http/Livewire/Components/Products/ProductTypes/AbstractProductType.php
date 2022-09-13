@@ -2,6 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
+use Illuminate\Support\Collection;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Attribute;
@@ -9,9 +12,6 @@ use Lunar\Models\AttributeGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
-use Illuminate\Support\Collection;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 abstract class AbstractProductType extends Component
 {

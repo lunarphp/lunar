@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\DataTransferObjects\TaxBreakdown;
@@ -10,7 +11,6 @@ use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartAddressFactory;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CartAddress extends BaseModel implements Addressable
 {

@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Console;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\FieldTypes\Dropdown;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Text;
@@ -10,7 +11,6 @@ use Lunar\Models\AttributeGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group traits

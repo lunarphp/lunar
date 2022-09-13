@@ -1,9 +1,9 @@
 <?php
 
-use Lunar\DataTypes\Price;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Lunar\DataTypes\Price;
 
 if (! function_exists('max_upload_filesize')) {
     function max_upload_filesize()

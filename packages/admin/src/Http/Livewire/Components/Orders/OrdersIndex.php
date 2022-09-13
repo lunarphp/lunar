@@ -2,13 +2,13 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
+use Livewire\Component;
+use Livewire\WithPagination;
 use Lunar\Hub\Facades\OrdersTable;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithSavedSearches;
 use Lunar\Hub\Search\OrderSearch;
 use Lunar\Models\Order;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 class OrdersIndex extends Component
 {

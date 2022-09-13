@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Collections;
 
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Collection;
-use Livewire\Component;
 
 class CollectionShow extends Component
 {

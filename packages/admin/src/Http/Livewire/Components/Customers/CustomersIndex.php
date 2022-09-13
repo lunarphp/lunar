@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
-use Lunar\Models\Attribute;
-use Lunar\Models\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Attribute;
+use Lunar\Models\Customer;
 
 class CustomersIndex extends Component
 {

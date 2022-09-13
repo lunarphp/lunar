@@ -2,8 +2,8 @@
 
 namespace Lunar\Actions\Carts;
 
-use Lunar\Models\Cart;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Cart;
 
 class MergeCart
 {

@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Unit\Traits;
 
-use Lunar\Models\Product;
-use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Lunar\Models\Product;
+use Lunar\Tests\TestCase;
 
 /**
  * @group traits

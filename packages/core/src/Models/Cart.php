@@ -2,6 +2,9 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Address;
 use Lunar\Base\Traits\HasMacros;
@@ -9,9 +12,6 @@ use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\Managers\CartManager;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
 
 class Cart extends BaseModel
 {

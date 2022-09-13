@@ -1,13 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Hub;
 use Lunar\Hub\Http\Livewire\Pages\Account;
 use Lunar\Hub\Http\Livewire\Pages\Authentication\Login;
 use Lunar\Hub\Http\Livewire\Pages\Authentication\PasswordReset;
 use Lunar\Hub\Http\Middleware\Authenticate;
 use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => config('lunar-hub.system.path', 'hub'),

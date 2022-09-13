@@ -2,9 +2,9 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Support\Collection;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Cart;
-use Illuminate\Support\Collection;
 
 interface ShippingManifestInterface
 {

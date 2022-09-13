@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
-use Lunar\Models\ProductType;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\ProductType;
 
 class ProductTypesIndex extends Component
 {

@@ -2,8 +2,8 @@
 
 namespace Lunar\Base\DataTransferObjects;
 
-use Lunar\Models\Price;
 use Illuminate\Support\Collection;
+use Lunar\Models\Price;
 
 class PricingResponse
 {

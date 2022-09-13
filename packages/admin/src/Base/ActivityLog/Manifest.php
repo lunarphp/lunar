@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Base\ActivityLog;
 
+use Illuminate\Support\Collection;
 use Lunar\Hub\Base\ActivityLog\Orders\Capture;
 use Lunar\Hub\Base\ActivityLog\Orders\EmailNotification;
 use Lunar\Hub\Base\ActivityLog\Orders\Intent;
@@ -9,7 +10,6 @@ use Lunar\Hub\Base\ActivityLog\Orders\StatusUpdate;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Illuminate\Support\Collection;
 
 class Manifest
 {

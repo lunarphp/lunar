@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Unit\Observers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Address;
 use Lunar\Models\Customer;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group observers

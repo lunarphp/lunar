@@ -2,8 +2,8 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\TaxClass;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\TaxClass;
 
 class TaxClassFactory extends Factory
 {

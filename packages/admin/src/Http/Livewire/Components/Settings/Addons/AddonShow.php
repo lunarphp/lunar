@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Addons;
 
-use Lunar\Addons\Manifest;
 use Livewire\Component;
+use Lunar\Addons\Manifest;
 
 class AddonShow extends Component
 {

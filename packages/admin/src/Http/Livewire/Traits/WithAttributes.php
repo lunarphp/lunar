@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Traits;
 
+use Illuminate\Support\Collection;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Language;
-use Illuminate\Support\Collection;
 
 trait WithAttributes
 {

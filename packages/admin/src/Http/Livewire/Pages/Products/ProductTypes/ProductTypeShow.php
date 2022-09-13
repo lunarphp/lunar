@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Products\ProductTypes;
 
-use Lunar\Models\ProductType;
 use Livewire\Component;
+use Lunar\Models\ProductType;
 
 class ProductTypeShow extends Component
 {

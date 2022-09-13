@@ -2,10 +2,10 @@
 
 namespace Lunar\Listeners;
 
-use Lunar\Facades\CartSession;
-use Lunar\Models\Cart;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
+use Lunar\Facades\CartSession;
+use Lunar\Models\Cart;
 
 class CartSessionAuthListener
 {

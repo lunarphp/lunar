@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Customers;
 
-use Lunar\Models\Customer;
 use Livewire\Component;
+use Lunar\Models\Customer;
 
 class CustomerShow extends Component
 {

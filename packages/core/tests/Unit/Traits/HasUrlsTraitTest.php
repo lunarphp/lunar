@@ -2,14 +2,14 @@
 
 namespace Lunar\Tests\Unit\Traits;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Lunar\Generators\UrlGenerator;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Str;
 
 /**
  * @group traits

@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Currencies;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Currency;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group hub.currencies

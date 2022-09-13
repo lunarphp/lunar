@@ -2,14 +2,14 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
+use Illuminate\Support\Str;
+use Livewire\Component;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Collection;
 use Lunar\Models\ProductType;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 abstract class AbstractAttribute extends Component
 {

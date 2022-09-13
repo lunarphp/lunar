@@ -2,11 +2,6 @@
 
 namespace Lunar\Hub\Jobs\Products;
 
-use Lunar\Hub\Exceptions\InvalidProductValuesException;
-use Lunar\Hub\Exceptions\VariantsDisabledException;
-use Lunar\Models\Product;
-use Lunar\Models\ProductOptionValue;
-use Lunar\Models\ProductVariant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,6 +11,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Hub\Exceptions\InvalidProductValuesException;
+use Lunar\Hub\Exceptions\VariantsDisabledException;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductVariant;
 
 class GenerateVariants implements ShouldQueue
 {

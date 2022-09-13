@@ -2,6 +2,8 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Orders;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderShow;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
@@ -12,8 +14,6 @@ use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 
 /**

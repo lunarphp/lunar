@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\Tag;
 
 class TagFactory extends Factory
 {

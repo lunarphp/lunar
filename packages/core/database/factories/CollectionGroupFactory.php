@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\CollectionGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\CollectionGroup;
 
 class CollectionGroupFactory extends Factory
 {

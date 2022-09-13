@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Controllers;
 
-use Lunar\Hub\GetCandyHub;
 use Illuminate\Routing\Controller;
+use Lunar\Hub\GetCandyHub;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

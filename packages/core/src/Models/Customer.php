@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
@@ -10,7 +11,6 @@ use Lunar\Base\Traits\HasPersonalDetails;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CustomerFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends BaseModel
 {

@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Tags;
 
-use Lunar\Models\Tag;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Tag;
 
 class TagsIndex extends Component
 {

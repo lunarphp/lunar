@@ -2,8 +2,8 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Currency;
 
 class CurrencyFactory extends Factory
 {

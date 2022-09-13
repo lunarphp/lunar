@@ -2,14 +2,14 @@
 
 namespace Lunar\Tests\Unit\Base;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasModelExtending;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Route;
 
 /**
  * @group models.base

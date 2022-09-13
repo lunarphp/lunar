@@ -4,6 +4,10 @@ namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
 use Carbon\CarbonPeriod;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Lunar\DataTypes\Price;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
@@ -17,10 +21,6 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\State;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Password;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 class CustomerShow extends Component
 {

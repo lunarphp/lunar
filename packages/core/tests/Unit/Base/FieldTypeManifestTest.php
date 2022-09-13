@@ -2,14 +2,14 @@
 
 namespace Lunar\Tests\Unit\Base;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
 use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
 use Lunar\Models\Channel;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 /**
  * @group core.fieldtype-manifest

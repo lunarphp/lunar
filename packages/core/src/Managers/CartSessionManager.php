@@ -2,14 +2,14 @@
 
 namespace Lunar\Managers;
 
+use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Session\SessionManager;
 use Lunar\Base\CartSessionInterface;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Session\SessionManager;
 
 class CartSessionManager implements CartSessionInterface
 {

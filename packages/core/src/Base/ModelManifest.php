@@ -2,9 +2,9 @@
 
 namespace Lunar\Base;
 
-use Lunar\Base\Traits\HasModelExtending;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Lunar\Base\Traits\HasModelExtending;
 
 class ModelManifest implements ModelManifestInterface
 {

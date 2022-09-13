@@ -2,8 +2,8 @@
 
 namespace Lunar\Database\State;
 
-use Lunar\Models\TaxClass;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\TaxClass;
 
 class EnsureDefaultTaxClassExists
 {

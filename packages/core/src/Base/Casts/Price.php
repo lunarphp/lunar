@@ -2,10 +2,10 @@
 
 namespace Lunar\Base\Casts;
 
-use Lunar\DataTypes\Price as PriceDataType;
-use Lunar\Models\Currency;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Facades\Validator;
+use Lunar\DataTypes\Price as PriceDataType;
+use Lunar\Models\Currency;
 
 class Price implements CastsAttributes
 {

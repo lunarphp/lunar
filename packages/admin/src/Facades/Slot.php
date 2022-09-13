@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Facades;
 
-use Lunar\Hub\Slots\SlotRegistry;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Hub\Slots\SlotRegistry;
 
 class Slot extends Facade
 {

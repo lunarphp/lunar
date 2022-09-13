@@ -3,6 +3,8 @@
 namespace Lunar\Hub\Http\Livewire;
 
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
@@ -11,8 +13,6 @@ use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
 use Lunar\Models\Product;
-use Illuminate\Support\Facades\DB;
-use Livewire\Component;
 
 class Dashboard extends Component
 {

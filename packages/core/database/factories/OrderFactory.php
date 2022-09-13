@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Channel;
 use Lunar\Models\Order;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
 {

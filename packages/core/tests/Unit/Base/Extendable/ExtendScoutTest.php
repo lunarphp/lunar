@@ -2,9 +2,9 @@
 
 namespace Lunar\Tests\Unit\Base\Extendable;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Product;
 use Lunar\Tests\Stubs\Models\ProductSwapModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExtendScoutTest extends ExtendableTestCase
 {

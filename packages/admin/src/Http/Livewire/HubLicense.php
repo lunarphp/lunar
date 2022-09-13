@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire;
 
-use Lunar\Licensing\LicenseManager;
 use Livewire\Component;
+use Lunar\Licensing\LicenseManager;
 
 class HubLicense extends Component
 {
