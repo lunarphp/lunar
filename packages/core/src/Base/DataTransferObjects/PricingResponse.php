@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base\DataTransferObjects;
+namespace Lunar\Base\DataTransferObjects;
 
-use GetCandy\Models\Price;
+use Lunar\Models\Price;
 use Illuminate\Support\Collection;
 
 class PricingResponse

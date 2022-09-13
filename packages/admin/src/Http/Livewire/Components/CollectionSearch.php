@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Models\Collection as ModelsCollection;
+use Lunar\Models\Collection as ModelsCollection;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base;
+namespace Lunar\Tests\Unit\Base;
 
-use GetCandy\Base\FieldTypeManifest;
-use GetCandy\Base\FieldTypeManifestInterface;
-use GetCandy\Exceptions\FieldTypes\FieldTypeMissingException;
-use GetCandy\Exceptions\FieldTypes\InvalidFieldTypeException;
-use GetCandy\Models\Channel;
-use GetCandy\Tests\TestCase;
+use Lunar\Base\FieldTypeManifest;
+use Lunar\Base\FieldTypeManifestInterface;
+use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
+use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
+use Lunar\Models\Channel;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 

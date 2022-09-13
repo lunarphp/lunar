@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\Price;
-use GetCandy\Base\Casts\TaxBreakdown;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Base\Traits\Searchable;
-use GetCandy\Database\Factories\OrderFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\Price;
+use Lunar\Base\Casts\TaxBreakdown;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\Traits\Searchable;
+use Lunar\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends BaseModel
@@ -63,7 +63,7 @@ class Order extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\OrderFactory
+     * @return \Lunar\Database\Factories\OrderFactory
      */
     protected static function newFactory(): OrderFactory
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\TaxManagerInterface;
+use Lunar\Base\TaxManagerInterface;
 use Illuminate\Support\Facades\Facade;
 
 class Taxes extends Facade

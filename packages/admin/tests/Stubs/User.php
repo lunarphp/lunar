@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Stubs;
+namespace Lunar\Hub\Tests\Stubs;
 
-use GetCandy\Base\Traits\GetCandyUser;
+use Lunar\Base\Traits\GetCandyUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants\Editing;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Variants\Editing;
 
-use GetCandy\Models\ProductVariant;
+use Lunar\Models\ProductVariant;
 use Livewire\Component;
 
 class Inventory extends Component

@@ -18,7 +18,7 @@ A collection must also belong to a collection group, this allows you to have gre
 Create a collection group
 
 ```php
-$group = \GetCandy\Models\CollectionGroup::create([
+$group = \Lunar\Models\CollectionGroup::create([
     'name' => 'Main Catalogue',
     'handle' => 'main-catalogue' // Will auto generate if omitted.
 ]);
@@ -32,9 +32,9 @@ Collections are a hierarchy of models that have products associated to them, you
 ### Create a collection
 
 ```php
-$collection = \GetCandy\Models\Collection::create([
+$collection = \Lunar\Models\Collection::create([
     'attribute_data' => [
-        'name' => new \GetCandy\FieldTypes\Text('Clearance'),
+        'name' => new \Lunar\FieldTypes\Text('Clearance'),
     ],
     'collection_group_id' => $group->id,
 ]);
@@ -44,7 +44,7 @@ $collection = \GetCandy\Models\Collection::create([
 ### Add a child collection
 
 ```php
-$child = new \GetCandy\Models\Collection::create([/*..*/]);
+$child = new \Lunar\Models\Collection::create([/*..*/]);
 
 $collection->appendNode($child);
 ```

@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire;
+namespace Lunar\Hub\Http\Livewire;
 
 use Carbon\CarbonPeriod;
-use GetCandy\DataTypes\Price;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\Product;
+use Lunar\DataTypes\Price;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Order;
+use Lunar\Models\OrderAddress;
+use Lunar\Models\OrderLine;
+use Lunar\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -110,7 +110,7 @@ class Dashboard extends Component
     /**
      * Return the computed property for default currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {
@@ -120,7 +120,7 @@ class Dashboard extends Component
     /**
      * Return computed property for order totals.
      *
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function getOrderTotalProperty()
     {

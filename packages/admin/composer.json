@@ -13,8 +13,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "GetCandy\\Hub\\": "src",
-            "GetCandy\\Hub\\Database\\Factories\\": "database/factories"
+            "Lunar\\Hub\\": "src",
+            "Lunar\\Hub\\Database\\Factories\\": "database/factories"
         },
         "files": [
             "src/helpers.php"
@@ -22,13 +22,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GetCandy\\Hub\\Tests\\": "tests"
+            "Lunar\\Hub\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "GetCandy\\Hub\\AdminHubServiceProvider"
+                "Lunar\\Hub\\AdminHubServiceProvider"
             ]
         }
     },

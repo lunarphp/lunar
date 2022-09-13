@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base;
+namespace Lunar\Tests\Unit\Base;
 
-use GetCandy\Base\AttributeManifest;
-use GetCandy\Base\AttributeManifestInterface;
-use GetCandy\Models\Channel;
-use GetCandy\Tests\TestCase;
+use Lunar\Base\AttributeManifest;
+use Lunar\Base\AttributeManifestInterface;
+use Lunar\Models\Channel;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 

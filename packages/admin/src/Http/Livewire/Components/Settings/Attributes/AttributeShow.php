@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\Facades\AttributeManifest;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
+use Lunar\Facades\AttributeManifest;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -114,7 +114,7 @@ class AttributeShow extends AbstractAttribute
     /**
      * Return the group to be used when creating an attribute.
      *
-     * @return \GetCandy\Models\AttributeGroup
+     * @return \Lunar\Models\AttributeGroup
      */
     public function getAttributeCreateGroupProperty()
     {
@@ -185,7 +185,7 @@ class AttributeShow extends AbstractAttribute
     /**
      * Return the computed property for the group to edit.
      *
-     * @return \GetCandy\Models\AttributeGroup|null
+     * @return \Lunar\Models\AttributeGroup|null
      */
     public function getAttributeGroupToEditProperty()
     {
@@ -205,7 +205,7 @@ class AttributeShow extends AbstractAttribute
     /**
      * Return the attribute to edit.
      *
-     * @return \GetCandy\Models\Attribute
+     * @return \Lunar\Models\Attribute
      */
     public function getAttributeToEditProperty()
     {

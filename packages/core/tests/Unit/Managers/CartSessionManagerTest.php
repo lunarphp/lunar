@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Managers;
+namespace Lunar\Tests\Unit\Managers;
 
-use GetCandy\Facades\CartSession;
-use GetCandy\Managers\CartSessionManager;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Order;
-use GetCandy\Tests\TestCase;
+use Lunar\Facades\CartSession;
+use Lunar\Managers\CartSessionManager;
+use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
+use Lunar\Models\Order;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;

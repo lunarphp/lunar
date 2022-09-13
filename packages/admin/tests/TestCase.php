@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Tests;
+namespace Lunar\Hub\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
-use GetCandy\GetCandyServiceProvider;
-use GetCandy\Hub\AdminHubServiceProvider;
-use GetCandy\Tests\Stubs\TestUrlGenerator;
+use Lunar\GetCandyServiceProvider;
+use Lunar\Hub\AdminHubServiceProvider;
+use Lunar\Tests\Stubs\TestUrlGenerator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;

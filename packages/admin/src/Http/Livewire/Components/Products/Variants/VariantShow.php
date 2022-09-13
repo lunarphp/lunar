@@ -1,20 +1,20 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Variants;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
-use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Hub\Jobs\Products\GenerateVariants;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
+use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasPrices;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Hub\Jobs\Products\GenerateVariants;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -37,14 +37,14 @@ class VariantShow extends Component
     /**
      * Instance of the parent product.
      *
-     * @var \GetCandy\Models\Product
+     * @var \Lunar\Models\Product
      */
     public Product $product;
 
     /**
      * Instance of the product variant.
      *
-     * @var \GetCandy\Models\ProductVariant
+     * @var \Lunar\Models\ProductVariant
      */
     public ProductVariant $variant;
 
@@ -426,7 +426,7 @@ class VariantShow extends Component
     /**
      * Returns the model which has slots associated.
      *
-     * @return \GetCandy\Models\ProductVariant
+     * @return \Lunar\Models\ProductVariant
      */
     protected function getSlotModel()
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\TaxClass;
+use Lunar\Models\TaxClass;
 use Illuminate\Support\Collection;
 
 interface Purchasable
@@ -10,7 +10,7 @@ interface Purchasable
     /**
      * Get the purchasable prices.
      *
-     * @return \Illuminate\Support\Collection<\GetCandy\Models\Price>
+     * @return \Illuminate\Support\Collection<\Lunar\Models\Price>
      */
     public function getPrices(): Collection;
 

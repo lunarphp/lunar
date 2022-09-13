@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
+namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
+use Lunar\Models\Attribute;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 
 class ProductTypeShow extends AbstractProductType

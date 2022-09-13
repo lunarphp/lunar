@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Console\Commands;
+namespace Lunar\Hub\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;

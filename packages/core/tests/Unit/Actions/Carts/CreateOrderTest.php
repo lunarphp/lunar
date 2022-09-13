@@ -1,24 +1,24 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Carts;
+namespace Lunar\Tests\Unit\Actions\Carts;
 
-use GetCandy\DataTypes\Price as PriceDataType;
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
-use GetCandy\Exceptions\Carts\BillingAddressMissingException;
-use GetCandy\Facades\ShippingManifest;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\Country;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\Price;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Tests\TestCase;
+use Lunar\DataTypes\Price as PriceDataType;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
+use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Lunar\Models\Country;
+use Lunar\Models\Currency;
+use Lunar\Models\Order;
+use Lunar\Models\OrderAddress;
+use Lunar\Models\OrderLine;
+use Lunar\Models\Price;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

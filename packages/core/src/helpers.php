@@ -1,6 +1,6 @@
 <?php
 
-use GetCandy\Base\Traits\GetCandyUser;
+use Lunar\Base\Traits\GetCandyUser;
 
 if (! function_exists('is_getcandy_user')) {
     function is_getcandy_user($user)

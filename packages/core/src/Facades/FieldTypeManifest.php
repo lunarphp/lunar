@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\FieldTypeManifestInterface;
+use Lunar\Base\FieldTypeManifestInterface;
 use Illuminate\Support\Facades\Facade;
 
 class FieldTypeManifest extends Facade

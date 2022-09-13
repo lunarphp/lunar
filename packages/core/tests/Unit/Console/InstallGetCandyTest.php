@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Console;
+namespace Lunar\Tests\Unit\Console;
 
-use GetCandy\Tests\TestCase;
+use Lunar\Tests\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 

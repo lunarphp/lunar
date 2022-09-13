@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\ProductOptions;
+namespace Lunar\Hub\Http\Livewire\Components\ProductOptions;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\ProductOption;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\ProductOption;
 use Livewire\Component;
 
 class OptionValueCreateModal extends Component
@@ -15,7 +15,7 @@ class OptionValueCreateModal extends Component
     /**
      * The parent product option for this new value.
      *
-     * @var null|\GetCandy\Models\ProductOption
+     * @var null|\Lunar\Models\ProductOption
      */
     public ?ProductOption $option = null;
 

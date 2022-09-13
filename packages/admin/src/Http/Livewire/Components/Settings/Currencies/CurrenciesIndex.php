@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Currencies;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Currencies;
 
-use GetCandy\Models\Currency;
+use Lunar\Models\Currency;
 use Livewire\Component;
 use Livewire\WithPagination;
 

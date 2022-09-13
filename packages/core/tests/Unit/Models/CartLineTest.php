@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Exceptions\NonPurchasableItemException;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Channel;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\Stubs\User;
-use GetCandy\Tests\TestCase;
+use Lunar\Exceptions\NonPurchasableItemException;
+use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
+use Lunar\Models\Channel;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Stubs\User;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

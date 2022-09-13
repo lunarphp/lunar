@@ -27,7 +27,7 @@ Currently, only the side menu and settings menu are available to extend. But we 
 Here is an example of how you would add a new link to the side menu.
 
 ```php
-use GetCandy\Hub\Facades\Menu;
+use Lunar\Hub\Facades\Menu;
 
 $slot = Menu::slot('sidebar');
 
@@ -65,8 +65,8 @@ A Slot is a Livewire component that implements the `AbstractSlot` interface. Her
 
 namespace App\Slots;
 
-use GetCandy\Hub\Slots\AbstractSlot;
-use GetCandy\Hub\Slots\Traits\HubSlot;
+use Lunar\Hub\Slots\AbstractSlot;
+use Lunar\Hub\Slots\Traits\HubSlot;
 use Livewire\Component;
 
 class SeoSlot extends Component implements AbstractSlot
@@ -242,7 +242,7 @@ Throughout GetCandy there are a number of data tables on pages, such as product,
 
 We'll be working towards adding this functionality across as many data tables as possible, but for now the supported tables are:
 
-- `GetCandy\Facades\OrdersTable`
+- `Lunar\Facades\OrdersTable`
 
 ### Adding Columns
 
@@ -286,7 +286,7 @@ GetCandy comes with basic exporter for each supported table. You're free to add 
 
 namespace App\Exporters;
 
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 use Illuminate\Support\Facades\Storage;
 
 class OrderExporter

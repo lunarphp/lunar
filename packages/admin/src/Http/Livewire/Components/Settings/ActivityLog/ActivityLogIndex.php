@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\ActivityLog;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\ActivityLog;
 
 use Livewire\Component;
 use Livewire\WithPagination;

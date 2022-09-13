@@ -1,7 +1,7 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Pages\Customers\CustomerShow;
-use GetCandy\Hub\Http\Livewire\Pages\Customers\CustomersIndex;
+use Lunar\Hub\Http\Livewire\Pages\Customers\CustomerShow;
+use Lunar\Hub\Http\Livewire\Pages\Customers\CustomersIndex;
 use Illuminate\Support\Facades\Route;
 
 /**

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\ModelManifestInterface;
+use Lunar\Base\ModelManifestInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string getMorphClassBaseModel(string $morphClass)
  * @method static \Illuminate\Support\Collection getBaseModelClasses()
  *
- * @see \GetCandy\Base\ModelManifest
+ * @see \Lunar\Base\ModelManifest
  */
 class ModelManifest extends Facade
 {

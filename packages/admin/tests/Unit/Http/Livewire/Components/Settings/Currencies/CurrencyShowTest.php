@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Settings\Currencies;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Settings\Currencies;
 
-use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Currency;
+use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Currency;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 

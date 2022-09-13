@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Facades;
+namespace Lunar\Hub\Facades;
 
-use GetCandy\Hub\Slots\SlotRegistry;
+use Lunar\Hub\Slots\SlotRegistry;
 use Illuminate\Support\Facades\Facade;
 
 class Slot extends Facade

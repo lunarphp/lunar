@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Actions\Pricing;
+namespace Lunar\Hub\Tests\Unit\Actions\Pricing;
 
-use GetCandy\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
+use Lunar\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

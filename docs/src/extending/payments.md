@@ -28,7 +28,7 @@ A payment driver should take into account 2 fundamentals:
 ### Registering your driver
 
 ```php
-use GetCandy\Facades\Payments;
+use Lunar\Facades\Payments;
 
 Payments::extend('custom', function ($app) {
     return $app->make(CustomPayment::class);
@@ -44,10 +44,10 @@ First, we'll show you the complete class and then break it down to see what's go
 
 namespace App\PaymentTypes;
 
-use GetCandy\Base\DataTransferObjects\PaymentCapture;
-use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
-use GetCandy\Models\Transaction;
+use Lunar\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Models\Transaction;
 
 class CustomPayment extends AbstractPayment
 {
@@ -180,7 +180,7 @@ Depending on how your driver works, you're likely going to need to create some t
 ### Database Schema
 
 ```
-GetCandy\Models\Transaction
+Lunar\Models\Transaction
 ```
 
 |Field|Description|Example|

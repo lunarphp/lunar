@@ -1,85 +1,85 @@
 <?php
 
-namespace GetCandy\Hub;
+namespace Lunar\Hub;
 
-use GetCandy\Hub\Auth\Manifest;
-use GetCandy\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
-use GetCandy\Hub\Base\OrdersTableInterface;
-use GetCandy\Hub\Console\Commands\InstallHub;
-use GetCandy\Hub\Facades\ActivityLog;
-use GetCandy\Hub\Http\Livewire\Components\Account;
-use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
-use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
-use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
-use GetCandy\Hub\Http\Livewire\Components\Avatar;
-use GetCandy\Hub\Http\Livewire\Components\Brands\BrandShow;
-use GetCandy\Hub\Http\Livewire\Components\Brands\BrandsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
-use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
-use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionTree;
-use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
-use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
-use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
-use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
-use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
-use GetCandy\Hub\Http\Livewire\Components\Orders\EmailNotification;
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrderCapture;
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrderRefund;
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
-use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
-use GetCandy\Hub\Http\Livewire\Components\ProductOptions\OptionValueCreateModal;
-use GetCandy\Hub\Http\Livewire\Components\Products\Editing\CustomerGroups;
-use GetCandy\Hub\Http\Livewire\Components\Products\Options\OptionCreator;
-use GetCandy\Hub\Http\Livewire\Components\Products\Options\OptionSelector;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductCreate;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductShow;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
-use GetCandy\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
-use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
-use GetCandy\Hub\Http\Livewire\Components\Products\Variants\VariantSideMenu;
-use GetCandy\Hub\Http\Livewire\Components\ProductSearch;
-use GetCandy\Hub\Http\Livewire\Components\Reporting\ApexChart;
-use GetCandy\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Addons\AddonsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeEdit;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupEdit;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributeShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Attributes\AttributesIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelCreate;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrenciesIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyCreate;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
-use GetCandy\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
-use GetCandy\Hub\Http\Livewire\Dashboard;
-use GetCandy\Hub\Http\Livewire\HubLicense;
-use GetCandy\Hub\Http\Livewire\Sidebar;
-use GetCandy\Hub\Listeners\SetStaffAuthMiddlewareListener;
-use GetCandy\Hub\Menu\MenuRegistry;
-use GetCandy\Hub\Menu\OrderActionsMenu;
-use GetCandy\Hub\Menu\SettingsMenu;
-use GetCandy\Hub\Menu\SidebarMenu;
-use GetCandy\Hub\Menu\SlotRegistry;
-use GetCandy\Hub\Tables\Orders;
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
+use Lunar\Hub\Base\OrdersTableInterface;
+use Lunar\Hub\Console\Commands\InstallHub;
+use Lunar\Hub\Facades\ActivityLog;
+use Lunar\Hub\Http\Livewire\Components\Account;
+use Lunar\Hub\Http\Livewire\Components\ActivityLogFeed;
+use Lunar\Hub\Http\Livewire\Components\Authentication\LoginForm;
+use Lunar\Hub\Http\Livewire\Components\Authentication\PasswordReset;
+use Lunar\Hub\Http\Livewire\Components\Avatar;
+use Lunar\Hub\Http\Livewire\Components\Brands\BrandShow;
+use Lunar\Hub\Http\Livewire\Components\Brands\BrandsIndex;
+use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
+use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
+use Lunar\Hub\Http\Livewire\Components\Collections\CollectionShow;
+use Lunar\Hub\Http\Livewire\Components\Collections\CollectionTree;
+use Lunar\Hub\Http\Livewire\Components\Collections\SideMenu;
+use Lunar\Hub\Http\Livewire\Components\CollectionSearch;
+use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
+use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
+use Lunar\Hub\Http\Livewire\Components\Customers\CustomersIndex;
+use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrderRefund;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrderShow;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrdersIndex;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrderStatus;
+use Lunar\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
+use Lunar\Hub\Http\Livewire\Components\ProductOptions\OptionValueCreateModal;
+use Lunar\Hub\Http\Livewire\Components\Products\Editing\CustomerGroups;
+use Lunar\Hub\Http\Livewire\Components\Products\Options\OptionCreator;
+use Lunar\Hub\Http\Livewire\Components\Products\Options\OptionSelector;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductCreate;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductsIndex;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
+use Lunar\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
+use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
+use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantSideMenu;
+use Lunar\Hub\Http\Livewire\Components\ProductSearch;
+use Lunar\Hub\Http\Livewire\Components\Reporting\ApexChart;
+use Lunar\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Addons\AddonShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Addons\AddonsIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeEdit;
+use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupEdit;
+use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributesIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelCreate;
+use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelsIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrenciesIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyCreate;
+use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
+use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
+use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
+use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
+use Lunar\Hub\Http\Livewire\Dashboard;
+use Lunar\Hub\Http\Livewire\HubLicense;
+use Lunar\Hub\Http\Livewire\Sidebar;
+use Lunar\Hub\Listeners\SetStaffAuthMiddlewareListener;
+use Lunar\Hub\Menu\MenuRegistry;
+use Lunar\Hub\Menu\OrderActionsMenu;
+use Lunar\Hub\Menu\SettingsMenu;
+use Lunar\Hub\Menu\SidebarMenu;
+use Lunar\Hub\Menu\SlotRegistry;
+use Lunar\Hub\Tables\Orders;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -117,8 +117,8 @@ class AdminHubServiceProvider extends ServiceProvider
             return new SlotRegistry();
         });
 
-        $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
-            return new \GetCandy\Hub\Editing\ProductSection();
+        $this->app->singleton(\Lunar\Hub\Editing\ProductSection::class, function ($app) {
+            return new \Lunar\Hub\Editing\ProductSection();
         });
 
         $this->app->singleton(OrdersTableInterface::class, function ($app) {
@@ -144,7 +144,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         Auth::resolved(function ($auth) {
             $auth->extend('getcandyhub', function ($app, $name, array $config) {
-                return $app->make(\GetCandy\Hub\Auth\HubGuard::class);
+                return $app->make(\Lunar\Hub\Auth\HubGuard::class);
             });
         });
 
@@ -213,7 +213,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerCustomerComponents();
 
         // Blade Components
-        Blade::componentNamespace('GetCandy\\Hub\\Views\\Components', 'hub');
+        Blade::componentNamespace('Lunar\\Hub\\Views\\Components', 'hub');
     }
 
     /**

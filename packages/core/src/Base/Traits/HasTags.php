@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Jobs\SyncTags;
-use GetCandy\Models\Tag;
+use Lunar\Jobs\SyncTags;
+use Lunar\Models\Tag;
 use Illuminate\Support\Collection;
 
 trait HasTags

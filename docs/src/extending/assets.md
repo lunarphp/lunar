@@ -16,7 +16,7 @@ Here is an example of how you would register assets in the `boot` method of your
 These assets will get registered to the admin hubs' `app` layout.
 
 ```php
-use GetCandy\Hub\GetCandyHub;
+use Lunar\Hub\GetCandyHub;
 
 /**
  * Bootstrap the application services.

@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Exceptions\FieldTypes;
+namespace Lunar\Exceptions\FieldTypes;
 
 use Exception;
 

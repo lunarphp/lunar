@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Country;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\State;
-use GetCandy\Models\TaxZone;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\Country;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\State;
+use Lunar\Models\TaxZone;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

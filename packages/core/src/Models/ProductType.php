@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasAttributes;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Database\Factories\ProductTypeFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasAttributes;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Database\Factories\ProductTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductType extends BaseModel
@@ -17,7 +17,7 @@ class ProductType extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\ProductTypeFactory
+     * @return \Lunar\Database\Factories\ProductTypeFactory
      */
     protected static function newFactory(): ProductTypeFactory
     {

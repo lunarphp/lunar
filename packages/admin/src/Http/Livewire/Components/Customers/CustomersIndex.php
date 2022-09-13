@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Customers;
+namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Customer;
+use Lunar\Models\Attribute;
+use Lunar\Models\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
 

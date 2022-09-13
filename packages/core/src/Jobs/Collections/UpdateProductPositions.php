@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Jobs\Collections;
+namespace Lunar\Jobs\Collections;
 
-use GetCandy\Actions\Collections\SortProducts;
-use GetCandy\Models\Collection;
+use Lunar\Actions\Collections\SortProducts;
+use Lunar\Models\Collection;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

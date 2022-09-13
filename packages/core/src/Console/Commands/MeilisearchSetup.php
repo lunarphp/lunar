@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Console\Commands;
+namespace Lunar\Console\Commands;
 
 use Illuminate\Console\Command;
 use Laravel\Scout\EngineManager;

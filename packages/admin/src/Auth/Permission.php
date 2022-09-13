@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Auth;
+namespace Lunar\Hub\Auth;
 
 use Illuminate\Support\Collection;
 

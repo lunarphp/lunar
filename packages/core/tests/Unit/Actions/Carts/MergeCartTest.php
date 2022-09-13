@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Carts;
+namespace Lunar\Tests\Unit\Actions\Carts;
 
-use GetCandy\Actions\Carts\MergeCart;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Price;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Tests\TestCase;
+use Lunar\Actions\Carts\MergeCart;
+use Lunar\Models\Cart;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Price;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

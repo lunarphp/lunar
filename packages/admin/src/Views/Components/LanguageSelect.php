@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace Lunar\Hub\Views\Components;
 
-use GetCandy\Models\Language;
+use Lunar\Models\Language;
 use Illuminate\View\Component;
 
 class LanguageSelect extends Component

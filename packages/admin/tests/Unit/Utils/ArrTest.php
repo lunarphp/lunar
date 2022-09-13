@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Utils;
+namespace Lunar\Hub\Tests\Unit\Utils;
 
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Utils\Arr;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Utils\Arr;
 
 /**
  * @group hub.utils

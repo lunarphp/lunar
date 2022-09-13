@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Account;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Http\Livewire\Components\Account;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;

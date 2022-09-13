@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\Models\Collection;
-use GetCandy\Models\CollectionGroup;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CollectionFactory extends Factory

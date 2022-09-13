@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\PaymentTypes\OfflinePayment;
+use Lunar\PaymentTypes\OfflinePayment;
 use Illuminate\Support\Manager;
 use Illuminate\Support\Str;
 

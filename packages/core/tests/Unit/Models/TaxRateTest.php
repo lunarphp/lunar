@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\TaxRate;
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Models\TaxZone;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Models\TaxZone;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

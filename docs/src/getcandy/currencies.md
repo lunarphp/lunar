@@ -9,7 +9,7 @@ Currencies allow you to charge different amounts relative to the currency you're
 ## Creating a currency
 
 ```php
-\GetCandy\Models\Currency::create([
+\Lunar\Models\Currency::create([
     'code' => 'GBP',
     'name' => 'British Pound',
     'exchange_rate' => 1.0000,
@@ -56,7 +56,7 @@ This then gives us the correct format and allows it to be specified per currency
 These are relative to the default currency. For example assuming we have the following:
 
 ```php
-\GetCandy\Models\Currency::create([
+\Lunar\Models\Currency::create([
     'code' => 'GBP',
     'name' => 'British Pound',
     'exchange_rate' => 1.0000,

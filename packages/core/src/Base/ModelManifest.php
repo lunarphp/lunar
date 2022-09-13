@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Base\Traits\HasModelExtending;
+use Lunar\Base\Traits\HasModelExtending;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 

@@ -1,11 +1,11 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Hub;
-use GetCandy\Hub\Http\Livewire\Pages\Account;
-use GetCandy\Hub\Http\Livewire\Pages\Authentication\Login;
-use GetCandy\Hub\Http\Livewire\Pages\Authentication\PasswordReset;
-use GetCandy\Hub\Http\Middleware\Authenticate;
-use GetCandy\Hub\Http\Middleware\RedirectIfAuthenticated;
+use Lunar\Hub\Http\Livewire\Hub;
+use Lunar\Hub\Http\Livewire\Pages\Account;
+use Lunar\Hub\Http\Livewire\Pages\Authentication\Login;
+use Lunar\Hub\Http\Livewire\Pages\Authentication\PasswordReset;
+use Lunar\Hub\Http\Middleware\Authenticate;
+use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 

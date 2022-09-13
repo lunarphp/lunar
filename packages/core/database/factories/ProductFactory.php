@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Drivers\SystemTaxDriver;
+use Lunar\Drivers\SystemTaxDriver;
 use Illuminate\Support\Manager;
 
 class TaxManager extends Manager

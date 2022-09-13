@@ -30,11 +30,11 @@ Index names are relative to the `SCOUT_PREFIX` env variable.
 
 |Model|Index|Contains Sensitive Information|
 |:-|:-|:-|
-`\GetCandy\Models\Product`|`products`|❌|
-`\GetCandy\Models\Collection`|`collections`|❌|
-`\GetCandy\Models\ProductOption`|`product_options`|❌|
-`\GetCandy\Models\Customer`|`customers`|✅|
-`\GetCandy\Models\Order`|`orders`|✅|
+`\Lunar\Models\Product`|`products`|❌|
+`\Lunar\Models\Collection`|`collections`|❌|
+`\Lunar\Models\ProductOption`|`product_options`|❌|
+`\Lunar\Models\Customer`|`customers`|✅|
+`\Lunar\Models\Order`|`orders`|✅|
 
 
 ## Securing Meilisearch

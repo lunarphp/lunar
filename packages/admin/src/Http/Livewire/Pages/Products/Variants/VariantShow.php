@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Products\Variants;
+namespace Lunar\Hub\Http\Livewire\Pages\Products\Variants;
 
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
 use Livewire\Component;
 
 class VariantShow extends Component
@@ -11,14 +11,14 @@ class VariantShow extends Component
     /**
      * The current product.
      *
-     * @var \GetCandy\Models\Product
+     * @var \Lunar\Models\Product
      */
     public Product $product;
 
     /**
      * The current variant.
      *
-     * @var \GetCandy\Models\ProductVariant
+     * @var \Lunar\Models\ProductVariant
      */
     public ProductVariant $variant;
 

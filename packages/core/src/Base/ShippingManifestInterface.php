@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Models\Cart;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Models\Cart;
 use Illuminate\Support\Collection;
 
 interface ShippingManifestInterface
@@ -11,7 +11,7 @@ interface ShippingManifestInterface
     /**
      * Add a shipping option to the manifest.
      *
-     * @param  \GetCandy\DataTypes\ShippingOption  $shippingOption
+     * @param  \Lunar\DataTypes\ShippingOption  $shippingOption
      * @return self
      */
     public function addOption(ShippingOption $shippingOption);
@@ -19,7 +19,7 @@ interface ShippingManifestInterface
     /**
      * Return available options for a given cart.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param  \Lunar\Models\Cart  $cart
      * @return \Illuminate\Support\Collection
      */
     public function getOptions(Cart $cart): Collection;

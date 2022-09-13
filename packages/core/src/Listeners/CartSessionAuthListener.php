@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Listeners;
+namespace Lunar\Listeners;
 
-use GetCandy\Facades\CartSession;
-use GetCandy\Models\Cart;
+use Lunar\Facades\CartSession;
+use Lunar\Models\Cart;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 

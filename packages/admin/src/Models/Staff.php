@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Models;
+namespace Lunar\Hub\Models;
 
-use GetCandy\Hub\Database\Factories\StaffFactory;
+use Lunar\Hub\Database\Factories\StaffFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +18,7 @@ class Staff extends Authenticatable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Hub\Database\Factories\StaffFactory
+     * @return \Lunar\Hub\Database\Factories\StaffFactory
      */
     protected static function newFactory(): StaffFactory
     {

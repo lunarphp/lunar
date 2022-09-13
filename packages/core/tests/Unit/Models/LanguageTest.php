@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Language;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\Language;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LanguageTest extends TestCase

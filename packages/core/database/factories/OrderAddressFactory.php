@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\OrderAddress;
+use Lunar\Models\OrderAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderAddressFactory extends Factory

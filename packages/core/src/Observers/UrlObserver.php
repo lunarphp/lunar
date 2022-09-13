@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Observers;
+namespace Lunar\Observers;
 
-use GetCandy\Models\Url;
+use Lunar\Models\Url;
 
 class UrlObserver
 {
     /**
      * Handle the Url "created" event.
      *
-     * @param  \GetCandy\Models\Url  $url
+     * @param  \Lunar\Models\Url  $url
      * @return void
      */
     public function created(Url $url)
@@ -20,7 +20,7 @@ class UrlObserver
     /**
      * Handle the User "updated" event.
      *
-     * @param  \GetCandy\Models\Url  $url
+     * @param  \Lunar\Models\Url  $url
      * @return void
      */
     public function updated(Url $url)
@@ -31,7 +31,7 @@ class UrlObserver
     /**
      * Handle the Url "deleted" event.
      *
-     * @param  \GetCandy\Models\Url  $url
+     * @param  \Lunar\Models\Url  $url
      * @return void
      */
     public function deleted(Url $url)

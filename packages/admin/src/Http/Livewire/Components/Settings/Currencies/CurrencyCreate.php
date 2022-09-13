@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Currencies;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Currencies;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Currency;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Currency;
 use Livewire\Component;
 
 class CurrencyCreate extends Component

@@ -27,7 +27,7 @@ A URL cannot share the same `slug` and `language_id` columns. You can also only 
 ## Creating a URL
 
 ```php
-\GetCandy\Models\Url::create([
+\Lunar\Models\Url::create([
     'slug' => 'apple-iphone',
     'language_id' => $language->id,
     'default' => true,
@@ -39,7 +39,7 @@ If you add a new default URL for a language which already has one, the new URL w
 :::
 
 ```php
-$urlA = \GetCandy\Models\Url::create([
+$urlA = \Lunar\Models\Url::create([
     'slug' => 'apple-iphone',
     'language_id' => 1,
     'default' => true,
@@ -47,7 +47,7 @@ $urlA = \GetCandy\Models\Url::create([
 
 $urlA->default // true
 
-$urlB = \GetCandy\Models\Url::create([
+$urlB = \Lunar\Models\Url::create([
     'slug' => 'apple-iphone-26',
     'language_id' => 1,
     'default' => true,
@@ -59,7 +59,7 @@ $urlB->default // true
 /**
  * Since this is a different language, no other URLs will be changed.
  **/
-$urlC = \GetCandy\Models\Url::create([
+$urlC = \Lunar\Models\Url::create([
     'slug' => 'apple-iphone-french',
     'language_id' => 2,
     'default' => true,
@@ -77,13 +77,13 @@ When you delete a URL, if it was the default then GetCandy will look for a non d
 
 
 ```php
-$urlA = \GetCandy\Models\Url::create([
+$urlA = \Lunar\Models\Url::create([
     'slug' => 'apple-iphone',
     'language_id' => 1,
     'default' => true,
 ]);
 
-$urlB = \GetCandy\Models\Url::create([
+$urlB = \Lunar\Models\Url::create([
     'slug' => 'apple-iphone-26',
     'language_id' => 1,
     'default' => false,
@@ -111,7 +111,7 @@ You are free to add URLs to your own models.
 
 namespace App\Models;
 
-use GetCandy\Base\Traits\HasUrls;
+use Lunar\Base\Traits\HasUrls;
 
 // ...
 
@@ -132,7 +132,7 @@ $myModel->urls; // Collection
 
 You can tell GetCandy to generate URLs for models that use the `HasUrls` trait automatically by setting the `generator` config option in `config/getcandy/urls.php`.
 
-By default this is set to `GetCandy\Generators\UrlGenerator::class` which means URLs will be generated. To disable this, set the config like below:
+By default this is set to `Lunar\Generators\UrlGenerator::class` which means URLs will be generated. To disable this, set the config like below:
 
 ```php
 return [

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Staff;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
-use GetCandy\Hub\Auth\Manifest;
-use GetCandy\Hub\Http\Livewire\Traits\ConfirmsDelete;
-use GetCandy\Hub\Models\Staff;
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Http\Livewire\Traits\ConfirmsDelete;
+use Lunar\Hub\Models\Staff;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 

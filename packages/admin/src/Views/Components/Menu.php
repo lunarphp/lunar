@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace Lunar\Hub\Views\Components;
 
-use GetCandy\Hub\Facades\Menu as MenuFacade;
+use Lunar\Hub\Facades\Menu as MenuFacade;
 use Illuminate\View\Component;
 
 class Menu extends Component

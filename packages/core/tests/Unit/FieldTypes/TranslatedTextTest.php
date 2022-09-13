@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\FieldTypes;
+namespace Lunar\Tests\Unit\FieldTypes;
 
-use GetCandy\Exceptions\FieldTypeException;
-use GetCandy\FieldTypes\Number;
-use GetCandy\FieldTypes\Text;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Tests\TestCase;
+use Lunar\Exceptions\FieldTypeException;
+use Lunar\FieldTypes\Number;
+use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Tests\TestCase;
 use Illuminate\Support\Collection;
 
 class TranslatedTextTest extends TestCase

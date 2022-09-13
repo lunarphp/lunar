@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Jobs\Products\Associations;
+namespace Lunar\Jobs\Products\Associations;
 
-use GetCandy\Models\Product;
+use Lunar\Models\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,7 +30,7 @@ class Dissociate implements ShouldQueue
     /**
      * The parent product instance.
      *
-     * @var \GetCandy\Models\Product
+     * @var \Lunar\Models\Product
      */
     protected Product $product;
 
@@ -44,7 +44,7 @@ class Dissociate implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \GetCandy\Models\Product  $product
+     * @param  \Lunar\Models\Product  $product
      * @param  mixed  $targets
      * @param  string  $type
      */

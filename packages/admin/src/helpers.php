@@ -1,6 +1,6 @@
 <?php
 
-use GetCandy\DataTypes\Price;
+use Lunar\DataTypes\Price;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;

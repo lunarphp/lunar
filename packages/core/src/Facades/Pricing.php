@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\PricingManagerInterface;
+use Lunar\Base\PricingManagerInterface;
 use Illuminate\Support\Facades\Facade;
 
 class Pricing extends Facade

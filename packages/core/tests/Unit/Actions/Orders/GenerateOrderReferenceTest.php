@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Orders;
+namespace Lunar\Tests\Unit\Actions\Orders;
 
-use GetCandy\Actions\Orders\GenerateOrderReference;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Tests\Stubs\TestOrderReferenceGenerator;
-use GetCandy\Tests\TestCase;
+use Lunar\Actions\Orders\GenerateOrderReference;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Tests\Stubs\TestOrderReferenceGenerator;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 

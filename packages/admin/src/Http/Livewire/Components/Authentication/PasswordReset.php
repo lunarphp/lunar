@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Authentication;
+namespace Lunar\Hub\Http\Livewire\Components\Authentication;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Mail\ResetPasswordEmail;
-use GetCandy\Hub\Models\Staff;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Mail\ResetPasswordEmail;
+use Lunar\Hub\Models\Staff;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

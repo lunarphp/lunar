@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages\Settings\ActivityLog;
+namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Settings\ActivityLog;
 
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

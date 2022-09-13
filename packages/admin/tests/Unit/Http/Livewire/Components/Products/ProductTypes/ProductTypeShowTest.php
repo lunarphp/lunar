@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products\ProductTypes;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Attribute;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 

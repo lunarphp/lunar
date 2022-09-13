@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\PaymentManagerInterface;
+use Lunar\Base\PaymentManagerInterface;
 use Illuminate\Support\Facades\Facade;
 
 class Payments extends Facade

@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Staff;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Models\Staff;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Models\Staff;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -15,7 +15,7 @@ abstract class AbstractStaff extends Component
     /**
      * The staff model for the staff member we want to show.
      *
-     * @var \GetCandy\Hub\Models\Staff
+     * @var \Lunar\Hub\Models\Staff
      */
     public Staff $staff;
 

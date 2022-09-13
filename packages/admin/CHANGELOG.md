@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Changed
 
-- `savePricing` on the `GetCandy\Hub\Http\Livewire\Traits\HasPrices` trait now supports `basePrices` and `tierPrices` parameters.
+- `savePricing` on the `Lunar\Hub\Http\Livewire\Traits\HasPrices` trait now supports `basePrices` and `tierPrices` parameters.
 
 ## Fixed
 

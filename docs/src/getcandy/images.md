@@ -14,15 +14,15 @@ Configuration is generally managed by the package itself, they do allow you to p
 
 Below is a list of models which currently support media:
 
-- `GetCandy\Models\Product`
-- `GetCandy\Models\Collection`
+- `Lunar\Models\Product`
+- `Lunar\Models\Collection`
 
 ## Adding media to models
 
 If you've used the medialibrary package before you will feel right at home.
 
 ```php
-$product = \GetCandy\Models\Product::find(123);
+$product = \Lunar\Models\Product::find(123);
 
 $product->addMedia($request->file('image'))->toMediaCollection('images');
 ```
@@ -32,7 +32,7 @@ For more information on what's available, see [Associating files](https://spatie
 ## Fetching images
 
 ```php
-$product = \GetCandy\Models\Product::find(123);
+$product = \Lunar\Models\Product::find(123);
 
 $product->getMedia('images');
 ```
@@ -44,7 +44,7 @@ GetCandy provides some useful conversions which come ready out the box. This is 
 
 ```php
 'conversions' => [
-    \GetCandy\Base\StandardMediaConversions::class,
+    \Lunar\Base\StandardMediaConversions::class,
 ],
 ```
 
@@ -73,7 +73,7 @@ Afterwards, simply add your conversion class to the `conversions` array, if you 
 
 return [
     'conversions' => [
-        \GetCandy\Base\StandardMediaConversions::class,
+        \Lunar\Base\StandardMediaConversions::class,
         \App\Media\Conversions\StorefrontConversions::class
     ],
 ];
@@ -105,7 +105,7 @@ To enable image transformations on your models within GetCandy, simply add the `
 
 namespace App\Models;
 
-use GetCandy\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasMedia;
 
 class YourCustomModel extends Model
 {

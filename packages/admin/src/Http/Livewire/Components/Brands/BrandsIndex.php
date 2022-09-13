@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Brands;
+namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Brand;
-use GetCandy\Models\Language;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Brand;
+use Lunar\Models\Language;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;

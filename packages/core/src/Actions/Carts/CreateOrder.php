@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Actions\Orders\GenerateOrderReference;
-use GetCandy\Base\OrderModifiers;
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Order;
+use Lunar\Actions\Orders\GenerateOrderReference;
+use Lunar\Base\OrderModifiers;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Models\Cart;
+use Lunar\Models\Currency;
+use Lunar\Models\Order;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +16,7 @@ class CreateOrder
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param  \Lunar\Models\Cart  $cart
      * @return void
      */
     public function execute(

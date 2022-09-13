@@ -1,9 +1,9 @@
 <?php
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use GetCandy\Hub\Http\Livewire\Pages\Orders\OrderShow;
-use GetCandy\Hub\Http\Livewire\Pages\Orders\OrdersIndex;
-use GetCandy\Models\Order;
+use Lunar\Hub\Http\Livewire\Pages\Orders\OrderShow;
+use Lunar\Hub\Http\Livewire\Pages\Orders\OrdersIndex;
+use Lunar\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

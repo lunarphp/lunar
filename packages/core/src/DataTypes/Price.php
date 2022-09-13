@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\DataTypes;
+namespace Lunar\DataTypes;
 
 use App;
-use GetCandy\Exceptions\InvalidDataTypeValueException;
-use GetCandy\Models\Currency;
+use Lunar\Exceptions\InvalidDataTypeValueException;
+use Lunar\Models\Currency;
 use NumberFormatter;
 
 class Price

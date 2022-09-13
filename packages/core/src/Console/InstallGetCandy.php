@@ -1,21 +1,21 @@
 <?php
 
-namespace GetCandy\Console;
+namespace Lunar\Console;
 
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Collection;
-use GetCandy\Models\CollectionGroup;
-use GetCandy\Models\Country;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\TaxClass;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Hub\Models\Staff;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Channel;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
+use Lunar\Models\Country;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\TaxClass;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -323,7 +323,7 @@ class InstallGetCandy extends Command
     private function publishConfiguration($forcePublish = false): void
     {
         $params = [
-            '--provider' => "GetCandy\GetCandyServiceProvider",
+            '--provider' => "Lunar\GetCandyServiceProvider",
             '--tag'      => 'getcandy',
         ];
 

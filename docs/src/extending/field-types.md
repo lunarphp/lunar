@@ -18,7 +18,7 @@ Each FieldType is it's own class which implements the `FieldType` interface. So 
 
 namespace App\FieldTypes;
 
-use GetCandy\Base\FieldType;
+use Lunar\Base\FieldType;
 
 class ColourPicker implements FieldType
 {
@@ -131,7 +131,7 @@ You will also have access to the `$language` variable, which is generally used o
 Once you've made the FieldType, you need to register it. Typically this could done in a service provider:
 
 ```php
-\GetCandy\Facades\FieldTypeManifest::add(
+\Lunar\Facades\FieldTypeManifest::add(
   ColourFieldType::class
 );
 ```

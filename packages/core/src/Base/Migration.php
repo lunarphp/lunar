@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Illuminate\Database\Migrations\Migration as BaseMigration;
 

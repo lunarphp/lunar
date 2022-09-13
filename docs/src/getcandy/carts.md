@@ -14,7 +14,7 @@ Cart prices are dynamically calculated and are not stored (unlike Orders).
 ## Carts
 
 ```php
-GetCandy\Models\Cart
+Lunar\Models\Cart
 ```
 
 |Field|Description|
@@ -32,7 +32,7 @@ GetCandy\Models\Cart
 ### Creating a cart
 
 ```php
-$cart = \GetCandy\Models\Cart::create([
+$cart = \Lunar\Models\Cart::create([
     'currency_id' => 1,
     'channel_id' => 2,
 ]);
@@ -41,14 +41,14 @@ $cart = \GetCandy\Models\Cart::create([
 ## Cart Lines
 
 ```php
-GetCandy\Models\CartLine
+Lunar\Models\CartLine
 ```
 
 |Field|Description|
 |:-|:-|
 |id||
 |cart_id||
-|purchasable_type|e.g. `GetCandy\Models\ProductVariant`.|
+|purchasable_type|e.g. `Lunar\Models\ProductVariant`.|
 |purchasable_id||
 |quantity||
 |created_at||
@@ -56,7 +56,7 @@ GetCandy\Models\CartLine
 |meta|JSON data for saving any custom information.|
 
 ```php
-$cartLine = new \GetCandy\Models\CartLine([
+$cartLine = new \Lunar\Models\CartLine([
     'cart_id' => 1,
     'purchasable_type' => ProductVariant::class,
     'purchasable_id' => 123,
@@ -83,7 +83,7 @@ $cart = $cart->getManager()->getCart();
 This will return a "hydrated" version of your cart with the following:
 
 ::: tip
-All values will return a `GetCandy\Datatypes\Price` object. So you have access to the following: `value`, `formatted`, `decimal`
+All values will return a `Lunar\Datatypes\Price` object. So you have access to the following: `value`, `formatted`, `decimal`
 :::
 
 ```php
@@ -140,10 +140,10 @@ $cart->getManager()->setShippingAddress($shippingAddress);
 $cart->getManager()->setBillingAddress($billingAddress);
 ```
 
-You can also pass through a `\GetCandy\Models\Address` model, or even another `\GetCandy\Models\CartAddress`
+You can also pass through a `\Lunar\Models\Address` model, or even another `\Lunar\Models\CartAddress`
 
 ```php
-$shippingAddress = \GetCandy\Models\Address::first();
+$shippingAddress = \Lunar\Models\Address::first();
 
 $cart->getManager()->setShippingAddress($shippingAddress);
 
@@ -177,10 +177,10 @@ Configuration for your cart is handled in `getcandy/cart.php`
 You can either use the facade or inject the `CartSession` into your code.
 
 ```php
-$cart = \GetCandy\Facades\CartSession::current();
+$cart = \Lunar\Facades\CartSession::current();
 
 public function __construct(
-    protected \GetCandy\Base\CartSessionInterface $cartSession
+    protected \Lunar\Base\CartSessionInterface $cartSession
 ) {
     // ...
 }
@@ -189,7 +189,7 @@ public function __construct(
 ### Fetching the current cart
 
 ```php
-$cart = \GetCandy\Facades\CartSession::current();
+$cart = \Lunar\Facades\CartSession::current();
 ```
 
 When you call current, you have two options, you either return `null` if they don't have a cart, or you want to create one straight away. By default, we do not create them initially as this could lead to a ton of cart models being created for no good reason. If you want to enable this functionality, you can adjust the config in `getcandy/cart.php`
@@ -204,7 +204,7 @@ CartSession::forget();
 You may want to manually specify which cart should be used for the session.
 
 ```php
-$cart = \GetCandy\Models\Cart::first();
+$cart = \Lunar\Models\Cart::first();
 CartSessionManager::use($cart);
 ```
 
@@ -269,7 +269,7 @@ CartSession::clear();
 You can easily associate a cart to a user.
 
 ```php
-$cart = \GetCandy\Models\Cart::first();
+$cart = \Lunar\Models\Cart::first();
 CartSession::associate($cart, $user, 'merge');
 ```
 

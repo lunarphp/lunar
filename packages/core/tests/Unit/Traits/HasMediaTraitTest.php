@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Traits;
+namespace Lunar\Tests\Unit\Traits;
 
-use GetCandy\Base\StandardMediaConversions;
-use GetCandy\Models\Product;
-use GetCandy\Tests\TestCase;
+use Lunar\Base\StandardMediaConversions;
+use Lunar\Models\Product;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 

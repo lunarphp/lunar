@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Country;
-use GetCandy\Models\TaxZone;
-use GetCandy\Models\TaxZonePostcode;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\Country;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxZonePostcode;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

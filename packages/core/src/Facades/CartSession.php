@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\CartSessionInterface;
+use Lunar\Base\CartSessionInterface;
 use Illuminate\Support\Facades\Facade;
 
 class CartSession extends Facade

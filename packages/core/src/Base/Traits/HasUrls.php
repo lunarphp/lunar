@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Models\Url;
+use Lunar\Models\Url;
 use Illuminate\Database\Eloquent\Model;
 
 trait HasUrls

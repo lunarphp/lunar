@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Collections;
+namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Hub\Http\Livewire\Traits\MapsCollectionTree;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Collection;
-use GetCandy\Models\CollectionGroup;
-use GetCandy\Models\Language;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Hub\Http\Livewire\Traits\MapsCollectionTree;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
+use Lunar\Models\Language;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -317,7 +317,7 @@ class CollectionGroupShow extends Component
     /**
      * Get the target collection to move into.
      *
-     * @return null|\GetCandy\Models\Collection
+     * @return null|\Lunar\Models\Collection
      */
     public function getTargetCollectionProperty()
     {
@@ -331,7 +331,7 @@ class CollectionGroupShow extends Component
     /**
      * Get the source collection we want to move.
      *
-     * @return null|\GetCandy\Models\Collection
+     * @return null|\Lunar\Models\Collection
      */
     public function getSourceCollectionProperty()
     {
@@ -451,7 +451,7 @@ class CollectionGroupShow extends Component
     /**
      * Getter for returning the collection to remove.
      *
-     * @return \GetCandy\Models\Collection|null
+     * @return \Lunar\Models\Collection|null
      */
     public function getCollectionToRemoveProperty()
     {
@@ -463,7 +463,7 @@ class CollectionGroupShow extends Component
     /**
      * Getter for the collection parent.
      *
-     * @return \GetCandy\Models\Collection|null
+     * @return \Lunar\Models\Collection|null
      */
     public function getCollectionParentProperty()
     {

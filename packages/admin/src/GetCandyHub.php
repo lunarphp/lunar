@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub;
+namespace Lunar\Hub;
 
-use GetCandy\Hub\Assets\Script;
-use GetCandy\Hub\Assets\Style;
+use Lunar\Hub\Assets\Script;
+use Lunar\Hub\Assets\Style;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -12,14 +12,14 @@ class GetCandyHub
     /**
      * Registered scripts.
      *
-     * @var array<string, \GetCandy\Hub\Assets\Script>
+     * @var array<string, \Lunar\Hub\Assets\Script>
      */
     public static $scripts = [];
 
     /**
      * Registered styles.
      *
-     * @var array<string, \GetCandy\Hub\Assets\Style>
+     * @var array<string, \Lunar\Hub\Assets\Style>
      */
     public static $styles = [];
 
@@ -27,7 +27,7 @@ class GetCandyHub
      * Get scripts that should be registered.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array<string, \GetCandy\Hub\Assets\Script>
+     * @return array<string, \Lunar\Hub\Assets\Script>
      */
     public static function scripts(): array
     {
@@ -38,7 +38,7 @@ class GetCandyHub
      * Get styles that should be registered.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array<string, \GetCandy\Hub\Assets\Script>
+     * @return array<string, \Lunar\Hub\Assets\Script>
      */
     public static function styles(): array
     {

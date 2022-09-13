@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Jobs\Products;
+namespace Lunar\Hub\Jobs\Products;
 
-use GetCandy\Hub\Exceptions\InvalidProductValuesException;
-use GetCandy\Hub\Exceptions\VariantsDisabledException;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Models\ProductVariant;
+use Lunar\Hub\Exceptions\InvalidProductValuesException;
+use Lunar\Hub\Exceptions\VariantsDisabledException;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductVariant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -29,7 +29,7 @@ class GenerateVariants implements ShouldQueue
     /**
      * The product instance.
      *
-     * @var \GetCandy\Models\Product
+     * @var \Lunar\Models\Product
      */
     protected $product;
 
@@ -45,7 +45,7 @@ class GenerateVariants implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \GetCandy\Models\Product  $product
+     * @param  \Lunar\Models\Product  $product
      * @param  iterable  $optionValues
      * @return void
      */

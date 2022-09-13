@@ -38,13 +38,13 @@ return [
 To use a payment driver, you need to pass the type of payment you wish to use, this will then return an instance of the driver.
 
 ```php
-$driver = \GetCandy\Facades\Payments::driver('card');
+$driver = \Lunar\Facades\Payments::driver('card');
 ```
 
 We can then set the cart.
 
 ```php
-$driver->cart(\GetCandy\Models\Cart $cart);
+$driver->cart(\Lunar\Models\Cart $cart);
 ```
 
 Set any additional data that the driver may need.
@@ -65,7 +65,7 @@ $driver->authorize();
 <!-- As you'd expect, orders on an online system show what users have purchased. They are linked to a Cart and you can only have 1 order per cart in the database.
 
 ```php
-GetCandy\Models\Order
+Lunar\Models\Order
 ```
 
 |Field|Description|
@@ -96,7 +96,7 @@ GetCandy\Models\Order
 You can either create an order directly, or the recommended way is via a `Cart` model.
 
 ```php
-$order = \GetCandy\Models\Order::create([/** .. */]);
+$order = \Lunar\Models\Order::create([/** .. */]);
 
 // Recommended way
 $order = Cart::first()->getManager()->createOrder();
@@ -132,7 +132,7 @@ Given that there is validation taking place and there could be exceptions thrown
 ```php
 try {
     $order = $cart->createOrder();
-} catch (\GetCandy\Exceptions\CartException $e) {
+} catch (\Lunar\Exceptions\CartException $e) {
     // Return back to checkout.
 }
 ```
@@ -140,9 +140,9 @@ try {
 If you want more fine grained control of what you do under the different exceptions, here they are:
 
 ```php
-\GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
-\GetCandy\Exceptions\Carts\BillingAddressMissingException;
-\GetCandy\Exceptions\Carts\OrderExistsException;
+\Lunar\Exceptions\Carts\BillingAddressIncompleteException;
+\Lunar\Exceptions\Carts\BillingAddressMissingException;
+\Lunar\Exceptions\Carts\OrderExistsException;
 ```
 
 They each extend `CartException` so it depends on how much control you need.
@@ -164,14 +164,14 @@ You can find out more in the Extending GetCandy section for [Order Modifiers](/e
 ## Order Lines
 
 ```php
-GetCandy\Models\OrderLine
+Lunar\Models\OrderLine
 ```
 
 |Field|Description|
 |:-|:-|
 |id||
 |order_id||
-|purchasable_type|Class reference for the purchasable item e.g. `GetCandy\Models\ProductVariant`|
+|purchasable_type|Class reference for the purchasable item e.g. `Lunar\Models\ProductVariant`|
 |purchasable_id|
 |type|Whether `digital`,`physical` etc
 |description|A description of the line item
@@ -198,7 +198,7 @@ If you are using the `createOrder` method on a cart, this is all handled for you
 :::
 
 ```php
-\GetCandy\Models\OrderLine::create([
+\Lunar\Models\OrderLine::create([
     // ...
 ]);
 ```
@@ -220,7 +220,7 @@ If you are using the `createOrder` method on a cart, this is all handled for you
 :::
 
 ```php
-\GetCandy\Models\OrderAddress::create([
+\Lunar\Models\OrderAddress::create([
     'order_id' => 1,
     'country_id' => 1,
     'title' => null,
@@ -265,23 +265,23 @@ To add Shipping Options you will need to [extend GetCandy](/extending/shipping) 
 Then in your checkout, or where ever you want, you can fetch these options:
 
 ```php
-\GetCandy\Facades\ShippingManifest::getOptions(\GetCandy\Models\Cart $cart);
+\Lunar\Facades\ShippingManifest::getOptions(\Lunar\Models\Cart $cart);
 ```
 
-This will return a collection of `GetCandy\DataTypes\ShippingOption` objects.
+This will return a collection of `Lunar\DataTypes\ShippingOption` objects.
 
 ### Adding the shipping option to the cart
 
 Once the user has selected the shipping option they want, you will need to add this to the cart so it can calculate the new totals.
 
 ```php
-$cart->getManager()->setShippingOption(\GetCandy\DataTypes\ShippingOption $option);
+$cart->getManager()->setShippingOption(\Lunar\DataTypes\ShippingOption $option);
 ```
 
 ## Transactions
 
 ```php
-GetCandy\Models\Transaction
+Lunar\Models\Transaction
 ```
 
 |Field|Description|
@@ -309,7 +309,7 @@ Just because an order has a transaction does not mean it has been placed. GetCan
 Most stores will likely want to store a transaction against the order, this helps determining how much has been paid, how it was paid and give a clue on the best way to issue a refund if needed.
 
 ```php
-\GetCandy\Models\Transaction::create([
+\Lunar\Models\Transaction::create([
     //...
 ]);
 

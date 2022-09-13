@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Orders;
+namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
-use GetCandy\Models\State;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithCountries;
+use Lunar\Models\Channel;
+use Lunar\Models\Order;
+use Lunar\Models\OrderAddress;
+use Lunar\Models\State;
 use Illuminate\Support\Arr;
 use Livewire\Component;
 
@@ -19,21 +19,21 @@ class OrderShow extends Component
     /**
      * The current order in view.
      *
-     * @var \GetCandy\Models\Order
+     * @var \Lunar\Models\Order
      */
     public Order $order;
 
     /**
      * The instance of the shipping address.
      *
-     * @var \GetCandy\Models\OrderAddress
+     * @var \Lunar\Models\OrderAddress
      */
     public ?OrderAddress $shippingAddress = null;
 
     /**
      * The instance of the shipping address.
      *
-     * @var \GetCandy\Models\OrderAddress
+     * @var \Lunar\Models\OrderAddress
      */
     public ?OrderAddress $billingAddress = null;
 
@@ -195,7 +195,7 @@ class OrderShow extends Component
     /**
      * Get the billing address computed property.
      *
-     * @return \GetCandy\Models\OrderAddress|null
+     * @return \Lunar\Models\OrderAddress|null
      */
     public function getBillingProperty()
     {
@@ -560,7 +560,7 @@ class OrderShow extends Component
     /**
      * Returns the model which has slots associated.
      *
-     * @return \GetCandy\Models\Order
+     * @return \Lunar\Models\Order
      */
     protected function getSlotModel()
     {

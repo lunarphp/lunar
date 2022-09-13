@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Facades;
+namespace Lunar\Hub\Facades;
 
-use GetCandy\Hub\Base\ActivityLog\Manifest;
+use Lunar\Hub\Base\ActivityLog\Manifest;
 use Illuminate\Support\Facades\Facade;
 
 class ActivityLog extends Facade

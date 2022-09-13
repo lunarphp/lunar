@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxClass;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
 
 class ProductCreate extends AbstractProduct
 {

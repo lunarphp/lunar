@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Controllers;
+namespace Lunar\Hub\Http\Controllers;
 
-use GetCandy\Hub\GetCandyHub;
+use Lunar\Hub\GetCandyHub;
 use Illuminate\Routing\Controller;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -11,7 +11,7 @@ class StylesController extends Controller
 {
     /**
      * @param  string  $style
-     * @return \GetCandy\Hub\Assets\Script
+     * @return \Lunar\Hub\Assets\Script
      *
      * @throws HttpException
      * @throws NotFoundHttpException

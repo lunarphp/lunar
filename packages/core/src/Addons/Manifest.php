@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Addons;
+namespace Lunar\Addons;
 
-use GetCandy\Licensing\LicenseManager;
+use Lunar\Licensing\LicenseManager;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;

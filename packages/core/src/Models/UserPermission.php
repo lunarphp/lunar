@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserPermission extends BaseModel

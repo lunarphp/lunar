@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Base\CartSessionInterface;
-use GetCandy\Facades\ShippingManifest;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
+use Lunar\Base\CartSessionInterface;
+use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Cart;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Session\SessionManager;
@@ -82,7 +82,7 @@ class CartSessionManager implements CartSessionInterface
      * Fetches a cart and optionally creates one if it doesn't exist.
      *
      * @param  bool  $create
-     * @return \GetCandy\Models\Cart|null
+     * @return \Lunar\Models\Cart|null
      */
     private function fetchOrCreate($create = false)
     {
@@ -148,7 +148,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Return the current currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getCurrency(): Currency
     {
@@ -158,7 +158,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Return the current channel.
      *
-     * @return \GetCandy\Models\Channel
+     * @return \Lunar\Models\Channel
      */
     public function getChannel(): Channel
     {
@@ -181,7 +181,7 @@ class CartSessionManager implements CartSessionInterface
      * Create an order from a cart instance.
      *
      * @param  bool  $forget
-     * @return \GetCandy\Models\Order
+     * @return \Lunar\Models\Order
      */
     public function createOrder($forget = true)
     {

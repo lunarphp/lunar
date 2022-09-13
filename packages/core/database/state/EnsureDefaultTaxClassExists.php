@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\TaxClass;
+use Lunar\Models\TaxClass;
 use Illuminate\Support\Facades\Schema;
 
 class EnsureDefaultTaxClassExists

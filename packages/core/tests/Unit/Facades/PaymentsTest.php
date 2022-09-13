@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Facades;
+namespace Lunar\Tests\Unit\Facades;
 
-use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
-use GetCandy\Base\PaymentManagerInterface;
-use GetCandy\Facades\Payments;
-use GetCandy\Tests\Stubs\TestPaymentDriver;
-use GetCandy\Tests\TestCase;
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Base\PaymentManagerInterface;
+use Lunar\Facades\Payments;
+use Lunar\Tests\Stubs\TestPaymentDriver;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

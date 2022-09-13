@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\CartLineFactory;
-use GetCandy\DataTypes\Price;
+use Lunar\Base\BaseModel;
+use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Database\Factories\CartLineFactory;
+use Lunar\DataTypes\Price;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CartLine extends BaseModel
@@ -54,14 +54,14 @@ class CartLine extends BaseModel
     /**
      * All the tax breakdowns for the cart line.
      *
-     * @var \GetCandy\Base\DataTransferObjects\TaxBreakdown
+     * @var \Lunar\Base\DataTransferObjects\TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CartLineFactory
+     * @return \Lunar\Database\Factories\CartLineFactory
      */
     protected static function newFactory(): CartLineFactory
     {

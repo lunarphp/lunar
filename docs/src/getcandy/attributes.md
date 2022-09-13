@@ -16,18 +16,18 @@ For example, a television might have the following attributes assigned...
 ## Attributes
 
 ```php
-GetCandy\Models\Attribute
+Lunar\Models\Attribute
 ```
 
 |Field|Description|
 |:-|:-|
-|`attribute_type`|Model type that can use attribute, e.g. `GetCandy\Models\ProductType`|
+|`attribute_type`|Model type that can use attribute, e.g. `Lunar\Models\ProductType`|
 |`attribute_group_id`|The associated group|
 |`position`|An integer used to define the sorting order of attributes within attribute groups|
 |`name`|Laravel Collection of translations `{'en': 'Screen Size'}`|
 |`handle`|Kebab-cased reference, e.g. `screen-size`|
 |`section`|An optional name to define where an attribute should be used.|
-|`type`|The field type to be used, e.g. `GetCandy\FieldTypes\Number`|
+|`type`|The field type to be used, e.g. `Lunar\FieldTypes\Number`|
 |`required`|Boolean|
 |`default_value`||
 |`configuration`|Meta data stored as a Laravel Collection|
@@ -38,10 +38,10 @@ GetCandy\Models\Attribute
 
 |Type|Config|
 |:-|:-|
-|`GetCandy\FieldTypes\Number`|Integer or Decimal|
-|`GetCandy\FieldTypes\Text`|Single-line, Multi-line, Rich Text|
-|`GetCandy\FieldTypes\TranslatedText`|Single-line, Multi-line, Rich Text|
-|`GetCandy\FieldTypes\ListField`|An re-orderable list of text values|
+|`Lunar\FieldTypes\Number`|Integer or Decimal|
+|`Lunar\FieldTypes\Text`|Single-line, Multi-line, Rich Text|
+|`Lunar\FieldTypes\TranslatedText`|Single-line, Multi-line, Rich Text|
+|`Lunar\FieldTypes\ListField`|An re-orderable list of text values|
 
 ::: tip INFO
 More field types will be coming soon.
@@ -49,19 +49,19 @@ More field types will be coming soon.
 
 ### Models that use Attributes
 
-* GetCandy\Models\Product
-* GetCandy\Models\ProductVariant
-* GetCandy\Models\Collection
+* Lunar\Models\Product
+* Lunar\Models\ProductVariant
+* Lunar\Models\Collection
 
 ### Saving Attribute Data
 
 ```php
 $product->attribute_data = collect([
-    'meta_title' => new \GetCandy\FieldTypes\Text('The best screwdriver you will ever buy!'),
-    'pack_qty' => new \GetCandy\FieldTypes\Number(2),
-    'description' => new \GetCandy\FieldTypes\TranslatedText(collect([
-        'en' => new \GetCandy\FieldTypes\Text('Blue'),
-        'fr' => new \GetCandy\FieldTypes\Text('Bleu'),
+    'meta_title' => new \Lunar\FieldTypes\Text('The best screwdriver you will ever buy!'),
+    'pack_qty' => new \Lunar\FieldTypes\Number(2),
+    'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+        'en' => new \Lunar\FieldTypes\Text('Blue'),
+        'fr' => new \Lunar\FieldTypes\Text('Bleu'),
     ])),
 ]);
 ```
@@ -70,8 +70,8 @@ $product->attribute_data = collect([
 ### Adding attributes to your own model
 
 ```php
-use GetCandy\Base\Casts\AsAttributeData;
-use GetCandy\Base\Traits\HasAttributes;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasAttributes;
 
 class Collection extends Model
 {
@@ -107,22 +107,22 @@ dump($product->attribute_data);
 
 Illuminate\Support\Collection {#1522 ▼
   #items: array:2 [▼
-    "name" => GetCandy\FieldTypes\TranslatedText {#1533 ▼
+    "name" => Lunar\FieldTypes\TranslatedText {#1533 ▼
       #value: Illuminate\Support\Collection {#1505 ▼
         #items: array:3 [▼
-          "de" => GetCandy\FieldTypes\Text {#1506 ▼
+          "de" => Lunar\FieldTypes\Text {#1506 ▼
             #value: "Leren laarzen"
           }
-          "en" => GetCandy\FieldTypes\Text {#1514 ▼
+          "en" => Lunar\FieldTypes\Text {#1514 ▼
             #value: "Leather boots"
           }
-          "fr" => GetCandy\FieldTypes\Text {#1502 ▼
+          "fr" => Lunar\FieldTypes\Text {#1502 ▼
             #value: "Bottes en cuires"
           }
         ]
       }
     }
-    "description" => GetCandy\FieldTypes\Text {#1537 ▼
+    "description" => Lunar\FieldTypes\Text {#1537 ▼
       #value: "<p>I'm a description!</p>"
     }
   ]
@@ -146,7 +146,7 @@ $product->translateAttribute('name', 'FOO');
 ### Advanced usage
 
 ```php
-use GetCandy\Base\Traits\HasAttributes;
+use Lunar\Base\Traits\HasAttributes;
 
 class ProductType extends Model
 {
@@ -159,7 +159,7 @@ class ProductType extends Model
 
 ```php
 
-use GetCandy\Base\Casts\AsAttributeData;
+use Lunar\Base\Casts\AsAttributeData;
 
 class Product extends Model
 {
@@ -179,7 +179,7 @@ class Product extends Model
 
 ```php
 
-use GetCandy\Base\Casts\AsAttributeData;
+use Lunar\Base\Casts\AsAttributeData;
 
 class ProductVariant extends Model
 {
@@ -205,7 +205,7 @@ Attribute Groups form a collection of attributes that are logically grouped toge
 A good example might be an "SEO" attribute group which has attributes for "Meta Title" and "Meta Description".
 
 ```php
-GetCandy\Models\AttributeGroup
+Lunar\Models\AttributeGroup
 ```
 
 |Field|Description|

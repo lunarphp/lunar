@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasChannels;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
-use GetCandy\Base\Traits\HasUrls;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Base\Traits\Searchable;
-use GetCandy\Database\Factories\BrandFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasChannels;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasUrls;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\Traits\Searchable;
+use Lunar\Database\Factories\BrandFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
@@ -48,7 +48,7 @@ class Brand extends BaseModel implements SpatieHasMedia
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\BrandFactory
+     * @return \Lunar\Database\Factories\BrandFactory
      */
     protected static function newFactory(): BrandFactory
     {

@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
+namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -29,7 +29,7 @@ abstract class AbstractProductType extends Component
     /**
      * Instance of the parent product.
      *
-     * @var \GetCandy\Models\ProductType
+     * @var \Lunar\Models\ProductType
      */
     public ProductType $productType;
 

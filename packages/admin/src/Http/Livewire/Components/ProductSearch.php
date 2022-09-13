@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Models\Product;
+use Lunar\Models\Product;
 use Livewire\Component;
 
 class ProductSearch extends Component

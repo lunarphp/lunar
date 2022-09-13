@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Database\Factories\AttributeGroupFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Database\Factories\AttributeGroupFactory;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -18,7 +18,7 @@ class AttributeGroup extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\AttributeGroupFactory
+     * @return \Lunar\Database\Factories\AttributeGroupFactory
      */
     protected static function newFactory(): AttributeGroupFactory
     {

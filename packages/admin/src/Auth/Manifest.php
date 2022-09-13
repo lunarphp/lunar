@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Auth;
+namespace Lunar\Hub\Auth;
 
 use Illuminate\Support\Collection;
 
@@ -57,7 +57,7 @@ class Manifest
      * Returns the parent permission based on handle naming.
      *
      * @param  Permission  $permission
-     * @return null|\GetCandy\Hub\Acl\Permission
+     * @return null|\Lunar\Hub\Acl\Permission
      */
     protected function getParentPermission(Permission $permission)
     {

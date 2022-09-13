@@ -12,10 +12,10 @@
     ],
     "autoload": {
         "psr-4": {
-            "GetCandy\\": "src",
-            "GetCandy\\Database\\Factories\\": "database/factories",
-            "GetCandy\\Database\\Seeders\\": "database/seeders",
-            "GetCandy\\Database\\State\\": "database/state"
+            "Lunar\\": "src",
+            "Lunar\\Database\\Factories\\": "database/factories",
+            "Lunar\\Database\\Seeders\\": "database/seeders",
+            "Lunar\\Database\\State\\": "database/state"
         },
         "files": [
             "src/helpers.php"
@@ -23,13 +23,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GetCandy\\Tests\\": "tests"
+            "Lunar\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "GetCandy\\GetCandyServiceProvider"
+                "Lunar\\GetCandyServiceProvider"
             ]
         }
     },

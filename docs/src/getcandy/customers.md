@@ -9,7 +9,7 @@ We use Customers in GetCandy to store the customer details, rather than Users. W
 ## Customers
 
 ```php
-GetCandy\Models\Customer
+Lunar\Models\Customer
 ```
 
 |Field|Description|
@@ -27,7 +27,7 @@ GetCandy\Models\Customer
 ### Creating a customer
 
 ```php
-GetCandy\Models\Customer::create([
+Lunar\Models\Customer::create([
     'title' => 'Mr.',
     'first_name' => 'Tony',
     'last_name' => 'Stark',
@@ -51,7 +51,7 @@ Customers will typically be associated with a user, so they can place orders. Bu
 ### Attaching users to a customer
 
 ```php
-$customer = \GetCandy\Models\Customer::create([/* ... */]);
+$customer = \Lunar\Models\Customer::create([/* ... */]);
 
 $customer->users()->attach($user);
 
@@ -61,7 +61,7 @@ $customer->users()->sync([1,2,3]);
 ## Attaching a customer to a customer group
 
 ```php
-$customer = \GetCandy\Models\Customer::create([/* ... */]);
+$customer = \Lunar\Models\Customer::create([/* ... */]);
 
 $customer->customerGroups()->attach($customerGroup);
 
@@ -80,7 +80,7 @@ GetCandy allows you to specify your own method of how you want to impersonate us
 
 namespace App\Auth;
 
-use GetCandy\Hub\Auth\Impersonate as GetCandyImpersonate;
+use Lunar\Hub\Auth\Impersonate as GetCandyImpersonate;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\URL;
 
@@ -133,7 +133,7 @@ You must have at least one customer group in your store and when you install Get
 ## Creating a customer group
 
 ```php
-$customerGroup = GetCandy\Models\CustomerGroup::create([
+$customerGroup = Lunar\Models\CustomerGroup::create([
     'name' => 'Retail',
     'handle' => 'retail', // Must be unique
     'default' => false,
@@ -151,7 +151,7 @@ If you would like to add customer group availability to your own models, you can
 ```php
 
 // ...
-use GetCandy\Base\Traits\HasCustomerGroups;
+use Lunar\Base\Traits\HasCustomerGroups;
 
 class MyModel extends Model
 {
@@ -164,7 +164,7 @@ You will need to define the relationship for customer groups so that GetCandy kn
 ```php
 public function customerGroup()
 {
-    return $this->hasMany(\GetCandy\Models\CustomerGroup::class)->withTimestamps()->withPivot([/* .. */]);
+    return $this->hasMany(\Lunar\Models\CustomerGroup::class)->withTimestamps()->withPivot([/* .. */]);
 }
 ```
 You will then have access to the following methods:

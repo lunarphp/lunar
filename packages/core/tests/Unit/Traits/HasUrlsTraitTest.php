@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Traits;
+namespace Lunar\Tests\Unit\Traits;
 
-use GetCandy\Generators\UrlGenerator;
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\Url;
-use GetCandy\Tests\TestCase;
+use Lunar\Generators\UrlGenerator;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;

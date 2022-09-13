@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit;
+namespace Lunar\Hub\Tests\Unit;
 
-use GetCandy\Hub\Assets\Script;
-use GetCandy\Hub\Assets\Style;
-use GetCandy\Hub\GetCandyHub;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Assets\Script;
+use Lunar\Hub\Assets\Style;
+use Lunar\Hub\GetCandyHub;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\ProductOptions;
+namespace Lunar\Hub\Http\Livewire\Components\ProductOptions;
 
-use GetCandy\Models\ProductOption;
+use Lunar\Models\ProductOption;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 

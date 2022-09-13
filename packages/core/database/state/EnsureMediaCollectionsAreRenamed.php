@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\Brand;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Product;
+use Lunar\Models\Brand;
+use Lunar\Models\Collection;
+use Lunar\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class EnsureMediaCollectionsAreRenamed

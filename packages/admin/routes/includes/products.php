@@ -1,9 +1,9 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Pages\Products\ProductCreate;
-use GetCandy\Hub\Http\Livewire\Pages\Products\ProductShow;
-use GetCandy\Hub\Http\Livewire\Pages\Products\ProductsIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Products\Variants\VariantShow;
+use Lunar\Hub\Http\Livewire\Pages\Products\ProductCreate;
+use Lunar\Hub\Http\Livewire\Pages\Products\ProductShow;
+use Lunar\Hub\Http\Livewire\Pages\Products\ProductsIndex;
+use Lunar\Hub\Http\Livewire\Pages\Products\Variants\VariantShow;
 use Illuminate\Support\Facades\Route;
 
 /**

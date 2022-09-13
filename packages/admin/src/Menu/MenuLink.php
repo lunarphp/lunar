@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
-use GetCandy\Hub\GetCandyHub;
+use Lunar\Hub\GetCandyHub;
 use Illuminate\Support\Str;
 
 class MenuLink implements MenuItem

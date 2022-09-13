@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Staff;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Staff;
 
-use GetCandy\Hub\Models\Staff;
+use Lunar\Hub\Models\Staff;
 use Livewire\Component;
 
 class StaffShow extends Component

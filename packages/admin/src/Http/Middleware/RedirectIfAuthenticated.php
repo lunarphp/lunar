@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Middleware;
+namespace Lunar\Hub\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

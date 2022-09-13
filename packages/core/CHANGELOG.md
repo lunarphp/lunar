@@ -73,7 +73,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - The method `released` on Payment Drivers has been renamed to `authorize`
-- `GetCandy\Base\DataTransferObjects\PaymentRelease` has been renamed to `GetCandy\Base\DataTransferObjects\PaymentAuthorize`
+- `Lunar\Base\DataTransferObjects\PaymentRelease` has been renamed to `Lunar\Base\DataTransferObjects\PaymentAuthorize`
 
 [View Changes](https://github.com/getcandy/core/compare/2.0-beta11...2.0-beta12)
 

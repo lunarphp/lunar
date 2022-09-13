@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tags;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tags;
 
-use GetCandy\Models\Tag;
+use Lunar\Models\Tag;
 use Livewire\Component;
 use Livewire\WithPagination;
 

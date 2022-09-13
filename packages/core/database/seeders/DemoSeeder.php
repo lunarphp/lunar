@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Database\Seeders;
+namespace Lunar\Database\Seeders;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Channel;
-use GetCandy\Models\ProductType;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Channel;
+use Lunar\Models\ProductType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 

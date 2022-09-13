@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Orders;
+namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Facades\OrdersTable;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithSavedSearches;
-use GetCandy\Hub\Search\OrderSearch;
-use GetCandy\Models\Order;
+use Lunar\Hub\Facades\OrdersTable;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithSavedSearches;
+use Lunar\Hub\Search\OrderSearch;
+use Lunar\Models\Order;
 use Livewire\Component;
 use Livewire\WithPagination;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Models\Brand;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
+use Lunar\Models\Brand;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
 use Illuminate\Support\Collection;
 
 trait SearchesProducts

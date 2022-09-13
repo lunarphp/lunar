@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 

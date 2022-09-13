@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\Stubs\User;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Http\Livewire\Components\Authentication\LoginForm;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\Stubs\User;
+use Lunar\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 

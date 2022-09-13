@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\TaxRate;
-use GetCandy\Models\TaxZone;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxZone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaxRateFactory extends Factory

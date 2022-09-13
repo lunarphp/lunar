@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Base\Traits\Searchable;
-use GetCandy\Database\Factories\ProductOptionFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\Searchable;
+use Lunar\Database\Factories\ProductOptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductOption extends BaseModel
@@ -47,7 +47,7 @@ class ProductOption extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\ProductOptionFactory
+     * @return \Lunar\Database\Factories\ProductOptionFactory
      */
     protected static function newFactory(): ProductOptionFactory
     {

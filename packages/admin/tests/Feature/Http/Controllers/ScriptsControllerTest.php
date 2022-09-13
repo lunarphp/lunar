@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Feature\Http\Controllers;
+namespace Lunar\Hub\Tests\Feature\Http\Controllers;
 
-use GetCandy\Hub\GetCandyHub;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\GetCandyHub;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

@@ -9,7 +9,7 @@ Customers may save addresses to make checking-out easier and quicker.
 ## Addresses
 
 ```php
-GetCandy\Models\Address
+Lunar\Models\Address
 ```
 
 |Field|Description|
@@ -40,7 +40,7 @@ GetCandy\Models\Address
 ## Countries
 
 ```php
-GetCandy\Models\Country
+Lunar\Models\Country
 ```
 
 |Field|Description|
@@ -62,7 +62,7 @@ GetCandy\Models\Country
 ## States
 
 ```php
-GetCandy\Models\State
+Lunar\Models\State
 ```
 
 |Field|Description|

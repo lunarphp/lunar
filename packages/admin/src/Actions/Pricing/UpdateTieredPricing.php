@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Actions\Pricing;
+namespace Lunar\Hub\Actions\Pricing;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -57,7 +57,7 @@ class UpdateTieredPricing
      * @param  float  $price
      * @param  int  $currencyId
      * @param  int|null  $id
-     * @return \GetCandy\Models\Price
+     * @return \Lunar\Models\Price
      */
     private function createOrUpdatePrice(Model $owner, $tier, $price, $currencyId, $groupId = null, $id = null)
     {

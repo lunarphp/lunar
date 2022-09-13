@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Cart;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
+use Lunar\Models\Cart;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CartFactory extends Factory

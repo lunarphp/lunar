@@ -46,7 +46,7 @@ The way media conversions are defined and used has changed, you should update yo
 ```php
 <?php
 
-use GetCandy\Base\StandardMediaConversions;
+use Lunar\Base\StandardMediaConversions;
 
 return [
     'conversions' => [
@@ -66,8 +66,8 @@ If you have custom models that extend the GetCandy `BaseModel` and are using mac
 
 namespace App\Models;
 
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\BaseModel;
 
 class CustomModel extends BaseModel
 {
@@ -85,7 +85,7 @@ If you currently use this feature, you will need to either publish the migration
 ```php
 <?php
 
-use GetCandy\Base\Migration;
+use Lunar\Base\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -119,8 +119,8 @@ Next you should create a `SavedCart` model.
 
 namespace App\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Models\Cart;
+use Lunar\Base\BaseModel;
+use Lunar\Models\Cart;
 
 class SavedCart extends BaseModel
 {
@@ -148,7 +148,7 @@ Finally, you will need to define a dynamic relationship if your service provider
 
 ```php
 
-\GetCandy\Models\Cart::resolveRelationshipUsing('savedCart', function ($cartModel) {
+\Lunar\Models\Cart::resolveRelationshipUsing('savedCart', function ($cartModel) {
     return $cartModel->hasOne(SavedCart::class);
 });
 ```
@@ -243,9 +243,9 @@ It's now possible to define which Scout driver should be used on a per model bas
 |
 */
 'engine_map' => [
-    // \GetCandy\Models\Product::class => 'algolia',
-    // \GetCandy\Models\Order::class => 'meilisearch',
-    // \GetCandy\Models\Collection::class => 'meilisearch',
+    // \Lunar\Models\Product::class => 'algolia',
+    // \Lunar\Models\Order::class => 'meilisearch',
+    // \Lunar\Models\Collection::class => 'meilisearch',
 ],
 ```
 
@@ -254,7 +254,7 @@ It's now possible to define which Scout driver should be used on a per model bas
 ### Payment driver changes.
 
 - The method `released` on Payment Drivers has been renamed to `authorize`
-- `GetCandy\Base\DataTransferObjects\PaymentRelease` has been renamed to `GetCandy\Base\DataTransferObjects\PaymentAuthorize`
+- `Lunar\Base\DataTransferObjects\PaymentRelease` has been renamed to `Lunar\Base\DataTransferObjects\PaymentAuthorize`
 
 ## 2.0-beta11
 
@@ -264,12 +264,12 @@ The `PricingManager` has been updated to use the currently authorised user by de
 
 Before
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant);
+$pricing = \Lunar\Facades\Pricing::for($variant);
 ```
 
 After
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::for($variant)->get();
 ```
 
 ### Disabling Variants in the Admin Hub
@@ -284,7 +284,7 @@ If your storefront already supports variants, you do not need to change anything
 If you disable variants, the `GenerateVariants` job will now throw an exception if it's called when this setting is `true` so you will need to update any calls to this job to handle it.
 
 ```php
-GetCandy\Hub\Exceptions\VariantsDisabledException
+Lunar\Hub\Exceptions\VariantsDisabledException
 ```
 
 ---
@@ -296,7 +296,7 @@ If you are using the scout `Searchable` trait. Make sure to change this to GetCa
 use Laravel\Scout\Searchable;
 
 // New
-use GetCandy\Base\Traits\Searchable;
+use Lunar\Base\Traits\Searchable;
 ```
 
 ---
@@ -353,7 +353,7 @@ If you have your own routine for URL's then you should either implement your own
 
 ### Changes to Tax drivers - High Impact
 
-Previously tax drivers were required to return a collection of `GetCandy\Models\TaxRateAmount` models. This wasn't very useful for custom tax drivers that did not use them and as a result limited their use. The interface was also not very clear on what should be returned.
+Previously tax drivers were required to return a collection of `Lunar\Models\TaxRateAmount` models. This wasn't very useful for custom tax drivers that did not use them and as a result limited their use. The interface was also not very clear on what should be returned.
 
 The interface has been updated to make this clearer.
 
@@ -370,7 +370,7 @@ public function setCurrency(Currency $currency): self;
 The return type for the `getBreakdown` method should now be as follows:
 
 ```php
-public function getBreakdown($subTotal): \GetCandy\Base\DataTransferObjects\TaxBreakdown;
+public function getBreakdown($subTotal): \Lunar\Base\DataTransferObjects\TaxBreakdown;
 ```
 
 You need to update the `getBreakdown` method to use both the new Data Transfer Objects.

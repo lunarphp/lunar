@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Jobs;
+namespace Lunar\Jobs;
 
-use GetCandy\Models\Tag;
+use Lunar\Models\Tag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;

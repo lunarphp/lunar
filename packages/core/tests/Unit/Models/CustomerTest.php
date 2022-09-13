@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Address;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Tests\Stubs\User;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\Address;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Tests\Stubs\User;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

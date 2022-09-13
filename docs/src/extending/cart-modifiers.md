@@ -14,8 +14,8 @@ There may instances where you need to make changes to a cart or cart line, befor
 namespace App\Modifiers;
 
 use Closure;
-use GetCandy\Base\CartModifier;
-use GetCandy\Models\Cart;
+use Lunar\Base\CartModifier;
+use Lunar\Models\Cart;
 
 class CustomCartModifier extends CartModifier
 {
@@ -39,8 +39,8 @@ class CustomCartModifier extends CartModifier
 namespace App\Modifiers;
 
 use Closure;
-use GetCandy\Base\CartLineModifier;
-use GetCandy\Models\CartLine;
+use Lunar\Base\CartLineModifier;
+use Lunar\Models\CartLine;
 
 class CustomCartLineModifier extends CartLineModifier
 {
@@ -62,8 +62,8 @@ Then register your modifier in your service provider.
 
 ```php
 public function boot(
-    \GetCandy\Base\CartModifiers $cartModifiers,
-    \GetCandy\Base\CartLineModifiers $cartLineModifiers
+    \Lunar\Base\CartModifiers $cartModifiers,
+    \Lunar\Base\CartLineModifiers $cartLineModifiers
 ) {
     $cartModifiers->add(
         CustomCartModifier::class

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Database\Factories\UrlFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Database\Factories\UrlFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Url extends BaseModel
@@ -15,7 +15,7 @@ class Url extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\UrlFactory
+     * @return \Lunar\Database\Factories\UrlFactory
      */
     protected static function newFactory(): UrlFactory
     {

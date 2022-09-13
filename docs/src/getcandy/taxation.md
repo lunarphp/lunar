@@ -12,7 +12,7 @@ No one likes taxes! But we have to deal with them... GetCandy provides manual ta
 Tax Classes are assigned to Products and allow us to classify products to certain taxable groups that may have differing tax rates.
 
 ```php
-GetCandy\Models\TaxClass
+Lunar\Models\TaxClass
 ```
 
 |Field|Description|
@@ -33,7 +33,7 @@ $taxClass = TaxClass::create([
 These specify a geographic zone for tax rates to be applied. Tax Zones can be based upon countries, states or zip/post codes.
 
 ```php
-GetCandy\Models\TaxZone
+Lunar\Models\TaxZone
 ```
 
 |Field|Description|
@@ -58,7 +58,7 @@ $taxZone = TaxZone::create([
 ```
 
 ```php
-GetCandy\Models\TaxZoneCountry
+Lunar\Models\TaxZoneCountry
 ```
 
 |Field|Description|
@@ -72,12 +72,12 @@ GetCandy\Models\TaxZoneCountry
 
 ```php
 $taxZone->countries()->create([
-    'country_id' => \GetCandy\Models\Country::first()->id,
+    'country_id' => \Lunar\Models\Country::first()->id,
 ]);
 ```
 
 ```php
-GetCandy\Models\TaxZoneState
+Lunar\Models\TaxZoneState
 ```
 
 |Field|Description|
@@ -90,12 +90,12 @@ GetCandy\Models\TaxZoneState
 
 ```php
 $taxZone->states()->create([
-    'state_id' => \GetCandy\Models\State::first()->id,
+    'state_id' => \Lunar\Models\State::first()->id,
 ]);
 ```
 
 ```php
-GetCandy\Models\TaxZonePostcode
+Lunar\Models\TaxZonePostcode
 ```
 
 |Field|Description|
@@ -108,7 +108,7 @@ GetCandy\Models\TaxZonePostcode
 |updated_at||
 
 ```php
-GetCandy\Models\TaxZoneCustomerGroup
+Lunar\Models\TaxZoneCustomerGroup
 ```
 
 |Field|Description|
@@ -125,7 +125,7 @@ GetCandy\Models\TaxZoneCustomerGroup
 Tax Zones have one or many tax rates. E.g. you might have a tax rate for the State and also the City, which would collectively make up the total tax amount.
 
 ```php
-GetCandy\Models\TaxRate
+Lunar\Models\TaxRate
 ```
 
 |Field|Description|
@@ -137,7 +137,7 @@ GetCandy\Models\TaxRate
 |updated_at||
 
 ```php
-GetCandy\Models\TaxRateAmount
+Lunar\Models\TaxRateAmount
 ```
 
 |Field|Description|

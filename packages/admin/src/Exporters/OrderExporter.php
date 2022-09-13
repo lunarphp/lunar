@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Exporters;
+namespace Lunar\Hub\Exporters;
 
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 use Illuminate\Support\Facades\Storage;
 
 class OrderExporter

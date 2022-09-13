@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Image\Manipulations;

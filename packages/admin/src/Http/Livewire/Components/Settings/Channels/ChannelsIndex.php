@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Channels;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Channels;
 
-use GetCandy\Models\Channel;
+use Lunar\Models\Channel;
 use Livewire\Component;
 use Livewire\WithPagination;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasDefaultRecord;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\CurrencyFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasDefaultRecord;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Database\Factories\CurrencyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Currency extends BaseModel
@@ -27,7 +27,7 @@ class Currency extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CurrencyFactory
+     * @return \Lunar\Database\Factories\CurrencyFactory
      */
     protected static function newFactory(): CurrencyFactory
     {

@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
-use GetCandy\Hub\Actions\Pricing\UpdatePrices;
-use GetCandy\Hub\Actions\Pricing\UpdateTieredPricing;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
-use GetCandy\Models\TaxClass;
-use GetCandy\Rules\MaxDecimalPlaces;
+use Lunar\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
+use Lunar\Hub\Actions\Pricing\UpdatePrices;
+use Lunar\Hub\Actions\Pricing\UpdateTieredPricing;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
+use Lunar\Models\TaxClass;
+use Lunar\Rules\MaxDecimalPlaces;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -39,7 +39,7 @@ trait HasPrices
     /**
      * The currency currency.
      *
-     * @var \GetCandy\Models\Currency
+     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 
@@ -210,7 +210,7 @@ trait HasPrices
     /**
      * Return the computed default currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {

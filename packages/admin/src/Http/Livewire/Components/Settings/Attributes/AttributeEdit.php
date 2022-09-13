@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\Facades\FieldTypeManifest;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
+use Lunar\Facades\FieldTypeManifest;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -25,7 +25,7 @@ class AttributeEdit extends Component
     /**
      * The attribute instance.
      *
-     * @var \GetCandy\Models\Attribute
+     * @var \Lunar\Models\Attribute
      */
     public ?Attribute $attribute = null;
 

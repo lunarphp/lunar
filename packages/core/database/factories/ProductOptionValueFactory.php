@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\ProductOptionValue;
+use Lunar\Models\ProductOptionValue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductOptionValueFactory extends Factory

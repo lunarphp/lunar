@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\Brand;
-use GetCandy\Models\Product;
+use Lunar\Models\Brand;
+use Lunar\Models\Product;
 use Illuminate\Support\Facades\Schema;
 
 class EnsureBrandsAreUpgraded

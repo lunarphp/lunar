@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\AsAttributeData;
-use GetCandy\Base\Traits\HasAttributes;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasPersonalDetails;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Base\Traits\Searchable;
-use GetCandy\Database\Factories\CustomerFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasAttributes;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasPersonalDetails;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\Searchable;
+use Lunar\Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends BaseModel
@@ -59,7 +59,7 @@ class Customer extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CustomerFactory
+     * @return \Lunar\Database\Factories\CustomerFactory
      */
     protected static function newFactory(): CustomerFactory
     {

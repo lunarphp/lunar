@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Products\ProductTypes;
+namespace Lunar\Hub\Http\Livewire\Pages\Products\ProductTypes;
 
-use GetCandy\Models\ProductType;
+use Lunar\Models\ProductType;
 use Livewire\Component;
 
 class ProductTypeShow extends Component
@@ -10,7 +10,7 @@ class ProductTypeShow extends Component
     /**
      * The Product we are currently editing.
      *
-     * @var \GetCandy\Models\ProductType
+     * @var \Lunar\Models\ProductType
      */
     public ProductType $productType;
 

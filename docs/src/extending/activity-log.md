@@ -17,7 +17,7 @@ You can tell GetCandy how to render certain activity log events, this is achieve
 
 namespace App\ActivityLog;
 
-use GetCandy\Hub\Base\ActivityLog\AbstractRender;
+use Lunar\Hub\Base\ActivityLog\AbstractRender;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogRenderer extends AbstractRender
@@ -53,7 +53,7 @@ We have our render class, by itself it doesn't do much, we need to tell GetCandy
 
 ```php
 ActivityLog::addRender(
-  \GetCandy\Models\Order::class,
+  \Lunar\Models\Order::class,
   ActivityLogRenderer::class
 );
 ```

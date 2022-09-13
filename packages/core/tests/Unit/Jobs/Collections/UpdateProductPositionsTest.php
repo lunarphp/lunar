@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Jobs\Collections;
+namespace Lunar\Tests\Unit\Jobs\Collections;
 
-use GetCandy\Jobs\Collections\UpdateProductPositions;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\TestCase;
+use Lunar\Jobs\Collections\UpdateProductPositions;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

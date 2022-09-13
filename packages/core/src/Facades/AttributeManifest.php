@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\AttributeManifestInterface;
+use Lunar\Base\AttributeManifestInterface;
 use Illuminate\Support\Facades\Facade;
 
 class AttributeManifest extends Facade

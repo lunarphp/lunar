@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\Url;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UrlFactory extends Factory

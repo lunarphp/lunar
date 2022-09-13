@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Stubs\Mailers;
+namespace Lunar\Hub\Tests\Stubs\Mailers;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

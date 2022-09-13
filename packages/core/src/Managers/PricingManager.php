@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Base\DataTransferObjects\PricingResponse;
-use GetCandy\Base\PricingManagerInterface;
-use GetCandy\Base\Purchasable;
-use GetCandy\Exceptions\MissingCurrencyPriceException;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
+use Lunar\Base\DataTransferObjects\PricingResponse;
+use Lunar\Base\PricingManagerInterface;
+use Lunar\Base\Purchasable;
+use Lunar\Exceptions\MissingCurrencyPriceException;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +17,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * The instance of the purchasable model.
      *
-     * @var \GetCandy\Base\Purchasable
+     * @var \Lunar\Base\Purchasable
      */
     protected Purchasable $purchasable;
 
@@ -31,7 +31,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * The instance of the currency.
      *
-     * @var \GetCandy\Models\Currency
+     * @var \Lunar\Models\Currency
      */
     protected ?Currency $currency = null;
 
@@ -59,7 +59,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the purchasable property.
      *
-     * @param  \GetCandy\Base\Purchasable  $purchasable
+     * @param  \Lunar\Base\Purchasable  $purchasable
      * @return self
      */
     public function for(Purchasable $purchasable)
@@ -97,7 +97,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the currency property.
      *
-     * @param  \GetCandy\Models\Currency  $currency
+     * @param  \Lunar\Models\Currency  $currency
      * @return self
      */
     public function currency(?Currency $currency)
@@ -151,7 +151,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * Get the price for the purchasable.
      *
-     * @return \GetCandy\Base\DataTransferObjects\PricingResponse
+     * @return \Lunar\Base\DataTransferObjects\PricingResponse
      */
     public function get()
     {

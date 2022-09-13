@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Jobs\Products;
+namespace Lunar\Hub\Tests\Unit\Jobs\Products;
 
-use GetCandy\Hub\Exceptions\InvalidProductValuesException;
-use GetCandy\Hub\Exceptions\VariantsDisabledException;
-use GetCandy\Hub\Jobs\Products\GenerateVariants;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Models\ProductVariant;
+use Lunar\Hub\Exceptions\InvalidProductValuesException;
+use Lunar\Hub\Exceptions\VariantsDisabledException;
+use Lunar\Hub\Jobs\Products\GenerateVariants;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;

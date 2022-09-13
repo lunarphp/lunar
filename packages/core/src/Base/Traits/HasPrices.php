@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Facades\Pricing;
-use GetCandy\Models\Price;
+use Lunar\Facades\Pricing;
+use Lunar\Models\Price;
 
 trait HasPrices
 {
@@ -31,7 +31,7 @@ trait HasPrices
     /**
      * Return a PricingManager for this model.
      *
-     * @return \GetCandy\Managers\PricingManager
+     * @return \Lunar\Managers\PricingManager
      */
     public function pricing()
     {

@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Managers\CartManager;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\Order;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\Stubs\User as StubUser;
-use GetCandy\Tests\TestCase;
+use Lunar\Managers\CartManager;
+use Lunar\Models\Cart;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\Order;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Stubs\User as StubUser;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
@@ -23,7 +23,7 @@ class CartTest extends TestCase
 
     private function setAuthUserConfig()
     {
-        Config::set('auth.providers.users.model', 'GetCandy\Tests\Stubs\User');
+        Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
     }
 
     /** @test */

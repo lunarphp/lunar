@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 

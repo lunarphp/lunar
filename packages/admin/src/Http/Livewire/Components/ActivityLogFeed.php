@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Facades\ModelManifest;
-use GetCandy\Hub\Facades\ActivityLog;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Facades\ModelManifest;
+use Lunar\Hub\Facades\ActivityLog;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Livewire\WithPagination;

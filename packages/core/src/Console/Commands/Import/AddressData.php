@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Console\Commands\Import;
+namespace Lunar\Console\Commands\Import;
 
-use GetCandy\Models\Country;
+use Lunar\Models\Country;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;

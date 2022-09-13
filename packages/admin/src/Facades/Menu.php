@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Facades;
+namespace Lunar\Hub\Facades;
 
-use GetCandy\Hub\Menu\MenuRegistry;
+use Lunar\Hub\Menu\MenuRegistry;
 use Illuminate\Support\Facades\Facade;
 
 class Menu extends Facade

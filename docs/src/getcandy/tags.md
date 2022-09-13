@@ -22,7 +22,7 @@ In order to enable tagging on a model, simply add the `HasTags` trait.
 namespace App\Models;
 
 // ...
-use GetCandy\Base\Traits\HasTags;
+use Lunar\Base\Traits\HasTags;
 
 class SomethingWithTags extends Model
 {

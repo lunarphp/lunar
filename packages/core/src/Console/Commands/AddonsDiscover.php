@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Console\Commands;
+namespace Lunar\Console\Commands;
 
-use GetCandy\Addons\Manifest;
+use Lunar\Addons\Manifest;
 use Illuminate\Console\Command;
 
 class AddonsDiscover extends Command

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Models\TaxZone;
+use Lunar\Models\TaxZone;
 use Livewire\Component;
 use Livewire\WithPagination;
 

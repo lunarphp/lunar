@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Customers;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Customers;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Language;
+use Lunar\FieldTypes\Text;
+use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Attribute;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Language;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -130,12 +130,12 @@ class CustomerShowTest extends TestCase
         // Need some attributes...
         $name = Attribute::factory()->create([
             'handle' => 'name',
-            'attribute_type' => 'GetCandy\Models\Customer',
+            'attribute_type' => 'Lunar\Models\Customer',
         ]);
 
         $description = Attribute::factory()->create([
             'handle' => 'description',
-            'attribute_type' => 'GetCandy\Models\Customer',
+            'attribute_type' => 'Lunar\Models\Customer',
         ]);
 
         $customer = Customer::factory()->create();

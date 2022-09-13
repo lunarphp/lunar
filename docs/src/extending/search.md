@@ -14,11 +14,11 @@ There are three things to consider when you want to extend the search:
 
 Each of these can be extended using Model Observers in Laravel. The following models can be extended:
 
-- `GetCandy\Models\Collection`
-- `GetCandy\Models\Customer`
-- `GetCandy\Models\Order`
-- `GetCandy\Models\Product`
-- `GetCandy\Models\ProductOption`
+- `Lunar\Models\Collection`
+- `Lunar\Models\Customer`
+- `Lunar\Models\Order`
+- `Lunar\Models\Product`
+- `Lunar\Models\ProductOption`
 
 ## Creating and using an Observer
 
@@ -29,7 +29,7 @@ As mentioned, you simply need to add a [Model Observer](https://laravel.com/docs
 
 namespace App\Observers;
 
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 
 class OrderObserver
 {

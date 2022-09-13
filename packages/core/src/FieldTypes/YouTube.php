@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 use JsonSerializable;
 
 class YouTube implements FieldType, JsonSerializable

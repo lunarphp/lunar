@@ -21,5 +21,5 @@ return [
   | ships with GetCandy, which by default will use the name attribute.
   |
   */
-    'generator' => GetCandy\Generators\UrlGenerator::class,
+    'generator' => Lunar\Generators\UrlGenerator::class,
 ];

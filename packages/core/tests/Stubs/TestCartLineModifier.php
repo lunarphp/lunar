@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Stubs;
+namespace Lunar\Tests\Stubs;
 
 use Closure;
-use GetCandy\Base\CartLineModifier;
-use GetCandy\DataTypes\Price;
-use GetCandy\Models\CartLine;
+use Lunar\Base\CartLineModifier;
+use Lunar\DataTypes\Price;
+use Lunar\Models\CartLine;
 
 class TestCartLineModifier extends CartLineModifier
 {

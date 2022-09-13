@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Languages;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Languages;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Language;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Language;
 use Livewire\Component;
 
 class LanguageShow extends Component
@@ -13,7 +13,7 @@ class LanguageShow extends Component
     /**
      * The current language we're showing.
      *
-     * @var \GetCandy\Models\Language
+     * @var \Lunar\Models\Language
      */
     public Language $language;
 

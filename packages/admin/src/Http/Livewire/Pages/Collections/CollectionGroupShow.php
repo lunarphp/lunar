@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Collections;
+namespace Lunar\Hub\Http\Livewire\Pages\Collections;
 
-use GetCandy\Models\CollectionGroup;
+use Lunar\Models\CollectionGroup;
 use Livewire\Component;
 
 class CollectionGroupShow extends Component

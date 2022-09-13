@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire;
+namespace Lunar\Hub\Http\Livewire;
 
-use GetCandy\Licensing\LicenseManager;
+use Lunar\Licensing\LicenseManager;
 use Livewire\Component;
 
 class HubLicense extends Component

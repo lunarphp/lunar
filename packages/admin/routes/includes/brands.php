@@ -1,7 +1,7 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Pages\Brands\BrandShow;
-use GetCandy\Hub\Http\Livewire\Pages\Brands\BrandsIndex;
+use Lunar\Hub\Http\Livewire\Pages\Brands\BrandShow;
+use Lunar\Hub\Http\Livewire\Pages\Brands\BrandsIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::group([

@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tags;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tags;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Tag;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 

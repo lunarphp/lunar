@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Brand;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\Brand;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BrandTest extends TestCase

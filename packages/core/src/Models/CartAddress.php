@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\Addressable;
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\CartAddressFactory;
-use GetCandy\DataTypes\Price;
-use GetCandy\DataTypes\ShippingOption;
+use Lunar\Base\Addressable;
+use Lunar\Base\BaseModel;
+use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Database\Factories\CartAddressFactory;
+use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CartAddress extends BaseModel implements Addressable
@@ -28,35 +28,35 @@ class CartAddress extends BaseModel implements Addressable
     /**
      * The shipping sub total.
      *
-     * @var \GetCandy\DataTypes\Price|null
+     * @var \Lunar\DataTypes\Price|null
      */
     public ?Price $shippingSubTotal;
 
     /**
      * The shipping tax total.
      *
-     * @var \GetCandy\DataTypes\Price|null
+     * @var \Lunar\DataTypes\Price|null
      */
     public ?Price $shippingTaxTotal;
 
     /**
      * The shipping total.
      *
-     * @var \GetCandy\DataTypes\Price|null
+     * @var \Lunar\DataTypes\Price|null
      */
     public ?Price $shippingTotal;
 
     /**
      * The tax breakdown.
      *
-     * @var \GetCandy\Base\DataTransferObjects\TaxBreakdown
+     * @var \Lunar\Base\DataTransferObjects\TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CartAddressFactory
+     * @return \Lunar\Database\Factories\CartAddressFactory
      */
     protected static function newFactory(): CartAddressFactory
     {

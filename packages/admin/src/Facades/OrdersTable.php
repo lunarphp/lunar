@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Facades;
+namespace Lunar\Hub\Facades;
 
-use GetCandy\Hub\Base\OrdersTableInterface;
+use Lunar\Hub\Base\OrdersTableInterface;
 use Illuminate\Support\Facades\Facade;
 
 class OrdersTable extends Facade

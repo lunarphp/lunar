@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Tests\Stubs;
+namespace Lunar\Tests\Stubs;
 
-use GetCandy\Base\OrderReferenceGeneratorInterface;
-use GetCandy\Models\Order;
+use Lunar\Base\OrderReferenceGeneratorInterface;
+use Lunar\Models\Order;
 
 class TestOrderReferenceGenerator implements OrderReferenceGeneratorInterface
 {

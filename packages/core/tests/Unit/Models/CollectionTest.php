@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\Models\Collection;
-use GetCandy\Tests\TestCase;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Collection;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CollectionTest extends TestCase

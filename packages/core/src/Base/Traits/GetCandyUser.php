@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Models\Customer;
+use Lunar\Models\Customer;
 
 trait GetCandyUser
 {

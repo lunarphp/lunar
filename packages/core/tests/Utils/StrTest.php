@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Utils;
+namespace Lunar\Tests\Unit\Utils;
 
-use GetCandy\Tests\TestCase;
+use Lunar\Tests\TestCase;
 use Illuminate\Support\Str;
 
 /**

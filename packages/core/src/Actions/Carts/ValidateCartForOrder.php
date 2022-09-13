@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
-use GetCandy\Exceptions\Carts\BillingAddressMissingException;
-use GetCandy\Exceptions\Carts\OrderExistsException;
-use GetCandy\Exceptions\Carts\ShippingAddressIncompleteException;
-use GetCandy\Exceptions\Carts\ShippingAddressMissingException;
-use GetCandy\Exceptions\Carts\ShippingOptionMissingException;
-use GetCandy\Models\Cart;
+use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
+use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\Exceptions\Carts\OrderExistsException;
+use Lunar\Exceptions\Carts\ShippingAddressIncompleteException;
+use Lunar\Exceptions\Carts\ShippingAddressMissingException;
+use Lunar\Exceptions\Carts\ShippingOptionMissingException;
+use Lunar\Models\Cart;
 use Illuminate\Support\Facades\Validator;
 
 class ValidateCartForOrder
@@ -16,7 +16,7 @@ class ValidateCartForOrder
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param  \Lunar\Models\Cart  $cart
      * @return void
      */
     public function execute(

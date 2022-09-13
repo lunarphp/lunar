@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Tests\Stubs;
+namespace Lunar\Tests\Stubs;
 
-use GetCandy\Base\Traits\GetCandyUser;
+use Lunar\Base\Traits\GetCandyUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -47,7 +47,7 @@ class User extends Authenticatable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Tests\Stubs\UserFactory
+     * @return \Lunar\Tests\Stubs\UserFactory
      */
     protected static function newFactory(): UserFactory
     {
