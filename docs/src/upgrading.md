@@ -479,12 +479,12 @@ To get this update you need to make a change in your composer file.
 
 From
 ```
-"lunar/lunar": "^2.0"
+"lunarphp/lunar": "^2.0"
 ```
 
 To
 ```
-"lunar/admin": "^2.0"
+"lunarphp/admin": "^2.0"
 ```
 
 And then run...

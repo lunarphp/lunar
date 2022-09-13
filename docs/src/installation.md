@@ -20,7 +20,7 @@ Lunar is currently in Public Beta. The software may not be stable enough for a p
 ### Composer Require Package
 
 ```sh
-composer require lunar/admin
+composer require lunarphp/admin
 ```
 
 ### Publish the Config Files

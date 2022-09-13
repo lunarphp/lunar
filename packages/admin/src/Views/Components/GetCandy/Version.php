@@ -12,7 +12,7 @@ class Version extends Component
 
     public function __construct()
     {
-        $installedVersion = InstalledVersions::getPrettyVersion('lunar/core');
+        $installedVersion = InstalledVersions::getPrettyVersion('lunarphp/core');
 
         $prettyVersion = Str::contains($installedVersion, [
             'dev',

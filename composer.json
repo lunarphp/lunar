@@ -62,8 +62,6 @@
         }
     },
     "replace": {
-        "lunar/admin": "self.version",
-        "lunar/core": "self.version",
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version"
     },

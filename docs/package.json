@@ -7,7 +7,7 @@
     "name": "",
     "email": ""
   },
-  "repository": "lunar/docs/lunar",
+  "repository": "lunarphp/docs/lunar",
   "scripts": {
     "dev": "vuepress dev src",
     "build": "vuepress build src"
