@@ -83,7 +83,7 @@ class VariantShow extends Component
                 'preview'   => false,
                 'caption'   => $media->getCustomProperty('caption'),
                 'primary'   => $media->pivot->primary,
-                'position'  => $media->getCustomProperty('position', 1),
+                'position'  => $media->pivot->position,
             ];
         })->sortBy('position')->values()->toArray();
     }
@@ -246,6 +246,7 @@ class VariantShow extends Component
 
                 $imagesToSync[$media->id] = [
                     'primary' => $image['primary'],
+                    'position' => $image['position'],
                 ];
             }
 
