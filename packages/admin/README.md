@@ -18,4 +18,4 @@ The admin hub is an open source app that allows you to manage all aspects of you
 
 ## License
 
-GetCandy is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Lunar is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

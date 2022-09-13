@@ -20,7 +20,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
-class InstallGetCandy extends Command
+class InstallLunar extends Command
 {
     /**
      * The name and signature of the console command.
@@ -274,7 +274,7 @@ class InstallGetCandy extends Command
                 );
             }
 
-            $this->info('GetCandy is now installed.');
+            $this->info('Lunar is now installed.');
 
             if ($this->confirm('Would you like to show some love by starring the repo?')) {
                 $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';

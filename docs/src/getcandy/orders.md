@@ -334,7 +334,7 @@ And as always, if you have any questions you can reach out on our Discord!
 
 ## Order Notifications
 
-GetCandy allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `lunar/orders` config file and are defined like so:
+Lunar allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `lunar/orders` config file and are defined like so:
 
 ```php
 'statuses'     => [

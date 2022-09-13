@@ -18,7 +18,7 @@ php artisan vendor:publish --tag=lunar-hub-views
 
 ## Adding to Menus
 
-GetCandy uses dynamic menus in the UI which you can extend to add further links.
+Lunar uses dynamic menus in the UI which you can extend to add further links.
 
 ::: tip
 Currently, only the side menu and settings menu are available to extend. But we will be adding further menus into the core editing screens soon.
@@ -40,7 +40,7 @@ $slot->addItem(function ($item) {
 });
 ```
 
-GetCandy comes with a collection of icons you can use in the Resources folder. If you wish to supply your own, simply use an SVG instead, e.g.
+Lunar comes with a collection of icons you can use in the Resources folder. If you wish to supply your own, simply use an SVG instead, e.g.
 
 ```php
 ->icon('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9A9AA9" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -279,7 +279,7 @@ OrdersTable::addFilter('Status', 'status', function ($value) {
 
 ### Exporting Records
 
-GetCandy comes with basic exporter for each supported table. You're free to add your own, here's what it could look like:
+Lunar comes with basic exporter for each supported table. You're free to add your own, here's what it could look like:
 
 ```php
 <?php

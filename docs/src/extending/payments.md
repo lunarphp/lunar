@@ -4,7 +4,7 @@
 
 ## Overview
 
-GetCandy provides an easy way for you to add your own payment drivers, by default, there is a basic `OfflinePayment` driver that ships with GetCandy, additional providers should be added to your Storefront via addons.
+Lunar provides an easy way for you to add your own payment drivers, by default, there is a basic `OfflinePayment` driver that ships with GetCandy, additional providers should be added to your Storefront via addons.
 
 Below is a list of available payment drivers.
 

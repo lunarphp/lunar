@@ -4,7 +4,7 @@
 
 ## Overview
 
-GetCandy provides a number of Eloquent Models and quite often in custom applications you will want to add your own relationships and functionality to these models.
+Lunar provides a number of Eloquent Models and quite often in custom applications you will want to add your own relationships and functionality to these models.
 
 ::: warning
 We highly suggest using your own Eloquent Models to add additional data, rather than trying to change fields on the core Lunar models.

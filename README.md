@@ -36,4 +36,4 @@ The core Lunar package, this provides all the things needed for your store to fu
 
 ## License
 
-GetCandy is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Lunar is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

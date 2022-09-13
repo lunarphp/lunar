@@ -96,7 +96,7 @@ You can extend your own models to use media, either by using our implementation 
 If you decide to use medialibrary directly, you will not have access to our transformations or any other Lunar features we add.
 :::
 
-### Extending with GetCandy
+### Extending with Lunar
 
 To enable image transformations on your models within GetCandy, simply add the `HasMedia` trait.
 

@@ -56,7 +56,7 @@ This results in the following
     - Child
 ```
 
-GetCandy uses the [Laravel Nested Set](https://github.com/lazychaser/laravel-nestedset) package, so feel free to take a look at it to see what's possible.
+Lunar uses the [Laravel Nested Set](https://github.com/lazychaser/laravel-nestedset) package, so feel free to take a look at it to see what's possible.
 
 ### Adding products
 
@@ -81,7 +81,7 @@ The key in the `$products` array is the product id
 
 ### Sorting products
 
-GetCandy comes with a handful of criteria out the box for sorting products in a collection:
+Lunar comes with a handful of criteria out the box for sorting products in a collection:
 
 |Name|Description|
 |:-|:-|

@@ -14,7 +14,7 @@
 ## Install GetCandy
 
 ::: warning Beta Software
-GetCandy is currently in Public Beta. The software may not be stable enough for a production site and further beta releases may bring breaking changes.
+Lunar is currently in Public Beta. The software may not be stable enough for a production site and further beta releases may bring breaking changes.
 :::
 
 ### Composer Require Package
@@ -46,7 +46,7 @@ class User extends Authenticatable
 
 ## Search Configuration
 
-GetCandy uses Laravel Scout for search. We have had good success using Meilisearch, although it's entirely up to you which driver you use, as long as it's compatible.
+Lunar uses Laravel Scout for search. We have had good success using Meilisearch, although it's entirely up to you which driver you use, as long as it's compatible.
 
 If you just want to give the wheels a spin, we also ship with a MySQL driver. Just bear in mind this is highly restrictive and we do not recommend using this in any production capacity.
 
@@ -129,11 +129,11 @@ php artisan lunar:hub:install
 ## Run Migrations
 
 ::: tip
-GetCandy uses table prefixes to avoid conflicts with your app's tables. You can change this in the [configuration](/configuration.html).
+Lunar uses table prefixes to avoid conflicts with your app's tables. You can change this in the [configuration](/configuration.html).
 :::
 
 ::: warning
-GetCandy assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/lunar/database.php` to set the correct field type before running the migrations.
+Lunar assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/lunar/database.php` to set the correct field type before running the migrations.
 :::
 
 As you'd expect, there's quite a few tables Lunar needs to function, so run the migrations now.

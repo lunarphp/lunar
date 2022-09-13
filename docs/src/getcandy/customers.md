@@ -71,7 +71,7 @@ $customer->customerGroups()->sync([4,5,6]);
 ## Impersonating users
 
 When a customer needs help with their account, it's useful to be able to log in as that user so you can help diagnose the issue they're having. 
-GetCandy allows you to specify your own method of how you want to impersonate users, usually this is in the form of a signed URL an admin can go to in order to log in as the user.
+Lunar allows you to specify your own method of how you want to impersonate users, usually this is in the form of a signed URL an admin can go to in order to log in as the user.
 
 ### Creating the impersonate class
 

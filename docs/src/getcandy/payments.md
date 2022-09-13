@@ -8,7 +8,7 @@ If you're looking for a guide on how to create your own Payment Driver, or for a
 
 ## Overview
 
-GetCandy takes a driver based approach with Payments, meaning you are free to use either add ons to support the provider you wish to use, or you can create your own to meet your exact needs.
+Lunar takes a driver based approach with Payments, meaning you are free to use either add ons to support the provider you wish to use, or you can create your own to meet your exact needs.
 
 ## Configuration
 

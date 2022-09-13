@@ -2,7 +2,7 @@
 
 ## About GetCandy
 
-GetCandy is an open source E-commerce platform which embraces Laravel as it's foundation and uses it to build a highly extensible, robust and feature rich application you can build any store on.
+Lunar is an open source E-commerce platform which embraces Laravel as it's foundation and uses it to build a highly extensible, robust and feature rich application you can build any store on.
 
 We put developers first and try to ensure your experience is as smooth as possible.
 
@@ -21,4 +21,4 @@ We put developers first and try to ensure your experience is as smooth as possib
 
 ## License
 
-GetCandy is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Lunar is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

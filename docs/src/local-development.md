@@ -8,7 +8,7 @@ This guide is here to help you set-up Lunar locally so you can contribute to the
 
 ## Before your start
 
-You will need a Laravel application to run Lunar in. You can either use a fresh install of [Laravel](https://laravel.com/docs/9.x/installation) or the [GetCandy demo store](https://github.com/lunarphp/demo-store).
+You will need a Laravel application to run Lunar in. You can either use a fresh install of [Laravel](https://laravel.com/docs/9.x/installation) or the [Lunar demo store](https://github.com/lunarphp/demo-store).
 
 ## Set-Up
 

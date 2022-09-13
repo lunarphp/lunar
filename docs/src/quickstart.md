@@ -6,7 +6,7 @@ If you want to get up and running quickly to review GetCandy, this section is fo
 
 ## Demo Store
 
-GetCandy provides a demo store as a reference to help you build your own custom e-commerce app. The demo store is built using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and checkout.
+Lunar provides a demo store as a reference to help you build your own custom e-commerce app. The demo store is built using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and checkout.
 
 If you would prefer to install Lunar into your own Laravel application, please follow the [installation instructions](/installation).
 
