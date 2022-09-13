@@ -4,7 +4,7 @@
 
 ## Overview
 
-Good search is the backbone of any storefront so GetCandy aims to make this as extensible as possible so you can index what you need for your front-end, without compromising on what we require our side in the hub.
+Good search is the backbone of any storefront so Lunar aims to make this as extensible as possible so you can index what you need for your front-end, without compromising on what we require our side in the hub.
 
 There are three things to consider when you want to extend the search:
 

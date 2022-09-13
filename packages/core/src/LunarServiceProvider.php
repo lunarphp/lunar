@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy;
+namespace Lunar;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Lunar\Addons\Manifest;
@@ -26,7 +26,7 @@ use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MeilisearchSetup;
 use Lunar\Console\Commands\ScoutIndexer;
-use Lunar\Console\InstallGetCandy;
+use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
 use Lunar\Database\State\EnsureBrandsAreUpgraded;
 use Lunar\Database\State\EnsureDefaultTaxClassExists;
@@ -68,7 +68,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
-class GetCandyServiceProvider extends ServiceProvider
+class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
         'database',
@@ -185,7 +185,7 @@ class GetCandyServiceProvider extends ServiceProvider
             ], 'lunar-migrations');
 
             $this->commands([
-                InstallGetCandy::class,
+                InstallLunar::class,
                 AddonsDiscover::class,
                 MeilisearchSetup::class,
                 AddressData::class,

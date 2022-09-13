@@ -4,7 +4,7 @@
 
 ## Overview
 
-Associations allow you to relate products to each other. There are a few different ways you can associate two products and this type of relationship would define how they are presented on your storefront and also how GetCandy sees them.
+Associations allow you to relate products to each other. There are a few different ways you can associate two products and this type of relationship would define how they are presented on your storefront and also how Lunar sees them.
 
 ## Loading associations
 
@@ -114,7 +114,7 @@ $product->associations()->type(ProductAssociation::ALTERNATE);
 
 ### Custom types
 
-Although GetCandy comes preloaded with the associations above, you are free to add your own custom association types.
+Although Lunar comes preloaded with the associations above, you are free to add your own custom association types.
 
 ```php
 $product->associate(

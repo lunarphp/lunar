@@ -4,7 +4,7 @@
 
 ## Overview
 
-Products are generally what you will be selling in your store. You define all your attributes against the product and products can also have variations. In GetCandy a product will always have at least one variation. From a UX point of view, it will just look like you're editing a single product, but behind the scenes you'll be editing one variant.
+Products are generally what you will be selling in your store. You define all your attributes against the product and products can also have variations. In Lunar a product will always have at least one variation. From a UX point of view, it will just look like you're editing a single product, but behind the scenes you'll be editing one variant.
 
 Products also belong to a `ProductType` and aside from the attributes, which you are free to define yourself, will have a base SKU and a brand name.
 
@@ -185,7 +185,7 @@ This Product option and it's values are now ready to be used to with Product Var
 
 # Product Shipping
 
-By default GetCandy will mark all product variants as `shippable`. If you don't need to ship a certain variant then you can simply set this to false.
+By default Lunar will mark all product variants as `shippable`. If you don't need to ship a certain variant then you can simply set this to false.
 
 ```php
 $variant->update([
@@ -216,7 +216,7 @@ width_unit
 
 ### Configuring measurements
 
-You can configure the available UOM's in the `lunar/shipping.php` config file. Here is an example of what GetCandy provides by default:
+You can configure the available UOM's in the `lunar/shipping.php` config file. Here is an example of what Lunar provides by default:
 
 **Length**
 
@@ -292,7 +292,7 @@ Variants allow you to specify different variations of a product. Think things li
 
 Variants are also responsible for storing data such as Pricing, Inventory/Stock information, Shipping information etc. For that reason a product will always have at least one variant.
 
-When you decide you want to offer more than one variant for a product, upon generation, GetCandy will take the first variant and use that as a base for all other variants in terms of pricing, inventory etc. So you won't lose any data you may have already saved against the existing product.
+When you decide you want to offer more than one variant for a product, upon generation, Lunar will take the first variant and use that as a base for all other variants in terms of pricing, inventory etc. So you won't lose any data you may have already saved against the existing product.
 
 ## Creating variants
 
@@ -501,7 +501,7 @@ $pricing = \Lunar\Facades\Pricing::qty(5)->for($variant)->get();
 
 #### With Customer Groups
 
-If you don't pass in a customer group, GetCandy will use the default, including any pricing that isn't specific to a customer group.
+If you don't pass in a customer group, Lunar will use the default, including any pricing that isn't specific to a customer group.
 
 ```php
 $pricing = \Lunar\Facades\Pricing::customerGroups($groups)->for($variant)->get();

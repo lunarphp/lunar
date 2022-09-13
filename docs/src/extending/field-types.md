@@ -4,7 +4,7 @@
 
 ## Overview
 
-There will likely come a point where you need more field types than what GetCandy offers in the core. We've made adding your own a breeze and it's the same process whether you want to add these to directly to your app or via an add on.
+There will likely come a point where you need more field types than what Lunar offers in the core. We've made adding your own a breeze and it's the same process whether you want to add these to directly to your app or via an add on.
 
 
 GetCandy will load up available field types via the `AttributeManifest`. This is a singleton which houses all the field types you can use. We currently have a handful in the core, with more being added in the future. If you need a field type that's not here, speak with us first in case it's in the pipeline.

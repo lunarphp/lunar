@@ -1,6 +1,6 @@
 # Securing your site
 
-When you move to production, you will want to make sure you have taken all the steps possible to secure your site and the data that powers it. GetCandy takes this very seriously and always do our best to follow industry practices.
+When you move to production, you will want to make sure you have taken all the steps possible to secure your site and the data that powers it. Lunar takes this very seriously and always do our best to follow industry practices.
 
 [[toc]]
 
@@ -18,7 +18,7 @@ As a Laravel developer, we are sure you are well versed in their security practi
 
 ## Securing search
 
-Depending on which search driver you are using will depend on how you lock down the data that GetCandy indexes in a production environment. To provide a rich search experience in the hub. We currently index the following models, which may contain sensitive information.
+Depending on which search driver you are using will depend on how you lock down the data that Lunar indexes in a production environment. To provide a rich search experience in the hub. We currently index the following models, which may contain sensitive information.
 
 ### What is sensitive information?
 

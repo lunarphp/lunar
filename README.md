@@ -30,7 +30,7 @@ The admin hub provided to enable you to manage your store via a modern interface
 
 ### Core
 
-The core GetCandy package, this provides all the things needed for your store to function. This is where all the models, actions and utilities live and is required by the admin hub.
+The core Lunar package, this provides all the things needed for your store to function. This is where all the models, actions and utilities live and is required by the admin hub.
 
 ---
 

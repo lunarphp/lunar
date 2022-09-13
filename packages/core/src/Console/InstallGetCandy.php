@@ -45,14 +45,14 @@ class InstallGetCandy extends Command
     {
         $this->warn('**************************************************************************');
         $this->warn('*                              WARNING                                   *');
-        $this->warn('*    We take security very seriously in GetCandy and every effort is     *');
+        $this->warn('*    We take security very seriously in Lunar and every effort is     *');
         $this->warn('*          made to stay in line with security best practices.            *');
         $this->warn('*                                                                        *');
         $this->warn('*   In order to provide rich search functionality, some sensitive data   *');
         $this->warn('*    is likely to be indexed in the search engine. Depending on your     *');
         $this->warn('*     search engine of choice, you must ensure this data is secure.      *');
         $this->warn('*                                                                        *');
-        $this->warn('* GetCandy accepts no liability for compromised data as a result of your *');
+        $this->warn('* Lunar accepts no liability for compromised data as a result of your *');
         $this->warn('*  storefront not following guidelines set out by third party providers. *');
         $this->warn('*                                                                        *');
         $this->warn('*      Find out more: https://docs.lunarphp.io/securing-your-site        *');

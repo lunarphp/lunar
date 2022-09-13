@@ -59,7 +59,7 @@ return [
 
 ### Removal of Macro functionality from BaseModel - Low Impact
 
-If you have custom models that extend the GetCandy `BaseModel` and are using macros, you will need to implement the new `HasMacros` trait.
+If you have custom models that extend the Lunar `BaseModel` and are using macros, you will need to implement the new `HasMacros` trait.
 
 ```php
 <?php
@@ -445,7 +445,7 @@ Please add the following to your `config/lunar/database.php` file
     | Users Table ID
     |--------------------------------------------------------------------------
     |
-    | GetCandy adds a relationship to your 'users' table and by default assumes
+    | Lunar adds a relationship to your 'users' table and by default assumes
     | a 'bigint'. You can change this to either an 'int' or 'uuid'.
     |
     */
@@ -501,7 +501,7 @@ php artisan lunar:hub:install
 
 ## v2.0-beta
 
-GetCandy 2 is a complete re-write of our e-commerce page. It is not currently possible to upgrade from v0.12.* to GetCandy 2.
+GetCandy 2 is a complete re-write of our e-commerce page. It is not currently possible to upgrade from v0.12.* to Lunar 2.
 
 GetCandy 2 provides both the core e-commerce functionality and also an integrated admin hub within Laravel. A separate package will be released early 2022 to provide frontend API functionality.
 

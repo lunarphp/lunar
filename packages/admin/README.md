@@ -2,7 +2,7 @@
 
 ## About the admin hub
 
-The admin hub is an open source app that allows you to manage all aspects of your GetCandy store.
+The admin hub is an open source app that allows you to manage all aspects of your Lunar store.
 
 ---
 
@@ -10,7 +10,7 @@ The admin hub is an open source app that allows you to manage all aspects of you
 - PHP ^8.0
 - Laravel 8+
 - MySQL 5.7+ / PostgreSQL 9.2+
-- GetCandy Core
+- Lunar Core
 
 ## Documentation
 

@@ -4,9 +4,9 @@
 
 ## Overview
 
-GetCandy supports multiple languages. By default, GetCandy is set to install a default language of "en" (English). However, this can be changed to whatever language you would like to use.
+GetCandy supports multiple languages. By default, Lunar is set to install a default language of "en" (English). However, this can be changed to whatever language you would like to use.
 
-Languages allow data in GetCandy models to be translated, such as attributes on Products and Collections.
+Languages allow data in Lunar models to be translated, such as attributes on Products and Collections.
 
 
 ### Model

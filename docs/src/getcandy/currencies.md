@@ -34,9 +34,9 @@ Currencies allow you to charge different amounts relative to the currency you're
 
 ## Currency Format
 
-The format in which currencies can appear can all potentially be different, to facilitate this GetCandy has a `format` column which you can specify how prices are displayed.
+The format in which currencies can appear can all potentially be different, to facilitate this Lunar has a `format` column which you can specify how prices are displayed.
 
-For example, the format for GBP is `£1.99` We can then specify this format in GetCandy by setting the `format` to `£{value}`.
+For example, the format for GBP is `£1.99` We can then specify this format in Lunar by setting the `format` to `£{value}`.
 
 If we wanted to format for EUR, which might be `1,99€` we would simply do `{value}€`. So what's happening?
 

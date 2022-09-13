@@ -4,7 +4,7 @@
 
 ## Overview
 
-We use Customers in GetCandy to store the customer details, rather than Users. We do this for a few reasons. One, so that we leave your User models well alone and two, because it provides flexibility.
+We use Customers in Lunar to store the customer details, rather than Users. We do this for a few reasons. One, so that we leave your User models well alone and two, because it provides flexibility.
 
 ## Customers
 
@@ -128,7 +128,7 @@ Specify different pricing per customer group, for example you may have certain p
 You can turn product visibility off depending on the customer group, this would mean only certain products would show depending on the group they belong to. This will also include scheduling availability so you can release products earlier or later to different groups.
 
 ---
-You must have at least one customer group in your store and when you install GetCandy you will be given a default one to get you started named `retail`.
+You must have at least one customer group in your store and when you install Lunar you will be given a default one to get you started named `retail`.
 
 ## Creating a customer group
 
@@ -159,7 +159,7 @@ class MyModel extends Model
 }
 ```
 
-You will need to define the relationship for customer groups so that GetCandy knows how to handle it.
+You will need to define the relationship for customer groups so that Lunar knows how to handle it.
 
 ```php
 public function customerGroup()

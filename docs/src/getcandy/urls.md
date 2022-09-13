@@ -73,7 +73,7 @@ $urlC->default // true
 
 ## Deleting a URL
 
-When you delete a URL, if it was the default then GetCandy will look for a non default of the same language and assign that instead.
+When you delete a URL, if it was the default then Lunar will look for a non default of the same language and assign that instead.
 
 
 ```php
@@ -99,7 +99,7 @@ $urlB->default // true
 
 ## Adding URL support to Models
 
-Out the box GetCandy has a few pre-configured models which have URLs
+Out the box Lunar has a few pre-configured models which have URLs
 
 - Products
 - Collections
@@ -130,7 +130,7 @@ $myModel->urls; // Collection
 
 ## Automatically generating URLs
 
-You can tell GetCandy to generate URLs for models that use the `HasUrls` trait automatically by setting the `generator` config option in `config/lunar/urls.php`.
+You can tell Lunar to generate URLs for models that use the `HasUrls` trait automatically by setting the `generator` config option in `config/lunar/urls.php`.
 
 By default this is set to `Lunar\Generators\UrlGenerator::class` which means URLs will be generated. To disable this, set the config like below:
 

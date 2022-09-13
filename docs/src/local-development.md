@@ -1,14 +1,14 @@
-# Setting Up GetCandy For Local Development
+# Setting Up Lunar For Local Development
 
 [[toc]]
 
 ## Overview
 
-This guide is here to help you set-up GetCandy locally so you can contribute to the core and admin hub.
+This guide is here to help you set-up Lunar locally so you can contribute to the core and admin hub.
 
 ## Before your start
 
-You will need a Laravel application to run GetCandy in. You can either use a fresh install of [Laravel](https://laravel.com/docs/9.x/installation) or the [GetCandy demo store](https://github.com/lunarphp/demo-store).
+You will need a Laravel application to run Lunar in. You can either use a fresh install of [Laravel](https://laravel.com/docs/9.x/installation) or the [GetCandy demo store](https://github.com/lunarphp/demo-store).
 
 ## Set-Up
 
@@ -54,4 +54,4 @@ composer update
 ````
 
 ## Done
-You can now follow the GetCandy installation process and start contributing.
+You can now follow the Lunar installation process and start contributing.

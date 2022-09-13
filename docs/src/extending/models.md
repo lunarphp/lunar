@@ -7,16 +7,16 @@
 GetCandy provides a number of Eloquent Models and quite often in custom applications you will want to add your own relationships and functionality to these models.
 
 ::: warning
-We highly suggest using your own Eloquent Models to add additional data, rather than trying to change fields on the core GetCandy models.
+We highly suggest using your own Eloquent Models to add additional data, rather than trying to change fields on the core Lunar models.
 :::
 
 ## Extendable Models
-All GetCandy models are now extendable.
+All Lunar models are now extendable.
 This means you can now add your own functionality or change out existing core model behaviour using your own model implementations.
 
 ### Registration:
 We recommend registering your own models for your application within the boot method of your Service Provider.
-When registering your models, you will need to set the GetCandy core model as the key and then your own model implementation as the value.
+When registering your models, you will need to set the Lunar core model as the key and then your own model implementation as the value.
 
 Here is an example below where we are extending 10 core models from your main AppServiceProvider:
 
@@ -240,7 +240,7 @@ trait HasAddresses
 
 ## Dynamic Eloquent Relationships
 
-Eloquent relationships can be dynamically specified in code, allowing you to add additional relationships to the GetCandy Models.
+Eloquent relationships can be dynamically specified in code, allowing you to add additional relationships to the Lunar Models.
 
 e.g. 
 
@@ -258,7 +258,7 @@ See [https://laravel.com/docs/9.x/eloquent-relationships#dynamic-relationships](
 
 ## Macroable
 
-All GetCandy models have been made macroable. This is a Laravel technique to allow a developer to dynamically add methods to an existing class. This is ideal for adding helpful functions for your application.
+All Lunar models have been made macroable. This is a Laravel technique to allow a developer to dynamically add methods to an existing class. This is ideal for adding helpful functions for your application.
 
 Here is an example...
 

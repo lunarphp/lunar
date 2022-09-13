@@ -136,7 +136,7 @@ GetCandy uses table prefixes to avoid conflicts with your app's tables. You can 
 GetCandy assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/lunar/database.php` to set the correct field type before running the migrations.
 :::
 
-As you'd expect, there's quite a few tables GetCandy needs to function, so run the migrations now.
+As you'd expect, there's quite a few tables Lunar needs to function, so run the migrations now.
 
 You can optionally publish these migrations so they're added to your Laravel app.
 
@@ -154,7 +154,7 @@ php artisan migrate
 php artisan lunar:install
 ```
 
-This will take you through a set of questions to configure your GetCandy install. The process includes...
+This will take you through a set of questions to configure your Lunar install. The process includes...
 
 - Creating a default admin user (if required)
 - Seeding initial data
@@ -174,7 +174,7 @@ You are now installed! You can access the admin hub at `http://<yoursite>/hub`
 
 ## Spread the Word
 
-If you enjoy our project, please share it with others. The more developers using GetCandy the more we can put back into the project.
+If you enjoy our project, please share it with others. The more developers using Lunar the more we can put back into the project.
 
 Get sharing on Twitter, Reddit, Medium, Dev.to, Laravel News, Slack, Discord, etc.
 

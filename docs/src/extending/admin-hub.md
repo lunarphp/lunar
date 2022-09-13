@@ -181,7 +181,7 @@ public function handleSlotSave($model, $data)
 
 ### Registering the Slot
 
-Once you've created your Slot, you need to tell GetCandy where it should go, you can do this in your ServiceProvider.
+Once you've created your Slot, you need to tell Lunar where it should go, you can do this in your ServiceProvider.
 
 ```php
 Slot::register('product.show', SeoSlot::class);
@@ -238,7 +238,7 @@ Rendered on the product creation screen
 
 ## Customising Tables
 
-Throughout GetCandy there are a number of data tables on pages, such as product, orders etc. We want to make these flexible and allow you to extend them by adding functionality such as additional columns and filters.
+Throughout Lunar there are a number of data tables on pages, such as product, orders etc. We want to make these flexible and allow you to extend them by adding functionality such as additional columns and filters.
 
 We'll be working towards adding this functionality across as many data tables as possible, but for now the supported tables are:
 

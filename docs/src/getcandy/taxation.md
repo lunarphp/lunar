@@ -4,7 +4,7 @@
 
 ## Overview
 
-No one likes taxes! But we have to deal with them... GetCandy provides manual tax rules to implement the correct sales tax for each order. For complex taxation (e.g. US States) we suggest integrating with a service such as [TaxJar](https://www.taxjar.com/).
+No one likes taxes! But we have to deal with them... Lunar provides manual tax rules to implement the correct sales tax for each order. For complex taxation (e.g. US States) we suggest integrating with a service such as [TaxJar](https://www.taxjar.com/).
 
 
 ## Tax Classes

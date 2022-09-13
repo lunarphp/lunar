@@ -106,7 +106,7 @@ Each `CartLine` has access to the same properties as a Cart does.
 
 If you need to programmatically change the Cart values, e.g. custom discounts or prices, you will want to extend the Cart.
 
-You can find out more in the Extending GetCandy section for [Cart Modifiers](/extending/cart-modifiers).
+You can find out more in the Extending Lunar section for [Cart Modifiers](/extending/cart-modifiers).
 
 ## Calculating Tax
 
@@ -158,7 +158,7 @@ $cart->getManager()->setBillingAddress(
 The cart session manager is useful if you're building a traditional Laravel storefront which makes use of sessions.
 :::
 
-When building a store, you're going to want an easy way to fetch the cart for the current user (or guest user) by retrieving it from their current session. GetCandy provides an easy to use class to make this easier for you, so you don't have to keep reinventing the wheel.
+When building a store, you're going to want an easy way to fetch the cart for the current user (or guest user) by retrieving it from their current session. Lunar provides an easy to use class to make this easier for you, so you don't have to keep reinventing the wheel.
 
 ### Available config
 
@@ -309,5 +309,5 @@ $cart->billingAddress;
 ```
 
 ## Handling User Login
-When a user logs in, you will likely want to check if they have a cart associated to their account and use that, or if they have started a cart as a guest and logged in, you will likely want to be able to handle this. GetCandy takes the pain out of this by listening to the authentication events and responding automatically by associating any previous guest cart they may have had and, depending on your `auth_policy` merge or override the basket on their account.
+When a user logs in, you will likely want to check if they have a cart associated to their account and use that, or if they have started a cart as a guest and logged in, you will likely want to be able to handle this. Lunar takes the pain out of this by listening to the authentication events and responding automatically by associating any previous guest cart they may have had and, depending on your `auth_policy` merge or override the basket on their account.
 

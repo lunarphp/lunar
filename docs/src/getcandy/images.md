@@ -4,7 +4,7 @@
 
 ## Overview
 
-For handling media across GetCandy we use the brilliant [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) package by Spatie. We are committed to only bringing in additional dependencies when absolutely makes sense and we feel in this case, the medialibrary package offers a lot of features we would just end up trying to replicate anyway. Don't reinvent the wheel right?
+For handling media across Lunar we use the brilliant [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) package by Spatie. We are committed to only bringing in additional dependencies when absolutely makes sense and we feel in this case, the medialibrary package offers a lot of features we would just end up trying to replicate anyway. Don't reinvent the wheel right?
 
 For uploading images in the hub we are using [FilePond](https://pqina.nl).
 
@@ -40,7 +40,7 @@ For more information on what's available, see [Retrieving media](https://spatie.
 
 ## Conversions
 
-GetCandy provides some useful conversions which come ready out the box. This is provided in the config `lunar/media`.
+Lunar provides some useful conversions which come ready out the box. This is provided in the config `lunar/media`.
 
 ```php
 'conversions' => [
@@ -93,7 +93,7 @@ This will create queue jobs for each media entry to be re-processed. More inform
 You can extend your own models to use media, either by using our implementation or by implementing medialibrary directly. It's totally up to you and your requirements. If you want to use medialibrary directly, [just follow their guides](https://spatie.be/docs/laravel-medialibrary/v9/basic-usage/preparing-your-model) and you'll be all set.
 
 ::: warning
-If you decide to use medialibrary directly, you will not have access to our transformations or any other GetCandy features we add.
+If you decide to use medialibrary directly, you will not have access to our transformations or any other Lunar features we add.
 :::
 
 ### Extending with GetCandy

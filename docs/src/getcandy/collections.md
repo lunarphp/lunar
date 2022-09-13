@@ -91,4 +91,4 @@ GetCandy comes with a handful of criteria out the box for sorting products in a 
 |`sku:desc`|Sorts using the sku descending|
 |`custom`|This will allow you to specify the order of each product manually|
 
-Depending on what you have as the sort time on the collection, GetCandy will automatically sort the products for you when you update the products.
+Depending on what you have as the sort time on the collection, Lunar will automatically sort the products for you when you update the products.

@@ -115,7 +115,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added support for Laravel 9
 - Added new `TaxBreakdown` and `TaxBreakdownAmount` Data Transfer Objects. ([#173](https://github.com/lunarphp/lunar/issues/173))
 - Added `setCartLine` method to the system tax driver. ([#173](https://github.com/lunarphp/lunar/issues/173))
-- GetCandy will now automatically prefer multiple default addresses for shipping and billing. By [@nicolalazzaro](https://github.com/nicolalazzaro)
+- Lunar will now automatically prefer multiple default addresses for shipping and billing. By [@nicolalazzaro](https://github.com/nicolalazzaro)
 
 ### Changed
 
@@ -124,7 +124,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- GetCandy will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
+- Lunar will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
 - The Cart actions to calculate the totals will now use the `Taxes` facade correctly.
 
 [View Changes](https://github.com/lunarphp/core/compare/2.0-beta9...2.0-beta10)
@@ -139,7 +139,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The `Text` fieldtype tolerance now accepts numeric values instead of just forcing strings.
 - Translating an attribute via `->translateAttribute('name')` will now handle non translatable fields for consistency.
 - When using the `lunar:meilisearch:setup` only indexes available within the app should be affected.
-- When installing GetCandy the correct configuration or rich text fields should now be applied. By ([@KKSzymanowski](https://github.com/KKSzymanowski))
+- When installing Lunar the correct configuration or rich text fields should now be applied. By ([@KKSzymanowski](https://github.com/KKSzymanowski))
 
 ### Added
 

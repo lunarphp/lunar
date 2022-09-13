@@ -58,7 +58,7 @@ $order = CartSession::createOrder(false);
 
 Now when you create the order, you will still have the cart id in the session.
 
-So what's happening when we call `createOrder` on a cart, that's so different from just creating an order manually? Well there's a few steps GetCandy takes to make sure data stays consistent and valid, it also means that a lot of the columns on an order will automatically be populated based on the cart.
+So what's happening when we call `createOrder` on a cart, that's so different from just creating an order manually? Well there's a few steps Lunar takes to make sure data stays consistent and valid, it also means that a lot of the columns on an order will automatically be populated based on the cart.
 
 Here's the order things happen when you call `createOrder`:
 
@@ -99,7 +99,7 @@ This essentially does the same as above, except we already catch the exceptions 
 
 ## Order Reference Generating
 
-By default GetCandy will generate a new order reference for you when you create an order from a cart. The format for this is:
+By default Lunar will generate a new order reference for you when you create an order from a cart. The format for this is:
 
 ```
 {year}-{month}-{0..0}{orderId}
@@ -116,7 +116,7 @@ By default GetCandy will generate a new order reference for you when you create 
 
 ### Custom Generators
 
-If your store has a specific requirement for how references are generated, you can easily swap out the GetCandy one for your own:
+If your store has a specific requirement for how references are generated, you can easily swap out the Lunar one for your own:
 
 `config/lunar/orders.php`
 
@@ -152,7 +152,7 @@ class MyCustomGenerator implements OrderReferenceGeneratorInterface
 
 If you need to programmatically change the Order values or add in new behaviour, you will want to extend the Order system.
 
-You can find out more in the Extending GetCandy section for [Order Modifiers](/extending/order-modifiers).
+You can find out more in the Extending Lunar section for [Order Modifiers](/extending/order-modifiers).
 
 ## Order Lines
 
@@ -285,7 +285,7 @@ Lunar\Models\Transaction
 |driver|The payment driver used e.g. `stripe`|
 |amount|An integer amount|
 |reference|The reference returned from the payment Provider. Used to identify the transaction with them.
-|status|A string representation of the status, unlinked to GetCandy e.g. `settled`|
+|status|A string representation of the status, unlinked to Lunar e.g. `settled`|
 |notes|Any relevant notes for the transaction
 |card_type| e.g. `visa`
 |last_four| Last 4 digits of the card
@@ -296,7 +296,7 @@ Lunar\Models\Transaction
 ### Create a transaction
 
 ::: tip
-Just because an order has a transaction does not mean it has been placed. GetCandy determines whether an order is considered placed when the `placed_at` column has a datetime, regardless if any transactions exist or not.
+Just because an order has a transaction does not mean it has been placed. Lunar determines whether an order is considered placed when the `placed_at` column has a datetime, regardless if any transactions exist or not.
 :::
 
 Most stores will likely want to store a transaction against the order, this helps determining how much has been paid, how it was paid and give a clue on the best way to issue a refund if needed.
@@ -326,7 +326,7 @@ $order->refunds; // Get all transactions that are refunds.
 
 We will be looking to add support for the most popular payment providers, so keep an eye out here as we will list them all out.
 
-In the meantime, you can absolutely still get a storefront working, at the end of the day GetCandy doesn't really mind if you what payment provider you use or plan to use.
+In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind if you what payment provider you use or plan to use.
 
 In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table, the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier for you as laid out above.
 
@@ -353,7 +353,7 @@ GetCandy allows you to specify what Laravel mailers/notifications should be avai
 
 Now when you update an order's status in the hub, you will have these mailers available if the new status is `awaiting-payment`. You can then choose the email addresses which the email should be sent to and also add an additional email address if required.
 
-Once updated, GetCandy will keep a render of the email sent out in the activity log so you have a clear history of what's been sent out.
+Once updated, Lunar will keep a render of the email sent out in the activity log so you have a clear history of what's been sent out.
 
 :::tip
 These email notifications do not get sent out automatically if you update the status outside of the hub.

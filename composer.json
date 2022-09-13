@@ -6,17 +6,22 @@
         {
             "name": "LunarPHP",
             "homepage": "https://lunarphp.io/"
+        },
+        {
+            "name": "GetCandy",
+            "homepage": "https://lunarphp.io/"
         }
     ],
     "require": {
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^6.1|^7.0",
         "doctrine/dbal": "3.3.7",
-        "lunar/licensing": "dev-main",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
         "livewire/livewire": "^2.0",
+        "lunar/licensing": "dev-main",
+        "lunarphp/licensing": "dev-main",
         "php": "^8.0",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
@@ -24,10 +29,10 @@
         "yab/laravel-scout-mysql-driver": "^5.0"
     },
     "require-dev": {
+        "laravel/pint": "^1.1",
         "orchestra/testbench": "^6.0|^7.0",
         "phpunit/phpunit": "^9.5",
-        "symplify/monorepo-builder": "^10.0",
-        "laravel/pint": "^1.1"
+        "symplify/monorepo-builder": "^10.0"
     },
     "autoload": {
         "files": [
@@ -53,6 +58,7 @@
         "laravel": {
             "providers": [
                 "Lunar\\Hub\\AdminHubServiceProvider",
+                "Lunar\\GetCandyServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
         }

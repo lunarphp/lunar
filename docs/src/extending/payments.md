@@ -87,7 +87,7 @@ class CustomPayment extends AbstractPayment
 }
 ```
 
-This is the most basic implementation of a driver, you can see we are extending an `AbstractPayment`. This is a class which is provided by GetCandy and contains some useful helpers you can utilise in your own driver.
+This is the most basic implementation of a driver, you can see we are extending an `AbstractPayment`. This is a class which is provided by Lunar and contains some useful helpers you can utilise in your own driver.
 
 [See available methods](#abstract-class-methods)
 
@@ -207,7 +207,7 @@ Lunar\Models\Transaction
 
 #### Releasing
 
-When releasing a payment, if you're not charging the card straight away, you should create a transaction with type `intent`. This tells GetCandy you intend to charge the card at a later date.
+When releasing a payment, if you're not charging the card straight away, you should create a transaction with type `intent`. This tells Lunar you intend to charge the card at a later date.
 
 ```php
 Transaction::create([
