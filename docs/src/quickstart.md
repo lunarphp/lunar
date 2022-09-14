@@ -1,14 +1,14 @@
 # Quick Start
 
-If you want to get up and running quickly to review GetCandy, this section is for you.
+If you want to get up and running quickly to review Lunar, this section is for you.
 
 [[toc]]
 
 ## Demo Store
 
-GetCandy provides a demo store as a reference to help you build your own custom e-commerce app. The demo store is built using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and checkout.
+Lunar provides a demo store as a reference to help you build your own custom e-commerce app. The demo store is built using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and checkout.
 
-If you would prefer to install GetCandy into your own Laravel application, please follow the [installation instructions](/installation).
+If you would prefer to install Lunar into your own Laravel application, please follow the [installation instructions](/installation).
 
 
 ## Requirements
@@ -19,7 +19,7 @@ If you would prefer to install GetCandy into your own Laravel application, pleas
 - GD PHP extension (used for image manipulation)
 
 ::: warning
-This demo store uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.getcandy.io/installation.html#search-configuration)
+This demo store uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.lunarphp.io/installation.html#search-configuration)
 :::
 
 
@@ -28,7 +28,7 @@ This demo store uses Meilisearch, for the best experience it is recommended you 
 ### Clone the repo
 
 ```bash
-git clone --depth=1 https://github.com/getcandy/demo-store.git
+git clone --depth=1 https://github.com/lunarphp/demo-store.git
 ```
 
 This will create a shallow clone of the repo, from there you would just need to remove the `.git` folder and reinitialise it to make it your own.
@@ -62,10 +62,10 @@ Run the migrations
 php artisan migrate
 ```
 
-Install GetCandy
+Install Lunar
 
 ```
-php artisan getcandy:install
+php artisan lunar:install
 ```
 
 Seed the demo data.
@@ -87,12 +87,12 @@ You are now installed!
 - You can access the storefront at `http://<yoursite>`
 - You can access the admin hub at `http://<yoursite>/hub`
 
-You can review the source code at the GitHub Repository: [https://github.com/getcandy/demo-store](https://github.com/getcandy/demo-store)
+You can review the source code at the GitHub Repository: [https://github.com/lunarphp/demo-store](https://github.com/lunarphp/demo-store)
 
 ## Spread the Word
 
-If you enjoy our project, please share it with others. The more developers using GetCandy the more we can put back into the project.
+If you enjoy our project, please share it with others. The more developers using Lunar the more we can put back into the project.
 
 Get sharing on Twitter, Reddit, Medium, Dev.to, Laravel News, Slack, Discord, etc.
 
-Go Team GetCandy! 🤟
+Go Team Lunar! 🤟

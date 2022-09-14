@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base;
+namespace Lunar\Tests\Unit\Base;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasModelExtending;
-use GetCandy\Models\Collection as ModelsCollection;
-use GetCandy\Models\Product;
-use GetCandy\Models\Url;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasModelExtending;
+use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
+use Lunar\Tests\TestCase;
 
 /**
  * @group models.base

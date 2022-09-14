@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components\GetCandy;
+namespace Lunar\Hub\Views\Components\Lunar;
 
 use Illuminate\View\Component;
 
@@ -13,6 +13,6 @@ class Stamp extends Component
      */
     public function render()
     {
-        return view('adminhub::components.getcandy.stamp');
+        return view('adminhub::components.lunar.stamp');
     }
 }

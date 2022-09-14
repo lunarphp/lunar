@@ -22,10 +22,10 @@
             <p class="text-xs text-center text-gray-500">
                 <span x-cloak
                       x-show="showExpandedMenu">
-                    GetCandy
+                    Lunar
                 </span>
 
-                <x-hub::get-candy.version />
+                <x-hub::lunar.version />
             </p>
         </div>
 

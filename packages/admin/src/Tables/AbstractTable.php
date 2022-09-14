@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Tables;
+namespace Lunar\Hub\Tables;
 
 use Closure;
-use GetCandy\Hub\Base\OrdersTableInterface;
-use GetCandy\Hub\DataTransferObjects\TableColumn;
-use GetCandy\Hub\DataTransferObjects\TableFilter;
-use GetCandy\Hub\Exporters\OrderExporter;
 use Illuminate\Support\Collection;
+use Lunar\Hub\Base\OrdersTableInterface;
+use Lunar\Hub\DataTransferObjects\TableColumn;
+use Lunar\Hub\DataTransferObjects\TableFilter;
+use Lunar\Hub\Exporters\OrderExporter;
 
 abstract class AbstractTable implements OrdersTableInterface
 {

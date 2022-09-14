@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
+use Lunar\Models\ProductVariant;
 
 class CartLineFactory extends Factory
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use DateTime;
-use GetCandy\Models\Channel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Channel;
 
 trait HasChannels
 {
@@ -32,7 +32,7 @@ trait HasChannels
      */
     public function channels()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Channel::class,

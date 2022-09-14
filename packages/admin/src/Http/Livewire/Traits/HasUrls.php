@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Models\Url;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Lunar\Models\Url;
 
 trait HasUrls
 {
@@ -34,8 +34,8 @@ trait HasUrls
             'urls' => 'array',
         ];
 
-        $required = config('getcandy.urls.required', true);
-        $generator = config('getcandy.urls.generator', null);
+        $required = config('lunar.urls.required', true);
+        $generator = config('lunar.urls.generator', null);
 
         if (($required && ! $create) || ($required && $create && ! $generator)) {
             $rules['urls'] = 'array|min:1';

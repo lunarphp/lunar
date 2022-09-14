@@ -1,21 +1,21 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Jobs\Products;
+namespace Lunar\Hub\Tests\Unit\Jobs\Products;
 
-use GetCandy\Hub\Exceptions\InvalidProductValuesException;
-use GetCandy\Hub\Exceptions\VariantsDisabledException;
-use GetCandy\Hub\Jobs\Products\GenerateVariants;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
+use Lunar\Hub\Exceptions\InvalidProductValuesException;
+use Lunar\Hub\Exceptions\VariantsDisabledException;
+use Lunar\Hub\Jobs\Products\GenerateVariants;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductVariant;
 
 /**
- * @group getcandyhub.jobs
+ * @group lunarhub.jobs
  */
 class GenerateVariantsTest extends TestCase
 {
@@ -34,7 +34,7 @@ class GenerateVariantsTest extends TestCase
     /** @test */
     public function can_generate_from_one_set_of_option_values()
     {
-        Config::set('getcandy-hub.products.sku.unique', true);
+        Config::set('lunar-hub.products.sku.unique', true);
 
         $product = Product::factory()->has(ProductVariant::factory(), 'variants')->create();
 
@@ -95,7 +95,7 @@ class GenerateVariantsTest extends TestCase
     /** @test */
     public function check_variants_only_generate_when_enabled()
     {
-        Config::set('getcandy-hub.products.disable_variants', true);
+        Config::set('lunar-hub.products.disable_variants', true);
 
         $product = Product::factory()->has(ProductVariant::factory(), 'variants')->create();
 
@@ -106,7 +106,7 @@ class GenerateVariantsTest extends TestCase
     /** @test */
     public function can_generate_variants()
     {
-        Config::set('getcandy-hub.products.sku.unique', true);
+        Config::set('lunar-hub.products.sku.unique', true);
 
         $product = Product::factory()
             ->has(ProductVariant::factory(), 'variants')

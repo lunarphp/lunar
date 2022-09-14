@@ -4,14 +4,14 @@
 
 ## Overview
 
-Products are generally what you will be selling in your store. You define all your attributes against the product and products can also have variations. In GetCandy a product will always have at least one variation. From a UX point of view, it will just look like you're editing a single product, but behind the scenes you'll be editing one variant.
+Products are generally what you will be selling in your store. You define all your attributes against the product and products can also have variations. In Lunar a product will always have at least one variation. From a UX point of view, it will just look like you're editing a single product, but behind the scenes you'll be editing one variant.
 
 Products also belong to a `ProductType` and aside from the attributes, which you are free to define yourself, will have a base SKU and a brand name.
 
 ## Creating a product
 
 ```php
-GetCandy\Models\Product::create([
+Lunar\Models\Product::create([
     'product_type_id' => $productTypeId,
     'status' => 'published',
     'brand' => 'Foo',
@@ -48,9 +48,9 @@ If you want to get all products related to a customer group, you can use the `cu
 
 ```php
 // Can be an array of ids
-$products = \GetCandy\Models\Product::customerGroup(1)->paginate(50);
+$products = \Lunar\Models\Product::customerGroup(1)->paginate(50);
 
-$products = \GetCandy\Models\Product::customerGroup([
+$products = \Lunar\Models\Product::customerGroup([
     $groupA,
     $groupB,
 ])->paginate(50);
@@ -65,12 +65,12 @@ Assigns the appropriate attributes for the product type.
 ### Creating a product type
 
 ```php
-GetCandy\Models\ProductType::create([
+Lunar\Models\ProductType::create([
     'name' => 'Boots',
 ]);
 ```
 
-Product Types also have [Attributes](/{{route}}/{{version}}/getcandy/attributes) associated to them. These associated attributes will determine what fields are available to products when editing. For example if you had an attribute of `Screen Type` associated to a `TVs` product type, any products with that product type would have access to that attribute when editing.
+Product Types also have [Attributes](/{{route}}/{{version}}/lunar/attributes) associated to them. These associated attributes will determine what fields are available to products when editing. For example if you had an attribute of `Screen Type` associated to a `TVs` product type, any products with that product type would have access to that attribute when editing.
 
 You can associate attributes to a product type like so (it's just a straight forward [Polymorphic relationship](https://laravel.com/docs/8.x/eloquent-relationships#many-to-many-polymorphic-relations)).
 
@@ -119,7 +119,7 @@ European Article numbering code (EAN) is a series of letters and numbers in a un
 
 Depending on your storefront needs, you might not need any of these fields to be required or unique. For this reason you can change this behaviour at a validation level.
 
-`config/getcandy-hub/products.php`
+`config/lunar-hub/products.php`
 
 ```php
     'sku' => [
@@ -153,7 +153,7 @@ Product options and Product option values are defined at a system level and are 
 ### Creating a `ProductOption`
 
 ```php
-$option = GetCandy\Models\ProductOption::create([
+$option = Lunar\Models\ProductOption::create([
     'name' => [
         'en' => 'Colour',
         'fr' => 'Couleur',
@@ -164,7 +164,7 @@ $option = GetCandy\Models\ProductOption::create([
 We can then create values for this option:
 
 ```php
-// GetCandy\Models\ProductOptionValue
+// Lunar\Models\ProductOptionValue
 $option->values()->createMany([
     [
         'name' => [
@@ -185,7 +185,7 @@ This Product option and it's values are now ready to be used to with Product Var
 
 # Product Shipping
 
-By default GetCandy will mark all product variants as `shippable`. If you don't need to ship a certain variant then you can simply set this to false.
+By default Lunar will mark all product variants as `shippable`. If you don't need to ship a certain variant then you can simply set this to false.
 
 ```php
 $variant->update([
@@ -216,7 +216,7 @@ width_unit
 
 ### Configuring measurements
 
-You can configure the available UOM's in the `getcandy/shipping.php` config file. Here is an example of what GetCandy provides by default:
+You can configure the available UOM's in the `lunar/shipping.php` config file. Here is an example of what Lunar provides by default:
 
 **Length**
 
@@ -292,7 +292,7 @@ Variants allow you to specify different variations of a product. Think things li
 
 Variants are also responsible for storing data such as Pricing, Inventory/Stock information, Shipping information etc. For that reason a product will always have at least one variant.
 
-When you decide you want to offer more than one variant for a product, upon generation, GetCandy will take the first variant and use that as a base for all other variants in terms of pricing, inventory etc. So you won't lose any data you may have already saved against the existing product.
+When you decide you want to offer more than one variant for a product, upon generation, Lunar will take the first variant and use that as a base for all other variants in terms of pricing, inventory etc. So you won't lose any data you may have already saved against the existing product.
 
 ## Creating variants
 
@@ -325,7 +325,7 @@ $currency = Currency::where(...)->first();
 Then we need to create our base option and it's values.
 
 ```php
-$option = \GetCandy\Models\ProductOption::create([
+$option = \Lunar\Models\ProductOption::create([
     'name' => [
         'en' => 'Colour',
     ];
@@ -375,7 +375,7 @@ When creating variants there are some exceptions that will be thrown if certain 
 
 |Exception|Conditions
 |:-|:-|
-|`GetCandy\Exceptions\InvalidProductValuesException`|Thrown if you try and create a variant with less option values than what are required.|
+|`Lunar\Exceptions\InvalidProductValuesException`|Thrown if you try and create a variant with less option values than what are required.|
 |`Illuminate\Validation\ValidationException`|Thrown if validation fails on the value options array.|
 
 ## Pricing
@@ -395,13 +395,13 @@ Prices are stored in the database as integers. When retrieving a `Price` model t
 |`priceable_id`|This is the id of the related model which owns the price|`null`|yes
 
 ```php
-$price = \GetCandy\Models\Price::create([
+$price = \Lunar\Models\Price::create([
     'price' => 199,
     'compare_price' => 299,
     'currency_id' => 1,
     'tier' => 1,
     'customer_group_id' => null,
-    'priceable_type' => 'GetCandy\Models\ProductVariant',
+    'priceable_type' => 'Lunar\Models\ProductVariant',
     'priceable_id' => 1,
 ]);
 ```
@@ -439,13 +439,13 @@ Pricing is defined on a variant level, meaning you will have a different price f
 
 
 ```php
-\GetCandy\Models\Price::create([
+\Lunar\Models\Price::create([
     'price' => 199,
     'compare_price' => 299,
     'currency_id' => 1,
     'tier' => 1,
     'customer_group_id' => null,
-    'priceable_type' => 'GetCandy\Models\ProductVariant',
+    'priceable_type' => 'Lunar\Models\ProductVariant',
     'priceable_id' => 1,
 ]);
 ```
@@ -460,7 +460,7 @@ You can specify which customer group the price applies to by setting the `custom
 
 ### Tiered Pricing
 
-Tiered pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing on GetCandy, this is determined by the `tier` column when creating prices. For example:
+Tiered pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing on Lunar, this is determined by the `tier` column when creating prices. For example:
 
 ```php
 Price::create([
@@ -491,23 +491,23 @@ To get the pricing for a product you can simple use the following helpers:
 A quantity of 1 is implied when not passed.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::for($variant)->get();
 ```
 
 #### With Quantities
 ```php
-$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::qty(5)->for($variant)->get();
 ```
 
 #### With Customer Groups
 
-If you don't pass in a customer group, GetCandy will use the default, including any pricing that isn't specific to a customer group.
+If you don't pass in a customer group, Lunar will use the default, including any pricing that isn't specific to a customer group.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::customerGroups($groups)->for($variant)->get();
 
 // Or a single customer group
-$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::customerGroup($group)->for($variant)->get();
 ```
 
 #### Specific to a user
@@ -516,13 +516,13 @@ The PricingManager assumes you want the price for the current authenticated user
 If you want to always return the guest price, you may use...
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::guest()->for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::guest()->for($variant)->get();
 ```
 
 Or to specify a different user...
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::user($user)->for($variant)->get();
 ```
 
 #### With a specific currency
@@ -530,7 +530,7 @@ $pricing = \GetCandy\Facades\Pricing::user($user)->for($variant)->get();
 If you don't pass in a currency, the default is implied.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::currency($currency)->for($variant)->get();
 ```
 
 #### For a model
@@ -541,12 +541,12 @@ $pricing = $variant->pricing()->qty(5)->get();
 ```
 
 ::: danger Be aware
-If you try and fetch a price for a currency that doesn't exist, a ` GetCandy\Exceptions\MissingCurrencyPriceException` exception will be thrown.
+If you try and fetch a price for a currency that doesn't exist, a ` Lunar\Exceptions\MissingCurrencyPriceException` exception will be thrown.
 :::
 
 ---
 
-This will return a `PricingResponse` object which you can interact with to display the correct prices. Unless it's a collection, each property will return a `GetCandy\Models\Price` object.
+This will return a `PricingResponse` object which you can interact with to display the correct prices. Unless it's a collection, each property will return a `Lunar\Models\Price` object.
 
 ```php
 /**
@@ -586,7 +586,7 @@ Here are the steps we're going to take:
 ### Set up the product type.
 
 ```php
-$productType = GetCandy\Models\ProductType::create([
+$productType = Lunar\Models\ProductType::create([
     'name' => 'Boots',
 ]);
 ```
@@ -598,7 +598,7 @@ This example assumes we already have Attributes set up for name and description 
 ### Create the initial product
 
 ```php
-GetCandy\Models\Product::create([
+Lunar\Models\Product::create([
     'product_type_id' => $productType->id,
     'status' => 'published',
     'brand' => 'Dr. Martens',
@@ -617,13 +617,13 @@ GetCandy\Models\Product::create([
 Based on the example above we're going to need 2 options, Size and Colour.
 
 ```php
-$colour = GetCandy\Models\ProductOption::create([
+$colour = Lunar\Models\ProductOption::create([
     'name' => [
         'en' => 'Colour',
     ],
 ]);
 
-$size = GetCandy\Models\ProductOption::create([
+$size = Lunar\Models\ProductOption::create([
     'name' => [
         'en' => 'Size',
     ],
@@ -679,7 +679,7 @@ First we just need to grab the values we want to use to generate the variants. S
 ```php
 $optionValueIds = $size->values->merge($colour->values)->pluck('id');
 
-\GetCandy\Hub\Jobs\Products\GenerateVariants::dispatch($product, $optionValueIds);
+\Lunar\Hub\Jobs\Products\GenerateVariants::dispatch($product, $optionValueIds);
 ```
 
 ::: tip

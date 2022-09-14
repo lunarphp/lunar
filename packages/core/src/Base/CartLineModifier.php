@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Closure;
-use GetCandy\Models\CartLine;
+use Lunar\Models\CartLine;
 
 abstract class CartLineModifier
 {

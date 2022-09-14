@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Channels;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Channels;
 
-use GetCandy\Models\Channel;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Channel;
 
 class ChannelsIndex extends Component
 {

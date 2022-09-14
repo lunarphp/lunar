@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
-use GetCandy\Database\Factories\ProductAssociationFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Database\Factories\ProductAssociationFactory;
 
 class ProductAssociation extends BaseModel
 {
@@ -44,7 +44,7 @@ class ProductAssociation extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\ProductAssociationFactory
+     * @return \Lunar\Database\Factories\ProductAssociationFactory
      */
     protected static function newFactory(): ProductAssociationFactory
     {

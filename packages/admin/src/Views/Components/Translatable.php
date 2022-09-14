@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace Lunar\Hub\Views\Components;
 
-use GetCandy\Models\Language;
 use Illuminate\View\Component;
+use Lunar\Models\Language;
 
 class Translatable extends Component
 {

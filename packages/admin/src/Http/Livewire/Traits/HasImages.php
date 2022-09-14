@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -203,7 +203,7 @@ trait HasImages
                     ->performedOn($owner)
                     ->withProperties(['media' => $media->toArray()])
                     ->event('added_image')
-                    ->useLog('getcandy')
+                    ->useLog('lunar')
                     ->log('added_image');
 
                     // Add ID for future and processing now.

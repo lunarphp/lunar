@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
-use GetCandy\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\SearchesProducts;
+use Lunar\Models\Product;
 
 class ProductsIndex extends Component
 {

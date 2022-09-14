@@ -1,40 +1,40 @@
 <?php
 
-namespace GetCandy\Console;
+namespace Lunar\Console;
 
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Collection;
-use GetCandy\Models\CollectionGroup;
-use GetCandy\Models\Country;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\TaxClass;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Hub\Models\Staff;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Channel;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
+use Lunar\Models\Country;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\TaxClass;
 
-class InstallGetCandy extends Command
+class InstallLunar extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'getcandy:install';
+    protected $signature = 'lunar:install';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Install the GetCandy';
+    protected $description = 'Install the Lunar';
 
     /**
      * Execute the console command.
@@ -45,17 +45,17 @@ class InstallGetCandy extends Command
     {
         $this->warn('**************************************************************************');
         $this->warn('*                              WARNING                                   *');
-        $this->warn('*    We take security very seriously in GetCandy and every effort is     *');
+        $this->warn('*    We take security very seriously in Lunar and every effort is     *');
         $this->warn('*          made to stay in line with security best practices.            *');
         $this->warn('*                                                                        *');
         $this->warn('*   In order to provide rich search functionality, some sensitive data   *');
         $this->warn('*    is likely to be indexed in the search engine. Depending on your     *');
         $this->warn('*     search engine of choice, you must ensure this data is secure.      *');
         $this->warn('*                                                                        *');
-        $this->warn('* GetCandy accepts no liability for compromised data as a result of your *');
+        $this->warn('* Lunar accepts no liability for compromised data as a result of your *');
         $this->warn('*  storefront not following guidelines set out by third party providers. *');
         $this->warn('*                                                                        *');
-        $this->warn('*      Find out more: https://docs.getcandy.io/securing-your-site        *');
+        $this->warn('*      Find out more: https://docs.lunarphp.io/securing-your-site        *');
         $this->warn('**************************************************************************');
 
         $confirmed = $this->confirm('I understand, lets do this 🚀');
@@ -67,11 +67,11 @@ class InstallGetCandy extends Command
         }
 
         DB::transaction(function () {
-            $this->info('Installing GetCandy...');
+            $this->info('Installing Lunar...');
 
             $this->info('Publishing configuration...');
 
-            if (! $this->configExists('getcandy')) {
+            if (! $this->configExists('lunar')) {
                 $this->publishConfiguration();
             } else {
                 if ($this->shouldOverwriteConfig()) {
@@ -86,7 +86,7 @@ class InstallGetCandy extends Command
 
             if (! Country::count()) {
                 $this->info('Importing countries');
-                $this->call('getcandy:import:address-data');
+                $this->call('lunar:import:address-data');
             }
 
             if (! Channel::whereDefault(true)->exists()) {
@@ -274,12 +274,12 @@ class InstallGetCandy extends Command
                 );
             }
 
-            $this->info('GetCandy is now installed.');
+            $this->info('Lunar is now installed.');
 
             if ($this->confirm('Would you like to show some love by starring the repo?')) {
                 $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';
 
-                exec("{$exec} https://github.com/getcandy/getcandy");
+                exec("{$exec} https://github.com/lunarphp/lunar");
 
                 $this->line("Thanks, you're awesome!");
             }
@@ -323,8 +323,8 @@ class InstallGetCandy extends Command
     private function publishConfiguration($forcePublish = false): void
     {
         $params = [
-            '--provider' => "GetCandy\GetCandyServiceProvider",
-            '--tag'      => 'getcandy',
+            '--provider' => "Lunar\LunarServiceProvider",
+            '--tag'      => 'lunar',
         ];
 
         if ($forcePublish === true) {

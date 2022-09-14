@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Traits;
+namespace Lunar\Tests\Unit\Traits;
 
-use GetCandy\Base\StandardMediaConversions;
-use GetCandy\Models\Product;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Lunar\Base\StandardMediaConversions;
+use Lunar\Models\Product;
+use Lunar\Tests\TestCase;
 
 /**
  * @group traits
@@ -18,7 +18,7 @@ class HasMediaTraitTest extends TestCase
     /** @test */
     public function conversions_are_loaded()
     {
-        $conversions = config('getcandy.media.conversions');
+        $conversions = config('lunar.media.conversions');
 
         $this->assertCount(1, $conversions);
 

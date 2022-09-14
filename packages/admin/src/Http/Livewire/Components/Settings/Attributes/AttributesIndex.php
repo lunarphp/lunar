@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\Facades\AttributeManifest;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Facades\AttributeManifest;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
 
 class AttributesIndex extends Component
 {

@@ -4,7 +4,7 @@
 
 ## Overview
 
-Associations allow you to relate products to each other. There are a few different ways you can associate two products and this type of relationship would define how they are presented on your storefront and also how GetCandy sees them.
+Associations allow you to relate products to each other. There are a few different ways you can associate two products and this type of relationship would define how they are presented on your storefront and also how Lunar sees them.
 
 ## Loading associations
 
@@ -12,10 +12,10 @@ Associations allow you to relate products to each other. There are a few differe
 $product->associations
 ```
 
-This will return a Laravel collection of `GetCandy\Models\ProductAssociation` models. On each model you will have access to the following:
+This will return a Laravel collection of `Lunar\Models\ProductAssociation` models. On each model you will have access to the following:
 
 ```php
-// GetCandy\Models\ProductAssociation
+// Lunar\Models\ProductAssociation
 $association->parent; // The owning product who has the associations
 $association->target // The associated (cross-sell, up-sell, alternate) product.
 $association->type // Whether it's cross-sell, up-sell or alternate.
@@ -33,13 +33,13 @@ For example, if you're selling a Phone on your store, you may want to present so
 
 ```php
 $product->associate(
-    \GetCandy\Models\Product $crossSellProduct,
-    \GetCandy\Models\ProductAssociation::CROSS_SELL
+    \Lunar\Models\Product $crossSellProduct,
+    \Lunar\Models\ProductAssociation::CROSS_SELL
 );
 
 $product->associate(
     [$productA, $productB],
-    \GetCandy\Models\ProductAssociation::CROSS_SELL
+    \Lunar\Models\ProductAssociation::CROSS_SELL
 );
 ```
 
@@ -66,13 +66,13 @@ When editing the 16gb Phone we would add the 32gb version as an up-sell associat
 
 ```php
 $product->associate(
-    \GetCandy\Models\Product $upSellProduct,
-    \GetCandy\Models\ProductAssociation::UP_SELL
+    \Lunar\Models\Product $upSellProduct,
+    \Lunar\Models\ProductAssociation::UP_SELL
 );
 
 $product->associate(
     [$productA, $productB],
-    \GetCandy\Models\ProductAssociation::UP_SELL
+    \Lunar\Models\ProductAssociation::UP_SELL
 );
 ```
 
@@ -92,13 +92,13 @@ Alternate products are what you could present the user as an alternative to the 
 
 ```php
 $product->associate(
-    \GetCandy\Models\Product $alternateProduct,
-    \GetCandy\Models\ProductAssociation::ALTERNATE
+    \Lunar\Models\Product $alternateProduct,
+    \Lunar\Models\ProductAssociation::ALTERNATE
 );
 
 $product->associate(
     [$productA, $productB],
-    \GetCandy\Models\ProductAssociation::ALTERNATE
+    \Lunar\Models\ProductAssociation::ALTERNATE
 );
 ```
 
@@ -114,11 +114,11 @@ $product->associations()->type(ProductAssociation::ALTERNATE);
 
 ### Custom types
 
-Although GetCandy comes preloaded with the associations above, you are free to add your own custom association types.
+Although Lunar comes preloaded with the associations above, you are free to add your own custom association types.
 
 ```php
 $product->associate(
-    \GetCandy\Models\Product $alternateProduct,
+    \Lunar\Models\Product $alternateProduct,
     'my-custom-type'
 );
 ```

@@ -1,12 +1,7 @@
 <?php
 
-namespace GetCandy\Hub\Jobs\Products;
+namespace Lunar\Hub\Jobs\Products;
 
-use GetCandy\Hub\Exceptions\InvalidProductValuesException;
-use GetCandy\Hub\Exceptions\VariantsDisabledException;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,6 +11,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Hub\Exceptions\InvalidProductValuesException;
+use Lunar\Hub\Exceptions\VariantsDisabledException;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductVariant;
 
 class GenerateVariants implements ShouldQueue
 {
@@ -29,7 +29,7 @@ class GenerateVariants implements ShouldQueue
     /**
      * The product instance.
      *
-     * @var \GetCandy\Models\Product
+     * @var \Lunar\Models\Product
      */
     protected $product;
 
@@ -45,7 +45,7 @@ class GenerateVariants implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \GetCandy\Models\Product  $product
+     * @param  \Lunar\Models\Product  $product
      * @param  iterable  $optionValues
      * @return void
      */
@@ -68,7 +68,7 @@ class GenerateVariants implements ShouldQueue
      */
     public function handle()
     {
-        if (config('getcandy-hub.products.disable_variants')) {
+        if (config('lunar-hub.products.disable_variants')) {
             throw new VariantsDisabledException(
                 'Variants are not enabled, check the hub config'
             );
@@ -95,7 +95,7 @@ class GenerateVariants implements ShouldQueue
 
         DB::transaction(function () use ($permutations, $baseVariant) {
             // Validation bits
-            $rules = config('getcandy-hub.products', []);
+            $rules = config('lunar-hub.products', []);
 
             foreach ($permutations as $key => $optionsToCreate) {
                 $variant = new ProductVariant();

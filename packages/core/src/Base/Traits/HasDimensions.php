@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 

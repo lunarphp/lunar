@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Tests\Stubs\Models;
+namespace Lunar\Tests\Stubs\Models;
 
 use Illuminate\Support\Collection;
 

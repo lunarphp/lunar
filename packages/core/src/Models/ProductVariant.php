@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\AsAttributeData;
-use GetCandy\Base\Purchasable;
-use GetCandy\Base\Traits\HasDimensions;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasPrices;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\ProductVariantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Purchasable;
+use Lunar\Base\Traits\HasDimensions;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasPrices;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Database\Factories\ProductVariantFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductVariant extends BaseModel implements Purchasable
@@ -42,7 +42,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\ProductVariantFactory
+     * @return \Lunar\Database\Factories\ProductVariantFactory
      */
     protected static function newFactory(): ProductVariantFactory
     {
@@ -76,7 +76,7 @@ class ProductVariant extends BaseModel implements Purchasable
      */
     public function values()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             ProductOptionValue::class,
@@ -104,7 +104,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * Return the tax class.
      *
-     * @return \GetCandy\Models\TaxClass
+     * @return \Lunar\Models\TaxClass
      */
     public function getTaxClass(): TaxClass
     {
@@ -166,7 +166,7 @@ class ProductVariant extends BaseModel implements Purchasable
 
     public function images()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(Media::class, "{$prefix}media_product_variant")
             ->withPivot(['primary', 'position'])

@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Observers;
+namespace Lunar\Observers;
 
-use GetCandy\Models\Transaction;
+use Lunar\Models\Transaction;
 
 class TransactionObserver
 {
     /**
      * Handle the OrderLine "updated" event.
      *
-     * @param  \GetCandy\Models\OrderLine  $orderLine
+     * @param  \Lunar\Models\OrderLine  $orderLine
      * @return void
      */
     public function created(Transaction $transaction)

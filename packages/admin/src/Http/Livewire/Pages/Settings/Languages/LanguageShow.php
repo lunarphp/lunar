@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Languages;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Languages;
 
-use GetCandy\Models\Language;
 use Livewire\Component;
+use Lunar\Models\Language;
 
 class LanguageShow extends Component
 {

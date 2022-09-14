@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use Illuminate\Database\Eloquent\Collection;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class TranslatedText implements FieldType, JsonSerializable
 {

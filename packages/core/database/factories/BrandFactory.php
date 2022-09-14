@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Brand;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Brand;
 
 class BrandFactory extends Factory
 {

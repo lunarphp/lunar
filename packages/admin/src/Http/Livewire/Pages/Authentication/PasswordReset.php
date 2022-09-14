@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Authentication;
+namespace Lunar\Hub\Http\Livewire\Pages\Authentication;
 
 use Livewire\Component;
 

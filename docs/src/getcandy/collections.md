@@ -18,7 +18,7 @@ A collection must also belong to a collection group, this allows you to have gre
 Create a collection group
 
 ```php
-$group = \GetCandy\Models\CollectionGroup::create([
+$group = \Lunar\Models\CollectionGroup::create([
     'name' => 'Main Catalogue',
     'handle' => 'main-catalogue' // Will auto generate if omitted.
 ]);
@@ -32,9 +32,9 @@ Collections are a hierarchy of models that have products associated to them, you
 ### Create a collection
 
 ```php
-$collection = \GetCandy\Models\Collection::create([
+$collection = \Lunar\Models\Collection::create([
     'attribute_data' => [
-        'name' => new \GetCandy\FieldTypes\Text('Clearance'),
+        'name' => new \Lunar\FieldTypes\Text('Clearance'),
     ],
     'collection_group_id' => $group->id,
 ]);
@@ -44,7 +44,7 @@ $collection = \GetCandy\Models\Collection::create([
 ### Add a child collection
 
 ```php
-$child = new \GetCandy\Models\Collection::create([/*..*/]);
+$child = new \Lunar\Models\Collection::create([/*..*/]);
 
 $collection->appendNode($child);
 ```
@@ -56,7 +56,7 @@ This results in the following
     - Child
 ```
 
-GetCandy uses the [Laravel Nested Set](https://github.com/lazychaser/laravel-nestedset) package, so feel free to take a look at it to see what's possible.
+Lunar uses the [Laravel Nested Set](https://github.com/lazychaser/laravel-nestedset) package, so feel free to take a look at it to see what's possible.
 
 ### Adding products
 
@@ -81,7 +81,7 @@ The key in the `$products` array is the product id
 
 ### Sorting products
 
-GetCandy comes with a handful of criteria out the box for sorting products in a collection:
+Lunar comes with a handful of criteria out the box for sorting products in a collection:
 
 |Name|Description|
 |:-|:-|
@@ -91,4 +91,4 @@ GetCandy comes with a handful of criteria out the box for sorting products in a 
 |`sku:desc`|Sorts using the sku descending|
 |`custom`|This will allow you to specify the order of each product manually|
 
-Depending on what you have as the sort time on the collection, GetCandy will automatically sort the products for you when you update the products.
+Depending on what you have as the sort time on the collection, Lunar will automatically sort the products for you when you update the products.

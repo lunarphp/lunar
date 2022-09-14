@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Brands;
+namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Brand;
-use GetCandy\Models\Product;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasUrls;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Brand;
+use Lunar\Models\Product;
 
 class BrandShow extends Component
 {
@@ -44,7 +44,7 @@ class BrandShow extends Component
     /**
      * Return the model with media.
      *
-     * @return \GetCandy\Models\Brand
+     * @return \Lunar\Models\Brand
      */
     public function getMediaModel()
     {
@@ -54,7 +54,7 @@ class BrandShow extends Component
     /**
      * Return the model with URLs.
      *
-     * @return \GetCandy\Models\Brand
+     * @return \Lunar\Models\Brand
      */
     public function getHasUrlsModel()
     {

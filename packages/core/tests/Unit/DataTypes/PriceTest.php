@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\DataTypes;
+namespace Lunar\Tests\Unit\DataTypes;
 
-use GetCandy\DataTypes\Price;
-use GetCandy\Exceptions\InvalidDataTypeValueException;
-use GetCandy\Models\Currency;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\DataTypes\Price;
+use Lunar\Exceptions\InvalidDataTypeValueException;
+use Lunar\Models\Currency;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.datatypes
+ * @group lunar.datatypes
  */
 class PriceTest extends TestCase
 {

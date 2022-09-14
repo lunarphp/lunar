@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Tests\Stubs\Models;
+namespace Lunar\Tests\Stubs\Models;
 
-class Product extends \GetCandy\Models\Product
+class Product extends \Lunar\Models\Product
 {
     use SearchableTrait;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
-use GetCandy\Hub\Facades\Menu;
+use Lunar\Hub\Facades\Menu;
 
 class SidebarMenu
 {

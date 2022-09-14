@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Actions\Taxes;
+namespace Lunar\Actions\Taxes;
 
-use GetCandy\Base\Addressable;
-use GetCandy\Models\TaxZone;
+use Lunar\Base\Addressable;
+use Lunar\Models\TaxZone;
 
 class GetTaxZone
 {

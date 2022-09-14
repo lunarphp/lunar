@@ -1,8 +1,8 @@
 <?php
 
-use GetCandy\Hub\Http\Controllers\ScriptsController;
-use GetCandy\Hub\Http\Controllers\StylesController;
 use Illuminate\Support\Facades\Route;
+use Lunar\Hub\Http\Controllers\ScriptsController;
+use Lunar\Hub\Http\Controllers\StylesController;
 
 /**
  * Assets routes.

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Hub\Models\SavedSearch;
+use Lunar\Hub\Models\SavedSearch;
 
 trait WithSavedSearches
 {
@@ -52,7 +52,7 @@ trait WithSavedSearches
     /**
      * Getter for default language.
      *
-     * @return \GetCandy\Models\Language
+     * @return \Lunar\Models\Language
      */
     public function getSavedSearchesProperty()
     {
@@ -64,7 +64,7 @@ trait WithSavedSearches
     /**
      * Return the active saved search.
      *
-     * @return null|\GetCandy\Hub\Models\SavedSearch
+     * @return null|\Lunar\Hub\Models\SavedSearch
      */
     public function getActiveSavedSearchProperty()
     {

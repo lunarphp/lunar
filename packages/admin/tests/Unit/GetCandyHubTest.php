@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit;
+namespace Lunar\Hub\Tests\Unit;
 
-use GetCandy\Hub\Assets\Script;
-use GetCandy\Hub\Assets\Style;
-use GetCandy\Hub\GetCandyHub;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Assets\Script;
+use Lunar\Hub\Assets\Style;
+use Lunar\Hub\LunarHub;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub
  */
-class GetCandyHubTest extends TestCase
+class LunarHubTest extends TestCase
 {
     public function setUp(): void
     {
@@ -23,13 +23,13 @@ class GetCandyHubTest extends TestCase
         $name = 'local-script';
         $path = 'js/local-script.js';
 
-        GetCandyHub::script($name, $path);
+        LunarHub::script($name, $path);
 
-        $this->assertContainsOnlyInstancesOf(Script::class, GetCandyHub::scripts());
-        $this->assertEquals(GetCandyHub::scripts()[0]->name(), $name);
-        $this->assertEquals(GetCandyHub::scripts()[0]->path(), $path);
+        $this->assertContainsOnlyInstancesOf(Script::class, LunarHub::scripts());
+        $this->assertEquals(LunarHub::scripts()[0]->name(), $name);
+        $this->assertEquals(LunarHub::scripts()[0]->path(), $path);
 
-        GetCandyHub::$scripts = [];
+        LunarHub::$scripts = [];
     }
 
     /** @test */
@@ -37,23 +37,23 @@ class GetCandyHubTest extends TestCase
     {
         $path = 'https://example.com/script.js';
 
-        GetCandyHub::remoteScript($path);
+        LunarHub::remoteScript($path);
 
-        $this->assertContainsOnlyInstancesOf(Script::class, GetCandyHub::scripts());
-        $this->assertEquals(GetCandyHub::scripts()[0]->name(), md5($path));
-        $this->assertEquals(GetCandyHub::scripts()[0]->path(), $path);
-        $this->assertEquals(GetCandyHub::scripts()[0]->isRemote(), true);
+        $this->assertContainsOnlyInstancesOf(Script::class, LunarHub::scripts());
+        $this->assertEquals(LunarHub::scripts()[0]->name(), md5($path));
+        $this->assertEquals(LunarHub::scripts()[0]->path(), $path);
+        $this->assertEquals(LunarHub::scripts()[0]->isRemote(), true);
 
         $name = 'remote-script';
         $path2 = 'https://example.com/script2.js';
 
-        GetCandyHub::script($name, $path2, true);
+        LunarHub::script($name, $path2, true);
 
-        $this->assertEquals(GetCandyHub::scripts()[1]->name(), $name);
-        $this->assertEquals(GetCandyHub::scripts()[1]->path(), $path2);
-        $this->assertEquals(GetCandyHub::scripts()[1]->isRemote(), true);
+        $this->assertEquals(LunarHub::scripts()[1]->name(), $name);
+        $this->assertEquals(LunarHub::scripts()[1]->path(), $path2);
+        $this->assertEquals(LunarHub::scripts()[1]->isRemote(), true);
 
-        GetCandyHub::$scripts = [];
+        LunarHub::$scripts = [];
     }
 
     /** @test */
@@ -62,13 +62,13 @@ class GetCandyHubTest extends TestCase
         $name = 'local-style';
         $path = 'local-style.css';
 
-        GetCandyHub::style($name, $path);
+        LunarHub::style($name, $path);
 
-        $this->assertContainsOnlyInstancesOf(Style::class, GetCandyHub::styles());
-        $this->assertEquals(GetCandyHub::styles()[0]->name(), $name);
-        $this->assertEquals(GetCandyHub::styles()[0]->path(), $path);
+        $this->assertContainsOnlyInstancesOf(Style::class, LunarHub::styles());
+        $this->assertEquals(LunarHub::styles()[0]->name(), $name);
+        $this->assertEquals(LunarHub::styles()[0]->path(), $path);
 
-        GetCandyHub::$styles = [];
+        LunarHub::$styles = [];
     }
 
     /** @test */
@@ -76,22 +76,22 @@ class GetCandyHubTest extends TestCase
     {
         $path = 'https://example.com/style.css';
 
-        GetCandyHub::remoteStyle($path);
+        LunarHub::remoteStyle($path);
 
-        $this->assertContainsOnlyInstancesOf(Style::class, GetCandyHub::scripts());
-        $this->assertEquals(GetCandyHub::styles()[0]->name(), md5($path));
-        $this->assertEquals(GetCandyHub::styles()[0]->path(), $path);
-        $this->assertEquals(GetCandyHub::styles()[0]->isRemote(), true);
+        $this->assertContainsOnlyInstancesOf(Style::class, LunarHub::scripts());
+        $this->assertEquals(LunarHub::styles()[0]->name(), md5($path));
+        $this->assertEquals(LunarHub::styles()[0]->path(), $path);
+        $this->assertEquals(LunarHub::styles()[0]->isRemote(), true);
 
         $name = 'remote-style';
         $path2 = 'https://example.com/style2.css';
 
-        GetCandyHub::style($name, $path2, true);
+        LunarHub::style($name, $path2, true);
 
-        $this->assertEquals(GetCandyHub::styles()[1]->name(), $name);
-        $this->assertEquals(GetCandyHub::styles()[1]->path(), $path2);
-        $this->assertEquals(GetCandyHub::styles()[1]->isRemote(), true);
+        $this->assertEquals(LunarHub::styles()[1]->name(), $name);
+        $this->assertEquals(LunarHub::styles()[1]->path(), $path2);
+        $this->assertEquals(LunarHub::styles()[1]->isRemote(), true);
 
-        GetCandyHub::$styles = [];
+        LunarHub::$styles = [];
     }
 }

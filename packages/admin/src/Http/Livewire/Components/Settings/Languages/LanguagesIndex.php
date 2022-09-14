@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Languages;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Languages;
 
-use GetCandy\Models\Language;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Language;
 
 class LanguagesIndex extends Component
 {
