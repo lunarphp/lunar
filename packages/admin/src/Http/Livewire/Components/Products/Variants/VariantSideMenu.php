@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Variants;
 
 class VariantSideMenu extends VariantShow
 {

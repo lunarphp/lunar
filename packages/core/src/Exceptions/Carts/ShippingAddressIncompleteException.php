@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Exceptions\Carts;
+namespace Lunar\Exceptions\Carts;
 
 class ShippingAddressIncompleteException extends CartException
 {

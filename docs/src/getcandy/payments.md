@@ -8,11 +8,11 @@ If you're looking for a guide on how to create your own Payment Driver, or for a
 
 ## Overview
 
-GetCandy takes a driver based approach with Payments, meaning you are free to use either add ons to support the provider you wish to use, or you can create your own to meet your exact needs.
+Lunar takes a driver based approach with Payments, meaning you are free to use either add ons to support the provider you wish to use, or you can create your own to meet your exact needs.
 
 ## Configuration
 
-All configuration for payments is located in `config/getcandy/payments.php`. Here you can specify different types of payments and the driver each one should use.
+All configuration for payments is located in `config/lunar/payments.php`. Here you can specify different types of payments and the driver each one should use.
 
 ```php
 <?php
@@ -38,13 +38,13 @@ return [
 To use a payment driver, you need to pass the type of payment you wish to use, this will then return an instance of the driver.
 
 ```php
-$driver = \GetCandy\Facades\Payments::driver('card');
+$driver = \Lunar\Facades\Payments::driver('card');
 ```
 
 We can then set the cart.
 
 ```php
-$driver->cart(\GetCandy\Models\Cart $cart);
+$driver->cart(\Lunar\Models\Cart $cart);
 ```
 
 Set any additional data that the driver may need.
@@ -65,7 +65,7 @@ $driver->authorize();
 <!-- As you'd expect, orders on an online system show what users have purchased. They are linked to a Cart and you can only have 1 order per cart in the database.
 
 ```php
-GetCandy\Models\Order
+Lunar\Models\Order
 ```
 
 |Field|Description|
@@ -96,7 +96,7 @@ GetCandy\Models\Order
 You can either create an order directly, or the recommended way is via a `Cart` model.
 
 ```php
-$order = \GetCandy\Models\Order::create([/** .. */]);
+$order = \Lunar\Models\Order::create([/** .. */]);
 
 // Recommended way
 $order = Cart::first()->getManager()->createOrder();
@@ -116,7 +116,7 @@ $order = CartSession::createOrder(false);
 
 Now when you create the order, you will still have the cart id in the session.
 
-So what's happening when we call `createOrder` on a cart, that's so different from just creating an order manually? Well there's a few steps GetCandy takes to make sure data stays consistent and valid, it also means that a lot of the columns on an order will automatically be populated based on the cart.
+So what's happening when we call `createOrder` on a cart, that's so different from just creating an order manually? Well there's a few steps Lunar takes to make sure data stays consistent and valid, it also means that a lot of the columns on an order will automatically be populated based on the cart.
 
 Here's the order things happen when you call `createOrder`:
 
@@ -132,7 +132,7 @@ Given that there is validation taking place and there could be exceptions thrown
 ```php
 try {
     $order = $cart->createOrder();
-} catch (\GetCandy\Exceptions\CartException $e) {
+} catch (\Lunar\Exceptions\CartException $e) {
     // Return back to checkout.
 }
 ```
@@ -140,9 +140,9 @@ try {
 If you want more fine grained control of what you do under the different exceptions, here they are:
 
 ```php
-\GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
-\GetCandy\Exceptions\Carts\BillingAddressMissingException;
-\GetCandy\Exceptions\Carts\OrderExistsException;
+\Lunar\Exceptions\Carts\BillingAddressIncompleteException;
+\Lunar\Exceptions\Carts\BillingAddressMissingException;
+\Lunar\Exceptions\Carts\OrderExistsException;
 ```
 
 They each extend `CartException` so it depends on how much control you need.
@@ -159,19 +159,19 @@ This essentially does the same as above, except we already catch the exceptions 
 
 If you need to programatically change the Order values or add in new behaviour, you will want to extend the Order system.
 
-You can find out more in the Extending GetCandy section for [Order Modifiers](/extending/order-modifiers).
+You can find out more in the Extending Lunar section for [Order Modifiers](/extending/order-modifiers).
 
 ## Order Lines
 
 ```php
-GetCandy\Models\OrderLine
+Lunar\Models\OrderLine
 ```
 
 |Field|Description|
 |:-|:-|
 |id||
 |order_id||
-|purchasable_type|Class reference for the purchasable item e.g. `GetCandy\Models\ProductVariant`|
+|purchasable_type|Class reference for the purchasable item e.g. `Lunar\Models\ProductVariant`|
 |purchasable_id|
 |type|Whether `digital`,`physical` etc
 |description|A description of the line item
@@ -198,7 +198,7 @@ If you are using the `createOrder` method on a cart, this is all handled for you
 :::
 
 ```php
-\GetCandy\Models\OrderLine::create([
+\Lunar\Models\OrderLine::create([
     // ...
 ]);
 ```
@@ -220,7 +220,7 @@ If you are using the `createOrder` method on a cart, this is all handled for you
 :::
 
 ```php
-\GetCandy\Models\OrderAddress::create([
+\Lunar\Models\OrderAddress::create([
     'order_id' => 1,
     'country_id' => 1,
     'title' => null,
@@ -260,28 +260,28 @@ $order->billingAddress;
 A Shipping Tables addon is planned to make setting up shipping in the admin hub easy for most scenarios.
 :::
 
-To add Shipping Options you will need to [extend GetCandy](/extending/shipping) to add in your own logic.
+To add Shipping Options you will need to [extend Lunar](/extending/shipping) to add in your own logic.
 
 Then in your checkout, or where ever you want, you can fetch these options:
 
 ```php
-\GetCandy\Facades\ShippingManifest::getOptions(\GetCandy\Models\Cart $cart);
+\Lunar\Facades\ShippingManifest::getOptions(\Lunar\Models\Cart $cart);
 ```
 
-This will return a collection of `GetCandy\DataTypes\ShippingOption` objects.
+This will return a collection of `Lunar\DataTypes\ShippingOption` objects.
 
 ### Adding the shipping option to the cart
 
 Once the user has selected the shipping option they want, you will need to add this to the cart so it can calculate the new totals.
 
 ```php
-$cart->getManager()->setShippingOption(\GetCandy\DataTypes\ShippingOption $option);
+$cart->getManager()->setShippingOption(\Lunar\DataTypes\ShippingOption $option);
 ```
 
 ## Transactions
 
 ```php
-GetCandy\Models\Transaction
+Lunar\Models\Transaction
 ```
 
 |Field|Description|
@@ -292,7 +292,7 @@ GetCandy\Models\Transaction
 |driver|The payment driver used e.g. `stripe`|
 |amount|An integer amount|
 |reference|The reference returned from the payment Provider. Used to identify the transaction with them.
-|status|A string representation of the status, unlinked to GetCandy e.g. `settled`|
+|status|A string representation of the status, unlinked to Lunar e.g. `settled`|
 |notes|Any relevant notes for the transaction
 |cart_type| e.g. `visa`
 |last_four| Last 4 digits of the card
@@ -303,13 +303,13 @@ GetCandy\Models\Transaction
 ### Create a transaction
 
 ::: tip
-Just because an order has a transaction does not mean it has been placed. GetCandy determines whether an order is considered placed when the `placed_at` column has a datetime, regardless if any transactions exist or not.
+Just because an order has a transaction does not mean it has been placed. Lunar determines whether an order is considered placed when the `placed_at` column has a datetime, regardless if any transactions exist or not.
 :::
 
 Most stores will likely want to store a transaction against the order, this helps determining how much has been paid, how it was paid and give a clue on the best way to issue a refund if needed.
 
 ```php
-\GetCandy\Models\Transaction::create([
+\Lunar\Models\Transaction::create([
     //...
 ]);
 
@@ -333,7 +333,7 @@ $order->refunds; // Get all transactions that are refunds.
 
 We will be looking to add support for the most popular payment providers, so keep an eye out here as we will list them all out.
 
-In the meantime, you can absolutely still get a storefront working, at the end of the day GetCandy doesn't really mind if you what payment provider you use or plan to use.
+In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind if you what payment provider you use or plan to use.
 
 In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table, the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier for you as laid out above.
 

@@ -1,9 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Addons;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Addons;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Addons\Manifest;
 
 class AddonsIndex extends Component
 {

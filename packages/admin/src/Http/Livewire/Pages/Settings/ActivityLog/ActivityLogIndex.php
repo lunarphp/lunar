@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\ActivityLog;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\ActivityLog;
 
 use Livewire\Component;
 

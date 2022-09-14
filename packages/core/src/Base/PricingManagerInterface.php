@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 
 interface PricingManagerInterface
 {
@@ -20,7 +20,7 @@ interface PricingManagerInterface
     /**
      * Set the currency property.
      *
-     * @param  \GetCandy\Models\Currency  $currency
+     * @param  \Lunar\Models\Currency  $currency
      * @return self
      */
     public function currency(Currency $currency);
@@ -53,7 +53,7 @@ interface PricingManagerInterface
      * Get the price for a purchasable.
      *
      * @param  Purchasable  $purchasable
-     * @return \GetCandy\Base\DataTransferObjects\PricingResponse
+     * @return \Lunar\Base\DataTransferObjects\PricingResponse
      */
     public function for(Purchasable $purchasable);
 }

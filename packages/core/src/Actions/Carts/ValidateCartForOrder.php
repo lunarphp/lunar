@@ -1,22 +1,22 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
-use GetCandy\Exceptions\Carts\BillingAddressMissingException;
-use GetCandy\Exceptions\Carts\OrderExistsException;
-use GetCandy\Exceptions\Carts\ShippingAddressIncompleteException;
-use GetCandy\Exceptions\Carts\ShippingAddressMissingException;
-use GetCandy\Exceptions\Carts\ShippingOptionMissingException;
-use GetCandy\Models\Cart;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
+use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\Exceptions\Carts\OrderExistsException;
+use Lunar\Exceptions\Carts\ShippingAddressIncompleteException;
+use Lunar\Exceptions\Carts\ShippingAddressMissingException;
+use Lunar\Exceptions\Carts\ShippingOptionMissingException;
+use Lunar\Models\Cart;
 
 class ValidateCartForOrder
 {
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param  \Lunar\Models\Cart  $cart
      * @return void
      */
     public function execute(
@@ -26,14 +26,14 @@ class ValidateCartForOrder
         // Does this cart already have an order?
         if ($cart->order) {
             throw new OrderExistsException(
-                _('getcandy::exceptions.carts.order_exists')
+                _('lunar::exceptions.carts.order_exists')
             );
         }
 
         // Do we have a billing address?
         if (! $cart->billingAddress) {
             throw new BillingAddressMissingException(
-                __('getcandy::exceptions.carts.billing_missing')
+                __('lunar::exceptions.carts.billing_missing')
             );
         }
 
@@ -50,7 +50,7 @@ class ValidateCartForOrder
         if ($cart->getManager()->isShippable()) {
             if (! $cart->shippingAddress) {
                 throw new ShippingAddressMissingException(
-                    __('getcandy::exceptions.carts.shipping_missing')
+                    __('lunar::exceptions.carts.shipping_missing')
                 );
             }
 

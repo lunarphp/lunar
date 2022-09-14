@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Http\Livewire\Components\Products;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use Livewire\Component;

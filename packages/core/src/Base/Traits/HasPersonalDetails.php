@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 trait HasPersonalDetails
 {

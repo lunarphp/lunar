@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Channels;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Channels;
 
 use Livewire\Component;
 

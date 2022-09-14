@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Hub\Facades\Slot;
 use Illuminate\Support\Arr;
+use Lunar\Hub\Facades\Slot;
 
 trait HasSlots
 {

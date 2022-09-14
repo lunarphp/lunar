@@ -1,71 +1,74 @@
 <?php
 
-namespace GetCandy;
+namespace Lunar;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
-use GetCandy\Addons\Manifest;
-use GetCandy\Base\AttributeManifest;
-use GetCandy\Base\AttributeManifestInterface;
-use GetCandy\Base\CartLineModifiers;
-use GetCandy\Base\CartModifiers;
-use GetCandy\Base\CartSessionInterface;
-use GetCandy\Base\FieldTypeManifest;
-use GetCandy\Base\FieldTypeManifestInterface;
-use GetCandy\Base\ModelManifest;
-use GetCandy\Base\ModelManifestInterface;
-use GetCandy\Base\OrderModifiers;
-use GetCandy\Base\OrderReferenceGenerator;
-use GetCandy\Base\OrderReferenceGeneratorInterface;
-use GetCandy\Base\PaymentManagerInterface;
-use GetCandy\Base\PricingManagerInterface;
-use GetCandy\Base\ShippingManifest;
-use GetCandy\Base\ShippingManifestInterface;
-use GetCandy\Base\ShippingModifiers;
-use GetCandy\Base\TaxManagerInterface;
-use GetCandy\Console\Commands\AddonsDiscover;
-use GetCandy\Console\Commands\Import\AddressData;
-use GetCandy\Console\Commands\MeilisearchSetup;
-use GetCandy\Console\Commands\ScoutIndexer;
-use GetCandy\Console\InstallGetCandy;
-use GetCandy\Database\State\ConvertProductTypeAttributesToProducts;
-use GetCandy\Database\State\EnsureDefaultTaxClassExists;
-use GetCandy\Listeners\CartSessionAuthListener;
-use GetCandy\Managers\CartSessionManager;
-use GetCandy\Managers\PaymentManager;
-use GetCandy\Managers\PricingManager;
-use GetCandy\Managers\TaxManager;
-use GetCandy\Models\Address;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\Transaction;
-use GetCandy\Models\Url;
-use GetCandy\Observers\AddressObserver;
-use GetCandy\Observers\CartLineObserver;
-use GetCandy\Observers\ChannelObserver;
-use GetCandy\Observers\CollectionObserver;
-use GetCandy\Observers\CurrencyObserver;
-use GetCandy\Observers\LanguageObserver;
-use GetCandy\Observers\OrderLineObserver;
-use GetCandy\Observers\OrderObserver;
-use GetCandy\Observers\TransactionObserver;
-use GetCandy\Observers\UrlObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Lunar\Addons\Manifest;
+use Lunar\Base\AttributeManifest;
+use Lunar\Base\AttributeManifestInterface;
+use Lunar\Base\CartLineModifiers;
+use Lunar\Base\CartModifiers;
+use Lunar\Base\CartSessionInterface;
+use Lunar\Base\FieldTypeManifest;
+use Lunar\Base\FieldTypeManifestInterface;
+use Lunar\Base\ModelManifest;
+use Lunar\Base\ModelManifestInterface;
+use Lunar\Base\OrderModifiers;
+use Lunar\Base\OrderReferenceGenerator;
+use Lunar\Base\OrderReferenceGeneratorInterface;
+use Lunar\Base\PaymentManagerInterface;
+use Lunar\Base\PricingManagerInterface;
+use Lunar\Base\ShippingManifest;
+use Lunar\Base\ShippingManifestInterface;
+use Lunar\Base\ShippingModifiers;
+use Lunar\Base\TaxManagerInterface;
+use Lunar\Console\Commands\AddonsDiscover;
+use Lunar\Console\Commands\Import\AddressData;
+use Lunar\Console\Commands\MeilisearchSetup;
+use Lunar\Console\Commands\ScoutIndexer;
+use Lunar\Console\InstallLunar;
+use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
+use Lunar\Database\State\EnsureBrandsAreUpgraded;
+use Lunar\Database\State\EnsureDefaultTaxClassExists;
+use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
+use Lunar\Listeners\CartSessionAuthListener;
+use Lunar\Managers\CartSessionManager;
+use Lunar\Managers\PaymentManager;
+use Lunar\Managers\PricingManager;
+use Lunar\Managers\TaxManager;
+use Lunar\Models\Address;
+use Lunar\Models\CartLine;
+use Lunar\Models\Channel;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
+use Lunar\Models\Transaction;
+use Lunar\Models\Url;
+use Lunar\Observers\AddressObserver;
+use Lunar\Observers\CartLineObserver;
+use Lunar\Observers\ChannelObserver;
+use Lunar\Observers\CollectionObserver;
+use Lunar\Observers\CurrencyObserver;
+use Lunar\Observers\LanguageObserver;
+use Lunar\Observers\OrderLineObserver;
+use Lunar\Observers\OrderObserver;
+use Lunar\Observers\TransactionObserver;
+use Lunar\Observers\UrlObserver;
 
-class GetCandyServiceProvider extends ServiceProvider
+class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
         'database',
@@ -89,10 +92,10 @@ class GetCandyServiceProvider extends ServiceProvider
     public function register(): void
     {
         collect($this->configFiles)->each(function ($config) {
-            $this->mergeConfigFrom("{$this->root}/config/$config.php", "getcandy.$config");
+            $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar.$config");
         });
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'getcandy');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
 
         $this->registerAddonManifest();
 
@@ -159,8 +162,8 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         Relation::morphMap([
-            'product_type' => GetCandy\Models\ProductType::class,
-            //'order' => GetCandy\Models\Order::class,
+            'product_type' => Lunar\Models\ProductType::class,
+            //'order' => Lunar\Models\Order::class,
         ]);
 
         $this->registerObservers();
@@ -173,16 +176,16 @@ class GetCandyServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
                 $this->publishes([
-                    "{$this->root}/config/$config.php" => config_path("getcandy/$config.php"),
-                ], 'getcandy');
+                    "{$this->root}/config/$config.php" => config_path("lunar/$config.php"),
+                ], 'lunar');
             });
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
-            ], 'getcandy-migrations');
+            ], 'lunar-migrations');
 
             $this->commands([
-                InstallGetCandy::class,
+                InstallLunar::class,
                 AddonsDiscover::class,
                 MeilisearchSetup::class,
                 AddressData::class,
@@ -190,7 +193,7 @@ class GetCandyServiceProvider extends ServiceProvider
             ]);
         }
 
-        Arr::macro('permutate', [\GetCandy\Utils\Arr::class, 'permutate']);
+        Arr::macro('permutate', [\Lunar\Utils\Arr::class, 'permutate']);
 
         // Handle generator
         Str::macro('handle', function ($string) {
@@ -198,7 +201,7 @@ class GetCandyServiceProvider extends ServiceProvider
         });
 
         Converter::setMeasurements(
-            config('getcandy.shipping.measurements', [])
+            config('lunar.shipping.measurements', [])
         );
 
         Event::listen(
@@ -217,7 +220,7 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->app->instance(Manifest::class, new Manifest(
             new Filesystem(),
             $this->app->basePath(),
-            $this->app->bootstrapPath().'/cache/getcandy_addons.php'
+            $this->app->bootstrapPath().'/cache/lunar_addons.php'
         ));
     }
 
@@ -226,18 +229,20 @@ class GetCandyServiceProvider extends ServiceProvider
         $states = [
             ConvertProductTypeAttributesToProducts::class,
             EnsureDefaultTaxClassExists::class,
+            EnsureBrandsAreUpgraded::class,
+            EnsureMediaCollectionsAreRenamed::class,
         ];
 
         foreach ($states as $state) {
             Event::listen(
-                MigrationsEnded::class,
+                [MigrationsEnded::class, NoPendingMigrations::class],
                 [$state, 'run']
             );
         }
     }
 
     /**
-     * Register the observers used in GetCandy.
+     * Register the observers used in Lunar.
      *
      * @return void
      */
@@ -279,7 +284,7 @@ class GetCandyServiceProvider extends ServiceProvider
         Blueprint::macro('userForeignKey', function ($field_name = 'user_id', $nullable = false) {
             $userModel = config('auth.providers.users.model');
 
-            $type = config('getcandy.database.users_id_type', 'bigint');
+            $type = config('lunar.database.users_id_type', 'bigint');
 
             if ($type == 'uuid') {
                 $this->foreignUuId($field_name)

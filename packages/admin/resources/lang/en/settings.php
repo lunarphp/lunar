@@ -99,7 +99,7 @@ return [
     'currencies.form.notify.created'   => 'Currency created',
     'currencies.form.format_help_text' => [
         'This allows you to specify the format that price fields should use for this currency.',
-        'When displaying, GetCandy will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
+        'When displaying, Lunar will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
         'You must always include <code>{value}</code> for this to work properly.',
     ],
     /*

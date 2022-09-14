@@ -3,14 +3,14 @@
 return [
     'connection' => '',
 
-    'table_prefix' => 'getcandy_',
+    'table_prefix' => 'lunar_',
 
     /*
     |--------------------------------------------------------------------------
     | Users Table ID
     |--------------------------------------------------------------------------
     |
-    | GetCandy adds a relationship to your 'users' table and by default assumes
+    | Lunar adds a relationship to your 'users' table and by default assumes
     | a 'bigint'. You can change this to either an 'int' or 'uuid'.
     |
     */

@@ -14,7 +14,7 @@ Cart prices are dynamically calculated and are not stored (unlike Orders).
 ## Carts
 
 ```php
-GetCandy\Models\Cart
+Lunar\Models\Cart
 ```
 
 |Field|Description|
@@ -32,7 +32,7 @@ GetCandy\Models\Cart
 ### Creating a cart
 
 ```php
-$cart = \GetCandy\Models\Cart::create([
+$cart = \Lunar\Models\Cart::create([
     'currency_id' => 1,
     'channel_id' => 2,
 ]);
@@ -41,14 +41,14 @@ $cart = \GetCandy\Models\Cart::create([
 ## Cart Lines
 
 ```php
-GetCandy\Models\CartLine
+Lunar\Models\CartLine
 ```
 
 |Field|Description|
 |:-|:-|
 |id||
 |cart_id||
-|purchasable_type|e.g. `GetCandy\Models\ProductVariant`.|
+|purchasable_type|e.g. `Lunar\Models\ProductVariant`.|
 |purchasable_id||
 |quantity||
 |created_at||
@@ -56,7 +56,7 @@ GetCandy\Models\CartLine
 |meta|JSON data for saving any custom information.|
 
 ```php
-$cartLine = new \GetCandy\Models\CartLine([
+$cartLine = new \Lunar\Models\CartLine([
     'cart_id' => 1,
     'purchasable_type' => ProductVariant::class,
     'purchasable_id' => 123,
@@ -83,7 +83,7 @@ $cart = $cart->getManager()->getCart();
 This will return a "hydrated" version of your cart with the following:
 
 ::: tip
-All values will return a `GetCandy\Datatypes\Price` object. So you have access to the following: `value`, `formatted`, `decimal`
+All values will return a `Lunar\Datatypes\Price` object. So you have access to the following: `value`, `formatted`, `decimal`
 :::
 
 ```php
@@ -106,7 +106,7 @@ Each `CartLine` has access to the same properties as a Cart does.
 
 If you need to programmatically change the Cart values, e.g. custom discounts or prices, you will want to extend the Cart.
 
-You can find out more in the Extending GetCandy section for [Cart Modifiers](/extending/cart-modifiers).
+You can find out more in the Extending Lunar section for [Cart Modifiers](/extending/cart-modifiers).
 
 ## Calculating Tax
 
@@ -140,10 +140,10 @@ $cart->getManager()->setShippingAddress($shippingAddress);
 $cart->getManager()->setBillingAddress($billingAddress);
 ```
 
-You can also pass through a `\GetCandy\Models\Address` model, or even another `\GetCandy\Models\CartAddress`
+You can also pass through a `\Lunar\Models\Address` model, or even another `\Lunar\Models\CartAddress`
 
 ```php
-$shippingAddress = \GetCandy\Models\Address::first();
+$shippingAddress = \Lunar\Models\Address::first();
 
 $cart->getManager()->setShippingAddress($shippingAddress);
 
@@ -158,11 +158,11 @@ $cart->getManager()->setBillingAddress(
 The cart session manager is useful if you're building a traditional Laravel storefront which makes use of sessions.
 :::
 
-When building a store, you're going to want an easy way to fetch the cart for the current user (or guest user) by retrieving it from their current session. GetCandy provides an easy to use class to make this easier for you, so you don't have to keep reinventing the wheel.
+When building a store, you're going to want an easy way to fetch the cart for the current user (or guest user) by retrieving it from their current session. Lunar provides an easy to use class to make this easier for you, so you don't have to keep reinventing the wheel.
 
 ### Available config
 
-Configuration for your cart is handled in `getcandy/cart.php`
+Configuration for your cart is handled in `lunar/cart.php`
 
 |Field|Description|Default
 |:-|:-|:-|
@@ -177,10 +177,10 @@ Configuration for your cart is handled in `getcandy/cart.php`
 You can either use the facade or inject the `CartSession` into your code.
 
 ```php
-$cart = \GetCandy\Facades\CartSession::current();
+$cart = \Lunar\Facades\CartSession::current();
 
 public function __construct(
-    protected \GetCandy\Base\CartSessionInterface $cartSession
+    protected \Lunar\Base\CartSessionInterface $cartSession
 ) {
     // ...
 }
@@ -189,10 +189,10 @@ public function __construct(
 ### Fetching the current cart
 
 ```php
-$cart = \GetCandy\Facades\CartSession::current();
+$cart = \Lunar\Facades\CartSession::current();
 ```
 
-When you call current, you have two options, you either return `null` if they don't have a cart, or you want to create one straight away. By default, we do not create them initially as this could lead to a ton of cart models being created for no good reason. If you want to enable this functionality, you can adjust the config in `getcandy/cart.php`
+When you call current, you have two options, you either return `null` if they don't have a cart, or you want to create one straight away. By default, we do not create them initially as this could lead to a ton of cart models being created for no good reason. If you want to enable this functionality, you can adjust the config in `lunar/cart.php`
 
 ### Forgetting the cart
 
@@ -204,7 +204,7 @@ CartSession::forget();
 You may want to manually specify which cart should be used for the session.
 
 ```php
-$cart = \GetCandy\Models\Cart::first();
+$cart = \Lunar\Models\Cart::first();
 CartSessionManager::use($cart);
 ```
 
@@ -269,7 +269,7 @@ CartSession::clear();
 You can easily associate a cart to a user.
 
 ```php
-$cart = \GetCandy\Models\Cart::first();
+$cart = \Lunar\Models\Cart::first();
 CartSession::associate($cart, $user, 'merge');
 ```
 
@@ -309,5 +309,5 @@ $cart->billingAddress;
 ```
 
 ## Handling User Login
-When a user logs in, you will likely want to check if they have a cart associated to their account and use that, or if they have started a cart as a guest and logged in, you will likely want to be able to handle this. GetCandy takes the pain out of this by listening to the authentication events and responding automatically by associating any previous guest cart they may have had and, depending on your `auth_policy` merge or override the basket on their account.
+When a user logs in, you will likely want to check if they have a cart associated to their account and use that, or if they have started a cart as a guest and logged in, you will likely want to be able to handle this. Lunar takes the pain out of this by listening to the authentication events and responding automatically by associating any previous guest cart they may have had and, depending on your `auth_policy` merge or override the basket on their account.
 

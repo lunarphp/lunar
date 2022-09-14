@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
 use Livewire\Component;
 

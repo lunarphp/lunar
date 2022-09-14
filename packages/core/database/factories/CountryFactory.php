@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Country;
 
 class CountryFactory extends Factory
 {

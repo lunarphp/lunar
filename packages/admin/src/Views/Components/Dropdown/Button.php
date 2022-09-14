@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components\Dropdown;
+namespace Lunar\Hub\Views\Components\Dropdown;
 
 use Illuminate\View\Component;
 

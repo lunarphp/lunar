@@ -4,12 +4,12 @@
 
 ## Overview
 
-We use Customers in GetCandy to store the customer details, rather than Users. We do this for a few reasons. One, so that we leave your User models well alone and two, because it provides flexibility.
+We use Customers in Lunar to store the customer details, rather than Users. We do this for a few reasons. One, so that we leave your User models well alone and two, because it provides flexibility.
 
 ## Customers
 
 ```php
-GetCandy\Models\Customer
+Lunar\Models\Customer
 ```
 
 |Field|Description|
@@ -27,7 +27,7 @@ GetCandy\Models\Customer
 ### Creating a customer
 
 ```php
-GetCandy\Models\Customer::create([
+Lunar\Models\Customer::create([
     'title' => 'Mr.',
     'first_name' => 'Tony',
     'last_name' => 'Stark',
@@ -51,7 +51,7 @@ Customers will typically be associated with a user, so they can place orders. Bu
 ### Attaching users to a customer
 
 ```php
-$customer = \GetCandy\Models\Customer::create([/* ... */]);
+$customer = \Lunar\Models\Customer::create([/* ... */]);
 
 $customer->users()->attach($user);
 
@@ -61,7 +61,7 @@ $customer->users()->sync([1,2,3]);
 ## Attaching a customer to a customer group
 
 ```php
-$customer = \GetCandy\Models\Customer::create([/* ... */]);
+$customer = \Lunar\Models\Customer::create([/* ... */]);
 
 $customer->customerGroups()->attach($customerGroup);
 
@@ -71,7 +71,7 @@ $customer->customerGroups()->sync([4,5,6]);
 ## Impersonating users
 
 When a customer needs help with their account, it's useful to be able to log in as that user so you can help diagnose the issue they're having. 
-GetCandy allows you to specify your own method of how you want to impersonate users, usually this is in the form of a signed URL an admin can go to in order to log in as the user.
+Lunar allows you to specify your own method of how you want to impersonate users, usually this is in the form of a signed URL an admin can go to in order to log in as the user.
 
 ### Creating the impersonate class
 
@@ -80,11 +80,11 @@ GetCandy allows you to specify your own method of how you want to impersonate us
 
 namespace App\Auth;
 
-use GetCandy\Hub\Auth\Impersonate as GetCandyImpersonate;
+use Lunar\Hub\Auth\Impersonate as LunarImpersonate;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\URL;
 
-class Impersonate extends GetCandyImpersonate
+class Impersonate extends LunarImpersonate
 {
     /**
      * Return the URL for impersonation.
@@ -100,7 +100,7 @@ class Impersonate extends GetCandyImpersonate
 }
 ```
 
-Then you need to register this in `config/getcandy-hub/customers.php`.
+Then you need to register this in `config/lunar-hub/customers.php`.
 
 ```php
 return [
@@ -128,12 +128,12 @@ Specify different pricing per customer group, for example you may have certain p
 You can turn product visibility off depending on the customer group, this would mean only certain products would show depending on the group they belong to. This will also include scheduling availability so you can release products earlier or later to different groups.
 
 ---
-You must have at least one customer group in your store and when you install GetCandy you will be given a default one to get you started named `retail`.
+You must have at least one customer group in your store and when you install Lunar you will be given a default one to get you started named `retail`.
 
 ## Creating a customer group
 
 ```php
-$customerGroup = GetCandy\Models\CustomerGroup::create([
+$customerGroup = Lunar\Models\CustomerGroup::create([
     'name' => 'Retail',
     'handle' => 'retail', // Must be unique
     'default' => false,
@@ -151,7 +151,7 @@ If you would like to add customer group availability to your own models, you can
 ```php
 
 // ...
-use GetCandy\Base\Traits\HasCustomerGroups;
+use Lunar\Base\Traits\HasCustomerGroups;
 
 class MyModel extends Model
 {
@@ -159,12 +159,12 @@ class MyModel extends Model
 }
 ```
 
-You will need to define the relationship for customer groups so that GetCandy knows how to handle it.
+You will need to define the relationship for customer groups so that Lunar knows how to handle it.
 
 ```php
 public function customerGroup()
 {
-    return $this->hasMany(\GetCandy\Models\CustomerGroup::class)->withTimestamps()->withPivot([/* .. */]);
+    return $this->hasMany(\Lunar\Models\CustomerGroup::class)->withTimestamps()->withPivot([/* .. */]);
 }
 ```
 You will then have access to the following methods:

@@ -4,25 +4,25 @@
 
 ## Overview
 
-Configuration for GetCandy is separated into individual files under `config/getcandy` for core and `config/getcandy-hub` for admin hub. You can either override the different config options adhoc or you can publish all the configuration options and tweak as you see fit.
+Configuration for Lunar is separated into individual files under `config/lunar` for core and `config/lunar-hub` for admin hub. You can either override the different config options adhoc or you can publish all the configuration options and tweak as you see fit.
 
 ```bash
-php artisan vendor:publish --tag=getcandy
+php artisan vendor:publish --tag=lunar
 ```
 
 ### Database Table Prefix
 
-`getcandy/database.php`
+`lunar/database.php`
 
-So that GetCandy tables do not conflict with your existing application database tables, you can specify a prefix to use. If you change this after installation, you are on your own - happy renaming!
+So that Lunar tables do not conflict with your existing application database tables, you can specify a prefix to use. If you change this after installation, you are on your own - happy renaming!
 
 ```php
-    'table_prefix' => 'getcandy_',
+    'table_prefix' => 'lunar_',
 ```
 
 ### Orders
 
-`getcandy/orders.php`
+`lunar/orders.php`
 
 Here you can set up the statuses you wish to use for your orders.
 
@@ -43,7 +43,7 @@ Here you can set up the statuses you wish to use for your orders.
 
 ### Media
 
-`getcandy/media.php`
+`lunar/media.php`
 
 Transformations for all uploaded images.
 
@@ -67,7 +67,7 @@ Transformations for all uploaded images.
 
 ### Products
 
-`getcandy-hub/products`
+`lunar-hub/products`
 
 ```php
 'disable_variants' => false,

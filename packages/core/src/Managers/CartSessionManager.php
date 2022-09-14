@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Base\CartSessionInterface;
-use GetCandy\Facades\ShippingManifest;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Session\SessionManager;
+use Lunar\Base\CartSessionInterface;
+use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Cart;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
 
 class CartSessionManager implements CartSessionInterface
 {
@@ -29,7 +29,7 @@ class CartSessionManager implements CartSessionInterface
     public function current()
     {
         return $this->fetchOrCreate(
-            config('getcandy.cart.auto_create', false)
+            config('lunar.cart.auto_create', false)
         );
     }
 
@@ -82,7 +82,7 @@ class CartSessionManager implements CartSessionInterface
      * Fetches a cart and optionally creates one if it doesn't exist.
      *
      * @param  bool  $create
-     * @return \GetCandy\Models\Cart|null
+     * @return \Lunar\Models\Cart|null
      */
     private function fetchOrCreate($create = false)
     {
@@ -95,7 +95,7 @@ class CartSessionManager implements CartSessionInterface
         }
 
         $this->cart = Cart::with(
-            config('getcandy.cart.eager_load', [])
+            config('lunar.cart.eager_load', [])
         )->find($cartId);
 
         if (! $this->cart) {
@@ -114,7 +114,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getSessionKey()
     {
-        return config('getcandy.cart.session_key');
+        return config('lunar.cart.session_key');
     }
 
     /**
@@ -148,7 +148,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Return the current currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getCurrency(): Currency
     {
@@ -158,7 +158,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Return the current channel.
      *
-     * @return \GetCandy\Models\Channel
+     * @return \Lunar\Models\Channel
      */
     public function getChannel(): Channel
     {
@@ -181,7 +181,7 @@ class CartSessionManager implements CartSessionInterface
      * Create an order from a cart instance.
      *
      * @param  bool  $forget
-     * @return \GetCandy\Models\Order
+     * @return \Lunar\Models\Order
      */
     public function createOrder($forget = true)
     {

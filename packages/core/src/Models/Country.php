@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Database\Factories\CountryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Database\Factories\CountryFactory;
 
 class Country extends BaseModel
 {
@@ -15,7 +15,7 @@ class Country extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CountryFactory
+     * @return \Lunar\Database\Factories\CountryFactory
      */
     protected static function newFactory(): CountryFactory
     {

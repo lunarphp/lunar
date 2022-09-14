@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Database\Seeders;
+namespace Lunar\Database\Seeders;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Channel;
-use GetCandy\Models\ProductType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Channel;
+use Lunar\Models\ProductType;
 
 class DemoSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class DemoSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
 
         foreach ($this->toTruncate as $table) {
-            \DB::table(config('getcandy.table_prefix').$table)->truncate();
+            \DB::table(config('lunar.table_prefix').$table)->truncate();
         }
 
         Schema::enableForeignKeyConstraints();

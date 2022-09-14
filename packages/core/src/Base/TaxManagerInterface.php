@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Drivers\SystemTaxDriver;
+use Lunar\Drivers\SystemTaxDriver;
 
 interface TaxManagerInterface
 {

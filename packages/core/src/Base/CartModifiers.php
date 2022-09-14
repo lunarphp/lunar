@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Middleware;
+namespace Lunar\Hub\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 

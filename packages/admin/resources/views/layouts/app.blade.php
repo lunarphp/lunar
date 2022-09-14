@@ -9,9 +9,7 @@
 
     <title>{{ $title ?? 'Hub' }} | {{ config('app.name') }}</title>
 
-    <link rel="icon"
-          type="image/png"
-          href="https://cdn.getcandy.io/hub/favicon.svg">
+    <x-hub::branding.favicon />
 
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
@@ -21,7 +19,7 @@
     <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
 
-    @if ($styles = \GetCandy\Hub\GetCandyHub::styles())
+    @if ($styles = \Lunar\Hub\LunarHub::styles())
         <!-- Package Styles -->
         @foreach ($styles as $asset)
             <link href="{!! $asset->url() !!}" rel="stylesheet">
@@ -62,7 +60,7 @@
           showMobileMenu: false,
           darkMode: $persist(false),
       }">
-    {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
+    {!! \Lunar\Hub\LunarHub::paymentIcons() !!}
 
     <div class="flex h-full">
         @include('adminhub::partials.navigation.side-menu-mobile')
@@ -96,14 +94,14 @@
 
     @livewireScripts
 
-    @if ($scripts = \GetCandy\Hub\GetCandyHub::scripts())
+    @if ($scripts = \Lunar\Hub\LunarHub::scripts())
         <!-- Package Scripts -->
         @foreach ($scripts as $asset)
             <script src="{!! $asset->url() !!}"></script>
         @endforeach
     @endif
-    
-    <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>
+
+    <script src="{{ asset('vendor/lunar/admin-hub/app.js') }}"></script>
 </body>
 
 </html>

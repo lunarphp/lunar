@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Models\Cart;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Cart;
 
 class MergeCart
 {
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Cart  $target
-     * @param  \GetCandy\Models\Cart  $source
-     * @return \GetCandy\Models\Cart
+     * @param  \Lunar\Models\Cart  $target
+     * @param  \Lunar\Models\Cart  $source
+     * @return \Lunar\Models\Cart
      */
     public function execute(Cart $target, Cart $source)
     {

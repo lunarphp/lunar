@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Staff;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
 use Livewire\Component;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components\GetCandy;
+namespace Lunar\Hub\Views\Components\Branding;
 
 use Illuminate\View\Component;
 
-class Stamp extends Component
+class Favicon extends Component
 {
     /**
      * Get the view / contents that represent the component.
@@ -13,6 +13,6 @@ class Stamp extends Component
      */
     public function render()
     {
-        return view('adminhub::components.getcandy.stamp');
+        return view('adminhub::components.branding.favicon');
     }
 }

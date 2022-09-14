@@ -1,20 +1,20 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\DataTransferObjects\Search\Facets;
-use GetCandy\Hub\DataTransferObjects\Search\SearchResults;
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrdersIndex;
-use GetCandy\Hub\Models\SavedSearch;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Search\OrderSearch;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Livewire;
+use Lunar\Hub\DataTransferObjects\Search\Facets;
+use Lunar\Hub\DataTransferObjects\Search\SearchResults;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrdersIndex;
+use Lunar\Hub\Models\SavedSearch;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Search\OrderSearch;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
 use Mockery;
 
 /**

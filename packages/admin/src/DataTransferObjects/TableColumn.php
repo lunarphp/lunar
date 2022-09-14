@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\DataTransferObjects;
+namespace Lunar\Hub\DataTransferObjects;
 
 use Closure;
 

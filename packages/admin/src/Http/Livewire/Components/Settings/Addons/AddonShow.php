@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Addons;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Addons;
 
-use GetCandy\Addons\Manifest;
 use Livewire\Component;
+use Lunar\Addons\Manifest;
 
 class AddonShow extends Component
 {

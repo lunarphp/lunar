@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Channel;
-use GetCandy\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Channel;
+use Lunar\Models\Order;
 
 class OrderFactory extends Factory
 {

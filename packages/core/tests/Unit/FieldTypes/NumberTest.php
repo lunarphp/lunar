@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\FieldTypes;
+namespace Lunar\Tests\Unit\FieldTypes;
 
-use GetCandy\Exceptions\FieldTypeException;
-use GetCandy\FieldTypes\Number;
-use GetCandy\Tests\TestCase;
+use Lunar\Exceptions\FieldTypeException;
+use Lunar\FieldTypes\Number;
+use Lunar\Tests\TestCase;
 
 class NumberTest extends TestCase
 {
