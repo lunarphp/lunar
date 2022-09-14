@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-composer require getcandy/livewire-tables
+composer require lunarphp/livewire-tables
 ```
 
 ## Creating a table
@@ -13,7 +13,7 @@ composer require getcandy/livewire-tables
 
 namespace App\Http\Livewire\Tables;
 
-use GetCandy\LivewireTables\Components\Table;
+use Lunar\LivewireTables\Components\Table;
 
 class OrdersTable extends Table
 {

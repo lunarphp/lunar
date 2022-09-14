@@ -16,7 +16,7 @@
 
     @livewireTableStyles
 
-    <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}"
+    <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
 
     @if ($styles = \Lunar\Hub\LunarHub::styles())

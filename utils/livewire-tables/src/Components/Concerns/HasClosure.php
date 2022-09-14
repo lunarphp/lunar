@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Concerns;
+namespace Lunar\LivewireTables\Components\Concerns;
 
 use Closure;
 

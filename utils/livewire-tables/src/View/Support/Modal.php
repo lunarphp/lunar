@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\LivewireTables\View\Support;
+namespace Lunar\LivewireTables\View\Support;
 
 use Illuminate\View\Component;
 

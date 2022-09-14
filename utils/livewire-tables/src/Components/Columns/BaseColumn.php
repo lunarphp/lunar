@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Columns;
+namespace Lunar\LivewireTables\Components\Columns;
 
 use Closure;
-use GetCandy\LivewireTables\Components\Concerns\HasClosure;
-use GetCandy\LivewireTables\Components\Concerns\HasEloquentRelationships;
-use GetCandy\LivewireTables\Components\Concerns\HasLivewireComponent;
-use GetCandy\LivewireTables\Components\Concerns\HasTranslations;
-use GetCandy\LivewireTables\Components\Concerns\HasViewComponent;
-use GetCandy\LivewireTables\Components\Concerns\HasViewProperties;
+use Lunar\LivewireTables\Components\Concerns\HasClosure;
+use Lunar\LivewireTables\Components\Concerns\HasEloquentRelationships;
+use Lunar\LivewireTables\Components\Concerns\HasLivewireComponent;
+use Lunar\LivewireTables\Components\Concerns\HasTranslations;
+use Lunar\LivewireTables\Components\Concerns\HasViewComponent;
+use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 use Illuminate\Support\Str;
 use Livewire\Component;
 

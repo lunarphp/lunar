@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\LivewireTables;
+namespace Lunar\LivewireTables;
 
-use GetCandy\LivewireTables\Components\Actions\BulkAction;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Filters\SelectFilter;
-use GetCandy\LivewireTables\Components\Head;
-use GetCandy\LivewireTables\Components\Table;
-use GetCandy\LivewireTables\Support\TableBuilder;
-use GetCandy\LivewireTables\Support\TableBuilderInterface;
+use Lunar\LivewireTables\Components\Actions\BulkAction;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
+use Lunar\LivewireTables\Components\Filters\SelectFilter;
+use Lunar\LivewireTables\Components\Head;
+use Lunar\LivewireTables\Components\Table;
+use Lunar\LivewireTables\Support\TableBuilder;
+use Lunar\LivewireTables\Support\TableBuilderInterface;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -38,7 +38,7 @@ class LivewireTablesServiceProvider extends ServiceProvider
             Livewire::component((new $component)->getName(), $component);
         }
 
-        Blade::componentNamespace('GetCandy\\LivewireTables\\View', 'tables');
+        Blade::componentNamespace('Lunar\\LivewireTables\\View', 'tables');
 
         Blade::directive('livewireTableStyles', function () {
             $manifest = json_decode(file_get_contents(__DIR__.'/../dist/mix-manifest.json'), true);

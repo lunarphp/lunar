@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components;
+namespace Lunar\LivewireTables\Components;
 
 use Livewire\Component;
 

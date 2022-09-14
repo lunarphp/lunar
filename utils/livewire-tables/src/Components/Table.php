@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components;
+namespace Lunar\LivewireTables\Components;
 
-use GetCandy\LivewireTables\Components\Concerns\HasSavedSearches;
-use GetCandy\LivewireTables\Components\Concerns\HasSortableColumns;
-use GetCandy\LivewireTables\Support\TableBuilderInterface;
+use Lunar\LivewireTables\Components\Concerns\HasSavedSearches;
+use Lunar\LivewireTables\Components\Concerns\HasSortableColumns;
+use Lunar\LivewireTables\Support\TableBuilderInterface;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;

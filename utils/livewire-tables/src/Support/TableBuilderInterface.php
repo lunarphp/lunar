@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\LivewireTables\Support;
+namespace Lunar\LivewireTables\Support;
 
-use GetCandy\LivewireTables\Components\Actions\Action;
-use GetCandy\LivewireTables\Components\Actions\BulkAction;
-use GetCandy\LivewireTables\Components\Columns\BaseColumn;
-use GetCandy\LivewireTables\Components\Filters\BaseFilter;
+use Lunar\LivewireTables\Components\Actions\Action;
+use Lunar\LivewireTables\Components\Actions\BulkAction;
+use Lunar\LivewireTables\Components\Columns\BaseColumn;
+use Lunar\LivewireTables\Components\Filters\BaseFilter;
 use Illuminate\Support\Collection;
 
 interface TableBuilderInterface

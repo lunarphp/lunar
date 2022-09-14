@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\LivewireTables\Tests\Unit;
+namespace Lunar\LivewireTables\Tests\Unit;
 
-use GetCandy\LivewireTables\Components\Table;
-use GetCandy\LivewireTables\Support\TableBuilder;
-use GetCandy\LivewireTables\Tests\TestCase;
+use Lunar\LivewireTables\Components\Table;
+use Lunar\LivewireTables\Support\TableBuilder;
+use Lunar\LivewireTables\Tests\TestCase;
 use Livewire\Livewire;
 
 /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Columns;
+namespace Lunar\LivewireTables\Components\Columns;
 
 use Closure;
-use GetCandy\LivewireTables\TableManifest;
+use Lunar\LivewireTables\TableManifest;
 use Livewire\Component;
 
 class AvatarColumn extends BaseColumn

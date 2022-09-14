@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Columns;
+namespace Lunar\LivewireTables\Components\Columns;
 
-use GetCandy\LivewireTables\TableManifest;
+use Lunar\LivewireTables\TableManifest;
 use Livewire\Component;
 
 class TextColumn extends BaseColumn

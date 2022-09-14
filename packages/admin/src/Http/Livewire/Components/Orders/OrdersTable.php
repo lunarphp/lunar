@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Orders;
+namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Models\SavedSearch;
-use GetCandy\Hub\Tables\Builders\OrdersTableBuilder;
-use GetCandy\LivewireTables\Components\Actions\Action;
-use GetCandy\LivewireTables\Components\Actions\BulkAction;
-use GetCandy\LivewireTables\Components\Filters\DateFilter;
-use GetCandy\LivewireTables\Components\Filters\SelectFilter;
-use GetCandy\LivewireTables\Components\Table;
-use GetCandy\Models\Order;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Models\SavedSearch;
+use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
+use Lunar\LivewireTables\Components\Actions\Action;
+use Lunar\LivewireTables\Components\Actions\BulkAction;
+use Lunar\LivewireTables\Components\Filters\DateFilter;
+use Lunar\LivewireTables\Components\Filters\SelectFilter;
+use Lunar\LivewireTables\Components\Table;
+use Lunar\Models\Order;
 use Illuminate\Support\Collection;
 
 class OrdersTable extends Table

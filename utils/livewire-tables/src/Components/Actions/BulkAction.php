@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Actions;
+namespace Lunar\LivewireTables\Components\Actions;
 
 class BulkAction extends Action
 {

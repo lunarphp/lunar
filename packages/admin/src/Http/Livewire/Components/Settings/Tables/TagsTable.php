@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tables;
 
-use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\Models\Tag;
+use Lunar\Hub\Tables\LunarTable;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
+use Lunar\Models\Tag;
 
-class TagsTable extends GetCandyTable
+class TagsTable extends LunarTable
 {
     /**
      * {@inheritDoc}

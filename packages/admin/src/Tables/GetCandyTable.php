@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Tables;
+namespace Lunar\Hub\Tables;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\LivewireTables\Components\Table;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\LivewireTables\Components\Table;
 
-abstract class GetCandyTable extends Table
+abstract class LunarTable extends Table
 {
     use Notifies;
 

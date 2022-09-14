@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tables;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Tables\LunarTable;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Spatie\Activitylog\Models\Activity;
 
-class ActivityLogTable extends GetCandyTable
+class ActivityLogTable extends LunarTable
 {
     use Notifies;
 

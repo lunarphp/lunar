@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\LivewireTables\Tests\Unit\Columns;
+namespace Lunar\LivewireTables\Tests\Unit\Columns;
 
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Tests\TestCase;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
+use Lunar\LivewireTables\Tests\TestCase;
 use Livewire\Livewire;
 
 /**

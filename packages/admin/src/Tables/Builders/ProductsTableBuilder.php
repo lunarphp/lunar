@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Tables\Builders;
+namespace Lunar\Hub\Tables\Builders;
 
-use GetCandy\Hub\Tables\TableBuilder;
-use GetCandy\Models\Product;
+use Lunar\Hub\Tables\TableBuilder;
+use Lunar\Models\Product;
 
 class ProductsTableBuilder extends TableBuilder
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Filters;
+namespace Lunar\LivewireTables\Components\Filters;
 
 use Closure;
-use GetCandy\LivewireTables\Components\Concerns\HasTranslations;
-use GetCandy\LivewireTables\Components\Concerns\HasViewProperties;
+use Lunar\LivewireTables\Components\Concerns\HasTranslations;
+use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Component;
 

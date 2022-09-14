@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\LivewireTables\Tests;
+namespace Lunar\LivewireTables\Tests;
 
-use GetCandy\LivewireTables\LivewireTablesServiceProvider;
+use Lunar\LivewireTables\LivewireTablesServiceProvider;
 use Livewire\LivewireServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase

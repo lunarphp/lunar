@@ -12,7 +12,7 @@
             "homepage": "https://lunarphp.io/"
         },
         {
-            "name": "GetCandy",
+            "name": "Lunar",
             "homepage": "https://getcandy.io/"
         }
     ],
@@ -45,7 +45,7 @@
             "packages/core/src/helpers.php"
         ],
         "psr-4": {
-            "GetCandy\\LivewireTables\\": "utils/livewire-tables/src/",
+            "Lunar\\LivewireTables\\": "utils/livewire-tables/src/",
             "Lunar\\": "packages/core/src",
             "Lunar\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
@@ -57,7 +57,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GetCandy\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
+            "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
             "Lunar\\Hub\\Tests\\": "packages/admin/tests",
             "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
             "Lunar\\Tests\\": "packages/core/tests"
@@ -69,7 +69,6 @@
         },
         "laravel": {
             "providers": [
-                "GetCandy\\LivewireTables\\LivewireTablesServiceProvider",
                 "Lunar\\Hub\\AdminHubServiceProvider",
                 "Lunar\\LunarServiceProvider",
                 "Lunar\\LivewireTables\\LivewireTablesServiceProvider"

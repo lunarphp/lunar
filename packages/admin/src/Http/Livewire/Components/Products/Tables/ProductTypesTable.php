@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Tables;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Tables;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Models\SavedSearch;
-use GetCandy\Hub\Tables\Builders\ProductTypesTableBuilder;
-use GetCandy\LivewireTables\Components\Columns\BadgeColumn;
-use GetCandy\LivewireTables\Components\Columns\ImageColumn;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Table;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Models\SavedSearch;
+use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
+use Lunar\LivewireTables\Components\Columns\BadgeColumn;
+use Lunar\LivewireTables\Components\Columns\ImageColumn;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
+use Lunar\LivewireTables\Components\Table;
 use Illuminate\Support\Collection;
 
 class ProductTypesTable extends Table

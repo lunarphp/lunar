@@ -1,13 +1,13 @@
 {
-  "name": "getcandy/livewire-tables",
+  "name": "lunarphp/livewire-tables",
   "type": "project",
   "description": "Livewire Tables",
   "keywords": ["getcandy", "laravel", "livewire", "tables"],
   "license": "MIT",
   "authors": [
     {
-      "name": "GetCandy",
-      "homepage": "https://getcandy.io/"
+      "name": "LunarPHP",
+      "homepage": "https://lunarphp.io/"
     }
   ],
   "require": {
@@ -22,21 +22,21 @@
   },
   "autoload": {
       "psr-4": {
-          "GetCandy\\LivewireTables\\": "src/"
+          "Lunar\\LivewireTables\\": "src/"
       }
   },
   "autoload-dev": {
       "psr-4": {
-          "GetCandy\\LivewireTables\\Tests\\": "tests/"
+          "Lunar\\LivewireTables\\Tests\\": "tests/"
       }
   },
   "extra": {
-    "getcandy": {
+    "lunar": {
         "name": "Livewire Tables"
     },
     "laravel": {
         "providers": [
-            "GetCandy\\LivewireTables\\LivewireTablesServiceProvider"
+            "Lunar\\LivewireTables\\LivewireTablesServiceProvider"
         ]
     }
   },

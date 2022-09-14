@@ -1,9 +1,9 @@
 {
-  "name": "getcandy-livewire-tables",
+  "name": "lunar-livewire-tables",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://getcandy@github.com/getcandy/livewire-tables",
-  "author": "Alec Ritson <alec@getcandy.io>",
+  "repository": "https://lunarphp@github.com/lunar/livewire-tables",
+  "author": "LunarPHP <hello@lunarphp.io>",
   "license": "MIT",
   "scripts": {
     "dev": "npm run development",

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Filters;
+namespace Lunar\LivewireTables\Components\Filters;
 
-use GetCandy\LivewireTables\Components\Filters\BaseFilter;
+use Lunar\LivewireTables\Components\Filters\BaseFilter;
 
 class DateFilter extends BaseFilter
 {

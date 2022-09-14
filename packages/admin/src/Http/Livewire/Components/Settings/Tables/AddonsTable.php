@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tables;
 
-use GetCandy\Addons\Manifest;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\LivewireTables\Components\Columns\StatusColumn;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
+use Lunar\Addons\Manifest;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Tables\LunarTable;
+use Lunar\LivewireTables\Components\Columns\StatusColumn;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Activity;
 
-class AddonsTable extends GetCandyTable
+class AddonsTable extends LunarTable
 {
     use Notifies;
 

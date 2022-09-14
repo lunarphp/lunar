@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Filters;
+namespace Lunar\LivewireTables\Components\Filters;
 
 use Closure;
-use GetCandy\LivewireTables\Components\Filters\BaseFilter;
+use Lunar\LivewireTables\Components\Filters\BaseFilter;
 use Livewire\Component;
 
 class SelectFilter extends BaseFilter

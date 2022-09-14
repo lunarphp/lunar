@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tables;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tables;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tables\GetCandyTable;
-use GetCandy\LivewireTables\Components\Columns\AvatarColumn;
-use GetCandy\LivewireTables\Components\Columns\StatusColumn;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tables\LunarTable;
+use Lunar\LivewireTables\Components\Columns\AvatarColumn;
+use Lunar\LivewireTables\Components\Columns\StatusColumn;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
 
-class StaffTable extends GetCandyTable
+class StaffTable extends LunarTable
 {
     use Notifies;
 

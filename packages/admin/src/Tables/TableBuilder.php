@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Tables;
+namespace Lunar\Hub\Tables;
 
 use Closure;
-use GetCandy\LivewireTables\Support\TableBuilder as LivewireTableBuilder;
+use Lunar\LivewireTables\Support\TableBuilder as LivewireTableBuilder;
 use Illuminate\Support\Collection;
 
 class TableBuilder extends LivewireTableBuilder

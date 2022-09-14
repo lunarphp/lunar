@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Columns;
+namespace Lunar\LivewireTables\Components\Columns;
 
 class StatusColumn extends BaseColumn
 {

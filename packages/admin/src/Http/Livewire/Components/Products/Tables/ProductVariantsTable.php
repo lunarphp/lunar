@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Tables;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Tables;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Tables\Builders\ProductVariantsTableBuilder;
-use GetCandy\LivewireTables\Components\Columns\ImageColumn;
-use GetCandy\LivewireTables\Components\Columns\TextColumn;
-use GetCandy\LivewireTables\Components\Table;
-use GetCandy\Models\Product;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
+use Lunar\LivewireTables\Components\Columns\ImageColumn;
+use Lunar\LivewireTables\Components\Columns\TextColumn;
+use Lunar\LivewireTables\Components\Table;
+use Lunar\Models\Product;
 
 class ProductVariantsTable extends Table
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\LivewireTables\Components\Actions;
+namespace Lunar\LivewireTables\Components\Actions;
 
 use Closure;
-use GetCandy\LivewireTables\Components\Concerns\HasClosure;
-use GetCandy\LivewireTables\Components\Concerns\HasLivewireComponent;
-use GetCandy\LivewireTables\Components\Concerns\HasViewComponent;
-use GetCandy\LivewireTables\Components\Concerns\HasViewProperties;
+use Lunar\LivewireTables\Components\Concerns\HasClosure;
+use Lunar\LivewireTables\Components\Concerns\HasLivewireComponent;
+use Lunar\LivewireTables\Components\Concerns\HasViewComponent;
+use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Component;
 
