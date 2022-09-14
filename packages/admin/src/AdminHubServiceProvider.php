@@ -2,7 +2,6 @@
 
 namespace Lunar\Hub;
 
-use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -88,6 +87,7 @@ use Lunar\Hub\Menu\OrderActionsMenu;
 use Lunar\Hub\Menu\SettingsMenu;
 use Lunar\Hub\Menu\SidebarMenu;
 use Lunar\Hub\Menu\SlotRegistry;
+use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Lunar\Hub\Tables\Orders;
 
 class AdminHubServiceProvider extends ServiceProvider

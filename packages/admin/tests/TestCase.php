@@ -3,12 +3,12 @@
 namespace Lunar\Hub\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
-use Lunar\LivewireTables\LivewireTablesServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\Hub\AdminHubServiceProvider;
+use Lunar\LivewireTables\LivewireTablesServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Tests\Stubs\TestUrlGenerator;
 use Spatie\Activitylog\ActivitylogServiceProvider;
