@@ -10,7 +10,7 @@ You can contribute to the project in many different ways. Reporting bugs, fixing
 
 ## Monorepo
 
-Lunar uses a monorepo [lunar/lunar](https://github.com/lunarphp/lunar) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
+Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
 
 ## Repository Branching
 
