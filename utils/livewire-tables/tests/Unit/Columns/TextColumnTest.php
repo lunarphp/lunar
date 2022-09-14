@@ -2,9 +2,9 @@
 
 namespace Lunar\LivewireTables\Tests\Unit\Columns;
 
+use Livewire\Livewire;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\LivewireTables\Tests\TestCase;
-use Livewire\Livewire;
 
 /**
  * @group tables

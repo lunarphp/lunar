@@ -3,10 +3,10 @@
 namespace Lunar\LivewireTables\Components\Filters;
 
 use Closure;
-use Lunar\LivewireTables\Components\Concerns\HasTranslations;
-use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Component;
+use Lunar\LivewireTables\Components\Concerns\HasTranslations;
+use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 
 abstract class BaseFilter extends Component implements Htmlable
 {

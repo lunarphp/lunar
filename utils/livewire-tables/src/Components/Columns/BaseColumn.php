@@ -3,14 +3,14 @@
 namespace Lunar\LivewireTables\Components\Columns;
 
 use Closure;
+use Illuminate\Support\Str;
+use Livewire\Component;
 use Lunar\LivewireTables\Components\Concerns\HasClosure;
 use Lunar\LivewireTables\Components\Concerns\HasEloquentRelationships;
 use Lunar\LivewireTables\Components\Concerns\HasLivewireComponent;
 use Lunar\LivewireTables\Components\Concerns\HasTranslations;
 use Lunar\LivewireTables\Components\Concerns\HasViewComponent;
 use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 abstract class BaseColumn extends Component
 {

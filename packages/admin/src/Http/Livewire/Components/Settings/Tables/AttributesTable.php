@@ -2,13 +2,13 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Tables;
 
+use Illuminate\Support\Str;
 use Lunar\Facades\AttributeManifest;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\LivewireTables\Components\Table;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
-use Illuminate\Support\Str;
 
 class AttributesTable extends Table
 {

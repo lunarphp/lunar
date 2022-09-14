@@ -2,10 +2,10 @@
 
 namespace Lunar\LivewireTables\Tests\Unit;
 
+use Livewire\Livewire;
 use Lunar\LivewireTables\Components\Table;
 use Lunar\LivewireTables\Support\TableBuilder;
 use Lunar\LivewireTables\Tests\TestCase;
-use Livewire\Livewire;
 
 /**
  * @group tables

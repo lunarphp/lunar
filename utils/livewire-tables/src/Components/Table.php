@@ -2,12 +2,12 @@
 
 namespace Lunar\LivewireTables\Components;
 
-use Lunar\LivewireTables\Components\Concerns\HasSavedSearches;
-use Lunar\LivewireTables\Components\Concerns\HasSortableColumns;
-use Lunar\LivewireTables\Support\TableBuilderInterface;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\LivewireTables\Components\Concerns\HasSavedSearches;
+use Lunar\LivewireTables\Components\Concerns\HasSortableColumns;
+use Lunar\LivewireTables\Support\TableBuilderInterface;
 
 class Table extends Component
 {

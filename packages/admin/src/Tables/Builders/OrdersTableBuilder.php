@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Tables\Builders;
 
+use Illuminate\Support\Collection;
 use Lunar\Hub\Tables\TableBuilder;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\Models\Order;
-use Illuminate\Support\Collection;
 
 class OrdersTableBuilder extends TableBuilder
 {

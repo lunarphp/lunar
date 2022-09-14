@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Tables\Actions;
 
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Order;
-use Livewire\Component;
 
 class UpdateStatus extends Component
 {

@@ -3,12 +3,12 @@
 namespace Lunar\LivewireTables\Components\Actions;
 
 use Closure;
+use Illuminate\Contracts\Support\Htmlable;
+use Livewire\Component;
 use Lunar\LivewireTables\Components\Concerns\HasClosure;
 use Lunar\LivewireTables\Components\Concerns\HasLivewireComponent;
 use Lunar\LivewireTables\Components\Concerns\HasViewComponent;
 use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
-use Illuminate\Contracts\Support\Htmlable;
-use Livewire\Component;
 
 class Action extends Component implements Htmlable
 {

@@ -3,8 +3,8 @@
 namespace Lunar\Hub\Tables;
 
 use Closure;
-use Lunar\LivewireTables\Support\TableBuilder as LivewireTableBuilder;
 use Illuminate\Support\Collection;
+use Lunar\LivewireTables\Support\TableBuilder as LivewireTableBuilder;
 
 class TableBuilder extends LivewireTableBuilder
 {

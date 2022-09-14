@@ -2,8 +2,8 @@
 
 namespace Lunar\LivewireTables\Components\Columns;
 
-use Lunar\LivewireTables\TableManifest;
 use Livewire\Component;
+use Lunar\LivewireTables\TableManifest;
 
 class TextColumn extends BaseColumn
 {

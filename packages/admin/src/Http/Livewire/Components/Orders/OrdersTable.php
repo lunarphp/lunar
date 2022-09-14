@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
+use Illuminate\Support\Collection;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
@@ -11,7 +12,6 @@ use Lunar\LivewireTables\Components\Filters\DateFilter;
 use Lunar\LivewireTables\Components\Filters\SelectFilter;
 use Lunar\LivewireTables\Components\Table;
 use Lunar\Models\Order;
-use Illuminate\Support\Collection;
 
 class OrdersTable extends Table
 {

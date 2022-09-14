@@ -2,8 +2,8 @@
 
 namespace Lunar\LivewireTables\Tests;
 
-use Lunar\LivewireTables\LivewireTablesServiceProvider;
 use Livewire\LivewireServiceProvider;
+use Lunar\LivewireTables\LivewireTablesServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

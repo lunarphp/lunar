@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Tables;
 
+use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Tables\LunarTable;
 use Lunar\LivewireTables\Components\Columns\StatusColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
-use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Activity;
 
 class AddonsTable extends LunarTable

@@ -2,6 +2,9 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Livewire\Livewire;
 use Lunar\Hub\DataTransferObjects\Search\Facets;
 use Lunar\Hub\DataTransferObjects\Search\SearchResults;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrdersIndex;
@@ -14,9 +17,6 @@ use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Livewire\Livewire;
 use Mockery;
 
 /**
