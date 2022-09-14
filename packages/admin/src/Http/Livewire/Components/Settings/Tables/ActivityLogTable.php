@@ -34,6 +34,6 @@ class ActivityLogTable extends LunarTable
      */
     public function getData()
     {
-        return Activity::whereLogName('getcandy')->with('causer')->orderBy('created_at', 'desc')->paginate($this->perPage);
+        return Activity::whereLogName('lunar')->with('causer')->orderBy('created_at', 'desc')->paginate($this->perPage);
     }
 }

@@ -205,7 +205,7 @@
 
                             @foreach ($this->columns as $column)
                                 @livewire(
-                                    'get-candy.livewire-tables.components.head',
+                                    'lunar.livewire-tables.components.head',
                                     [
                                         'heading' => $column->getHeading(),
                                         'sortable' => $column->isSortable(),

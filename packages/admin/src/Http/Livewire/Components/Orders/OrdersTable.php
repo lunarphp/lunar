@@ -61,7 +61,7 @@ class OrdersTable extends Table
         $this->tableBuilder->addFilter(
             SelectFilter::make('status')->options(function () {
                 $statuses = collect(
-                    config('getcandy.orders.statuses'),
+                    config('lunar.orders.statuses'),
                     []
                 )->mapWithKeys(fn ($status, $key) => [$key => $status['label']]);
 

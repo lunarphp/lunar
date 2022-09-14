@@ -2,7 +2,7 @@
   "name": "lunarphp/livewire-tables",
   "type": "project",
   "description": "Livewire Tables",
-  "keywords": ["getcandy", "laravel", "livewire", "tables"],
+  "keywords": ["lunar", "laravel", "livewire", "tables"],
   "license": "MIT",
   "authors": [
     {

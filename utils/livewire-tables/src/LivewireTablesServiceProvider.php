@@ -43,7 +43,7 @@ class LivewireTablesServiceProvider extends ServiceProvider
         Blade::directive('livewireTableStyles', function () {
             $manifest = json_decode(file_get_contents(__DIR__.'/../dist/mix-manifest.json'), true);
 
-            $cssUrl = asset('/vendor/getcandy'.$manifest['/livewire-tables/app.css']);
+            $cssUrl = asset('/vendor/lunar'.$manifest['/livewire-tables/app.css']);
 
             return <<<EOT
                 <link rel="stylesheet" href="{$cssUrl}" />
@@ -53,11 +53,11 @@ class LivewireTablesServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'tables');
 
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/getcandy'),
-        ], 'getcandy.livewiretables.components');
+            __DIR__.'/../resources/views' => resource_path('views/vendor/lunar'),
+        ], 'lunar.livewiretables.components');
 
         $this->publishes([
-            __DIR__.'/../dist' => public_path('vendor/getcandy'),
-        ], 'getcandy.livewiretables.public');
+            __DIR__.'/../dist' => public_path('vendor/lunar'),
+        ], 'lunar.livewiretables.public');
     }
 }
