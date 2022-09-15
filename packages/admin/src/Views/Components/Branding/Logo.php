@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Views\Components\Branding;
 
-use Illuminate\View\Component;
 use Illuminate\Support\Str;
+use Illuminate\View\Component;
 
 class Logo extends Component
 {
