@@ -2,13 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use Livewire\Component;
 
 class ProductsIndex extends Component
 {
-    use Notifies;
-
     /**
      * Render the livewire component.
      *
