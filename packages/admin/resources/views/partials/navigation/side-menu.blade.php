@@ -8,9 +8,9 @@
         <div class="flex-1">
             <a href="{{ route('hub.index') }}"
                class="flex items-center w-full h-16 px-4">
-                <x-hub::branding.logo x-show="showExpandedMenu" />
+                <x-hub::branding.logo x-show="showExpandedMenu" x-cloak />
                 <x-hub::branding.logo x-show="!showExpandedMenu"
-                                      iconOnly />
+                                      iconOnly x-cloak />
             </a>
 
             <div class="w-full px-4 pt-4 border-t border-gray-100 dark:border-gray-800">

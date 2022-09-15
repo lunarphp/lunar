@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Views\Components\Branding;
 
 use Illuminate\View\Component;
+use Illuminate\Support\Str;
 
 class Logo extends Component
 {
@@ -30,6 +31,8 @@ class Logo extends Component
      */
     public function render()
     {
-        return view('adminhub::components.branding.logo');
+        return view('adminhub::components.branding.logo', [
+            'reference' => Str::random(),
+        ]);
     }
 }
