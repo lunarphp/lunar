@@ -254,7 +254,7 @@ class CollectionShow extends Component
         $this->collection->channels()->sync($channels);
 
         DB::transaction(function () {
-            $gcAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
+            $cgAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
                 $data = Arr::only($group, ['starts_at', 'ends_at']);
 
                 $data['visible'] = in_array($group['status'], ['purchasable', 'visible']);
@@ -265,7 +265,7 @@ class CollectionShow extends Component
                 ];
             });
 
-            $this->collection->customerGroups()->sync($gcAvailability);
+            $this->collection->customerGroups()->sync($cgAvailability);
         });
 
         DB::transaction(function () {

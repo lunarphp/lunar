@@ -9,7 +9,7 @@ return [
     | Specify the session key used when fetching the cart.
     |
     */
-    'session_key' => 'gc_cart',
+    'session_key' => 'lunar_cart',
 
     /*
     |--------------------------------------------------------------------------

@@ -44,7 +44,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    logo: '/lunar_icon.svg',
+    logo: '/images/lunar-icon.svg',
     repo: 'lunarphp/lunar',
     docsDir: 'docs/src',
     docsRepo: 'lunarphp/lunar',

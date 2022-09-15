@@ -43,7 +43,7 @@ Update your `composer.json` file similar to the following. Note we are targeting
     }],
 
     "require": {
-        "lunar/lunar": "dev-main",
+        "lunarphp/lunar": "dev-main",
     }
 ````
 

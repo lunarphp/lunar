@@ -370,7 +370,7 @@ abstract class AbstractProduct extends Component
                 ];
             });
 
-            $gcAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
+            $cgAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
                 $data = Arr::only($group, ['starts_at', 'ends_at']);
 
                 $data['purchasable'] = $group['status'] == 'purchasable';
@@ -382,7 +382,7 @@ abstract class AbstractProduct extends Component
                 ];
             });
 
-            $this->product->customerGroups()->sync($gcAvailability);
+            $this->product->customerGroups()->sync($cgAvailability);
 
             $this->product->channels()->sync($channels);
 
