@@ -2,9 +2,9 @@
 
 namespace Lunar\ScoutDatabaseEngine\Tests\Unit;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\ScoutDatabaseEngine\SearchIndex;
 use Lunar\ScoutDatabaseEngine\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SearchIndexTest extends TestCase
 {
