@@ -46,9 +46,7 @@ class User extends Authenticatable
 
 ## Search Configuration
 
-Lunar uses Laravel Scout for search. We have had good success using Meilisearch, although it's entirely up to you which driver you use, as long as it's compatible.
-
-If you just want to give the wheels a spin, we also ship with a MySQL driver. Just bear in mind this is highly restrictive and we do not recommend using this in any production capacity.
+Lunar uses Laravel Scout for search. Out the box we provide our own database driver for getting set up quickly, although it's entirely up to you which driver you use, as long as it's compatible.
 
 Publish the Scout config.
 
@@ -58,11 +56,17 @@ php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
 
 By default, scout has the setting `soft_delete` set to false. You need to make sure this is set to true otherwise you will see soft deleted models appear in your search results.
 
-### Going with Meilisearch
-
-::: tip Recommended
-Meilisearch is the recommended search driver for Lunar.
+::: warning Development Only
+We suggest the database driver is only used for development purposes.
 :::
+
+Add/update the entry in your `.env` file as follows.
+
+```
+SCOUT_DRIVER=database_index
+```
+
+### Going with Meilisearch
 
 If you're on OSX then you can use [Takeout](https://github.com/tighten/takeout) which makes installing Meilisearch via Docker a breeze.
 
@@ -85,36 +89,6 @@ MEILISEARCH_KEY=masterKey
 ```
 
 See the [Laravel Scout documentation](https://laravel.com/docs/8.x/scout#meilisearch) for more information.
-
-### Going with MySQL
-
-::: warning Development Only
-We suggest the MySQL driver is only used for development purposes.
-:::
-
-Add/update the entry in your `.env` file as follows.
-
-```
-SCOUT_DRIVER=mysql
-```
-
-Then finally, add this to your `scout.php` config file.
-
-```php
-/*
-|--------------------------------------------------------------------------
-| MySQL Configuration
-|--------------------------------------------------------------------------
-*/
-'mysql' => [
-    'mode' => 'LIKE_EXPANDED',
-    'model_directories' => [app_path()],
-    'min_search_length' => 0,
-    'min_fulltext_search_length' => 4,
-    'min_fulltext_search_fallback' => 'LIKE',
-    'query_expansion' => false
-],
-```
 
 ## Admin Hub
 
@@ -159,15 +133,6 @@ This will take you through a set of questions to configure your Lunar install. T
 - Creating a default admin user (if required)
 - Seeding initial data
 - Inviting you to star our repo on GitHub ⭐
-
-## Final Meilisearch Set-up
-
-If you are using Meilisearch, you just need to do some final configuration. Simply run this command.
-
-```sh
-php artisan lunar:meilisearch:setup
-```
-
 ::: tip Success 🎉
 You are now installed! You can access the admin hub at `http://<yoursite>/hub`
 :::
