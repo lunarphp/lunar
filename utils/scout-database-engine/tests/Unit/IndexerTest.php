@@ -2,11 +2,11 @@
 
 namespace Lunar\ScoutDatabaseEngine\Tests\Unit;
 
-use Lunar\ScoutDatabaseEngine\SearchIndex;
-use Lunar\ScoutDatabaseEngine\Tests\TestCase;
-use Lunar\ScoutDatabaseEngine\Tests\Stubs\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Lunar\ScoutDatabaseEngine\SearchIndex;
+use Lunar\ScoutDatabaseEngine\Tests\Stubs\Post;
+use Lunar\ScoutDatabaseEngine\Tests\TestCase;
 
 class IndexerTest extends TestCase
 {

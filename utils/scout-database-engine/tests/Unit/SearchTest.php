@@ -2,10 +2,10 @@
 
 namespace Lunar\ScoutDatabaseEngine\Tests\Unit;
 
-use Lunar\ScoutDatabaseEngine\SearchIndex;
-use Lunar\ScoutDatabaseEngine\Tests\TestCase;
-use Lunar\ScoutDatabaseEngine\Tests\Stubs\Post;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Lunar\ScoutDatabaseEngine\SearchIndex;
+use Lunar\ScoutDatabaseEngine\Tests\Stubs\Post;
+use Lunar\ScoutDatabaseEngine\Tests\TestCase;
 
 class SearchTest extends TestCase
 {

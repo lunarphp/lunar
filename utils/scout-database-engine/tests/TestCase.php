@@ -2,8 +2,8 @@
 
 namespace Lunar\ScoutDatabaseEngine\Tests;
 
-use Lunar\ScoutDatabaseEngine\ScoutDatabaseServiceProvider;
 use Laravel\Scout\ScoutServiceProvider;
+use Lunar\ScoutDatabaseEngine\ScoutDatabaseServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -36,7 +36,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
      * Get package providers.
      *
      * @param  \Illuminate\Foundation\Application  $app
-     *
      * @return array<int, string>
      */
     protected function getPackageProviders($app)
