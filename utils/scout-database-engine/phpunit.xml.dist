@@ -10,7 +10,7 @@
   convertNoticesToExceptions="true"
   convertWarningsToExceptions="true"
   processIsolation="false"
-  stopOnFailure="true"
+  stopOnFailure="false"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
   <coverage>
@@ -20,18 +20,19 @@
   </coverage>
   <testsuites>
     <testsuite name="Unit">
-      <directory suffix="Test.php">packages/**/tests</directory>
-      <directory suffix="Test.php">utils/**/tests</directory>
+      <directory suffix="Test.php">./tests/Unit</directory>
     </testsuite>
-    <testsuite name="Utils">
-      <directory suffix="Test.php">utils/**/tests</directory>
-      <exclude>utils/scout-database-engine/**</exclude>
+    <testsuite name="Feature">
+      <directory suffix="Test.php">./tests/Feature</directory>
     </testsuite>
   </testsuites>
   <php>
-    <env name="DB_CONNECTION" value="testing"/>
+    <env name="DB_CONNECTION" value="mysql"/>
+    <env name="DB_HOST" value="mysql"/>
+    <env name="DB_DATABASE" value="test"/>
+    <env name="DB_USERNAME" value="root"/>
+    <env name="DB_PASSWORD" value="password"/>
     <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
     <env name="APP_ENV" value="testing"/>
-    <env name="MAIL_MAILER" value="log" />
   </php>
 </phpunit>

@@ -47,13 +47,15 @@
             "Lunar\\Database\\State\\": "packages/core/database/state",
             "Lunar\\Hub\\": "packages/admin/src",
             "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
-            "Lunar\\LivewireTables\\": "utils/livewire-tables/src/"
+            "Lunar\\LivewireTables\\": "utils/livewire-tables/src/",
+            "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Lunar\\Hub\\Tests\\": "packages/admin/tests",
             "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
+            "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
             "Lunar\\Tests\\": "packages/core/tests"
         }
     },
@@ -64,6 +66,7 @@
         "laravel": {
             "providers": [
                 "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
+                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\Hub\\AdminHubServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
@@ -72,7 +75,8 @@
     "replace": {
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
-        "lunarphp/livewire-tables": "self.version"
+        "lunarphp/livewire-tables": "self.version",
+        "lunarphp/scout-database-engine": "self.version"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

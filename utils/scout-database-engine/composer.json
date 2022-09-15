@@ -1,0 +1,40 @@
+{
+    "name": "lunarphp/scout-database-engine",
+    "description": "Laravel Scout engine to allow full searching in MySQL and PostgreSQL.",
+    "keywords": ["laravel", "scout", "search"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+          "name": "Lunar",
+          "homepage": "https://lunarphp.io/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lunar\\ScoutDatabaseEngine\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lunar\\ScoutDatabaseEngine\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^8.0|^9.0",
+        "laravel/scout": "^9.4",
+        "spatie/laravel-blink": "^1.6"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0|^7.0",
+        "phpunit/phpunit": "^9.5"
+    }
+}
