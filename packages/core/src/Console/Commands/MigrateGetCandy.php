@@ -31,19 +31,15 @@ class MigrateGetCandy extends Command
      */
     public function handle()
     {
-        $tables = collect(
-            DB::select('SHOW TABLES')
-        )->map(function ($table) {
-            return array_values((array) $table)[0];
-        })->filter(function ($table) {
+        $tableNames = collect(
+            DB::connection()->getDoctrineSchemaManager()->listTableNames()
+        );
+
+        $tables = $tableNames->filter(function ($table) {
             return str_contains($table, 'getcandy_');
         });
 
-        $lunarTables = collect(
-            DB::select('SHOW TABLES')
-        )->map(function ($table) {
-            return array_values((array) $table)[0];
-        })->filter(function ($table) {
+        $lunarTables = $tableNames->filter(function ($table) {
             return str_contains($table, 'lunar_');
         });
 
