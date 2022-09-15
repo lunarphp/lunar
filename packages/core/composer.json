@@ -40,7 +40,7 @@
         "spatie/laravel-activitylog": "^4.4",
         "laravel/scout": "^9.4",
         "cartalyst/converter": "^6.1|^7.0",
-        "yab/laravel-scout-mysql-driver": "^5.0",
+        "lunarphp/scout-database-engine": "*",
         "kalnoy/nestedset": "^6.0",
         "doctrine/dbal": "3.3.7",
         "spatie/laravel-blink": "^1.6"
