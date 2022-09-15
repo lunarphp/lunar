@@ -36,6 +36,7 @@ use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MeilisearchSetup;
+use Lunar\Console\Commands\MigrateGetCandy;
 use Lunar\Console\Commands\ScoutIndexer;
 use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
@@ -190,6 +191,7 @@ class LunarServiceProvider extends ServiceProvider
                 MeilisearchSetup::class,
                 AddressData::class,
                 ScoutIndexer::class,
+                MigrateGetCandy::class,
             ]);
         }
 
