@@ -46,7 +46,7 @@ class LunarHub
     }
 
     /**
-     * Register script with Getcandy.
+     * Register script with Lunar.
      *
      * @param  string|Script  $name
      * @param  string  $path
@@ -60,7 +60,7 @@ class LunarHub
     }
 
     /**
-     * Register remote script with Getcandy.
+     * Register remote script with Lunar.
      *
      * @param  string  $path
      * @return static
@@ -71,7 +71,7 @@ class LunarHub
     }
 
     /**
-     * Register style with Getcandy.
+     * Register style with Lunar.
      *
      * @param  string|Style  $name
      * @param  string  $path
@@ -85,7 +85,7 @@ class LunarHub
     }
 
     /**
-     * Register remote style with Getcandy.
+     * Register remote style with Lunar.
      *
      * @param  string  $path
      * @return static
