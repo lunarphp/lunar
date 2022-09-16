@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Jobs\Collections;
+namespace Lunar\Jobs\Collections;
 
-use GetCandy\Actions\Collections\SortProducts;
-use GetCandy\Models\Collection;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Lunar\Actions\Collections\SortProducts;
+use Lunar\Models\Collection;
 
 class UpdateProductPositions implements ShouldQueue
 {

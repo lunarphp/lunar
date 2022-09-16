@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Console;
+namespace Lunar\Tests\Unit\Console;
 
-use GetCandy\Exceptions\SchedulingException;
-use GetCandy\Models\Channel;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Product;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Exceptions\SchedulingException;
+use Lunar\Models\Channel;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Product;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.traits
+ * @group lunar.traits
  */
 class HasCustomerGroupsTest extends TestCase
 {
@@ -26,7 +26,7 @@ class HasCustomerGroupsTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -47,7 +47,7 @@ class HasCustomerGroupsTest extends TestCase
 
         foreach ($groups as $group) {
             $this->assertDatabaseHas(
-                'getcandy_customer_group_product',
+                'lunar_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
                     'enabled'           => 1,
@@ -69,7 +69,7 @@ class HasCustomerGroupsTest extends TestCase
 
         foreach ($groups as $group) {
             $this->assertDatabaseHas(
-                'getcandy_customer_group_product',
+                'lunar_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
                     'enabled'           => 1,
@@ -108,7 +108,7 @@ class HasCustomerGroupsTest extends TestCase
 
         foreach ($groups as $group) {
             $this->assertDatabaseHas(
-                'getcandy_customer_group_product',
+                'lunar_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
                     'enabled'           => 1,
@@ -130,7 +130,7 @@ class HasCustomerGroupsTest extends TestCase
 
         foreach ($groups as $group) {
             $this->assertDatabaseHas(
-                'getcandy_customer_group_product',
+                'lunar_customer_group_product',
                 [
                     'customer_group_id' => $group->id,
                     'enabled'           => 1,

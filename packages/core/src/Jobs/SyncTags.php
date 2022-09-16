@@ -1,8 +1,7 @@
 <?php
 
-namespace GetCandy\Jobs;
+namespace Lunar\Jobs;
 
-use GetCandy\Models\Tag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Lunar\Models\Tag;
 
 class SyncTags implements ShouldQueue
 {

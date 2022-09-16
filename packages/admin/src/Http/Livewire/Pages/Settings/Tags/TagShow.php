@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Tags;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Tags;
 
-use GetCandy\Models\Tag;
 use Livewire\Component;
+use Lunar\Models\Tag;
 
 class TagShow extends Component
 {

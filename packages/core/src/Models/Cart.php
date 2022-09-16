@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\Address;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\CartFactory;
-use GetCandy\DataTypes\Price;
-use GetCandy\Discounts\Models\DiscountReward;
-use GetCandy\Managers\CartManager;
+use Lunar\Discounts\Models\DiscountReward;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\Address;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Database\Factories\CartFactory;
+use Lunar\DataTypes\Price;
+use Lunar\Managers\CartManager;
 
 class Cart extends BaseModel
 {
@@ -23,28 +23,28 @@ class Cart extends BaseModel
     /**
      * The cart total.
      *
-     * @var null|\GetCandy\DataTypes\Price
+     * @var null|\Lunar\DataTypes\Price
      */
     public $total = null;
 
     /**
      * The cart sub total.
      *
-     * @var null|\GetCandy\DataTypes\Price
+     * @var null|\Lunar\DataTypes\Price
      */
     public $subTotal = null;
 
     /**
      * The cart tax total.
      *
-     * @var null|\GetCandy\DataTypes\Price
+     * @var null|\Lunar\DataTypes\Price
      */
     public $taxTotal = null;
 
     /**
      * The discount total.
      *
-     * @var null|\GetCandy\DataTypes\Price
+     * @var null|\Lunar\DataTypes\Price
      */
     public ?Price $discountTotal = null;
 
@@ -67,7 +67,7 @@ class Cart extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CartFactory
+     * @return \Lunar\Database\Factories\CartFactory
      */
     protected static function newFactory(): CartFactory
     {
@@ -170,7 +170,7 @@ class Cart extends BaseModel
     /**
      * Return the cart manager.
      *
-     * @return \GetCandy\Managers\CartManager
+     * @return \Lunar\Managers\CartManager
      */
     public function getManager()
     {

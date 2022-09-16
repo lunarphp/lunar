@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\FieldTypes\Number;
-use GetCandy\FieldTypes\Text;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Language;
 use Illuminate\Support\Collection;
+use Lunar\FieldTypes\Number;
+use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Language;
 
 trait WithAttributes
 {
@@ -137,7 +137,7 @@ trait WithAttributes
      * Map translated values into field types.
      *
      * @param  array  $data
-     * @return \GetCandy\FieldTypes\TranslatedText
+     * @return \Lunar\FieldTypes\TranslatedText
      */
     protected function mapTranslatedText($data)
     {
@@ -166,6 +166,7 @@ trait WithAttributes
                     $newValue[$language->code] = $value;
                 }
                 $value = $newValue;
+
                 continue;
             }
 
@@ -224,6 +225,7 @@ trait WithAttributes
                 if ($attribute['type'] == TranslatedText::class) {
                     $messages["attributeMapping.{$index}.data.{$this->defaultLanguage->code}.required"] =
                         __('adminhub::validation.generic_required');
+
                     continue;
                 }
                 $messages["attributeMapping.{$index}.data.required"] = __('adminhub::validation.generic_required');

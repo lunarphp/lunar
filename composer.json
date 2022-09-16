@@ -1,28 +1,34 @@
 {
-    "name": "getcandy/getcandy",
-    "description": "GetCandy Monorepo",
+    "name": "lunarphp/lunar",
+    "description": "Lunar Monorepo",
     "license": "MIT",
     "authors": [
         {
-            "name": "GetCandy",
-            "homepage": "https://getcandy.io/"
+            "name": "LunarPHP",
+            "homepage": "https://lunarphp.io/"
+        },
+        {
+            "name": "Lunar",
+            "homepage": "https://lunarphp.io/"
         }
     ],
     "require": {
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^6.1|^7.0",
         "doctrine/dbal": "3.3.7",
-        "getcandy/licensing": "dev-main",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
         "livewire/livewire": "^2.0",
+        "lunarphp/licensing": "dev-main",
         "php": "^8.0",
         "spatie/laravel-activitylog": "^4.4",
+        "spatie/laravel-blink": "^1.6",
         "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
         "yab/laravel-scout-mysql-driver": "^5.0"
     },
     "require-dev": {
+        "laravel/pint": "^1.1",
         "orchestra/testbench": "^6.0|^7.0",
         "phpunit/phpunit": "^9.5",
         "symplify/monorepo-builder": "^10.0"
@@ -33,28 +39,29 @@
             "packages/core/src/helpers.php"
         ],
         "psr-4": {
-            "GetCandy\\": "packages/core/src",
-            "GetCandy\\Database\\Factories\\": "packages/core/database/factories",
-            "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
-            "GetCandy\\Database\\State\\": "packages/core/database/state",
-            "GetCandy\\Discounts\\Database\\Factories\\": "packages/pro/discounts/database/factories",
-            "GetCandy\\Hub\\": "packages/admin/src",
-            "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
+            "Lunar\\": "packages/core/src",
+            "Lunar\\Database\\Factories\\": "packages/core/database/factories",
+            "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
+            "Lunar\\Database\\State\\": "packages/core/database/state",
+            "Lunar\\Hub\\": "packages/admin/src",
+            "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
+            "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "GetCandy\\Discounts\\Tests\\": "packages/pro/discounts/tests",
-            "GetCandy\\Hub\\Tests\\": "packages/admin/tests",
-            "GetCandy\\Shipping\\Tests\\": "packages/pro/discounts/tests",
-            "GetCandy\\Tests\\": "packages/core/tests"
+            "Lunar\\Hub\\Tests\\": "packages/admin/tests",
+            "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
+            "Lunar\\Tests\\": "packages/core/tests",
+            "Lunar\\Discounts\\Tests\\": "packages/pro/discounts/tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "GetCandy\\Hub\\AdminHubServiceProvider",
-                "GetCandy\\GetCandyServiceProvider"
+                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
+                "Lunar\\Hub\\AdminHubServiceProvider",
+                "Lunar\\LunarServiceProvider"
             ]
         },
         "getcandy": {
@@ -62,9 +69,9 @@
         }
     },
     "replace": {
-        "getcandy/admin": "self.version",
-        "getcandy/core": "self.version",
-        "getcandy/pro-discounts": "self.version"
+        "lunarphp/admin": "self.version",
+        "lunarphp/core": "self.version",
+        "lunarphp/scout-database-engine": "self.version"
     },
     "minimum-stability": "beta"
 }

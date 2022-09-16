@@ -1,8 +1,8 @@
-<p align="center"><a href="https://getcandy.io/" target="_blank"><img src="https://getcandy.io/getcandy_logo.svg" width="400" alt="GetCandy"></a></p>
+<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://lunarphp.io/lunar_logo.svg" width="400" alt="Lunar"></a></p>
 
 ## About the admin hub
 
-The admin hub is an open source app that allows you to manage all aspects of your GetCandy store.
+The admin hub is an open source app that allows you to manage all aspects of your Lunar store.
 
 ---
 
@@ -10,12 +10,12 @@ The admin hub is an open source app that allows you to manage all aspects of you
 - PHP ^8.0
 - Laravel 8+
 - MySQL 5.7+ / PostgreSQL 9.2+
-- GetCandy Core
+- Lunar Core
 
 ## Documentation
 
-- [Full documentation](https://docs.getcandy.io/) - Includes in-depth guides on everything GetCandy
+- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything Lunar
 
 ## License
 
-GetCandy is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Lunar is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

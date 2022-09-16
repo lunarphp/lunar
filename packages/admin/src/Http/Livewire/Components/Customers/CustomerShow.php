@@ -1,26 +1,26 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Customers;
+namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
 use Carbon\CarbonPeriod;
 use Exception;
-use GetCandy\DataTypes\Price;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Address;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\State;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\DataTypes\Price;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithCountries;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Address;
+use Lunar\Models\Attribute;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
+use Lunar\Models\State;
 
 class CustomerShow extends Component
 {
@@ -33,7 +33,7 @@ class CustomerShow extends Component
     /**
      * The current customer in view.
      *
-     * @var \GetCandy\Models\Customer
+     * @var \Lunar\Models\Customer
      */
     public Customer $customer;
 
@@ -127,6 +127,7 @@ class CustomerShow extends Component
                 'customer.first_name'   => 'string|required',
                 'customer.last_name'    => 'string|required',
                 'customer.company_name' => 'nullable|string',
+                'customer.account_ref'  => 'nullable|string',
                 'customer.vat_no'       => 'nullable|string',
                 'address'               => 'nullable',
                 'address.postcode' => 'required|string|max:255',
@@ -383,7 +384,7 @@ class CustomerShow extends Component
     /**
      * Return the average spend for the customer.
      *
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function getAvgSpendProperty()
     {
@@ -397,7 +398,7 @@ class CustomerShow extends Component
     /**
      * Return the average spend for the customer.
      *
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function getTotalSpendProperty()
     {
@@ -411,7 +412,7 @@ class CustomerShow extends Component
     /**
      * Return the spending chart data.
      *
-     * @return \GetCandy\Models\Collection
+     * @return \Lunar\Models\Collection
      */
     public function getSpendingChartProperty()
     {

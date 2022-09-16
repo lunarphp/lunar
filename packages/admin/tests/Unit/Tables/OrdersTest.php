@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Menu;
+namespace Lunar\Hub\Tests\Unit\Menu;
 
-use GetCandy\Hub\DataTransferObjects\TableColumn;
-use GetCandy\Hub\DataTransferObjects\TableFilter;
-use GetCandy\Hub\Facades\OrdersTable;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\DataTransferObjects\TableColumn;
+use Lunar\Hub\DataTransferObjects\TableFilter;
+use Lunar\Hub\Facades\OrdersTable;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.tables

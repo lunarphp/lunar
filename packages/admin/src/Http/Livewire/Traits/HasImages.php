@@ -1,12 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\TemporaryUploadedFile;
 use Spatie\Activitylog\Facades\LogBatch;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 trait HasImages
 {
@@ -23,6 +24,20 @@ trait HasImages
      * @var array
      */
     public $images = [];
+
+    /**
+     * An array of selected images.
+     *
+     * @var array
+     */
+    public array $selectedImages = [];
+
+    /**
+     * Whether to shoe the image select modal dialog.
+     *
+     * @var bool
+     */
+    public bool $showImageSelectModal = false;
 
     public function getHasImagesListeners()
     {
@@ -41,6 +56,8 @@ trait HasImages
         return [
             'imageUploadQueue.*' => 'image|max:'.max_upload_filesize(),
             'images.*.caption'   => 'nullable|string',
+            'showImageSelectModal' => 'boolean',
+            'selectedImages' => 'nullable|array|min:0',
         ];
     }
 
@@ -53,7 +70,7 @@ trait HasImages
     {
         $owner = $this->getMediaModel();
 
-        $this->images = $owner->media->map(function ($media) {
+        $this->images = $owner->getMedia('images')->map(function ($media) {
             return [
                 'id'        => $media->id,
                 'sort_key'  => Str::random(),
@@ -75,6 +92,16 @@ trait HasImages
     public function updatedImages()
     {
         $this->validate($this->hasImagesValidationRules());
+    }
+
+    /**
+     * Return the id's of the current images.
+     *
+     * @return array
+     */
+    public function getCurrentImageIdsProperty()
+    {
+        return collect($this->images)->pluck('id')->filter()->toArray();
     }
 
     /**
@@ -156,7 +183,7 @@ trait HasImages
             // Need to find any images that have been deleted.
             // We need to also get a fresh instance of the relationship
             // as we may have changes that Livewire/Eloquent might not be aware of.
-            $owner->refresh()->media->reject(function ($media) {
+            $owner->refresh()->getMedia('images')->reject(function ($media) {
                 $imageIds = collect($this->images)->pluck('id')->toArray();
 
                 return in_array($media->id, $imageIds);
@@ -170,13 +197,13 @@ trait HasImages
                         $image['filename']
                     );
                     $media = $owner->addMedia($file->getRealPath())
-                        ->toMediaCollection('products');
+                        ->toMediaCollection('images');
 
                     activity()
                     ->performedOn($owner)
                     ->withProperties(['media' => $media->toArray()])
                     ->event('added_image')
-                    ->useLog('getcandy')
+                    ->useLog('lunar')
                     ->log('added_image');
 
                     // Add ID for future and processing now.
@@ -243,5 +270,27 @@ trait HasImages
         if ($image['primary'] && count($this->images)) {
             $this->images[array_key_first($this->images)]['primary'] = true;
         }
+    }
+
+    public function selectImages()
+    {
+        $chosen = Media::findMany($this->selectedImages);
+
+        foreach ($chosen as $media) {
+            $this->images[] = [
+                'id' => $media->id,
+                'thumbnail' => $media->getUrl('small'),
+                'sort_key'  => Str::random(),
+                'filename'  => $media->file_name,
+                'original'  => $media->getUrl(),
+                'caption'   => null,
+                'position'  => $media->getCustomProperty('position'),
+                'preview'   => false,
+                'primary'   => false,
+            ];
+        }
+
+        $this->selectedImages = [];
+        $this->showImageSelectModal = false;
     }
 }

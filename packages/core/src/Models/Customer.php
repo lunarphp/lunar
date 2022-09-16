@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\AsAttributeData;
-use GetCandy\Base\Traits\HasAttributes;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasPersonalDetails;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Base\Traits\Searchable;
-use GetCandy\Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasAttributes;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasPersonalDetails;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\Searchable;
+use Lunar\Database\Factories\CustomerFactory;
 
 class Customer extends BaseModel
 {
@@ -59,7 +59,7 @@ class Customer extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CustomerFactory
+     * @return \Lunar\Database\Factories\CustomerFactory
      */
     protected static function newFactory(): CustomerFactory
     {
@@ -88,6 +88,7 @@ class Customer extends BaseModel
             'name'         => $this->fullName,
             'company_name' => $this->company_name,
             'vat_no'       => $this->vat_no,
+            'account_ref'  => $this->account_ref,
         ];
 
         foreach ($metaFields as $key => $value) {
@@ -116,7 +117,7 @@ class Customer extends BaseModel
      */
     public function customerGroups()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             CustomerGroup::class,
@@ -131,7 +132,7 @@ class Customer extends BaseModel
      */
     public function users()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             config('auth.providers.users.model'),
@@ -161,7 +162,7 @@ class Customer extends BaseModel
      */
     public function mappedAttributes()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Attribute::class,

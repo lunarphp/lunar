@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
-use GetCandy\Hub\Facades\Menu;
+use Lunar\Hub\Facades\Menu;
 
 class SidebarMenu
 {
@@ -73,6 +73,13 @@ class SidebarMenu
             )->handle('hub.discounts')
             ->route('hub.discounts.index')
             ->icon('ticket');
+
+        $slot->addItem(function ($item) {
+            $item->name(
+                __('adminhub::menu.sidebar.brands')
+            )->handle('hub.brands')
+                 ->route('hub.brands.index')
+                 ->icon('view-grid');
         });
 
         $slot->addItem(function ($item) {

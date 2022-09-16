@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\Url;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
+use Lunar\Tests\TestCase;
 
 /**
  * @group models
@@ -33,7 +33,7 @@ class UrlTest extends TestCase
 
         Url::create($data);
 
-        $this->assertDatabaseHas('getcandy_urls', $data);
+        $this->assertDatabaseHas('lunar_urls', $data);
     }
 
     /** @test */

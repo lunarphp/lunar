@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\CartAddress;
+use Lunar\Models\Country;
 
 class CartAddressFactory extends Factory
 {

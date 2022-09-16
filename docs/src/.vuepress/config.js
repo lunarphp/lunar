@@ -4,7 +4,7 @@ module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#title
    */
-  title: 'GetCandy 2 Docs',
+  title: 'Lunar Docs',
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
@@ -44,10 +44,10 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    logo: '/getcandy_icon.svg',
-    repo: 'getcandy/getcandy',
+    logo: '/images/lunar-icon.svg',
+    repo: 'lunarphp/lunar',
     docsDir: 'docs/src',
-    docsRepo: 'getcandy/getcandy',
+    docsRepo: 'lunarphp/lunar',
     docsBranch: 'main',
     editLinks: true,
     editLinkText: 'Help us improve this page!',
@@ -55,13 +55,13 @@ module.exports = {
     lastUpdated: false,
     algolia: {
       apiKey: '5b837c3914609051127d86be919e1724',
-      indexName: 'getcandy',
+      indexName: 'lunar',
       appId: 'LRDQ9JSQEG'
     },
     nav: [
       {
         text: 'Roadmap',
-        link: 'https://github.com/orgs/getcandy/projects/5',
+        link: 'https://github.com/orgs/lunarphp/projects/5',
       },
       {
         text: 'Discord',
@@ -94,33 +94,34 @@ module.exports = {
         title: 'Guide',
         collapsable: false, // optional, defaults to true
         children: [
-          '/getcandy/activity-log',
-          '/getcandy/addresses',
-          '/getcandy/associations',
-          '/getcandy/attributes',
-          '/getcandy/carts',
-          '/getcandy/channels',
-          '/getcandy/collections',
-          '/getcandy/currencies',
-          '/getcandy/customers',
-          '/getcandy/discounts',
-          '/getcandy/images',
-          '/getcandy/languages',
-          '/getcandy/orders',
-          '/getcandy/payments',
-          '/getcandy/products',
-          '/getcandy/search',
-          '/getcandy/tags',
-          '/getcandy/taxation',
-          '/getcandy/urls'
+          '/lunar/activity-log',
+          '/lunar/addresses',
+          '/lunar/associations',
+          '/lunar/attributes',
+          '/lunar/carts',
+          '/lunar/channels',
+          '/lunar/collections',
+          '/lunar/discounts',
+          '/lunar/currencies',
+          '/lunar/customers',
+          '/lunar/images',
+          '/lunar/languages',
+          '/lunar/orders',
+          '/lunar/payments',
+          '/lunar/products',
+          '/lunar/search',
+          '/lunar/tags',
+          '/lunar/taxation',
+          '/lunar/urls'
         ]
       },
       {
-        title: 'Extending GetCandy',
+        title: 'Extending Lunar',
         collapsable: false, // optional, defaults to true
         children: [
           '/extending/activity-log',
           '/extending/admin-hub',
+          '/extending/assets',
           '/extending/cart-modifiers',
           '/extending/field-types',
           '/extending/models',

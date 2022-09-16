@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Drivers\SystemTaxDriver;
 use Illuminate\Support\Manager;
+use Lunar\Drivers\SystemTaxDriver;
 
 class TaxManager extends Manager
 {
@@ -25,6 +25,6 @@ class TaxManager extends Manager
 
     public function getDefaultDriver()
     {
-        return config('getcandy.taxes.driver', 'system');
+        return config('lunar.taxes.driver', 'system');
     }
 }

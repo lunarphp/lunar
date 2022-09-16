@@ -1,8 +1,8 @@
 <?php
 
-use GetCandy\Base\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Base\Migration;
 
 class CreateTaxClassesTable extends Migration
 {

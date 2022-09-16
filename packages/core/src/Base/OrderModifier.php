@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Closure;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Order;
+use Lunar\Models\Cart;
+use Lunar\Models\Order;
 
 abstract class OrderModifier
 {

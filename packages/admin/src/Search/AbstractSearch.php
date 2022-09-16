@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Search;
+namespace Lunar\Hub\Search;
 
-use GetCandy\Hub\Base\SearchInterface;
-use GetCandy\Hub\DataTransferObjects\Search\SearchResults;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Hub\Base\SearchInterface;
+use Lunar\Hub\DataTransferObjects\Search\SearchResults;
 
 abstract class AbstractSearch implements SearchInterface
 {
@@ -24,7 +24,7 @@ abstract class AbstractSearch implements SearchInterface
      */
     public function getDriverForModel(string $model): string
     {
-        $engines = config('getcandy.search.engine_map', []);
+        $engines = config('lunar.search.engine_map', []);
         if (isset($engines[$model])) {
             return $engines[$model];
         }

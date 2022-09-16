@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Editing;
+namespace Lunar\Hub\Editing;
 
 class ProductSection
 {

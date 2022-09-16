@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Tags;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Tags;
 
 use Livewire\Component;
 

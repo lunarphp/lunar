@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
 
 class ProductAssociationFactory extends Factory
 {

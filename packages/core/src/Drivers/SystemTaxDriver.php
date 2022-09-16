@@ -1,30 +1,30 @@
 <?php
 
-namespace GetCandy\Drivers;
+namespace Lunar\Drivers;
 
-use GetCandy\Actions\Taxes\GetTaxZone;
-use GetCandy\Base\Addressable;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\DataTransferObjects\TaxBreakdownAmount;
-use GetCandy\Base\Purchasable;
-use GetCandy\Base\TaxDriver;
-use GetCandy\DataTypes\Price;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Currency;
+use Lunar\Actions\Taxes\GetTaxZone;
+use Lunar\Base\Addressable;
+use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\Base\DataTransferObjects\TaxBreakdownAmount;
+use Lunar\Base\Purchasable;
+use Lunar\Base\TaxDriver;
+use Lunar\DataTypes\Price;
+use Lunar\Models\CartLine;
+use Lunar\Models\Currency;
 
 class SystemTaxDriver implements TaxDriver
 {
     /**
      * The taxable shipping address.
      *
-     * @var \GetCandy\Base\Addressable|null
+     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $shippingAddress = null;
 
     /**
      * The taxable billing address.
      *
-     * @var \GetCandy\Base\Addressable|null
+     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $billingAddress = null;
 

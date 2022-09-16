@@ -1,21 +1,22 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Base\Addressable;
-use GetCandy\DataTypes\Price;
-use GetCandy\Facades\Taxes;
-use GetCandy\Models\CartLine;
 use Illuminate\Support\Collection;
+use Lunar\Base\Addressable;
+use Lunar\DataTypes\Price;
+use Lunar\Facades\Pricing;
+use Lunar\Facades\Taxes;
+use Lunar\Models\CartLine;
 
 class CalculateLine
 {
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\CartLine  $cartLine
+     * @param  \Lunar\Models\CartLine  $cartLine
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \GetCandy\Models\CartLine
+     * @return \Lunar\Models\CartLine
      */
     public function execute(
         CartLine $cartLine,

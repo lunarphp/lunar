@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Models;
+namespace Lunar\Hub\Models;
 
-use GetCandy\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Lunar\Base\BaseModel;
 
 class StaffPermission extends BaseModel
 {

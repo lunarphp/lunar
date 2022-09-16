@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Taxes;
+namespace Lunar\Tests\Unit\Actions\Taxes;
 
-use GetCandy\Actions\Taxes\GetTaxZonePostcode;
-use GetCandy\Models\TaxZonePostcode;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Actions\Taxes\GetTaxZonePostcode;
+use Lunar\Models\TaxZonePostcode;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.actions
+ * @group lunar.actions
  */
 class GetTaxZonePostcodeTest extends TestCase
 {

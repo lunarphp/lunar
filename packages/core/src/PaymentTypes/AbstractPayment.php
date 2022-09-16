@@ -1,24 +1,24 @@
 <?php
 
-namespace GetCandy\PaymentTypes;
+namespace Lunar\PaymentTypes;
 
-use GetCandy\Base\PaymentTypeInterface;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Order;
+use Lunar\Base\PaymentTypeInterface;
+use Lunar\Models\Cart;
+use Lunar\Models\Order;
 
 abstract class AbstractPayment implements PaymentTypeInterface
 {
     /**
      * The instance of the cart.
      *
-     * @var \GetCandy\Models\Cart
+     * @var \Lunar\Models\Cart
      */
     protected ?Cart $cart = null;
 
     /**
      * The instance of the order.
      *
-     * @var \GetCandy\Models\Order
+     * @var \Lunar\Models\Order
      */
     protected ?Order $order = null;
 

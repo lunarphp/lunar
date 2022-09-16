@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Base\Casts;
+namespace Lunar\Base\Casts;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Collection;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class AsAttributeData implements Castable
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Menu;
+namespace Lunar\Hub\Tests\Unit\Menu;
 
-use GetCandy\Hub\Menu\MenuRegistry;
-use GetCandy\Hub\Menu\MenuSlot;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Menu\MenuRegistry;
+use Lunar\Hub\Menu\MenuSlot;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.menu

@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\PaymentTypes;
+namespace Lunar\PaymentTypes;
 
-use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
-use GetCandy\Base\DataTransferObjects\PaymentCapture;
-use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Models\Transaction;
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Models\Transaction;
 
 class OfflinePayment extends AbstractPayment
 {

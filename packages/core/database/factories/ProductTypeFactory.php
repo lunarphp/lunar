@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\ProductType;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\ProductType;
 
 class ProductTypeFactory extends Factory
 {

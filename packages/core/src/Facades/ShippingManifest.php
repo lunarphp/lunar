@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\ShippingManifestInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\ShippingManifestInterface;
 
 class ShippingManifest extends Facade
 {

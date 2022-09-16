@@ -1,21 +1,21 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Exceptions\FieldTypes\FieldTypeMissingException;
-use GetCandy\Exceptions\FieldTypes\InvalidFieldTypeException;
-use GetCandy\FieldTypes\Dropdown;
-use GetCandy\FieldTypes\ListField;
-use GetCandy\FieldTypes\Number;
-use GetCandy\FieldTypes\Text;
-use GetCandy\FieldTypes\Toggle;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\FieldTypes\YouTube;
+use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
+use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
+use Lunar\FieldTypes\Dropdown;
+use Lunar\FieldTypes\ListField;
+use Lunar\FieldTypes\Number;
+use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\Toggle;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\FieldTypes\YouTube;
 
 class FieldTypeManifest
 {
     /**
-     * The FieldTypes available in GetCandy.
+     * The FieldTypes available in Lunar.
      *
      * @var \Illuminate\Support\Collection
      */
@@ -35,7 +35,7 @@ class FieldTypeManifest
     }
 
     /**
-     * Add a FieldType into GetCandy.
+     * Add a FieldType into Lunar.
      *
      * @param  string  $classname
      * @return void

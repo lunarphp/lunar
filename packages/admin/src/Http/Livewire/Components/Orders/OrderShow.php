@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Orders;
+namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
-use GetCandy\Models\State;
 use Illuminate\Support\Arr;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithCountries;
+use Lunar\Models\Channel;
+use Lunar\Models\Order;
+use Lunar\Models\OrderAddress;
+use Lunar\Models\State;
 
 class OrderShow extends Component
 {
@@ -19,21 +19,21 @@ class OrderShow extends Component
     /**
      * The current order in view.
      *
-     * @var \GetCandy\Models\Order
+     * @var \Lunar\Models\Order
      */
     public Order $order;
 
     /**
      * The instance of the shipping address.
      *
-     * @var \GetCandy\Models\OrderAddress
+     * @var \Lunar\Models\OrderAddress
      */
     public ?OrderAddress $shippingAddress = null;
 
     /**
      * The instance of the shipping address.
      *
-     * @var \GetCandy\Models\OrderAddress
+     * @var \Lunar\Models\OrderAddress
      */
     public ?OrderAddress $billingAddress = null;
 
@@ -137,7 +137,7 @@ class OrderShow extends Component
             'shippingAddress.delivery_instructions' => 'nullable|string|max:255',
             'shippingAddress.contact_email' => 'nullable|email|max:255',
             'shippingAddress.contact_phone' => 'nullable|string|max:255',
-            'shippingAddress.country_id'   => 'required',
+            'shippingAddress.country_id' => 'required',
             'billingAddress.postcode' => 'required|string|max:255',
             'billingAddress.title' => 'nullable|string|max:255',
             'billingAddress.first_name' => 'nullable|string|max:255',
@@ -151,7 +151,7 @@ class OrderShow extends Component
             'billingAddress.delivery_instructions' => 'nullable|string|max:255',
             'billingAddress.contact_email' => 'nullable|email|max:255',
             'billingAddress.contact_phone' => 'nullable|string|max:255',
-            'billingAddress.country_id'   => 'required',
+            'billingAddress.country_id' => 'required',
         ];
     }
 
@@ -189,13 +189,13 @@ class OrderShow extends Component
      */
     public function getStatusesProperty()
     {
-        return config('getcandy.orders.statuses', []);
+        return config('lunar.orders.statuses', []);
     }
 
     /**
      * Get the billing address computed property.
      *
-     * @return \GetCandy\Models\OrderAddress|null
+     * @return \Lunar\Models\OrderAddress|null
      */
     public function getBillingProperty()
     {
@@ -219,7 +219,7 @@ class OrderShow extends Component
      */
     public function getVisibleLinesProperty()
     {
-        return $this->physicalLines->take($this->allLinesVisible ? null : $this->maxLines);
+        return $this->physicalAndDigitalLines->take($this->allLinesVisible ? null : $this->maxLines);
     }
 
     /**
@@ -231,6 +231,18 @@ class OrderShow extends Component
     {
         return $this->order->lines->filter(function ($line) {
             return $line->type == 'physical';
+        });
+    }
+
+    /**
+     * Return the physical and digital order lines.
+     *
+     * @return void
+     */
+    public function getPhysicalAndDigitalLinesProperty()
+    {
+        return $this->order->lines->filter(function ($line) {
+            return in_array($line->type, ['physical', 'digital']);
         });
     }
 
@@ -548,7 +560,7 @@ class OrderShow extends Component
     /**
      * Returns the model which has slots associated.
      *
-     * @return \GetCandy\Models\Order
+     * @return \Lunar\Models\Order
      */
     protected function getSlotModel()
     {
