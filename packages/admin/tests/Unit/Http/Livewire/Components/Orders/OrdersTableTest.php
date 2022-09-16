@@ -5,19 +5,14 @@ namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Livewire;
-use Lunar\Hub\DataTransferObjects\Search\Facets;
-use Lunar\Hub\DataTransferObjects\Search\SearchResults;
-use Lunar\Hub\Http\Livewire\Components\Orders\OrdersIndex;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrdersTable;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Models\Staff;
-use Lunar\Hub\Search\OrderSearch;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
-use Mockery;
 
 /**
  * @group hub.tables
