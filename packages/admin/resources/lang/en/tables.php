@@ -43,4 +43,5 @@ return [
     'headings.version' => 'Version',
     'headings.latest_version' => 'Latest Version',
     'headings.author' => 'Author',
+    'headings.products_count' => 'No. Products',
 ];

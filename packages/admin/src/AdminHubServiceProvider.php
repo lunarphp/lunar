@@ -22,6 +22,7 @@ use Lunar\Hub\Http\Livewire\Components\Authentication\PasswordReset;
 use Lunar\Hub\Http\Livewire\Components\Avatar;
 use Lunar\Hub\Http\Livewire\Components\Brands\BrandShow;
 use Lunar\Hub\Http\Livewire\Components\Brands\BrandsIndex;
+use Lunar\Hub\Http\Livewire\Components\Brands\BrandsTable;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -321,6 +322,7 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerBrandComponents()
     {
         Livewire::component('hub.components.brands.index', BrandsIndex::class);
+        Livewire::component('hub.components.brands.table', BrandsTable::class);
         Livewire::component('hub.components.brands.show', BrandShow::class);
     }
 
