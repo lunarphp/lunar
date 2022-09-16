@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Lunar\DataTypes\Price;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
 use Lunar\Hub\Http\Livewire\Traits\WithCountries;
@@ -24,6 +25,7 @@ use Lunar\Models\State;
 
 class CustomerShow extends Component
 {
+    use HasSlots;
     use Notifies;
     use WithAttributes;
     use WithPagination;
@@ -181,6 +183,13 @@ class CustomerShow extends Component
     {
         return Attribute::whereAttributeType(Customer::class)->orderBy('position')->get();
     }
+    
+    protected function getListeners()
+    {
+        return array_merge([],
+            $this->getHasSlotsListeners()
+        );
+    }
 
     /**
      * Save the customer record.
@@ -198,6 +207,8 @@ class CustomerShow extends Component
         $this->customer->attribute_data = $this->prepareAttributeData();
 
         $this->customer->save();
+        
+        $this->updateSlots();
 
         $this->notify(
             __('adminhub::notifications.customer.updated')
@@ -543,5 +554,25 @@ class CustomerShow extends Component
     {
         return view('adminhub::livewire.components.customers.show')
             ->layout('adminhub::layouts.base');
+    }
+    
+    /*
+     * Returns the model which has slots associated.
+     *
+     * @return \Lunar\Models\Customer
+     */
+    protected function getSlotModel()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * Returns the contexts for any slots.
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['customer.show'];
     }
 }
