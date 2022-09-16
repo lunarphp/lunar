@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Base\CartLineModifiers;
-use GetCandy\DataTypes\Price;
-use GetCandy\Facades\Pricing;
-use GetCandy\Models\CartLine;
+use Lunar\Base\CartLineModifiers;
+use Lunar\DataTypes\Price;
+use Lunar\Facades\Pricing;
+use Lunar\Models\CartLine;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 
@@ -14,9 +14,9 @@ class CalculateLineSubtotal
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\CartLine  $cartLine
+     * @param  \Lunar\Models\CartLine  $cartLine
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \GetCandy\Models\CartLine
+     * @return \Lunar\Models\CartLine
      */
     public function execute(
         CartLine $cartLine,

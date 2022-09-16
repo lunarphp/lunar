@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Discounts\Types;
+namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
-use GetCandy\Models\Discount;
+use Lunar\Models\Discount;
 use Livewire\Component;
 
 abstract class AbstractDiscountType extends Component

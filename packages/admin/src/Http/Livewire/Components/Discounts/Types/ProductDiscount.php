@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Discounts\Types;
+namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Discount;
+use Lunar\Models\Currency;
+use Lunar\Models\Discount;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 

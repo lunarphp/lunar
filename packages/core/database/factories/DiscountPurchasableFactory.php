@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\DiscountPurchasable;
-use GetCandy\Models\ProductVariant;
+use Lunar\Models\DiscountPurchasable;
+use Lunar\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DiscountPurchasableFactory extends Factory

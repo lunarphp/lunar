@@ -50,10 +50,10 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Lunar\\Discounts\\Tests\\": "packages/pro/discounts/tests",
             "Lunar\\Hub\\Tests\\": "packages/admin/tests",
             "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
-            "Lunar\\Tests\\": "packages/core/tests",
-            "Lunar\\Discounts\\Tests\\": "packages/pro/discounts/tests"
+            "Lunar\\Tests\\": "packages/core/tests"
         }
     },
     "extra": {

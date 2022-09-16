@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Base\DataTransferObjects\CartDiscount;
-use GetCandy\Base\DiscountManagerInterface;
-use GetCandy\DiscountTypes\Coupon;
-use GetCandy\DiscountTypes\ProductDiscount;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Discount;
+use Lunar\Base\DataTransferObjects\CartDiscount;
+use Lunar\Base\DiscountManagerInterface;
+use Lunar\DiscountTypes\Coupon;
+use Lunar\DiscountTypes\ProductDiscount;
+use Lunar\Models\CartLine;
+use Lunar\Models\Discount;
 use Illuminate\Support\Collection;
 
 class DiscountManager implements DiscountManagerInterface

@@ -389,8 +389,8 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.discounts.create', DiscountCreate::class);
 
         // dd((new Coupon)->getName());
-        Livewire::component('get-candy.hub.http.livewire.components.discounts.types.coupon', Coupon::class);
-        Livewire::component('get-candy.hub.http.livewire.components.discounts.types.product-discount', ProductDiscount::class);
+        Livewire::component('lunar.hub.http.livewire.components.discounts.types.coupon', Coupon::class);
+        Livewire::component('lunar.hub.http.livewire.components.discounts.types.product-discount', ProductDiscount::class);
     }
 
     /**

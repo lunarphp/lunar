@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Editing;
+namespace Lunar\Hub\Editing;
 
-use GetCandy\DiscountTypes\Coupon;
-use GetCandy\DiscountTypes\ProductDiscount;
-use GetCandy\Hub\Http\Livewire\Components\Discounts\Types\Coupon as TypesCoupon;
-use GetCandy\Hub\Http\Livewire\Components\Discounts\Types\ProductDiscount as TypesProductDiscount;
+use Lunar\DiscountTypes\Coupon;
+use Lunar\DiscountTypes\ProductDiscount;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Coupon as TypesCoupon;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\ProductDiscount as TypesProductDiscount;
 
 class DiscountTypes
 {

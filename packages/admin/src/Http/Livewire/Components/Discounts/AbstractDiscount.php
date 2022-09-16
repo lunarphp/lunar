@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Discounts;
+namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
-use GetCandy\Facades\Discounts;
-use GetCandy\Hub\Editing\DiscountTypes;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Collection as ModelsCollection;
-use GetCandy\Models\Discount;
+use Lunar\Facades\Discounts;
+use Lunar\Hub\Editing\DiscountTypes;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Discount;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Livewire\Component;

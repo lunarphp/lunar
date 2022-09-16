@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Discounts\Types;
+namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
-use GetCandy\Models\Currency;
+use Lunar\Models\Currency;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 

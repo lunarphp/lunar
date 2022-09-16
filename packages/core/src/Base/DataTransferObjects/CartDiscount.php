@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\DataTransferObjects;
+namespace Lunar\Base\DataTransferObjects;
 
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Discount;
+use Lunar\Models\CartLine;
+use Lunar\Models\Discount;
 
 class CartDiscount
 {

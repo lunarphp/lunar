@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Facades;
+namespace Lunar\Facades;
 
-use GetCandy\Base\DiscountManagerInterface;
+use Lunar\Base\DiscountManagerInterface;
 use Illuminate\Support\Facades\Facade;
 
 class Discounts extends Facade

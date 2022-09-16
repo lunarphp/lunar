@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\CartLine;
+use Lunar\Models\CartLine;
 
 interface DiscountTypeInterface
 {

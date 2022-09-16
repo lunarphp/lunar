@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Tests\Stubs;
+namespace Lunar\Tests\Stubs;
 
-use GetCandy\DiscountTypes\AbstractDiscountType;
-use GetCandy\Models\CartLine;
+use Lunar\DiscountTypes\AbstractDiscountType;
+use Lunar\Models\CartLine;
 
 class TestDiscountType extends AbstractDiscountType
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Discounts;
+namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
-use GetCandy\Models\Discount;
+use Lunar\Models\Discount;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;

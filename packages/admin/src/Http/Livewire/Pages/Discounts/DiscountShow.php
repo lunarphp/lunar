@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Discounts;
+namespace Lunar\Hub\Http\Livewire\Pages\Discounts;
 
-use GetCandy\Models\Discount;
+use Lunar\Models\Discount;
 use Livewire\Component;
 
 class DiscountShow extends Component

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Database\Factories\DiscountPurchasableFactory;
-use GetCandy\Discounts\Database\Factories\DiscountFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Database\Factories\DiscountPurchasableFactory;
+use Lunar\Discounts\Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

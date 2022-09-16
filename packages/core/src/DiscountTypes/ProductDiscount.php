@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\DiscountTypes;
+namespace Lunar\DiscountTypes;
 
-use GetCandy\Base\DataTransferObjects\CartDiscount;
-use GetCandy\DataTypes\Price;
-use GetCandy\Facades\Discounts;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Discount;
+use Lunar\Base\DataTransferObjects\CartDiscount;
+use Lunar\DataTypes\Price;
+use Lunar\Facades\Discounts;
+use Lunar\Models\CartLine;
+use Lunar\Models\Discount;
 
 class ProductDiscount
 {

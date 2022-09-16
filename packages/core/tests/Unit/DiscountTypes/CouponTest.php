@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\DiscountTypes;
+namespace Lunar\Tests\Unit\DiscountTypes;
 
-use GetCandy\DiscountTypes\Coupon;
-use GetCandy\Managers\CartManager;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Discount;
-use GetCandy\Models\Price;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\TestCase;
+use Lunar\DiscountTypes\Coupon;
+use Lunar\Managers\CartManager;
+use Lunar\Models\Cart;
+use Lunar\Models\Currency;
+use Lunar\Models\Discount;
+use Lunar\Models\Price;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

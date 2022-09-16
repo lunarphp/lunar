@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Managers;
+namespace Lunar\Tests\Unit\Managers;
 
-use GetCandy\Base\DataTransferObjects\CartDiscount;
-use GetCandy\Base\DiscountManagerInterface;
-use GetCandy\Managers\DiscountManager;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Discount;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\Stubs\TestDiscountType;
-use GetCandy\Tests\TestCase;
+use Lunar\Base\DataTransferObjects\CartDiscount;
+use Lunar\Base\DiscountManagerInterface;
+use Lunar\Managers\DiscountManager;
+use Lunar\Models\CartLine;
+use Lunar\Models\Discount;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Stubs\TestDiscountType;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\DiscountTypes\Coupon;
-use GetCandy\Models\Discount;
+use Lunar\DiscountTypes\Coupon;
+use Lunar\Models\Discount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

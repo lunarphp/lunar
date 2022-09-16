@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\DiscountTypes;
+namespace Lunar\DiscountTypes;
 
-use GetCandy\Base\DiscountTypeInterface;
-use GetCandy\Models\Discount;
+use Lunar\Base\DiscountTypeInterface;
+use Lunar\Models\Discount;
 
 abstract class AbstractDiscountType implements DiscountTypeInterface
 {

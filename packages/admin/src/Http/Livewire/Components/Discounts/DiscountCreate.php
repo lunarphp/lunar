@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Discounts;
+namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
-use GetCandy\DiscountTypes\Coupon;
-use GetCandy\Models\Discount;
+use Lunar\DiscountTypes\Coupon;
+use Lunar\Models\Discount;
 use Illuminate\Support\Str;
 
 class DiscountCreate extends AbstractDiscount

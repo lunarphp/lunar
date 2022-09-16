@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Database\Factories\DiscountFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;

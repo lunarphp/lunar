@@ -1,8 +1,8 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Pages\Discounts\DiscountCreate;
-use GetCandy\Hub\Http\Livewire\Pages\Discounts\DiscountShow;
-use GetCandy\Hub\Http\Livewire\Pages\Discounts\DiscountsIndex;
+use Lunar\Hub\Http\Livewire\Pages\Discounts\DiscountCreate;
+use Lunar\Hub\Http\Livewire\Pages\Discounts\DiscountShow;
+use Lunar\Hub\Http\Livewire\Pages\Discounts\DiscountsIndex;
 use Illuminate\Support\Facades\Route;
 
 /**
