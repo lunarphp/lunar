@@ -183,7 +183,7 @@ class CustomerShow extends Component
     {
         return Attribute::whereAttributeType(Customer::class)->orderBy('position')->get();
     }
-    
+
     protected function getListeners()
     {
         return array_merge([],
@@ -207,7 +207,7 @@ class CustomerShow extends Component
         $this->customer->attribute_data = $this->prepareAttributeData();
 
         $this->customer->save();
-        
+
         $this->updateSlots();
 
         $this->notify(
@@ -555,7 +555,7 @@ class CustomerShow extends Component
         return view('adminhub::livewire.components.customers.show')
             ->layout('adminhub::layouts.base');
     }
-    
+
     /*
      * Returns the model which has slots associated.
      *
