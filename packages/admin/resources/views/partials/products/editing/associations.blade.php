@@ -60,13 +60,13 @@
 
           <tbody>
             @foreach($associations->filter(fn($product) => $product['inverse'] == $showInverseAssociations) as $index => $product)
-              <tr class="lt-bg-white even:lt-bg-gray-50" wire:key="table_row_{{ $product['id'] }}">
+              <tr class="lt-bg-white even:lt-bg-gray-50" wire:key="table_row_{{ $product['target_id'] }}">
                 <x-tables::cell>
                   <img src="{{ $product['thumbnail']}}" class="w-12 rounded">
                 </x-tables::cell>
 
                 <x-tables::cell>
-                  <a href="{{ route('hub.products.show', $product['id']) }}" class="lt-text-blue-600 hover:underline">
+                  <a href="{{ route('hub.products.show', $product['target_id']) }}" class="lt-text-blue-600 hover:underline">
                     {{ $product['name'] }}
                   </a>
                 </x-tables::cell>
