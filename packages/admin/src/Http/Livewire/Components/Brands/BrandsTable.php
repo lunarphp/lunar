@@ -33,7 +33,7 @@ class BrandsTable extends LunarTable
             TextColumn::make('name')->url(function ($record) {
                 return route('hub.brands.show', $record->id);
             }),
-            TextColumn::make('products_count')
+            TextColumn::make('products_count'),
         ]);
     }
 
