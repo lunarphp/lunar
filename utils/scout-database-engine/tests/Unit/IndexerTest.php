@@ -33,6 +33,26 @@ class IndexerTest extends TestCase
     }
 
     /** @test */
+    public function can_index_a_post_with_nulls()
+    {
+        $post = new Post();
+        $post->title = 'Example Post';
+        $post->body = null;
+        $post->save();
+
+        $this->assertInstanceOf(Post::class, $post);
+
+        $this->assertDatabaseCount('search_index', 2);
+
+        $this->assertDatabaseHas('search_index', [
+            'key' => $post->getScoutKey(),
+            'index' => $post->searchableAs(),
+            'field' => 'body',
+            'content' => '',
+        ]);
+    }
+
+    /** @test */
     public function deletes_outdated_index_data()
     {
         $searchIndex = new SearchIndex();
