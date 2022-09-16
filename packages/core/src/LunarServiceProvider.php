@@ -3,8 +3,6 @@
 namespace Lunar;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
-use Lunar\Base\DiscountManagerInterface;
-use Lunar\Managers\DiscountManager;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -22,6 +20,7 @@ use Lunar\Base\AttributeManifestInterface;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Base\CartModifiers;
 use Lunar\Base\CartSessionInterface;
+use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Base\ModelManifest;
@@ -47,6 +46,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
+use Lunar\Managers\DiscountManager;
 use Lunar\Managers\PaymentManager;
 use Lunar\Managers\PricingManager;
 use Lunar\Managers\TaxManager;

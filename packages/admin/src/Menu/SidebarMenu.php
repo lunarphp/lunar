@@ -73,6 +73,7 @@ class SidebarMenu
             )->handle('hub.discounts')
             ->route('hub.discounts.index')
             ->icon('ticket');
+        });
 
         $slot->addItem(function ($item) {
             $item->name(

@@ -2,7 +2,6 @@
 
 namespace Lunar\Models;
 
-use Lunar\Discounts\Models\DiscountReward;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
@@ -12,6 +11,7 @@ use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
+use Lunar\Discounts\Models\DiscountReward;
 use Lunar\Managers\CartManager;
 
 class Cart extends BaseModel

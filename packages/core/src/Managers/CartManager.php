@@ -2,7 +2,6 @@
 
 namespace Lunar\Managers;
 
-use Lunar\Facades\Discounts;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
@@ -20,6 +19,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\Carts\ShippingAddressMissingException;
 use Lunar\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Exceptions\MaximumCartLineQuantityException;
+use Lunar\Facades\Discounts;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
