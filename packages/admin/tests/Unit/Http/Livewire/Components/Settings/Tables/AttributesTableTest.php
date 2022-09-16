@@ -40,7 +40,6 @@ class AttributesTableTest extends TestCase
 
         $types = AttributeManifest::getTypes();
 
-
         $component = Livewire::actingAs($staff, 'staff')->test(AttributesTable::class)
                         ->assertViewIs('tables::index');
 
