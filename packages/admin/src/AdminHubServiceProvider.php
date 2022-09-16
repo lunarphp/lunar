@@ -52,6 +52,7 @@ use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
 use Lunar\Hub\Http\Livewire\Components\Products\Tables\ProductsTable;
+use Lunar\Hub\Http\Livewire\Components\Products\Tables\ProductTypesTable;
 use Lunar\Hub\Http\Livewire\Components\Products\Tables\ProductVariantsTable;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
