@@ -14,8 +14,8 @@
             type="button"
             @class([
                 'text-sm rounded-md py-1 px-3' => true,
-                'bg-gray-100 text-gray-700 font-medium hover:bg-gray-200' => $this->discount->data['fixed_value'],
-                'bg-blue-500 text-white font-medium' => !$this->discount->data['fixed_value']
+                'bg-gray-100 text-gray-700 font-medium hover:bg-gray-200' => !empty($this->discount->data['fixed_value']),
+                'bg-blue-500 text-white font-medium' => empty($this->discount->data['fixed_value'])
             ])
         >
             Percentage
@@ -25,15 +25,15 @@
             type="button"
             @class([
                 'text-sm rounded-md py-1 px-3' => true,
-                'bg-gray-100 text-gray-700 font-medium hover:bg-gray-200' => !$this->discount->data['fixed_value'],
-                'bg-blue-500 text-white font-medium' => $this->discount->data['fixed_value']
+                'bg-gray-100 text-gray-700 font-medium hover:bg-gray-200' => empty($this->discount->data['fixed_value']),
+                'bg-blue-500 text-white font-medium' => $this->discount->data['fixed_value'] ?? false
             ])
         >
             Fixed amount
         </button>
     </div>
 
-    <div @class(['hidden' => !$this->discount->data['fixed_value'] ?? false])>
+    <div @class(['hidden' => !($this->discount->data['fixed_value'] ?? false)])>
         @foreach($this->currencies as $currency)
             <x-hub::input.group
                 for="{{ $currency->code }}"
