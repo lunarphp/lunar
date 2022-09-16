@@ -41,24 +41,24 @@ class CollectionGroupIndexTest extends TestCase
             ->assertStatus(403);
     }
 
-    /** @test */
-    public function can_view_page_with_correct_permission()
-    {
-        $staff = Staff::factory()->create([
-            'admin' => false,
-        ]);
-
-        $staff->permissions()->createMany([
-            [
-                'handle' => 'catalogue:manage-collections',
-            ],
-        ]);
-
-        $this->actingAs($staff, 'staff');
-
-        $this->get(route('hub.collection-groups.index'))
-            ->assertSeeLivewire('hub.components.collections.collection-groups.index');
-    }
+//     /** @test */
+//     public function can_view_page_with_correct_permission()
+//     {
+//         $staff = Staff::factory()->create([
+//             'admin' => false,
+//         ]);
+//
+//         $staff->permissions()->createMany([
+//             [
+//                 'handle' => 'catalogue:manage-collections',
+//             ],
+//         ]);
+//
+//         $this->actingAs($staff, 'staff');
+//
+//         $this->get(route('hub.collection-groups.index'))
+//             ->assertSeeLivewire('hub.components.collections.collection-groups.index');
+//     }
 
     /** @test */
     public function will_redirect_to_collection_group_if_exists()
