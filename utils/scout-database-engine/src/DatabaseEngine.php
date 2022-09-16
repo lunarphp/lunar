@@ -55,7 +55,7 @@ class DatabaseEngine extends Engine
                     'key' => $model->getScoutKey(),
                     'index' => $model->searchableAs(),
                     'field' => $field,
-                    'content' => $data,
+                    'content' => $data ?? '',
                 ];
             });
 
