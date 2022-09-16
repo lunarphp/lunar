@@ -21,7 +21,6 @@
   <testsuites>
     <testsuite name="Unit">
       <directory suffix="Test.php">packages/**/tests</directory>
-      <directory suffix="Test.php">utils/**/tests</directory>
     </testsuite>
     <testsuite name="Utils">
       <directory suffix="Test.php">utils/**/tests</directory>
