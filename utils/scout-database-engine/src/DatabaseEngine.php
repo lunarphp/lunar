@@ -50,7 +50,12 @@ class DatabaseEngine extends Engine
                 return;
             }
 
-            $indexes = collect($searchableData)->map(function ($data, $field) use ($model) {
+            $indexes = collect($searchableData)->filter()->map(function ($data, $field) use ($model) {
+
+                if (is_iterable($data)) {
+                    $data = json_encode($data);
+                }
+
                 return [
                     'key' => $model->getScoutKey(),
                     'index' => $model->searchableAs(),
