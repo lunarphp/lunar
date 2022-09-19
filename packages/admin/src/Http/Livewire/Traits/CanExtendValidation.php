@@ -1,9 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Closure;
-use Illuminate\Support\Facades\Log;
 
 trait CanExtendValidation
 {
