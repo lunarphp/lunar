@@ -220,6 +220,7 @@ class VariantShow extends Component
                 $file = null;
                 $imageEdited = false;
                 $previousMediaId = false;
+                $previousMedia = null;
 
                 // edited image
                 if ($image['file'] ?? false && $image['file'] instanceof TemporaryUploadedFile) {
@@ -262,8 +263,8 @@ class VariantShow extends Component
                         ->log('added_image');
 
                     // Add ID for future and processing now.
-
                     $this->images[$key]['id'] = $media->id;
+
                     // reset image thumbnail
                     if ($imageEdited) {
                         $this->images[$key]['thumbnail'] = $media->getFullUrl('medium');
@@ -284,21 +285,28 @@ class VariantShow extends Component
                                 }
                             });
 
-                            $owner->media()->find($previousMediaId)->delete();
+                            $previousMedia = $owner->media()->find($previousMediaId);
+                            $previousMedia->delete();
                         }
                     }
 
                     $image['id'] = $media->id;
 
                     $newImage = true;
+                } else {
+                    $media = app(config('media-library.media_model'))::find($image['id']);
                 }
 
-                $media = app(config('media-library.media_model'))::find($image['id']);
-
                 if ($newImage) {
-                    $media->setCustomProperty('caption', $image['caption']);
-                    $media->setCustomProperty('primary', false);
-                    $media->setCustomProperty('position', $owner->media()->count() + 1);
+                    if ($imageEdited) {
+                        $media->setCustomProperty('caption', $previousMedia->getCustomProperty('caption', $image['caption']));
+                        $media->setCustomProperty('primary', $previousMedia->getCustomProperty('primary', false));
+                        $media->setCustomProperty('position', $previousMedia->getCustomProperty('position', $owner->media()->count() + 1));
+                    } else {
+                        $media->setCustomProperty('caption', $image['caption']);
+                        $media->setCustomProperty('primary', false);
+                        $media->setCustomProperty('position', $owner->media()->count() + 1);
+                    }
                     $media->save();
                 }
 
