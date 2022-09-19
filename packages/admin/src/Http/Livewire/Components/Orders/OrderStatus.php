@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Orders;
+namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Order;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Order;
 
 class OrderStatus extends Component
 {
@@ -105,7 +105,7 @@ class OrderStatus extends Component
      */
     public function getStatusesProperty()
     {
-        return config('getcandy.orders.statuses', []);
+        return config('lunar.orders.statuses', []);
     }
 
     /**

@@ -1,14 +1,15 @@
 <?php
 
-namespace GetCandy\Tests;
+namespace Lunar\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
-use GetCandy\GetCandyServiceProvider;
-use GetCandy\Tests\Stubs\TestUrlGenerator;
-use GetCandy\Tests\Stubs\User;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
+use Lunar\LunarServiceProvider;
+use Lunar\Tests\Stubs\TestUrlGenerator;
+use Lunar\Tests\Stubs\User;
 use Spatie\Activitylog\ActivitylogServiceProvider;
+use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -18,18 +19,19 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
         // additional setup
         Config::set('providers.users.model', User::class);
-        Config::set('getcandy.urls.generator', TestUrlGenerator::class);
+        Config::set('lunar.urls.generator', TestUrlGenerator::class);
         activity()->disableLogging();
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            GetCandyServiceProvider::class,
+            LunarServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ActivitylogServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
+            BlinkServiceProvider::class,
         ];
     }
 

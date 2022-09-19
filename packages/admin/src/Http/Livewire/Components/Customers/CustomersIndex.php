@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Customers;
+namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Attribute;
+use Lunar\Models\Customer;
 
 class CustomersIndex extends Component
 {
@@ -57,7 +57,7 @@ class CustomersIndex extends Component
      */
     public function getMetaFieldsProperty()
     {
-        return collect(config('getcandy-hub.customers.searchable_meta'));
+        return collect(config('lunar-hub.customers.searchable_meta'));
     }
 
     /**

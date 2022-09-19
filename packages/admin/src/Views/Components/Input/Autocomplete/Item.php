@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components\Input\Autocomplete;
+namespace Lunar\Hub\Views\Components\Input\Autocomplete;
 
 use Illuminate\View\Component;
 

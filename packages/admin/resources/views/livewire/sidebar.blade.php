@@ -43,7 +43,7 @@
                    'menu-link--inactive' => !Str::contains(request()->url(), 'settings'),
                ])
                :class="{ 'group': !showExpandedMenu }">
-                {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-5 h-5') !!}
+                {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
 
                 <span x-cloak
                       x-show="showExpandedMenu"

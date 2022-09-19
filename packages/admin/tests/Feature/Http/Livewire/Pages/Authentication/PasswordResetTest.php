@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages\Authentication;
+namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Authentication;
 
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.auth

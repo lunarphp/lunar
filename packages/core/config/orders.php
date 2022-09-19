@@ -1,6 +1,6 @@
 <?php
 
-use GetCandy\Base\OrderReferenceGenerator;
+use Lunar\Base\OrderReferenceGenerator;
 
 return [
     /*

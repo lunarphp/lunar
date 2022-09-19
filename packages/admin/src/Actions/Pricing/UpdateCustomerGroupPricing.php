@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Actions\Pricing;
+namespace Lunar\Hub\Actions\Pricing;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

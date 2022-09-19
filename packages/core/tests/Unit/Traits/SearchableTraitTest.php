@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Traits;
+namespace Lunar\Tests\Unit\Traits;
 
-use GetCandy\Models\Product;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Lunar\Models\Product;
+use Lunar\Tests\TestCase;
 
 /**
  * @group traits

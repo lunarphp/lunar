@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Address;
-use GetCandy\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Address;
+use Lunar\Models\Country;
 
 class AddressFactory extends Factory
 {

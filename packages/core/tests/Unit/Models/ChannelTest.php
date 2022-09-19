@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Channel;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Channel;
+use Lunar\Tests\TestCase;
 
 class ChannelTest extends TestCase
 {

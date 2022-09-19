@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Models\Url;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Models\Url;
 
 trait HasUrls
 {
@@ -15,7 +15,7 @@ trait HasUrls
     public static function bootHasUrls()
     {
         static::created(function (Model $model) {
-            $generator = config('getcandy.urls.generator', null);
+            $generator = config('lunar.urls.generator', null);
             if ($generator) {
                 app($generator)->handle($model);
             }

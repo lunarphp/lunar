@@ -1,4 +1,4 @@
-name: GetCandy Tests
+name: Lunar Tests
 on:
   pull_request:
 defaults:

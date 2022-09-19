@@ -79,7 +79,10 @@
                     </div>
                 </div>
                 <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
-                     @if ($group->attributes->count()) x-show="expanded" @endif>
+                     @if ($group->attributes->count())
+                        x-cloak
+                        x-show="expanded" 
+                     @endif>
                     <div class="space-y-2"
                          wire:sort
                          sort.options='{group: "attributes", method: "sortAttributes", owner: {{ $group->id }}}'

@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Product;
 
 class AttributeFactory extends Factory
 {
@@ -25,7 +25,7 @@ class AttributeFactory extends Factory
             ],
             'handle'        => Str::slug($this->faker->name()),
             'section'       => $this->faker->name(),
-            'type'          => \GetCandy\FieldTypes\Text::class,
+            'type'          => \Lunar\FieldTypes\Text::class,
             'required'      => false,
             'default_value' => '',
             'configuration' => [

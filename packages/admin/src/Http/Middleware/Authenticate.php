@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Middleware;
+namespace Lunar\Hub\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
@@ -30,12 +30,8 @@ class Authenticate extends Middleware
      */
     protected function authenticate($request, array $guards)
     {
-        $check = $this->auth->guard('staff')->check();
-
-        if ($check) {
-            return $this->auth->shouldUse('staff');
-        }
-
-        $this->unauthenticated($request, $guards);
+        $this->auth->guard('staff')->check()
+            ? $this->auth->shouldUse('staff')
+            : $this->unauthenticated($request, $guards);
     }
 }

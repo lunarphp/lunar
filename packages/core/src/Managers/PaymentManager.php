@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\PaymentTypes\OfflinePayment;
 use Illuminate\Support\Manager;
 use Illuminate\Support\Str;
+use Lunar\PaymentTypes\OfflinePayment;
 
 class PaymentManager extends Manager
 {
@@ -25,7 +25,7 @@ class PaymentManager extends Manager
     {
         $originalDriver = $driver;
 
-        $type = config("getcandy.payments.types.{$driver}");
+        $type = config("lunar.payments.types.{$driver}");
 
         $driver = $type['driver'] ?? $originalDriver;
 
@@ -64,6 +64,6 @@ class PaymentManager extends Manager
 
     public function getDefaultDriver()
     {
-        return config('getcandy.payments.default');
+        return config('lunar.payments.default');
     }
 }

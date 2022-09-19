@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Search;
+namespace Lunar\Hub\Search;
 
-use GetCandy\Hub\DataTransferObjects\Search\Facet;
-use GetCandy\Hub\DataTransferObjects\Search\FacetField;
-use GetCandy\Hub\DataTransferObjects\Search\Facets;
-use GetCandy\Hub\DataTransferObjects\Search\SearchResults;
-use GetCandy\Models\Order;
+use Lunar\Hub\DataTransferObjects\Search\Facet;
+use Lunar\Hub\DataTransferObjects\Search\FacetField;
+use Lunar\Hub\DataTransferObjects\Search\Facets;
+use Lunar\Hub\DataTransferObjects\Search\SearchResults;
+use Lunar\Models\Order;
 
 class OrderSearch extends AbstractSearch
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Observers;
+namespace Lunar\Tests\Unit\Observers;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Tests\TestCase;
 use Spatie\Activitylog\Models\Activity;
 
 /**

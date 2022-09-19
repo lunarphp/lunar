@@ -2,9 +2,7 @@
     <div class="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-100 sm:px-6 lg:px-8">
         <a href="{{ route('hub.index') }}"
            class="block">
-            <img class="w-8 h-8"
-                 src="https://markmead.dev/gc-favicon.svg"
-                 alt="GetCandy Logo">
+            <x-hub::branding.logo iconOnly />
         </a>
 
         <div class="flex items-center gap-4">

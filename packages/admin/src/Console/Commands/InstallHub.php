@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Console\Commands;
+namespace Lunar\Hub\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 class InstallHub extends Command
 {
     protected $commands = [
-        'vendor:publish --tag=getcandy:hub:public --force',
+        'vendor:publish --tag=lunar:hub:public --force',
     ];
 
     /**
@@ -16,7 +16,7 @@ class InstallHub extends Command
      *
      * @var string
      */
-    protected $signature = 'getcandy:hub:install';
+    protected $signature = 'lunar:hub:install';
 
     /**
      * The console command description.

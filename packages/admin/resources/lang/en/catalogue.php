@@ -87,6 +87,12 @@ return [
     'product-types.show.delete.minimum_required'    => 'You cannot delete the only product type.',
     'product-types.attribute.no_attributes'         => 'There are no attributes to select in this group',
     /**
+     * Brands.
+     */
+    'brands.index.title'          => 'Brands',
+    'brands.create.title'         => 'Create Brand',
+    'brands.show.back_link_title' => 'Go back to brands',
+    /**
      * Customers.
      */
     'customers.index.title'                             => 'Customers',

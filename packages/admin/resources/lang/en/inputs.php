@@ -68,6 +68,7 @@ return [
     'tax_ref.instructions' => 'Add the third party tax reference, if required.',
     'company_name.label'                    => 'Company Name',
     'vat_no.label'                    => 'Vat No.',
+    'account_ref.label' => 'Account Reference',
     'from_date.label'                       => 'From Date',
     'to_date.label'                         => 'To Date',
     'select_option.label'                     => 'Select an option',

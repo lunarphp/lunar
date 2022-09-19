@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\DataTransferObjects\Search;
+namespace Lunar\Hub\DataTransferObjects\Search;
 
 class FacetField
 {

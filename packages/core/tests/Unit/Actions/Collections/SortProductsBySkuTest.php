@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Collections;
+namespace Lunar\Tests\Unit\Actions\Collections;
 
-use GetCandy\Actions\Collections\SortProductsBySku;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Actions\Collections\SortProductsBySku;
+use Lunar\Models\Collection;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.actions
+ * @group lunar.actions
  */
 class SortProductsBySkuTest extends TestCase
 {

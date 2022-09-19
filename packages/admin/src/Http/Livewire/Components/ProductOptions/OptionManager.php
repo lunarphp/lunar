@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\ProductOptions;
+namespace Lunar\Hub\Http\Livewire\Components\ProductOptions;
 
-use GetCandy\Models\ProductOption;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Lunar\Models\ProductOption;
 
 class OptionManager extends Component
 {

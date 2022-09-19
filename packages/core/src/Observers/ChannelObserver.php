@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Observers;
+namespace Lunar\Observers;
 
-use GetCandy\Models\Channel;
+use Lunar\Models\Channel;
 
 class ChannelObserver
 {
     /**
      * Handle the User "created" event.
      *
-     * @param  \GetCandy\Models\Channel  $channel
+     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function created(Channel $channel)
@@ -20,7 +20,7 @@ class ChannelObserver
     /**
      * Handle the User "updated" event.
      *
-     * @param  \GetCandy\Models\Channel  $channel
+     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function updated(Channel $channel)
@@ -31,7 +31,7 @@ class ChannelObserver
     /**
      * Handle the User "deleted" event.
      *
-     * @param  \GetCandy\Models\Channel  $channel
+     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function deleted(Channel $channel)
@@ -42,7 +42,7 @@ class ChannelObserver
     /**
      * Handle the User "forceDeleted" event.
      *
-     * @param  \GetCandy\Models\Channel  $channel
+     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function forceDeleted(Channel $channel)

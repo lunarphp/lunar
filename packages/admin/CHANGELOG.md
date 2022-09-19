@@ -3,13 +3,38 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-### [Unreleased]
+### [ Unreleased ]
+
+## Added
+
+- Added `account_ref` to customers.
+
+## Changed
+
+- Images now use the `images` media collection name. The hub now only shows images in this collection.
+
+## Fixed
+
+- When migrating fresh, the transaction table migrations were out of order.  Changed the type when making nullable.
+- Added `wire:key` to URL management
+- When setting a new `default` URL whilst editing, other existing `default` values are set to `false`
+- Moved the activity log on product variants outside the form element as this was conflicting.
+- ProductVariants now have comments enabled.
+
+### 2.0-beta15 - 2022-08-10
+
+## Changed
+
+- `savePricing` on the `Lunar\Hub\Http\Livewire\Traits\HasPrices` trait now supports `basePrices` and `tierPrices` parameters.
 
 ## Fixed
 
 - When variants are disabled, editing a product type will not longer display tabs for variant attributes.
 - Fixed an issue where adding a comment to the activity log would error.
 - Comments should now show correctly on product editing pages.
+- Sortable is now attached to the browser window so it's globally available.
+- Fixed an issue where incorrect attributes were showing when changing product types
+- `doctrine/dbal` locked to `3.3.7` due to issue with Sqlite 
 
 ### 2.0-beta14 - 2022-08-03
 
@@ -26,7 +51,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Added
 
-- Migrations are now publishable under the tag `getcandy-migrations`.
+- Migrations are now publishable under the tag `lunar-migrations`.
 - Added current and purchase stock level to order lines.
 - Added order notifications to order status updates.
 - Added Tax Management screens.
@@ -43,7 +68,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Datepicker component now supports passing whole array of config.
 - The stock level on order lines will show if present in the meta.
 - Slots have been added to the order screen.
-- Migrations are now publishable under the tag `getcandy-migrations`.
+- Migrations are now publishable under the tag `lunar-migrations`.
 - UI update across the board.
 
 ## Fixed
@@ -79,14 +104,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - The Quill editor now has some added spacing between elements such as Paragraphs.
 - If a fieldtype class no longer exists, the editing pages will now remove it and prevent the associated errors.
-- When deleting a collection with descendants, their relationships will now be factored in. [#292](https://github.com/getcandy/getcandy/issues/292)
+- When deleting a collection with descendants, their relationships will now be factored in. [#292](https://github.com/lunarphp/lunar/issues/292)
 - When deleting a collection, their URLs will now also be removed.
 
 ## Changed
 
-- Collection tree now uses a Livewire approach for loading, which should reduce the load on the browser. [#274](https://github.com/getcandy/getcandy/pull/274)
+- Collection tree now uses a Livewire approach for loading, which should reduce the load on the browser. [#274](https://github.com/lunarphp/lunar/pull/274)
 
-[View Changes](https://github.com/getcandy/admin/compare/2.0-beta12...2.0-beta13)
+[View Changes](https://github.com/lunarphp/admin/compare/2.0-beta12...2.0-beta13)
 
 ## 2.0-beta12 - 2022-04-08
 
@@ -95,13 +120,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Updated exchange rate validation to allow values greater than 255.
 - Fixed references to DB connection. By [@ryanmitchell](https://github.com/ryanmitchell)
 
-[View Changes](https://github.com/getcandy/admin/compare/2.0-beta11...2.0-beta12)
+[View Changes](https://github.com/lunarphp/admin/compare/2.0-beta11...2.0-beta12)
 
 ## 2.0-beta11 - 2022-04-04
 
 ## Added
 
-- Added new config option `disable_variants` to `getcandy-hub/products.php`. This is set to `false` by default so variants remain enabled.
+- Added new config option `disable_variants` to `lunar-hub/products.php`. This is set to `false` by default so variants remain enabled.
 - Added validation message for URLs when editing a product
 - Added `slug` field when creating a new collection and URLs are required.
 - Added ability to save searches on the orders table.
@@ -118,9 +143,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Customer screens have been completely overhauled.
 - Order screens has been completely overhauled.
 - Complete rewrite to the orders table.
-- The way order statuses are defined in `config/getcandy/orders.php` has changed, see upgrade guide for detais.
+- The way order statuses are defined in `config/lunar/orders.php` has changed, see upgrade guide for detais.
 
-[View Changes](https://github.com/getcandy/admin/compare/2.0-beta10.1...2.0-beta11)
+[View Changes](https://github.com/lunarphp/admin/compare/2.0-beta10.1...2.0-beta11)
 
 ## 2.0-beta10.1 - 2022-02-19
 
@@ -128,7 +153,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Issue with unauthorised messages in the hub.
 
-[View Changes](https://github.com/getcandy/admin/compare/2.0-beta9...2.0-beta10.1)
+[View Changes](https://github.com/lunarphp/admin/compare/2.0-beta9...2.0-beta10.1)
 
 ## 2.0-beta10 - 2022-02-18
 
@@ -139,9 +164,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- GetCandy will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
+- Lunar will now register it's bindings in the `boot` method of the service providers. By [@edcoreweb](https://github.com/edcoreweb)
 
-[View Changes](https://github.com/getcandy/admin/compare/2.0-beta9...2.0-beta10)
+[View Changes](https://github.com/lunarphp/admin/compare/2.0-beta9...2.0-beta10)
 
 ## 2.0-beta9 - 2022-02-11
 
@@ -150,7 +175,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - When editing a product variant, you should now be able to select an image and save.
 - Image browser on variants is now scrollable to fix an issue with it going off screen.
 
-[View Changes](https://github.com/getcandy/admin/compare/2.0-beta8...2.0-beta9)
+[View Changes](https://github.com/lunarphp/admin/compare/2.0-beta8...2.0-beta9)
 
 ## 2.0-beta8 - 2022-02-01
 
@@ -169,7 +194,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added editable `tax_ref` field under pricing for products and variants.
 
-[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta7...2.0-beta8)
+[View Changes](https://github.com/lunarphp/lunar/compare/2.0-beta7...2.0-beta8)
 
 ## 2.0-beta7 - 2022-01-19
 
@@ -182,7 +207,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Complete rework on how attributes are edited/created in the hub
 - When saving a product it will now be wrapped in a transaction to prevent data corruption on error.
-- Removed dependency on `livewire-ui/modal` package since it was only used in one place. ([#47](https://github.com/getcandy/getcandy/issues/47)).
+- Removed dependency on `livewire-ui/modal` package since it was only used in one place. ([#47](https://github.com/lunarphp/lunar/issues/47)).
 - Removed `Basket` model since it's completely redundant.
 - Alpine JS has been updated to v3.
 
@@ -195,31 +220,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added an additional list `FieldType`.
 - Tag editing screens have been added by [@briavers](https://github.com/briavers).
 
-[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta6...2.0-beta7)
+[View Changes](https://github.com/lunarphp/lunar/compare/2.0-beta6...2.0-beta7)
 
 ## 2.0-beta6 - 2022-01-10
 
 ### Fixed
 
-- Use Alpine JS `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) ([#41])(https://github.com/getcandy/getcandy/issues/41).
+- Use Alpine JS `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) ([#41])(https://github.com/lunarphp/lunar/issues/41).
 
 ### Added
 
 - Added account section for the current staff member update their details.
 - Added password reset and remember me functionality.
 
-[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta5...2.0-beta6)
+[View Changes](https://github.com/lunarphp/lunar/compare/2.0-beta5...2.0-beta6)
 
 ## 2.0-beta5 - 2022-01-07
 
 ### Fixed
 
-- Product SKU(s) will now be displayed on listing page ([#19](https://github.com/getcandy/getcandy/issues/19)).
-- Product stock will now show correct value ([#19](https://github.com/getcandy/getcandy/issues/19)).
-- Incoming stock on product variants will show correct values on product edit page ([#19](https://github.com/getcandy/getcandy/issues/19)).
-- The name displayed on the activity log should now be accurate ([#18](https://github.com/getcandy/getcandy/issues/18)).
-- Move collection button is now disabled if no target collection is selected ([#23](https://github.com/getcandy/getcandy/issues/23)).
-- Tweaked the way attributes are mapped to Livewire to prevent issue with `@entangle` updating attributes listed ([#4](https://github.com/getcandy/getcandy/issues/4)).
+- Product SKU(s) will now be displayed on listing page ([#19](https://github.com/lunarphp/lunar/issues/19)).
+- Product stock will now show correct value ([#19](https://github.com/lunarphp/lunar/issues/19)).
+- Incoming stock on product variants will show correct values on product edit page ([#19](https://github.com/lunarphp/lunar/issues/19)).
+- The name displayed on the activity log should now be accurate ([#18](https://github.com/lunarphp/lunar/issues/18)).
+- Move collection button is now disabled if no target collection is selected ([#23](https://github.com/lunarphp/lunar/issues/23)).
+- Tweaked the way attributes are mapped to Livewire to prevent issue with `@entangle` updating attributes listed ([#4](https://github.com/lunarphp/lunar/issues/4)).
 
 ### Changed
 
@@ -230,7 +255,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Initial customer listing screen.
 - Initial customer editing screen.
 
-[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta4...2.0-beta5)
+[View Changes](https://github.com/lunarphp/lunar/compare/2.0-beta4...2.0-beta5)
 
 ## 2.0-beta4 - 2021-12-24
 
@@ -239,7 +264,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed group by statement on dashboard query by [@itcyborg](https://github.com/itcyborg).
 - Fixed support for PostgreSQL on dashboard queries.
 
-[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta3...2.0-beta4)
+[View Changes](https://github.com/lunarphp/lunar/compare/2.0-beta3...2.0-beta4)
 
 ## 2.0-beta3 - 2021-12-23
 
@@ -249,7 +274,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - There was an issue deleting a nested collection, this has been resolved.
 - Translation fixes various screens.
 
-[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta2...2.0-beta3)
+[View Changes](https://github.com/lunarphp/lunar/compare/2.0-beta2...2.0-beta3)
 
 ### Changed
 
@@ -263,7 +288,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Unit quantity validation messages now show when editing a product.
 - Fixed issue where dialog modals appeared behind the overlay, rendering them unusable.
 
-[View Changes](https://github.com/getcandy/getcandy/compare/2.0-beta...2.0-beta2)
+[View Changes](https://github.com/lunarphp/lunar/compare/2.0-beta...2.0-beta2)
 
 ## 2.0-beta - 2021-12-22
 

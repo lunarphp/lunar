@@ -8,7 +8,7 @@
 Update the package
 
 ```sh
-composer update getcandy/admin
+composer update lunar/admin
 ```
 
 Run any migrations
@@ -21,28 +21,53 @@ php artisan migrate
 Re-publish the admin hub assets
 
 ```sh
-php artisan getcandy:hub:install
+php artisan lunar:hub:install
 ```
 
 If you're using Meilisearch, run the following
 
 ```sh
-php artisan getcandy:meilisearch:setup
+php artisan lunar:meilisearch:setup
+```
+
+## [ Unreleased ]
+
+### Images now use the `images` media collection name.
+
+The way images are saved and retrieved by the Hub has changed. The Hub now saves images in the `images` collection, and only shows images from that collection.
+If you are using the old collection name `products` in your code, you'll need to update it to the new collection name.
+
+## 2.0-beta15
+
+### Removal of config based media conversions
+
+The way media conversions are defined and used has changed, you should update your `lunar/media.php` config file to the following:
+
+```php
+<?php
+
+use Lunar\Base\StandardMediaConversions;
+
+return [
+    'conversions' => [
+        StandardMediaConversions::class
+    ],
+];
 ```
 
 ## 2.0-beta14
 
 ### Removal of Macro functionality from BaseModel - Low Impact
 
-If you have custom models that extend the GetCandy `BaseModel` and are using macros, you will need to implement the new `HasMacros` trait.
+If you have custom models that extend the Lunar `BaseModel` and are using macros, you will need to implement the new `HasMacros` trait.
 
 ```php
 <?php
 
 namespace App\Models;
 
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\BaseModel;
 
 class CustomModel extends BaseModel
 {
@@ -60,7 +85,7 @@ If you currently use this feature, you will need to either publish the migration
 ```php
 <?php
 
-use GetCandy\Base\Migration;
+use Lunar\Base\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -94,8 +119,8 @@ Next you should create a `SavedCart` model.
 
 namespace App\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Models\Cart;
+use Lunar\Base\BaseModel;
+use Lunar\Models\Cart;
 
 class SavedCart extends BaseModel
 {
@@ -123,15 +148,15 @@ Finally, you will need to define a dynamic relationship if your service provider
 
 ```php
 
-\GetCandy\Models\Cart::resolveRelationshipUsing('savedCart', function ($cartModel) {
+\Lunar\Models\Cart::resolveRelationshipUsing('savedCart', function ($cartModel) {
     return $cartModel->hasOne(SavedCart::class);
 });
 ```
 
 ### Removal of `override` method for OrderReferenceGenerator - Medium Impact
 
-If you are using the `override` method to generator your own order references, this has been removed in favour of a config based approach. 
-You should update your code to reflect this, see [Orders](/getcandy/orders#order-reference-generating)
+If you are using the `override` method to generator your own order references, this has been removed in favour of a config based approach.
+You should update your code to reflect this, see [Orders](/lunar/orders#order-reference-generating)
 
 ## 2.0-beta13.2
 
@@ -205,7 +230,7 @@ public function created(Order $order, Closure $next): Order
 
 ### Additional Scout configuration
 
-It's now possible to define which Scout driver should be used on a per model basis. To enable this, add the following to `config/getcandy/search.php`
+It's now possible to define which Scout driver should be used on a per model basis. To enable this, add the following to `config/lunar/search.php`
 
 ```php
 /*
@@ -218,9 +243,9 @@ It's now possible to define which Scout driver should be used on a per model bas
 |
 */
 'engine_map' => [
-    // \GetCandy\Models\Product::class => 'algolia',
-    // \GetCandy\Models\Order::class => 'meilisearch',
-    // \GetCandy\Models\Collection::class => 'meilisearch',
+    // \Lunar\Models\Product::class => 'algolia',
+    // \Lunar\Models\Order::class => 'meilisearch',
+    // \Lunar\Models\Collection::class => 'meilisearch',
 ],
 ```
 
@@ -229,7 +254,7 @@ It's now possible to define which Scout driver should be used on a per model bas
 ### Payment driver changes.
 
 - The method `released` on Payment Drivers has been renamed to `authorize`
-- `GetCandy\Base\DataTransferObjects\PaymentRelease` has been renamed to `GetCandy\Base\DataTransferObjects\PaymentAuthorize`
+- `Lunar\Base\DataTransferObjects\PaymentRelease` has been renamed to `Lunar\Base\DataTransferObjects\PaymentAuthorize`
 
 ## 2.0-beta11
 
@@ -239,16 +264,16 @@ The `PricingManager` has been updated to use the currently authorised user by de
 
 Before
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant);
+$pricing = \Lunar\Facades\Pricing::for($variant);
 ```
 
 After
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant)->get();
+$pricing = \Lunar\Facades\Pricing::for($variant)->get();
 ```
 
 ### Disabling Variants in the Admin Hub
-There is a new configuration option under `getcandy-hub/products.php` to disable product variants. This is useful if your storefront will never need to generate different product options and you don't want staff members to be able to do it accidentally.
+There is a new configuration option under `lunar-hub/products.php` to disable product variants. This is useful if your storefront will never need to generate different product options and you don't want staff members to be able to do it accidentally.
 
 ```
 'disable_variants' => false,
@@ -259,26 +284,26 @@ If your storefront already supports variants, you do not need to change anything
 If you disable variants, the `GenerateVariants` job will now throw an exception if it's called when this setting is `true` so you will need to update any calls to this job to handle it.
 
 ```php
-GetCandy\Hub\Exceptions\VariantsDisabledException
+Lunar\Hub\Exceptions\VariantsDisabledException
 ```
 
 ---
 
-If you are using the scout `Searchable` trait. Make sure to change this to GetCandy's if you want to tap into the Model Observers.
+If you are using the scout `Searchable` trait. Make sure to change this to Lunar's if you want to tap into the Model Observers.
 
 ```php
 // Old
 use Laravel\Scout\Searchable;
 
 // New
-use GetCandy\Base\Traits\Searchable;
+use Lunar\Base\Traits\Searchable;
 ```
 
 ---
 
 ### Changes to order statuses - High Impact
 
-The way statuses for orders are defined in `config/getcandy/orders.php` has changed. See below for the new definition:
+The way statuses for orders are defined in `config/lunar/orders.php` has changed. See below for the new definition:
 
 #### Old
 
@@ -309,11 +334,11 @@ The way statuses for orders are defined in `config/getcandy/orders.php` has chan
 You must re index and set up Meilisearch indexes due to a breaking change.
 
 ```sh
-php artisan getcandy:search:index
+php artisan lunar:search:index
 ```
 
 ```sh
-php artisan getcandy:meilisearch:setup
+php artisan lunar:meilisearch:setup
 ```
 
 This change removes the `_{locale}` suffix from certain indexes, so those can be removed.
@@ -328,7 +353,7 @@ If you have your own routine for URL's then you should either implement your own
 
 ### Changes to Tax drivers - High Impact
 
-Previously tax drivers were required to return a collection of `GetCandy\Models\TaxRateAmount` models. This wasn't very useful for custom tax drivers that did not use them and as a result limited their use. The interface was also not very clear on what should be returned.
+Previously tax drivers were required to return a collection of `Lunar\Models\TaxRateAmount` models. This wasn't very useful for custom tax drivers that did not use them and as a result limited their use. The interface was also not very clear on what should be returned.
 
 The interface has been updated to make this clearer.
 
@@ -345,7 +370,7 @@ public function setCurrency(Currency $currency): self;
 The return type for the `getBreakdown` method should now be as follows:
 
 ```php
-public function getBreakdown($subTotal): \GetCandy\Base\DataTransferObjects\TaxBreakdown;
+public function getBreakdown($subTotal): \Lunar\Base\DataTransferObjects\TaxBreakdown;
 ```
 
 You need to update the `getBreakdown` method to use both the new Data Transfer Objects.
@@ -412,7 +437,7 @@ On install we no longer set `description` to be `system` or `required` as this w
 
 This version adds a new config setting for User ID field types.
 
-Please add the following to your `config/getcandy/database.php` file
+Please add the following to your `config/lunar/database.php` file
 
 ```
     /*
@@ -420,7 +445,7 @@ Please add the following to your `config/getcandy/database.php` file
     | Users Table ID
     |--------------------------------------------------------------------------
     |
-    | GetCandy adds a relationship to your 'users' table and by default assumes
+    | Lunar adds a relationship to your 'users' table and by default assumes
     | a 'bigint'. You can change this to either an 'int' or 'uuid'.
     |
     */
@@ -448,18 +473,18 @@ $product->scheduleChannel($channel, $startAt, $endAt);
 
 ## v2.0-beta5
 
-The composer package to install has now changed to `getcandy/admin`. This is to support our new monorepo [getcandy/getcandy](https://github.com/getcandy/getcandy)
+The composer package to install has now changed to `lunar/admin`. This is to support our new monorepo [lunar/lunar](https://github.com/lunarphp/lunar)
 
 To get this update you need to make a change in your composer file.
 
 From
 ```
-"getcandy/getcandy": "^2.0"
+"lunarphp/lunar": "^2.0"
 ```
 
 To
 ```
-"getcandy/admin": "^2.0"
+"lunarphp/admin": "^2.0"
 ```
 
 And then run...
@@ -471,14 +496,14 @@ composer update
 Then re-publish the admin hub assets
 
 ```sh
-php artisan getcandy:hub:install
+php artisan lunar:hub:install
 ```
 
 ## v2.0-beta
 
-GetCandy 2 is a complete re-write of our e-commerce page. It is not currently possible to upgrade from v0.12.* to GetCandy 2.
+Lunar 2 is a complete re-write of our e-commerce page. It is not currently possible to upgrade from v0.12.* to Lunar 2.
 
-GetCandy 2 provides both the core e-commerce functionality and also an integrated admin hub within Laravel. A separate package will be released early 2022 to provide frontend API functionality.
+Lunar 2 provides both the core e-commerce functionality and also an integrated admin hub within Laravel. A separate package will be released early 2022 to provide frontend API functionality.
 
 
 ## Migrating from v0.12.*

@@ -1,21 +1,21 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
 use DateTime;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\Transaction;
-use GetCandy\Tests\Stubs\User;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\Transaction;
+use Lunar\Tests\Stubs\User;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.orders
+ * @group lunar.orders
  */
 class OrderTest extends TestCase
 {

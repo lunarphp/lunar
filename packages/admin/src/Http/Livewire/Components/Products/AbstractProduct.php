@@ -1,33 +1,33 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Hub\Http\Livewire\Traits\CanExtendValidation;
-use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
-use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
-use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
-use GetCandy\Hub\Http\Livewire\Traits\HasTags;
-use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Hub\Jobs\Products\GenerateVariants;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Collection as ModelsCollection;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
+use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
+use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasPrices;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\HasTags;
+use Lunar\Hub\Http\Livewire\Traits\HasUrls;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\SearchesProducts;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Hub\Jobs\Products\GenerateVariants;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 
 abstract class AbstractProduct extends Component
 {
@@ -159,14 +159,15 @@ abstract class AbstractProduct extends Component
 
     protected function getListeners()
     {
-        return array_merge([
-            'useProductOptions'             => 'setOptions',
-            'productOptionCreated'          => 'resetOptionView',
-            'option-manager.selectedValues' => 'setOptionValues',
-            'urlSaved'                      => 'refreshUrls',
-            'product-search.selected'       => 'updateAssociations',
-            'collectionSearch.selected'     => 'selectCollections',
-        ],
+        return array_merge(
+            [
+                'useProductOptions'             => 'setOptions',
+                'productOptionCreated'          => 'resetOptionView',
+                'option-manager.selectedValues' => 'setOptionValues',
+                'urlSaved'                      => 'refreshUrls',
+                'product-search.selected'       => 'updateAssociations',
+                'collectionSearch.selected'     => 'selectCollections',
+            ],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners()
         );
@@ -196,7 +197,7 @@ abstract class AbstractProduct extends Component
     {
         $baseRules = [
             'product.status'          => 'required|string',
-            'product.brand'           => 'nullable|string|max:255',
+            'product.brand_id'        => 'nullable',
             'product.product_type_id' => 'required',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
@@ -317,7 +318,7 @@ abstract class AbstractProduct extends Component
             });
         })->validate(null, $this->getValidationMessages());
 
-        $isNew = ! $this->product->id;
+        $isNew = !$this->product->id;
 
         DB::transaction(function () use ($isNew) {
             $data = $this->prepareAttributeData();
@@ -328,11 +329,11 @@ abstract class AbstractProduct extends Component
             $this->product->save();
 
             if (($this->getVariantsCount() <= 1) || $isNew) {
-                if (! $this->variant->product_id) {
+                if (!$this->variant->product_id) {
                     $this->variant->product_id = $this->product->id;
                 }
 
-                if (! $this->manualVolume) {
+                if (!$this->manualVolume) {
                     $this->variant->volume_unit = null;
                     $this->variant->volume_value = null;
                 }
@@ -347,13 +348,13 @@ abstract class AbstractProduct extends Component
             }
 
             // We generating variants?
-            $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
+            $generateVariants = (bool) count($this->optionValues) && !$this->variantsDisabled;
 
             if ($generateVariants) {
                 GenerateVariants::dispatch($this->product, $this->optionValues);
             }
 
-            if (! $generateVariants && $this->product->variants->count() <= 1 && ! $isNew) {
+            if (!$generateVariants && $this->product->variants->count() <= 1 && !$isNew) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
@@ -369,14 +370,14 @@ abstract class AbstractProduct extends Component
             $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
                 return [
                     $channel['channel_id'] => [
-                        'starts_at'    => ! $channel['enabled'] ? null : $channel['starts_at'],
-                        'ends_at'      => ! $channel['enabled'] ? null : $channel['ends_at'],
+                        'starts_at'    => !$channel['enabled'] ? null : $channel['starts_at'],
+                        'ends_at'      => !$channel['enabled'] ? null : $channel['ends_at'],
                         'enabled'      => $channel['enabled'],
                     ],
                 ];
             });
 
-            $gcAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
+            $cgAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
                 $data = Arr::only($group, ['starts_at', 'ends_at']);
 
                 $data['purchasable'] = $group['status'] == 'purchasable';
@@ -388,7 +389,7 @@ abstract class AbstractProduct extends Component
                 ];
             });
 
-            $this->product->customerGroups()->sync($gcAvailability);
+            $this->product->customerGroups()->sync($cgAvailability);
 
             $this->product->channels()->sync($channels);
 
@@ -397,7 +398,7 @@ abstract class AbstractProduct extends Component
             }
 
             $this->associations->each(function ($assoc) {
-                if (! empty($assoc['id'])) {
+                if (!empty($assoc['id'])) {
                     ProductAssociation::find($assoc['id'])->update([
                         'type' => $assoc['type'],
                     ]);
@@ -490,7 +491,7 @@ abstract class AbstractProduct extends Component
      */
     public function getVariantsDisabledProperty()
     {
-        return config('getcandy-hub.products.disable_variants', false);
+        return config('lunar-hub.products.disable_variants', false);
     }
 
     /**
@@ -524,7 +525,7 @@ abstract class AbstractProduct extends Component
                 if ($pivot) {
                     if ($pivot->purchasable) {
                         $status = 'purchasable';
-                    } elseif (! $pivot->visible && ! $pivot->enabled) {
+                    } elseif (!$pivot->visible && !$pivot->enabled) {
                         $status = 'hidden';
                     } elseif ($pivot->visible) {
                         $status = 'visible';
@@ -765,7 +766,7 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.basic-information'),
                 'id'         => 'basic-information',
                 'has_errors' => $this->errorBag->hasAny([
-                    'product.brand',
+                    'product.brand_id',
                     'product.product_type_id',
                 ]),
             ],
@@ -822,15 +823,13 @@ abstract class AbstractProduct extends Component
                 'title'       => __('adminhub::menu.product.inventory'),
                 'id'          => 'inventory',
                 'error_check' => [],
-                'has_errors'  => $this->errorBag->hasAny([
-                ]),
+                'has_errors'  => $this->errorBag->hasAny([]),
             ],
             [
                 'title'      => __('adminhub::menu.product.shipping'),
                 'id'         => 'shipping',
                 'hidden'     => $this->getVariantsCount() > 1,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title'      => __('adminhub::menu.product.urls'),
@@ -845,8 +844,7 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.associations'),
                 'id'         => 'associations',
                 'hidden'     => false,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title'      => __('adminhub::menu.product.collections'),
@@ -863,7 +861,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model with pricing.
      *
-     * @return \GetCandy\Models\ProductVariant
+     * @return \Lunar\Models\ProductVariant
      */
     protected function getPricedModel()
     {
@@ -883,7 +881,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model which has media associated.
      *
-     * @return \GetCandy\Models\Product
+     * @return \Lunar\Models\Product
      */
     protected function getMediaModel()
     {
@@ -893,7 +891,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model which has slots associated.
      *
-     * @return \GetCandy\Models\Product
+     * @return \Lunar\Models\Product
      */
     protected function getSlotModel()
     {

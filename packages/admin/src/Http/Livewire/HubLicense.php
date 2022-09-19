@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire;
+namespace Lunar\Hub\Http\Livewire;
 
-use GetCandy\Licensing\LicenseManager;
 use Livewire\Component;
+use Lunar\Licensing\LicenseManager;
 
 class HubLicense extends Component
 {
     public function render()
     {
-        $license = LicenseManager::fetch('getcandy/admin-hub', []);
+        $license = LicenseManager::fetch('lunar/admin-hub', []);
 
         // $status = $license->getStatus();
 

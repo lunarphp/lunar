@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Collections;
+namespace Lunar\Tests\Unit\Actions\Collections;
 
-use GetCandy\Actions\Collections\SortProductsByPrice;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Actions\Collections\SortProductsByPrice;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.actions
+ * @group lunar.actions
  */
 class SortProductsByPriceTest extends TestCase
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Collections;
+namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use GetCandy\Hub\Http\Livewire\Traits\MapsCollectionTree;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Collection;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\MapsCollectionTree;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Collection;
 
 class CollectionTree extends Component
 {
