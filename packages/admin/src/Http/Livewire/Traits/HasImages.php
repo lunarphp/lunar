@@ -332,6 +332,10 @@ trait HasImages
     {
         $chosen = Media::findMany($this->selectedImages);
 
+        $images = collect($this->images);
+
+        $maxPosition = $images->max('position');
+
         foreach ($chosen as $media) {
             $this->images[] = [
                 'id' => $media->id,
@@ -340,11 +344,17 @@ trait HasImages
                 'filename'  => $media->file_name,
                 'original'  => $media->getUrl(),
                 'caption'   => null,
-                'position'  => $media->getCustomProperty('position'),
+                'position'  => $maxPosition + 1,
                 'preview'   => false,
                 'edit'   => false,
-                'primary'   => false,
+                'primary'   => !count($this->images),
             ];
+        }
+
+        $hasPrimary = $images->search(fn ($image) => $image['primary'] === true);
+
+        if ($hasPrimary === false) {
+            $this->images[array_key_first($this->images)]['primary'] = true;
         }
 
         $this->selectedImages = [];
