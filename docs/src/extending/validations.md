@@ -9,8 +9,8 @@ If you want to add additional validation rules, you can do so by registering in 
 ## Extending Validation Rules
 
 ```php
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductCreate;
-use GetCandy\Models\Product;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductCreate;
+use Lunar\Models\Product;
 
 public function boot() {
     ProductCreate::extendValidation([
@@ -25,7 +25,7 @@ public function boot() {
 }
 ```
  
-| Type    | Page                                                                                                                               | Closure parameters                  |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| Product | `\GetCandy\Hub\Http\Livewire\Components\Products\ProductCreate`<br />`\GetCandy\Hub\Http\Livewire\Components\Products\ProductShow` | `\GetCandy\Models\Product $product` |
+| Type    | Page                                                                                                                         | Closure parameters               |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| Product | `\Lunar\Hub\Http\Livewire\Components\Products\ProductCreate`<br />`\Lunar\Hub\Http\Livewire\Components\Products\ProductShow` | `\Lunar\Models\Product $product` |
  
