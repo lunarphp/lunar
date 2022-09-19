@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Models\Cart;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Models\Cart;
 
 class ShippingManifest implements ShippingManifestInterface
 {

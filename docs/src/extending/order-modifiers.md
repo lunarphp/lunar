@@ -23,9 +23,9 @@ public function boot(OrderModifiers $orderModifiers)
 namespace App\Modifiers;
 
 use Closure;
-use GetCandy\Base\OrderModifier;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Order;
+use Lunar\Base\OrderModifier;
+use Lunar\Models\Cart;
+use Lunar\Models\Order;
 
 class CustomOrderModifier extends OrderModifier
 {
@@ -51,7 +51,7 @@ The process is wrapped in a transaction so no need to worry about incomplete dat
 ```php
 namespace App\Exceptions;
 
-class MyCustomException extends \GetCandy\Exceptions\CartException
+class MyCustomException extends \Lunar\Exceptions\CartException
 {
 
 }

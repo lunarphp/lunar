@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Observers;
+namespace Lunar\Tests\Unit\Observers;
 
-use GetCandy\Models\Language;
-use GetCandy\Models\Url;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Language;
+use Lunar\Models\Url;
+use Lunar\Tests\TestCase;
 
 /**
  * @group observers

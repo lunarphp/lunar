@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Tests;
+namespace Lunar\Hub\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
-use GetCandy\GetCandyServiceProvider;
-use GetCandy\Hub\AdminHubServiceProvider;
-use GetCandy\Tests\Stubs\TestUrlGenerator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
+use Lunar\Hub\AdminHubServiceProvider;
+use Lunar\LunarServiceProvider;
+use Lunar\Tests\Stubs\TestUrlGenerator;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
@@ -21,9 +21,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
         // additional setup
         Config::set('auth.guards.staff', [
-            'driver' => 'getcandyhub',
+            'driver' => 'lunarhub',
         ]);
-        Config::set('getcandy.urls.generator', TestUrlGenerator::class);
+        Config::set('lunar.urls.generator', TestUrlGenerator::class);
 
         View::addLocation(__DIR__.'/resources/views');
     }
@@ -31,7 +31,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            GetCandyServiceProvider::class,
+            LunarServiceProvider::class,
             LivewireServiceProvider::class,
             AdminHubServiceProvider::class,
             ActivitylogServiceProvider::class,

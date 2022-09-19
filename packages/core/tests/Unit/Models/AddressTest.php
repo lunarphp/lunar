@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Address;
-use GetCandy\Models\Country;
-use GetCandy\Models\Customer;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Address;
+use Lunar\Models\Country;
+use Lunar\Models\Customer;
+use Lunar\Tests\TestCase;
 
 /**
  * @group models
@@ -33,7 +33,7 @@ class AddressTest extends TestCase
 
         Address::create($data);
 
-        $this->assertDatabaseHas('getcandy_addresses', $data);
+        $this->assertDatabaseHas('lunar_addresses', $data);
     }
 
     /** @test */
@@ -67,7 +67,7 @@ class AddressTest extends TestCase
 
         $data['meta'] = json_encode($data['meta']);
 
-        $this->assertDatabaseHas('getcandy_addresses', $data);
+        $this->assertDatabaseHas('lunar_addresses', $data);
 
         $this->assertInstanceOf(Customer::class, $address->customer);
         $this->assertInstanceOf(Country::class, $address->country);

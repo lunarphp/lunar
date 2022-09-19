@@ -1,39 +1,39 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Managers;
+namespace Lunar\Tests\Unit\Managers;
 
-use GetCandy\Base\CartLineModifiers;
-use GetCandy\Base\CartModifiers;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\Purchasable;
-use GetCandy\DataTypes\Price;
-use GetCandy\Exceptions\CartLineIdMismatchException;
-use GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
-use GetCandy\Exceptions\Carts\BillingAddressMissingException;
-use GetCandy\Exceptions\Carts\OrderExistsException;
-use GetCandy\Exceptions\InvalidCartLineQuantityException;
-use GetCandy\Exceptions\MaximumCartLineQuantityException;
-use GetCandy\Managers\CartManager;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Order;
-use GetCandy\Models\Price as PriceModel;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Tests\Stubs\TestCartLineModifier;
-use GetCandy\Tests\Stubs\TestCartModifier;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\CartLineModifiers;
+use Lunar\Base\CartModifiers;
+use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\Base\Purchasable;
+use Lunar\DataTypes\Price;
+use Lunar\Exceptions\CartLineIdMismatchException;
+use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
+use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\Exceptions\Carts\OrderExistsException;
+use Lunar\Exceptions\InvalidCartLineQuantityException;
+use Lunar\Exceptions\MaximumCartLineQuantityException;
+use Lunar\Managers\CartManager;
+use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Lunar\Models\CartLine;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Order;
+use Lunar\Models\Price as PriceModel;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Tests\Stubs\TestCartLineModifier;
+use Lunar\Tests\Stubs\TestCartModifier;
+use Lunar\Tests\TestCase;
 use Mockery;
 use Mockery\MockInterface;
 
 /**
- * @group getcandy.cart-manager
+ * @group lunar.cart-manager
  */
 class CartManagerTest extends TestCase
 {

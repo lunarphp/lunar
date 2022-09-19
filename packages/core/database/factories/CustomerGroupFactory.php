@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\CustomerGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\CustomerGroup;
 
 class CustomerGroupFactory extends Factory
 {

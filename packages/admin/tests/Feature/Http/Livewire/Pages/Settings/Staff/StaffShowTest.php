@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Channels;
+namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Channels;
 
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.staff

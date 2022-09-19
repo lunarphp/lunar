@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Models\Language;
+use Lunar\Models\Language;
 
 trait WithLanguages
 {
     /**
      * Getter for default language.
      *
-     * @return \GetCandy\Models\Language
+     * @return \Lunar\Models\Language
      */
     public function getDefaultLanguageProperty()
     {

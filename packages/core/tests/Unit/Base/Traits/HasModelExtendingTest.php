@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base\Traits;
+namespace Lunar\Tests\Unit\Base\Traits;
 
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Tests\Unit\Base\Extendable\ExtendableTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Tests\Unit\Base\Extendable\ExtendableTestCase;
 
 class HasModelExtendingTest extends ExtendableTestCase
 {
@@ -17,7 +17,7 @@ class HasModelExtendingTest extends ExtendableTestCase
     {
         $product = Product::find(1);
 
-        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\Product::class, $product);
+        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\Product::class, $product);
     }
 
     /** @test */
@@ -25,7 +25,7 @@ class HasModelExtendingTest extends ExtendableTestCase
     {
         $sizeOption = ProductOption::with('sizes')->find(1);
 
-        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\ProductOption::class, $sizeOption);
+        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\ProductOption::class, $sizeOption);
 
         $this->assertInstanceOf(Collection::class, $sizeOption->sizes);
         $this->assertCount(1, $sizeOption->sizes);
@@ -34,7 +34,7 @@ class HasModelExtendingTest extends ExtendableTestCase
     /** @test */
     public function can_forward_static_method_calls_to_extended_model()
     {
-        /** @see \GetCandy\Tests\Stubs\Models\ProductOption::getSizesStatic() */
+        /** @see \Lunar\Tests\Stubs\Models\ProductOption::getSizesStatic() */
         $newStaticMethod = ProductOption::getSizesStatic();
 
         $this->assertInstanceOf(Collection::class, $newStaticMethod);
@@ -48,17 +48,17 @@ class HasModelExtendingTest extends ExtendableTestCase
         $product = Product::find(1);
 
         $newProductModel = $product->swap(
-            \GetCandy\Tests\Stubs\Models\ProductSwapModel::class
+            \Lunar\Tests\Stubs\Models\ProductSwapModel::class
         );
 
-        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\Product::class, $product);
-        $this->assertInstanceOf(\GetCandy\Tests\Stubs\Models\ProductSwapModel::class, $newProductModel);
+        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\Product::class, $product);
+        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\ProductSwapModel::class, $newProductModel);
     }
 
     /** @test */
     public function can_get_base_model_morph_class_name()
     {
-        $product = \GetCandy\Tests\Stubs\Models\Product::query()->create(
+        $product = \Lunar\Tests\Stubs\Models\Product::query()->create(
             Product::factory()->raw()
         );
 

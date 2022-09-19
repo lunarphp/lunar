@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Database\Factories\CollectionGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Database\Factories\CollectionGroupFactory;
 
 class CollectionGroup extends BaseModel
 {
@@ -17,7 +17,7 @@ class CollectionGroup extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CollectionGroupFactory
+     * @return \Lunar\Database\Factories\CollectionGroupFactory
      */
     protected static function newFactory(): CollectionGroupFactory
     {

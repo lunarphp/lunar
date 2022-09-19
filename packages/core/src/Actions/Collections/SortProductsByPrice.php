@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Actions\Collections;
+namespace Lunar\Actions\Collections;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Product;
 use Illuminate\Support\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Product;
 
 class SortProductsByPrice
 {
@@ -12,7 +12,7 @@ class SortProductsByPrice
      * Execute the action.
      *
      * @param  \Illuminate\Support\Collection  $products
-     * @param  \GetCandy\Models\Currency  $currency
+     * @param  \Lunar\Models\Currency  $currency
      * @param  string  $direction
      * @return void
      */

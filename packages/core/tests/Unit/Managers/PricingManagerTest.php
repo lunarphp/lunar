@@ -1,21 +1,21 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Managers;
+namespace Lunar\Tests\Unit\Managers;
 
-use GetCandy\Base\DataTransferObjects\PricingResponse;
-use GetCandy\Managers\PricingManager;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\Stubs\User;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\DataTransferObjects\PricingResponse;
+use Lunar\Managers\PricingManager;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Stubs\User;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.pricing-manager
+ * @group lunar.pricing-manager
  */
 class PricingManagerTest extends TestCase
 {

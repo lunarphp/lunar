@@ -30,7 +30,7 @@
             </x-slot>
             <x-slot name="content">
               <div class="grid grid-cols-3 gap-4">
-                @forelse($product->media as $productImage)
+                @forelse($product->images as $productImage)
                   <label class="cursor-pointer">
                     <input wire:model="imageToSelect" name="imageToSelect" value="{{ $productImage->id }}" class="sr-only peer" type="radio">
                     <img src="{{ $productImage->getFullUrl('small') }}" class="border-2 border-transparent rounded-lg shadow-sm peer-checked:border-blue-500">

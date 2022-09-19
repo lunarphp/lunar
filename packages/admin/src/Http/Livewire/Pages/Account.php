@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages;
+namespace Lunar\Hub\Http\Livewire\Pages;
 
-use GetCandy\Hub\Models\Staff;
 use Livewire\Component;
+use Lunar\Hub\Models\Staff;
 
 class Account extends Component
 {

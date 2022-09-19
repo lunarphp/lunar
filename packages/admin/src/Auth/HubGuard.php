@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Auth;
+namespace Lunar\Hub\Auth;
 
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Session\Session;
@@ -11,7 +11,7 @@ class HubGuard extends SessionGuard
     /**
      * Create a new authentication guard.
      *
-     * @param  \GetCandy\Hub\Auth\StaffProvider  $provider
+     * @param  \Lunar\Hub\Auth\StaffProvider  $provider
      * @param  \Illuminate\Contracts\Session\Session  $session
      * @param  \Symfony\Component\HttpFoundation\Request|null  $request
      * @return void
@@ -21,7 +21,7 @@ class HubGuard extends SessionGuard
         Session $session,
         Request $request = null
     ) {
-        $this->name = 'getcandyhub';
+        $this->name = 'lunarhub';
         $this->session = $session;
         $this->request = $request;
         $this->provider = $provider;

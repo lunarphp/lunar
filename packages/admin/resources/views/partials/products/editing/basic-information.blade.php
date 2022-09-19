@@ -7,14 +7,13 @@
     </header>
 
     <div class="space-y-4">
-      <x-hub::input.group :label="__('adminhub::inputs.brand.label')" for="brand" :error="$errors->first('product.brand')">
-        <x-hub::input.autocomplete wire:model="product.brand" wire:keydown="getBrands('{{ $product->brand }}')">
-          @foreach($brands as $key => $brand)
-            <x-hub::input.autocomplete.item wire:key="{{ $key }}" wire:click="$set('product.brand', '{{ $brand }}')">
-              {{ $brand }}
-            </x-hub::input.autocomplete.item>
+      <x-hub::input.group :label="__('adminhub::inputs.brand.label')" for="brand">
+        <x-hub::input.select id="brand" wire:model="product.brand_id">
+          <option>{{ __('adminhub::components.brands.choose_brand_default_option') }}</option>
+          @foreach($this->brands as $brand)
+            <option value="{{ $brand->id }}" wire:key="{{ $brand->id }}">{{ $brand->name }}</option>
           @endforeach
-        </x-hub::input.autocomplete>
+        </x-hub::input.select>
       </x-hub::input.group>
 
       <x-hub::input.group :label="__('adminhub::inputs.product-type.label')" for="productType">

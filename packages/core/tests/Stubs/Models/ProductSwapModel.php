@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Tests\Stubs\Models;
+namespace Lunar\Tests\Stubs\Models;
 
-class ProductSwapModel extends \GetCandy\Models\Product
+class ProductSwapModel extends \Lunar\Models\Product
 {
     public function shouldBeSearchable()
     {

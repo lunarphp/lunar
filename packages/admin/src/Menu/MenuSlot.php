@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -122,7 +122,7 @@ class MenuSlot
      * Get an existing or create a new section on the slot.
      *
      * @param  string  $handle
-     * @return \GetCandy\Hub\Menu\MenuSection
+     * @return \Lunar\Hub\Menu\MenuSection
      */
     public function section($handle)
     {

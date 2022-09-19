@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Generators;
+namespace Lunar\Generators;
 
-use GetCandy\Models\Language;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Models\Language;
 
 class UrlGenerator
 {
@@ -18,7 +18,7 @@ class UrlGenerator
     /**
      * The default language.
      *
-     * @var \GetCandy\Models\Language
+     * @var \Lunar\Models\Language
      */
     protected Language $defaultLanguage;
 

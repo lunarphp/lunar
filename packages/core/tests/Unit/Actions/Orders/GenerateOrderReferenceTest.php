@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Orders;
+namespace Lunar\Tests\Unit\Actions\Orders;
 
-use GetCandy\Actions\Orders\GenerateOrderReference;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Tests\Stubs\TestOrderReferenceGenerator;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Lunar\Actions\Orders\GenerateOrderReference;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Tests\Stubs\TestOrderReferenceGenerator;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.actions
+ * @group lunar.actions
  */
 class SortProductsByPriceTest extends TestCase
 {
@@ -56,7 +56,7 @@ class SortProductsByPriceTest extends TestCase
             'placed_at' => now(),
         ]);
 
-        Config::set('getcandy.orders.reference_generator', TestOrderReferenceGenerator::class);
+        Config::set('lunar.orders.reference_generator', TestOrderReferenceGenerator::class);
 
         $this->assertNull($order->reference);
 
@@ -73,7 +73,7 @@ class SortProductsByPriceTest extends TestCase
             'placed_at' => now(),
         ]);
 
-        Config::set('getcandy.orders.reference_generator', null);
+        Config::set('lunar.orders.reference_generator', null);
 
         $this->assertNull($order->reference);
 

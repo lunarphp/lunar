@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Tables;
+namespace Lunar\Hub\Tables;
 
 class Orders extends AbstractTable
 {

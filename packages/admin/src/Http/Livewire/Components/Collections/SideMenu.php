@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Collections;
+namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\CollectionGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\CollectionGroup;
 
 class SideMenu extends Component
 {

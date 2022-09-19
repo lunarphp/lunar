@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Menu;
+namespace Lunar\Hub\Tests\Unit\Menu;
 
-use GetCandy\Hub\Auth\Manifest;
-use GetCandy\Hub\Menu\MenuSlot;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Menu\MenuSlot;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.menu

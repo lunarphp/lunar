@@ -4,33 +4,33 @@
 
 ## Overview
 
-GetCandy provides a number of Eloquent Models and quite often in custom applications you will want to add your own relationships and functionality to these models.
+Lunar provides a number of Eloquent Models and quite often in custom applications you will want to add your own relationships and functionality to these models.
 
 ::: warning
-We highly suggest using your own Eloquent Models to add additional data, rather than trying to change fields on the core GetCandy models.
+We highly suggest using your own Eloquent Models to add additional data, rather than trying to change fields on the core Lunar models.
 :::
 
 ## Extendable Models
-All GetCandy models are now extendable.
+All Lunar models are now extendable.
 This means you can now add your own functionality or change out existing core model behaviour using your own model implementations.
 
 ### Registration:
 We recommend registering your own models for your application within the boot method of your Service Provider.
-When registering your models, you will need to set the GetCandy core model as the key and then your own model implementation as the value.
+When registering your models, you will need to set the Lunar core model as the key and then your own model implementation as the value.
 
 Here is an example below where we are extending 10 core models from your main AppServiceProvider:
 
 ```php
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Customer;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\Collection;
+use Lunar\Models\Customer;
+use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
 
 /**
  * Bootstrap any application services.
@@ -63,9 +63,9 @@ When you call the swap method this will update the key value pair for the regist
 ```php
 namespace App\Models;
 
-use GetCandy\Models\ProductVariant;
+use Lunar\Models\ProductVariant;
 
-class ProductSwapModel extends \GetCandy\Models\Product
+class ProductSwapModel extends \Lunar\Models\Product
 {
     /**
      * This will return the default variant for the product.
@@ -80,7 +80,7 @@ class ProductSwapModel extends \GetCandy\Models\Product
 ```
 
 ```php
-$product = \GetCandy\Models\Product::find(1);
+$product = \Lunar\Models\Product::find(1);
 
 // This will swap out the registered implementation.
 $product->swap(\App\Models\ProductSwapModel::class);
@@ -94,7 +94,7 @@ $product->swap(\App\Models\Product::class);
 
 ### Examples
 Here are some example simple use cases of extending the core models.
-You are required to extend the core model `GetCandy\Models\[Model]` in order for the relationships to function correctly.
+You are required to extend the core model `Lunar\Models\[Model]` in order for the relationships to function correctly.
 
 #### Example 1 - Adding static method (ProductOption Model)
 
@@ -103,7 +103,7 @@ namespace App\Models;
 
 use Illuminate\Support\Collection;
 
-class ProductOption extends \GetCandy\Models\ProductOption
+class ProductOption extends \Lunar\Models\ProductOption
 {
     public static function getSizes(): Collection
     {
@@ -111,13 +111,13 @@ class ProductOption extends \GetCandy\Models\ProductOption
     }
 }
 ```
-In this example you can access the static method via `\GetCandy\Models\ProductOption::getSizes()`
+In this example you can access the static method via `\Lunar\Models\ProductOption::getSizes()`
 Note: Static methods will not allow you to jump to the function declaration.
 As a workaround simply add @see inline docblock:
 
 ```php
 `/** @see \App\Models\ProductOption::getSizesStatic() */`
-$newStaticMethod = \GetCandy\Models\ProductOption::getSizesStatic();
+$newStaticMethod = \Lunar\Models\ProductOption::getSizesStatic();
 ```
 
 #### Example 2 - Overriding trait method (Product Model)
@@ -127,7 +127,7 @@ namespace App\Models;
 
 use App\Concerns\SearchableTrait
 
-class Product extends \GetCandy\Models\Product
+class Product extends \Lunar\Models\Product
 {
     use SearchableTrait;
 }
@@ -170,7 +170,7 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
  * @property \Illuminate\Support\Collection $shippingAddress
  *
  */
-class Cart extends \GetCandy\Models\Cart
+class Cart extends \Lunar\Models\Cart
 {
     use HasAddresses;
 
@@ -240,12 +240,12 @@ trait HasAddresses
 
 ## Dynamic Eloquent Relationships
 
-Eloquent relationships can be dynamically specified in code, allowing you to add additional relationships to the GetCandy Models.
+Eloquent relationships can be dynamically specified in code, allowing you to add additional relationships to the Lunar Models.
 
 e.g. 
 
 ```php
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 use App\Models\Ticket;
  
 Order::resolveRelationUsing('ticket', function ($orderModel) {
@@ -258,12 +258,12 @@ See [https://laravel.com/docs/9.x/eloquent-relationships#dynamic-relationships](
 
 ## Macroable
 
-All GetCandy models have been made macroable. This is a Laravel technique to allow a developer to dynamically add methods to an existing class. This is ideal for adding helpful functions for your application.
+All Lunar models have been made macroable. This is a Laravel technique to allow a developer to dynamically add methods to an existing class. This is ideal for adding helpful functions for your application.
 
 Here is an example...
 
 ```php
-use GetCandy\Models\Product;
+use Lunar\Models\Product;
 
 Product::macro('isDraft', function () {
     return $this->status === 'draft';

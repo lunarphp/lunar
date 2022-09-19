@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Base\ActivityLog;
+namespace Lunar\Hub\Base\ActivityLog;
 
 use Spatie\Activitylog\Models\Activity;
 

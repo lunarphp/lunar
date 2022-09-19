@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Actions\Collections;
+namespace Lunar\Actions\Collections;
 
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
 
 class SortProducts
 {
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Collection  $collection
+     * @param  \Lunar\Models\Collection  $collection
      * @return void
      */
     public function execute(Collection $collection)

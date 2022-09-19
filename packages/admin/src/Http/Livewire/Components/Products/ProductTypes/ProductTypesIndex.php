@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes;
+namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Models\ProductType;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\ProductType;
 
 class ProductTypesIndex extends Component
 {

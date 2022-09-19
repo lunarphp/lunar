@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Base\ActivityLog;
+namespace Lunar\Hub\Tests\Unit\Base\ActivityLog;
 
-use GetCandy\Hub\Facades\ActivityLog;
-use GetCandy\Hub\Tests\Stubs\ActivityLogRenderer;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Facades\ActivityLog;
+use Lunar\Hub\Tests\Stubs\ActivityLogRenderer;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.activity-log

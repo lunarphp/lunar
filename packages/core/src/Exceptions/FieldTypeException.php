@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Exceptions;
+namespace Lunar\Exceptions;
 
 use Exception;
 

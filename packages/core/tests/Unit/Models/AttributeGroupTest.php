@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Tests\TestCase;
 
 class AttributeGroupTest extends TestCase
 {

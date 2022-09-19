@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\FieldTypes;
+namespace Lunar\Tests\Unit\FieldTypes;
 
-use GetCandy\Exceptions\FieldTypeException;
-use GetCandy\FieldTypes\Text;
-use GetCandy\Tests\TestCase;
+use Lunar\Exceptions\FieldTypeException;
+use Lunar\FieldTypes\Text;
+use Lunar\Tests\TestCase;
 
 /**
  * @group fieldtypes

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages;
+namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages;
 
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Tests\TestCase;
 
 class LoginTest extends TestCase
 {

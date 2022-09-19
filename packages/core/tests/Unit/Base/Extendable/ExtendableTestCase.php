@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base\Extendable;
+namespace Lunar\Tests\Unit\Base\Extendable;
 
-use GetCandy\Facades\ModelManifest;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Tests\TestCase;
+use Lunar\Facades\ModelManifest;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Tests\TestCase;
 
 class ExtendableTestCase extends TestCase
 {
@@ -15,8 +15,8 @@ class ExtendableTestCase extends TestCase
         parent::setUp();
 
         ModelManifest::register(collect([
-            Product::class => \GetCandy\Tests\Stubs\Models\Product::class,
-            ProductOption::class => \GetCandy\Tests\Stubs\Models\ProductOption::class,
+            Product::class => \Lunar\Tests\Stubs\Models\Product::class,
+            ProductOption::class => \Lunar\Tests\Stubs\Models\ProductOption::class,
         ]));
 
         Product::factory()->count(20)->create();

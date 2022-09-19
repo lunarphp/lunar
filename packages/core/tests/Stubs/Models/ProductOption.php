@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Stubs\Models;
+namespace Lunar\Tests\Stubs\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
-class ProductOption extends \GetCandy\Models\ProductOption
+class ProductOption extends \Lunar\Models\ProductOption
 {
     use SizesTrait;
 

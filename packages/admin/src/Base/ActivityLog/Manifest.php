@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Base\ActivityLog;
+namespace Lunar\Hub\Base\ActivityLog;
 
-use GetCandy\Hub\Base\ActivityLog\Orders\Capture;
-use GetCandy\Hub\Base\ActivityLog\Orders\EmailNotification;
-use GetCandy\Hub\Base\ActivityLog\Orders\Intent;
-use GetCandy\Hub\Base\ActivityLog\Orders\StatusUpdate;
-use GetCandy\Models\Order;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Collection;
+use Lunar\Hub\Base\ActivityLog\Orders\Capture;
+use Lunar\Hub\Base\ActivityLog\Orders\EmailNotification;
+use Lunar\Hub\Base\ActivityLog\Orders\Intent;
+use Lunar\Hub\Base\ActivityLog\Orders\StatusUpdate;
+use Lunar\Models\Order;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
 
 class Manifest
 {
