@@ -249,7 +249,6 @@ abstract class AbstractProduct extends Component
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            // $this->withAttributesValidationRules(),
             $this->hasUrlsValidationRules(!$this->product->id),
             $this->withAttributesValidationRules(),
             $this->getExtendedValidationRules([
@@ -314,7 +313,6 @@ abstract class AbstractProduct extends Component
                         level: 'error'
                     );
                 }
-                // dd(1);
             });
         })->validate(null, $this->getValidationMessages());
 
