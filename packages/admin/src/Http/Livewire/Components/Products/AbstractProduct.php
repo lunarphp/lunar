@@ -241,6 +241,7 @@ abstract class AbstractProduct extends Component
                 ]
             );
         }
+
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
