@@ -91,7 +91,7 @@ trait HasUrls
         Arr::set($this->urls, $key, Str::slug($value));
     }
 
-    public function saveUrls()
+    protected function validateUrls()
     {
         $rules = [];
 
@@ -144,7 +144,10 @@ trait HasUrls
                 'urls.*.slug.unique' => __('adminhub::validation.url_slug_unique'),
             ]);
         }
+    }
 
+    public function saveUrls()
+    {
         $model = $this->getHasUrlsModel();
 
         DB::transaction(function () use ($model) {

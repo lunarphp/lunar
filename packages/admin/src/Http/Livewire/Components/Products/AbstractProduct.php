@@ -241,7 +241,6 @@ abstract class AbstractProduct extends Component
                 ]
             );
         }
-
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
@@ -307,9 +306,10 @@ abstract class AbstractProduct extends Component
                         level: 'error'
                     );
                 }
-                // dd(1);
             });
         })->validate(null, $this->getValidationMessages());
+
+        $this->validateUrls();
 
         $isNew = ! $this->product->id;
 

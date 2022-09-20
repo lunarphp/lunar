@@ -22,9 +22,9 @@
       </div>
       @foreach($urls as $url)
         <div wire:key="url_{{ $url['key'] }}">
-          <div class="flex items-center space-x-4" wire:key="url_{{ $loop->index }}">
+          <div class="flex items-center space-x-4">
             <div class="w-64">
-              <x-hub::input.select wire:model="urls.{{ $loop->index }}.language_id">
+              <x-hub::input.select wire:model.defer="urls.{{ $loop->index }}.language_id">
                 @foreach($this->languages as $lang)
                   <option value="{{ $lang['id'] }}">{{ $lang['name'] }}</option>
                 @endforeach
@@ -32,11 +32,11 @@
             </div>
 
             <div class="w-full">
-              <x-hub::input.text wire:model.lazy="urls.{{ $loop->index }}.slug" />
+              <x-hub::input.text wire:model.defer="urls.{{ $loop->index }}.slug" />
             </div>
 
             <div class="flex items-center w-32 space-x-4">
-              <x-hub::input.toggle wire:model="urls.{{ $loop->index }}.default" />
+              <x-hub::input.toggle wire:model.defer="urls.{{ $loop->index }}.default" />
 
               <button class="text-gray-400" wire:click.prevent="removeUrl('{{ $loop->index }}')"><x-hub::icon ref="trash" style="solid" /></button>
             </div>
