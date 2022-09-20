@@ -89,7 +89,7 @@
                                 </div>
                             @endif
 
-                            <div>
+                            <div x-data="{ imageBlob: null }">
                                 <button type="button"
                                         wire:click="$set('images.{{ $loop->index }}.preview', true)">
                                     <img src="{{ $image['thumbnail'] }}"
@@ -110,9 +110,8 @@
 
                                                 init() {
                                                     const { TABS, TOOLS } = FilerobotImageEditor;
-
                                                     const config = {
-                                                        source: '{{ $image['original'] }}',
+                                                        source: imageBlob ? imageBlob : '{{ $image['original'] }}',
                                                         Rotate: { angle: 45, componentType: 'slider' },
                                                         theme: {
                                                             typography: {
@@ -131,6 +130,9 @@
                                                         },
                                                         onBeforeSave: (imageFileInfo) => false,
                                                         onSave: (imageData, imageDesignState) => {
+
+                                                            imageBlob = imageData.imageBase64
+
                                                             fetch(imageData.imageBase64)
                                                                 .then(res => res.blob())
                                                                 .then(blob => {
@@ -139,6 +141,10 @@
                                                                     @this.upload('images.{{ $loop->index }}.file', file)
 
                                                                     @this.set('images.{{ $loop->index }}.edit', false)
+
+                                                                    @this.set('images.{{ $loop->index }}.thumbnail', imageData.imageBase64)
+                                                                    
+                                                                    @this.set('images.{{ $loop->index }}.original', imageData.imageBase64)
                                                                 })
                                                         }
                                                     });
