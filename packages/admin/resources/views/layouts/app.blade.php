@@ -13,6 +13,9 @@
 
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
+
+    @livewireTableStyles
+
     <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
 
@@ -45,6 +48,7 @@
             document.documentElement.classList.remove('app-sidemenu-expanded');
         })
     </script>
+
 
     @livewireStyles
 </head>
@@ -96,7 +100,7 @@
             <script src="{!! $asset->url() !!}"></script>
         @endforeach
     @endif
-    
+
     <script src="{{ asset('vendor/lunar/admin-hub/app.js') }}"></script>
 </body>
 
