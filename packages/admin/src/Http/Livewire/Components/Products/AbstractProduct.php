@@ -193,7 +193,7 @@ abstract class AbstractProduct extends Component
     {
         $baseRules = [
             'product.status'          => 'required|string',
-            'product.brand_id'        => 'nullable',
+            'product.brand_id'        => 'required',
             'product.product_type_id' => 'required',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',

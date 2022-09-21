@@ -7,7 +7,7 @@
     </header>
 
     <div class="space-y-4">
-      <x-hub::input.group :label="__('adminhub::inputs.brand.label')" for="brand">
+      <x-hub::input.group :label="__('adminhub::inputs.brand.label')" for="brand" :error="$errors->first('product.brand_id')">
         <x-hub::input.select id="brand" wire:model="product.brand_id">
           <option>{{ __('adminhub::components.brands.choose_brand_default_option') }}</option>
           @foreach($this->brands as $brand)
