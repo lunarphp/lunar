@@ -86,7 +86,7 @@ class CollectionTree extends Component
 
             Collection::rebuildSubtree(
                 $models->first()->parent,
-                $models->map(fn($model) => ['id' => $model->id])->toArray()
+                $models->map(fn ($model) => ['id' => $model->id])->toArray()
             );
 
             $this->nodes = $this->mapCollections($models);
