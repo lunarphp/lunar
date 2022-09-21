@@ -85,6 +85,7 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\LanguagesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\StaffTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\TagsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\TaxZonesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
