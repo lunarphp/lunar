@@ -80,7 +80,7 @@
       </div>
 
        @if(count($node['children']))
-          <div class="py-4 pl-2 pr-4 mt-2 space-y-2 border-l ml-7">
+          <div class="py-2 pl-2 mt-2 space-y-2 border-l ml-7">
             @livewire('hub.components.collections.collection-tree', [
               'nodes' => $node['children'],
               'sortGroup' => 'children_'.$node['id'],
