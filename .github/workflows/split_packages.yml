@@ -17,9 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
-          with:
-            php-version: 8.0
-            coverage: none
+        with:
+          php-version: 8.0
+          coverage: none
       - name: Split ${{ matrix.package }}
         uses: symplify/github-action-monorepo-split@main
         env:
@@ -56,9 +56,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
-          with:
-            php-version: 8.0
-            coverage: none
+        with:
+          php-version: 8.0
+          coverage: none
       - name: Split ${{ matrix.package }}
         uses: symplify/github-action-monorepo-split@main
         env:
