@@ -7,6 +7,7 @@ use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductCreate;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Brand;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
@@ -64,6 +65,27 @@ class ProductCreateTest extends TestCase
     }
 
     /** @test */
+    public function validation_triggers()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $currency = Currency::getDefault();
+
+        $language = Language::getDefault();
+
+        $collection = Collection::factory()->create();
+
+        $component = LiveWire::actingAs($staff, 'staff')
+            ->test(ProductCreate::class)
+            ->call('save')
+            ->assertHasErrors([
+                'product.brand_id',
+            ]);
+    }
+
+    /** @test */
     public function can_create_product()
     {
         $staff = Staff::factory()->create([
@@ -84,6 +106,8 @@ class ProductCreateTest extends TestCase
             'brand'  => 'PROC',
         ]);
 
+        $brand = Brand::factory()->create();
+
         $collection = Collection::factory()->create();
 
         $this->assertDatabaseMissing((new Product)->collections()->getTable(), [
@@ -97,6 +121,7 @@ class ProductCreateTest extends TestCase
             ->set("basePrices.{$currency->code}.price", 1234)
             ->call('addUrl')
             ->set('urls.0.slug', 'foo-bar')
+            ->set('product.brand_id', $brand->id)
             ->set('associations', collect([
                 [
                     'inverse' => false,

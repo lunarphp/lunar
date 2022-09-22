@@ -37,6 +37,11 @@ trait HasSavedSearches
         return collect();
     }
 
+    public function mountHasSavedSearches()
+    {
+        $this->applySavedSearchToQuery($this->savedSearch);
+    }
+
     /**
      * Apply the saved search to the table.
      *
@@ -54,7 +59,23 @@ trait HasSavedSearches
             return;
         }
 
+        $this->applySavedSearchToQuery($key);
+
         $this->savedSearch = $key;
+    }
+
+    protected function applySavedSearchToQuery($key)
+    {
+        if ($key) {
+            $search = $this->savedSearches->first(function ($search) use ($key) {
+                return $search['key'] == $key;
+            });
+
+            if ($search) {
+                $this->filters = $search['filters'];
+                $this->query = $search['query'];
+            }
+        }
     }
 
     /**
