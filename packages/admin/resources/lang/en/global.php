@@ -138,4 +138,5 @@ return [
     'delivery_instructions' => 'Delivery Instructions',
     'not_provided' => 'Not Provided',
     'billing_email' => 'Billing Email',
+    'custom'    => 'Custom',
 ];

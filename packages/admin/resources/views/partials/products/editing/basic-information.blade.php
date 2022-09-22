@@ -7,16 +7,35 @@
     </header>
 
     <div class="space-y-4">
-      <x-hub::input.group :label="__('adminhub::inputs.brand.label')" for="brand">
+      <x-hub::input.group
+        :label="__('adminhub::inputs.brand.label')"
+        for="brand"
+        :errors="$errors->get('product.brand_id') ?: $errors->get('brand')"
+    >
         <div class="flex items-center space-x-4">
-            <x-hub::input.select id="brand" wire:model="product.brand_id">
-              <option>{{ __('adminhub::components.brands.choose_brand_default_option') }}</option>
-              @foreach($this->brands as $brand)
-                <option value="{{ $brand->id }}" wire:key="{{ $brand->id }}">{{ $brand->name }}</option>
-              @endforeach
-            </x-hub::input.select>
+            <div class="grow">
+                @if($useCustomBrand)
+                    <x-hub::input.text wire:model="brand" />
+                @else
+                    <x-hub::input.select id="brand" wire:model="product.brand_id" :error="$errors->first('product.brand_id')">
+                      <option value>{{ __('adminhub::components.brands.choose_brand_default_option') }}</option>
+                      @foreach($this->brands as $brand)
+                        <option value="{{ $brand->id }}" wire:key="{{ $brand->id }}">{{ $brand->name }}</option>
+                      @endforeach
+                    </x-hub::input.select>
+                @endif
+            </div>
             <div>
-                <x-hub::button theme="gray">Custom</x-hub::button>
+                @if($useCustomBrand)
+                    <x-hub::button theme="gray" type="button" wire:click="$set('useCustomBrand', false)">
+                        {{ __('adminhub::global.cancel') }}
+                    </x-hub::button>
+                @else
+                    <x-hub::button theme="gray" type="button" wire:click="$set('useCustomBrand', true)">
+                        {{ __('adminhub::global.custom') }}
+                    </x-hub::button>
+                @endif
+
             </div>
         </div>
       </x-hub::input.group>
