@@ -8,7 +8,7 @@
             </span>
         </a>
     @else
-        <p class="text-sm font-medium lt-text-gray-600 lt-px-3 lt-py-2">
+        <p class="lt-text-sm lt-font-medium lt-text-gray-600 lt-px-3 lt-py-2">
             <span class="lt-capitalize">
                 {{ $label }}
             </span>
