@@ -9,7 +9,7 @@
      x-on:notify.window="level = $event.detail.level; messages.push($event.detail.message)"
      x-init="$watch('messages', () => {
          clearTimeout(timeout)
-         {{-- timeout = setTimeout(() => messages.shift(), 2000) --}}
+         timeout = setTimeout(() => messages.shift(), 2000)
      })"
      class="fixed inset-0 z-50 flex flex-col items-center justify-end p-4 space-y-4 pointer-events-none sm:p-6 lg:items-end lg:justify-start">
     <template x-for="(message, messageIndex) in messages"
