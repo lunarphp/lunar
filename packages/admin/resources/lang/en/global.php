@@ -27,6 +27,7 @@ return [
     'thumbnail'           => 'Thumbnail',
     'alt_text'            => 'Alt. Text',
     'delete'              => 'Delete',
+    'restore'             => 'Restore',
     'options'             => 'Options',
     'sku'                 => 'SKU',
     'unit_price_tax'      => 'Unit Price Incl. tax',
