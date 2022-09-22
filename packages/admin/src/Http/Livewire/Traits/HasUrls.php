@@ -64,6 +64,15 @@ trait HasUrls
 
     public function removeUrl($index)
     {
+        $url = $this->urls[$index];
+
+        if ($url['default'] && $url['slug']) {
+            $this->notify(
+                message: __('adminhub::notifications.default_url_protected'),
+                level: 'error',
+            );
+            return;
+        }
         unset($this->urls[$index]);
     }
 
