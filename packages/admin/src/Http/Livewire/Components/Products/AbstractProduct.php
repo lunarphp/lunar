@@ -209,7 +209,7 @@ abstract class AbstractProduct extends Component
         $baseRules = [
             'product.status'          => 'required|string',
             'product.brand_id'        => 'required_without:brand',
-            'brand'                   => 'required_without:product.brand_id|unique:' . Brand::class . ',name',
+            'brand'                   => 'required_without:product.brand_id|unique:'.Brand::class.',name',
             'product.product_type_id' => 'required',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
