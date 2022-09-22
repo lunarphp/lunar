@@ -223,6 +223,16 @@ class Table extends Component
     }
 
     /**
+     * Return the empty message.
+     *
+     * @return string|null
+     */
+    public function getEmptyMessageProperty()
+    {
+        return $this->tableBuilder->emptyMessage;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function render()

@@ -1,4 +1,4 @@
-<th class="lt-px-4 lt-py-3 lt-text-sm lt-font-medium lt-text-left lt-text-gray-700">
+<th class="lt-px-4 lt-py-3 lt-text-sm lt-font-medium lt-text-left lt-text-gray-700 lt-whitespace-nowrap">
     @unless($sortable)
         <span class="lt-capitalize">
             {{ $heading }}

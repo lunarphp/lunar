@@ -187,121 +187,125 @@
                 </div>
             @endif
 
-            @if($poll)
+            @if ($poll)
                 <div wire:poll.{{ $poll }}></div>
             @endif
 
             <div class="lt-overflow-x-auto">
-                <table class="lt-min-w-full lt-divide-y lt-divide-gray-200">
-                    <thead class="lt-bg-white">
-                        <tr>
-                            @if (count($this->bulkActions))
-                                <td class="lt-w-10 lt-py-3 lt-pl-4 lt-leading-none">
-                                    <input type="checkbox"
-                                           x-model="selectedAll"
-                                           class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
-                                </td>
-                            @endif
-
-                            @foreach ($this->columns as $column)
-                                @livewire(
-                                    'lunar.livewire-tables.components.head',
-                                    [
-                                        'heading' => $column->getHeading(),
-                                        'sortable' => $column->isSortable(),
-                                        'field' => $column->field,
-                                        'sortField' => $sortField,
-                                        'sortDir' => $sortDir,
-                                    ],
-                                    key($column->field),
-                                )
-                            @endforeach
-
-                            @if (count($this->actions))
-                                <td></td>
-                            @endif
-                        </tr>
-
-                        <tr x-cloak
-                            x-show="selected.length">
-                            <td colspan="50"
-                                class="lt-p-0">
-                                <div
-                                     class="lt-relative lt-px-3 lt-py-2 lt--my-px lt-text-sm lt-text-blue-700 lt-border-blue-200 lt-border-y lt-bg-blue-50">
-                                    Selected <span x-text="selected.length"></span> of {{ $this->rows->count() }}
-                                    results.
-                                </div>
-                            </td>
-                        </tr>
-                    </thead>
-
-                    <tbody class="lt-hidden"
-                           wire:loading.delay.class.remove="lt-hidden">
-                        @foreach (range(1, count($this->rows)) as $id)
-                            <tr class="lt-border-b lt-border-gray-100 lt-bg-white"
-                                wire:key="loading_{{ $id }}">
+                @if (count($this->rows))
+                    <table class="lt-min-w-full lt-divide-y lt-divide-gray-200">
+                        <thead class="lt-bg-white">
+                            <tr>
                                 @if (count($this->bulkActions))
-                                    <x-tables::cell class="lt-text-right">
-                                    </x-tables::cell>
-                                @endif
-
-                                @foreach ($this->columns as $column)
-                                    <x-tables::cell wire:key="loading_column_{{ $column->field }}">
-                                        <div class="lt-animate-pulse">
-                                            <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
-                                        </div>
-                                    </x-tables::cell>
-                                @endforeach
-
-                                @if (count($this->actions))
-                                    <x-tables::cell class="lt-text-right">
-                                        <div class="lt-animate-pulse">
-                                            <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
-                                        </div>
-                                    </x-tables::cell>
-                                @endif
-                            </tr>
-                        @endforeach
-                    </tbody>
-
-                    <tbody class="lt-relative"
-                           wire:loading.delay.remove>
-                        @foreach ($this->rows as $row)
-                            <tr class="lt-bg-white even:lt-bg-gray-50"
-                                wire:key="table_row_{{ $row->id }}">
-                                @if ($this->bulkActions->count())
-                                    <x-tables::cell class="lt-w-10 lt-pr-0 lt-leading-none">
+                                    <td class="lt-w-10 lt-py-3 lt-pl-4 lt-leading-none">
                                         <input type="checkbox"
-                                               x-model="selected"
-                                               value="{{ $row->id }}"
+                                               x-model="selectedAll"
                                                class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
-                                    </x-tables::cell>
+                                    </td>
                                 @endif
 
                                 @foreach ($this->columns as $column)
-                                    <x-tables::cell :sort="true"
-                                                    wire:key="column_{{ $column->field }}">
-                                        @if ($column->isLivewire())
-                                            <livewire:is :component="$column->getLivewire()" />
-                                        @elseif($column->isViewComponent())
-                                            <x-dynamic-component :component="$column->getViewComponent()"
-                                                                 :record="$row" />
-                                        @else
-                                            {{ $column->record($row)->render() }}
-                                        @endif
-                                    </x-tables::cell>
+                                    @livewire(
+                                        'lunar.livewire-tables.components.head',
+                                        [
+                                            'heading' => $column->getHeading(),
+                                            'sortable' => $column->isSortable(),
+                                            'field' => $column->field,
+                                            'sortField' => $sortField,
+                                            'sortDir' => $sortDir,
+                                        ],
+                                        key($column->field),
+                                    )
                                 @endforeach
 
                                 @if (count($this->actions))
-                                    <x-tables::cell class="lt-text-right">
-                                        <x-tables::action-cell :actions="$this->actions"
-                                                               :record="$row" />
-                                    </x-tables::cell>
+                                    <td></td>
                                 @endif
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+
+                            <tr x-cloak
+                                x-show="selected.length">
+                                <td colspan="50"
+                                    class="lt-p-0">
+                                    <div
+                                         class="lt-relative lt-px-3 lt-py-2 lt--my-px lt-text-sm lt-text-blue-700 lt-border-blue-200 lt-border-y lt-bg-blue-50">
+                                        Selected <span x-text="selected.length"></span> of {{ $this->rows->count() }}
+                                        results.
+                                    </div>
+                                </td>
+                            </tr>
+                        </thead>
+
+                        <tbody class="lt-hidden"
+                               wire:loading.delay.class.remove="lt-hidden">
+                            @foreach (range(1, count($this->rows)) as $id)
+                                <tr class="lt-border-b lt-border-gray-100 lt-bg-white"
+                                    wire:key="loading_{{ $id }}">
+                                    @if (count($this->bulkActions))
+                                        <x-tables::cell class="lt-text-right">
+                                        </x-tables::cell>
+                                    @endif
+
+                                    @foreach ($this->columns as $column)
+                                        <x-tables::cell wire:key="loading_column_{{ $column->field }}">
+                                            <div class="lt-animate-pulse">
+                                                <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
+                                            </div>
+                                        </x-tables::cell>
+                                    @endforeach
+
+                                    @if (count($this->actions))
+                                        <x-tables::cell class="lt-text-right">
+                                            <div class="lt-animate-pulse">
+                                                <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
+                                            </div>
+                                        </x-tables::cell>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+
+                        <tbody class="lt-relative"
+                               wire:loading.delay.remove>
+                            @foreach ($this->rows as $row)
+                                <tr class="lt-bg-white even:lt-bg-gray-50"
+                                    wire:key="table_row_{{ $row->id }}">
+                                    @if ($this->bulkActions->count())
+                                        <x-tables::cell class="lt-w-10 lt-pr-0 lt-leading-none">
+                                            <input type="checkbox"
+                                                   x-model="selected"
+                                                   value="{{ $row->id }}"
+                                                   class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
+                                        </x-tables::cell>
+                                    @endif
+
+                                    @foreach ($this->columns as $column)
+                                        <x-tables::cell :sort="true"
+                                                        wire:key="column_{{ $column->field }}">
+                                            @if ($column->isLivewire())
+                                                <livewire:is :component="$column->getLivewire()" />
+                                            @elseif($column->isViewComponent())
+                                                <x-dynamic-component :component="$column->getViewComponent()"
+                                                                     :record="$row" />
+                                            @else
+                                                {{ $column->record($row)->render() }}
+                                            @endif
+                                        </x-tables::cell>
+                                    @endforeach
+
+                                    @if (count($this->actions))
+                                        <x-tables::cell class="lt-text-right">
+                                            <x-tables::action-cell :actions="$this->actions"
+                                                                   :record="$row" />
+                                        </x-tables::cell>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <x-tables::support.no-entries />
+                @endif
             </div>
         </div>
     </div>
