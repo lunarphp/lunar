@@ -17,6 +17,6 @@ class CreateBrandsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists($this->prefix.'cart_lines');
+        Schema::dropIfExists($this->prefix.'brands');
     }
 }
