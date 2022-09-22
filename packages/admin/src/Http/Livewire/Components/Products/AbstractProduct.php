@@ -100,6 +100,13 @@ abstract class AbstractProduct extends Component
     public $showDeleteConfirm = false;
 
     /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public $showRestoreConfirm = false;
+
+    /**
      * Define availability properties.
      *
      * @var array

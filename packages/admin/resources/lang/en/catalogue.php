@@ -54,6 +54,9 @@ return [
     'products.show.delete_strapline'        => 'This will send the product into the recycle bin, you will be able to restore it later',
     'products.show.restore_strapline'       => 'Restore this product so it becomes available on your store.',
     'products.show.delete_btn'              => 'Confirm delete',
+    'products.show.restore_title'            => 'Restore product',
+    'products.show.restore_strapline'       => 'Restore this product so it becomes available on your store.',
+    'products.show.restore_btn'              => 'Confirm restore',
 
     /**
      * Product variant.

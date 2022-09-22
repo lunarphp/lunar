@@ -173,16 +173,50 @@
                             </div>
 
                             <div class="col-span-6 text-right lg:col-span-4">
-                                <x-hub::button :disabled="false"
-                                               wire:click="$set('showDeleteConfirm', true)"
-                                               type="button"
-                                               theme="danger">
-                                    {{ __('adminhub::global.delete') }}
-                                </x-hub::button>
+                                @if($product->deleted_at)
+                                    <x-hub::button :disabled="false"
+                                                   wire:click="$set('showRestoreConfirm', true)"
+                                                   type="button"
+                                                   theme="green">
+                                        {{ __('adminhub::global.restore') }}
+                                    </x-hub::button>
+                                @else
+                                    <x-hub::button :disabled="false"
+                                                   wire:click="$set('showDeleteConfirm', true)"
+                                                   type="button"
+                                                   theme="danger">
+                                        {{ __('adminhub::global.delete') }}
+                                    </x-hub::button>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <x-hub::modal.dialog wire:model="showRestoreConfirm">
+                    <x-slot name="title">
+                        {{ __('adminhub::catalogue.products.show.restore_title') }}
+                    </x-slot>
+
+                    <x-slot name="content">
+                        {{ __('adminhub::catalogue.products.show.restore_strapline') }}
+                    </x-slot>
+
+                    <x-slot name="footer">
+                        <div class="flex items-center justify-end space-x-4">
+                            <x-hub::button theme="gray"
+                                           type="button"
+                                           wire:click.prevent="$set('showRestoreConfirm', false)">
+                                {{ __('adminhub::global.cancel') }}
+                            </x-hub::button>
+
+                            <x-hub::button wire:click="restore"
+                                           theme="green">
+                                {{ __('adminhub::catalogue.products.show.restore_btn') }}
+                            </x-hub::button>
+                        </div>
+                    </x-slot>
+                </x-hub::modal.dialog>
 
                 <x-hub::modal.dialog wire:model="showDeleteConfirm">
                     <x-slot name="title">
