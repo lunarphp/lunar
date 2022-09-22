@@ -71,6 +71,7 @@ trait HasUrls
                 message: __('adminhub::notifications.default_url_protected'),
                 level: 'error',
             );
+
             return;
         }
         unset($this->urls[$index]);
