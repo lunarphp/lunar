@@ -108,8 +108,7 @@
                             <div class="flex items-center ml-4 space-x-4">
                                 <x-hub::tooltip text="Make primary">
                                     <x-hub::input.toggle :disabled="$image['primary']"
-                                                         :on="$image['primary']"
-                                                         wire:click.prevent="setPrimary('{{ $loop->index }}')" />
+                                        wire:model="images.{{ $loop->index }}.primary"/>
                                 </x-hub::tooltip>
 
                                 @if (!empty($image['id']))
@@ -126,7 +125,8 @@
 
                                 <button type="button"
                                         wire:click.prevent="removeImage('{{ $image['sort_key'] }}')"
-                                        class="text-gray-400 hover:text-red-500 ">
+                                        class="text-gray-400 hover:text-red-500 "
+                                        @if($image['primary']) disabled @endif>
                                     <x-hub::icon ref="trash"
                                                  style="solid" />
                                 </button>

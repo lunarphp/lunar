@@ -89,9 +89,23 @@ trait HasImages
      *
      * @return void
      */
-    public function updatedImages()
+    public function updatedImages($value, $key)
     {
         $this->validate($this->hasImagesValidationRules());
+
+        [$index, $field] = explode('.', $key);
+        if ($field == 'primary' && $value) {
+            // Make sure other defaults are unchecked...
+            $this->images = collect($this->images)->map(function ($image, $imageIndex) use ($index) {
+                if ($index != $imageIndex) {
+                    $image['primary'] = false;
+                } else {
+                    $image['primary'] = true;
+                }
+
+                return $image;
+            })->toArray();
+        }
     }
 
     /**
