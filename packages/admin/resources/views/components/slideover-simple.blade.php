@@ -8,7 +8,7 @@
 
     <div class="fixed inset-0 z-40 flex"
          x-show="{{ $target }}"
-         x-trap.inert.noscroll="{{ $target }}"
+         x-trap.noscroll="{{ $target }}"
          x-on:click.away="{{ $target }} = false"
          x-cloak
          x-transition:enter="transition ease-out duration-300"

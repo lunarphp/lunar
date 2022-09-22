@@ -36,7 +36,7 @@ switch ($maxWidth ?? '2xl') {
 
     <div x-cloak
          x-show="show"
-         x-trap.inert.noscroll="show"
+         x-trap.noscroll="show"
          x-on:click.away="show = false"
          x-init="$watch('show', (isShown) => isShown && $focus.first())"
          x-transition
