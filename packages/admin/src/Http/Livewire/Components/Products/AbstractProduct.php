@@ -70,7 +70,7 @@ abstract class AbstractProduct extends Component
      *
      * @var bool
      */
-    public bool $useCustomBrand = false;
+    public bool $useNewBrand = false;
 
     /**
      * The options we want to use for the product.
@@ -339,7 +339,7 @@ abstract class AbstractProduct extends Component
                 ]);
                 $this->product->brand_id = $brand->id;
                 $this->brand = null;
-                $this->useCustomBrand = false;
+                $this->useNewBrand = false;
             }
             $this->product->attribute_data = $data;
 

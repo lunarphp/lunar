@@ -14,7 +14,7 @@
     >
         <div class="flex items-center space-x-4">
             <div class="grow">
-                @if($useCustomBrand)
+                @if($useNewBrand)
                     <x-hub::input.text wire:model="brand" />
                 @else
                     <x-hub::input.select id="brand" wire:model="product.brand_id" :error="$errors->first('product.brand_id')">
@@ -26,13 +26,13 @@
                 @endif
             </div>
             <div>
-                @if($useCustomBrand)
-                    <x-hub::button theme="gray" type="button" wire:click="$set('useCustomBrand', false)">
+                @if($useNewBrand)
+                    <x-hub::button theme="gray" type="button" wire:click="$set('useNewBrand', false)">
                         {{ __('adminhub::global.cancel') }}
                     </x-hub::button>
                 @else
-                    <x-hub::button theme="gray" type="button" wire:click="$set('useCustomBrand', true)">
-                        {{ __('adminhub::global.custom') }}
+                    <x-hub::button theme="gray" type="button" wire:click="$set('useNewBrand', true)">
+                        {{ __('adminhub::global.add_new') }}
                     </x-hub::button>
                 @endif
 
