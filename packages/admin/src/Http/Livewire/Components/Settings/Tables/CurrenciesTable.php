@@ -25,7 +25,7 @@ class CurrenciesTable extends LunarTable
         $this->tableBuilder->baseColumns([
             StatusColumn::make('default'),
             TextColumn::make('name')->url(function ($record) {
-                return route('hub.channels.show', $record->id);
+                return route('hub.currencies.show', $record->id);
             }),
             TextColumn::make('code'),
             TextColumn::make('exchange_rate'),
