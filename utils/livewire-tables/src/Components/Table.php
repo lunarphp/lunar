@@ -122,6 +122,16 @@ class Table extends Component
         //
     }
 
+    public function updatedQuery()
+    {
+        $this->resetSavedSearch();
+    }
+
+    public function updatedFilters()
+    {
+        $this->resetSavedSearch();
+    }
+
     public function updatedSelected($value)
     {
         $this->emit('table.selectedRows', $value);
