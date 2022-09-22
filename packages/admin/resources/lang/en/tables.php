@@ -44,4 +44,5 @@ return [
     'headings.latest_version' => 'Latest Version',
     'headings.author' => 'Author',
     'headings.products_count' => 'No. Products',
+    'headings.empty' => 'No Entries Found',
 ];

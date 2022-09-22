@@ -122,6 +122,16 @@ class Table extends Component
         //
     }
 
+    public function updatedQuery()
+    {
+        $this->resetSavedSearch();
+    }
+
+    public function updatedFilters()
+    {
+        $this->resetSavedSearch();
+    }
+
     public function updatedSelected($value)
     {
         $this->emit('table.selectedRows', $value);
@@ -220,6 +230,16 @@ class Table extends Component
     public function getActiveFiltersCountProperty()
     {
         return collect($this->filters)->filter()->count();
+    }
+
+    /**
+     * Return the empty message.
+     *
+     * @return string|null
+     */
+    public function getEmptyMessageProperty()
+    {
+        return $this->tableBuilder->emptyMessage;
     }
 
     /**
