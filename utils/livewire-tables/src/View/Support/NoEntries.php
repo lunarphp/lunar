@@ -8,7 +8,7 @@ class NoEntries extends Component
 {
     public $message = null;
 
-    public function __construct($message)
+    public function __construct($message = null)
     {
         $this->message = $message;
     }
