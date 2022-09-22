@@ -81,6 +81,13 @@ class TableBuilder implements TableBuilderInterface
     public array $queryStringFilters = [];
 
     /**
+     * The empty message.
+     *
+     * @var string|null
+     */
+    public ?string $emptyMessage = '';
+
+    /**
      * Initialise the TableBuilder
      */
     public function __construct()
