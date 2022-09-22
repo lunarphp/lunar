@@ -12,7 +12,7 @@
     </svg>
 
     <h3 class="mt-2 font-bold text-gray-900">
-        No Rows Found
+        {{ __('adminhub::tables.headings.empty') }}
     </h3>
 
     @if ($message)
