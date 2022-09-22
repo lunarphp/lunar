@@ -187,17 +187,6 @@ class OrdersTable extends Table
                 ->paginate($this->perPage);
         }
 
-        if ($this->savedSearch) {
-            $search = $this->savedSearches->first(function ($search) {
-                return $search['key'] == $this->savedSearch;
-            });
-
-            if ($search) {
-                $filters = $search['filters'];
-                $query = $search['query'];
-            }
-        }
-
         return $this->tableBuilder
             ->searchTerm($query)
             ->queryStringFilters($filters)
