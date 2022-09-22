@@ -149,16 +149,10 @@ class CollectionTree extends Component
      */
     public function collectionMoved($id)
     {
-        // Was the collection that moved part of this tree?
-        $matched = collect($this->nodes)->first(fn ($node) => $node['id'] == $id);
-
-        if ($matched) {
-            // Get the first node's parent ID and then load them up.
-            $parentId = collect($this->nodes)->first()['parent_id'];
-            $this->nodes = $this->mapCollections(
-                Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
-            );
-        }
+        $parentId = collect($this->nodes)->first()['parent_id'];
+        $this->nodes = $this->mapCollections(
+            Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
+        );
     }
 
     /**
