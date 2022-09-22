@@ -304,7 +304,7 @@
                         </tbody>
                     </table>
                 @else
-                    <x-tables::support.no-entries />
+                    <x-tables::support.no-entries :message="$this->emptyMessage" />
                 @endif
             </div>
         </div>
