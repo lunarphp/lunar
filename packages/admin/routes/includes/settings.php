@@ -26,7 +26,7 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZonesIndex;
 
 Route::get('/', function () {
-    return redirect()->route('hub.channels.index');
+    return redirect()->route('hub.attributes.index');
 })->name('hub.settings');
 
 /**
