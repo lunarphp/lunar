@@ -102,6 +102,7 @@ trait HasImages
                 } else {
                     $image['primary'] = true;
                 }
+
                 return $image;
             })->toArray();
         }
@@ -249,7 +250,6 @@ trait HasImages
             $this->images[$key]['primary'] = $imageKey == $key;
         }
     }
-
 
     /**
      * Method to handle firing of command to generate media conversions.
