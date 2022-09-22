@@ -58,6 +58,13 @@ abstract class AbstractProduct extends Component
     public ProductVariant $variant;
 
     /**
+     * The custom brand to add.
+     *
+     * @var string
+     */
+    public ?string $brand = null;
+
+    /**
      * The options we want to use for the product.
      *
      * @var \Illuminate\Support\Collection
@@ -193,7 +200,8 @@ abstract class AbstractProduct extends Component
     {
         $baseRules = [
             'product.status'          => 'required|string',
-            'product.brand_id'        => 'nullable',
+            'product.brand_id'        => 'required_without:brand',
+            'brand'                   => 'nullable',
             'product.product_type_id' => 'required',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',

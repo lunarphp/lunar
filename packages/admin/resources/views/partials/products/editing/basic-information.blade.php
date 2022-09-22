@@ -8,12 +8,17 @@
 
     <div class="space-y-4">
       <x-hub::input.group :label="__('adminhub::inputs.brand.label')" for="brand">
-        <x-hub::input.select id="brand" wire:model="product.brand_id">
-          <option>{{ __('adminhub::components.brands.choose_brand_default_option') }}</option>
-          @foreach($this->brands as $brand)
-            <option value="{{ $brand->id }}" wire:key="{{ $brand->id }}">{{ $brand->name }}</option>
-          @endforeach
-        </x-hub::input.select>
+        <div class="flex items-center space-x-4">
+            <x-hub::input.select id="brand" wire:model="product.brand_id">
+              <option>{{ __('adminhub::components.brands.choose_brand_default_option') }}</option>
+              @foreach($this->brands as $brand)
+                <option value="{{ $brand->id }}" wire:key="{{ $brand->id }}">{{ $brand->name }}</option>
+              @endforeach
+            </x-hub::input.select>
+            <div>
+                <x-hub::button theme="gray">Custom</x-hub::button>
+            </div>
+        </div>
       </x-hub::input.group>
 
       <x-hub::input.group :label="__('adminhub::inputs.product-type.label')" for="productType">
