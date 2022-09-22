@@ -129,20 +129,46 @@
             @endforeach
 
             @if ($product->id)
-                <div class="bg-white border border-red-300 rounded shadow">
-                    <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
-                        {{ __('adminhub::inputs.danger_zone.title') }}
+                <div
+                    @class([
+                        'bg-white border rounded shadow',
+                        'border-red-300' => !$product->deleted_at,
+                        'border-gray-300' => $product->deleted_at,
+                    ])
+                >
+                    <header
+                        @class([
+                            'px-6 py-4 bg-white border-b rounded-t',
+                            'border-red-300 text-red-700' => !$product->deleted_at,
+                            'border-gray-300 text-gray-700' => $product->deleted_at,
+                        ])
+                    >
+                        @if($product->deleted_at)
+                            {{ __('adminhub::inputs.restore_zone.title') }}
+                        @else
+                            {{ __('adminhub::inputs.danger_zone.title') }}
+                        @endif
+
                     </header>
 
                     <div class="p-6 text-sm">
                         <div class="grid grid-cols-12 gap-4">
                             <div class="col-span-12 lg:col-span-8">
                                 <strong>
-                                    {{ __('adminhub::inputs.danger_zone.label', ['model' => 'product']) }}
+                                    @if($product->deleted_at)
+                                        {{ __('adminhub::inputs.restore_zone.label', ['model' => 'product']) }}
+                                    @else
+                                        {{ __('adminhub::inputs.danger_zone.label', ['model' => 'product']) }}
+                                    @endif
                                 </strong>
 
                                 <p class="text-xs text-gray-600">
-                                    {{ __('adminhub::catalogue.products.show.delete_strapline') }}
+                                    @if($product->deleted_at)
+                                        {{ __('adminhub::catalogue.products.show.restore_strapline') }}
+                                    @else
+                                        {{ __('adminhub::catalogue.products.show.delete_strapline') }}
+                                    @endif
+
                                 </p>
                             </div>
 
