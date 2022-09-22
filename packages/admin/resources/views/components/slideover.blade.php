@@ -23,7 +23,7 @@
 
         <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
             <div x-show="show"
-                 x-trap.inert.noscroll="show"
+                 x-trap.noscroll="show"
                  x-on:click.away="show = false"
                  x-cloak
                  x-init="$watch('show', (isShown) => isShown && $focus.first())"
