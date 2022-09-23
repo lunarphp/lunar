@@ -35,7 +35,6 @@ use Lunar\Base\ShippingModifiers;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
-use Lunar\Console\Commands\MeilisearchSetup;
 use Lunar\Console\Commands\MigrateGetCandy;
 use Lunar\Console\Commands\ScoutIndexer;
 use Lunar\Console\InstallLunar;
@@ -188,7 +187,6 @@ class LunarServiceProvider extends ServiceProvider
             $this->commands([
                 InstallLunar::class,
                 AddonsDiscover::class,
-                MeilisearchSetup::class,
                 AddressData::class,
                 ScoutIndexer::class,
                 MigrateGetCandy::class,
