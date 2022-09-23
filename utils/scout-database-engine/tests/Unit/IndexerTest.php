@@ -22,7 +22,7 @@ class IndexerTest extends TestCase
 
         $this->assertInstanceOf(Post::class, $post);
 
-        $this->assertDatabaseCount('search_index', 2);
+        $this->assertDatabaseCount('search_index', 3);
 
         $this->assertDatabaseHas('search_index', [
             'key' => $post->getScoutKey(),
@@ -101,7 +101,7 @@ class IndexerTest extends TestCase
         $post->save();
 
         // 3 models x 2 fields = 6
-        $this->assertDatabaseCount('search_index', 6);
+        $this->assertDatabaseCount('search_index', 9);
 
         Artisan::call('scout:flush "Lunar\\\ScoutDatabaseEngine\\\Tests\\\Stubs\\\Post"');
 

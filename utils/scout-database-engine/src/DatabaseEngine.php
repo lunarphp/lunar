@@ -4,6 +4,7 @@ namespace Lunar\ScoutDatabaseEngine;
 
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\LazyCollection;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Engines\Engine;
@@ -53,7 +54,7 @@ class DatabaseEngine extends Engine
             $indexes = collect($searchableData)->filter()->map(function ($data, $field) use ($model) {
 
                 if (is_iterable($data)) {
-                    $data = json_encode($data);
+                    $data = implode(' , ', Arr::flatten($data));
                 }
 
                 return [
