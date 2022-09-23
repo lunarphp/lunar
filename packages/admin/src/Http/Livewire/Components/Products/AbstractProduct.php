@@ -21,6 +21,7 @@ use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Hub\Jobs\Products\GenerateVariants;
 use Lunar\Models\AttributeGroup;
+use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
@@ -56,6 +57,20 @@ abstract class AbstractProduct extends Component
      * @var ProductVariant
      */
     public ProductVariant $variant;
+
+    /**
+     * The custom brand to add.
+     *
+     * @var string
+     */
+    public ?string $brand = null;
+
+    /**
+     * Whether to use a custom brand.
+     *
+     * @var bool
+     */
+    public bool $useNewBrand = false;
 
     /**
      * The options we want to use for the product.
@@ -98,6 +113,13 @@ abstract class AbstractProduct extends Component
      * @var bool
      */
     public $showDeleteConfirm = false;
+
+    /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public $showRestoreConfirm = false;
 
     /**
      * Define availability properties.
@@ -193,7 +215,8 @@ abstract class AbstractProduct extends Component
     {
         $baseRules = [
             'product.status'          => 'required|string',
-            'product.brand_id'        => 'nullable',
+            'product.brand_id'        => 'required_without:brand',
+            'brand'                   => 'required_without:product.brand_id|unique:'.Brand::class.',name',
             'product.product_type_id' => 'required',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
@@ -318,6 +341,14 @@ abstract class AbstractProduct extends Component
             $data = $this->prepareAttributeData();
             $variantData = $this->prepareAttributeData($this->variantAttributes);
 
+            if ($this->brand) {
+                $brand = Brand::create([
+                    'name' => $this->brand,
+                ]);
+                $this->product->brand_id = $brand->id;
+                $this->brand = null;
+                $this->useNewBrand = false;
+            }
             $this->product->attribute_data = $data;
 
             $this->product->save();

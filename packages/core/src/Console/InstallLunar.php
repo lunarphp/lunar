@@ -96,7 +96,7 @@ class InstallLunar extends Command
                     'name'    => 'Webstore',
                     'handle'  => 'webstore',
                     'default' => true,
-                    'url'     => 'localhost',
+                    'url'     => 'http://localhost',
                 ]);
             }
 

@@ -41,6 +41,20 @@ class ProductShow extends AbstractProduct
     }
 
     /**
+     * Restore the product.
+     *
+     * @return void
+     */
+    public function restore()
+    {
+        $this->product->restore();
+        $this->showRestoreConfirm = false;
+        $this->notify(
+            __('adminhub::notifications.products.product_restored')
+        );
+    }
+
+    /**
      * Render the livewire component.
      *
      * @return \Illuminate\View\View

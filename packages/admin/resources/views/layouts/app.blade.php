@@ -13,16 +13,18 @@
 
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
+
+    @livewireTableStyles
+
     <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
 
     @if ($styles = \Lunar\Hub\LunarHub::styles())
-        <!-- Package Styles -->
         @foreach ($styles as $asset)
-            <link href="{!! $asset->url() !!}" rel="stylesheet">
+            <link href="{!! $asset->url() !!}"
+                  rel="stylesheet">
         @endforeach
     @endif
-
 
     <style>
         .filepond--credits {
@@ -32,6 +34,9 @@
 
     <script defer
             src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+
+    <script defer
+            src="https://unpkg.com/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
 
     <script defer
             src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
@@ -45,6 +50,7 @@
             document.documentElement.classList.remove('app-sidemenu-expanded');
         })
     </script>
+
 
     @livewireStyles
 </head>
@@ -91,12 +97,11 @@
     @livewireScripts
 
     @if ($scripts = \Lunar\Hub\LunarHub::scripts())
-        <!-- Package Scripts -->
         @foreach ($scripts as $asset)
             <script src="{!! $asset->url() !!}"></script>
         @endforeach
     @endif
-    
+
     <script src="{{ asset('vendor/lunar/admin-hub/app.js') }}"></script>
 </body>
 
