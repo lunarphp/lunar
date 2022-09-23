@@ -3,18 +3,12 @@
 namespace Lunar\Database\State;
 
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Lunar\Models\Brand;
 use Lunar\Models\Product;
 
 class EnsureBrandsAreUpgraded
 {
-    /**
-     * The legacy brands to import.
-     *
-     * @var array
-     */
-    protected $legacyBrands = [];
-
     public function prepare()
     {
         $prefix = config('lunar.database.table_prefix');
@@ -32,13 +26,17 @@ class EnsureBrandsAreUpgraded
             return;
         }
 
+        $brands = [];
+
         foreach ($legacyBrands as $productId => $brand) {
-            if (empty($this->legacyBrands[$brand])) {
+            if (empty($brands[$brand])) {
                 $this->legacyBrands[$brand] = [];
             }
 
-            $this->legacyBrands[$brand][] = $productId;
+            $brands[$brand][] = $productId;
         }
+
+        Storage::put('tmp/state/legacy_brands.json', json_encode($brands));
     }
 
     public function run()
@@ -47,15 +45,23 @@ class EnsureBrandsAreUpgraded
             return;
         }
 
-        foreach ($this->legacyBrands as $brandName => $productIds) {
-            $brand = Brand::firstOrCreate([
-                'name' => $brandName,
-            ]);
+        $brands = Storage::get('tmp/state/legacy_brands.json');
 
-            Product::whereIn('id', $productIds)->update([
-                'brand_id' => $brand->id,
-            ]);
+        if ($brands) {
+            $brands = json_decode($brands);
+
+            foreach ($brands as $brandName => $productIds) {
+                $brand = Brand::firstOrCreate([
+                    'name' => $brandName,
+                ]);
+
+                Product::whereIn('id', $productIds)->update([
+                    'brand_id' => $brand->id,
+                ]);
+            }
         }
+
+        Storage::delete('tmp/state/legacy_brands.json');
     }
 
     protected function canRun()
