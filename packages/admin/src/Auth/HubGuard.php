@@ -5,6 +5,7 @@ namespace Lunar\Hub\Auth;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Timebox;
 
 class HubGuard extends SessionGuard
 {
@@ -19,12 +20,14 @@ class HubGuard extends SessionGuard
     public function __construct(
         StaffProvider $provider,
         Session $session,
-        Request $request = null
+        Request $request = null,
+        Timebox $timebox = null
     ) {
         $this->name = 'lunarhub';
         $this->session = $session;
         $this->request = $request;
         $this->provider = $provider;
+        $this->timebox = $timebox ?: new Timebox;
 
         $this->setCookieJar(app('cookie'));
     }
