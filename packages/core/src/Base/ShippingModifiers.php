@@ -41,7 +41,7 @@ class ShippingModifiers
     {
         $this->modifiers->push($modifier);
     }
-    
+
     /**
      * Remove a shipping modifier.
      *
