@@ -22,9 +22,7 @@ class EnsureBrandsAreUpgradedTest extends TestCase
     /** @test */
     public function can_run()
     {
-        Storage::fake();
-
-
+        Storage::fake('app');
 
         $prefix = config('lunar.database.table_prefix');
         Schema::dropIfExists("{$prefix}brands");
@@ -71,15 +69,6 @@ class EnsureBrandsAreUpgradedTest extends TestCase
             ]),
         ]);
 
-        Storage::put('tmp/state/legacy_brands.json', json_encode([
-            'Brand A' => [
-                $pa->id,
-                $pb->id,
-            ],
-            'Brand B' => [
-                $pc->id,
-            ],
-        ]));
 
         $this->assertDatabaseHas((new Product)->getTable(), [
             'brand' => 'Brand A',

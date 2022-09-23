@@ -36,7 +36,7 @@ class EnsureBrandsAreUpgraded
             $brands[$brand][] = $productId;
         }
 
-        Storage::put('tmp/state/legacy_brands.json', json_encode($brands));
+        Storage::put('legacy_brands.json', json_encode($brands));
     }
 
     public function run()
@@ -45,7 +45,7 @@ class EnsureBrandsAreUpgraded
             return;
         }
 
-        $brands = Storage::get('tmp/state/legacy_brands.json');
+        $brands = Storage::get('legacy_brands.json');
 
         if ($brands) {
             $brands = json_decode($brands);
@@ -61,7 +61,7 @@ class EnsureBrandsAreUpgraded
             }
         }
 
-        Storage::delete('tmp/state/legacy_brands.json');
+        Storage::delete('legacy_brands.json');
     }
 
     protected function canRun()
