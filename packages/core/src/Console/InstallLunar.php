@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Lunar\FieldTypes\TranslatedText;
-use Lunar\Hub\Models\Staff;
+use Lunar\Hub\AdminHubServiceProvider;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Channel;
@@ -255,6 +255,11 @@ class InstallLunar extends Command
                 );
             }
 
+            if ($this->isHubInstalled()) {
+                $this->info('Installing Admin Hub.');
+                $this->call('lunar:hub:install');
+            }
+
             $this->info('Lunar is now installed.');
 
             if ($this->confirm('Would you like to show some love by starring the repo?')) {
@@ -313,5 +318,15 @@ class InstallLunar extends Command
         }
 
         $this->call('vendor:publish', $params);
+    }
+
+    /**
+     * Determines if the admin hub is installed.
+     *
+     * @return bool
+     */
+    private function isHubInstalled()
+    {
+        return class_exists(AdminHubServiceProvider::class);
     }
 }
