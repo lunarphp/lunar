@@ -21,13 +21,18 @@ class HubGuard extends SessionGuard
         StaffProvider $provider,
         Session $session,
         Request $request = null,
-        Timebox $timebox = null
+        $timebox = null
     ) {
         $this->name = 'lunarhub';
         $this->session = $session;
         $this->request = $request;
         $this->provider = $provider;
-        $this->timebox = $timebox ?: new Timebox;
+
+        if (class_exists(Timebox::class)) {
+            $this->timebox = $timebox ?: new Timebox;
+        } else {
+            $this->timebox = null;
+        }
 
         $this->setCookieJar(app('cookie'));
     }
