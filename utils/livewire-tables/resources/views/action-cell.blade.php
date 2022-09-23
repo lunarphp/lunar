@@ -6,6 +6,7 @@
         <span>
             Actions
         </span>
+
         <svg xmlns="http://www.w3.org/2000/svg"
              class="lt-w-4 lt-h-4"
              viewBox="0 0 20 20"
