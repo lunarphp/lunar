@@ -3,12 +3,18 @@
 namespace Lunar\Database\State;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Lunar\Models\Brand;
 use Lunar\Models\Collection;
 use Lunar\Models\Product;
 
 class EnsureMediaCollectionsAreRenamed
 {
+    public function prepare()
+    {
+        //
+    }
+
     public function run()
     {
         if (! $this->shouldRun()) {
@@ -20,7 +26,7 @@ class EnsureMediaCollectionsAreRenamed
 
     protected function shouldRun()
     {
-        return $this->getOutdatedMediaQuery()->count();
+        return Schema::hasTable('media') && $this->getOutdatedMediaQuery()->count();
     }
 
     /**

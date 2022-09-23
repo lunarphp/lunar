@@ -42,7 +42,6 @@ class PricingManagerTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -95,7 +94,6 @@ class PricingManagerTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -131,7 +129,6 @@ class PricingManagerTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -184,7 +181,6 @@ class PricingManagerTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -281,7 +277,6 @@ class PricingManagerTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -333,7 +328,6 @@ class PricingManagerTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([

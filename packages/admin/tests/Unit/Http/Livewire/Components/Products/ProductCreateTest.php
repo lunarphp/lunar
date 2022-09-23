@@ -98,12 +98,10 @@ class ProductCreateTest extends TestCase
 
         $productB = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'PROB',
         ]);
 
         $productC = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'PROC',
         ]);
 
         $brand = Brand::factory()->create();

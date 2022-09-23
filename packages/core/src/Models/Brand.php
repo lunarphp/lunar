@@ -5,7 +5,6 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasUrls;
@@ -18,7 +17,6 @@ class Brand extends BaseModel implements SpatieHasMedia
 {
     use HasFactory,
         HasMedia,
-        HasChannels,
         HasUrls,
         Searchable,
         LogsActivity,
