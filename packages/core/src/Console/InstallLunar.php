@@ -239,7 +239,7 @@ class InstallLunar extends Command
 
             $this->info('Lunar is now installed.');
 
-            if ($this->confirm('Would you like to show some love by starring the repo?')) {
+            if ($this->confirm('Would you like to show some love by starring the repo?', true)) {
                 $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';
 
                 exec("{$exec} https://github.com/lunarphp/lunar");
