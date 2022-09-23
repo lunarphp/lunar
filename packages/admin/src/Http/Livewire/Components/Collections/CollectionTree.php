@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -72,21 +73,24 @@ class CollectionTree extends Component
      */
     public function sort($payload)
     {
-        $ids = collect($payload['items'])->pluck('id')->toArray();
+        DB::transaction(function () use ($payload) {
+            $ids = collect($payload['items'])->pluck('id')->toArray();
 
-        $objectIdPositions = array_flip($ids);
+            $objectIdPositions = array_flip($ids);
 
-        $models = Collection::withCount('children')->findMany($ids)->sortBy(function ($model) use ($objectIdPositions) {
-            return $objectIdPositions[$model->getKey()];
-        })->values();
+            $models = Collection::withCount('children')
+            ->findMany($ids)
+            ->sortBy(function ($model) use ($objectIdPositions) {
+                return $objectIdPositions[$model->getKey()];
+            })->values();
 
-        $models->each(function ($collection, $index) use ($models) {
-            if ($prev = $models[$index - 1] ?? null) {
-                $collection->afterNode($prev)->save();
-            }
+            Collection::rebuildSubtree(
+                $models->first()->parent,
+                $models->map(fn ($model) => ['id' => $model->id])->toArray()
+            );
+
+            $this->nodes = $this->mapCollections($models);
         });
-
-        $this->nodes = $this->mapCollections($models);
 
         $this->notify(
             __('adminhub::notifications.collections.reordered')
@@ -145,16 +149,10 @@ class CollectionTree extends Component
      */
     public function collectionMoved($id)
     {
-        // Was the collection that moved part of this tree?
-        $matched = collect($this->nodes)->first(fn ($node) => $node['id'] == $id);
-
-        if ($matched) {
-            // Get the first node's parent ID and then load them up.
-            $parentId = collect($this->nodes)->first()['parent_id'];
-            $this->nodes = $this->mapCollections(
-                Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
-            );
-        }
+        $parentId = collect($this->nodes)->first()['parent_id'];
+        $this->nodes = $this->mapCollections(
+            Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
+        );
     }
 
     /**
