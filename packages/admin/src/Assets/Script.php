@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Assets;
+namespace Lunar\Hub\Assets;
 
 class Script extends Asset
 {

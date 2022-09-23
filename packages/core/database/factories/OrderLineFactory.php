@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
+use Lunar\Models\ProductVariant;
 
 class OrderLineFactory extends Factory
 {

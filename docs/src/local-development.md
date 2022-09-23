@@ -1,14 +1,14 @@
-# Setting Up GetCandy For Local Development
+# Setting Up Lunar For Local Development
 
 [[toc]]
 
 ## Overview
 
-This guide is here to help you set-up GetCandy locally so you can contribute to the core and admin hub.
+This guide is here to help you set-up Lunar locally so you can contribute to the core and admin hub.
 
 ## Before your start
 
-You will need a Laravel application to run GetCandy in. You can either use a fresh install of [Laravel](https://laravel.com/docs/9.x/installation) or the [GetCandy demo store](https://github.com/getcandy/demo-store).
+You will need a Laravel application to run Lunar in. You can either use a fresh install of [Laravel](https://laravel.com/docs/9.x/installation) or the [Lunar demo store](https://github.com/lunarphp/demo-store).
 
 ## Set-Up
 
@@ -27,13 +27,13 @@ Add the "packages" folder to your `.gitignore` file so the folder is not committ
 /packages
 ```
 
-Fork and then clone the [monorepo](https://github.com/getcandy/getcandy) to the `packages` folder, e.g. `/packages/getcandy/`.
+Fork and then clone the [monorepo](https://github.com/lunarphp/lunar) to the `packages` folder, e.g. `/packages/lunar/`.
 
 ```sh
-git clone https://github.com/YOUR-USERNAME/getcandy
+git clone https://github.com/YOUR-USERNAME/lunar
 ````
 
-Update your `composer.json` file similar to the following. Note we are targeting `getcandy/getcandy` and not `getcandy/admin`.
+Update your `composer.json` file similar to the following. Note we are targeting `lunar/lunar` and not `lunar/admin`.
 
 ```json
     "repositories": [{
@@ -43,7 +43,7 @@ Update your `composer.json` file similar to the following. Note we are targeting
     }],
 
     "require": {
-        "getcandy/getcandy": "dev-main",
+        "lunarphp/lunar": "dev-main",
     }
 ````
 
@@ -54,4 +54,4 @@ composer update
 ````
 
 ## Done
-You can now follow the GetCandy installation process and start contributing.
+You can now follow the Lunar installation process and start contributing.

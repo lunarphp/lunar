@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Country;
-use GetCandy\Models\TaxZone;
-use GetCandy\Models\TaxZonePostcode;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Country;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxZonePostcode;
 
 class TaxZonePostcodeFactory extends Factory
 {

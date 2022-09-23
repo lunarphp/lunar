@@ -1,17 +1,17 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
 
 class ConvertProductTypeAttributesToProducts
 {
     public function run()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         if (! $this->canRun()) {
             return;
@@ -32,7 +32,7 @@ class ConvertProductTypeAttributesToProducts
 
     protected function canRun()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return Schema::hasTable("{$prefix}attributes") &&
             Schema::hasTable("{$prefix}attribute_groups");

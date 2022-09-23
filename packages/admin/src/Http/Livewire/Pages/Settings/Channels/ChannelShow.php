@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Channels;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Channels;
 
-use GetCandy\Models\Channel;
 use Livewire\Component;
+use Lunar\Models\Channel;
 
 class ChannelShow extends Component
 {

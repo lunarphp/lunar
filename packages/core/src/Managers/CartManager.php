@@ -1,31 +1,31 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Actions\Carts\CreateOrder;
-use GetCandy\Actions\Carts\MergeCart;
-use GetCandy\Actions\Carts\ValidateCartForOrder;
-use GetCandy\Base\Addressable;
-use GetCandy\Base\CartModifiers;
-use GetCandy\Base\Purchasable;
-use GetCandy\DataTypes\Price;
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Exceptions\CartLineIdMismatchException;
-use GetCandy\Exceptions\Carts\CartException;
-use GetCandy\Exceptions\Carts\ShippingAddressMissingException;
-use GetCandy\Exceptions\InvalidCartLineQuantityException;
-use GetCandy\Exceptions\MaximumCartLineQuantityException;
-use GetCandy\Facades\ShippingManifest;
-use GetCandy\Facades\Taxes;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\TaxZone;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Lunar\Actions\Carts\CreateOrder;
+use Lunar\Actions\Carts\MergeCart;
+use Lunar\Actions\Carts\ValidateCartForOrder;
+use Lunar\Base\Addressable;
+use Lunar\Base\CartModifiers;
+use Lunar\Base\Purchasable;
+use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Exceptions\CartLineIdMismatchException;
+use Lunar\Exceptions\Carts\CartException;
+use Lunar\Exceptions\Carts\ShippingAddressMissingException;
+use Lunar\Exceptions\InvalidCartLineQuantityException;
+use Lunar\Exceptions\MaximumCartLineQuantityException;
+use Lunar\Facades\ShippingManifest;
+use Lunar\Facades\Taxes;
+use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Lunar\Models\CartLine;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\TaxZone;
 
 class CartManager
 {
@@ -132,7 +132,7 @@ class CartManager
     /**
      * Return the cart model instance.
      *
-     * @return \GetCandy\Models\Cart
+     * @return \Lunar\Models\Cart
      */
     public function getCart(): Cart
     {
@@ -155,7 +155,7 @@ class CartManager
     {
         if ($quantity < 1) {
             throw new InvalidCartLineQuantityException(
-                __('getcandy::exceptions.invalid_cart_line_quantity', [
+                __('lunar::exceptions.invalid_cart_line_quantity', [
                     'quantity' => $quantity,
                 ])
             );
@@ -214,9 +214,9 @@ class CartManager
      * Remove a cart line from the cart.
      *
      * @param  int|string  $cartLineId
-     * @return \GetCandy\Models\Cart
+     * @return \Lunar\Models\Cart
      *
-     * @throws \GetCandy\Exceptions\CartLineIdMismatchException
+     * @throws \Lunar\Exceptions\CartLineIdMismatchException
      */
     public function removeLine($cartLineId)
     {
@@ -226,7 +226,7 @@ class CartManager
 
         if (! $line) {
             throw new CartLineIdMismatchException(
-                __('getcandy::exceptions.cart_line_id_mismatch')
+                __('lunar::exceptions.cart_line_id_mismatch')
             );
         }
 
@@ -249,7 +249,7 @@ class CartManager
      * Update cart lines.
      *
      * @param  Collection  $lines
-     * @return \GetCandy\Models\Cart
+     * @return \Lunar\Models\Cart
      */
     public function updateLines(Collection $lines)
     {
@@ -278,7 +278,7 @@ class CartManager
     {
         if ($quantity < 1) {
             throw new InvalidCartLineQuantityException(
-                __('getcandy::exceptions.invalid_cart_line_quantity', [
+                __('lunar::exceptions.invalid_cart_line_quantity', [
                     'quantity' => $quantity,
                 ])
             );
@@ -299,7 +299,7 @@ class CartManager
      *
      * @param  User  $user
      * @param  string  $policy
-     * @return \GetCandy\Models\Cart
+     * @return \Lunar\Models\Cart
      */
     public function associate(User $user, $policy = 'merge')
     {
@@ -329,8 +329,8 @@ class CartManager
     /**
      * Set the shipping address.
      *
-     * @param  \GetCandy\Base\Addressable|array  $address
-     * @return \GetCandy\Models\Cart
+     * @param  \Lunar\Base\Addressable|array  $address
+     * @return \Lunar\Models\Cart
      */
     public function setShippingAddress(array|Addressable $address)
     {
@@ -362,7 +362,7 @@ class CartManager
      * @param  ShippingOption  $option
      * @return self
      *
-     * @throws \GetCandy\Exceptions\Carts\ShippingAddressMissingException
+     * @throws \Lunar\Exceptions\Carts\ShippingAddressMissingException
      */
     public function setShippingOption(ShippingOption $option)
     {

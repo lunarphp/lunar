@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Str;
 
@@ -28,7 +28,7 @@ class MenuRegistry
      * then a new one will be added to the slots property and returned.
      *
      * @param  string  $handle
-     * @return \GetCandy\Hub\Menu\MenuSlot
+     * @return \Lunar\Hub\Menu\MenuSlot
      */
     public function slot($handle): MenuSlot
     {

@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Currencies;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Currencies;
 
-use GetCandy\Models\Currency;
 use Livewire\Component;
+use Lunar\Models\Currency;
 
 class CurrencyShow extends Component
 {
     /**
      * The instance of the channel we want to edit.
      *
-     * @var \GetCandy\Models\Currency
+     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 

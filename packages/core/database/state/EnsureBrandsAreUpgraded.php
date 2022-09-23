@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\Brand;
-use GetCandy\Models\Product;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\Brand;
+use Lunar\Models\Product;
 
 class EnsureBrandsAreUpgraded
 {
@@ -14,7 +14,7 @@ class EnsureBrandsAreUpgraded
             return;
         }
 
-        $legacyBrands = Product::query()->pluck('brand', 'id');
+        $legacyBrands = Product::query()->pluck('brand', 'id')->filter();
         if ($legacyBrands->isEmpty()) {
             return;
         }
@@ -30,14 +30,14 @@ class EnsureBrandsAreUpgraded
         });
 
         if (Product::has('brand')->count() === $legacyBrands->count()) {
-            $prefix = config('getcandy.database.table_prefix');
+            $prefix = config('lunar.database.table_prefix');
             Schema::dropColumns("{$prefix}products", ['brand']);
         }
     }
 
     protected function canRun()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return Schema::hasTable("{$prefix}brands");
     }

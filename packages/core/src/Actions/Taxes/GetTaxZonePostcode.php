@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Actions\Taxes;
+namespace Lunar\Actions\Taxes;
 
-use GetCandy\Models\TaxZonePostcode;
+use Lunar\Models\TaxZonePostcode;
 
 class GetTaxZonePostcode
 {
@@ -10,7 +10,7 @@ class GetTaxZonePostcode
      * Execute the action.
      *
      * @param  string  $postcode
-     * @return null|\GetCandy\Models\TaxZonePostcode
+     * @return null|\Lunar\Models\TaxZonePostcode
      */
     public function execute($postcode)
     {
@@ -43,7 +43,7 @@ class GetTaxZonePostcode
      * Return the zone or zones which match this postcode.
      *
      * @param  string  $postcode
-     * @return \GetCandy\Models\TaxZonePostcode|\Illuminate\Support\Collection
+     * @return \Lunar\Models\TaxZonePostcode|\Illuminate\Support\Collection
      */
     protected function getZoneMatches($postcode)
     {

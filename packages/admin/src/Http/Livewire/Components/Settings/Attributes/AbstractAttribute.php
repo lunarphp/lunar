@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\FieldTypes\Number;
-use GetCandy\FieldTypes\Text;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Collection;
-use GetCandy\Models\ProductType;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\FieldTypes\Number;
+use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Collection;
+use Lunar\Models\ProductType;
 
 abstract class AbstractAttribute extends Component
 {
@@ -68,7 +68,7 @@ abstract class AbstractAttribute extends Component
     {
         return [
             ProductType::class      => class_basename(ProductType::class),
-            'GetCandy\Models\Order' => 'Order',
+            'Lunar\Models\Order' => 'Order',
             Collection::class       => class_basename(Collection::class),
         ];
     }

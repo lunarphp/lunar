@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Models\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Models\Attribute;
 
 trait HasAttributes
 {

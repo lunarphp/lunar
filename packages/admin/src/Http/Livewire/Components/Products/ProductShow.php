@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Http\Livewire\Components\Products;
 
 class ProductShow extends AbstractProduct
 {
@@ -37,6 +37,20 @@ class ProductShow extends AbstractProduct
         $this->notify(
             __('adminhub::notifications.products.deleted'),
             'hub.products.index'
+        );
+    }
+
+    /**
+     * Restore the product.
+     *
+     * @return void
+     */
+    public function restore()
+    {
+        $this->product->restore();
+        $this->showRestoreConfirm = false;
+        $this->notify(
+            __('adminhub::notifications.products.product_restored')
         );
     }
 

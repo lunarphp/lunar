@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Address;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Tests\Stubs\User;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Address;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Tests\Stubs\User;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.models
+ * @group lunar.models
  */
 class CustomerTest extends TestCase
 {
@@ -31,7 +31,7 @@ class CustomerTest extends TestCase
         Customer::create($customer);
 
         $this->assertDatabaseHas(
-            'getcandy_customers',
+            'lunar_customers',
             $customer
         );
     }
@@ -51,7 +51,7 @@ class CustomerTest extends TestCase
         Customer::create($customer);
 
         $this->assertDatabaseHas(
-            'getcandy_customers',
+            'lunar_customers',
             $customer
         );
     }

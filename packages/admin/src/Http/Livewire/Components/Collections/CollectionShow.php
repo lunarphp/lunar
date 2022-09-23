@@ -1,24 +1,24 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Collections;
+namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Product;
-use GetCandy\Models\Tag;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasUrls;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Product;
+use Lunar\Models\Tag;
 
 class CollectionShow extends Component
 {
@@ -33,7 +33,7 @@ class CollectionShow extends Component
     /**
      * The collection we are currently editing.
      *
-     * @var \GetCandy\Models\Collection
+     * @var \Lunar\Models\Collection
      */
     public Collection $collection;
 
@@ -94,7 +94,7 @@ class CollectionShow extends Component
     /**
      * Return the model with media.
      *
-     * @return \GetCandy\Models\Collection
+     * @return \Lunar\Models\Collection
      */
     public function getMediaModel()
     {
@@ -104,7 +104,7 @@ class CollectionShow extends Component
     /**
      * Return the model with URLs.
      *
-     * @return \GetCandy\Models\Collection
+     * @return \Lunar\Models\Collection
      */
     public function getHasUrlsModel()
     {
@@ -114,7 +114,7 @@ class CollectionShow extends Component
     /**
      * Return the default currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {
@@ -254,7 +254,7 @@ class CollectionShow extends Component
         $this->collection->channels()->sync($channels);
 
         DB::transaction(function () {
-            $gcAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
+            $cgAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
                 $data = Arr::only($group, ['starts_at', 'ends_at']);
 
                 $data['visible'] = in_array($group['status'], ['purchasable', 'visible']);
@@ -265,7 +265,7 @@ class CollectionShow extends Component
                 ];
             });
 
-            $this->collection->customerGroups()->sync($gcAvailability);
+            $this->collection->customerGroups()->sync($cgAvailability);
         });
 
         DB::transaction(function () {

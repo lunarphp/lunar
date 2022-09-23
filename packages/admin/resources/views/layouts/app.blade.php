@@ -13,16 +13,18 @@
 
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
           rel="stylesheet">
-    <link href="{{ asset('vendor/getcandy/admin-hub/app.css?v=1') }}"
+
+    @livewireTableStyles
+
+    <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}"
           rel="stylesheet">
 
-    @if ($styles = \GetCandy\Hub\GetCandyHub::styles())
-        <!-- Package Styles -->
+    @if ($styles = \Lunar\Hub\LunarHub::styles())
         @foreach ($styles as $asset)
-            <link href="{!! $asset->url() !!}" rel="stylesheet">
+            <link href="{!! $asset->url() !!}"
+                  rel="stylesheet">
         @endforeach
     @endif
-
 
     <style>
         .filepond--credits {
@@ -32,6 +34,9 @@
 
     <script defer
             src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+
+    <script defer
+            src="https://unpkg.com/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
 
     <script defer
             src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
@@ -46,6 +51,7 @@
         })
     </script>
 
+
     @livewireStyles
 </head>
 
@@ -56,7 +62,7 @@
           showMobileMenu: false,
           darkMode: $persist(false),
       }">
-    {!! \GetCandy\Hub\GetCandyHub::paymentIcons() !!}
+    {!! \Lunar\Hub\LunarHub::paymentIcons() !!}
 
     <div class="flex h-full">
         @include('adminhub::partials.navigation.side-menu-mobile')
@@ -90,14 +96,13 @@
 
     @livewireScripts
 
-    @if ($scripts = \GetCandy\Hub\GetCandyHub::scripts())
-        <!-- Package Scripts -->
+    @if ($scripts = \Lunar\Hub\LunarHub::scripts())
         @foreach ($scripts as $asset)
             <script src="{!! $asset->url() !!}"></script>
         @endforeach
     @endif
-    
-    <script src="{{ asset('vendor/getcandy/admin-hub/app.js') }}"></script>
+
+    <script src="{{ asset('vendor/lunar/admin-hub/app.js') }}"></script>
 </body>
 
 </html>

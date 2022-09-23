@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base\DataTransferObjects;
+namespace Lunar\Base\DataTransferObjects;
 
-use GetCandy\DataTypes\Price;
+use Lunar\DataTypes\Price;
 
 class TaxBreakdownAmount
 {

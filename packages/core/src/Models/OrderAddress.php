@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\Addressable;
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasPersonalDetails;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\OrderAddressFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\Addressable;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasPersonalDetails;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Database\Factories\OrderAddressFactory;
 
 class OrderAddress extends BaseModel implements Addressable
 {
@@ -20,7 +20,7 @@ class OrderAddress extends BaseModel implements Addressable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\OrderAddressFactory
+     * @return \Lunar\Database\Factories\OrderAddressFactory
      */
     protected static function newFactory(): OrderAddressFactory
     {

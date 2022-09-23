@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Brands;
+namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Brand;
-use GetCandy\Models\Language;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Brand;
+use Lunar\Models\Language;
 
 class BrandsIndex extends Component
 {
@@ -115,8 +115,7 @@ class BrandsIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.brands.index', [
-            'brands' => Brand::query()->latest()->paginate(20),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.brands.index')
+            ->layout('adminhub::layouts.base');
     }
 }

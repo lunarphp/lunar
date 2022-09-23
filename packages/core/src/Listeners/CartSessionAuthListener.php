@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Listeners;
+namespace Lunar\Listeners;
 
-use GetCandy\Facades\CartSession;
-use GetCandy\Models\Cart;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
+use Lunar\Facades\CartSession;
+use Lunar\Models\Cart;
 
 class CartSessionAuthListener
 {
@@ -27,7 +27,7 @@ class CartSessionAuthListener
      */
     public function login(Login $event)
     {
-        if (! is_getcandy_user($event->user)) {
+        if (! is_lunar_user($event->user)) {
             return;
         }
 
@@ -37,7 +37,7 @@ class CartSessionAuthListener
             CartSession::associate(
                 $currentCart,
                 $event->user,
-                config('getcandy.cart.auth_policy')
+                config('lunar.cart.auth_policy')
             );
         }
 
@@ -59,7 +59,7 @@ class CartSessionAuthListener
      */
     public function logout(Logout $event)
     {
-        if (! is_getcandy_user($event->user)) {
+        if (! is_lunar_user($event->user)) {
             return;
         }
 

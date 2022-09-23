@@ -1,26 +1,26 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\AsAttributeData;
-use GetCandy\Base\Traits\HasChannels;
-use GetCandy\Base\Traits\HasCustomerGroups;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
-use GetCandy\Base\Traits\HasTags;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Base\Traits\HasUrls;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Base\Traits\Searchable;
-use GetCandy\Database\Factories\ProductFactory;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Jobs\Products\Associations\Associate;
-use GetCandy\Jobs\Products\Associations\Dissociate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasChannels;
+use Lunar\Base\Traits\HasCustomerGroups;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasTags;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\HasUrls;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\Traits\Searchable;
+use Lunar\Database\Factories\ProductFactory;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Jobs\Products\Associations\Associate;
+use Lunar\Jobs\Products\Associations\Dissociate;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Product extends BaseModel implements SpatieHasMedia
@@ -74,7 +74,7 @@ class Product extends BaseModel implements SpatieHasMedia
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\ProductFactory
+     * @return \Lunar\Database\Factories\ProductFactory
      */
     protected static function newFactory(): ProductFactory
     {
@@ -123,6 +123,16 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Return the product images relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function images()
+    {
+        return $this->media()->where('collection_name', 'images');
+    }
+
+    /**
      * Return the product variants relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -141,7 +151,7 @@ class Product extends BaseModel implements SpatieHasMedia
     {
         return $this->belongsToMany(
             Collection::class,
-            config('getcandy.database.table_prefix').'collection_product'
+            config('lunar.database.table_prefix').'collection_product'
         )->withPivot(['position'])->withTimestamps();
     }
 
@@ -224,7 +234,7 @@ class Product extends BaseModel implements SpatieHasMedia
      */
     public function customerGroups(): BelongsToMany
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             CustomerGroup::class,

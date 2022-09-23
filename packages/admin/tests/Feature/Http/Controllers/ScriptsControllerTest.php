@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Feature\Http\Controllers;
+namespace Lunar\Hub\Tests\Feature\Http\Controllers;
 
-use GetCandy\Hub\GetCandyHub;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Hub\LunarHub;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.assets
@@ -25,7 +25,6 @@ class ScriptsControllerTest extends TestCase
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
-
         $this->actingAs($staff, 'staff');
 
         $this->get(route('hub.assets.scripts', ['script' => 'non-existing-script']))
@@ -44,12 +43,12 @@ class ScriptsControllerTest extends TestCase
         $name = 'non-existing-local-script';
         $path = 'js/non-existing-local-script.js';
 
-        GetCandyHub::script($name, $path);
+        LunarHub::script($name, $path);
 
         $this->get(route('hub.assets.scripts', ['script' => $name]))
             ->assertStatus(500);
 
-        GetCandyHub::$scripts = [];
+        LunarHub::$scripts = [];
     }
 
     /** @test */
@@ -65,7 +64,7 @@ class ScriptsControllerTest extends TestCase
         $path = __DIR__.'/local-script.js';
         $content = "console.log('hello');";
 
-        GetCandyHub::script($name, $path);
+        LunarHub::script($name, $path);
 
         // Create the file
         file_put_contents($path, $content);
@@ -77,6 +76,6 @@ class ScriptsControllerTest extends TestCase
         // Remove the file after test
         unlink($path);
 
-        GetCandyHub::$scripts = [];
+        LunarHub::$scripts = [];
     }
 }

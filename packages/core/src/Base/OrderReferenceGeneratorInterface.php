@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 
 interface OrderReferenceGeneratorInterface
 {
     /**
      * Generate a reference for the order.
      *
-     * @param  \GetCandy\Models\Order  $order
+     * @param  \Lunar\Models\Order  $order
      * @return string
      */
     public function generate(Order $order): string;

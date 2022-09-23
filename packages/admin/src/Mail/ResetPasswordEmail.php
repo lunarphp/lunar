@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Mail;
+namespace Lunar\Hub\Mail;
 
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\URL;

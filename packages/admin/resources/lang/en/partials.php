@@ -6,6 +6,8 @@ return [
      */
     'activity-log.added_images.description'         => 'Added :count images',
     'activity-log.system.system'                    => 'System',
+    'activity-log.update.updated'                   => 'Updated',
+    'activity-log.create.created'                   => 'Created',
     /**
      * Associations.
      */

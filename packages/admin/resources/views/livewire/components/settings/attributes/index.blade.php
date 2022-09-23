@@ -5,43 +5,5 @@
         </h1>
     </header>
 
-    <x-hub::table>
-        <x-slot name="head">
-            <x-hub::table.heading>
-                {{ __('adminhub::global.attribute_type') }}
-            </x-hub::table.heading>
-            <x-hub::table.heading sortable>
-                {{ __('adminhub::global.attribute_groups') }}
-            </x-hub::table.heading>
-            <x-hub::table.heading>
-                {{ __('adminhub::global.attributes') }}
-            </x-hub::table.heading>
-            <x-hub::table.heading></x-hub::table.heading>
-        </x-slot>
-        <x-slot name="body">
-            @forelse($this->attributeTypes as $handle => $attributeType)
-                <x-hub::table.row>
-                    <x-hub::table.cell>
-                        {{ class_basename($attributeType) }}
-                    </x-hub::table.cell>
-                    <x-hub::table.cell>
-                        {{ $this->getStats($attributeType)['group_count'] }}
-                    </x-hub::table.cell>
-                    <x-hub::table.cell>
-                        {{ $this->getStats($attributeType)['attribute_count'] }}
-                    </x-hub::table.cell>
-                    <x-hub::table.cell class="text-right">
-                        <a href="{{ route('hub.attributes.show', $handle) }}"
-                           class="text-indigo-500 hover:underline">
-                            {{ __('adminhub::settings.currencies.index.table_row_action_text') }}
-                        </a>
-                    </x-hub::table.cell>
-                </x-hub::table.row>
-            @empty
-                <x-hub::table.no-results>
-                    {{ __('adminhub::settings.attributes.index.no_results') }}
-                </x-hub::table.no-results>
-            @endforelse
-        </x-slot>
-    </x-hub::table>
+    @livewire('hub.components.settings.attributes.table')
 </div>

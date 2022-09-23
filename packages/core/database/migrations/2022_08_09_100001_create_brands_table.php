@@ -1,8 +1,8 @@
 <?php
 
-use GetCandy\Base\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Base\Migration;
 
 class CreateBrandsTable extends Migration
 {
@@ -17,6 +17,6 @@ class CreateBrandsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists($this->prefix.'cart_lines');
+        Schema::dropIfExists($this->prefix.'brands');
     }
 }

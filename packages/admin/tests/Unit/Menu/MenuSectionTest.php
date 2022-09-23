@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Menu;
+namespace Lunar\Hub\Tests\Unit\Menu;
 
-use GetCandy\Hub\Menu\MenuSection;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Menu\MenuSection;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.menu

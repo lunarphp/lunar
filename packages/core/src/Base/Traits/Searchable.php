@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Searchable as ScoutSearchable;
@@ -149,7 +149,7 @@ trait Searchable
      */
     public function searchableUsing()
     {
-        $engines = config('getcandy.search.engine_map', []);
+        $engines = config('lunar.search.engine_map', []);
 
         if (isset($engines[self::class])) {
             return app(EngineManager::class)->engine(

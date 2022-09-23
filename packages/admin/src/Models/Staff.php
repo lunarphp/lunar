@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Models;
+namespace Lunar\Hub\Models;
 
-use GetCandy\Hub\Database\Factories\StaffFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lunar\Hub\Database\Factories\StaffFactory;
 
 class Staff extends Authenticatable
 {
@@ -18,7 +18,7 @@ class Staff extends Authenticatable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Hub\Database\Factories\StaffFactory
+     * @return \Lunar\Hub\Database\Factories\StaffFactory
      */
     protected static function newFactory(): StaffFactory
     {
@@ -66,9 +66,9 @@ class Staff extends Authenticatable
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('getcandy.database.table_prefix').$this->getTable());
+        $this->setTable(config('lunar.database.table_prefix').$this->getTable());
 
-        if ($connection = config('getcandy.database.connection', false)) {
+        if ($connection = config('lunar.database.connection', false)) {
             $this->setConnection($connection);
         }
     }

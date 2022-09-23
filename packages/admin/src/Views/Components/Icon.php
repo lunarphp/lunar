@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace Lunar\Hub\Views\Components;
 
 use Illuminate\View\Component;
 

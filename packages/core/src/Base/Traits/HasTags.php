@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Jobs\SyncTags;
-use GetCandy\Models\Tag;
 use Illuminate\Support\Collection;
+use Lunar\Jobs\SyncTags;
+use Lunar\Models\Tag;
 
 trait HasTags
 {
@@ -13,7 +13,7 @@ trait HasTags
      */
     public function tags()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Tag::class,

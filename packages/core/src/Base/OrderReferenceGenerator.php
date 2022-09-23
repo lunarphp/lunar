@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\Order;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Order;
 
 class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
 {

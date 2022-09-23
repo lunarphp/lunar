@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Models\Staff;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Models\Staff;
 
 class Account extends Component
 {

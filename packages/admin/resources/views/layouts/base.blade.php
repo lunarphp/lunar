@@ -12,7 +12,7 @@
 
     <link href="https://fonts.bunny.net/css2?family=Nunito&display=swap"
           rel="stylesheet">
-    <link href="{{ asset('vendor/getcandy/admin-hub/app.css') }}"
+    <link href="{{ asset('vendor/lunar/admin-hub/app.css') }}"
           rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js"

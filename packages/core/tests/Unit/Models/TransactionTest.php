@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Models\Transaction;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Models\Transaction;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.transactions
+ * @group lunar.transactions
  */
 class TransactionTest extends TestCase
 {

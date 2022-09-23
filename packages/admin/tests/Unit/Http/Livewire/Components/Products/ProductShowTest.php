@@ -1,24 +1,25 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductShow;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Livewire\Livewire;
+use Lunar\FieldTypes\Text;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Attribute;
+use Lunar\Models\Brand;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductVariant;
 
 /**
  * @group hub.products
@@ -260,6 +261,8 @@ class ProductShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
+        $brand = Brand::factory()->create();
+
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
@@ -276,6 +279,7 @@ class ProductShowTest extends TestCase
                                  'product' => $product->refresh(),
                              ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
                              ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription')
+                             ->set('product.brand_id', $brand->id)
                              ->call('addUrl')
                              ->set('urls.0.slug', 'foo-bar');
 
@@ -402,6 +406,8 @@ class ProductShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
+        $brand = Brand::factory()->create();
+
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
@@ -419,13 +425,14 @@ class ProductShowTest extends TestCase
 
         $values = ProductOptionValue::get();
 
-        Config::set('getcandy-hub.products.sku.unique', true);
+        Config::set('lunar-hub.products.sku.unique', true);
 
         LiveWire::actingAs($staff, 'staff')
                 ->test(ProductShow::class, [
                     'product' => $product,
                 ])->set('optionValues', $values->pluck('id')->toArray())
                 ->call('addUrl')
+                ->set('product.brand_id', $brand->id)
                 ->set('urls.0.slug', 'foo-bar')
                 ->call('save')
                 ->assertHasNoErrors();
@@ -520,6 +527,8 @@ class ProductShowTest extends TestCase
             'status' => 'published',
         ]);
 
+        $brand = Brand::factory()->create();
+
         $variant = ProductVariant::factory()->create([
             'product_id' => $product->id,
         ]);
@@ -541,6 +550,7 @@ class ProductShowTest extends TestCase
                              ])->call('addUrl')
                              ->set('urls.0.slug', 'foo-bar')
                              ->assertCount('collections', 0)
+                             ->set('product.brand_id', $brand->id)
                              ->set('collections', collect([[
                                  'id' => $collection->id,
                                  'name' => $collection->translateAttribute('name'),
@@ -572,6 +582,8 @@ class ProductShowTest extends TestCase
             'handle' => 'description',
         ]);
 
+        $brand = Brand::factory()->create();
+
         $product = Product::factory()->create([
             'status' => 'published',
         ]);
@@ -600,6 +612,7 @@ class ProductShowTest extends TestCase
                     'product' => $product->refresh(),
                 ])->call('addUrl')
                 ->set('urls.0.slug', 'foo-bar')
+                ->set('product.brand_id', $brand->id)
                 ->assertCount('associations', 0)
                 ->set('associations', collect([
                     [
@@ -641,6 +654,8 @@ class ProductShowTest extends TestCase
             'status' => 'published',
         ]);
 
+        $brand = Brand::factory()->create();
+
         $variant = ProductVariant::factory()->create([
             'product_id' => $product->id,
         ]);
@@ -662,6 +677,7 @@ class ProductShowTest extends TestCase
                 ])->call('addUrl')
                 ->set('urls.0.slug', 'foo-bar')
                 ->assertCount('associations', 0)
+                ->set('product.brand_id', $brand->id)
                 ->set('associations', collect([
                     [
                         'inverse' => true,
@@ -716,7 +732,7 @@ class ProductShowTest extends TestCase
      * */
     public function variants_can_be_disabled()
     {
-        Config::set('getcandy-hub.products.disable_variants', true);
+        Config::set('lunar-hub.products.disable_variants', true);
 
         $staff = Staff::factory()->create([
             'admin' => true,
@@ -750,7 +766,7 @@ class ProductShowTest extends TestCase
      * */
     public function variants_arent_generated_when_disabled()
     {
-        Config::set('getcandy-hub.products.disable_variants', true);
+        Config::set('lunar-hub.products.disable_variants', true);
 
         $staff = Staff::factory()->create([
             'admin' => true,
@@ -763,6 +779,8 @@ class ProductShowTest extends TestCase
         $variant = ProductVariant::factory()->create([
             'product_id' => $product->id,
         ]);
+
+        $brand = Brand::factory()->create();
 
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
@@ -781,12 +799,13 @@ class ProductShowTest extends TestCase
 
         $values = ProductOptionValue::get();
 
-        Config::set('getcandy-hub.products.sku.unique', true);
+        Config::set('lunar-hub.products.sku.unique', true);
 
         LiveWire::actingAs($staff, 'staff')
                 ->test(ProductShow::class, [
                     'product' => $product,
                 ])->call('addUrl')
+                ->set('product.brand_id', $brand->id)
                 ->set('urls.0.slug', 'foo-bar')
                 ->set('optionValues', $values->pluck('id')->toArray())
                 ->call('save')

@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;

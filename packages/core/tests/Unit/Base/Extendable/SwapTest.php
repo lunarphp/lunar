@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base\Extendable;
+namespace Lunar\Tests\Unit\Base\Extendable;
 
-use GetCandy\Models\Product;
-use GetCandy\Tests\Stubs\Models\ProductSwapModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Product;
+use Lunar\Tests\Stubs\Models\ProductSwapModel;
 
 class SwapTest extends ExtendableTestCase
 {

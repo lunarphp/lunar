@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Brands;
+namespace Lunar\Hub\Http\Livewire\Pages\Brands;
 
-use GetCandy\Models\Brand;
 use Livewire\Component;
+use Lunar\Models\Brand;
 
 class BrandShow extends Component
 {

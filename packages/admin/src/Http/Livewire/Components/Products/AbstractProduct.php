@@ -1,32 +1,33 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Http\Livewire\Components\Products;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
-use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
-use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
-use GetCandy\Hub\Http\Livewire\Traits\HasTags;
-use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\SearchesProducts;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Hub\Jobs\Products\GenerateVariants;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Collection as ModelsCollection;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
+use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasPrices;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\HasTags;
+use Lunar\Hub\Http\Livewire\Traits\HasUrls;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\SearchesProducts;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Hub\Jobs\Products\GenerateVariants;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Brand;
+use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 
 abstract class AbstractProduct extends Component
 {
@@ -56,6 +57,20 @@ abstract class AbstractProduct extends Component
      * @var ProductVariant
      */
     public ProductVariant $variant;
+
+    /**
+     * The custom brand to add.
+     *
+     * @var string
+     */
+    public ?string $brand = null;
+
+    /**
+     * Whether to use a custom brand.
+     *
+     * @var bool
+     */
+    public bool $useNewBrand = false;
 
     /**
      * The options we want to use for the product.
@@ -98,6 +113,13 @@ abstract class AbstractProduct extends Component
      * @var bool
      */
     public $showDeleteConfirm = false;
+
+    /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public $showRestoreConfirm = false;
 
     /**
      * Define availability properties.
@@ -193,7 +215,8 @@ abstract class AbstractProduct extends Component
     {
         $baseRules = [
             'product.status'          => 'required|string',
-            'product.brand_id'        => 'nullable',
+            'product.brand_id'        => 'required_without:brand',
+            'brand'                   => 'required_without:product.brand_id|unique:'.Brand::class.',name',
             'product.product_type_id' => 'required',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
@@ -307,9 +330,10 @@ abstract class AbstractProduct extends Component
                         level: 'error'
                     );
                 }
-                // dd(1);
             });
         })->validate(null, $this->getValidationMessages());
+
+        $this->validateUrls();
 
         $isNew = ! $this->product->id;
 
@@ -317,6 +341,14 @@ abstract class AbstractProduct extends Component
             $data = $this->prepareAttributeData();
             $variantData = $this->prepareAttributeData($this->variantAttributes);
 
+            if ($this->brand) {
+                $brand = Brand::create([
+                    'name' => $this->brand,
+                ]);
+                $this->product->brand_id = $brand->id;
+                $this->brand = null;
+                $this->useNewBrand = false;
+            }
             $this->product->attribute_data = $data;
 
             $this->product->save();
@@ -370,7 +402,7 @@ abstract class AbstractProduct extends Component
                 ];
             });
 
-            $gcAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
+            $cgAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
                 $data = Arr::only($group, ['starts_at', 'ends_at']);
 
                 $data['purchasable'] = $group['status'] == 'purchasable';
@@ -382,7 +414,7 @@ abstract class AbstractProduct extends Component
                 ];
             });
 
-            $this->product->customerGroups()->sync($gcAvailability);
+            $this->product->customerGroups()->sync($cgAvailability);
 
             $this->product->channels()->sync($channels);
 
@@ -484,7 +516,7 @@ abstract class AbstractProduct extends Component
      */
     public function getVariantsDisabledProperty()
     {
-        return config('getcandy-hub.products.disable_variants', false);
+        return config('lunar-hub.products.disable_variants', false);
     }
 
     /**
@@ -854,7 +886,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model with pricing.
      *
-     * @return \GetCandy\Models\ProductVariant
+     * @return \Lunar\Models\ProductVariant
      */
     protected function getPricedModel()
     {
@@ -874,7 +906,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model which has media associated.
      *
-     * @return \GetCandy\Models\Product
+     * @return \Lunar\Models\Product
      */
     protected function getMediaModel()
     {
@@ -884,7 +916,7 @@ abstract class AbstractProduct extends Component
     /**
      * Returns the model which has slots associated.
      *
-     * @return \GetCandy\Models\Product
+     * @return \Lunar\Models\Product
      */
     protected function getSlotModel()
     {

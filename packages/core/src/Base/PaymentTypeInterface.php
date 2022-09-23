@@ -1,20 +1,20 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Base\DataTransferObjects\PaymentAuthorize;
-use GetCandy\Base\DataTransferObjects\PaymentCapture;
-use GetCandy\Base\DataTransferObjects\PaymentRefund;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Order;
-use GetCandy\Models\Transaction;
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Models\Cart;
+use Lunar\Models\Order;
+use Lunar\Models\Transaction;
 
 interface PaymentTypeInterface
 {
     /**
      * Set the cart.
      *
-     * @param  \GetCandy\Models\Cart  $order
+     * @param  \Lunar\Models\Cart  $order
      * @return self
      */
     public function cart(Cart $cart): self;
@@ -53,19 +53,19 @@ interface PaymentTypeInterface
     /**
      * Refund a transaction for a given amount.
      *
-     * @param  \GetCandy\Models\Transaction  $transaction
+     * @param  \Lunar\Models\Transaction  $transaction
      * @param  int  $amount
      * @param  null|string  $notes
-     * @return \GetCandy\Base\DataTransferObjects\PaymentRefund
+     * @return \Lunar\Base\DataTransferObjects\PaymentRefund
      */
     public function refund(Transaction $transaction, int $amount, $notes = null): PaymentRefund;
 
     /**
      * Capture an amount for a transaction.
      *
-     * @param  \GetCandy\Models\Transaction  $transaction
+     * @param  \Lunar\Models\Transaction  $transaction
      * @param  int  $amount
-     * @return \GetCandy\Base\DataTransferObjects\PaymentCapture
+     * @return \Lunar\Base\DataTransferObjects\PaymentCapture
      */
     public function capture(Transaction $transaction, $amount = 0): PaymentCapture;
 }

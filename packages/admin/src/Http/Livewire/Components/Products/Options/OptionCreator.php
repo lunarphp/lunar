@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Options;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Options;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Language;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Language;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 
 class OptionCreator extends Component
 {
@@ -23,7 +23,7 @@ class OptionCreator extends Component
     /**
      * The instance of the option to be created.
      *
-     * @var \GetCandy\Models\ProductOption
+     * @var \Lunar\Models\ProductOption
      */
     public ProductOption $option;
 

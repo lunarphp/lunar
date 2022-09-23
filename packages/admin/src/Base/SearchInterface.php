@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Base;
+namespace Lunar\Hub\Base;
 
-use GetCandy\Hub\DataTransferObjects\Search\SearchResults;
+use Lunar\Hub\DataTransferObjects\Search\SearchResults;
 
 interface SearchInterface
 {
