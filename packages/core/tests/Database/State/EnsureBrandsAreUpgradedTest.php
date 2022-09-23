@@ -5,6 +5,7 @@ namespace Lunar\Tests\Database\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Lunar\FieldTypes\Text;
 use Lunar\Models\Brand;
 use Lunar\Models\Product;
@@ -21,6 +22,10 @@ class EnsureBrandsAreUpgradedTest extends TestCase
     /** @test */
     public function can_run()
     {
+        Storage::fake();
+
+
+
         $prefix = config('lunar.database.table_prefix');
         Schema::dropIfExists("{$prefix}brands");
 
@@ -39,7 +44,7 @@ class EnsureBrandsAreUpgradedTest extends TestCase
 
         $productType = ProductType::factory()->create();
 
-        Product::forceCreate([
+        $pa = Product::forceCreate([
             'brand' => 'Brand A',
             'product_type_id' => $productType->id,
             'status'          => 'published',
@@ -48,7 +53,7 @@ class EnsureBrandsAreUpgradedTest extends TestCase
             ]),
         ]);
 
-        Product::forceCreate([
+        $pb = Product::forceCreate([
             'brand' => 'Brand A',
             'product_type_id' => $productType->id,
             'status'          => 'published',
@@ -57,7 +62,7 @@ class EnsureBrandsAreUpgradedTest extends TestCase
             ]),
         ]);
 
-        Product::forceCreate([
+        $pc = Product::forceCreate([
             'brand' => 'Brand B',
             'product_type_id' => $productType->id,
             'status'          => 'published',
@@ -65,6 +70,16 @@ class EnsureBrandsAreUpgradedTest extends TestCase
                 'name'        => new Text('Product C'),
             ]),
         ]);
+
+        Storage::put('tmp/state/legacy_brands.json', json_encode([
+            'Brand A' => [
+                $pa->id,
+                $pb->id,
+            ],
+            'Brand B' => [
+                $pc->id,
+            ],
+        ]));
 
         $this->assertDatabaseHas((new Product)->getTable(), [
             'brand' => 'Brand A',
