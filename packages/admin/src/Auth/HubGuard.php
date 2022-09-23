@@ -4,8 +4,8 @@ namespace Lunar\Hub\Auth;
 
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Session\Session;
-use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Timebox;
+use Symfony\Component\HttpFoundation\Request;
 
 class HubGuard extends SessionGuard
 {
