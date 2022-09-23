@@ -77,7 +77,7 @@ Meilisearch also provide great documentation on how to get set up.
 Once you have Meilisearch up and running, simply require the composer packages.
 
 ```sh
-composer require meilisearch/meilisearch-php http-interop/http-factory-guzzle
+composer require lunarphp/meilisearch
 ```
 
 Add/update the entry in your `.env` file as follows, changing the host and key as required.

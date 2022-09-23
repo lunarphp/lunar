@@ -6,7 +6,7 @@
 
 Search is configured using the [Laravel Scout](https://laravel.com/docs/8.x/scout) package.  Out the box we have configured the Lunar hub to use the community provided [mysql driver](https://github.com/yabhq/laravel-scout-mysql-driver).
 
-Using Scout allows us to provide search out the box but also make it easy for you as the developer to customise and tailor searching to your needs. There is no longer a requirement for Elasticsearch to be installed like it was in previous versions of Lunar.
+Using Scout allows us to provide search out the box but also make it easy for you as the developer to customise and tailor searching to your needs. There is no longer a requirement for Elasticsearch to be installed like it was in previous versions.
 
 ## Initial set up
 
@@ -17,13 +17,7 @@ When installing Lunar you will need to add the base config for using the MySQL d
 
 By default, scout has the setting `soft_delete` set to `false`. You need to make sure this is set to `true` otherwise you will see soft deleted models appear in your search results.
 
-If you are using meilisearch, there is some additional set up needed. We have a command ready to go which will set everything up for you, just run:
-
-```php
-php artisan lunar:meilisearch:setup
-```
-
-The above command will create the indexes for the models listed in the config file `lunar/search.php`. If you want to use other models or your own models in the search engine, you can add the reference for them on the config file.
+If you want to use other models or your own models in the search engine, you can add the reference for them on the config file.
 
 ```php
 'models' => [
