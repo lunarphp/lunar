@@ -13,10 +13,6 @@
 
 ## Install Lunar
 
-::: warning Beta Software
-Lunar is currently in Public Beta. The software may not be stable enough for a production site and further beta releases may bring breaking changes.
-:::
-
 ### Composer Require Package
 
 ```sh
