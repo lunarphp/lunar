@@ -82,8 +82,6 @@ class InstallLunar extends Command
                 }
             }
 
-            $this->info('Publishing hub assets');
-
             if (! Country::count()) {
                 $this->info('Importing countries');
                 $this->call('lunar:import:address-data');
@@ -97,23 +95,6 @@ class InstallLunar extends Command
                     'handle'  => 'webstore',
                     'default' => true,
                     'url'     => 'http://localhost',
-                ]);
-            }
-
-            if (! Staff::whereAdmin(true)->exists()) {
-                $this->info('Create an admin user');
-
-                $firstname = $this->ask('Whats your first name?');
-                $lastname = $this->ask('Whats your last name?');
-                $email = $this->ask('Whats your email address?');
-                $password = $this->secret('Enter a password');
-
-                Staff::create([
-                    'firstname' => $firstname,
-                    'lastname'  => $lastname,
-                    'email'     => $email,
-                    'password'  => bcrypt($password),
-                    'admin'     => true,
                 ]);
             }
 
