@@ -43,22 +43,28 @@ class InstallLunar extends Command
      */
     public function handle(): void
     {
-        DB::transaction(function () {
-            $this->info('Installing Lunar...');
+        $this->newLine();
+        $this->comment('Installing Lunar...');
 
-            $this->info('Publishing configuration...');
+        $this->newLine();
+        $this->info('Publishing configuration...');
 
-            if (! $this->configExists('lunar')) {
-                $this->publishConfiguration();
+        if (! $this->configExists('lunar')) {
+            $this->publishConfiguration();
+        } else {
+            if ($this->shouldOverwriteConfig()) {
+                $this->line('Overwriting configuration file...');
+                $this->publishConfiguration($force = true);
             } else {
-                if ($this->shouldOverwriteConfig()) {
-                    $this->info('Overwriting configuration file...');
-                    $this->publishConfiguration($force = true);
-                } else {
-                    $this->info('Existing configuration was not overwritten');
-                }
+                $this->line('Existing configuration was not overwritten');
             }
+        }
 
+        if ($this->confirm('Run database migrations?', true)) {
+            $this->call('migrate');
+        }
+
+        DB::transaction(function () {
             if (! Country::count()) {
                 $this->info('Importing countries');
                 $this->call('lunar:import:address-data');
@@ -231,22 +237,21 @@ class InstallLunar extends Command
                     Attribute::whereAttributeType(Product::class)->get()->pluck('id')
                 );
             }
-
-            if ($this->isHubInstalled()) {
-                $this->info('Installing Admin Hub.');
-                $this->call('lunar:hub:install');
-            }
-
-            $this->info('Lunar is now installed.');
-
-            if ($this->confirm('Would you like to show some love by starring the repo?', true)) {
-                $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';
-
-                exec("{$exec} https://github.com/lunarphp/lunar");
-
-                $this->line("Thanks, you're awesome!");
-            }
         });
+
+        if ($this->isHubInstalled()) {
+            $this->newLine();
+            $this->line('Installing Admin Hub.');
+            $this->call('lunar:hub:install');
+        }
+
+        $this->newLine();
+        $this->comment('Lunar is now installed 🚀');
+        $this->newLine();
+
+        $this->line('Please show some love for Lunar by giving us a star on GitHub ⭐️');
+        $this->info('https://github.com/lunarphp/lunar️');
+        $this->newLine(3);
     }
 
     /**
