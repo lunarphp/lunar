@@ -41,4 +41,15 @@ class ShippingModifiers
     {
         $this->modifiers->push($modifier);
     }
+    
+    /**
+     * Remove a shipping modifier.
+     *
+     * @param $modifier Class reference to the modifier.
+     * @return void
+     */
+    public function remove($modifier)
+    {
+        $this->modifiers->forget($modifier);
+    }
 }
