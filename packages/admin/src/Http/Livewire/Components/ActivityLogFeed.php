@@ -68,7 +68,6 @@ class ActivityLogFeed extends Component
     public function getActivityLogProperty()
     {
         return $this->subject->activities()
-            ->whereNotIn('event', ['updated'])
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy(function ($log) {
