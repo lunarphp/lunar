@@ -22,7 +22,7 @@ class EnsureBrandsAreUpgradedTest extends TestCase
     /** @test */
     public function can_run()
     {
-        Storage::fake('app');
+        Storage::fake('local');
 
         $prefix = config('lunar.database.table_prefix');
         Schema::dropIfExists("{$prefix}brands");
