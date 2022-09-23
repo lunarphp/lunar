@@ -31,9 +31,6 @@
       }
   },
   "extra": {
-    "lunar": {
-        "name": "Livewire Tables"
-    },
     "laravel": {
         "providers": [
             "Lunar\\LivewireTables\\LivewireTablesServiceProvider"
