@@ -6,7 +6,7 @@
 
 Search is configured using the [Laravel Scout](https://laravel.com/docs/9.x/scout) package.  Out the box we have configured the Lunar hub to use our own database Scout driver (see https://github.com/lunarphp/scout-database-engine).
 
-Using Scout allows us to provide search out the box but also make it easy for you as the developer to customise and tailor searching to your needs. There is no longer a requirement for Elasticsearch to be installed like it was in previous versions.
+Using Scout allows us to provide search out the box but also make it easy for you as the developer to customise and tailor searching to your needs.
 
 ## Initial set up
 
