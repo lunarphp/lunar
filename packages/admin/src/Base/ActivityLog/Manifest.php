@@ -28,9 +28,13 @@ class Manifest
         ],
         Product::class => [
             Comment::class,
+            Update::class,
+            Create::class,
         ],
         ProductVariant::class => [
             Comment::class,
+            Update::class,
+            Create::class,
         ],
     ];
 
