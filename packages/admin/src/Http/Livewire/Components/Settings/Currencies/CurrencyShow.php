@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Currencies;
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\ConfirmsDelete;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -51,7 +52,10 @@ class CurrencyShow extends Component
     public function delete()
     {
         if ($this->canDelete) {
-            $this->currency->delete();
+            DB::transaction(function () {
+                $this->currency->prices()->delete();
+                $this->currency->delete();
+            });
             $this->notify('Currency was removed', 'hub.currencies.index');
         }
     }
