@@ -59,12 +59,12 @@ return [
 
 ## Removal of config based media conversions
 
-The way media conversions are defined and used has changed, you should update your `getcandy/media.php` config file to the following:
+The way media conversions are defined and used has changed, you should update your `lunar/media.php` config file to the following:
 
 ```php
 <?php
 
-use GetCandy\Base\StandardMediaConversions;
+use Lunar\Base\StandardMediaConversions;
 
 return [
     'conversions' => [
@@ -77,12 +77,12 @@ return [
 
 ## Removal of config based media conversions
 
-The way media conversions are defined and used has changed, you should update your `getcandy/media.php` config file to the following:
+The way media conversions are defined and used has changed, you should update your `lunar/media.php` config file to the following:
 
 ```php
 <?php
 
-use GetCandy\Base\StandardMediaConversions;
+use Lunar\Base\StandardMediaConversions;
 
 return [
     'conversions' => [
