@@ -69,7 +69,6 @@ class EnsureBrandsAreUpgradedTest extends TestCase
             ]),
         ]);
 
-
         $this->assertDatabaseHas((new Product)->getTable(), [
             'brand' => 'Brand A',
         ]);
