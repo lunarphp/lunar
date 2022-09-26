@@ -4,6 +4,7 @@ namespace Lunar\ScoutDatabaseEngine;
 
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\LazyCollection;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Engines\Engine;
@@ -50,19 +51,22 @@ class DatabaseEngine extends Engine
                 return;
             }
 
-            $indexes = collect($searchableData)->filter()->map(function ($data, $field) use ($model) {
+            $indexes = collect($searchableData)
+                ->filter(function ($data) {
+                    return ! is_null($data);
+                })
+                ->map(function ($data, $field) use ($model) {
+                    if (is_iterable($data)) {
+                        $data = implode(' , ', Arr::flatten($data));
+                    }
 
-                if (is_iterable($data)) {
-                    $data = json_encode($data);
-                }
-
-                return [
-                    'key' => $model->getScoutKey(),
-                    'index' => $model->searchableAs(),
-                    'field' => $field,
-                    'content' => $data,
-                ];
-            });
+                    return [
+                        'key' => $model->getScoutKey(),
+                        'index' => $model->searchableAs(),
+                        'field' => $field,
+                        'content' => $data,
+                    ];
+                });
 
             SearchIndex::insert($indexes->values()->all());
 
