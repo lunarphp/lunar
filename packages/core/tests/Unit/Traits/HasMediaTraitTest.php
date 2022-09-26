@@ -35,6 +35,6 @@ class HasMediaTraitTest extends TestCase
         $this->assertTrue($image->hasGeneratedConversion('small'));
         $this->assertTrue($image->hasGeneratedConversion('medium'));
         $this->assertTrue($image->hasGeneratedConversion('large'));
-        $this->assertTrue($image->hasGeneratedConversion('zoom'));
+        $this->assertTrue($image->hasGeneratedConversion('zoom'))
     }
 }

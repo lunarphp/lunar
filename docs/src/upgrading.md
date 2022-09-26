@@ -73,6 +73,24 @@ return [
 ];
 ```
 
+### 2.0-beta15
+
+## Removal of config based media conversions
+
+The way media conversions are defined and used has changed, you should update your `getcandy/media.php` config file to the following:
+
+```php
+<?php
+
+use GetCandy\Base\StandardMediaConversions;
+
+return [
+    'conversions' => [
+        StandardMediaConversions::class
+    ],
+];
+```
+
 ## 2.0-beta14
 
 ### Removal of Macro functionality from BaseModel - Low Impact
