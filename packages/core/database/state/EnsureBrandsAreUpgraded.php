@@ -36,7 +36,7 @@ class EnsureBrandsAreUpgraded
             $brands[$brand][] = $productId;
         }
 
-        Storage::disk('local')->put('legacy_brands.json', json_encode($brands));
+        Storage::put('tmp/state/legacy_brands.json', json_encode($brands));
     }
 
     public function run()
@@ -45,10 +45,12 @@ class EnsureBrandsAreUpgraded
             return;
         }
 
-        $brands = Storage::disk('local')->get('legacy_brands.json');
+        $brands = Storage::get('tmp/state/legacy_brands.json');
 
         if ($brands) {
             $brands = json_decode($brands);
+
+            dd($brands, 1);
 
             foreach ($brands as $brandName => $productIds) {
                 $brand = Brand::firstOrCreate([
