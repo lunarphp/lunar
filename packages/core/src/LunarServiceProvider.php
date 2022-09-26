@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
@@ -168,10 +169,7 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerBlueprintMacros();
-
-        if (! $this->app->environment('testing')) {
-            $this->registerStateListeners();
-        }
+        $this->registerStateListeners();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -234,9 +232,16 @@ class LunarServiceProvider extends ServiceProvider
         ];
 
         foreach ($states as $state) {
+            $class = new $state;
+
+            Event::listen(
+                [MigrationsStarted::class],
+                [$class, 'prepare']
+            );
+
             Event::listen(
                 [MigrationsEnded::class, NoPendingMigrations::class],
-                [$state, 'run']
+                [$class, 'run']
             );
         }
     }

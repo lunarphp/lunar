@@ -8,6 +8,11 @@ use Lunar\Models\Order;
 
 class EnsureUserOrdersHaveACustomer
 {
+    public function prepare()
+    {
+        //
+    }
+
     public function run()
     {
         if (! $this->canRun()) {
