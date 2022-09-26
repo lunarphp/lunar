@@ -5,6 +5,7 @@ namespace Lunar\Tests\Unit\Models;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Brand;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\CustomerGroup;
@@ -72,7 +73,11 @@ class ProductTest extends TestCase
     {
         $channel = Channel::factory()->create();
 
-        $product = Product::factory()->create();
+        $brand = Brand::factory()->create();
+
+        $product = Product::factory()->create([
+            'brand_id' => $brand->id,
+        ]);
 
         $publishDate = now()->addDays(1);
 
