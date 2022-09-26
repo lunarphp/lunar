@@ -134,7 +134,7 @@ abstract class BaseColumn extends Component
      */
     public function render()
     {
-        return view('lt::columns.base', [
+        return view('l-tables::columns.base', [
             'url' => $this->url,
             'record' => $this->record,
             'value' => $this->getValue(),

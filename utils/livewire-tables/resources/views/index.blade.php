@@ -6,7 +6,7 @@
 }">
     <div x-cloak
          x-show="savingSearch">
-        <x-lt::support.modal>
+        <x-l-tables::support.modal>
             <div class="lt-p-4">
                 <div class="lt-flex lt-items-end lt-gap-4">
                     <div class="lt-flex-1">
@@ -22,10 +22,10 @@
                                class="lt-w-full lt-mt-1 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 lt-form-input">
                     </div>
 
-                    <x-lt::button theme="primary"
+                    <x-l-tables::button theme="primary"
                                       wire:click="saveSearch">
                         Save Search
-                    </x-lt::button>
+                    </x-l-tables::button>
                 </div>
 
                 @if ($errors->first('savedSearchName'))
@@ -34,7 +34,7 @@
                     </small>
                 @endif
             </div>
-        </x-lt::support.modal>
+        </x-l-tables::support.modal>
     </div>
 
     <div class="lt-overflow-hidden lt-border lt-border-gray-200 lt-rounded-lg">
@@ -81,13 +81,13 @@
                         @endif
 
                         @if ($this->hasSearchApplied)
-                            <x-lt::button x-on:click="savingSearch = true">
+                            <x-l-tables::button x-on:click="savingSearch = true">
                                 Save Search
-                            </x-lt::button>
+                            </x-l-tables::button>
                         @endif
 
                         @if (count($this->tableFilters) && $this->filterable)
-                            <x-lt::button x-on:click="showFilters = !showFilters">
+                            <x-l-tables::button x-on:click="showFilters = !showFilters">
                                 Filters
 
                                 @if ($this->activeFiltersCount)
@@ -95,7 +95,7 @@
                                         ({{ $this->activeFiltersCount }})
                                     </sup>
                                 @endif
-                            </x-lt::button>
+                            </x-l-tables::button>
                         @endif
                     </div>
 
@@ -104,7 +104,7 @@
                             @foreach ($this->savedSearches as $savedSearch)
                                 <div
                                      class="lt-flex lt-items-stretch lt-overflow-hidden lt-text-gray-600 lt-transition lt-bg-white lt-border lt-border-gray-200 lt-rounded-md hover:lt-shadow-sm focus-within:lt-ring focus-within:lt-ring-blue-100">
-                                    <x-lt::button size="xs"
+                                    <x-l-tables::button size="xs"
                                                       aria-label="Delete Saved Search"
                                                       wire:click="deleteSavedSearch({{ $savedSearch['key'] }})"
                                                       class="!lt-border-0 !lt-rounded-r-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
@@ -118,9 +118,9 @@
                                                   stroke-linejoin="round"
                                                   d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
-                                    </x-lt::button>
+                                    </x-l-tables::button>
 
-                                    <x-lt::button size="xs"
+                                    <x-l-tables::button size="xs"
                                                       aria-label="Apply Saved Search"
                                                       wire:click="applySavedSearch({{ $savedSearch['key'] }})"
                                                       class="!lt-border-y-0 !lt-border-r-0 !lt-rounded-l-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
@@ -141,7 +141,7 @@
                                                 </svg>
                                             @endif
                                         </span>
-                                    </x-lt::button>
+                                    </x-l-tables::button>
                                 </div>
                             @endforeach
                         </div>
@@ -242,24 +242,24 @@
                                 <tr class="lt-border-b lt-border-gray-100 lt-bg-white"
                                     wire:key="loading_{{ $id }}">
                                     @if (count($this->bulkActions))
-                                        <x-lt::cell class="lt-text-right">
-                                        </x-lt::cell>
+                                        <x-l-tables::cell class="lt-text-right">
+                                        </x-l-tables::cell>
                                     @endif
 
                                     @foreach ($this->columns as $column)
-                                        <x-lt::cell wire:key="loading_column_{{ $column->field }}">
+                                        <x-l-tables::cell wire:key="loading_column_{{ $column->field }}">
                                             <div class="lt-animate-pulse">
                                                 <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
                                             </div>
-                                        </x-lt::cell>
+                                        </x-l-tables::cell>
                                     @endforeach
 
                                     @if (count($this->actions))
-                                        <x-lt::cell class="lt-text-right">
+                                        <x-l-tables::cell class="lt-text-right">
                                             <div class="lt-animate-pulse">
                                                 <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
                                             </div>
-                                        </x-lt::cell>
+                                        </x-l-tables::cell>
                                     @endif
                                 </tr>
                             @endforeach
@@ -271,16 +271,16 @@
                                 <tr class="lt-bg-white even:lt-bg-gray-50"
                                     wire:key="table_row_{{ $row->id }}">
                                     @if ($this->bulkActions->count())
-                                        <x-lt::cell class="lt-w-10 lt-pr-0 lt-leading-none">
+                                        <x-l-tables::cell class="lt-w-10 lt-pr-0 lt-leading-none">
                                             <input type="checkbox"
                                                    x-model="selected"
                                                    value="{{ $row->id }}"
                                                    class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
-                                        </x-lt::cell>
+                                        </x-l-tables::cell>
                                     @endif
 
                                     @foreach ($this->columns as $column)
-                                        <x-lt::cell :sort="true"
+                                        <x-l-tables::cell :sort="true"
                                                         wire:key="column_{{ $column->field }}">
                                             @if ($column->isLivewire())
                                                 <livewire:is :component="$column->getLivewire()" />
@@ -290,21 +290,21 @@
                                             @else
                                                 {{ $column->record($row)->render() }}
                                             @endif
-                                        </x-lt::cell>
+                                        </x-l-tables::cell>
                                     @endforeach
 
                                     @if (count($this->actions))
-                                        <x-lt::cell class="lt-text-right">
-                                            <x-lt::action-cell :actions="$this->actions"
+                                        <x-l-tables::cell class="lt-text-right">
+                                            <x-l-tables::action-cell :actions="$this->actions"
                                                                    :record="$row" />
-                                        </x-lt::cell>
+                                        </x-l-tables::cell>
                                     @endif
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 @else
-                    <x-lt::support.no-entries :message="$this->emptyMessage" />
+                    <x-l-tables::support.no-entries :message="$this->emptyMessage" />
                 @endif
             </div>
         </div>

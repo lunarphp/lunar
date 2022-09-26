@@ -23,6 +23,6 @@ class Modal extends Component
      */
     public function render()
     {
-        return view('lt::support.modal');
+        return view('l-tables::support.modal');
     }
 }

@@ -15,7 +15,7 @@ class TableTest extends TestCase
     /** @test */
     public function can_instantiate_class()
     {
-        Livewire::test(Table::class)->assertViewIs('lt::index');
+        Livewire::test(Table::class)->assertViewIs('l-tables::index');
     }
 
     /** @test */

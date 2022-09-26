@@ -61,17 +61,17 @@
           <tbody>
             @foreach($associations->filter(fn($product) => $product['inverse'] == $showInverseAssociations) as $index => $product)
               <tr class="lt-bg-white even:lt-bg-gray-50" wire:key="table_row_{{ $product['target_id'] }}">
-                <x-lt::cell>
+                <x-l-tables::cell>
                   <img src="{{ $product['thumbnail']}}" class="w-12 rounded">
-                </x-lt::cell>
+                </x-l-tables::cell>
 
-                <x-lt::cell>
+                <x-l-tables::cell>
                   <a href="{{ route('hub.products.show', $product['target_id']) }}" class="lt-text-blue-600 hover:underline">
                     {{ $product['name'] }}
                   </a>
-                </x-lt::cell>
+                </x-l-tables::cell>
 
-                <x-lt::cell>
+                <x-l-tables::cell>
                   <x-hub::input.select wire:model="associations.{{ $index }}.type">
                     <option value="alternate">
                       {{ __('adminhub::partials.products.associations.alternate') }}
@@ -83,13 +83,13 @@
                       {{ __('adminhub::partials.products.associations.up-sell') }}
                     </option>
                   </x-hub::input.select>
-                </x-lt::cell>
+                </x-l-tables::cell>
 
-                <x-lt::cell>
+                <x-l-tables::cell>
                   <button type="button" wire:click.prevent="removeAssociation({{ $index }})" class="text-red-500 hover:underline">
                     {{ __('adminhub::global.remove') }}
                   </button>
-                </x-lt::cell>
+                </x-l-tables::cell>
               </tr>
             @endforeach
           </tbody>

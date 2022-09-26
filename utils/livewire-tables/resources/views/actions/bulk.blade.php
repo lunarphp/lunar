@@ -7,11 +7,11 @@
         </span>
     </button>
 
-    <x-lt::support.modal wire:model="showModal">
+    <x-l-tables::support.modal wire:model="showModal">
         <div>
             @livewire('hub.components.tables.actions.update-status', [
                 'ids' => $selectedIds,
             ])
         </div>
-    </x-lt::support.modal>
+    </x-l-tables::support.modal>
 </div>

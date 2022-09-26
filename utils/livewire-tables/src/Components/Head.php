@@ -55,6 +55,6 @@ class Head extends Component
 
     public function render()
     {
-        return view('lt::head');
+        return view('l-tables::head');
     }
 }

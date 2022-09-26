@@ -12,7 +12,7 @@ class ImageColumn extends BaseColumn
      */
     public function render()
     {
-        return view('lt::columns.image', [
+        return view('l-tables::columns.image', [
             'url' => $this->url,
             'record' => $this->record,
             'value' => $this->getValue(),

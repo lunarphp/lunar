@@ -31,6 +31,6 @@ class ActionCell extends Component
      */
     public function render()
     {
-        return view('lt::action-cell');
+        return view('l-tables::action-cell');
     }
 }

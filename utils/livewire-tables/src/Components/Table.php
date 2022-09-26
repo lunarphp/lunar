@@ -247,6 +247,6 @@ class Table extends Component
      */
     public function render()
     {
-        return view('lt::index');
+        return view('l-tables::index');
     }
 }
