@@ -23,6 +23,8 @@ class AddBrandIdToProductsTable extends Migration
     {
         Schema::table($this->prefix.'products', function ($table) {
             $table->dropForeign(['brand_id']);
+        });
+        Schema::table($this->prefix.'products', function ($table) {
             $table->dropColumn('brand_id');
         });
     }
