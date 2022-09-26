@@ -13,6 +13,6 @@ class Cell extends Component
      */
     public function render()
     {
-        return view('tables::cell');
+        return view('l-tables::cell');
     }
 }

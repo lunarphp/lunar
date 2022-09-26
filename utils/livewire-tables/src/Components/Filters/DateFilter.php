@@ -6,7 +6,7 @@ use Lunar\LivewireTables\Components\Filters\BaseFilter;
 
 class DateFilter extends BaseFilter
 {
-    public $view = 'tables::filters.date';
+    public $view = 'l-tables::filters.date';
 
     public function getViewData()
     {

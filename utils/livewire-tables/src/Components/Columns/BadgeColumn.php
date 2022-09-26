@@ -32,7 +32,7 @@ class BadgeColumn extends BaseColumn
             $states = call_user_func($this->states, $this->record);
         }
 
-        return view('tables::columns.badge', array_merge([
+        return view('l-tables::columns.badge', array_merge([
             'record' => $this->record,
             'value' => $this->getValue(),
         ], $states));

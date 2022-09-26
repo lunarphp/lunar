@@ -25,7 +25,7 @@ class AddBrandIdToProductsTable extends Migration
         Schema::table($this->prefix.'products', function ($table) {
             if (DB::getDriverName() !== 'sqlite') {
                 $table->dropForeign(['brand_id']);
-            };
+            }
             $table->dropColumn('brand_id');
         });
     }

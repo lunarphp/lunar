@@ -38,7 +38,7 @@ class LivewireTablesServiceProvider extends ServiceProvider
             Livewire::component((new $component)->getName(), $component);
         }
 
-        Blade::componentNamespace('Lunar\\LivewireTables\\View', 'tables');
+        Blade::componentNamespace('Lunar\\LivewireTables\\View', 'l-tables');
 
         Blade::directive('livewireTableStyles', function () {
             $manifest = json_decode(file_get_contents(__DIR__.'/../dist/mix-manifest.json'), true);
@@ -50,7 +50,7 @@ class LivewireTablesServiceProvider extends ServiceProvider
             EOT;
         });
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'tables');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'l-tables');
 
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/lunar'),

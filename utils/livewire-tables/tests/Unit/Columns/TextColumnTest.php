@@ -14,7 +14,7 @@ class TextColumnTest extends TestCase
     /** @test */
     public function can_instantiate_class()
     {
-        Livewire::test(TextColumn::class)->assertViewIs('tables::columns.base');
+        Livewire::test(TextColumn::class)->assertViewIs('l-tables::columns.base');
     }
 
     /** @test */
