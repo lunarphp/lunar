@@ -51,6 +51,7 @@ jobs:
     strategy:
       matrix:
         package: [
+          'livewire-tables',
           'scout-database-engine',
         ]
     steps:
