@@ -51,7 +51,6 @@ class EnsureBrandsAreUpgraded
         try {
             $brands = Storage::get('tmp/state/legacy_brands.json');
         } catch (FileNotFoundException $e) {
-            // $brands = null;
         }
 
         if ($brands) {
@@ -68,7 +67,7 @@ class EnsureBrandsAreUpgraded
             }
         }
 
-        Storage::disk('local')->delete('legacy_brands.json');
+        Storage::disk('local')->delete('tmp/state/legacy_brands.json');
     }
 
     protected function canRun()
