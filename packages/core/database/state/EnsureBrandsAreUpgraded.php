@@ -2,6 +2,7 @@
 
 namespace Lunar\Database\State;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Models\Brand;
@@ -45,12 +46,16 @@ class EnsureBrandsAreUpgraded
             return;
         }
 
-        $brands = Storage::get('tmp/state/legacy_brands.json');
+        $brands = null;
+
+        try {
+            $brands = Storage::get('tmp/state/legacy_brands.json');
+        } catch (FileNotFoundException $e) {
+            // $brands = null;
+        }
 
         if ($brands) {
             $brands = json_decode($brands);
-
-            dd($brands, 1);
 
             foreach ($brands as $brandName => $productIds) {
                 $brand = Brand::firstOrCreate([

@@ -37,7 +37,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        dd($app['config']);
         // perform environment setup
     }
 
