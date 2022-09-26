@@ -2,8 +2,8 @@
 
 namespace Lunar\Tests\Unit;
 
-use Lunar\Tests\TestCase;
 use Illuminate\Support\Facades\File;
+use Lunar\Tests\TestCase;
 
 /**
  * @group migrations
