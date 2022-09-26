@@ -20,6 +20,6 @@ class NoEntries extends Component
      */
     public function render()
     {
-        return view('tables::support.no-entries');
+        return view('lt::support.no-entries');
     }
 }

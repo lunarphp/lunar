@@ -25,7 +25,7 @@ class ChannelsTableTest extends TestCase
         ]);
 
         Livewire::actingAs($staff, 'staff')->test(ChannelsTable::class)
-            ->assertViewIs('tables::index');
+            ->assertViewIs('lt::index');
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class ChannelsTableTest extends TestCase
         $records = Channel::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(ChannelsTable::class)
-                        ->assertViewIs('tables::index');
+                        ->assertViewIs('lt::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());

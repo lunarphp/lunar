@@ -26,7 +26,7 @@ class ActivityLogTableTest extends TestCase
         ]);
 
         Livewire::actingAs($staff, 'staff')->test(ActivityLogTable::class)
-            ->assertViewIs('tables::index');
+            ->assertViewIs('lt::index');
     }
 
     /** @test */
@@ -41,7 +41,7 @@ class ActivityLogTableTest extends TestCase
         $channels = Channel::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(ActivityLogTable::class)
-                        ->assertViewIs('tables::index');
+                        ->assertViewIs('lt::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());

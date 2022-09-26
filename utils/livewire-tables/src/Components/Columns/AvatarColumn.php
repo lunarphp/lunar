@@ -37,7 +37,7 @@ class AvatarColumn extends BaseColumn
             $value = "https://www.gravatar.com/avatar/{$hash}?s=100&d=mp";
         }
 
-        return view('tables::columns.avatar', [
+        return view('lt::columns.avatar', [
             'record' => $this->record,
             'value' => $value,
             'gravatar' => $this->gravatar,

@@ -42,7 +42,7 @@ class OrdersTableTest extends TestCase
         ]);
 
         Livewire::actingAs($staff, 'staff')->test(OrdersTable::class)
-            ->assertViewIs('tables::index');
+            ->assertViewIs('lt::index');
     }
 
     /** @test */
@@ -57,7 +57,7 @@ class OrdersTableTest extends TestCase
         $orders = Order::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(OrdersTable::class)
-                        ->assertViewIs('tables::index');
+                        ->assertViewIs('lt::index');
 
         foreach ($columns as $column) {
             $component->assertSee($column->getHeading());

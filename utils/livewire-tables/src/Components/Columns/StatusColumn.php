@@ -9,7 +9,7 @@ class StatusColumn extends BaseColumn
      */
     public function render()
     {
-        return view('tables::columns.status', [
+        return view('lt::columns.status', [
             'url' => $this->url,
             'record' => $this->record,
             'value' => $this->getValue(),

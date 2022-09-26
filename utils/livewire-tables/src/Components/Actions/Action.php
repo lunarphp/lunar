@@ -67,7 +67,7 @@ class Action extends Component implements Htmlable
 
     public function render()
     {
-        return view('tables::actions.base', [
+        return view('lt::actions.base', [
             'label' => $this->label,
             'url' => $this->url,
             'record' => $this->record,

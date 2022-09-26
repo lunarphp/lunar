@@ -52,7 +52,7 @@ class BulkAction extends Action
      */
     public function render()
     {
-        return view('tables::actions.bulk', [
+        return view('lt::actions.bulk', [
             'label' => $this->label,
             'selectedIds' => $this->selectedIds,
             'livewire' => $this->livewire,

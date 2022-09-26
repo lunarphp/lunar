@@ -13,7 +13,7 @@ abstract class BaseFilter extends Component implements Htmlable
     use HasViewProperties,
         HasTranslations;
 
-    public $view = 'tables::filters.base';
+    public $view = 'lt::filters.base';
 
     protected $query;
 

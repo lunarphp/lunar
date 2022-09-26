@@ -26,7 +26,7 @@ class TagsTableTest extends TestCase
         ]);
 
         Livewire::actingAs($staff, 'staff')->test(TagsTable::class)
-            ->assertViewIs('tables::index');
+            ->assertViewIs('lt::index');
     }
 
     /** @test */
@@ -39,7 +39,7 @@ class TagsTableTest extends TestCase
         Tag::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(TagsTable::class)
-                        ->assertViewIs('tables::index');
+                        ->assertViewIs('lt::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());

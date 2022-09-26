@@ -41,6 +41,6 @@ class Button extends Component
      */
     public function render()
     {
-        return view('tables::button');
+        return view('lt::button');
     }
 }
