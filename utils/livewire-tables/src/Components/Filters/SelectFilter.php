@@ -12,7 +12,7 @@ class SelectFilter extends BaseFilter
 
     public $heading;
 
-    public $view = 'tables::filters.select';
+    public $view = 'l-tables::filters.select';
 
     public function mount()
     {

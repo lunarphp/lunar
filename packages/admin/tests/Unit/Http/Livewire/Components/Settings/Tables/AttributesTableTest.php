@@ -28,7 +28,7 @@ class AttributesTableTest extends TestCase
         ]);
 
         Livewire::actingAs($staff, 'staff')->test(AttributesTable::class)
-            ->assertViewIs('tables::index');
+            ->assertViewIs('l-tables::index');
     }
 
     /** @test */
@@ -41,7 +41,7 @@ class AttributesTableTest extends TestCase
         $types = AttributeManifest::getTypes();
 
         $component = Livewire::actingAs($staff, 'staff')->test(AttributesTable::class)
-                        ->assertViewIs('tables::index');
+                        ->assertViewIs('l-tables::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());

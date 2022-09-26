@@ -24,7 +24,7 @@ class StaffTableTest extends TestCase
         ]);
 
         Livewire::actingAs($staff, 'staff')->test(StaffTable::class)
-            ->assertViewIs('tables::index');
+            ->assertViewIs('l-tables::index');
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class StaffTableTest extends TestCase
         $records = Staff::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(StaffTable::class)
-                        ->assertViewIs('tables::index');
+                        ->assertViewIs('l-tables::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());
