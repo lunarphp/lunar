@@ -82,7 +82,7 @@ Also make sure any class references in your config files have been updated to th
 ### Meilisearch users
 
 Lunar no longer ships with Meilisearch by default. If you use Meilisearch and wish to carry on using it, you will need 
-to require the new Lunar meilisearch package.
+to require the new Lunar Meilisearch package.
 
 ```sh
 composer require lunarphp/meilisearch
