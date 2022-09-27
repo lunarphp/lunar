@@ -13,7 +13,7 @@ class EnsureBrandsAreUpgraded
 {
     public function prepare()
     {
-        if (! $this->canRun() || ! $this->shouldRun()) {
+        if (! $this->canPrepare()) {
             return;
         }
 
@@ -64,6 +64,16 @@ class EnsureBrandsAreUpgraded
         }
 
         Storage::disk('local')->delete('tmp/state/legacy_brands.json');
+    }
+
+    protected function canPrepare()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        $hasBrandsTable = Schema::hasTable("{$prefix}brands");
+        $hasProductsTable = Schema::hasTable("{$prefix}products");
+
+        return ! $hasBrandsTable && $hasProductsTable && Language::count();
     }
 
     protected function canRun()
