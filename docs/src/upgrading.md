@@ -25,7 +25,9 @@ php artisan lunar:hub:install
 
 ## Migrating from GetCandy to Lunar
 
-The initial release of Lunar will be on version `0.1.0`, this allows to have a rapid development cycle until we get to `1.0.0`. Understandably a complete name change is not a small task, so we've outlined steps you need to take to bring your install up to the latest Lunar version and move away from GetCandy.
+The initial release of Lunar will be version `0.1.0`. This allows for a rapid development cycle until we reach `1.0.0`. 
+Understandably, a complete name change is not small task, so we've outlined steps you need to take to bring your install 
+up to the latest Lunar version and move away from GetCandy.
 
 ### Update composer dependencies
 
@@ -38,7 +40,7 @@ The initial release of Lunar will be on version `0.1.0`, this allows to have a r
 "lunarphp/lunar": "^0.1"
 ```
 
-Any add-ons you are using will need their namespace updates, the package name should be the same, i.e.
+Any add-ons you are using will need their namespaces updated, the package name should remain the same, i.e.
 
 ```json
 "getcandy/stripe": "^1.0"
@@ -50,7 +52,7 @@ Any add-ons you are using will need their namespace updates, the package name sh
 
 ### Update namespaces
 
-If you are using any GetCandy classes, such as models, you need to update the namespace:
+If you are using any GetCandy classes, such as models, you will need to update their namespace:
 
 #### Models
 
@@ -79,21 +81,24 @@ Also make sure any class references in your config files have been updated to th
 
 ### Meilisearch users
 
-If you use Meilisearch and want to carry on using it, Lunar doesn't ship with Meilisearch anymore so you may need to include the new package.
+Lunar no longer ships with Meilisearch by default. If you use Meilisearch and wish to carry on using it, you will need 
+to require the new Lunar meilisearch package.
 
 ```sh
 composer require lunarphp/meilisearch
 ```
 
-This will install the appropriate packages that Scout needs and also register the set up command so you can keep using it, you just need to update the signature
+This will install the appropriate packages that Scout needs and also register the set up command so you can keep using 
+it, you just need to update the signature.
 
 ```sh
 php artisan lunar:meilisearch:setup
 ```
 
-### Mysql search users
+### MySQL Search
 
-If you were previously using the `mysql` database driver, change this to `database_index`. This will then populate the `search_index` table which the driver uses. You may need to run the scout import command:
+If you were previously using the `mysql` Scout driver, you should change this to `database_index`. This populates the 
+`search_index` table with the terms to be searched upon. You may need to run the scout import command:
 
 ```sh
 php artisan scout:import Lunar\Models\Product
@@ -101,7 +106,8 @@ php artisan scout:import Lunar\Models\Product
 
 ### Database migration
 
-If you're using the `getcandy_` prefix in your database, then likely you'll want to update this to `lunar_`. We've created a command for this purpose to try and make this as easy as possible.
+If you are using the `getcandy_` prefix in your database, then you will likely want to update this to `lunar_`. 
+We have created a command for this purpose to try make the switch as easy as possible.
 
 ```sh
 php artisan lunar:migrate:getcandy
@@ -116,11 +122,11 @@ php artisan lunar:migrate:getcandy
 - Update field types in `attribute_data` to the `Lunar` namespace.
 
 
-#### What this command won't do
+#### What this command will not do
 
 - Affect any custom tables that have been added outside the core packages.
 
 ---
 
-The intention of this is to provide a non destructive way to migrate the data, once the command has been run your `getcandy_` tables should remain in tact so you are free to check the data and remove them when ready.
-
+The intention of this is to provide a non-destructive way to migrate the data. Once the command has been run 
+your `getcandy_` tables should remain in-tact, so you are free to check the data and remove when ready.
