@@ -91,6 +91,14 @@ This will install the appropriate packages that Scout needs and also register th
 php artisan lunar:meilisearch:setup
 ```
 
+### Mysql search users
+
+If you were previously using the `mysql` database driver, change this to `database_index`. This will then populate the `search_index` table which the driver uses. You may need to run the scout import command:
+
+```sh
+php artisan scout:import Lunar\Models\Product
+```
+
 ### Database migration
 
 If you're using the `getcandy_` prefix in your database, then likely you'll want to update this to `lunar_`. We've created a command for this purpose to try and make this as easy as possible.
