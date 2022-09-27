@@ -128,6 +128,7 @@ module.exports = {
           '/extending/payments',
           '/extending/search',
           '/extending/shipping',
+          '/extending/tables',
           '/extending/taxation',
         ]
       }
