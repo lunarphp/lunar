@@ -59,7 +59,7 @@ class StorefrontConversions
 {
     public function apply($model)
     {
-        // .. Register spatie media conversions here...
+        // .. Register media conversions here...
     }
 }
 ```

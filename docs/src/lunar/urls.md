@@ -145,7 +145,7 @@ By default this will use the default language and take the `name` attribute as t
 ```php
 <?php
 
-namspace App\Generators;
+namespace App\Generators;
 
 use Illuminate\Database\Eloquent\Model;
 
