@@ -8,7 +8,7 @@
 Update the package
 
 ```sh
-composer update lunar/admin
+composer update lunarphp/lunar
 ```
 
 Run any migrations
