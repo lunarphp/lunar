@@ -129,4 +129,4 @@ php artisan lunar:migrate:getcandy
 ---
 
 The intention of this is to provide a non-destructive way to migrate the data. Once the command has been run 
-your `getcandy_` tables should remain in-tact, so you are free to check the data and remove when ready.
+your `getcandy_` tables should remain intact, so you are free to check the data and remove when ready.
