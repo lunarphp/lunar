@@ -13,12 +13,7 @@ class EnsureBrandsAreUpgraded
 {
     public function prepare()
     {
-        $prefix = config('lunar.database.table_prefix');
-
-        $hasBrandsTable = Schema::hasTable("{$prefix}brands");
-        $hasProductsTable = Schema::hasTable("{$prefix}products");
-
-        if ($hasBrandsTable || ! $hasProductsTable || ! Language::count()) {
+        if (! $this->canRun()) {
             return;
         }
 
@@ -75,7 +70,10 @@ class EnsureBrandsAreUpgraded
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return Schema::hasTable("{$prefix}brands");
+        $hasBrandsTable = Schema::hasTable("{$prefix}brands");
+        $hasProductsTable = Schema::hasTable("{$prefix}products");
+
+        return $hasBrandsTable && $hasProductsTable && Language::count();
     }
 
     protected function shouldRun()
