@@ -6,6 +6,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Models\Brand;
+use Lunar\Models\Language;
 use Lunar\Models\Product;
 
 class EnsureBrandsAreUpgraded
@@ -17,7 +18,7 @@ class EnsureBrandsAreUpgraded
         $hasBrandsTable = Schema::hasTable("{$prefix}brands");
         $hasProductsTable = Schema::hasTable("{$prefix}products");
 
-        if ($hasBrandsTable || ! $hasProductsTable) {
+        if ($hasBrandsTable || ! $hasProductsTable || ! Language::count()) {
             return;
         }
 
