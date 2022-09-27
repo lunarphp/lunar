@@ -24,7 +24,7 @@ module.exports = {
     ['link', { rel: "manifest", href: "/site.webmanifest"}],
     ['link', { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#5bbad5"}],
     ['meta', { name: "msapplication-TileColor", content: "#da532c"}],
-    ['meta', { property: 'og:image', content: 'https://lunarphp.io/src/images/og.jpg' }]
+    ['meta', { property: 'og:image', content: 'https://lunarphp.io/src/images/og.jpg' }],
     ['meta', { name: "theme-color", content: "#ffffff"}],
     ['script', {
         async: true,
