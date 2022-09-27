@@ -25,7 +25,7 @@ php artisan lunar:hub:install
 
 ## Migrating from GetCandy to Lunar
 
-The initial release of Lunar will be on version `0.1.0`, this allows to have a rapid development cycle untill we get to `1.0.0`. Understandable a complete name change is not small task, so we've outlined steps you need to take to bring your install up to the latest Lunar version and move away from GetCandy.
+The initial release of Lunar will be on version `0.1.0`, this allows to have a rapid development cycle until we get to `1.0.0`. Understandably a complete name change is not a small task, so we've outlined steps you need to take to bring your install up to the latest Lunar version and move away from GetCandy.
 
 ### Update composer dependencies
 
