@@ -13,7 +13,7 @@ class EnsureBrandsAreUpgraded
 {
     public function prepare()
     {
-        if (! $this->canRun()) {
+        if (! $this->canRun() || ! $this->shouldRun()) {
             return;
         }
 
