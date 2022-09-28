@@ -6,18 +6,14 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Models\Brand;
+use Lunar\Models\Language;
 use Lunar\Models\Product;
 
 class EnsureBrandsAreUpgraded
 {
     public function prepare()
     {
-        $prefix = config('lunar.database.table_prefix');
-
-        $hasBrandsTable = Schema::hasTable("{$prefix}brands");
-        $hasProductsTable = Schema::hasTable("{$prefix}products");
-
-        if ($hasBrandsTable || ! $hasProductsTable) {
+        if (! $this->canPrepare()) {
             return;
         }
 
@@ -70,11 +66,24 @@ class EnsureBrandsAreUpgraded
         Storage::disk('local')->delete('tmp/state/legacy_brands.json');
     }
 
+    protected function canPrepare()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        $hasBrandsTable = Schema::hasTable("{$prefix}brands");
+        $hasProductsTable = Schema::hasTable("{$prefix}products");
+
+        return ! $hasBrandsTable && $hasProductsTable && Language::count();
+    }
+
     protected function canRun()
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return Schema::hasTable("{$prefix}brands");
+        $hasBrandsTable = Schema::hasTable("{$prefix}brands");
+        $hasProductsTable = Schema::hasTable("{$prefix}products");
+
+        return $hasBrandsTable && $hasProductsTable && Language::count();
     }
 
     protected function shouldRun()

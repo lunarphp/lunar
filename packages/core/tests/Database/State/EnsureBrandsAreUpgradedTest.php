@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Lunar\FieldTypes\Text;
 use Lunar\Models\Brand;
+use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Tests\TestCase;
@@ -23,6 +24,10 @@ class EnsureBrandsAreUpgradedTest extends TestCase
     public function can_run()
     {
         Storage::fake('local');
+
+        Language::factory()->create([
+            'default' => true,
+        ]);
 
         $prefix = config('lunar.database.table_prefix');
         Schema::dropIfExists("{$prefix}brands");
