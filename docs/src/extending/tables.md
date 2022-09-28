@@ -347,3 +347,100 @@ class UpdateStatus extends Component
     }
 }
 ```
+
+## Customising the query
+
+If you add custom columns which reference relations, or want to make some performance improvements, it can be useful to customise the underlying query.
+
+```php
+$productsTableBuilder->extendQuery(function ($query) {
+    $query->withCount('variants');
+});
+```
+
+
+## Creating a new table
+
+If you need to create a table for your own add-on, simply create a Livewire component which extends the Table component.
+
+### Table component
+
+```php
+<?php
+
+namespace App\Http\Livewire;
+
+use Lunar\LivewireTables\Components\Table;
+
+class OrdersTable extends Table
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function build()
+    {
+        $this->tableBuilder->baseColumns([
+            TextColumn::make('id'),
+        ]);
+    }
+    
+    /**
+     * Return the search placeholder.
+     *
+     * @return string
+     */
+    public function getSearchPlaceholderProperty(): string
+    {
+        return 'Search by keyword';
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getData()
+    {
+        return Mode::get();
+    }
+}
+```
+
+### Table builder class
+
+Out the box, the table will be loaded with a base TableBuilder class. In most cases this should be enough, however you are free to add your own if needed.
+
+#### Create a new table builder class
+
+```php
+<?php
+
+namespace App\Tables;
+
+use Lunar\Hub\Tables\TableBuilder;
+
+class CustomTableBuilder extends TableBuilder
+{
+    // ...
+}
+```
+
+Then update the reference on your Table component.
+
+```php
+<?php
+
+namespace App\Http\Livewire;
+
+use Lunar\LivewireTables\Components\Table;
+
+class OrdersTable extends Table
+{
+    /**
+     * The binding to use when building out the table.
+     *
+     * @var string
+     */
+    protected $tableBuilderBinding = CustomTableBuilder::class;
+    
+    // ...
+}
+```
