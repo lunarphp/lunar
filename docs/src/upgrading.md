@@ -25,8 +25,8 @@ php artisan lunar:hub:install
 
 ## Migrating from GetCandy to Lunar
 
-The initial release of Lunar will be version `0.1.0`. This allows for a rapid development cycle until we reach `1.0.0`. 
-Understandably, a complete name change is not small task, so we've outlined steps you need to take to bring your install 
+The initial release of Lunar will be version `0.1.0`. This allows for a rapid development cycle until we reach `1.0.0`.
+Understandably, a complete name change is not small task, so we've outlined steps you need to take to bring your install
 up to the latest Lunar version and move away from GetCandy.
 
 ### Update composer dependencies
@@ -49,6 +49,8 @@ Any add-ons you are using will need their namespaces updated, the package name s
 ```json
 "lunarphp/stripe": "^0.1"
 ```
+
+Once done, remember to run `composer update` to pull in the latest packages.
 
 ### Update namespaces
 
@@ -74,21 +76,22 @@ getcandy
 
 ### Config changes
 
-Rename the `config/getcandy` folder to `config/lunar`
-Rename the `config/getcandy-hub` folder to `config/lunar-hub`
+- Rename the `config/getcandy` folder to `config/lunar`
+- Rename the `config/getcandy-hub` folder to `config/lunar-hub`
+- Change the prefix in `config/lunar/database.php` from `getcandy_` to `lunar_`
 
 Also make sure any class references in your config files have been updated to the `Lunar` namespace.
 
 ### Meilisearch users
 
-Lunar no longer ships with Meilisearch by default. If you use Meilisearch and wish to carry on using it, you will need 
-to require the new Lunar Meilisearch package.
+Lunar no longer ships with Meilisearch by default. If you use Meilisearch and wish to carry on using it, you will need
+to require the new Lunar meilisearch package.
 
 ```sh
 composer require lunarphp/meilisearch
 ```
 
-This will install the appropriate packages that Scout needs and also register the set up command so you can keep using 
+This will install the appropriate packages that Scout needs and also register the set up command so you can keep using
 it, you just need to update the signature.
 
 ```sh
@@ -97,7 +100,7 @@ php artisan lunar:meilisearch:setup
 
 ### MySQL Search
 
-If you were previously using the `mysql` Scout driver, you should change this to `database_index`. This populates the 
+If you were previously using the `mysql` Scout driver, you should change this to `database_index`. This populates the
 `search_index` table with the terms to be searched upon. You may need to run the scout import command:
 
 ```sh
@@ -106,7 +109,7 @@ php artisan scout:import Lunar\Models\Product
 
 ### Database migration
 
-If you are using the `getcandy_` prefix in your database, then you will likely want to update this to `lunar_`. 
+If you are using the `getcandy_` prefix in your database, then you will likely want to update this to `lunar_`.
 We have created a command for this purpose to try make the switch as easy as possible.
 
 ```sh
@@ -128,5 +131,5 @@ php artisan lunar:migrate:getcandy
 
 ---
 
-The intention of this is to provide a non-destructive way to migrate the data. Once the command has been run 
+The intention of this is to provide a non-destructive way to migrate the data. Once the command has been run
 your `getcandy_` tables should remain intact, so you are free to check the data and remove when ready.
