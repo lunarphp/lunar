@@ -61,7 +61,7 @@ The basic process for contributing to Lunar is as follows...
 However, if you're not used to working with monorepo's and setting them up inside a test Laravel application, no problem!
 
 ::: tip Development Guide
-Here's a guide on how to set-up your development environent ready for contributing to Lunar.
+Here's a guide on how to set-up your development environment ready for contributing to Lunar.
 
 [Setting Up Lunar For Local Development](/local-development.html)
 :::

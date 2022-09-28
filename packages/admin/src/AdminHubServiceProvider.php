@@ -104,7 +104,11 @@ use Lunar\Hub\Menu\OrderActionsMenu;
 use Lunar\Hub\Menu\SettingsMenu;
 use Lunar\Hub\Menu\SidebarMenu;
 use Lunar\Hub\Menu\SlotRegistry;
+use Lunar\Hub\Tables\Builders\CustomersTableBuilder;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
+use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
+use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
+use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
 use Lunar\Hub\Tables\Orders;
 use Lunar\Models\Product;
 
@@ -145,9 +149,19 @@ class AdminHubServiceProvider extends ServiceProvider
             return new ActivityLogManifest();
         });
 
-        $this->app->singleton(OrdersTableBuilder::class, function ($app) {
-            return new OrdersTableBuilder;
-        });
+        $tableBuilders = [
+            CustomersTableBuilder::class,
+            OrdersTableBuilder::class,
+            ProductsTableBuilder::class,
+            ProductTypesTableBuilder::class,
+            ProductVariantsTableBuilder::class,
+        ];
+
+        foreach ($tableBuilders as $tableBuilder) {
+            $this->app->singleton($tableBuilder, function ($app) use ($tableBuilder) {
+                return new $tableBuilder;
+            });
+        }
     }
 
     /**

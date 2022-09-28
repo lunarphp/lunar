@@ -10,6 +10,7 @@ class InstallHub extends Command
 {
     protected $commands = [
         'vendor:publish --tag=lunar:hub:public --force',
+        'vendor:publish --tag=lunar.livewiretables.public --force',
     ];
 
     /**
