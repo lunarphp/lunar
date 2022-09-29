@@ -278,4 +278,47 @@ class HasTranslationsTest extends TestCase
         $this->assertEquals('Foobar', $product->translateAttribute('dropdown'));
         $this->assertEquals(['One', 'Two', 'Three'], $product->translateAttribute('list'));
     }
+
+    /** @test */
+    public function can_use_shorthand_function_to_translate_attributes()
+    {
+        $attributeGroup = AttributeGroup::factory()->create([
+            'name' => [
+                'en' => 'English',
+                'fr' => 'French',
+            ],
+        ]);
+
+        $productOption = ProductOption::factory()->create([
+            'name' => [
+                'en' => 'English Option',
+                'fr' => 'French Option',
+            ],
+        ]);
+
+        $this->assertEquals('English', $attributeGroup->translate('name', 'en'));
+        $this->assertEquals('French', $attributeGroup->translate('name', 'fr'));
+
+        $this->assertEquals('English Option', $productOption->translate('name', 'en'));
+        $this->assertEquals('French Option', $productOption->translate('name', 'fr'));
+
+        $product = Product::factory()->create([
+            'attribute_data' => [
+                'name' => new TranslatedText(collect([
+                    'en' => new Text('English Name'),
+                    'fr' => new Text('French Name'),
+                ])),
+                'description' => new TranslatedText(collect([
+                    'en' => new Text('English Description'),
+                    'fr' => new Text('French Description'),
+                ])),
+            ],
+        ]);
+
+        $this->assertEquals('English Name', $product->tA('name'));
+        $this->assertEquals('French Name', $product->tA('name', 'fr'));
+
+        $this->assertEquals('English Description', $product->tA('description'));
+        $this->assertEquals('French Description', $product->tA('description', 'fr'));
+    }
 }
