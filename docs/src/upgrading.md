@@ -23,6 +23,19 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
+## [Unreleased]
+
+### Publishing changes
+
+All publishing commands for Lunar now use `.` as a separator.
+
+- Rename `lunar-hub-translations` to `lunar.hub.translations`
+- Rename `lunar-hub-views` to `lunar.hub.views`
+- Rename `lunar:hub:public` to `lunar.hub.public`
+- Rename `lunar-migrations` to `lunar.migrations`
+
+---
+
 ## Migrating from GetCandy to Lunar
 
 The initial release of Lunar will be version `0.1.0`. This allows for a rapid development cycle until we reach `1.0.0`.
@@ -81,15 +94,6 @@ getcandy
 - Change the prefix in `config/lunar/database.php` from `getcandy_` to `lunar_`
 
 Also make sure any class references in your config files have been updated to the `Lunar` namespace.
-
-### Publishing changes
-
-All publishing commands for Lunar now use `.` as a separator.
-
-- Rename `lunar-hub-translations` to `lunar.hub.translations`
-- Rename `lunar-hub-views` to `lunar.hub.views`
-- Rename `lunar:hub:public` to `lunar.hub.public`
-- Rename `lunar-migrations` to `lunar.migrations`
 
 ### Meilisearch users
 
