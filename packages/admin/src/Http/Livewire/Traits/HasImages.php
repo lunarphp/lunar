@@ -72,6 +72,7 @@ trait HasImages
 
         $this->images = $owner->getMedia('images')->mapWithKeys(function ($media) {
             $key = Str::random();
+
             return [
                 $key => [
                     'id'        => $media->id,
@@ -82,7 +83,7 @@ trait HasImages
                     'caption'   => $media->getCustomProperty('caption'),
                     'primary'   => $media->getCustomProperty('primary'),
                     'position'  => $media->getCustomProperty('position', 1),
-                ]
+                ],
             ];
         })->sortBy('position')->values()->toArray();
     }
