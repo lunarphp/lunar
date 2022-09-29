@@ -23,7 +23,7 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
-## [Unreleased]
+## 0.1.0-rc.5
 
 ### Changed
 
