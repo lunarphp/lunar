@@ -25,7 +25,9 @@ php artisan lunar:hub:install
 
 ## [Unreleased]
 
-### Publishing changes
+### Changed
+
+#### Publishing changes
 
 All publishing commands for Lunar now use `.` as a separator.
 
@@ -33,6 +35,14 @@ All publishing commands for Lunar now use `.` as a separator.
 - Rename `lunar-hub-views` to `lunar.hub.views`
 - Rename `lunar:hub:public` to `lunar.hub.public`
 - Rename `lunar-migrations` to `lunar.migrations`
+
+#### Brand requirement is now configurable.
+
+Whether the product brand is required on your store is now configurable, the default behaviour is set to `true`. If you wish to change this, simply update `config/lunar-hub/products.php`.
+
+```php
+'require_brand' => false,
+```
 
 ---
 
