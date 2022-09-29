@@ -62,7 +62,7 @@ module.exports = {
     nav: [
       {
         text: 'Roadmap',
-        link: 'https://github.com/orgs/lunarphp/projects/5',
+        link: 'https://github.com/orgs/lunarphp/projects/1',
       },
       {
         text: 'Discord',
