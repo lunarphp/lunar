@@ -215,9 +215,9 @@ abstract class AbstractProduct extends Component
     {
         $baseRules = [
             'product.status'          => 'required|string',
-            'product.brand_id'        => 'required_without:brand',
-            'brand'                   => 'required_without:product.brand_id|unique:'.Brand::class.',name',
             'product.product_type_id' => 'required',
+            'product.brand_id'        => 'nullable',
+            'brand'                   => 'nullable',
             'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
             'associations.*.type'     => 'required|string',
@@ -238,6 +238,11 @@ abstract class AbstractProduct extends Component
                 'max:255',
             ], $this->variant),
         ];
+
+        if (config('lunar-hub.products.require_brand', true)) {
+            $baseRules['product.brand_id'] = 'required_without:brand';
+            $baseRules['brand'] = 'required_without:product.brand_id|unique:'.Brand::class.',name';
+        }
 
         if ($this->getVariantsCount() <= 1) {
             $baseRules = array_merge(

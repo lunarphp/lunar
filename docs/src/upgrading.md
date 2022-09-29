@@ -23,6 +23,20 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
+[Unreleased]
+
+### Changed
+
+#### Brand requirement is now configurable.
+
+Whether the product brand is required on your store is now configurable, the default behaviour is set to `true`. If you wish to change this, simply update `config/lunar-hub/products.php`.
+
+```php
+'require_brand' => false,
+```
+
+---
+
 ## Migrating from GetCandy to Lunar
 
 The initial release of Lunar will be version `0.1.0`. This allows for a rapid development cycle until we reach `1.0.0`.
