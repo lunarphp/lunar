@@ -82,6 +82,15 @@ getcandy
 
 Also make sure any class references in your config files have been updated to the `Lunar` namespace.
 
+### Publishing changes
+
+All publishing commands for Lunar now use `.` as a separator.
+
+- Rename `lunar-hub-translations` to `lunar.hub.translations`
+- Rename `lunar-hub-views` to `lunar.hub.views`
+- Rename `lunar:hub:public` to `lunar.hub.public`
+- Rename `lunar-migrations` to `lunar.migrations`
+
 ### Meilisearch users
 
 Lunar no longer ships with Meilisearch by default. If you use Meilisearch and wish to carry on using it, you will need
