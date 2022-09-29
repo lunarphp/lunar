@@ -23,9 +23,18 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
-[Unreleased]
+## [Unreleased]
 
 ### Changed
+
+#### Publishing changes
+
+All publishing commands for Lunar now use `.` as a separator.
+
+- Rename `lunar-hub-translations` to `lunar.hub.translations`
+- Rename `lunar-hub-views` to `lunar.hub.views`
+- Rename `lunar:hub:public` to `lunar.hub.public`
+- Rename `lunar-migrations` to `lunar.migrations`
 
 #### Brand requirement is now configurable.
 

@@ -77,5 +77,5 @@ Lunar assumes your User ID field is a "BIGINT". If you are using an "INT" or "UU
 You can optionally publish Lunar's migrations so they're added to your Laravel app.
 
 ```sh
-php artisan vendor:publish --tag=lunar-migrations
+php artisan vendor:publish --tag=lunar.migrations
 ```

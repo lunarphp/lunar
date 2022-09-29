@@ -180,7 +180,7 @@ class LunarServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
-            ], 'lunar-migrations');
+            ], 'lunar.migrations');
 
             $this->commands([
                 InstallLunar::class,
