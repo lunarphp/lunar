@@ -16,7 +16,7 @@ Although the admin hub uses Laravel Livewire, there is no requirement for your a
 
 Lunar as a company has grand plans to continue developing new functionality to help you build awesome e-commerce websites. We want Lunar to be a true alternative to the likes of Magento, Shopify, WooCommerce, etc.
 
-Keep an eye on [our roadmap](https://github.com/orgs/lunarphp/projects/5) for future plans and recent releases.
+Keep an eye on [our roadmap](https://github.com/orgs/lunarphp/projects/1) for future plans and recent releases.
 
 ## Get started
 
