@@ -49,7 +49,7 @@
     </div>
 
     @if ($brand->id && !$brand->getOriginal('default') && !$brand->wasRecentlyCreated)
-        <div class="mb-24 bg-white border border-red-300 rounded shadow">
+        <div class="!mb-24 bg-white border border-red-300 rounded shadow">
             <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
                 {{ __('adminhub::inputs.danger_zone.title') }}
             </header>
