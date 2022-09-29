@@ -442,7 +442,7 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunar/admin-hub/'),
-        ], 'lunar:hub:public');
+        ], 'lunar.hub.public');
     }
 
     /**
