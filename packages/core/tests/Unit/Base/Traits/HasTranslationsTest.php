@@ -315,10 +315,10 @@ class HasTranslationsTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals('English Name', $product->tA('name'));
-        $this->assertEquals('French Name', $product->tA('name', 'fr'));
+        $this->assertEquals('English Name', $product->attr('name'));
+        $this->assertEquals('French Name', $product->attr('name', 'fr'));
 
-        $this->assertEquals('English Description', $product->tA('description'));
-        $this->assertEquals('French Description', $product->tA('description', 'fr'));
+        $this->assertEquals('English Description', $product->attr('description'));
+        $this->assertEquals('French Description', $product->attr('description', 'fr'));
     }
 }

@@ -83,7 +83,7 @@ trait HasTranslations
      * @param $params
      * @return void
      */
-    public function tA(...$params)
+    public function attr(...$params)
     {
         return $this->translateAttribute(...$params);
     }
