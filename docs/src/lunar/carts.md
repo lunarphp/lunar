@@ -7,8 +7,9 @@
 Carts are a collection of products (or other custom purchasable types) that you
 would like to order. Carts belong to Users (which relate to Customers).
 
-::: tip Cart prices are dynamically calculated and are not stored (unlike
-Orders). :::
+::: tip 
+Cart prices are dynamically calculated and are not stored (unlike Orders).
+:::
 
 ## Carts
 
