@@ -24,17 +24,17 @@ If you've used the medialibrary package before you will feel right at home.
 ```php
 $product = \Lunar\Models\Product::find(123);
 
-$product->addMedia($request->file('image'))->toMediaCollection('images');
+$product->addMedia($request->file('image'))->toMediaCollection();
 ```
 
 For more information on what's available, see [Associating files](https://spatie.be/docs/laravel-medialibrary/v9/basic-usage/associating-files)
 
-## Fetching images
+## Fetching media
 
 ```php
 $product = \Lunar\Models\Product::find(123);
 
-$product->getMedia('images');
+$product->getMedia();
 ```
 For more information on what's available, see [Retrieving media](https://spatie.be/docs/laravel-medialibrary/v9/basic-usage/retrieving-media)
 
@@ -59,7 +59,7 @@ class StorefrontConversions
 {
     public function apply($model)
     {
-        // .. Register media conversions here...
+        // .. Register spatie media conversions here...
     }
 }
 ```
