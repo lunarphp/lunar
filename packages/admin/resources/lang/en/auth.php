@@ -40,5 +40,5 @@ return [
      */
     'sign-in.btn' => 'Sign in',
     'welcome' => 'Welcome to :name',
-    'prompt' => 'Log in to administrate your e-commerce store.',
+    'prompt' => 'Log in to administer your e-commerce store.',
 ];
