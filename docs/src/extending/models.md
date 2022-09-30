@@ -253,7 +253,7 @@ Order::resolveRelationUsing('ticket', function ($orderModel) {
 });
 ```
 
-See [https://laravel.com/docs/9.x/eloquent-relationships#dynamic-relationships]([https://laravel.com/docs/9.x/eloquent-relationships#dynamic-relationships) for more information.
+See [https://laravel.com/docs/9.x/eloquent-relationships#dynamic-relationships](https://laravel.com/docs/9.x/eloquent-relationships#dynamic-relationships) for more information.
 
 
 ## Macroable
