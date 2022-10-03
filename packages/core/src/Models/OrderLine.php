@@ -52,6 +52,18 @@ class OrderLine extends BaseModel
     ];
 
     /**
+     * Return the URL of the image thumbnail.
+     *
+     * @param string $size
+     * @return string
+     */
+    public function getThumbnail(string $size = 'small'): string
+    {
+        return $this->purchasable->images->first()?->getUrl($size)
+            ?: $this->purchasable->product->media->first()?->getUrl($size);
+    }
+
+    /**
      * Return the order relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

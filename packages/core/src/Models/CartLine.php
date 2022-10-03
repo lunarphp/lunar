@@ -59,6 +59,18 @@ class CartLine extends BaseModel
     public TaxBreakdown $taxBreakdown;
 
     /**
+     * Return the URL of the image thumbnail.
+     *
+     * @param string $size
+     * @return string
+     */
+    public function getThumbnail(string $size = 'small'): string
+    {
+        return $this->purchasable->images->first()?->getUrl($size)
+            ?: $this->purchasable->product->media->first()?->getUrl($size);
+    }
+
+    /**
      * Return a new factory instance for the model.
      *
      * @return \Lunar\Database\Factories\CartLineFactory
