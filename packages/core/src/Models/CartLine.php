@@ -64,7 +64,7 @@ class CartLine extends BaseModel
      * @param string $size
      * @return string
      */
-    public function getThumbnail(string $size = 'small'): string
+    public function getThumbnail(string $size = 'small'): string|null
     {
         return $this->purchasable->images->first()?->getUrl($size)
             ?: $this->purchasable->product->media->first()?->getUrl($size);
