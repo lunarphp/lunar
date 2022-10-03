@@ -61,7 +61,7 @@ class CartLine extends BaseModel
     /**
      * Return the URL of the image thumbnail.
      *
-     * @param string $size
+     * @param  string  $size
      * @return string
      */
     public function getThumbnail(string $size = 'small'): string|null
