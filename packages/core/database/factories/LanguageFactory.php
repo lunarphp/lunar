@@ -13,7 +13,7 @@ class LanguageFactory extends Factory
     public function definition(): array
     {
         return [
-            'code'    => Str::random(2),
+            'code'    => Str::random(4),
             'name'    => $this->faker->name(),
             'default' => true,
         ];
