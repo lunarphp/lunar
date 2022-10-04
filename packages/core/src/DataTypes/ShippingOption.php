@@ -9,12 +9,14 @@ use Lunar\Models\TaxClass;
 class ShippingOption implements Purchasable
 {
     public function __construct(
+        public $name,
         public $description,
         public $identifier,
         public Price $price,
         public TaxClass $taxClass,
         public $taxReference = null,
-        public $option = null
+        public $option = null,
+        public $meta = null
     ) {
         //  ..
     }
@@ -77,6 +79,16 @@ class ShippingOption implements Purchasable
     public function getType()
     {
         return 'shipping';
+    }
+
+    /**
+     * Return the name for the purchasable.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
