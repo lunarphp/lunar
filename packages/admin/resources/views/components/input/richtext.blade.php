@@ -3,7 +3,7 @@
     x-data="{
         value: @entangle($attributes->wire('model')),
         init() {
-          {{ $instanceId }} = new Quill($refs.editor, {{ json_encode($options) }})
+          {{ $instanceId }} = new Quill($refs.editor, {!! str_replace('"', "'", json_encode($options)) !!})
 
           {{ $instanceId }}.on('text-change', () => {
             $dispatch('quill-input', {{ $instanceId }}.root.innerHTML)
