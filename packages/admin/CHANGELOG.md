@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.1.0
+
+### Fixed
+
+- Product variant will fallback on it's product's thumbnail if it has no primary image.
+- Language code will now correctly be set on factory and unique.
+
 ## 0.1.0-rc.5
 
 ### Fixed

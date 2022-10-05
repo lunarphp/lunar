@@ -15,13 +15,16 @@ class TableTest extends TestCase
     /** @test */
     public function can_instantiate_class()
     {
-        Livewire::test(Table::class)->assertViewIs('l-tables::index');
+        Livewire::test(Table::class, [
+            'hasPagination' => false,
+        ])->assertViewIs('l-tables::index');
     }
 
     /** @test */
     public function table_builder_is_attached()
     {
-        Livewire::test(Table::class)
-            ->assertSet('tableBuilder', new TableBuilder);
+        Livewire::test(Table::class, [
+            'hasPagination' => false,
+        ])->assertSet('tableBuilder', new TableBuilder);
     }
 }

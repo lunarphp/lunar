@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - '0.*'
     tags:
       - '*'
 jobs:
@@ -15,6 +16,7 @@ jobs:
           'core'
         ]
     steps:
+
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
@@ -30,7 +32,7 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: "GitHub Action"
           user_email: "action@github.com"
-          branch: "main"
+          branch: ${GITHUB_REF#refs/heads/}
 
       - name: Tag ${{ matrix.package }}
         if: "startsWith(github.ref, 'refs/tags/')"
@@ -44,7 +46,7 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: "GitHub Action"
           user_email: "action@github.com"
-          branch: "main"
+          branch: ${GITHUB_REF#refs/heads/}
 
   split_utils:
     runs-on: ubuntu-latest
@@ -70,4 +72,18 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: "GitHub Action"
           user_email: "action@github.com"
-          branch: "main"
+          branch: ${GITHUB_REF#refs/heads/}
+
+      - name: Tag ${{ matrix.package }}
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: symplify/github-action-monorepo-split@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag: ${GITHUB_REF#refs/tags/}
+          package_directory: 'utils/${{ matrix.package }}'
+          repository_organization: 'lunarphp'
+          repository_name: '${{ matrix.package }}'
+          user_name: "GitHub Action"
+          user_email: "action@github.com"
+          branch: ${GITHUB_REF#refs/heads/}
