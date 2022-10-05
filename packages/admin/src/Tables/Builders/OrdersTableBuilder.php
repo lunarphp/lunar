@@ -51,20 +51,10 @@ class OrdersTableBuilder extends TableBuilder
             }),
         ]);
 
-        foreach ($this->columns as $column) {
-            if (!$column->after) {
-                $baseColumns->push($column);
-                continue;
-            }
-
-            $position = $baseColumns->search(function ($existing) use ($column) {
-                return $existing->field == $column->after;
-            });
-
-            $baseColumns->splice($position + 1, 0, [$column]);
-        }
-
-        return $baseColumns;
+        return $this->resolveColumnPositions(
+            $baseColumns,
+            $this->columns
+        );
     }
 
     /**
