@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMedia as TraitsHasMedia;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMedia as TraitsHasMedia;
 use Spatie\MediaLibrary\HasMedia;
 
 class Asset extends BaseModel implements HasMedia

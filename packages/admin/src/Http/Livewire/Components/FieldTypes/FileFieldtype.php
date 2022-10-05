@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\FieldTypes;
+namespace Lunar\Hub\Http\Livewire\Components\FieldTypes;
 
-use GetCandy\Models\Asset;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Models\Asset;
 
 class FileFieldtype extends Component
 {

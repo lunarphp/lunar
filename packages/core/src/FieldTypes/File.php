@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
 use JsonSerializable;
 use Livewire\TemporaryUploadedFile;
+use Lunar\Base\FieldType;
 
 class File implements FieldType, JsonSerializable
 {

@@ -4,8 +4,8 @@ namespace Lunar\Base;
 
 use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
 use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
-use Lunar\FieldTypes\File;
 use Lunar\FieldTypes\Dropdown;
+use Lunar\FieldTypes\File;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
