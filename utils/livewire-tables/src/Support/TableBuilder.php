@@ -201,8 +201,9 @@ class TableBuilder implements TableBuilderInterface
     protected function resolveColumnPositions(Collection $existing, Collection $incoming)
     {
         foreach ($incoming as $column) {
-            if (!$column->after) {
+            if (! $column->after) {
                 $existing->push($column);
+
                 continue;
             }
 
