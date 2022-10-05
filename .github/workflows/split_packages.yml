@@ -46,7 +46,7 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: "GitHub Action"
           user_email: "action@github.com"
-          branch: ${GITHUB_REF#refs/heads/}
+          branch: ${${GITHUB_REF#refs/tags/}%.*}
 
   split_utils:
     runs-on: ubuntu-latest
@@ -86,4 +86,4 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: "GitHub Action"
           user_email: "action@github.com"
-          branch: ${GITHUB_REF#refs/heads/}
+          branch: ${${GITHUB_REF#refs/tags/}%.*}
