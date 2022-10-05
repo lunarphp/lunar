@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Collections;
+namespace Lunar\Hub\Http\Livewire\Pages\Collections;
 
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Collection;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Collection;
 
 class CollectionShow extends Component
 {

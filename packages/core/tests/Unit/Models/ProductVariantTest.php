@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Exceptions\MissingCurrencyPriceException;
-use GetCandy\Facades\Pricing;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Exceptions\MissingCurrencyPriceException;
+use Lunar\Facades\Pricing;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.models
+ * @group lunar.models
  */
 class ProductVariantTest extends TestCase
 {

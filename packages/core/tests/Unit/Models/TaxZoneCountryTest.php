@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Country;
-use GetCandy\Models\TaxZone;
-use GetCandy\Models\TaxZoneCountry;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Country;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxZoneCountry;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.models
+ * @group lunar.models
  */
 class TaxZoneCountryTest extends TestCase
 {

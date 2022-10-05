@@ -24,7 +24,10 @@
         @if($this->getVariantsCount() <= 1)
           @include('adminhub::partials.products.editing.options')
         @else
-          <x-hub::table>
+          @livewire('hub.components.products.variants.table', [
+            'product' => $this->product,
+          ])
+          {{-- <x-hub::table>
             <x-slot name="head">
               <x-hub::table.heading>{{ __('adminhub::global.options') }}</x-hub::table.heading>
               <x-hub::table.heading>{{ __('adminhub::global.sku') }}</x-hub::table.heading>
@@ -73,7 +76,7 @@
               </x-hub::table.row>
               @endforeach
             </x-slot>
-          </x-hub::table>
+          </x-hub::table> --}}
         @endif
       @endif
   </div>

@@ -1,6 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
+
+use Illuminate\Support\Str;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 trait HasDefaultRecord
 {
@@ -22,6 +25,10 @@ trait HasDefaultRecord
      */
     public static function getDefault()
     {
-        return self::query()->default(true)->first();
+        $key = 'lunar_default_'.Str::snake(self::class);
+
+        return Blink::once($key, function () {
+            return self::query()->default(true)->first();
+        });
     }
 }

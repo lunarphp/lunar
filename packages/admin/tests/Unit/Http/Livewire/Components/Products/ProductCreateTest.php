@@ -1,22 +1,23 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products;
 
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductCreate;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\Url;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductCreate;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Brand;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
+use Lunar\Models\Url;
 
 /**
  * @group hub.products
@@ -59,7 +60,29 @@ class ProductCreateTest extends TestCase
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-            ->test(ProductCreate::class);
+            ->test(ProductCreate::class)
+            ->assertViewIs('adminhub::livewire.components.products.create');
+    }
+
+    /** @test */
+    public function validation_triggers()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        $currency = Currency::getDefault();
+
+        $language = Language::getDefault();
+
+        $collection = Collection::factory()->create();
+
+        $component = LiveWire::actingAs($staff, 'staff')
+            ->test(ProductCreate::class)
+            ->call('save')
+            ->assertHasErrors([
+                'product.brand_id',
+            ]);
     }
 
     /** @test */
@@ -75,13 +98,13 @@ class ProductCreateTest extends TestCase
 
         $productB = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'PROB',
         ]);
 
         $productC = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'PROC',
         ]);
+
+        $brand = Brand::factory()->create();
 
         $collection = Collection::factory()->create();
 
@@ -96,6 +119,7 @@ class ProductCreateTest extends TestCase
             ->set("basePrices.{$currency->code}.price", 1234)
             ->call('addUrl')
             ->set('urls.0.slug', 'foo-bar')
+            ->set('product.brand_id', $brand->id)
             ->set('associations', collect([
                 [
                     'inverse' => false,

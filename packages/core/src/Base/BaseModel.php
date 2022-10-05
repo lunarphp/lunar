@@ -1,11 +1,14 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Base\Traits\HasModelExtending;
 
 abstract class BaseModel extends Model
 {
+    use HasModelExtending;
+
     /**
      * Create a new instance of the Model.
      *
@@ -15,9 +18,9 @@ abstract class BaseModel extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('getcandy.database.table_prefix').$this->getTable());
+        $this->setTable(config('lunar.database.table_prefix').$this->getTable());
 
-        if ($connection = config('getcandy.database.connection', false)) {
+        if ($connection = config('lunar.database.connection', false)) {
             $this->setConnection($connection);
         }
     }

@@ -1,17 +1,17 @@
 <?php
 
-namespace GetCandy\Observers;
+namespace Lunar\Observers;
 
-use GetCandy\Base\Purchasable;
-use GetCandy\Exceptions\NonPurchasableItemException;
-use GetCandy\Models\CartLine;
+use Lunar\Base\Purchasable;
+use Lunar\Exceptions\NonPurchasableItemException;
+use Lunar\Models\CartLine;
 
 class CartLineObserver
 {
     /**
      * Handle the CartLine "creating" event.
      *
-     * @param  \GetCandy\Models\CartLine  $cartLine
+     * @param  \Lunar\Models\CartLine  $cartLine
      * @return void
      */
     public function creating(CartLine $cartLine)
@@ -24,7 +24,7 @@ class CartLineObserver
     /**
      * Handle the CartLine "updated" event.
      *
-     * @param  \GetCandy\Models\CartLine  $cartLine
+     * @param  \Lunar\Models\CartLine  $cartLine
      * @return void
      */
     public function updating(CartLine $cartLine)

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Channel;
-use GetCandy\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Channel;
+use Lunar\Models\Order;
 
 class OrderFactory extends Factory
 {
@@ -18,7 +18,7 @@ class OrderFactory extends Factory
         return [
             'channel_id'     => Channel::factory(),
             'user_id'        => null,
-            'status'         => 'pending_payment',
+            'status'         => 'awaiting-payment',
             'reference'      => $this->faker->unique()->regexify('[A-Z]{8}'),
             'sub_total'      => $total - $taxTotal,
             'discount_total' => 0,

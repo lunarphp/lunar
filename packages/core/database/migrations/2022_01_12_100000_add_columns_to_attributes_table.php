@@ -1,8 +1,8 @@
 <?php
 
-use GetCandy\Base\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Base\Migration;
 
 class AddColumnsToAttributesTable extends Migration
 {
@@ -18,9 +18,7 @@ class AddColumnsToAttributesTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'attributes', function (Blueprint $table) {
-            $table->dropColumn('searchable');
-            $table->dropColumn('filterable');
-            $table->dropColumn('validation_rules');
+            $table->dropColumn(['searchable', 'filterable', 'validation_rules']);
         });
     }
 }

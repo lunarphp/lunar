@@ -1,19 +1,19 @@
 <?php
 
-namespace GetCandy\Managers;
+namespace Lunar\Managers;
 
-use GetCandy\Actions\Carts\CalculateLine;
-use GetCandy\Base\CartLineModifiers;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartLine;
 use Illuminate\Pipeline\Pipeline;
+use Lunar\Actions\Carts\CalculateLine;
+use Lunar\Base\CartLineModifiers;
+use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
 
 class CartLineManager
 {
     /**
      * Initialize the cart manager.
      *
-     * @param  \GetCandy\Models\CartLine  $cartLine
+     * @param  \Lunar\Models\CartLine  $cartLine
      */
     public function __construct(
         protected CartLine $cartLine

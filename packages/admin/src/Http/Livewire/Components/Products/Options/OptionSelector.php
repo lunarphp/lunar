@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Options;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Options;
 
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\ProductOption;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\ProductOption;
 
 class OptionSelector extends Component
 {

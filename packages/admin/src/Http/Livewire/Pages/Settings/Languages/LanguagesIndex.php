@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Languages;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Languages;
 
 use Livewire\Component;
 

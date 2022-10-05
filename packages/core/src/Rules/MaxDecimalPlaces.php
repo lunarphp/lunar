@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Rules;
+namespace Lunar\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 

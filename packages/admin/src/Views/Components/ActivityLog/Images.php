@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components\ActivityLog;
+namespace Lunar\Hub\Views\Components\ActivityLog;
 
 use Illuminate\Support\Collection;
 use Illuminate\View\Component;

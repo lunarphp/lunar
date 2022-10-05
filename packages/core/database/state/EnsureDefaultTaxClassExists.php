@@ -1,12 +1,17 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\TaxClass;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\TaxClass;
 
 class EnsureDefaultTaxClassExists
 {
+    public function prepare()
+    {
+        //
+    }
+
     public function run()
     {
         if (! $this->canRun() || ! $this->shouldRun()) {
@@ -25,7 +30,7 @@ class EnsureDefaultTaxClassExists
 
     protected function canRun()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return Schema::hasTable("{$prefix}tax_classes");
     }

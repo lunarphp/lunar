@@ -1,17 +1,18 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Channel;
-use GetCandy\Models\Collection;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
-use GetCandy\Models\ProductType;
-use GetCandy\Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Brand;
+use Lunar\Models\Channel;
+use Lunar\Models\Collection;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductType;
+use Lunar\Tests\TestCase;
 
 /**
  * @group associations
@@ -24,11 +25,11 @@ class ProductTest extends TestCase
     public function can_make_a_product()
     {
         $attribute_data = collect([
-            'meta_title'  => new \GetCandy\FieldTypes\Text('I like cake'),
-            'pack_qty'    => new \GetCandy\FieldTypes\Number(12345),
-            'description' => new \GetCandy\FieldTypes\TranslatedText(collect([
-                'en' => new \GetCandy\FieldTypes\Text('Blue'),
-                'fr' => new \GetCandy\FieldTypes\Text('Bleu'),
+            'meta_title'  => new \Lunar\FieldTypes\Text('I like cake'),
+            'pack_qty'    => new \Lunar\FieldTypes\Number(12345),
+            'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+                'en' => new \Lunar\FieldTypes\Text('Blue'),
+                'fr' => new \Lunar\FieldTypes\Text('Bleu'),
             ])),
         ]);
 
@@ -52,21 +53,6 @@ class ProductTest extends TestCase
     }
 
     /** @test */
-    public function has_image_transformations_loaded_from_config()
-    {
-        $collection = Product::factory()->create();
-        $collection->registerAllMediaConversions();
-
-        $conversions = $collection->mediaConversions;
-
-        $this->assertIsArray($conversions);
-
-        $transforms = config('getcandy.media.transformations');
-
-        $this->assertCount(count($transforms), $conversions);
-    }
-
-    /** @test */
     public function new_product_has_channel_associations()
     {
         Channel::factory(4)->create();
@@ -87,14 +73,18 @@ class ProductTest extends TestCase
     {
         $channel = Channel::factory()->create();
 
-        $product = Product::factory()->create();
+        $brand = Brand::factory()->create();
+
+        $product = Product::factory()->create([
+            'brand_id' => $brand->id,
+        ]);
 
         $publishDate = now()->addDays(1);
 
         $product->scheduleChannel($channel, $publishDate);
 
         $this->assertDatabaseHas(
-            'getcandy_channelables',
+            'lunar_channelables',
             [
                 'channel_id'       => $channel->id,
                 'channelable_type' => Product::class,
@@ -104,7 +94,7 @@ class ProductTest extends TestCase
             ],
         );
 
-        $this->assertCount(1, DB::table('getcandy_channelables')->get());
+        $this->assertCount(1, DB::table('lunar_channelables')->get());
     }
 
     /** @test */
@@ -119,7 +109,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -142,7 +132,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -157,7 +147,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start, $end);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -184,7 +174,7 @@ class ProductTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -199,7 +189,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start, $end);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -226,7 +216,7 @@ class ProductTest extends TestCase
         $product->scheduleCustomerGroup($customerGroup, $start, $end);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 1,
@@ -243,7 +233,7 @@ class ProductTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(
-            'getcandy_customer_group_product',
+            'lunar_customer_group_product',
             [
                 'customer_group_id' => $customerGroup->id,
                 'enabled'           => 0,

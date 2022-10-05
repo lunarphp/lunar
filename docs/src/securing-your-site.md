@@ -1,12 +1,12 @@
 # Securing your site
 
-When you move to production, you will want to make sure you have taken all the steps possible to secure your site and the data that powers it. GetCandy takes this very seriously and always do our best to follow industry practices.
+When you move to production, you will want to make sure you have taken all the steps possible to secure your site and the data that powers it. Lunar takes this very seriously and always do our best to follow industry practices.
 
 [[toc]]
 
 ## Reporting vulnerabilities
 
-If you find a security issue with GetCandy, please reach out to us privately on Discord or via email [security@getcandy.io](mailto:security@getcandy.io) so we can address it and patch with a new release as soon as possible.
+If you find a security issue with Lunar, please reach out to us privately on Discord or via email [security@lunarphp.io](mailto:security@lunarphp.io) so we can address it and patch with a new release as soon as possible.
 
 ## Securing Laravel
 
@@ -18,23 +18,23 @@ As a Laravel developer, we are sure you are well versed in their security practi
 
 ## Securing search
 
-Depending on which search driver you are using will depend on how you lock down the data that GetCandy indexes in a production environment. To provide a rich search experience in the hub. We currently index the following models, which may contain sensitive information.
+Depending on which search driver you are using will depend on how you lock down the data that Lunar indexes in a production environment. To provide a rich search experience in the hub. We currently index the following models, which may contain sensitive information.
 
 ### What is sensitive information?
 
 We classify sensitive information as data that contains information about your customers or orders, whether identifiable or not. Information such as addresses, emails, names is likely to be indexed for use in the hub.
 
-### GetCandy's indexes
+### Lunar's indexes
 
 Index names are relative to the `SCOUT_PREFIX` env variable.
 
 |Model|Index|Contains Sensitive Information|
 |:-|:-|:-|
-`\GetCandy\Models\Product`|`products`|❌|
-`\GetCandy\Models\Collection`|`collections`|❌|
-`\GetCandy\Models\ProductOption`|`product_options`|❌|
-`\GetCandy\Models\Customer`|`customers`|✅|
-`\GetCandy\Models\Order`|`orders`|✅|
+`\Lunar\Models\Product`|`products`|❌|
+`\Lunar\Models\Collection`|`collections`|❌|
+`\Lunar\Models\ProductOption`|`product_options`|❌|
+`\Lunar\Models\Customer`|`customers`|✅|
+`\Lunar\Models\Order`|`orders`|✅|
 
 
 ## Securing Meilisearch

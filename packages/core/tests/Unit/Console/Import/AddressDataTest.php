@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Console;
+namespace Lunar\Tests\Unit\Console;
 
-use GetCandy\Models\Country;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Lunar\Models\Country;
+use Lunar\Tests\TestCase;
 
 /**
  * @group commands
@@ -73,9 +73,9 @@ class AddressDataTest extends TestCase
             ], 200);
         });
 
-        $this->artisan('getcandy:import:address-data');
+        $this->artisan('lunar:import:address-data');
 
-        $this->assertDatabaseHas('getcandy_countries', [
+        $this->assertDatabaseHas('lunar_countries', [
             'name'      => 'United Kingdom',
             'iso3'      => 'GBR',
             'iso2'      => 'GB',

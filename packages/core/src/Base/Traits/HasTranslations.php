@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Base\FieldType;
 use Illuminate\Support\Arr;
+use Lunar\Base\FieldType;
 
 trait HasTranslations
 {

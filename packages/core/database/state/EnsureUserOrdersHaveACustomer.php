@@ -1,13 +1,18 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Models\Order;
 
 class EnsureUserOrdersHaveACustomer
 {
+    public function prepare()
+    {
+        //
+    }
+
     public function run()
     {
         if (! $this->canRun()) {
@@ -32,7 +37,7 @@ class EnsureUserOrdersHaveACustomer
 
     protected function canRun()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return Schema::hasTable("{$prefix}orders");
     }

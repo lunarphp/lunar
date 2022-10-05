@@ -9,7 +9,7 @@ return [
     | Specify the session key used when fetching the cart.
     |
     */
-    'session_key' => 'gc_cart',
+    'session_key' => 'lunar_cart',
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ return [
     | Authentication policy
     |--------------------------------------------------------------------------
     |
-    | When a user logs in, by default, GetCandy will merge the current (guest) cart
+    | When a user logs in, by default, Lunar will merge the current (guest) cart
     | with the users current cart, if they have one.
     | Available options: 'merge', 'override'
     |

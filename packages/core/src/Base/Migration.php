@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Illuminate\Database\Migrations\Migration as BaseMigration;
 
@@ -18,7 +18,7 @@ abstract class Migration extends BaseMigration
      */
     public function __construct()
     {
-        $this->prefix = config('getcandy.database.table_prefix');
+        $this->prefix = config('lunar.database.table_prefix');
     }
 
     /**
@@ -28,7 +28,7 @@ abstract class Migration extends BaseMigration
      */
     public function getConnection()
     {
-        if ($connection = config('getcandy.database.connection', false)) {
+        if ($connection = config('lunar.database.connection', false)) {
             return $connection;
         }
 

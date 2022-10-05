@@ -1,22 +1,22 @@
 <?php
 
-namespace GetCandy\Actions\Orders;
+namespace Lunar\Actions\Orders;
 
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 
 class GenerateOrderReference
 {
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\CartLine  $cartLine
+     * @param  \Lunar\Models\CartLine  $cartLine
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \GetCandy\Models\CartLine
+     * @return \Lunar\Models\CartLine
      */
     public function execute(
         Order $order
     ) {
-        $generator = config('getcandy.orders.reference_generator');
+        $generator = config('lunar.orders.reference_generator');
 
         if (! $generator) {
             return null;

@@ -13,7 +13,8 @@
     </div>
 
     <div>
-        <x-hub::table>
+        @livewire('hub.components.products.product-types.table')
+        {{-- <x-hub::table>
             <x-slot name="toolbar">
                 <div class="p-4">
                     <x-hub::input.text wire:model="search"
@@ -63,10 +64,7 @@
                 @empty
                 @endforelse
             </x-slot>
-        </x-hub::table>
+        </x-hub::table> --}}
     </div>
 
-    <div>
-        {{ $productTypes->links() }}
-    </div>
 </div>
