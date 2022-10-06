@@ -1,16 +1,17 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Hub\Facades\ActivityLog;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\Activitylog\Models\Activity;
+use Lunar\Facades\ModelManifest;
+use Lunar\Hub\Facades\ActivityLog;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 
 class ActivityLogFeed extends Component
 {
-    use WithPagination;
+    use WithPagination, Notifies;
 
     /**
      * The log subject to get activity for.
@@ -20,6 +21,46 @@ class ActivityLogFeed extends Component
     public Model $subject;
 
     /**
+     * The new comment for the subject.
+     *
+     * @var string|null
+     */
+    public ?string $comment = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rules()
+    {
+        return [
+            'comment' => 'string|required',
+        ];
+    }
+
+    /**
+     * Add a comment to the order.
+     *
+     * @return void
+     */
+    public function addComment()
+    {
+        activity()
+            ->performedOn($this->subject)
+            ->causedBy(
+                auth()->user()
+            )
+            ->event('comment')
+            ->withProperties(['content' => $this->comment])
+            ->log('comment');
+
+        $this->notify(
+            __('adminhub::notifications.order.comment_added')
+        );
+
+        $this->comment = null;
+    }
+
+    /**
      * Returns the activity log for the order.
      *
      * @return \Illuminate\Support\Collection
@@ -27,7 +68,6 @@ class ActivityLogFeed extends Component
     public function getActivityLogProperty()
     {
         return $this->subject->activities()
-            ->whereNotIn('event', ['updated'])
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy(function ($log) {
@@ -49,9 +89,9 @@ class ActivityLogFeed extends Component
 
     public function getRenderersProperty()
     {
-        return ActivityLog::getItems(
-            get_class($this->subject)
-        );
+        $subjectClass = ModelManifest::getMorphClassBaseModel(get_class($this->subject)) ?? get_class($this->subject);
+
+        return ActivityLog::getItems($subjectClass);
     }
 
     /**

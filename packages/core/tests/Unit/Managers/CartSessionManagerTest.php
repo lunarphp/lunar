@@ -1,21 +1,21 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Managers;
+namespace Lunar\Tests\Unit\Managers;
 
-use GetCandy\Facades\CartSession;
-use GetCandy\Managers\CartSessionManager;
-use GetCandy\Models\Cart;
-use GetCandy\Models\CartAddress;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Order;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Lunar\Facades\CartSession;
+use Lunar\Managers\CartSessionManager;
+use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
+use Lunar\Models\Order;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.cart-session-manager
+ * @group lunar.cart-session-manager
  */
 class CartSessionManagerTest extends TestCase
 {
@@ -45,19 +45,19 @@ class CartSessionManagerTest extends TestCase
             'default' => true,
         ]);
 
-        Config::set('getcandy.cart.auto_create', false);
+        Config::set('lunar.cart.auto_create', false);
 
         $cart = $manager->current();
 
         $this->assertNull($cart);
 
-        Config::set('getcandy.cart.auto_create', true);
+        Config::set('lunar.cart.auto_create', true);
 
         $cart = $manager->current();
 
         $this->assertInstanceOf(Cart::class, $cart);
 
-        $sessionCart = Session::get(config('getcandy.cart.session_key'));
+        $sessionCart = Session::get(config('lunar.cart.session_key'));
 
         $this->assertNotNull($sessionCart);
         $this->assertEquals($cart->id, $sessionCart);
@@ -76,7 +76,7 @@ class CartSessionManagerTest extends TestCase
             'default' => true,
         ]);
 
-        Config::set('getcandy.cart.auto_create', true);
+        Config::set('lunar.cart.auto_create', true);
 
         $cart = CartSession::current();
 
@@ -93,7 +93,7 @@ class CartSessionManagerTest extends TestCase
         $cart->getManager()->setShippingAddress($shipping);
         $cart->getManager()->setBillingAddress($billing);
 
-        $sessionCart = Session::get(config('getcandy.cart.session_key'));
+        $sessionCart = Session::get(config('lunar.cart.session_key'));
 
         $this->assertNotNull($sessionCart);
         $this->assertEquals($cart->id, $sessionCart);
@@ -104,7 +104,7 @@ class CartSessionManagerTest extends TestCase
         $this->assertEquals($cart->order_id, $order->id);
 
         $this->assertNull(
-            Session::get(config('getcandy.cart.session_key'))
+            Session::get(config('lunar.cart.session_key'))
         );
     }
 
@@ -121,7 +121,7 @@ class CartSessionManagerTest extends TestCase
             'default' => true,
         ]);
 
-        Config::set('getcandy.cart.auto_create', true);
+        Config::set('lunar.cart.auto_create', true);
 
         $cart = CartSession::current();
 
@@ -138,7 +138,7 @@ class CartSessionManagerTest extends TestCase
         $cart->getManager()->setShippingAddress($shipping);
         $cart->getManager()->setBillingAddress($billing);
 
-        $sessionCart = Session::get(config('getcandy.cart.session_key'));
+        $sessionCart = Session::get(config('lunar.cart.session_key'));
 
         $this->assertNotNull($sessionCart);
         $this->assertEquals($cart->id, $sessionCart);
@@ -152,7 +152,7 @@ class CartSessionManagerTest extends TestCase
 
         $this->assertEquals(
             $cart->id,
-            Session::get(config('getcandy.cart.session_key'))
+            Session::get(config('lunar.cart.session_key'))
         );
     }
 }

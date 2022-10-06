@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace Lunar\Hub\Views\Components;
 
 use Illuminate\View\Component;
 
@@ -12,7 +12,7 @@ class MenuList extends Component
 
     public $active;
 
-    public function __construct($sections = null, $items, $active)
+    public function __construct($sections, $items, $active)
     {
         $this->sections = $sections;
 

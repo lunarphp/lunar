@@ -1,24 +1,27 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Variants;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Variants;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasDimensions;
-use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
-use GetCandy\Hub\Http\Livewire\Traits\HasSlots;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Hub\Jobs\Products\GenerateVariants;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasPrices;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Hub\Jobs\Products\GenerateVariants;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
+use Spatie\Activitylog\Facades\LogBatch;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 
 class VariantShow extends Component
 {
@@ -29,48 +32,21 @@ class VariantShow extends Component
     use WithAttributes;
     use HasDimensions;
     use HasSlots;
+    use HasImages;
 
     /**
      * Instance of the parent product.
      *
-     * @var \GetCandy\Models\Product
+     * @var \Lunar\Models\Product
      */
     public Product $product;
 
     /**
      * Instance of the product variant.
      *
-     * @var \GetCandy\Models\ProductVariant
+     * @var \Lunar\Models\ProductVariant
      */
     public ProductVariant $variant;
-
-    /**
-     * The new image we want to use for the variant.
-     *
-     * @var null|\Spatie\MediaLibrary\MediaCollections\Models\Media|\Livewire\TemporaryUploadedFile
-     */
-    public $image = null;
-
-    /**
-     * The image we want to select from product images.
-     *
-     * @var null|string
-     */
-    public $imageToSelect = null;
-
-    /**
-     * Determines whether the image select modal is visible.
-     *
-     * @var bool
-     */
-    public $showImageSelectModal = false;
-
-    /**
-     * Whether the image should be removed on save.
-     *
-     * @var bool
-     */
-    public $removeImage = false;
 
     /**
      * Whether or not to show the delete confirm modal.
@@ -94,6 +70,25 @@ class VariantShow extends Component
     public array $newValues = [];
 
     /**
+     * {@inheritDoc}
+     */
+    public function mountHasImages()
+    {
+        $this->images = $this->variant->images->map(function ($media) {
+            return [
+                'id'        => $media->id,
+                'sort_key'  => Str::random(),
+                'thumbnail' => $media->getFullUrl('medium'),
+                'original'  => $media->getFullUrl(),
+                'preview'   => false,
+                'caption'   => $media->getCustomProperty('caption'),
+                'primary'   => $media->pivot->primary,
+                'position'  => $media->pivot->position,
+            ];
+        })->sortBy('position')->values()->toArray();
+    }
+
+    /**
      * Define the listeners.
      *
      * @var array
@@ -103,7 +98,8 @@ class VariantShow extends Component
         return array_merge([
             'option-value-create-modal.value-created' => 'refreshAndSelectOption',
         ],
-            $this->getHasSlotsListeners()
+            $this->getHasSlotsListeners(),
+            $this->getHasImagesListeners()
         );
     }
 
@@ -143,9 +139,7 @@ class VariantShow extends Component
     protected function rules()
     {
         return array_merge([
-            // 'images.*' => 'image',
             'newValues'             => 'array',
-            'image'                 => 'nullable',
             'variant.stock'         => 'numeric|max:10000000',
             'variant.tax_class_id'  => 'required',
             'variant.length_value'  => 'numeric|nullable',
@@ -179,39 +173,7 @@ class VariantShow extends Component
                 'string',
                 'max:255',
             ], $this->variant),
-        ], $this->hasPriceValidationRules());
-    }
-
-    /**
-     * Computed property for existing thumbnail.
-     *
-     * @return null|string
-     */
-    public function getExistingThumbnailProperty()
-    {
-        $image = $this->variant->media()->first();
-        if (! $image) {
-            return;
-        }
-
-        return $image->getFullUrl('large');
-    }
-
-    /**
-     * Computed property for if we are uploading a new image
-     * or selecting an existing product image.
-     *
-     * @return string|void
-     */
-    public function getThumbnailProperty()
-    {
-        if ($this->image instanceof Media) {
-            return $this->image->getFullUrl('large');
-        }
-
-        if ($this->image instanceof TemporaryUploadedFile) {
-            return $this->image->temporaryUrl();
-        }
+        ], $this->hasPriceValidationRules(), $this->hasImagesValidationRules());
     }
 
     /**
@@ -223,29 +185,6 @@ class VariantShow extends Component
     {
         $this->validate(null, $this->getValidationMessages());
 
-        if ($this->image) {
-            if ($this->image instanceof Media) {
-                $this->image->copy($this->variant, 'variants');
-                $this->image->setCustomProperty('primary', true);
-                $this->image->save();
-            }
-            if ($this->image instanceof TemporaryUploadedFile) {
-                $this->validateOnly('image', ['image' => 'image']);
-                $media = $this->variant->addMedia($this->image->getRealPath())
-                    ->preservingOriginal()
-                    ->toMediaCollection('variants');
-                $media->setCustomProperty('primary', true);
-                $media->save();
-            }
-        }
-
-        if ($this->removeImage) {
-            $image = $this->variant->media()->first();
-            if ($image) {
-                $image->forceDelete();
-            }
-        }
-
         if (! $this->manualVolume) {
             $this->variant->volume_unit = null;
             $this->variant->volume_value = null;
@@ -256,13 +195,65 @@ class VariantShow extends Component
 
         $this->variant->save();
         $this->savePricing();
-        $this->image = null;
-        // $this->variant->refresh();
-        $this->removeImage = false;
+        $this->updateImages();
 
         $this->updateSlots();
 
         $this->notify('Variant updated');
+    }
+
+    public function updateImages()
+    {
+        DB::transaction(function () {
+            LogBatch::startBatch();
+
+            $owner = $this->variant->product;
+
+            $imagesToSync = [];
+
+            foreach ($this->images as $key => $image) {
+                $newImage = false;
+
+                if (empty($image['id'])) {
+                    $file = TemporaryUploadedFile::createFromLivewire(
+                        $image['filename']
+                    );
+                    $media = $owner->addMedia($file->getRealPath())
+                        ->toMediaCollection('images');
+
+                    activity()
+                    ->performedOn($this->variant)
+                    ->withProperties(['media' => $media->toArray()])
+                    ->event('added_image')
+                    ->useLog('lunar')
+                    ->log('added_image');
+
+                    // Add ID for future and processing now.
+                    $this->images[$key]['id'] = $media->id;
+                    $image['id'] = $media->id;
+
+                    $newImage = true;
+                }
+
+                $media = app(config('media-library.media_model'))::find($image['id']);
+
+                if ($newImage) {
+                    $media->setCustomProperty('caption', $image['caption']);
+                    $media->setCustomProperty('primary', false);
+                    $media->setCustomProperty('position', $owner->media()->count() + 1);
+                    $media->save();
+                }
+
+                $imagesToSync[$media->id] = [
+                    'primary' => $image['primary'],
+                    'position' => $image['position'],
+                ];
+            }
+
+            $this->variant->images()->sync($imagesToSync);
+
+            LogBatch::endBatch();
+        });
     }
 
     /**
@@ -290,7 +281,7 @@ class VariantShow extends Component
     public function selectImage()
     {
         $this->image = $this->product
-            ->media
+            ->images
             ->first(fn ($image) => $image->id == $this->imageToSelect);
 
         $this->showImageSelectModal = false;
@@ -316,6 +307,16 @@ class VariantShow extends Component
     public function getHasDimensionsModel()
     {
         return $this->variant;
+    }
+
+    /**
+     * Return the product images.
+     *
+     * @return MediaCollection
+     */
+    public function getProductImagesProperty()
+    {
+        return $this->variant->product->getMedia('images');
     }
 
     /**
@@ -415,9 +416,17 @@ class VariantShow extends Component
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getMediaModel()
+    {
+        return $this->variant;
+    }
+
+    /**
      * Returns the model which has slots associated.
      *
-     * @return \GetCandy\Models\ProductVariant
+     * @return \Lunar\Models\ProductVariant
      */
     protected function getSlotModel()
     {

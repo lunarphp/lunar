@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Console\Commands;
+namespace Lunar\Console\Commands;
 
-use GetCandy\Addons\Manifest;
 use Illuminate\Console\Command;
+use Lunar\Addons\Manifest;
 
 class AddonsDiscover extends Command
 {
@@ -12,7 +12,7 @@ class AddonsDiscover extends Command
      *
      * @var string
      */
-    protected $signature = 'getcandy:addons:discover';
+    protected $signature = 'lunar:addons:discover';
 
     /**
      * The console command description.

@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use Illuminate\Database\Eloquent\Collection;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class TranslatedText implements FieldType, JsonSerializable
 {
@@ -64,7 +64,7 @@ class TranslatedText implements FieldType, JsonSerializable
         }
 
         foreach ($value as $key => $item) {
-            if (is_string($item)) {
+            if (is_string($item) || is_numeric($item) || is_bool($item)) {
                 $item = new Text($item);
                 $value[$key] = $item;
             }
@@ -108,6 +108,14 @@ class TranslatedText implements FieldType, JsonSerializable
         return [
             'options' => [
                 'richtext' => 'nullable',
+                'options' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if (! json_decode($value, true)) {
+                            $fail('Must be valid json');
+                        }
+                    },
+                ],
             ],
         ];
     }

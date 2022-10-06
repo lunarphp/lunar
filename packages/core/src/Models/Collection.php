@@ -1,22 +1,22 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Casts\AsAttributeData;
-use GetCandy\Base\Traits\HasChannels;
-use GetCandy\Base\Traits\HasCustomerGroups;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Base\Traits\HasUrls;
-use GetCandy\Base\Traits\Searchable;
-use GetCandy\Database\Factories\CollectionFactory;
-use GetCandy\FieldTypes\TranslatedText;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Kalnoy\Nestedset\NodeTrait;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasChannels;
+use Lunar\Base\Traits\HasCustomerGroups;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\HasUrls;
+use Lunar\Base\Traits\Searchable;
+use Lunar\Database\Factories\CollectionFactory;
+use Lunar\FieldTypes\TranslatedText;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Collection extends BaseModel implements SpatieHasMedia
@@ -63,7 +63,7 @@ class Collection extends BaseModel implements SpatieHasMedia
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CollectionFactory
+     * @return \Lunar\Database\Factories\CollectionFactory
      */
     protected static function newFactory(): CollectionFactory
     {
@@ -87,7 +87,7 @@ class Collection extends BaseModel implements SpatieHasMedia
      */
     public function products()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             Product::class,
@@ -130,13 +130,25 @@ class Collection extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Get the translated name of ancestor collections.
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getBreadcrumbAttribute()
+    {
+        return $this->ancestors->map(function ($ancestor) {
+            return $ancestor->translateAttribute('name');
+        });
+    }
+
+    /**
      * Return the customer groups relationship.
      *
      * @return BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             CustomerGroup::class,

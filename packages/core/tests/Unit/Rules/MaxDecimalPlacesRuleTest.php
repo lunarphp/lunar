@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Rules;
+namespace Lunar\Tests\Unit\Rules;
 
-use GetCandy\Rules\MaxDecimalPlaces;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Rules\MaxDecimalPlaces;
+use Lunar\Tests\TestCase;
 
 /**
  * @group rules

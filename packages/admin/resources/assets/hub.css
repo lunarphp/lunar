@@ -36,6 +36,10 @@ p > code {
     @apply space-y-2;
 }
 
+.app-sidemenu-expanded [data-ref='layout-sidemenu'] {
+    @apply w-64;
+}
+
 @layer components {
     .menu-link {
         @apply relative flex items-center gap-2 p-2 rounded;

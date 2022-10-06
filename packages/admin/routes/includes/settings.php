@@ -1,28 +1,32 @@
 <?php
 
-use GetCandy\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Attributes\AttributeShow;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Attributes\AttributesIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Channels\ChannelCreate;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Channels\ChannelShow;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Channels\ChannelsIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Currencies\CurrenciesIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyCreate;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagShow;
-use GetCandy\Hub\Http\Livewire\Pages\Settings\Tags\TagsIndex;
 use Illuminate\Support\Facades\Route;
+use Lunar\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Attributes\AttributeShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Attributes\AttributesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelCreate;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelsIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrenciesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyCreate;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Tags\TagShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Tags\TagsIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxClassesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneCreate;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZonesIndex;
 
 Route::get('/', function () {
-    return redirect()->route('hub.channels.index');
+    return redirect()->route('hub.attributes.index');
 })->name('hub.settings');
 
 /**
@@ -106,3 +110,16 @@ Route::group([
     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
 });
+
+ /**
+  * Taxes.
+  */
+ Route::group([
+     'middleware' => 'can:settings:core',
+     'prefix'     => 'taxes',
+ ], function () {
+     Route::get('/tax-zones', TaxZonesIndex::class)->name('hub.taxes.index');
+     Route::get('/tax-zones/create', TaxZoneCreate::class)->name('hub.taxes.create');
+     Route::get('/tax-zones/{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
+     Route::get('/tax-classes', TaxClassesIndex::class)->name('hub.taxes.tax-classes.index');
+ });

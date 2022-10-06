@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tags;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tags;
 
-use GetCandy\Models\Tag;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Tag;
 
 class TagsIndex extends Component
 {
@@ -17,8 +17,7 @@ class TagsIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.tags.index', [
-            'tags' => Tag::paginate(),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.tags.index')
+            ->layout('adminhub::layouts.base');
     }
 }

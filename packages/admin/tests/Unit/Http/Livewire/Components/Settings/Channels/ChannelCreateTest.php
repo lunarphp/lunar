@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Settings\Channels\ChannelCreate;
-use GetCandy\Hub\Tests\Stubs\User;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelCreate;
+use Lunar\Hub\Tests\Stubs\User;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Channel;
 
 class ChannelCreateTest extends TestCase
 {

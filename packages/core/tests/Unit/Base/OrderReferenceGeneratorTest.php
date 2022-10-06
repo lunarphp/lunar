@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base;
+namespace Lunar\Tests\Unit\Base;
 
-use GetCandy\Base\OrderReferenceGenerator;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\OrderReferenceGenerator;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Tests\TestCase;
 
 /**
  * @group reference
@@ -68,23 +68,5 @@ class OrderReferenceGeneratorTest extends TestCase
         $result = app(OrderReferenceGenerator::class)->generate($order);
 
         $this->assertEquals($order->created_at->format('Y-m').'-0002', $result);
-    }
-
-    /** @test */
-    public function can_override_reference_generator()
-    {
-        $order = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
-
-        $this->assertNull($order->reference);
-
-        $result = app(OrderReferenceGenerator::class)
-            ->override(function ($order) {
-                return 'hello-'.$order->id;
-            })->generate($order);
-
-        $this->assertEquals('hello-'.$order->id, $result);
     }
 }

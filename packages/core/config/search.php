@@ -13,11 +13,11 @@ return [
     */
     'models' => [
         // These models are required by the system, do not change them.
-        \GetCandy\Models\Collection::class,
-        \GetCandy\Models\Product::class,
-        \GetCandy\Models\ProductOption::class,
-        \GetCandy\Models\Order::class,
-        \GetCandy\Models\Customer::class,
+        \Lunar\Models\Collection::class,
+        \Lunar\Models\Product::class,
+        \Lunar\Models\ProductOption::class,
+        \Lunar\Models\Order::class,
+        \Lunar\Models\Customer::class,
         // Below you can add your own models for indexing
     ],
     /*
@@ -30,8 +30,8 @@ return [
     |
     */
     'engine_map' => [
-        // \GetCandy\Models\Product::class => 'algolia',
-        // \GetCandy\Models\Order::class => 'meilisearch',
-        // \GetCandy\Models\Collection::class => 'meilisearch',
+        // \Lunar\Models\Product::class => 'algolia',
+        // \Lunar\Models\Order::class => 'meilisearch',
+        // \Lunar\Models\Collection::class => 'meilisearch',
     ],
 ];

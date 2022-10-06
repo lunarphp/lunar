@@ -99,7 +99,7 @@ return [
     'currencies.form.notify.created'   => 'Currency created',
     'currencies.form.format_help_text' => [
         'This allows you to specify the format that price fields should use for this currency.',
-        'When displaying, GetCandy will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
+        'When displaying, Lunar will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
         'You must always include <code>{value}</code> for this to work properly.',
     ],
     /*
@@ -129,4 +129,32 @@ return [
      * Activity log page.
      */
     'activity_log.index.title' => 'Activity Log',
+
+    /**
+     * Taxes.
+     */
+    'taxes.tax-zones.index.title'             => 'Tax Zones',
+    'taxes.tax-zones.confirm_delete.title' => 'Confirm removal',
+    'taxes.tax-zones.confirm_delete.message' => 'Are you sure you want to delete this Tax Zone? This could result in data loss.',
+    'taxes.tax-zones.customer_groups.title' => 'Restrict to customer groups',
+    'taxes.tax-zones.customer_groups.instructions' => 'Select which customer groups you want to restrict this zone to. Leave unchecked for no restrictions.',
+    'taxes.tax-zones.create_title' => 'Create tax zone',
+    'taxes.tax-zones.create_btn' => 'Create tax zone',
+    'taxes.tax-zones.delete_btn' => 'Delete tax zone',
+    'taxes.tax-zones.index.table_row_action_text' => 'Manage',
+    'taxes.tax-classes.index.title' => 'Tax Classes',
+    'taxes.tax-classes.index.update.title' => 'Update tax class',
+    'taxes.tax-classes.create_btn' => 'Create tax class',
+    'taxes.tax-zones.price_display.label' => 'Price Display',
+    'taxes.tax-zones.price_display.excl_tax' => 'Exclude Tax',
+    'taxes.tax-zones.price_display.incl_tax' => 'Include Tax',
+    'taxes.tax-zones.zone_type.countries' => 'Limit to countries',
+    'taxes.tax-zones.zone_type.states' => 'Limit to states / provinces',
+    'taxes.tax-zones.zone_type.postcodes' => 'Limit to postcodes',
+    'taxes.tax-zones.tax_rates.title' => 'Tax Rates',
+    'taxes.tax-zones.tax_rates.create_button' => 'Add tax rate',
+    'taxes.tax-zones.save_btn' => 'Save tax zone',
+    'taxes.tax-classes.index.delete_message' => 'Are you sure? This could cause loss of data.',
+    'taxes.tax-classes.index.delete_message_disabled' => 'You cannot delete a tax class that is associated to product variants',
+    'taxes.tax-classes.index.delete_message_default' => 'You must select a new default before deleting',
 ];

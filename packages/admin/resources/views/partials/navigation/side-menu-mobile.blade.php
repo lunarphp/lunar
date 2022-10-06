@@ -2,9 +2,7 @@
     <div class="flex items-center justify-between">
         <a href="{{ route('hub.index') }}"
            class="block">
-            <img class="w-8 h-8"
-                 src="https://markmead.dev/gc-favicon.svg"
-                 alt="GetCandy Logo">
+           <x-hub::branding.logo iconOnly />
         </a>
 
         <button type="button"
@@ -40,11 +38,11 @@
         <div class="pt-4 mt-4 border-t border-gray-100">
             @if (Auth::user()->can('settings'))
                 <div x-data="{ showSettingsMenu: false }"
-                     x-init="showSettingsMenu = {{ Str::contains(request()->url(), 'settings') ? 'true' : 'false' }}">
+                     x-init="showSettingsMenu = '{{ Str::contains(request()->url(), 'settings') }}'">
                     <a href="{{ route('hub.settings') }}"
                        class="justify-between menu-link menu-link--inactive">
                         <div class="flex gap-2">
-                            {!! GetCandy\Hub\GetCandyHub::icon('cog', 'w-5 h-5 shrink-0') !!}
+                            {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5 shrink-0') !!}
 
                             <span class="text-sm font-medium">
                                 {{ __('adminhub::global.settings') }}

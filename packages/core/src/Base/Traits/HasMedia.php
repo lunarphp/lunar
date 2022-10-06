@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Image\Manipulations;
@@ -24,29 +24,16 @@ trait HasMedia
 
     public function registerMediaConversions(Media $media = null): void
     {
-        $transforms = config('getcandy.media.transformations');
+        $conversionClasses = config('lunar.media.conversions', []);
 
-        collect($transforms)->each(function ($transform, $handle) {
-            $conversion = $this->addMediaConversion($handle)
-                ->fit(
-                    $transform['fit'] ?? Manipulations::FIT_FILL,
-                    $transform['width'],
-                    $transform['height']
-                );
+        foreach ($conversionClasses as $classname) {
+            app($classname)->apply($this);
+        }
 
-            if ($collections = ($transform['collections'] ?? null)) {
-                $conversion->collections($collections);
-            }
-
-            if ($border = ($transform['border'] ?? null)) {
-                $conversion->border(
-                    $border['size'],
-                    $border['color'],
-                    $border['type']
-                );
-            }
-
-            $conversion->keepOriginalImageFormat();
-        });
+        // Add a conversion that the hub uses...
+        $this->addMediaConversion('small')
+            ->fit(Manipulations::FIT_FILL, 300, 300)
+            ->sharpen(10)
+            ->keepOriginalImageFormat();
     }
 }

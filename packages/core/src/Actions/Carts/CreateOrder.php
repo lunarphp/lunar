@@ -1,29 +1,22 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Base\OrderModifiers;
-use GetCandy\Base\OrderReferenceGeneratorInterface;
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Order;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
+use Lunar\Actions\Orders\GenerateOrderReference;
+use Lunar\Base\OrderModifiers;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Models\Cart;
+use Lunar\Models\Currency;
+use Lunar\Models\Order;
 
 class CreateOrder
 {
-    protected $referenceGenerator;
-
-    public function __construct(OrderReferenceGeneratorInterface $generator)
-    {
-        $this->referenceGenerator = $generator;
-    }
-
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param  \Lunar\Models\Cart  $cart
      * @return void
      */
     public function execute(
@@ -46,7 +39,7 @@ class CreateOrder
             $order = Order::create([
                 'user_id'            => $cart->user_id,
                 'channel_id'         => $cart->channel_id,
-                'status'             => config('getcandy.orders.draft_status'),
+                'status'             => config('lunar.orders.draft_status'),
                 'reference'          => null,
                 'customer_reference' => null,
                 'sub_total'          => $cart->subTotal->value,
@@ -57,7 +50,7 @@ class CreateOrder
                     return [
                         'description'       => $tax['description'],
                         'identifier'   => $tax['identifier'],
-                        'percentage' => $tax['amounts']->sum('percentage'),
+                        'percentage' => $tax['amounts']->min('percentage'),
                         'total'      => $tax['total']->value,
                     ];
                 })->values(),
@@ -68,7 +61,7 @@ class CreateOrder
             ]);
 
             $order->update([
-                'reference' => $this->referenceGenerator->generate($order),
+                'reference' => app(GenerateOrderReference::class)->execute($order),
             ]);
 
             $orderLines = $cart->lines->map(function ($line) {

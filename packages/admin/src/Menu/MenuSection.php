@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Str;
 

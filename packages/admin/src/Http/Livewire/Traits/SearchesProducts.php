@@ -1,29 +1,22 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
 use Illuminate\Support\Collection;
+use Lunar\Models\Brand;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
 
 trait SearchesProducts
 {
     /**
-     * List of filtered brands.
+     * Method to return computed brands.
      *
-     * @var array
+     * @return \Illuminate\Support\Collection
      */
-    public $brands = [];
-
-    /**
-     * Get brands by a given search term.
-     *
-     * @param  string|null  $term
-     * @return void
-     */
-    public function getBrands($term = null)
+    public function getBrandsProperty(): Collection
     {
-        $this->brands = $term ? $this->searchDistinct('brand', $term) : [];
+        return Brand::get();
     }
 
     /**

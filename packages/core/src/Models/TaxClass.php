@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasDefaultRecord;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Database\Factories\TaxClassFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasDefaultRecord;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Database\Factories\TaxClassFactory;
 
 class TaxClass extends BaseModel
 {
@@ -14,10 +14,29 @@ class TaxClass extends BaseModel
     use HasDefaultRecord;
     use HasMacros;
 
+    public static function booted()
+    {
+        static::updated(function ($taxClass) {
+            if ($taxClass->default) {
+                TaxClass::whereDefault(true)->where('id', '!=', $taxClass->id)->update([
+                    'default' => false,
+                ]);
+            }
+        });
+
+        static::created(function ($taxClass) {
+            if ($taxClass->default) {
+                TaxClass::whereDefault(true)->where('id', '!=', $taxClass->id)->update([
+                    'default' => false,
+                ]);
+            }
+        });
+    }
+
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\TaxClassFactory
+     * @return \Lunar\Database\Factories\TaxClassFactory
      */
     protected static function newFactory(): TaxClassFactory
     {
@@ -40,5 +59,15 @@ class TaxClass extends BaseModel
     public function taxRateAmounts()
     {
         return $this->hasMany(TaxRateAmount::class);
+    }
+
+    /**
+     * Return the ProductVariants relationship.
+     *
+     * @return HasMany
+     */
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
     }
 }

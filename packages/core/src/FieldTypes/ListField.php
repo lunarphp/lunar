@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class ListField implements FieldType, JsonSerializable
 {
@@ -40,7 +40,7 @@ class ListField implements FieldType, JsonSerializable
      */
     public function getValue()
     {
-        return json_decode($this->value);
+        return json_decode($this->value ?? '[]');
     }
 
     /**

@@ -12,7 +12,6 @@ return [
     'products.product-selector.no_options'       => 'There are no options available, create a new option to see it here.',
     'products.product-selector.add_new_btn'      => 'Add new option',
     'products.product-selector.use_selected_btn' => 'Use selected options',
-    'products.product-selector.title'            => 'Select Options',
     'products.option-creator.option_placeholder' => 'E.g. Colour',
     'products.option-creator.value_placeholder'  => 'E.g. Blue',
     'products.option-creator.min_values_notice'  => 'You must have at least :min value',
@@ -129,11 +128,6 @@ return [
     'orders.show.billing_matches_shipping' => 'Same as shipping address',
     'orders.show.billing_header' => 'Billing Address',
     'orders.show.shipping_header' => 'Shipping Address',
-    'orders.show.print_btn'                         => 'Print',
-    'orders.show.refund_btn'                         => 'Refund',
-    'orders.show.refund_lines_btn'                  => 'Refund Lines',
-    'orders.show.update_status_btn'                         => 'Update Status',
-    'orders.show.more_actions_btn'                         => 'More Actions',
     'orders.show.requires_capture' => 'This order still requires payment to be captured.',
     'orders.show.capture_payment_btn' => 'Capture Payment',
     'orders.show.partially_refunded' => 'This order has been partially refunded.',
@@ -151,6 +145,14 @@ return [
     'orders.refund.select_transaction'              => 'Select a transaction',
     'orders.refund.refund_btn'                      => 'Send refund',
     'orders.refund.fully_refunded'                  => 'The captures on this order have been refunded',
+    /**
+     * Brand Index.
+     */
+    'brands.index.title' => 'Brands',
+    'brands.index.create_brand' => 'Create Brand',
+    'brands.index.table_row_action_text' => 'Edit Brand',
+    'brands.index.table_count_header_text' => 'Products Count',
+    'brands.choose_brand_default_option' => 'Choose brand',
     /**
      * Product Index.
      */
@@ -173,6 +175,26 @@ return [
     'orders.capture.no_intents'                      => 'There are no transactions available for capture',
     'orders.capture.select_transaction'              => 'Select a transaction',
     'orders.capture.capture_btn'                      => 'Capture payment',
+    /**
+     * Order Status.
+     */
+    'orders.status.update_btn' => 'Update Status',
+    'orders.status.select_new' => 'Select a new status',
+    'orders.status.preview.title' => 'Preview template',
+    'orders.status.preview.alert' => 'This is a preview of how your email will look.',
+    'orders.status.no_status_selected_alert' => 'Select an order status to see available mailers.',
+    'orders.status.additional-content.label' => 'Additional content',
+    'orders.status.additional-content.instructions' => 'If supported, add an additional message to the notification or mailer.',
+    'orders.status.mailers.label' => 'Mailers',
+    'orders.status.mailers.instructions' => 'Select which mailers you would like to send.',
+    'orders.status.mailers.empty' => 'There are no mailers available for this status.',
+    'orders.status.notifications.label' => 'Notifications',
+    'orders.status.notifications.instructions' => 'Select which notifications you would like to send.',
+    'orders.status.notifications.empty' => 'There are no notifications available for this status.',
+    'orders.status.email_addresses.label' => 'Email Addresses',
+    'orders.status.email_addresses.instructions' => 'Select which email addresses you want to use',
+    'orders.status.additional_email.label' => 'Additional email address',
+    'orders.status.additional_email.instructions' => 'If you need to use a custom email address, enter it here.',
     /**
      * Activity Log.
      */

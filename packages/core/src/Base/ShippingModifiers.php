@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
 
@@ -40,5 +40,16 @@ class ShippingModifiers
     public function add($modifier)
     {
         $this->modifiers->push($modifier);
+    }
+
+    /**
+     * Remove a shipping modifier.
+     *
+     * @param $modifier Class reference to the modifier.
+     * @return void
+     */
+    public function remove($modifier)
+    {
+        $this->modifiers->forget($modifier);
     }
 }

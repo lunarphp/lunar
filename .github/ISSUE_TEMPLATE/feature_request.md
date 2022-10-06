@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Propose a new feature for GetCandy.
+about: Propose a new feature for Lunar.
 title: ''
 labels: feature
 assignees: ''

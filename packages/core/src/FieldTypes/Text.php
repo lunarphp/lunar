@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class Text implements FieldType, JsonSerializable
 {
@@ -40,7 +40,7 @@ class Text implements FieldType, JsonSerializable
      */
     public function __toString()
     {
-        return $this->getValue();
+        return $this->getValue() ?? '';
     }
 
     /**
@@ -100,6 +100,14 @@ class Text implements FieldType, JsonSerializable
             'view'    => 'adminhub::field-types.text',
             'options' => [
                 'richtext' => 'nullable',
+                'options' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if (! json_decode($value, true)) {
+                            $fail('Must be valid json');
+                        }
+                    },
+                ],
             ],
         ];
     }

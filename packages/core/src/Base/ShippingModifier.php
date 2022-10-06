@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\Cart;
+use Lunar\Models\Cart;
 
 abstract class ShippingModifier
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
 
 class PriceFactory extends Factory
 {

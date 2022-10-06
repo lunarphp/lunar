@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
-use GetCandy\Hub\Facades\Menu;
+use Lunar\Hub\Facades\Menu;
 
 class SettingsMenu
 {
@@ -56,6 +56,14 @@ class SettingsMenu
                 ->route('hub.currencies.index')
                 ->gate('settings:core')
                 ->icon('currency-pound');
+        });
+
+        $storeSection->addItem(function ($item) {
+            $item->name('Taxes')
+                ->handle('hub.taxes')
+                ->route('hub.taxes.index')
+                ->gate('settings:core')
+                ->icon('receipt-tax');
         });
 
         $storeSection->addItem(function ($item) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Currencies;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Currencies;
 
 use Livewire\Component;
 
