@@ -2,12 +2,12 @@
 
 namespace Lunar\Hub\Http\Livewire\Components;
 
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Tag;
 
 class Tags extends Component
 {
