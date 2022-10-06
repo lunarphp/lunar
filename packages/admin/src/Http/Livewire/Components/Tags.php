@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Tag;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -99,7 +99,7 @@ class Tags extends Component
         }
 
         return DB::table(
-            config('getcandy.database.table_prefix').'taggables'
+            config('lunar.database.table_prefix').'taggables'
         )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
         ->whereTaggableType(
             get_class($this->taggable)
