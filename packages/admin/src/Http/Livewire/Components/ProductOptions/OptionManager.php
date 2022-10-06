@@ -113,6 +113,22 @@ class OptionManager extends Component
     }
 
     /**
+     * Remove an option from the collection
+     *
+     * @param  int|string  $key
+     * @return
+     */
+    public function removeOption($key)
+    {
+        $option = $this->options->get($key);
+
+        $remainingValues = collect($this->selectedValues)->diff($option->values->pluck('id'));
+
+        $this->selectedValues = $remainingValues->values()->toArray();
+        $this->options->forget($key);
+    }
+
+    /**
      * Render the livewire component.
      *
      * @return \Illuminate\View\View
