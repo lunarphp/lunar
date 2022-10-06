@@ -2,12 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\Tables;
 
-use Illuminate\Support\Collection;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
-use Lunar\LivewireTables\Components\Columns\BadgeColumn;
-use Lunar\LivewireTables\Components\Columns\ImageColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\LivewireTables\Components\Table;
 

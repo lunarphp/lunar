@@ -27,12 +27,12 @@ class ProductTypeCreateTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code'    => 'fr',
+            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
@@ -61,7 +61,7 @@ class ProductTypeCreateTest extends TestCase
 
         Attribute::factory(2)->create([
             'attribute_type' => Product::class,
-            'system'         => true,
+            'system' => true,
         ]);
 
         Attribute::factory(2)->create([
@@ -88,7 +88,7 @@ class ProductTypeCreateTest extends TestCase
         ]);
 
         $variantAttribute = Attribute::factory()->create([
-            'handle'         => 'variant-attribute',
+            'handle' => 'variant-attribute',
             'attribute_type' => ProductVariant::class,
         ]);
 
@@ -112,9 +112,9 @@ class ProductTypeCreateTest extends TestCase
         $productType = ProductType::whereName('Foobar')->first();
 
         $this->assertDatabaseHas("{$tablePrefix}attributables", [
-            'attributable_id'   => $productType->id,
+            'attributable_id' => $productType->id,
             'attributable_type' => ProductType::class,
-            'attribute_id'      => $attribute->id,
+            'attribute_id' => $attribute->id,
         ]);
     }
 }

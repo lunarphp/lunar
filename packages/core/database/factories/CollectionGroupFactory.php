@@ -15,7 +15,7 @@ class CollectionGroupFactory extends Factory
         $name = $this->faker->unique()->word;
 
         return [
-            'name'   => $name,
+            'name' => $name,
             'handle' => Str::slug($name),
         ];
     }

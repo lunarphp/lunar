@@ -31,7 +31,7 @@ class Collection extends BaseModel implements SpatieHasMedia
         HasMacros,
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
-    }
+        }
 
     /**
      * Define our base filterable attributes.

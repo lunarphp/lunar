@@ -32,7 +32,7 @@ class MergeCartTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
@@ -50,38 +50,38 @@ class MergeCartTest extends TestCase
         )->create();
 
         $purchasableA = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         $purchasableB = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 100,
-            'tier'           => 1,
+            'price' => 100,
+            'tier' => 1,
             'priceable_type' => get_class($purchasableA),
-            'priceable_id'   => $purchasableA->id,
+            'priceable_id' => $purchasableA->id,
         ]);
 
         $cartA->lines()->create([
             'purchasable_type' => get_class($purchasableA),
-            'purchasable_id'   => $purchasableA->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
         ]);
 
         $cartB->lines()->createMany([
             [
                 'purchasable_type' => get_class($purchasableA),
-                'purchasable_id'   => $purchasableA->id,
-                'quantity'         => 1,
+                'purchasable_id' => $purchasableA->id,
+                'quantity' => 1,
             ],
             [
                 'purchasable_type' => get_class($purchasableB),
-                'purchasable_id'   => $purchasableB->id,
-                'quantity'         => 1,
+                'purchasable_id' => $purchasableB->id,
+                'quantity' => 1,
             ],
         ]);
 
@@ -105,7 +105,7 @@ class MergeCartTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
@@ -123,27 +123,27 @@ class MergeCartTest extends TestCase
         )->create();
 
         $purchasableA = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         $purchasableB = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 100,
-            'tier'           => 1,
+            'price' => 100,
+            'tier' => 1,
             'priceable_type' => get_class($purchasableA),
-            'priceable_id'   => $purchasableA->id,
+            'priceable_id' => $purchasableA->id,
         ]);
 
         $cartA->lines()->create([
             'purchasable_type' => get_class($purchasableA),
-            'purchasable_id'   => $purchasableA->id,
-            'quantity'         => 1,
-            'meta'             => [
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+            'meta' => [
                 'foo' => 'bar',
             ],
         ]);
@@ -151,16 +151,16 @@ class MergeCartTest extends TestCase
         $cartB->lines()->createMany([
             [
                 'purchasable_type' => get_class($purchasableA),
-                'purchasable_id'   => $purchasableA->id,
-                'quantity'         => 1,
-                'meta'             => [
+                'purchasable_id' => $purchasableA->id,
+                'quantity' => 1,
+                'meta' => [
                     'bar' => 'baz',
                 ],
             ],
             [
                 'purchasable_type' => get_class($purchasableB),
-                'purchasable_id'   => $purchasableB->id,
-                'quantity'         => 1,
+                'purchasable_id' => $purchasableB->id,
+                'quantity' => 1,
             ],
         ]);
 

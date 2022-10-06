@@ -74,10 +74,10 @@ class InstallLunar extends Command
                 $this->info('Setting up default channel');
 
                 Channel::create([
-                    'name'    => 'Webstore',
-                    'handle'  => 'webstore',
+                    'name' => 'Webstore',
+                    'handle' => 'webstore',
                     'default' => true,
-                    'url'     => 'http://localhost',
+                    'url' => 'http://localhost',
                 ]);
             }
 
@@ -85,8 +85,8 @@ class InstallLunar extends Command
                 $this->info('Adding default language');
 
                 Language::create([
-                    'code'    => 'en',
-                    'name'    => 'English',
+                    'code' => 'en',
+                    'name' => 'English',
                     'default' => true,
                 ]);
             }
@@ -95,12 +95,12 @@ class InstallLunar extends Command
                 $this->info('Adding a default currency (USD)');
 
                 Currency::create([
-                    'code'           => 'USD',
-                    'name'           => 'US Dollar',
-                    'exchange_rate'  => 1,
+                    'code' => 'USD',
+                    'name' => 'US Dollar',
+                    'exchange_rate' => 1,
                     'decimal_places' => 2,
-                    'default'        => true,
-                    'enabled'        => true,
+                    'default' => true,
+                    'enabled' => true,
                 ]);
             }
 
@@ -108,8 +108,8 @@ class InstallLunar extends Command
                 $this->info('Adding a default customer group.');
 
                 CustomerGroup::create([
-                    'name'    => 'Retail',
-                    'handle'  => 'retail',
+                    'name' => 'Retail',
+                    'handle' => 'retail',
                     'default' => true,
                 ]);
             }
@@ -118,7 +118,7 @@ class InstallLunar extends Command
                 $this->info('Adding an initial collection group');
 
                 CollectionGroup::create([
-                    'name'   => 'Main',
+                    'name' => 'Main',
                     'handle' => 'main',
                 ]);
             }
@@ -127,7 +127,7 @@ class InstallLunar extends Command
                 $this->info('Adding a default tax class.');
 
                 TaxClass::create([
-                    'name'    => 'Default Tax Class',
+                    'name' => 'Default Tax Class',
                     'default' => true,
                 ]);
             }
@@ -137,33 +137,33 @@ class InstallLunar extends Command
 
                 $group = AttributeGroup::create([
                     'attributable_type' => Product::class,
-                    'name'              => collect([
+                    'name' => collect([
                         'en' => 'Details',
                     ]),
-                    'handle'   => 'details',
+                    'handle' => 'details',
                     'position' => 1,
                 ]);
 
                 $collectionGroup = AttributeGroup::create([
                     'attributable_type' => Collection::class,
-                    'name'              => collect([
+                    'name' => collect([
                         'en' => 'Details',
                     ]),
-                    'handle'   => 'collection_details',
+                    'handle' => 'collection_details',
                     'position' => 1,
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Product::class,
+                    'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
-                    'position'           => 1,
-                    'name'               => [
+                    'position' => 1,
+                    'name' => [
                         'en' => 'Name',
                     ],
-                    'handle'        => 'name',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => true,
+                    'handle' => 'name',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => true,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => false,
@@ -172,16 +172,16 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Collection::class,
+                    'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position'           => 1,
-                    'name'               => [
+                    'position' => 1,
+                    'name' => [
                         'en' => 'Name',
                     ],
-                    'handle'        => 'name',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => true,
+                    'handle' => 'name',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => true,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => false,
@@ -190,16 +190,16 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Product::class,
+                    'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
-                    'position'           => 2,
-                    'name'               => [
+                    'position' => 2,
+                    'name' => [
                         'en' => 'Description',
                     ],
-                    'handle'        => 'description',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => false,
+                    'handle' => 'description',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => false,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => true,
@@ -208,16 +208,16 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Collection::class,
+                    'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position'           => 2,
-                    'name'               => [
+                    'position' => 2,
+                    'name' => [
                         'en' => 'Description',
                     ],
-                    'handle'        => 'description',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => false,
+                    'handle' => 'description',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => false,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => true,
@@ -292,7 +292,7 @@ class InstallLunar extends Command
     {
         $params = [
             '--provider' => "Lunar\LunarServiceProvider",
-            '--tag'      => 'lunar',
+            '--tag' => 'lunar',
         ];
 
         if ($forcePublish === true) {

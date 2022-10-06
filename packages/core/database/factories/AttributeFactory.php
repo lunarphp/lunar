@@ -18,15 +18,15 @@ class AttributeFactory extends Factory
     {
         return [
             'attribute_group_id' => AttributeGroup::factory(),
-            'attribute_type'     => Product::class,
-            'position'           => self::$position++,
-            'name'               => [
+            'attribute_type' => Product::class,
+            'position' => self::$position++,
+            'name' => [
                 'en' => $this->faker->name(),
             ],
-            'handle'        => Str::slug($this->faker->name()),
-            'section'       => $this->faker->name(),
-            'type'          => \Lunar\FieldTypes\Text::class,
-            'required'      => false,
+            'handle' => Str::slug($this->faker->name()),
+            'section' => $this->faker->name(),
+            'type' => \Lunar\FieldTypes\Text::class,
+            'required' => false,
             'default_value' => '',
             'configuration' => [
                 'options' => [
