@@ -115,8 +115,7 @@ class OptionManager extends Component
     /**
      * Remove an option from the collection
      *
-     * @param int|string $key
-     *
+     * @param  int|string  $key
      * @return
      */
     public function removeOption($key)
