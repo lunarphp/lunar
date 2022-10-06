@@ -21,6 +21,7 @@
         "laravel/scout": "^9.4",
         "livewire/livewire": "^2.0",
         "lunarphp/licensing": "dev-main",
+        "lunarphp/livewire-tables": "self.version",
         "php": "^8.0",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
@@ -29,6 +30,7 @@
     },
     "require-dev": {
         "laravel/pint": "^1.1",
+        "mockery/mockery": "^1.4.4",
         "orchestra/testbench": "^6.0|^7.0",
         "phpunit/phpunit": "^9.5",
         "symplify/monorepo-builder": "^10.0"
@@ -45,6 +47,7 @@
             "Lunar\\Database\\State\\": "packages/core/database/state",
             "Lunar\\Hub\\": "packages/admin/src",
             "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
+            "Lunar\\LivewireTables\\": "utils/livewire-tables/src/",
             "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"
         }
     },
@@ -52,6 +55,7 @@
         "psr-4": {
             "Lunar\\Discounts\\Tests\\": "packages/pro/discounts/tests",
             "Lunar\\Hub\\Tests\\": "packages/admin/tests",
+            "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
             "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
             "Lunar\\Tests\\": "packages/core/tests"
         }
@@ -59,6 +63,7 @@
     "extra": {
         "laravel": {
             "providers": [
+                "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
                 "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\Hub\\AdminHubServiceProvider",
                 "Lunar\\LunarServiceProvider"
@@ -71,7 +76,9 @@
     "replace": {
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
+        "lunarphp/livewire-tables": "self.version",
         "lunarphp/scout-database-engine": "self.version"
     },
-    "minimum-stability": "beta"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

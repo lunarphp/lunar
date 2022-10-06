@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
@@ -32,6 +33,16 @@ class Currency extends BaseModel
     protected static function newFactory(): CurrencyFactory
     {
         return CurrencyFactory::new();
+    }
+
+    /**
+     * Return the prices relationship
+     *
+     * @return HasMany
+     */
+    public function prices()
+    {
+        return $this->hasMany(Price::class);
     }
 
     /**

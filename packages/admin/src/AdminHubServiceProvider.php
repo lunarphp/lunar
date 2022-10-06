@@ -5,8 +5,10 @@ namespace Lunar\Hub;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Hub\Auth\Manifest;
@@ -21,6 +23,7 @@ use Lunar\Hub\Http\Livewire\Components\Authentication\PasswordReset;
 use Lunar\Hub\Http\Livewire\Components\Avatar;
 use Lunar\Hub\Http\Livewire\Components\Brands\BrandShow;
 use Lunar\Hub\Http\Livewire\Components\Brands\BrandsIndex;
+use Lunar\Hub\Http\Livewire\Components\Brands\BrandsTable;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -35,11 +38,13 @@ use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Coupon;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\ProductDiscount;
+use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderRefund;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderShow;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrdersIndex;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrdersTable;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use Lunar\Hub\Http\Livewire\Components\ProductOptions\OptionManager;
 use Lunar\Hub\Http\Livewire\Components\ProductOptions\OptionValueCreateModal;
@@ -52,6 +57,9 @@ use Lunar\Hub\Http\Livewire\Components\Products\ProductsIndex;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeShow;
 use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypesIndex;
+use Lunar\Hub\Http\Livewire\Components\Products\Tables\ProductsTable;
+use Lunar\Hub\Http\Livewire\Components\Products\Tables\ProductTypesTable;
+use Lunar\Hub\Http\Livewire\Components\Products\Tables\ProductVariantsTable;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantSideMenu;
@@ -76,12 +84,22 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\ActivityLogTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AddonsTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\LanguagesTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\StaffTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\TagsTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\TaxZonesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tags\TagShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tags\TagsIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxClassesIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
+use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use Lunar\Hub\Http\Livewire\Dashboard;
 use Lunar\Hub\Http\Livewire\HubLicense;
 use Lunar\Hub\Http\Livewire\Sidebar;
@@ -91,7 +109,13 @@ use Lunar\Hub\Menu\OrderActionsMenu;
 use Lunar\Hub\Menu\SettingsMenu;
 use Lunar\Hub\Menu\SidebarMenu;
 use Lunar\Hub\Menu\SlotRegistry;
+use Lunar\Hub\Tables\Builders\CustomersTableBuilder;
+use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
+use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
+use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
+use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
 use Lunar\Hub\Tables\Orders;
+use Lunar\Models\Product;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
@@ -126,13 +150,23 @@ class AdminHubServiceProvider extends ServiceProvider
             return new \Lunar\Hub\Editing\ProductSection();
         });
 
-        $this->app->singleton(OrdersTableInterface::class, function ($app) {
-            return $app->make(Orders::class);
-        });
-
         $this->app->singleton(ActivityLog::class, function () {
             return new ActivityLogManifest();
         });
+
+        $tableBuilders = [
+            CustomersTableBuilder::class,
+            OrdersTableBuilder::class,
+            ProductsTableBuilder::class,
+            ProductTypesTableBuilder::class,
+            ProductVariantsTableBuilder::class,
+        ];
+
+        foreach ($tableBuilders as $tableBuilder) {
+            $this->app->singleton($tableBuilder, function ($app) use ($tableBuilder) {
+                return new $tableBuilder;
+            });
+        }
     }
 
     /**
@@ -147,6 +181,8 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
 
+        Config::set('livewire-tables.translate_namespace', 'adminhub');
+
         Auth::resolved(function ($auth) {
             $auth->extend('lunarhub', function ($app, $name, array $config) {
                 return $app->make(\Lunar\Hub\Auth\HubGuard::class);
@@ -158,6 +194,10 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerPermissionManifest();
         $this->registerPublishables();
 
+        Route::bind('product', function ($id) {
+            return Product::withTrashed()->findOrFail($id);
+        });
+
         // Commands
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -168,16 +208,16 @@ class AdminHubServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
-            ], 'lunar-migrations');
+            ], 'lunar.migrations');
 
             $this->publishes([
                 __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
                 __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
-            ], 'lunar-hub-views');
+            ], 'lunar.hub.views');
 
             $this->publishes([
                 __DIR__.'/../resources/lang' => resource_path('lang/vendor/adminhub'),
-            ], 'lunar-hub-translations');
+            ], 'lunar.hub.translations');
 
             $this->commands([
                 InstallHub::class,
@@ -258,12 +298,16 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.refund', OrderRefund::class);
         Livewire::component('hub.components.orders.capture', OrderCapture::class);
         Livewire::component('hub.components.orders.status', OrderStatus::class);
+        Livewire::component('hub.components.tables.actions.update-status', UpdateStatus::class);
         Livewire::component('hub.components.orders.emil-notification', EmailNotification::class);
+
+        Livewire::component('hub.components.orders.table', OrdersTable::class);
     }
 
     protected function registerCustomerComponents()
     {
         Livewire::component('hub.components.customers.index', CustomersIndex::class);
+        Livewire::component('hub.components.customers.table', CustomersTable::class);
         Livewire::component('hub.components.customers.show', CustomerShow::class);
     }
 
@@ -275,12 +319,14 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerProductComponents()
     {
         Livewire::component('hub.components.products.index', ProductsIndex::class);
+        Livewire::component('hub.components.products.table', ProductsTable::class);
         Livewire::component('hub.components.products.show', ProductShow::class);
         Livewire::component('hub.components.products.create', ProductCreate::class);
 
         Livewire::component('hub.components.products.product-types.index', ProductTypesIndex::class);
         Livewire::component('hub.components.products.product-types.show', ProductTypeShow::class);
         Livewire::component('hub.components.products.product-types.create', ProductTypeCreate::class);
+        Livewire::component('hub.components.products.product-types.table', ProductTypesTable::class);
 
         Livewire::component('hub.components.products.editing.customer-groups', CustomerGroups::class);
 
@@ -289,6 +335,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         Livewire::component('hub.components.products.variants.side-menu', VariantSideMenu::class);
         Livewire::component('hub.components.products.variants.show', VariantShow::class);
+        Livewire::component('hub.components.products.variants.table', ProductVariantsTable::class);
         Livewire::component('hub.components.products.variants.editing.inventory', Inventory::class);
 
         Livewire::component('hub.components.product-options.option-manager', OptionManager::class);
@@ -303,6 +350,7 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerBrandComponents()
     {
         Livewire::component('hub.components.brands.index', BrandsIndex::class);
+        Livewire::component('hub.components.brands.table', BrandsTable::class);
         Livewire::component('hub.components.brands.show', BrandShow::class);
     }
 
@@ -339,45 +387,54 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         // Activity Log
         Livewire::component('hub.components.settings.activity-log.index', ActivityLogIndex::class);
+        Livewire::component('hub.components.settings.activity-log.table', ActivityLogTable::class);
 
         // Attributes
         Livewire::component('hub.components.settings.attributes.index', AttributesIndex::class);
         Livewire::component('hub.components.settings.attributes.show', AttributeShow::class);
         Livewire::component('hub.components.settings.attributes.attribute-group-edit', AttributeGroupEdit::class);
         Livewire::component('hub.components.settings.attributes.attribute-edit', AttributeEdit::class);
+        Livewire::component('hub.components.settings.attributes.table', AttributesTable::class);
 
         // Channels
         Livewire::component('hub.components.settings.channels.index', ChannelsIndex::class);
+        Livewire::component('hub.components.settings.channels.table', ChannelsTable::class);
         Livewire::component('hub.components.settings.channels.show', ChannelShow::class);
         Livewire::component('hub.components.settings.channels.create', ChannelCreate::class);
 
         // Users
         Livewire::component('hub.components.settings.staff.index', StaffIndex::class);
+        Livewire::component('hub.components.settings.staff.table', StaffTable::class);
         Livewire::component('hub.components.settings.staff.show', StaffShow::class);
         Livewire::component('hub.components.settings.staff.create', StaffCreate::class);
 
         // Languages
         Livewire::component('hub.components.settings.languages.index', LanguagesIndex::class);
+        Livewire::component('hub.components.settings.languages.table', LanguagesTable::class);
         Livewire::component('hub.components.settings.languages.create', LanguageCreate::class);
         Livewire::component('hub.components.settings.languages.show', LanguageShow::class);
 
         // Tags
         Livewire::component('hub.components.settings.tags.index', TagsIndex::class);
+        Livewire::component('hub.components.settings.tags.table', TagsTable::class);
         Livewire::component('hub.components.settings.tags.show', TagShow::class);
 
         // Currencies
         Livewire::component('hub.components.settings.currencies.index', CurrenciesIndex::class);
+        Livewire::component('hub.components.settings.currencies.table', CurrenciesTable::class);
         Livewire::component('hub.components.settings.currencies.show', CurrencyShow::class);
         Livewire::component('hub.components.settings.currencies.create', CurrencyCreate::class);
 
         // Addons
         Livewire::component('hub.components.settings.addons.index', AddonsIndex::class);
+        Livewire::component('hub.components.settings.addons.table', AddonsTable::class);
         Livewire::component('hub.components.settings.addons.show', AddonShow::class);
 
         // Taxes
         Livewire::component('hub.components.settings.taxes.tax-zones.index', TaxZonesIndex::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.show', TaxZoneShow::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.create', TaxZoneCreate::class);
+        Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
     }
@@ -402,7 +459,7 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunar/admin-hub/'),
-        ], 'lunar:hub:public');
+        ], 'lunar.hub.public');
     }
 
     /**

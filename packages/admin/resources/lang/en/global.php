@@ -27,6 +27,7 @@ return [
     'thumbnail'           => 'Thumbnail',
     'alt_text'            => 'Alt. Text',
     'delete'              => 'Delete',
+    'restore'             => 'Restore',
     'options'             => 'Options',
     'sku'                 => 'SKU',
     'unit_price_tax'      => 'Unit Price Incl. tax',
@@ -142,4 +143,5 @@ return [
     'delivery_instructions' => 'Delivery Instructions',
     'not_provided' => 'Not Provided',
     'billing_email' => 'Billing Email',
+    'add_new'    => 'Add new',
 ];

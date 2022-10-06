@@ -70,16 +70,20 @@ trait HasImages
     {
         $owner = $this->getMediaModel();
 
-        $this->images = $owner->getMedia('images')->map(function ($media) {
+        $this->images = $owner->getMedia('images')->mapWithKeys(function ($media) {
+            $key = Str::random();
+
             return [
-                'id'        => $media->id,
-                'sort_key'  => Str::random(),
-                'thumbnail' => $media->getFullUrl('medium'),
-                'original'  => $media->getFullUrl(),
-                'preview'   => false,
-                'caption'   => $media->getCustomProperty('caption'),
-                'primary'   => $media->getCustomProperty('primary'),
-                'position'  => $media->getCustomProperty('position', 1),
+                $key => [
+                    'id'        => $media->id,
+                    'sort_key'  => $key,
+                    'thumbnail' => $media->getFullUrl('medium'),
+                    'original'  => $media->getFullUrl(),
+                    'preview'   => false,
+                    'caption'   => $media->getCustomProperty('caption'),
+                    'primary'   => $media->getCustomProperty('primary'),
+                    'position'  => $media->getCustomProperty('position', 1),
+                ],
             ];
         })->sortBy('position')->values()->toArray();
     }
@@ -89,9 +93,23 @@ trait HasImages
      *
      * @return void
      */
-    public function updatedImages()
+    public function updatedImages($value, $key)
     {
         $this->validate($this->hasImagesValidationRules());
+
+        [$index, $field] = explode('.', $key);
+        if ($field == 'primary' && $value) {
+            // Make sure other defaults are unchecked...
+            $this->images = collect($this->images)->map(function ($image, $imageIndex) use ($index) {
+                if ($index != $imageIndex) {
+                    $image['primary'] = false;
+                } else {
+                    $image['primary'] = true;
+                }
+
+                return $image;
+            })->toArray();
+        }
     }
 
     /**
@@ -137,9 +155,11 @@ trait HasImages
         foreach ($filenames as $key => $filename) {
             $file = TemporaryUploadedFile::createFromLivewire($filename);
 
-            $this->images[] = [
+            $key = Str::random();
+
+            $this->images[$key] = [
                 'thumbnail' => $file->temporaryUrl(),
-                'sort_key'  => Str::random(),
+                'sort_key'  => $key,
                 'filename'  => $filename,
                 'original'  => $file->temporaryUrl(),
                 'caption'   => null,
@@ -277,10 +297,11 @@ trait HasImages
         $chosen = Media::findMany($this->selectedImages);
 
         foreach ($chosen as $media) {
-            $this->images[] = [
+            $key = Str::random();
+            $this->images[$key] = [
                 'id' => $media->id,
                 'thumbnail' => $media->getUrl('small'),
-                'sort_key'  => Str::random(),
+                'sort_key'  => $key,
                 'filename'  => $media->file_name,
                 'original'  => $media->getUrl(),
                 'caption'   => null,

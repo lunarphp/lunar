@@ -1,0 +1,24 @@
+{
+  "name": "lunar-livewire-tables",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://lunarphp@github.com/lunar/livewire-tables",
+  "author": "LunarPHP <hello@lunarphp.io>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npm run development",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "prod": "npm run production",
+    "production": "mix --production"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.2",
+    "autoprefixer": "^10.4.8",
+    "laravel-mix": "^6.0.43",
+    "postcss": "^8.4.16",
+    "tailwindcss": "^3.1.8"
+  }
+}

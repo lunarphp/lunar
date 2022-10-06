@@ -58,7 +58,7 @@ ActivityLog::addRender(
 );
 ```
 
-The first parameter is the class name for the subject of the event and the second parameter is the classname to the renderer class we just created.
+The first parameter is the class name for the subject of the event and the second parameter is the class name to the renderer class we just created.
 This gives us the flexibility to assign the same render across multiple models.
 
 Now when we view the timeline for an `Order` and we have a `created` event, we will see our view rendered in the timeline.

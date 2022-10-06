@@ -17,8 +17,7 @@ class TagsIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.tags.index', [
-            'tags' => Tag::paginate(),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.tags.index')
+            ->layout('adminhub::layouts.base');
     }
 }

@@ -8,8 +8,6 @@ use Lunar\Models\TaxZone;
 
 class TaxZonesIndex extends Component
 {
-    use WithPagination;
-
     /**
      * Render the livewire component.
      *
@@ -17,8 +15,7 @@ class TaxZonesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.taxes.tax-zones.index', [
-            'taxZones' => TaxZone::paginate(),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.taxes.tax-zones.index')
+        ->layout('adminhub::layouts.base');
     }
 }

@@ -1,45 +1,28 @@
 name: Split Packages
-
 on:
-    push:
-        branches:
-            - main
-        tags:
-            - '*'
+  push:
+    branches:
+      - main
+      - '0.*'
+    tags:
+      - '*'
 jobs:
-  provide_packages_json:
+  tag_split_packages:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        package: [
+          'admin',
+          'core'
+        ]
     steps:
-      - uses: actions/checkout@v2
 
+      - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.0
           coverage: none
-
-      - uses: "ramsey/composer-install@v1"
-
-      # get package json list
-      - id: output_data
-        run: echo "::set-output name=matrix::$(vendor/bin/monorepo-builder packages-json)"
-
-    outputs:
-      matrix: ${{ steps.output_data.outputs.matrix }}
-
-  split_monorepo:
-    needs: provide_packages_json
-
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{fromJson(needs.provide_packages_json.outputs.matrix)}}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Monorepo Split of ${{ matrix.package }}
+      - name: Split ${{ matrix.package }}
         uses: symplify/github-action-monorepo-split@main
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -49,4 +32,58 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: "GitHub Action"
           user_email: "action@github.com"
-          branch: "main"
+          branch: ${GITHUB_REF#refs/heads/}
+
+      - name: Tag ${{ matrix.package }}
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: symplify/github-action-monorepo-split@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag: ${GITHUB_REF#refs/tags/}
+          package_directory: 'packages/${{ matrix.package }}'
+          repository_organization: 'lunarphp'
+          repository_name: '${{ matrix.package }}'
+          user_name: "GitHub Action"
+          user_email: "action@github.com"
+          branch: ${${GITHUB_REF#refs/tags/}%.*}
+
+  split_utils:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [
+          'livewire-tables',
+          'scout-database-engine',
+        ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          coverage: none
+      - name: Split ${{ matrix.package }}
+        uses: symplify/github-action-monorepo-split@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          package_directory: 'utils/${{ matrix.package }}'
+          repository_organization: 'lunarphp'
+          repository_name: '${{ matrix.package }}'
+          user_name: "GitHub Action"
+          user_email: "action@github.com"
+          branch: ${GITHUB_REF#refs/heads/}
+
+      - name: Tag ${{ matrix.package }}
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: symplify/github-action-monorepo-split@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag: ${GITHUB_REF#refs/tags/}
+          package_directory: 'utils/${{ matrix.package }}'
+          repository_organization: 'lunarphp'
+          repository_name: '${{ matrix.package }}'
+          user_name: "GitHub Action"
+          user_email: "action@github.com"
+          branch: ${${GITHUB_REF#refs/tags/}%.*}

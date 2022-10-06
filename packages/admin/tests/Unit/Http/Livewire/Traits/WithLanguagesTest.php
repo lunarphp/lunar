@@ -56,7 +56,6 @@ class WithLanguagesTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([

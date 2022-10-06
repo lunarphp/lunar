@@ -7,6 +7,11 @@ use Lunar\Models\TaxClass;
 
 class EnsureDefaultTaxClassExists
 {
+    public function prepare()
+    {
+        //
+    }
+
     public function run()
     {
         if (! $this->canRun() || ! $this->shouldRun()) {

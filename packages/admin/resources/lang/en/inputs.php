@@ -18,6 +18,8 @@ return [
     'danger_zone.title'                      => 'Danger Zone!',
     'danger_zone.label'                      => 'Delete :model',
     'danger_zone.instructions'               => 'Enter the :attribute of the :model to delete it.',
+    'restore_zone.title'                     => 'Restore record',
+    'restore_zone.label'                      => 'Restore :model',
     'decimal_places'                         => 'Decimal places',
     'exchange_rate'                          => __('adminhub::global.exchange_rate'),
     'format'                                 => __('adminhub::global.format'),

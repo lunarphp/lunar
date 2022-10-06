@@ -64,6 +64,16 @@ trait HasUrls
 
     public function removeUrl($index)
     {
+        $url = $this->urls[$index];
+
+        if ($url['default'] && $url['slug']) {
+            $this->notify(
+                message: __('adminhub::notifications.default_url_protected'),
+                level: 'error',
+            );
+
+            return;
+        }
         unset($this->urls[$index]);
     }
 
@@ -91,7 +101,7 @@ trait HasUrls
         Arr::set($this->urls, $key, Str::slug($value));
     }
 
-    public function saveUrls()
+    protected function validateUrls()
     {
         $rules = [];
 
@@ -144,7 +154,10 @@ trait HasUrls
                 'urls.*.slug.unique' => __('adminhub::validation.url_slug_unique'),
             ]);
         }
+    }
 
+    public function saveUrls()
+    {
         $model = $this->getHasUrlsModel();
 
         DB::transaction(function () use ($model) {
