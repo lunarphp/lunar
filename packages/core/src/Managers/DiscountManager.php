@@ -2,13 +2,13 @@
 
 namespace Lunar\Managers;
 
+use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\DiscountTypes\Coupon;
 use Lunar\DiscountTypes\ProductDiscount;
 use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
-use Illuminate\Support\Collection;
 
 class DiscountManager implements DiscountManagerInterface
 {

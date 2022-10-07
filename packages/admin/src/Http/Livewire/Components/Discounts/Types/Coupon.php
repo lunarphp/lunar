@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
-use Lunar\Models\Currency;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
+use Lunar\Models\Currency;
 
 class Coupon extends AbstractDiscountType
 {

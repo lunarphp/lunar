@@ -2,11 +2,11 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Database\Factories\DiscountPurchasableFactory;
 use Lunar\Discounts\Database\Factories\DiscountFactory;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DiscountPurchasable extends BaseModel
 {

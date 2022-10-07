@@ -2,15 +2,15 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
+use Livewire\Component;
 use Lunar\Facades\Discounts;
 use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Discount;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Collection;
-use Livewire\Component;
 
 abstract class AbstractDiscount extends Component
 {

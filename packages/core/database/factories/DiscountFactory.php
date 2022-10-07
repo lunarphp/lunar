@@ -2,10 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\DiscountTypes\Coupon;
-use Lunar\Models\Discount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\DiscountTypes\Coupon;
+use Lunar\Models\Discount;
 
 class DiscountFactory extends Factory
 {

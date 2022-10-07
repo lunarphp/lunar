@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Lunar\Hub\Http\Livewire\Pages\Discounts\DiscountCreate;
 use Lunar\Hub\Http\Livewire\Pages\Discounts\DiscountShow;
 use Lunar\Hub\Http\Livewire\Pages\Discounts\DiscountsIndex;
-use Illuminate\Support\Facades\Route;
 
 /**
  * Channel routes.

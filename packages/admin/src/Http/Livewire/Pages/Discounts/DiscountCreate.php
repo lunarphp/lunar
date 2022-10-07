@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Discounts;
 
-use Lunar\Models\Discount;
 use Livewire\Component;
+use Lunar\Models\Discount;
 
 class DiscountCreate extends Component
 {

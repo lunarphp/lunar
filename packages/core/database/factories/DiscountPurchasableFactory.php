@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\DiscountPurchasable;
 use Lunar\Models\ProductVariant;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DiscountPurchasableFactory extends Factory
 {

@@ -2,12 +2,12 @@
 
 namespace Lunar\Models;
 
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasTranslations;
-use Lunar\Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Database\Factories\DiscountFactory;
 
 class Discount extends BaseModel
 {

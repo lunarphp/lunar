@@ -2,11 +2,11 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Database\Factories\DiscountPurchasableFactory;
 use Lunar\Discounts\Database\Factories\DiscountFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DiscountCollection extends BaseModel
 {

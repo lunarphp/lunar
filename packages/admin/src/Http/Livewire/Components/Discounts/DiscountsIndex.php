@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
-use Lunar\Models\Discount;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Models\Discount;
 
 class DiscountsIndex extends Component
 {

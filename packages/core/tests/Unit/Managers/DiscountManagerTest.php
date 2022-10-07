@@ -2,6 +2,8 @@
 
 namespace Lunar\Tests\Unit\Managers;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\Managers\DiscountManager;
@@ -10,8 +12,6 @@ use Lunar\Models\Discount;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\TestDiscountType;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 
 /**
  * @group getcandy.discounts

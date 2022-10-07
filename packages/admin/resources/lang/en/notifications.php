@@ -55,7 +55,7 @@ return [
     'tax_class.deleted' => 'Tax class deleted',
     'clipboard.copied' => 'Copied to clipboard',
     'clipboard.failed_copy' => 'Unable to copy to clipboard',
-    'discount.saved'                    => 'Discount saved',
-    'discount.deleted'                  => 'Discount deleted',
+    'discount.saved' => 'Discount saved',
+    'discount.deleted' => 'Discount deleted',
     'default_url_protected' => 'Unable to delete the default URL',
 ];

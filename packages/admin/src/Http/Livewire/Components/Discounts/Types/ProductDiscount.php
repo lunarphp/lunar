@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
-use Lunar\Models\Currency;
-use Lunar\Models\Discount;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Lunar\Models\Currency;
+use Lunar\Models\Discount;
 
 class ProductDiscount extends Component
 {

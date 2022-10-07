@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\DiscountTypes;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\Coupon;
 use Lunar\Managers\CartManager;
 use Lunar\Models\Cart;
@@ -10,7 +11,6 @@ use Lunar\Models\Discount;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group getcandy.discounts
@@ -37,17 +37,17 @@ class CouponTest extends TestCase
         $purchasable = ProductVariant::factory()->create();
 
         Price::factory()->create([
-            'price'          => 1000,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 1000,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $discount = Discount::factory()->create([
@@ -92,17 +92,17 @@ class CouponTest extends TestCase
         $purchasable = ProductVariant::factory()->create();
 
         Price::factory()->create([
-            'price'          => 2000,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 2000,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $discount = Discount::factory()->create([
@@ -148,17 +148,17 @@ class CouponTest extends TestCase
             $purchasable = ProductVariant::factory()->create();
 
             Price::factory()->create([
-                'price'          => 100,
-                'tier'           => 1,
-                'currency_id'    => $currency->id,
+                'price' => 100,
+                'tier' => 1,
+                'currency_id' => $currency->id,
                 'priceable_type' => get_class($purchasable),
-                'priceable_id'   => $purchasable->id,
+                'priceable_id' => $purchasable->id,
             ]);
 
             $cart->lines()->create([
                 'purchasable_type' => get_class($purchasable),
-                'purchasable_id'   => $purchasable->id,
-                'quantity'         => 1,
+                'purchasable_id' => $purchasable->id,
+                'quantity' => 1,
             ]);
         }
 

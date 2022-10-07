@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
-use Lunar\Models\Discount;
 use Livewire\Component;
+use Lunar\Models\Discount;
 
 abstract class AbstractDiscountType extends Component
 {

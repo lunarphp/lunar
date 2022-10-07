@@ -2,8 +2,8 @@
 
 namespace Lunar\Facades;
 
-use Lunar\Base\DiscountManagerInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\DiscountManagerInterface;
 
 class Discounts extends Facade
 {
