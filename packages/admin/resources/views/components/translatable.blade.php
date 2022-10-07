@@ -6,6 +6,7 @@
         <button
           @click.prevent="showTranslations = !showTranslations"
           class="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 uppercase bg-white border rounded shadow-sm hover:bg-gray-100"
+          type="button"
         >
           <x-hub::icon ref="translate" class="w-3 h-4" />
         </button>
