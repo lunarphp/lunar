@@ -21,7 +21,7 @@ class OrdersTableBuilder extends TableBuilder
      */
     public function getColumns(): Collection
     {
-        return collect([
+        $baseColumns = collect([
             TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status'),
             TextColumn::make('reference')->value(function ($record) {
                 return $record->reference;
@@ -49,7 +49,12 @@ class OrdersTableBuilder extends TableBuilder
             TextColumn::make('date')->value(function ($record) {
                 return $record->placed_at?->format('Y/m/d @ H:ma');
             }),
-        ])->merge($this->columns);
+        ]);
+
+        return $this->resolveColumnPositions(
+            $baseColumns,
+            $this->columns
+        );
     }
 
     /**

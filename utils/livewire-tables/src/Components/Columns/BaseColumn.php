@@ -41,9 +41,23 @@ abstract class BaseColumn extends Component
      */
     protected $sortable = false;
 
+    /**
+     * The column this should appear after
+     *
+     * @var string
+     */
+    public $after = null;
+
     public function url(Closure $closure): self
     {
         $this->url = $closure;
+
+        return $this;
+    }
+
+    public function after($column)
+    {
+        $this->after = $column;
 
         return $this;
     }
