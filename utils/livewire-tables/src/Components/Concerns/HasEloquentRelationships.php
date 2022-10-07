@@ -2,7 +2,6 @@
 
 namespace Lunar\LivewireTables\Components\Concerns;
 
-use Closure;
 use Illuminate\Support\Str;
 
 trait HasEloquentRelationships

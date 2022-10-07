@@ -116,11 +116,11 @@ class CartManager
         // Need to include shipping tax breakdown...
         $this->cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) {
             return [
-                'percentage'    => $amounts->first()->percentage,
+                'percentage' => $amounts->first()->percentage,
                 'description' => $amounts->first()->description,
                 'identifier' => $amounts->first()->identifier,
                 'amounts' => $amounts,
-                'total'   => new Price($amounts->sum('price.value'), $this->cart->currency, 1),
+                'total' => new Price($amounts->sum('price.value'), $this->cart->currency, 1),
             ];
         });
 
@@ -182,10 +182,10 @@ class CartManager
         }
 
         $this->cart->lines()->create([
-            'purchasable_id'   => $purchasable->id,
+            'purchasable_id' => $purchasable->id,
             'purchasable_type' => get_class($purchasable),
-            'quantity'         => $quantity,
-            'meta'             => $meta,
+            'quantity' => $quantity,
+            'meta' => $meta,
         ]);
 
         return true;
@@ -290,7 +290,7 @@ class CartManager
 
         CartLine::whereId($id)->update([
             'quantity' => $quantity,
-            'meta'     => (array) $meta,
+            'meta' => (array) $meta,
         ]);
     }
 

@@ -76,15 +76,15 @@ class AddressDataTest extends TestCase
         $this->artisan('lunar:import:address-data');
 
         $this->assertDatabaseHas('lunar_countries', [
-            'name'      => 'United Kingdom',
-            'iso3'      => 'GBR',
-            'iso2'      => 'GB',
+            'name' => 'United Kingdom',
+            'iso3' => 'GBR',
+            'iso2' => 'GB',
             'phonecode' => '44',
-            'capital'   => 'London',
-            'currency'  => 'GBP',
-            'native'    => 'United Kingdom',
-            'emoji'     => '🇬🇧',
-            'emoji_u'   => 'U+1F1EC U+1F1E7',
+            'capital' => 'London',
+            'currency' => 'GBP',
+            'native' => 'United Kingdom',
+            'emoji' => '🇬🇧',
+            'emoji_u' => 'U+1F1EC U+1F1E7',
         ]);
 
         $country = Country::first();

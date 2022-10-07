@@ -16,9 +16,9 @@ trait HasChannels
             $channels = Channel::get()->mapWithKeys(function ($channel) {
                 return [
                     $channel->id => [
-                        'enabled'      => false,
-                        'starts_at'    => null,
-                        'ends_at'      => null,
+                        'enabled' => false,
+                        'starts_at' => null,
+                        'ends_at' => null,
                     ],
                 ];
             });
@@ -56,9 +56,9 @@ trait HasChannels
                 $channel->mapWithKeys(function ($channel) use ($startsAt, $endsAt) {
                     return [
                         $channel->id => [
-                            'enabled'      => true,
-                            'starts_at'    => $startsAt,
-                            'ends_at'      => $endsAt,
+                            'enabled' => true,
+                            'starts_at' => $startsAt,
+                            'ends_at' => $endsAt,
                         ],
                     ];
                 })

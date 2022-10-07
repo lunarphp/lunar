@@ -26,10 +26,10 @@ class CartLineTest extends TestCase
         ]);
 
         $data = [
-            'cart_id'          => $cart->id,
-            'quantity'         => 1,
+            'cart_id' => $cart->id,
+            'quantity' => 1,
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
         ];
 
         CartLine::create($data);
@@ -45,10 +45,10 @@ class CartLineTest extends TestCase
         ]);
 
         $data = [
-            'cart_id'          => $cart->id,
-            'quantity'         => 1,
+            'cart_id' => $cart->id,
+            'quantity' => 1,
             'purchasable_type' => Channel::class,
-            'purchasable_id'   => Channel::factory()->create()->id,
+            'purchasable_id' => Channel::factory()->create()->id,
         ];
 
         $this->expectException(NonPurchasableItemException::class);

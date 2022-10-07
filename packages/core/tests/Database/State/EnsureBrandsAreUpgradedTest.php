@@ -50,27 +50,27 @@ class EnsureBrandsAreUpgradedTest extends TestCase
         $pa = Product::forceCreate([
             'brand' => 'Brand A',
             'product_type_id' => $productType->id,
-            'status'          => 'published',
-            'attribute_data'  => collect([
-                'name'        => new Text('Product A'),
+            'status' => 'published',
+            'attribute_data' => collect([
+                'name' => new Text('Product A'),
             ]),
         ]);
 
         $pb = Product::forceCreate([
             'brand' => 'Brand A',
             'product_type_id' => $productType->id,
-            'status'          => 'published',
-            'attribute_data'  => collect([
-                'name'        => new Text('Product B'),
+            'status' => 'published',
+            'attribute_data' => collect([
+                'name' => new Text('Product B'),
             ]),
         ]);
 
         $pc = Product::forceCreate([
             'brand' => 'Brand B',
             'product_type_id' => $productType->id,
-            'status'          => 'published',
-            'attribute_data'  => collect([
-                'name'        => new Text('Product C'),
+            'status' => 'published',
+            'attribute_data' => collect([
+                'name' => new Text('Product C'),
             ]),
         ]);
 

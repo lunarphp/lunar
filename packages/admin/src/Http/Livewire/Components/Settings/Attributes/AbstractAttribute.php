@@ -67,9 +67,9 @@ abstract class AbstractAttribute extends Component
     public function getAttributeTypesProperty()
     {
         return [
-            ProductType::class      => class_basename(ProductType::class),
+            ProductType::class => class_basename(ProductType::class),
             'Lunar\Models\Order' => 'Order',
-            Collection::class       => class_basename(Collection::class),
+            Collection::class => class_basename(Collection::class),
         ];
     }
 
@@ -81,7 +81,7 @@ abstract class AbstractAttribute extends Component
     public function getTypesProperty()
     {
         return [
-            Text::class           => class_basename(Text::class),
+            Text::class => class_basename(Text::class),
             TranslatedText::class => class_basename(TranslatedText::class),
         ];
     }

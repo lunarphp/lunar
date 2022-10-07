@@ -31,7 +31,7 @@ class CustomerShowTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
     }
 

@@ -36,7 +36,7 @@ class PricingManagerTest extends TestCase
         $manager = new PricingManager();
 
         $currency = Currency::factory()->create([
-            'default'       => true,
+            'default' => true,
             'exchange_rate' => 1,
         ]);
 
@@ -49,27 +49,27 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price'          => 100,
+            'price' => 100,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 50,
+            'price' => 50,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 10,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 10,
         ]);
 
         Price::factory()->create([
-            'price'             => 50,
-            'priceable_type'    => ProductVariant::class,
-            'priceable_id'      => $variant->id,
-            'currency_id'       => $currency->id,
-            'tier'              => 1,
+            'price' => 50,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 1,
             'customer_group_id' => CustomerGroup::factory(),
         ]);
 
@@ -88,7 +88,7 @@ class PricingManagerTest extends TestCase
         $manager = new PricingManager();
 
         $currency = Currency::factory()->create([
-            'default'       => true,
+            'default' => true,
             'exchange_rate' => 1,
         ]);
 
@@ -101,11 +101,11 @@ class PricingManagerTest extends TestCase
         ]);
 
         $price = Price::factory()->create([
-            'price'          => 100,
+            'price' => 100,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 1,
         ]);
 
         $pricing = $manager->for($variant)->get();
@@ -123,7 +123,7 @@ class PricingManagerTest extends TestCase
         $customerGroups = CustomerGroup::factory(5)->create();
 
         $currency = Currency::factory()->create([
-            'default'       => true,
+            'default' => true,
             'exchange_rate' => 1,
         ]);
 
@@ -136,19 +136,19 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price'          => 100,
+            'price' => 100,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 1,
         ]);
 
         $customerGroupPrice = Price::factory()->create([
-            'price'             => 150,
-            'priceable_type'    => ProductVariant::class,
-            'priceable_id'      => $variant->id,
-            'currency_id'       => $currency->id,
-            'tier'              => 1,
+            'price' => 150,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 1,
             'customer_group_id' => $customerGroups->first()->id,
         ]);
 
@@ -175,7 +175,7 @@ class PricingManagerTest extends TestCase
         $manager = new PricingManager();
 
         $currency = Currency::factory()->create([
-            'default'       => true,
+            'default' => true,
             'exchange_rate' => 1,
         ]);
 
@@ -188,35 +188,35 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price'          => 100,
+            'price' => 100,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 1,
         ]);
 
         $tiered10 = Price::factory()->create([
-            'price'          => 90,
+            'price' => 90,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 10,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 10,
         ]);
 
         $tiered20 = Price::factory()->create([
-            'price'          => 80,
+            'price' => 80,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 20,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 20,
         ]);
 
         $tiered30 = Price::factory()->create([
-            'price'          => 70,
+            'price' => 70,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $currency->id,
-            'tier'           => 30,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 30,
         ]);
 
         $pricing = $manager->qty(1)->for($variant)->get();
@@ -266,12 +266,12 @@ class PricingManagerTest extends TestCase
         $manager = new PricingManager();
 
         $defaultCurrency = Currency::factory()->create([
-            'default'       => true,
+            'default' => true,
             'exchange_rate' => 1,
         ]);
 
         $secondCurrency = Currency::factory()->create([
-            'default'       => false,
+            'default' => false,
             'exchange_rate' => 1.2,
         ]);
 
@@ -284,19 +284,19 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price'          => 100,
+            'price' => 100,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $defaultCurrency->id,
-            'tier'           => 1,
+            'priceable_id' => $variant->id,
+            'currency_id' => $defaultCurrency->id,
+            'tier' => 1,
         ]);
 
         $additional = Price::factory()->create([
-            'price'          => 120,
+            'price' => 120,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $secondCurrency->id,
-            'tier'           => 1,
+            'priceable_id' => $variant->id,
+            'currency_id' => $secondCurrency->id,
+            'tier' => 1,
         ]);
 
         $pricing = $manager->qty(1)->for($variant)->get();
@@ -322,7 +322,7 @@ class PricingManagerTest extends TestCase
         $group = CustomerGroup::factory()->create();
 
         $defaultCurrency = Currency::factory()->create([
-            'default'       => true,
+            'default' => true,
             'exchange_rate' => 1,
         ]);
 
@@ -335,19 +335,19 @@ class PricingManagerTest extends TestCase
         ]);
 
         $base = Price::factory()->create([
-            'price'          => 100,
+            'price' => 100,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
-            'currency_id'    => $defaultCurrency->id,
-            'tier'           => 1,
+            'priceable_id' => $variant->id,
+            'currency_id' => $defaultCurrency->id,
+            'tier' => 1,
         ]);
 
         $groupPrice = Price::factory()->create([
-            'price'             => 100,
-            'priceable_type'    => ProductVariant::class,
-            'priceable_id'      => $variant->id,
-            'currency_id'       => $defaultCurrency->id,
-            'tier'              => 1,
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id' => $variant->id,
+            'currency_id' => $defaultCurrency->id,
+            'tier' => 1,
             'customer_group_id' => $group->id,
         ]);
 
