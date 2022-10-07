@@ -2,12 +2,12 @@
 
 namespace Lunar\Tests\Unit\Models;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\ProductOption;
-use Lunar\Tests\TestCase;
-use Lunar\Models\ProductOptionValue;
-use Illuminate\Support\Str;
 use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Tests\TestCase;
 
 /**
  * @group products

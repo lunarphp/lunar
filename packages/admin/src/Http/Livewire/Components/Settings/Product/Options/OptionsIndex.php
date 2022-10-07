@@ -75,11 +75,11 @@ class OptionsIndex extends Component
      * {@inheritDoc}
      */
     protected $listeners = [
-        'option-edit.created'       => 'refreshGroups',
-        'option-edit.updated'       => 'resetGroupEdit',
+        'option-edit.created' => 'refreshGroups',
+        'option-edit.updated' => 'resetGroupEdit',
         'option-value-edit.created' => 'resetOptionValueEdit',
         'option-value-edit.updated' => 'resetOptionValueEdit',
-        'option-value-edit.closed'  => 'resetOptionValueEdit',
+        'option-value-edit.closed' => 'resetOptionValueEdit',
     ];
 
     /**
@@ -145,7 +145,7 @@ class OptionsIndex extends Component
         DB::transaction(function () use ($optionValues) {
             foreach ($optionValues['items'] as $item) {
                 ProductOptionValue::whereId($item['id'])->update([
-                    'position'           => $item['order'],
+                    'position' => $item['order'],
                     'product_option_id' => $item['parent'],
                 ]);
             }

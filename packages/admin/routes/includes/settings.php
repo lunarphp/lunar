@@ -14,8 +14,8 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
-use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
@@ -117,17 +117,17 @@ Route::group([
  */
 Route::group([
     'middleware' => 'can:settings:core',
-    'prefix'     => 'product',
+    'prefix' => 'product',
 ], function () {
     Route::get('options', OptionsIndex::class)->name('hub.product.options.index');
 });
 
 /**
-* Taxes.
-*/
+ * Taxes.
+ */
 Route::group([
- 'middleware' => 'can:settings:core',
- 'prefix'     => 'taxes',
+    'middleware' => 'can:settings:core',
+    'prefix' => 'taxes',
 ], function () {
     Route::get('/tax-zones', TaxZonesIndex::class)->name('hub.taxes.index');
     Route::get('/tax-zones/create', TaxZoneCreate::class)->name('hub.taxes.create');

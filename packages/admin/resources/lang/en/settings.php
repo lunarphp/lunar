@@ -128,8 +128,8 @@ return [
     /*
      * Product Options
      */
-    'product.options.index.title'                 => 'Options',
-    'product.options.index.create_btn'            => 'Create Option',
+    'product.options.index.title' => 'Options',
+    'product.options.index.create_btn' => 'Create Option',
     'product.options.index.table_row_action_text' => 'Edit Option',
     /**
      * Taxes.

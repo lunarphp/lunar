@@ -21,7 +21,7 @@ class ProductOptionsTest extends TestCase
         // Resolves the issue with tests failing where livewire components have translations
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
     }
 
