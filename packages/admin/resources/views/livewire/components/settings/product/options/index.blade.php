@@ -123,7 +123,7 @@
                     </div>
                     @if (!$option->values->count())
                         <span class="mx-4 text-sm text-gray-500">
-                            {{ __('adminhub::components.product.options.no_option_value_text') }}
+                            {{ __('adminhub::components.option.no_option_values_text') }}
                         </span>
                     @endif
                 </div>
