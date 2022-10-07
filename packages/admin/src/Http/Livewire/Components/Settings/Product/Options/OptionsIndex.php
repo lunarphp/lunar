@@ -2,13 +2,13 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Livewire\Component;
 
 class OptionsIndex extends Component
 {

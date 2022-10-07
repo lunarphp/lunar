@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
-use Livewire\Component;
 
 class OptionValueEdit extends Component
 {

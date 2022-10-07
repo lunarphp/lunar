@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
+use Illuminate\Support\Str;
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class OptionEdit extends Component
 {
