@@ -5,7 +5,6 @@ namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Settings\Tables;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Livewire;
-use Lunar\Hub\Http\Livewire\Components\Settings\Tables\StaffTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\TagsTable;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;

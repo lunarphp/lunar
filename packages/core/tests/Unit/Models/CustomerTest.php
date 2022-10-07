@@ -20,12 +20,12 @@ class CustomerTest extends TestCase
     public function can_make_a_customer_with_minimum_attributes()
     {
         $customer = [
-            'title'        => null,
-            'first_name'   => 'Tony',
-            'last_name'    => 'Stark',
+            'title' => null,
+            'first_name' => 'Tony',
+            'last_name' => 'Stark',
             'company_name' => null,
-            'vat_no'       => null,
-            'meta'         => null,
+            'vat_no' => null,
+            'meta' => null,
         ];
 
         Customer::create($customer);
@@ -40,12 +40,12 @@ class CustomerTest extends TestCase
     public function can_make_a_customer()
     {
         $customer = [
-            'title'        => 'Mr.',
-            'first_name'   => 'Tony',
-            'last_name'    => 'Stark',
+            'title' => 'Mr.',
+            'first_name' => 'Tony',
+            'last_name' => 'Stark',
             'company_name' => 'Stark Enterprises',
-            'vat_no'       => null,
-            'meta'         => null,
+            'vat_no' => null,
+            'meta' => null,
         ];
 
         Customer::create($customer);
@@ -60,12 +60,12 @@ class CustomerTest extends TestCase
     public function can_make_a_customer_with_meta_attribute()
     {
         $customer = [
-            'title'        => null,
-            'first_name'   => 'Tony',
-            'last_name'    => 'Stark',
+            'title' => null,
+            'first_name' => 'Tony',
+            'last_name' => 'Stark',
             'company_name' => null,
-            'vat_no'       => null,
-            'meta'         => [
+            'vat_no' => null,
+            'meta' => [
                 'account' => 123456,
             ],
         ];
@@ -79,9 +79,9 @@ class CustomerTest extends TestCase
     public function can_get_full_name()
     {
         $customer = Customer::factory()->create([
-            'title'      => null,
+            'title' => null,
             'first_name' => 'Tony',
-            'last_name'  => 'Stark',
+            'last_name' => 'Stark',
         ]);
 
         $this->assertEquals(
@@ -90,9 +90,9 @@ class CustomerTest extends TestCase
         );
 
         $customer = Customer::factory()->create([
-            'title'      => 'Mr.',
+            'title' => 'Mr.',
             'first_name' => 'Tony',
-            'last_name'  => 'Stark',
+            'last_name' => 'Stark',
         ]);
 
         $this->assertEquals(
@@ -101,9 +101,9 @@ class CustomerTest extends TestCase
         );
 
         $customer = Customer::factory()->create([
-            'title'      => 'Mr.',
+            'title' => 'Mr.',
             'first_name' => '',
-            'last_name'  => 'Stark',
+            'last_name' => 'Stark',
         ]);
 
         $this->assertEquals(
@@ -112,9 +112,9 @@ class CustomerTest extends TestCase
         );
 
         $customer = Customer::factory()->create([
-            'title'      => 'Mr.',
+            'title' => 'Mr.',
             'first_name' => 'Tony',
-            'last_name'  => '',
+            'last_name' => '',
         ]);
 
         $this->assertEquals(

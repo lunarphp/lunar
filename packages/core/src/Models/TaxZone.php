@@ -38,7 +38,7 @@ class TaxZone extends BaseModel
      * @var array
      */
     protected $casts = [
-        'active'  => 'boolean',
+        'active' => 'boolean',
         'default' => 'boolean',
     ];
 

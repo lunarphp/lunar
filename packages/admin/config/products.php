@@ -36,18 +36,18 @@ return [
     */
     'sku' => [
         'required' => true,
-        'unique'   => true,
+        'unique' => true,
     ],
     'gtin' => [
         'required' => false,
-        'unique'   => false,
+        'unique' => false,
     ],
     'mpn' => [
         'required' => false,
-        'unique'   => false,
+        'unique' => false,
     ],
     'ean' => [
         'required' => false,
-        'unique'   => false,
+        'unique' => false,
     ],
 ];

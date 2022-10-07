@@ -13,7 +13,6 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
-use Lunar\Hub\Base\OrdersTableInterface;
 use Lunar\Hub\Console\Commands\InstallHub;
 use Lunar\Hub\Facades\ActivityLog;
 use Lunar\Hub\Http\Livewire\Components\Account;
@@ -110,7 +109,6 @@ use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
-use Lunar\Hub\Tables\Orders;
 use Lunar\Models\Product;
 
 class AdminHubServiceProvider extends ServiceProvider
