@@ -68,10 +68,7 @@ class OptionValueEdit extends Component
                 $this->option->id
             )->count() + 1;
 
-            // @todo Not sure why this is not working here?
-            // $this->optionValue->increment('position');
-
-            $this->optionValue->productOption()->associate($this->option);
+            $this->optionValue->option()->associate($this->option);
             $this->optionValue->save();
             $this->notify(
                 __('adminhub::notifications.attribute-edit.created')

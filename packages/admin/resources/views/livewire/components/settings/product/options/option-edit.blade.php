@@ -1,8 +1,8 @@
-<form wire:submit.prevent="create">
+<form wire:submit.prevent="create" class="space-y-4">
   <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('productOption.name.' . $this->defaultLanguage->code)">
     <x-hub::translatable>
       <x-hub::input.text
-        wire:model="productOption.name.{{ $this->defaultLanguage->code }}"
+        wire:model.defer="productOption.name.{{ $this->defaultLanguage->code }}"
         :error="$errors->first('productOption.name.' . $this->defaultLanguage->code)"
         :placeholder="__('adminhub::components.option.value.edit.name.placeholder')"
       />
@@ -17,13 +17,14 @@
     </x-hub::translatable>
   </x-hub::input.group>
 
-  @if($errors->has('productOption.handle'))
-    <div class="mt-4">
-      <x-hub::alert level="danger">
-        {{ __('adminhub::components.attribute-group-edit.non_unique_handle') }}
-      </x-hub::alert>
-    </div>
-  @endif
+  <x-hub::input.group required :label="__('adminhub::inputs.handle')" for="handle" :error="$errors->first('productOption.handle')">
+    <x-hub::input.text
+      wire:model.defer="productOption.handle"
+      id="handle"
+      :error="$errors->first('productOption.handle')"
+     />
+  </x-hub::input.group>
+
 
   <div class="mt-6">
     <x-hub::button>

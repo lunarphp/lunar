@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -27,7 +27,13 @@ class OptionEdit extends Component
      */
     public function rules()
     {
-        $rules = [];
+        $rules = [
+            'productOption.handle' => [
+                'required',
+                Rule::unique(ProductOption::class, 'handle')->ignore(1, 'id'),
+            ],
+        ];
+
         foreach ($this->languages as $language) {
             $rules["productOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
         }
@@ -47,13 +53,6 @@ class OptionEdit extends Component
     {
         $this->validate();
 
-        $handle = Str::handle("{$this->productOption->translate('name')}");
-        $this->productOption->handle = $handle;
-
-        $this->validate([
-            'productOption.handle' => 'unique:'.get_class($this->productOption).',handle',
-        ]);
-
         if ($this->productOption->id) {
             $this->productOption->save();
             $this->emit('option-edit.updated', $this->productOption->id);
@@ -64,8 +63,10 @@ class OptionEdit extends Component
             return;
         }
 
-        $this->productOption->position = ProductOption::count() + 1;
-        $this->productOption->handle = $handle;
+        if (! $this->productOption->position) {
+            $this->productOption->position = ProductOption::count() + 1;
+        }
+
         $this->productOption->save();
 
         $this->emit('option-edit.created', $this->productOption->id);

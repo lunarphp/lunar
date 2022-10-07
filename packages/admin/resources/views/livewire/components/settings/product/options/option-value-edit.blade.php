@@ -1,4 +1,4 @@
-<form wire:submit.prevent="save">
+<form wire:submit.prevent="save" class="space-y-4">
   <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('optionValue.name.' . $this->defaultLanguage->code)">
     <x-hub::translatable>
       <x-hub::input.text
