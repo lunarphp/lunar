@@ -76,20 +76,20 @@ trait WithAttributes
             $reference = 'a_'.$attribute->id;
 
             return [$reference => [
-                'name'           => $attribute->translate('name'),
-                'group'          => $attribute->attributeGroup->translate('name'),
-                'group_id'       => $attribute->attributeGroup->id,
-                'group_handle'   => $attribute->attributeGroup->handle,
+                'name' => $attribute->translate('name'),
+                'group' => $attribute->attributeGroup->translate('name'),
+                'group_id' => $attribute->attributeGroup->id,
+                'group_handle' => $attribute->attributeGroup->handle,
                 'group_position' => $attribute->attributeGroup->position,
-                'id'             => $attribute->handle,
-                'signature'      => "{$key}.{$reference}.data",
-                'type'           => $attribute->type,
-                'handle'         => $attribute->handle,
-                'configuration'  => $attribute->configuration,
-                'required'       => $attribute->required,
-                'view'           => app()->make($attribute->type)->getView(),
-                'validation'     => $attribute->validation_rules,
-                'data'           => $value,
+                'id' => $attribute->handle,
+                'signature' => "{$key}.{$reference}.data",
+                'type' => $attribute->type,
+                'handle' => $attribute->handle,
+                'configuration' => $attribute->configuration,
+                'required' => $attribute->required,
+                'view' => app()->make($attribute->type)->getView(),
+                'validation' => $attribute->validation_rules,
+                'data' => $value,
             ]];
         });
     }
@@ -102,7 +102,7 @@ trait WithAttributes
             ->orderBy('position')
             ->get()->map(function ($group) {
                 return [
-                    'model'  => $group,
+                    'model' => $group,
                     'fields' => $this->attributeMapping->filter(fn ($att) => $att['group_id'] == $group->id),
                 ];
             });

@@ -27,7 +27,7 @@ class Transaction extends BaseModel
     protected $casts = [
         'refund' => 'bool',
         'amount' => Price::class,
-        'meta'   => 'object',
+        'meta' => 'object',
     ];
 
     /**

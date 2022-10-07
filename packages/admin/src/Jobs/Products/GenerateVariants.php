@@ -77,7 +77,7 @@ class GenerateVariants implements ShouldQueue
         Validator::make([
             'optionValues' => $this->optionValues,
         ], [
-            'optionValues'   => 'array',
+            'optionValues' => 'array',
             'optionValues.*' => 'numeric',
         ])->validate();
 

@@ -74,8 +74,8 @@ class OptionCreator extends Component
     public function create()
     {
         $this->validate([
-            "name.{$this->defaultLanguage->code}"          => 'string|required|max:255',
-            'values'                                       => 'array|min:1',
+            "name.{$this->defaultLanguage->code}" => 'string|required|max:255',
+            'values' => 'array|min:1',
             "values.*.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
         ]);
 

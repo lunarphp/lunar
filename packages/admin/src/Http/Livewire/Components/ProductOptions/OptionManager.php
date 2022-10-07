@@ -36,7 +36,7 @@ class OptionManager extends Component
      */
     protected $listeners = [
         'option-value-create-modal.value-created' => 'refreshOptions',
-        'products.options.updated'                => 'syncOptions',
+        'products.options.updated' => 'syncOptions',
     ];
 
     /**
@@ -110,6 +110,22 @@ class OptionManager extends Component
     public function updatedSelectedOption($val)
     {
         $this->emit('option-manager.selected-option', $val);
+    }
+
+    /**
+     * Remove an option from the collection
+     *
+     * @param  int|string  $key
+     * @return
+     */
+    public function removeOption($key)
+    {
+        $option = $this->options->get($key);
+
+        $remainingValues = collect($this->selectedValues)->diff($option->values->pluck('id'));
+
+        $this->selectedValues = $remainingValues->values()->toArray();
+        $this->options->forget($key);
     }
 
     /**

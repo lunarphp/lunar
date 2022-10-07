@@ -14,8 +14,8 @@ class TaxRateFactory extends Factory
     {
         return [
             'tax_zone_id' => TaxZone::factory(),
-            'name'        => $this->faker->name,
-            'priority'    => $this->faker->numberBetween(1, 50),
+            'name' => $this->faker->name,
+            'priority' => $this->faker->numberBetween(1, 50),
         ];
     }
 }

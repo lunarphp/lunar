@@ -26,7 +26,7 @@ class UpdateCustomerGroupPricingTest extends TestCase
         $customerGroups = CustomerGroup::factory(2)->create();
         Currency::factory()->create([
             'decimal_places' => 2,
-            'default'        => true,
+            'default' => true,
         ]);
 
         $pricing = [];
@@ -36,10 +36,10 @@ class UpdateCustomerGroupPricingTest extends TestCase
 
             foreach (Currency::get() as $currency) {
                 $pricing[$group->id][$currency->code] = [
-                    'price'             => 199,
-                    'currency_id'       => $currency->id,
+                    'price' => 199,
+                    'currency_id' => $currency->id,
                     'customer_group_id' => $group->id,
-                    'tier'              => 1,
+                    'tier' => 1,
                 ];
             }
         }
@@ -49,12 +49,12 @@ class UpdateCustomerGroupPricingTest extends TestCase
         foreach ($pricing as $prices) {
             foreach ($prices as $price) {
                 $this->assertDatabaseHas((new Price())->getTable(), [
-                    'currency_id'       => $price['currency_id'],
+                    'currency_id' => $price['currency_id'],
                     'customer_group_id' => $price['customer_group_id'],
-                    'price'             => $price['price'] * 100,
-                    'priceable_type'    => get_class($variant),
-                    'priceable_id'      => $variant->id,
-                    'tier'              => 1,
+                    'price' => $price['price'] * 100,
+                    'priceable_type' => get_class($variant),
+                    'priceable_id' => $variant->id,
+                    'tier' => 1,
                 ]);
             }
         }

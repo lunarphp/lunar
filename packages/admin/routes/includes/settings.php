@@ -104,22 +104,22 @@ Route::group([
  */
 Route::group([
     'middleware' => 'can:settings:core',
-    'prefix'     => 'tags',
+    'prefix' => 'tags',
 ], function () {
     Route::get('/', TagsIndex::class)->name('hub.tags.index');
     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
 });
 
- /**
-  * Taxes.
-  */
- Route::group([
-     'middleware' => 'can:settings:core',
-     'prefix'     => 'taxes',
- ], function () {
-     Route::get('/tax-zones', TaxZonesIndex::class)->name('hub.taxes.index');
-     Route::get('/tax-zones/create', TaxZoneCreate::class)->name('hub.taxes.create');
-     Route::get('/tax-zones/{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
-     Route::get('/tax-classes', TaxClassesIndex::class)->name('hub.taxes.tax-classes.index');
- });
+/**
+ * Taxes.
+ */
+Route::group([
+    'middleware' => 'can:settings:core',
+    'prefix' => 'taxes',
+], function () {
+    Route::get('/tax-zones', TaxZonesIndex::class)->name('hub.taxes.index');
+    Route::get('/tax-zones/create', TaxZoneCreate::class)->name('hub.taxes.create');
+    Route::get('/tax-zones/{taxZone}', TaxZoneShow::class)->name('hub.taxes.show');
+    Route::get('/tax-classes', TaxClassesIndex::class)->name('hub.taxes.tax-classes.index');
+});

@@ -32,8 +32,8 @@ class LanguageShow extends Component
     protected function rules()
     {
         return [
-            'language.name'    => 'required|string|max:255',
-            'language.code'    => 'required|string|max:255',
+            'language.name' => 'required|string|max:255',
+            'language.code' => 'required|string|max:255',
             'language.default' => 'nullable|boolean',
         ];
     }

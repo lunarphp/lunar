@@ -15,7 +15,7 @@ class CollectionFactory extends Factory
     {
         return [
             'collection_group_id' => CollectionGroup::factory(),
-            'attribute_data'      => collect([
+            'attribute_data' => collect([
                 'name' => new Text($this->faker->name),
             ]),
         ];
