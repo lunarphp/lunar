@@ -9,7 +9,7 @@
 ## Discounts
 
 ```php
-GetCandy\Models\Discount
+Lunar\Models\Discount
 ```
 
 |Field|Description|Example|
@@ -17,7 +17,7 @@ GetCandy\Models\Discount
 |`id`|||
 |`name`|The given name for the discount||
 |`handle`|The unique handle for the discount||
-|`type`|The type of discount|`GetCandy\DiscountTypes\Coupon`|
+|`type`|The type of discount|`Lunar\DiscountTypes\Coupon`|
 |`data`|JSON|Any data to be used by the type class
 |`starts_at`|The datetime the discount starts (required)|
 |`ends_at`|The datetime the discount expires, if `NULL` it won't expire|
@@ -31,10 +31,10 @@ GetCandy\Models\Discount
 ### Creating a discount
 
 ```php
-GetCandy\Models\Discount::create([
+Lunar\Models\Discount::create([
     'name' => '20% Coupon',
     'handle' => '20_coupon',
-    'type' => 'GetCandy\DiscountTypes\Coupon',
+    'type' => 'Lunar\DiscountTypes\Coupon',
     'data' => [
         'coupon' => '20OFF',
     ],
@@ -52,14 +52,14 @@ You can relate a purchasable to a discount via this model. Each has a type for w
 - `reward` - Once the conditions are met, discount one of more of these purchasable models.
 
 ```php
-GetCandy\Models\DiscountPurchasable
+Lunar\Models\DiscountPurchasable
 ```
 
 |Field|Description|Example|
 |:-|:-|:-|
 |`id`|||
 |`discount_id`|||
-|`purchasable_type`||`GetCandy\Models\ProductVariant`
+|`purchasable_type`||`Lunar\Models\ProductVariant`
 |`type`|`condition` or `reward`|
 |`created_at`|||
 |`updated_at`|||
@@ -75,7 +75,7 @@ GetCandy\Models\DiscountPurchasable
 Fetching applied discounts
 
 ```php
-use GetCandy\Facades\Discounts;
+use Lunar\Facades\Discounts;
 
 $appliedDiscounts = Discounts::getApplied();
 ```
@@ -84,9 +84,9 @@ This will return a collection of discounts which are applied to the current cart
 
 ```php
 foreach ($appliedDiscounts as $item) {
-    // GetCandy\Base\DataTransferObjects\CartDiscount
-    $item->cartLine; // GetCandy\Models\CartLine
-    $item->discount; // GetCandy\Models\Discount
+    // Lunar\Base\DataTransferObjects\CartDiscount
+    $item->cartLine; // Lunar\Models\CartLine
+    $item->discount; // Lunar\Models\Discount
 }
 ```
 
@@ -94,7 +94,7 @@ Each cart line will also have a `discount` property populated with the model of 
 
 ```php
 foreach ($cart->lines as $line) {
-    $line->discount; // GetCandy\Models\Discount;
+    $line->discount; // Lunar\Models\Discount;
 }
 ```
 
@@ -109,11 +109,11 @@ These aren't database relationships and will only persist for the lifecycle of t
 ```php
 namespace App\Discounts;
 
-use GetCandy\Base\DataTransferObjects\CartDiscount;
-use GetCandy\DataTypes\Price;
-use GetCandy\Facades\Discounts;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Discount;
+use Lunar\Base\DataTransferObjects\CartDiscount;
+use Lunar\DataTypes\Price;
+use Lunar\Facades\Discounts;
+use Lunar\Models\CartLine;
+use Lunar\Models\Discount;
 
 class CustomDiscount
 {
