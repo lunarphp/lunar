@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Lunar\Actions\Carts\CalculateLineSubtotal;
 use Lunar\Actions\Carts\CreateOrder;
 use Lunar\Actions\Carts\MergeCart;
 use Lunar\Actions\Carts\ValidateCartForOrder;
