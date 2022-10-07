@@ -28,15 +28,15 @@ class UpdateTieredPricingTest extends TestCase
 
         $tiers = collect([
             [
-                'tier'              => 4,
+                'tier' => 4,
                 'customer_group_id' => $customerGroup->id,
-                'prices'            => [
+                'prices' => [
                     [
-                        'price'       => 1.99,
+                        'price' => 1.99,
                         'currency_id' => $currencies->first()->id,
                     ],
                     [
-                        'price'       => 2.99,
+                        'price' => 2.99,
                         'currency_id' => $currencies->last()->id,
                     ],
                 ],
@@ -46,21 +46,21 @@ class UpdateTieredPricingTest extends TestCase
         app(UpdateTieredPricing::class)->execute($variant, $tiers);
 
         $this->assertDatabaseHas((new Price())->getTable(), [
-            'currency_id'       => $currencies->first()->id,
+            'currency_id' => $currencies->first()->id,
             'customer_group_id' => $customerGroup->id,
-            'price'             => 1.99 * $currencies->first()->factor,
-            'priceable_type'    => get_class($variant),
-            'priceable_id'      => $variant->id,
-            'tier'              => 4,
+            'price' => 1.99 * $currencies->first()->factor,
+            'priceable_type' => get_class($variant),
+            'priceable_id' => $variant->id,
+            'tier' => 4,
         ]);
 
         $this->assertDatabaseHas((new Price())->getTable(), [
-            'currency_id'       => $currencies->last()->id,
+            'currency_id' => $currencies->last()->id,
             'customer_group_id' => $customerGroup->id,
-            'price'             => 2.99 * $currencies->last()->factor,
-            'priceable_type'    => get_class($variant),
-            'priceable_id'      => $variant->id,
-            'tier'              => 4,
+            'price' => 2.99 * $currencies->last()->factor,
+            'priceable_type' => get_class($variant),
+            'priceable_id' => $variant->id,
+            'tier' => 4,
         ]);
     }
 }

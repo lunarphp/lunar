@@ -36,7 +36,7 @@ class ProductVariant extends BaseModel implements Purchasable
      */
     protected $casts = [
         'requires_shipping' => 'bool',
-        'attribute_data'    => AsAttributeData::class,
+        'attribute_data' => AsAttributeData::class,
     ];
 
     /**

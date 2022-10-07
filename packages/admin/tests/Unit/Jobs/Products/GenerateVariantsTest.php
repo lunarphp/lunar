@@ -122,14 +122,14 @@ class GenerateVariantsTest extends TestCase
 
         $blue = ProductOptionValue::factory()->create([
             'product_option_id' => $colour->id,
-            'name'              => [
+            'name' => [
                 'en' => 'Blue',
             ],
         ]);
 
         $red = ProductOptionValue::factory()->create([
             'product_option_id' => $colour->id,
-            'name'              => [
+            'name' => [
                 'en' => 'Red',
             ],
         ]);
@@ -142,14 +142,14 @@ class GenerateVariantsTest extends TestCase
 
         $small = ProductOptionValue::factory()->create([
             'product_option_id' => $size->id,
-            'name'              => [
+            'name' => [
                 'en' => 'Small',
             ],
         ]);
 
         $medium = ProductOptionValue::factory()->create([
             'product_option_id' => $size->id,
-            'name'              => [
+            'name' => [
                 'en' => 'Small',
             ],
         ]);

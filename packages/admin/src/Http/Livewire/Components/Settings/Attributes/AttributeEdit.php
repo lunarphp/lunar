@@ -51,10 +51,10 @@ class AttributeEdit extends Component
         $this->attribute = $this->attribute ?: new Attribute([
             'searchable' => true,
             'filterable' => false,
-            'required'   => false,
-            'section'    => 'main',
-            'system'     => false,
-            'type'       => get_class($this->fieldTypes->first()),
+            'required' => false,
+            'section' => 'main',
+            'system' => false,
+            'type' => get_class($this->fieldTypes->first()),
         ]);
 
         if ($this->attribute->id) {
@@ -73,16 +73,16 @@ class AttributeEdit extends Component
     public function rules()
     {
         $rules = [
-            'attribute.name'                                => 'required',
-            'attribute.handle'                              => 'required',
-            'attribute.required'                            => 'nullable|boolean',
-            'attribute.searchable'                          => 'nullable|boolean',
-            'attribute.filterable'                          => 'nullable|boolean',
-            'attribute.configuration'                       => 'nullable|array',
-            'attribute.section'                             => 'string',
-            'attribute.system'                              => 'boolean',
-            'attribute.type'                                => 'required',
-            'attribute.validation_rules'                    => 'nullable|string',
+            'attribute.name' => 'required',
+            'attribute.handle' => 'required',
+            'attribute.required' => 'nullable|boolean',
+            'attribute.searchable' => 'nullable|boolean',
+            'attribute.filterable' => 'nullable|boolean',
+            'attribute.configuration' => 'nullable|array',
+            'attribute.section' => 'string',
+            'attribute.system' => 'boolean',
+            'attribute.type' => 'required',
+            'attribute.validation_rules' => 'nullable|string',
         ];
 
         foreach ($this->languages as $lang) {

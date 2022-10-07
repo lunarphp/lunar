@@ -2,10 +2,7 @@
 
 namespace Lunar\ScoutDatabaseEngine;
 
-use Exception;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\LazyCollection;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Engines\Engine;
 
@@ -159,7 +156,7 @@ class DatabaseEngine extends Engine
             $objectIds
         )->filter(function ($model) use ($objectIds) {
             return in_array($model->getScoutKey(), $objectIds);
-        // })->sortBy(function ($model) use ($objectIdPositions) {
+            // })->sortBy(function ($model) use ($objectIdPositions) {
         //     return $objectIdPositions[$model->getScoutKey()];
         })->values();
     }

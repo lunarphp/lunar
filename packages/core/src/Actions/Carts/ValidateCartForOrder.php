@@ -22,7 +22,6 @@ class ValidateCartForOrder
     public function execute(
         Cart $cart
     ) {
-
         // Does this cart already have an order?
         if ($cart->order) {
             throw new OrderExistsException(
@@ -80,9 +79,9 @@ class ValidateCartForOrder
         return [
             'country_id' => 'required',
             'first_name' => 'required',
-            'line_one'   => 'required',
-            'city'       => 'required',
-            'postcode'   => 'required',
+            'line_one' => 'required',
+            'city' => 'required',
+            'postcode' => 'required',
         ];
     }
 }
