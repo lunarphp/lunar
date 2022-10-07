@@ -67,7 +67,7 @@
                                     </x-hub::dropdown.button>
 
                                     <x-hub::dropdown.button wire:click="$set('deleteOptionId', {{ $option->id }})"
-                                                            class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                                                            class="flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-50">
                                         <span
                                                 class="text-red-500">{{ __('adminhub::components.option.delete_group_btn') }}</span>
                                     </x-hub::dropdown.button>
@@ -111,7 +111,7 @@
                                             </x-hub::dropdown.button>
 
                                             <x-hub::dropdown.button wire:click="$set('deleteOptionValueId', {{ $optionValue->id }})"
-                                                                    class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
+                                                                    class="flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-50">
                                                 <span
                                                         class="text-red-500">{{ __('adminhub::components.option.delete_option.value.btn') }}</span>
                                             </x-hub::dropdown.button>
