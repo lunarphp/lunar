@@ -4,7 +4,7 @@
             <x-hub::input.group :label="__('adminhub::inputs.name')"
                                 for="name"
                                 :error="$errors->first('channel.name')">
-                <x-hub::input.text wire:model="channel.name"
+                <x-hub::input.text wire:model.defer="channel.name"
                                    name="name"
                                    id="name"
                                    :error="$errors->first('channel.name')" />
@@ -13,7 +13,7 @@
             <x-hub::input.group :label="__('adminhub::inputs.handle')"
                                 for="handle"
                                 :error="$errors->first('channel.handle')">
-                <x-hub::input.text wire:model.debounce.350ms="channel.handle"
+                <x-hub::input.text wire:model.defer="channel.handle"
                                    name="handle"
                                    id="handle"
                                    :error="$errors->first('channel.handle')" />
@@ -22,7 +22,7 @@
             <x-hub::input.group :label="__('adminhub::inputs.url')"
                                 for="url"
                                 :error="$errors->first('channel.url')">
-                <x-hub::input.text wire:model="channel.url"
+                <x-hub::input.text wire:model.defer="channel.url"
                                    name="url"
                                    id="url"
                                    :error="$errors->first('channel.url')" />
