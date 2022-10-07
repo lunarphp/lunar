@@ -137,7 +137,7 @@
                         @endif
                     </div>
                     <div class="space-y-2">
-                        <div class="grid grid-cols-3 gap-4">
+                        <div class="grid grid-cols-3 gap-4 pr-10">
                             <label class="block text-sm font-medium text-gray-700">
                                 {{ __('adminhub::global.customer_group') }}
                             </label>
@@ -154,7 +154,7 @@
                         <div class="space-y-2">
                             @foreach ($tieredPrices as $index => $tier)
                                 <div wire:key="tier_{{ $index }}">
-                                    <div class="flex items-center">
+                                    <div class="flex items-center gap-4">
                                         <div class="grid w-full grid-cols-3 gap-4">
                                             <x-hub::input.select wire:model='tieredPrices.{{ $index }}.customer_group_id'
                                                                  :disabled="!$this->currency->default">
@@ -181,11 +181,11 @@
                                                                 :currencyCode="$this->currency->code" />
                                         </div>
 
-                                        <div class="ml-4">
+                                        <div class="flex w-6">
                                             <button class="text-gray-500 hover:text-red-500"
                                                     wire:click.prevent="removeTier('{{ $index }}')">
                                                 <x-hub::icon ref="trash"
-                                                             class="w-4" />
+                                                             class="w-4 h-4" />
                                             </button>
                                         </div>
                                     </div>
