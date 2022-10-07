@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Product\Options;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -103,7 +103,7 @@ class OptionsIndex extends Component
     /**
      * Return the option to be used when creating an attribute.
      *
-     * @return \GetCandy\Models\ProductOption
+     * @return \Lunar\Models\ProductOption
      */
     public function getValueCreateOptionProperty()
     {
@@ -173,7 +173,7 @@ class OptionsIndex extends Component
     /**
      * Return the computed property for the option to edit.
      *
-     * @return \GetCandy\Models\ProductOption|null
+     * @return \Lunar\Models\ProductOption|null
      */
     public function getOptionToEditProperty()
     {
@@ -183,7 +183,7 @@ class OptionsIndex extends Component
     /**
      * Return the option marked for deletion.
      *
-     * @return \GetCandy\Models\ProductOption|null
+     * @return \Lunar\Models\ProductOption|null
      */
     public function getOptionToDeleteProperty(): ?ProductOption
     {
@@ -193,7 +193,7 @@ class OptionsIndex extends Component
     /**
      * Return the option value to edit.
      *
-     * @return \GetCandy\Models\Attribute
+     * @return \Lunar\Models\Attribute
      */
     public function getOptionValueToEditProperty()
     {
@@ -203,7 +203,7 @@ class OptionsIndex extends Component
     /**
      * Return the option value to delete.
      *
-     * @return \GetCandy\Models\ProductOptionValue|null
+     * @return \Lunar\Models\ProductOptionValue|null
      */
     public function getOptionValueToDeleteProperty(): ?ProductOptionValue
     {

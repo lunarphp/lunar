@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Product;
+namespace Lunar\Hub\Tests\Feature\Http\Livewire\Pages\Settings\Product;
 
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Language;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Language;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

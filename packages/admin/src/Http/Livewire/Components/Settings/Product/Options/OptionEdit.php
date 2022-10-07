@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Product\Options;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\ProductOption;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\ProductOption;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -16,7 +16,7 @@ class OptionEdit extends Component
     /**
      * The option to edit.
      *
-     * @var \GetCandy\Models\ProductOption
+     * @var \Lunar\Models\ProductOption
      */
     public ?ProductOption $productOption = null;
 

@@ -8,7 +8,7 @@ use Lunar\Hub\Menu\MenuRegistry;
 /**
  * @method static MenuSlot slot(string $handle)
  *
- * @see \GetCandy\Hub\Menu\MenuRegistry
+ * @see \Lunar\Hub\Menu\MenuRegistry
  */
 class Menu extends Facade
 {

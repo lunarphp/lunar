@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductOptionValueTest extends TestCase
