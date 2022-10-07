@@ -14,7 +14,7 @@ class AddPositionToProductOptionValuesTable extends Migration
     public function up()
     {
         Schema::table($this->prefix.'product_option_values', function (Blueprint $table) {
-            $table->integer('position')->default(0)->index();
+            $table->integer('position')->after('name')->default(0)->index();
         });
     }
 
