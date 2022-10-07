@@ -41,28 +41,28 @@ class ShippingManifestTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         PriceModel::factory()->create([
-            'price'          => 100,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $this->cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
     }
 

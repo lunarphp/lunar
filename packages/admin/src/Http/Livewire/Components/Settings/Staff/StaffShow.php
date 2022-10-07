@@ -31,11 +31,11 @@ class StaffShow extends AbstractStaff
     {
         return [
             'staffPermissions' => 'array',
-            'staff.email'      => 'required|email|unique:'.get_class($this->staff).',email,'.$this->staff->id,
-            'staff.firstname'  => 'string|max:255',
-            'staff.lastname'   => 'string|max:255',
-            'staff.admin'      => 'nullable|boolean',
-            'password'         => 'nullable|min:8|max:255|confirmed',
+            'staff.email' => 'required|email|unique:'.get_class($this->staff).',email,'.$this->staff->id,
+            'staff.firstname' => 'string|max:255',
+            'staff.lastname' => 'string|max:255',
+            'staff.admin' => 'nullable|boolean',
+            'password' => 'nullable|min:8|max:255|confirmed',
         ];
     }
 

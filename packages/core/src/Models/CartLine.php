@@ -85,7 +85,7 @@ class CartLine extends BaseModel
      */
     protected $casts = [
         'quantity' => 'integer',
-        'meta'     => 'object',
+        'meta' => 'object',
     ];
 
     /**

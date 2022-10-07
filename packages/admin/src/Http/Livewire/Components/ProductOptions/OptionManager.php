@@ -36,7 +36,7 @@ class OptionManager extends Component
      */
     protected $listeners = [
         'option-value-create-modal.value-created' => 'refreshOptions',
-        'products.options.updated'                => 'syncOptions',
+        'products.options.updated' => 'syncOptions',
     ];
 
     /**

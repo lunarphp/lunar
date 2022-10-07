@@ -55,9 +55,9 @@ trait HasUrls
     public function addUrl()
     {
         $this->urls[] = [
-            'slug'        => null,
-            'key'         => Str::random(),
-            'default'     => ! collect($this->urls)->count(),
+            'slug' => null,
+            'key' => Str::random(),
+            'default' => ! collect($this->urls)->count(),
             'language_id' => $this->defaultLanguage->id,
         ];
     }

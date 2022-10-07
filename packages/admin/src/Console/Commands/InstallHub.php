@@ -51,10 +51,10 @@ class InstallHub extends Command
 
             Staff::create([
                 'firstname' => $firstname,
-                'lastname'  => $lastname,
-                'email'     => $email,
-                'password'  => bcrypt($password),
-                'admin'     => true,
+                'lastname' => $lastname,
+                'email' => $email,
+                'password' => bcrypt($password),
+                'admin' => true,
             ]);
         }
     }

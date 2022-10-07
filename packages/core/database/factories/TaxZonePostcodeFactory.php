@@ -15,8 +15,8 @@ class TaxZonePostcodeFactory extends Factory
     {
         return [
             'tax_zone_id' => TaxZone::factory(),
-            'country_id'  => Country::factory(),
-            'postcode'    => $this->faker->postcode,
+            'country_id' => Country::factory(),
+            'postcode' => $this->faker->postcode,
         ];
     }
 }

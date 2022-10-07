@@ -70,20 +70,20 @@ class Manifest extends PackageManifest
         $license = LicenseManager::fetch($package['name'], $config);
 
         return [
-            'id'             => $package['name'],
-            'slug'           => $lunar['slug'] ?? null,
-            'editions'       => $lunar['editions'] ?? [],
-            'marketplaceId'  => data_get($license, 'id', null),
+            'id' => $package['name'],
+            'slug' => $lunar['slug'] ?? null,
+            'editions' => $lunar['editions'] ?? [],
+            'marketplaceId' => data_get($license, 'id', null),
             'marketplaceUrl' => data_get($license, 'url', null),
-            'licensed'       => data_get($license, 'licensed', false),
-            'latestVersion'  => data_get($license, 'latestVersion', null),
-            'version'        => $package['version'],
-            'namespace'      => $namespace,
-            'autoload'       => $autoload,
-            'provider'       => $provider,
-            'name'           => $statamic['name'] ?? Arr::last($providerParts),
-            'author'         => $author['name'] ?? null,
-            'email'          => $package['support']['email'] ?? null,
+            'licensed' => data_get($license, 'licensed', false),
+            'latestVersion' => data_get($license, 'latestVersion', null),
+            'version' => $package['version'],
+            'namespace' => $namespace,
+            'autoload' => $autoload,
+            'provider' => $provider,
+            'name' => $statamic['name'] ?? Arr::last($providerParts),
+            'author' => $author['name'] ?? null,
+            'email' => $package['support']['email'] ?? null,
         ];
     }
 

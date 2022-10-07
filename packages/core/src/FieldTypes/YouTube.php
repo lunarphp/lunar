@@ -97,7 +97,7 @@ class YouTube implements FieldType, JsonSerializable
     public function getConfig(): array
     {
         return [
-            'view'    => 'adminhub::field-types.youtube',
+            'view' => 'adminhub::field-types.youtube',
         ];
     }
 }
