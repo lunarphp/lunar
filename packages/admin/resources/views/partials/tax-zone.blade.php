@@ -33,7 +33,7 @@
                                     :error="$errors->first('taxZone.name')"
                                     required>
 
-                    <x-hub::input.text wire:model="taxZone.name"
+                    <x-hub::input.text wire:model.defer="taxZone.name"
                                        name="name"
                                        id="name"
                                        :error="$errors->first('taxZone.name')" />
@@ -44,7 +44,7 @@
                                     :error="$errors->first('taxZone.price_display')"
                                     required>
 
-                    <x-hub::input.select wire:model="taxZone.price_display"
+                    <x-hub::input.select wire:model.defer="taxZone.price_display"
                                          id="priceDisplay">
                         <option value="include_tax">
                             {{ __('adminhub::settings.taxes.tax-zones.price_display.incl_tax') }}
@@ -178,14 +178,14 @@
                                                 for="name"
                                                 required
                                                 :error="$errors->first('taxRates.' . $taxRateIndex . '.name')">
-                                <x-hub::input.text wire:model="taxRates.{{ $taxRateIndex }}.name" />
+                                <x-hub::input.text wire:model.defer="taxRates.{{ $taxRateIndex }}.name" />
                             </x-hub::input.group>
 
                             <x-hub::input.group :label="__('adminhub::inputs.priority.label')"
                                                 for="priority"
                                                 :error="$errors->first('taxRates.' . $taxRateIndex . '.priority')">
                                 <x-hub::input.text type="number"
-                                                   wire:model="taxRates.{{ $taxRateIndex }}.priority" />
+                                                   wire:model.defer="taxRates.{{ $taxRateIndex }}.priority" />
                             </x-hub::input.group>
                         </div>
 
@@ -202,7 +202,7 @@
                                             </span>
 
                                             <x-hub::input.text type="number"
-                                                               wire:model="taxRates.{{ $taxRateIndex }}.amounts.{{ $amountIndex }}.percentage"
+                                                               wire:model.defer="taxRates.{{ $taxRateIndex }}.amounts.{{ $amountIndex }}.percentage"
                                                                class="pl-7" />
                                         </div>
                                     </x-hub::input.group>
