@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Order;
-use GetCandy\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Order;
+use Lunar\Models\Transaction;
 
 class TransactionFactory extends Factory
 {
@@ -13,17 +13,17 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id'  => Order::factory(),
-            'success'   => true,
-            'type'      => $this->faker->boolean(85) ? 'capture' : 'refund',
-            'driver'    => 'getcandy',
-            'amount'    => 100,
+            'order_id' => Order::factory(),
+            'success' => true,
+            'type' => $this->faker->boolean(85) ? 'capture' : 'refund',
+            'driver' => 'lunar',
+            'amount' => 100,
             'reference' => $this->faker->unique()->regexify('[A-Z]{8}'),
-            'status'    => 'settled',
-            'notes'     => null,
+            'status' => 'settled',
+            'notes' => null,
             'card_type' => $this->faker->creditCardType,
             'last_four' => $this->faker->numberBetween(1000, 9999),
-            'meta'      => null,
+            'meta' => null,
         ];
     }
 }

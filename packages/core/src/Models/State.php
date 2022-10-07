@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Database\Factories\StateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Database\Factories\StateFactory;
 
 class State extends BaseModel
 {
@@ -15,7 +15,7 @@ class State extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\StateFactory
+     * @return \Lunar\Database\Factories\StateFactory
      */
     protected static function newFactory(): StateFactory
     {

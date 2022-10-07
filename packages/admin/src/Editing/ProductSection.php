@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Editing;
+namespace Lunar\Hub\Editing;
 
 class ProductSection
 {
@@ -10,19 +10,19 @@ class ProductSection
     {
         $this->sections = collect([
             [
-                'handle'    => 'basic-information',
+                'handle' => 'basic-information',
                 'component' => 'hub.components.products.editing.basic-information',
             ],
             [
-                'handle'    => 'attributes',
+                'handle' => 'attributes',
                 'component' => 'hub.components.products.editing.attributes',
             ],
             [
-                'handle'    => 'images',
+                'handle' => 'images',
                 'component' => 'hub.components.products.editing.images',
             ],
             [
-                'handle'    => 'channels',
+                'handle' => 'channels',
                 'component' => 'hub.components.products.editing.availability',
             ],
             // [

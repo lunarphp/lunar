@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base;
+namespace Lunar\Tests\Unit\Base;
 
-use GetCandy\Models\Product;
-use GetCandy\Tests\TestCase;
+use Lunar\Models\Product;
+use Lunar\Tests\TestCase;
 
 /**
  * @group reference

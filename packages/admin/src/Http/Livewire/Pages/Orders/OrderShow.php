@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Orders;
+namespace Lunar\Hub\Http\Livewire\Pages\Orders;
 
-use GetCandy\Models\Order;
 use Livewire\Component;
+use Lunar\Models\Order;
 
 class OrderShow extends Component
 {
     /**
      * The Product we are currently editing.
      *
-     * @var \GetCandy\Models\Product
+     * @var \Lunar\Models\Product
      */
     public Order $order;
 

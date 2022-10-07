@@ -1,12 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Hub\Facades\ActivityLog;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Facades\ModelManifest;
+use Lunar\Hub\Facades\ActivityLog;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 
 class ActivityLogFeed extends Component
 {
@@ -67,7 +68,6 @@ class ActivityLogFeed extends Component
     public function getActivityLogProperty()
     {
         return $this->subject->activities()
-            ->whereNotIn('event', ['updated'])
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy(function ($log) {
@@ -89,9 +89,9 @@ class ActivityLogFeed extends Component
 
     public function getRenderersProperty()
     {
-        return ActivityLog::getItems(
-            get_class($this->subject)
-        );
+        $subjectClass = ModelManifest::getMorphClassBaseModel(get_class($this->subject)) ?? get_class($this->subject);
+
+        return ActivityLog::getItems($subjectClass);
     }
 
     /**

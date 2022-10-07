@@ -1,19 +1,19 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Orders;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Orders;
 
-use GetCandy\Hub\Http\Livewire\Components\Orders\OrderShow;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Country;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Orders\OrderShow;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Country;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Models\OrderAddress;
+use Lunar\Models\OrderLine;
+use Lunar\Models\ProductVariant;
 use Spatie\Activitylog\Models\Activity;
 
 /**
@@ -29,11 +29,11 @@ class OrderShowTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Currency::factory()->create([
-            'default'        => true,
+            'default' => true,
             'decimal_places' => 2,
         ]);
     }
@@ -46,10 +46,10 @@ class OrderShowTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -61,7 +61,7 @@ class OrderShowTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 
@@ -79,11 +79,11 @@ class OrderShowTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'currency_code' => Currency::getDefault()->code,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -95,7 +95,7 @@ class OrderShowTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 
@@ -129,11 +129,11 @@ class OrderShowTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -175,11 +175,11 @@ class OrderShowTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -223,11 +223,11 @@ class OrderShowTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -244,11 +244,11 @@ class OrderShowTest extends TestCase
         );
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -284,7 +284,7 @@ class OrderShowTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'currency_code' => Currency::getDefault()->code,
             'placed_at' => null,
             'status' => 'awaiting-payment',

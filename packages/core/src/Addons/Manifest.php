@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Addons;
+namespace Lunar\Addons;
 
-use GetCandy\Licensing\LicenseManager;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Lunar\Licensing\LicenseManager;
 use ReflectionClass;
 
 /**
@@ -32,7 +32,7 @@ class Manifest extends PackageManifest
         }
 
         $this->write(collect($packages)->filter(function ($package) {
-            return Arr::has($package, 'extra.getcandy');
+            return Arr::has($package, 'extra.lunar');
         })->keyBy('name')->map(function ($package) {
             return $this->formatPackage($package);
         })->filter()->all());
@@ -60,30 +60,30 @@ class Manifest extends PackageManifest
         $directory = Str::remove(rtrim($autoload, '/'), dirname($reflector->getFileName()));
         $json = json_decode(File::get($directory.'composer.json'), true);
 
-        $getcandy = $json['extra']['getcandy'] ?? [];
+        $lunar = $json['extra']['lunar'] ?? [];
         $author = $json['authors'][0] ?? null;
 
-        $config = config('getcandy.addons.'.$package['name'], [
+        $config = config('lunar.addons.'.$package['name'], [
             'license' => null,
         ]);
 
         $license = LicenseManager::fetch($package['name'], $config);
 
         return [
-            'id'             => $package['name'],
-            'slug'           => $getcandy['slug'] ?? null,
-            'editions'       => $getcandy['editions'] ?? [],
-            'marketplaceId'  => data_get($license, 'id', null),
+            'id' => $package['name'],
+            'slug' => $lunar['slug'] ?? null,
+            'editions' => $lunar['editions'] ?? [],
+            'marketplaceId' => data_get($license, 'id', null),
             'marketplaceUrl' => data_get($license, 'url', null),
-            'licensed'       => data_get($license, 'licensed', false),
-            'latestVersion'  => data_get($license, 'latestVersion', null),
-            'version'        => $package['version'],
-            'namespace'      => $namespace,
-            'autoload'       => $autoload,
-            'provider'       => $provider,
-            'name'           => $statamic['name'] ?? Arr::last($providerParts),
-            'author'         => $author['name'] ?? null,
-            'email'          => $package['support']['email'] ?? null,
+            'licensed' => data_get($license, 'licensed', false),
+            'latestVersion' => data_get($license, 'latestVersion', null),
+            'version' => $package['version'],
+            'namespace' => $namespace,
+            'autoload' => $autoload,
+            'provider' => $provider,
+            'name' => $statamic['name'] ?? Arr::last($providerParts),
+            'author' => $author['name'] ?? null,
+            'email' => $package['support']['email'] ?? null,
         ];
     }
 

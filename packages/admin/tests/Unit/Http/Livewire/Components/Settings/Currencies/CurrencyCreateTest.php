@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Settings\Currencies;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Settings\Currencies;
 
-use GetCandy\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyCreate;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Currency;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyCreate;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Currency;
 
 /**
  * @group hub.currencies
@@ -27,12 +27,12 @@ class CurrencyCreateTest extends TestCase
         $this->actingAs($staff, 'staff');
 
         $properties = [
-            'name'           => 'Some currency name',
-            'code'           => 'TST',
-            'default'        => true,
-            'exchange_rate'  => 0.5,
+            'name' => 'Some currency name',
+            'code' => 'TST',
+            'default' => true,
+            'exchange_rate' => 0.5,
             'decimal_places' => 2,
-            'enabled'        => 0,
+            'enabled' => 0,
         ];
 
         $component = Livewire::test(CurrencyCreate::class);
@@ -57,9 +57,9 @@ class CurrencyCreateTest extends TestCase
 
         Livewire::test(CurrencyCreate::class)->call('create')
             ->assertHasErrors([
-                'currency.name'           => 'required',
-                'currency.code'           => 'required',
-                'currency.exchange_rate'  => 'required',
+                'currency.name' => 'required',
+                'currency.code' => 'required',
+                'currency.exchange_rate' => 'required',
             ]);
 
         Livewire::test(CurrencyCreate::class)
@@ -68,9 +68,9 @@ class CurrencyCreateTest extends TestCase
             ->set('currency.exchange_rate', 1000000)
             ->call('create')
             ->assertHasErrors([
-                'currency.code'           => 'max',
-                'currency.name'           => 'max',
-                'currency.exchange_rate'  => 'max',
+                'currency.code' => 'max',
+                'currency.name' => 'max',
+                'currency.exchange_rate' => 'max',
             ]);
 
         Currency::factory()->create([

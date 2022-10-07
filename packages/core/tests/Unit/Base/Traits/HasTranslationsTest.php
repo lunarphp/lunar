@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Console;
+namespace Lunar\Tests\Unit\Console;
 
-use GetCandy\FieldTypes\Dropdown;
-use GetCandy\FieldTypes\ListField;
-use GetCandy\FieldTypes\Text;
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductOption;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\FieldTypes\Dropdown;
+use Lunar\FieldTypes\ListField;
+use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Tests\TestCase;
 
 /**
  * @group traits
@@ -242,7 +242,7 @@ class HasTranslationsTest extends TestCase
 
         $product = Product::factory()->create([
             'attribute_data' => [
-                'name'        => new Text('English Name'),
+                'name' => new Text('English Name'),
                 'description' => new Text(null),
             ],
         ]);
@@ -264,13 +264,13 @@ class HasTranslationsTest extends TestCase
 
         $product = Product::factory()->create([
             'attribute_data' => [
-                'name'        => new Text('Test Name'),
-                'list'        => new ListField([
+                'name' => new Text('Test Name'),
+                'list' => new ListField([
                     'One',
                     'Two',
                     'Three',
                 ]),
-                'dropdown'        => new Dropdown('Foobar'),
+                'dropdown' => new Dropdown('Foobar'),
             ],
         ]);
 

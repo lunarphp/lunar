@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Languages;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Languages;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Language;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Language;
 
 class LanguageShow extends Component
 {
@@ -13,7 +13,7 @@ class LanguageShow extends Component
     /**
      * The current language we're showing.
      *
-     * @var \GetCandy\Models\Language
+     * @var \Lunar\Models\Language
      */
     public Language $language;
 
@@ -32,8 +32,8 @@ class LanguageShow extends Component
     protected function rules()
     {
         return [
-            'language.name'    => 'required|string|max:255',
-            'language.code'    => 'required|string|max:255',
+            'language.name' => 'required|string|max:255',
+            'language.code' => 'required|string|max:255',
             'language.default' => 'nullable|boolean',
         ];
     }

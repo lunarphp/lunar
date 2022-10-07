@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Console\Commands\Import;
+namespace Lunar\Console\Commands\Import;
 
-use GetCandy\Models\Country;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Lunar\Models\Country;
 
 class AddressData extends Command
 {
@@ -14,7 +14,7 @@ class AddressData extends Command
      *
      * @var string
      */
-    protected $signature = 'getcandy:import:address-data';
+    protected $signature = 'lunar:import:address-data';
 
     /**
      * The console command description.
@@ -38,7 +38,7 @@ class AddressData extends Command
          * Here we are using Http over Https due to some environments not having
          * the latest CA Authorities installed, causing an SSL exception to be thrown.
          */
-        $countries = Http::get('http://cdn.getcandy.io/data/countries+states.json')
+        $countries = Http::get('http://data.lunarphp.io/countries+states.json')
                         ->object();
 
         $newCountries = collect($countries)->filter(function ($country) use ($existing) {
@@ -54,15 +54,15 @@ class AddressData extends Command
         DB::transaction(function () use ($newCountries) {
             $this->withProgressBar($newCountries, function ($country) {
                 $model = Country::create([
-                    'name'      => $country->name,
-                    'iso3'      => $country->iso3,
-                    'iso2'      => $country->iso2,
+                    'name' => $country->name,
+                    'iso3' => $country->iso3,
+                    'iso2' => $country->iso2,
                     'phonecode' => $country->phone_code,
-                    'capital'   => $country->capital,
-                    'currency'  => $country->currency,
-                    'native'    => $country->native,
-                    'emoji'     => $country->emoji,
-                    'emoji_u'   => $country->emojiU,
+                    'capital' => $country->capital,
+                    'currency' => $country->currency,
+                    'native' => $country->native,
+                    'emoji' => $country->emoji,
+                    'emoji_u' => $country->emojiU,
                 ]);
 
                 $states = collect($country->states)->map(function ($state) {

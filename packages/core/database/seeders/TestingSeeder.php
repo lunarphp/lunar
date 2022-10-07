@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Database\Seeders;
+namespace Lunar\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 

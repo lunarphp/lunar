@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Channels;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Channels;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Channel;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Channel;
 
 class ChannelCreate extends Component
 {
@@ -38,9 +38,9 @@ class ChannelCreate extends Component
         $table = $this->channel->getTable();
 
         return [
-            'channel.name'    => 'required|string|max:255',
-            'channel.handle'  => "required|string|unique:$table,handle|max:255",
-            'channel.url'     => 'nullable|url|max:255',
+            'channel.name' => 'required|string|max:255',
+            'channel.handle' => "required|string|unique:$table,handle|max:255",
+            'channel.url' => 'nullable|url|max:255',
             'channel.default' => 'boolean',
         ];
     }

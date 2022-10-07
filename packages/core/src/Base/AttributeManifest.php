@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\Collection as ModelsCollection;
-use GetCandy\Models\Customer;
-use GetCandy\Models\Order;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Customer;
+use Lunar\Models\Order;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
 
 class AttributeManifest
 {

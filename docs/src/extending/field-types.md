@@ -4,10 +4,10 @@
 
 ## Overview
 
-There will likely come a point where you need more field types than what GetCandy offers in the core. We've made adding your own a breeze and it's the same process whether you want to add these to directly to your app or via an add on.
+There will likely come a point where you need more field types than what Lunar offers in the core. We've made adding your own a breeze and it's the same process whether you want to add these to directly to your app or via an add on.
 
 
-GetCandy will load up available field types via the `AttributeManifest`. This is a singleton which houses all the field types you can use. We currently have a handful in the core, with more being added in the future. If you need a field type that's not here, speak with us first in case it's in the pipeline.
+Lunar will load up available field types via the `AttributeManifest`. This is a singleton which houses all the field types you can use. We currently have a handful in the core, with more being added in the future. If you need a field type that's not here, speak with us first in case it's in the pipeline.
 
 ## Create Your Field Type Class
 
@@ -18,7 +18,7 @@ Each FieldType is it's own class which implements the `FieldType` interface. So 
 
 namespace App\FieldTypes;
 
-use GetCandy\Base\FieldType;
+use Lunar\Base\FieldType;
 
 class ColourPicker implements FieldType
 {
@@ -131,7 +131,25 @@ You will also have access to the `$language` variable, which is generally used o
 Once you've made the FieldType, you need to register it. Typically this could done in a service provider:
 
 ```php
-\GetCandy\Facades\FieldTypeManifest::add(
+\Lunar\Facades\FieldTypeManifest::add(
   ColourFieldType::class
 );
+```
+
+## Registering FieldType Assets
+
+If you need to register styles or scripts, you can do so in a service provider. More on this topic in [registering assets](/extending/assets).
+
+```php
+// Register compiled script
+LunarHub::script('lunar-package', __DIR__.'/../dist/lunar-package.js');
+
+// Register remote script
+LunarHub::remoteScript('https://example.com/script.js');
+
+// Register compiled styles
+LunarHub::style('lunar-package', __DIR__.'/../dist/lunar-package.css');
+
+// Register remote styles
+LunarHub::remoteStyle('https://example.com/style.css');
 ```

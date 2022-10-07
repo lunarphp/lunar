@@ -9,10 +9,16 @@
           <x-hub::input.checkbox value="{{ $line->id }}" wire:model="selectedLines" />
         @endif
         <div class="flex-shrink-0 p-1 overflow-hidden border border-gray-100 rounded">
-          <img
-            class="object-contain w-8 h-8"
-            src="{{ $line->purchasable->getThumbnail() }}"
-          />
+            @if($thumbnail = $line->purchasable->getThumbnail())
+                <img
+                    class="object-contain w-8 h-8"
+                    src="{{ $thumbnail->getUrl('small') }}"
+                  />
+            @else
+                <x-hub::icon ref="photograph"
+                 class="lt-w-10 lt-h-10 lt-text-gray-300" />
+            @endif
+
         </div>
       </div>
 

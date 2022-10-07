@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Language;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Language;
+use Lunar\Tests\TestCase;
 
 class LanguageTest extends TestCase
 {
@@ -14,8 +14,8 @@ class LanguageTest extends TestCase
     public function can_make_a_language()
     {
         $language = Language::factory()->create([
-            'code'    => 'fr',
-            'name'    => 'Français',
+            'code' => 'fr',
+            'name' => 'Français',
             'default' => true,
         ]);
 

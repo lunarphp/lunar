@@ -1,8 +1,8 @@
-<p align="center"><a href="https://getcandy.io/" target="_blank"><img src="https://getcandy.io/getcandy_logo.svg" width="400" alt="GetCandy"></a></p>
+<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://lunarphp.io/lunar_logo.svg" width="400" alt="Lunar"></a></p>
 
-## About GetCandy
+## About Lunar
 
-GetCandy is an open source E-commerce platform which embraces Laravel as it's foundation and uses it to build a highly extensible, robust and feature rich application you can build any store on.
+Lunar is an open source E-commerce platform which embraces Laravel as it's foundation and uses it to build a highly extensible, robust and feature rich application you can build any store on.
 
 We put developers first and try to ensure your experience is as smooth as possible.
 
@@ -17,8 +17,8 @@ We put developers first and try to ensure your experience is as smooth as possib
 
 ## Documentation
 
-- [Full documentation](https://docs.getcandy.io/) - Includes in-depth guides on everything GetCandy
+- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything Lunar
 
 ## License
 
-GetCandy is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Lunar is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

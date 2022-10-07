@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Authentication;
+namespace Lunar\Hub\Http\Livewire\Components\Authentication;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +37,7 @@ class LoginForm extends Component
      * {@inheritDoc}
      */
     protected $rules = [
-        'email'    => 'required|email',
+        'email' => 'required|email',
         'remember' => 'nullable',
         'password' => 'required',
     ];
@@ -52,7 +52,7 @@ class LoginForm extends Component
         $this->validate();
 
         $authCheck = Auth::guard('staff')->attempt([
-            'email'    => $this->email,
+            'email' => $this->email,
             'password' => $this->password,
         ], $this->remember);
 

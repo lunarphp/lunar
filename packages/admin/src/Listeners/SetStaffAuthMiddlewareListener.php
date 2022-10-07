@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Listeners;
+namespace Lunar\Hub\Listeners;
 
-use GetCandy\Hub\Http\Middleware\Authenticate;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Str;
+use Lunar\Hub\Http\Middleware\Authenticate;
 
 class SetStaffAuthMiddlewareListener
 {
@@ -60,6 +60,7 @@ class SetStaffAuthMiddlewareListener
         return Str::of($this->event->route->name)->contains([
             'hub.pages',
             'hub.components',
+            'lunar',
         ]);
     }
 

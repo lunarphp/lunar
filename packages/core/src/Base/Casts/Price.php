@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Base\Casts;
+namespace Lunar\Base\Casts;
 
-use GetCandy\DataTypes\Price as PriceDataType;
-use GetCandy\Models\Currency;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Facades\Validator;
+use Lunar\DataTypes\Price as PriceDataType;
+use Lunar\Models\Currency;
 
 class Price implements CastsAttributes
 {
@@ -16,7 +16,7 @@ class Price implements CastsAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function get($model, $key, $value, $attributes)
     {
@@ -45,7 +45,7 @@ class Price implements CastsAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  \GetCandy\DataTypes\Price  $value
+     * @param  \Lunar\DataTypes\Price  $value
      * @param  array  $attributes
      * @return array
      */

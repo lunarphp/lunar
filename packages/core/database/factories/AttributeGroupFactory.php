@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\AttributeGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\AttributeGroup;
 
 class AttributeGroupFactory extends Factory
 {
@@ -16,10 +16,10 @@ class AttributeGroupFactory extends Factory
     {
         return [
             'attributable_type' => 'product_type',
-            'name'              => collect([
+            'name' => collect([
                 'en' => $this->faker->name(),
             ]),
-            'handle'   => Str::slug($this->faker->name()),
+            'handle' => Str::slug($this->faker->name()),
             'position' => self::$position++,
         ];
     }

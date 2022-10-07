@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: superbrothers/close-pull-request@v3
       with:
-        comment: "Thank you for your pull request. However, you have submitted this PR on the GetCandy Core Repo which is a read-only sub split of `getcandy/getcandy`. Please submit your PR on the https://github.com/getcandy/getcandy repository.<br><br>Thanks!"
+        comment: "Thank you for your pull request. However, you have submitted this PR on the Lunar Core Repo which is a read-only sub split of `lunar/lunar`. Please submit your PR on the https://github.com/lunarphp/lunar repository.<br><br>Thanks!"

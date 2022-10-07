@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\TaxRate;
-use GetCandy\Models\TaxZone;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxZone;
 
 class TaxRateFactory extends Factory
 {
@@ -14,8 +14,8 @@ class TaxRateFactory extends Factory
     {
         return [
             'tax_zone_id' => TaxZone::factory(),
-            'name'        => $this->faker->name,
-            'priority'    => $this->faker->numberBetween(1, 50),
+            'name' => $this->faker->name,
+            'priority' => $this->faker->numberBetween(1, 50),
         ];
     }
 }

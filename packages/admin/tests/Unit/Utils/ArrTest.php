@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Utils;
+namespace Lunar\Hub\Tests\Unit\Utils;
 
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Utils\Arr;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Utils\Arr;
 
 /**
  * @group hub.utils
@@ -45,19 +45,19 @@ class ArrTest extends TestCase
                 ],
                 'expected' => [
                     [
-                        'colour'   => 'Blue',
+                        'colour' => 'Blue',
                         'material' => 'Leather',
                     ],
                     [
-                        'colour'   => 'Blue',
+                        'colour' => 'Blue',
                         'material' => 'Cotton',
                     ],
                     [
-                        'colour'   => 'Red',
+                        'colour' => 'Red',
                         'material' => 'Leather',
                     ],
                     [
-                        'colour'   => 'Red',
+                        'colour' => 'Red',
                         'material' => 'Cotton',
                     ],
                 ],
@@ -79,44 +79,44 @@ class ArrTest extends TestCase
                 ],
                 'expected' => [
                     [
-                        'colour'   => 'Blue',
+                        'colour' => 'Blue',
                         'material' => 'Leather',
-                        'size'     => 'Small',
+                        'size' => 'Small',
                     ],
                     [
-                        'colour'   => 'Blue',
+                        'colour' => 'Blue',
                         'material' => 'Leather',
-                        'size'     => 'Medium',
+                        'size' => 'Medium',
                     ],
                     [
-                        'colour'   => 'Blue',
+                        'colour' => 'Blue',
                         'material' => 'Cotton',
-                        'size'     => 'Small',
+                        'size' => 'Small',
                     ],
                     [
-                        'colour'   => 'Blue',
+                        'colour' => 'Blue',
                         'material' => 'Cotton',
-                        'size'     => 'Medium',
+                        'size' => 'Medium',
                     ],
                     [
-                        'colour'   => 'Red',
+                        'colour' => 'Red',
                         'material' => 'Leather',
-                        'size'     => 'Small',
+                        'size' => 'Small',
                     ],
                     [
-                        'colour'   => 'Red',
+                        'colour' => 'Red',
                         'material' => 'Leather',
-                        'size'     => 'Medium',
+                        'size' => 'Medium',
                     ],
                     [
-                        'colour'   => 'Red',
+                        'colour' => 'Red',
                         'material' => 'Cotton',
-                        'size'     => 'Small',
+                        'size' => 'Small',
                     ],
                     [
-                        'colour'   => 'Red',
+                        'colour' => 'Red',
                         'material' => 'Cotton',
-                        'size'     => 'Medium',
+                        'size' => 'Medium',
                     ],
                 ],
             ],

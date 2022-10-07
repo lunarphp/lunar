@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Utils;
+namespace Lunar\Tests\Unit\Utils;
 
-use GetCandy\Tests\TestCase;
 use Illuminate\Support\Str;
+use Lunar\Tests\TestCase;
 
 /**
  * @group core.utils

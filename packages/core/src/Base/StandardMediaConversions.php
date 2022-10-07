@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Spatie\Image\Manipulations;
 
@@ -10,15 +10,15 @@ class StandardMediaConversions
     {
         $conversions = [
             'zoom' => [
-                'width'  => 500,
+                'width' => 500,
                 'height' => 500,
             ],
             'large' => [
-                'width'  => 800,
+                'width' => 800,
                 'height' => 800,
             ],
             'medium' => [
-                'width'  => 500,
+                'width' => 500,
                 'height' => 500,
             ],
         ];

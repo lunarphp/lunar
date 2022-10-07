@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Database\Factories\TaxRateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Database\Factories\TaxRateFactory;
 
 class TaxRate extends BaseModel
 {
@@ -15,7 +15,7 @@ class TaxRate extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\TaxRateFactory
+     * @return \Lunar\Database\Factories\TaxRateFactory
      */
     protected static function newFactory(): TaxRateFactory
     {

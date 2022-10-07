@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class Toggle implements FieldType, JsonSerializable
 {
@@ -98,7 +98,7 @@ class Toggle implements FieldType, JsonSerializable
     {
         return [
             'options' => [
-                'on_value'  => 'nullable|string',
+                'on_value' => 'nullable|string',
                 'off_value' => 'nullable|string',
             ],
         ];

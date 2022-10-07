@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\TaxZone;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\TaxZone;
 
 class TaxZoneFactory extends Factory
 {
@@ -12,11 +12,11 @@ class TaxZoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'          => $this->faker->name,
-            'zone_type'     => $this->faker->randomElement(['country', 'postcode', 'state']),
+            'name' => $this->faker->name,
+            'zone_type' => $this->faker->randomElement(['country', 'postcode', 'state']),
             'price_display' => $this->faker->randomElement(['tax_inclusive', 'tax_exclusive']),
-            'active'        => $this->faker->boolean,
-            'default'       => true,
+            'active' => $this->faker->boolean,
+            'default' => true,
         ];
     }
 }

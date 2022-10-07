@@ -1,10 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Facades;
+namespace Lunar\Hub\Facades;
 
-use GetCandy\Hub\Menu\MenuRegistry;
-use GetCandy\Hub\Menu\MenuSlot;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Hub\Menu\MenuRegistry;
 
 /**
  * @method static MenuSlot slot(string $handle)

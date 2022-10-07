@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\Models\Collection;
-use GetCandy\Models\CollectionGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
 
 class CollectionFactory extends Factory
 {
@@ -15,7 +15,7 @@ class CollectionFactory extends Factory
     {
         return [
             'collection_group_id' => CollectionGroup::factory(),
-            'attribute_data'      => collect([
+            'attribute_data' => collect([
                 'name' => new Text($this->faker->name),
             ]),
         ];

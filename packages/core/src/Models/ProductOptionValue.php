@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Database\Factories\ProductOptionValueFactory;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Database\Factories\ProductOptionValueFactory;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class ProductOptionValue extends BaseModel implements SpatieHasMedia
@@ -30,7 +30,7 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\ProductOptionValueFactory
+     * @return \Lunar\Database\Factories\ProductOptionValueFactory
      */
     protected static function newFactory(): ProductOptionValueFactory
     {

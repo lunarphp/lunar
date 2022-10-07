@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\TaxRate;
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Models\TaxZone;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Models\TaxZone;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.models
+ * @group lunar.models
  */
 class TaxRateTest extends TestCase
 {
@@ -19,7 +19,7 @@ class TaxRateTest extends TestCase
     public function can_make_a_tax_rate()
     {
         $data = [
-            'name'        => 'VAT',
+            'name' => 'VAT',
             'tax_zone_id' => TaxZone::factory()->create()->id,
         ];
 
@@ -34,7 +34,7 @@ class TaxRateTest extends TestCase
     public function tax_rate_can_have_amounts()
     {
         $data = [
-            'name'        => 'VAT',
+            'name' => 'VAT',
             'tax_zone_id' => TaxZone::factory()->create()->id,
         ];
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Models;
+namespace Lunar\Hub\Models;
 
-use GetCandy\Base\BaseModel;
+use Lunar\Base\BaseModel;
 
 class SavedSearch extends BaseModel
 {
