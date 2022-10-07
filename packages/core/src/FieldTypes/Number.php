@@ -87,7 +87,7 @@ class Number implements FieldType, JsonSerializable
     public function getConfig(): array
     {
         return [
-            'view'    => 'adminhub::field-types.number',
+            'view' => 'adminhub::field-types.number',
             'options' => [
                 'min' => 'numeric|min:1',
                 'max' => 'numeric',

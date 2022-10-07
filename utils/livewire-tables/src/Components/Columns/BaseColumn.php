@@ -3,7 +3,6 @@
 namespace Lunar\LivewireTables\Components\Columns;
 
 use Closure;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\LivewireTables\Components\Concerns\HasClosure;
 use Lunar\LivewireTables\Components\Concerns\HasEloquentRelationships;

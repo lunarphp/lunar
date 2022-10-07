@@ -77,9 +77,9 @@ class AttributeShow extends AbstractAttribute
     protected $listeners = [
         'attribute-group-edit.created' => 'refreshGroups',
         'attribute-group-edit.updated' => 'resetGroupEdit',
-        'attribute-edit.created'       => 'resetAttributeEdit',
-        'attribute-edit.updated'       => 'resetAttributeEdit',
-        'attribute-edit.closed'        => 'resetAttributeEdit',
+        'attribute-edit.created' => 'resetAttributeEdit',
+        'attribute-edit.updated' => 'resetAttributeEdit',
+        'attribute-edit.closed' => 'resetAttributeEdit',
     ];
 
     /**
@@ -156,7 +156,7 @@ class AttributeShow extends AbstractAttribute
         DB::transaction(function () use ($attributes) {
             foreach ($attributes['items'] as $attribute) {
                 Attribute::whereId($attribute['id'])->update([
-                    'position'           => $attribute['order'],
+                    'position' => $attribute['order'],
                     'attribute_group_id' => $attributes['owner'],
                 ]);
             }

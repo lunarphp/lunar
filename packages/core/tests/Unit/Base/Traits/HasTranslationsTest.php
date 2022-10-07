@@ -242,7 +242,7 @@ class HasTranslationsTest extends TestCase
 
         $product = Product::factory()->create([
             'attribute_data' => [
-                'name'        => new Text('English Name'),
+                'name' => new Text('English Name'),
                 'description' => new Text(null),
             ],
         ]);
@@ -264,13 +264,13 @@ class HasTranslationsTest extends TestCase
 
         $product = Product::factory()->create([
             'attribute_data' => [
-                'name'        => new Text('Test Name'),
-                'list'        => new ListField([
+                'name' => new Text('Test Name'),
+                'list' => new ListField([
                     'One',
                     'Two',
                     'Three',
                 ]),
-                'dropdown'        => new Dropdown('Foobar'),
+                'dropdown' => new Dropdown('Foobar'),
             ],
         ]);
 

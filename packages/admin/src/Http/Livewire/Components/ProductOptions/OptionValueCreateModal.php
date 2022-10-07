@@ -47,7 +47,7 @@ class OptionValueCreateModal extends Component
      */
     protected $listeners = [
         'option-manager.selected-option' => 'setOption',
-        'variant-show.selected-option'   => 'setOption',
+        'variant-show.selected-option' => 'setOption',
     ];
 
     /**
@@ -119,7 +119,7 @@ class OptionValueCreateModal extends Component
 
         $this->emit('option-value-create-modal.value-created', [
             'option' => $this->option->id,
-            'value'  => (string) $value->id,
+            'value' => (string) $value->id,
         ]);
     }
 

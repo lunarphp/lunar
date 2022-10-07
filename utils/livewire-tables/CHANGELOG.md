@@ -10,6 +10,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added `after` method to enable positioning of additional columns.
 
+## 0.1.1
+
+> No notable changes
+
+## 0.1.0
+
+### Changed
+
+- Table pagination will now default to `true`.
+
+
 ## 0.1.0-rc.5
 
 ### Changed

@@ -3,8 +3,6 @@
 namespace Lunar\LivewireTables\Components\Columns;
 
 use Closure;
-use Livewire\Component;
-use Lunar\LivewireTables\TableManifest;
 
 class BadgeColumn extends BaseColumn
 {

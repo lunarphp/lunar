@@ -9,7 +9,6 @@ use Lunar\Hub\Http\Livewire\Traits\HasUrls;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Brand;
-use Lunar\Models\Product;
 
 class BrandShow extends Component
 {

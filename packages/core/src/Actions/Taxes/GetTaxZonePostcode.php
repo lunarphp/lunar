@@ -27,7 +27,7 @@ class GetTaxZonePostcode
         $match = $postcodeZone->map(function ($pZone) use ($postcode) {
             return [
                 'postcode' => $pZone,
-                'matches'  => $this->matchWildcard($pZone->postcode, $postcode),
+                'matches' => $this->matchWildcard($pZone->postcode, $postcode),
             ];
         })->sort(fn ($current, $next) => $current['matches'] < $next['matches'])->first();
 

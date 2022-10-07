@@ -29,7 +29,7 @@ class SideMenu extends Component
         $this->validate();
 
         $newGroup = CollectionGroup::create([
-            'name'   => $this->name,
+            'name' => $this->name,
             'handle' => Str::slug($this->name),
         ]);
 

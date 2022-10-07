@@ -32,16 +32,16 @@ class ProductCreateTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code'    => 'fr',
+            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
-            'default'        => true,
+            'default' => true,
             'decimal_places' => 2,
         ]);
 

@@ -75,7 +75,7 @@ class Associate implements ShouldQueue
                 $this->targets->map(function ($model) {
                     return [
                         'product_target_id' => $model->id,
-                        'type'              => $this->type,
+                        'type' => $this->type,
                     ];
                 })
             );

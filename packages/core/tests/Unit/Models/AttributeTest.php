@@ -24,13 +24,13 @@ class AttributeTest extends TestCase
             ->for(AttributeGroup::factory())
             ->create([
                 'position' => 4,
-                'name'     => [
+                'name' => [
                     'en' => 'Meta Description',
                 ],
-                'handle'        => 'meta_description',
-                'section'       => 'product_variant',
-                'type'          => \Lunar\FieldTypes\Text::class,
-                'required'      => false,
+                'handle' => 'meta_description',
+                'section' => 'product_variant',
+                'type' => \Lunar\FieldTypes\Text::class,
+                'required' => false,
                 'default_value' => '',
                 'configuration' => [
                     'options' => $options,

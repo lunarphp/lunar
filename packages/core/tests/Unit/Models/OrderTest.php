@@ -27,11 +27,11 @@ class OrderTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Currency::factory()->create([
-            'default'        => true,
+            'default' => true,
             'decimal_places' => 2,
         ]);
     }
@@ -60,9 +60,9 @@ class OrderTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -83,9 +83,9 @@ class OrderTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -97,7 +97,7 @@ class OrderTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 
@@ -109,7 +109,7 @@ class OrderTest extends TestCase
     {
         $order = Order::factory()->create([
             'user_id' => null,
-            'status'  => 'status_a',
+            'status' => 'status_a',
         ]);
 
         $this->assertEquals('status_a', $order->status);
@@ -130,7 +130,7 @@ class OrderTest extends TestCase
 
         $order = Order::factory()->create([
             'user_id' => null,
-            'status'  => 'status_a',
+            'status' => 'status_a',
         ]);
 
         $this->assertCount(0, $order->transactions);
@@ -153,15 +153,15 @@ class OrderTest extends TestCase
 
         $order = Order::factory()->create([
             'user_id' => null,
-            'status'  => 'status_a',
+            'status' => 'status_a',
         ]);
 
         $this->assertCount(0, $order->transactions);
 
         $charge = Transaction::factory()->create([
             'order_id' => $order->id,
-            'amount'   => 200,
-            'type'   => 'capture',
+            'amount' => 200,
+            'type' => 'capture',
         ]);
 
         $refund = Transaction::factory()->create([
@@ -184,11 +184,11 @@ class OrderTest extends TestCase
     public function can_have_user_and_customer_associated()
     {
         $user = User::create([
-            'name'              => 'Test User',
-            'email'             => 'test@domain.com',
+            'name' => 'Test User',
+            'email' => 'test@domain.com',
             'email_verified_at' => now(),
-            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token'    => \Illuminate\Support\Str::random(10),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
         ]);
 
         $customer = $user->customers()->create(
@@ -197,7 +197,7 @@ class OrderTest extends TestCase
 
         $order = Order::factory()->create([
             'customer_id' => $customer->id,
-            'user_id'     => $user->getKey(),
+            'user_id' => $user->getKey(),
         ]);
 
         $this->assertEquals($customer->id, $order->customer->id);

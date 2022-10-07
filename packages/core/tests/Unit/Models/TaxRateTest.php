@@ -19,7 +19,7 @@ class TaxRateTest extends TestCase
     public function can_make_a_tax_rate()
     {
         $data = [
-            'name'        => 'VAT',
+            'name' => 'VAT',
             'tax_zone_id' => TaxZone::factory()->create()->id,
         ];
 
@@ -34,7 +34,7 @@ class TaxRateTest extends TestCase
     public function tax_rate_can_have_amounts()
     {
         $data = [
-            'name'        => 'VAT',
+            'name' => 'VAT',
             'tax_zone_id' => TaxZone::factory()->create()->id,
         ];
 

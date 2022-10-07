@@ -40,15 +40,15 @@ class OrderLine extends BaseModel
      * @var array
      */
     protected $casts = [
-        'unit_quantity'  => 'integer',
-        'quantity'       => 'integer',
-        'meta'           => 'object',
-        'tax_breakdown'  => TaxBreakdown::class,
-        'unit_price'     => Price::class,
-        'sub_total'      => Price::class,
-        'tax_total'      => Price::class,
+        'unit_quantity' => 'integer',
+        'quantity' => 'integer',
+        'meta' => 'object',
+        'tax_breakdown' => TaxBreakdown::class,
+        'unit_price' => Price::class,
+        'sub_total' => Price::class,
+        'tax_total' => Price::class,
         'discount_total' => Price::class,
-        'total'          => Price::class,
+        'total' => Price::class,
     ];
 
     /**
