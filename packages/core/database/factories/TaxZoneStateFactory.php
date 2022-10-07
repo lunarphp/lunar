@@ -15,7 +15,7 @@ class TaxZoneStateFactory extends Factory
     {
         return [
             'tax_zone_id' => TaxZone::factory(),
-            'state_id'    => State::factory(),
+            'state_id' => State::factory(),
         ];
     }
 }

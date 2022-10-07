@@ -3,8 +3,6 @@
 namespace Lunar\LivewireTables\Components\Filters;
 
 use Closure;
-use Livewire\Component;
-use Lunar\LivewireTables\Components\Filters\BaseFilter;
 
 class SelectFilter extends BaseFilter
 {

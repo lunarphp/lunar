@@ -15,7 +15,7 @@ class ProductAssociationFactory extends Factory
         return [
             'product_parent_id' => Product::factory(),
             'product_target_id' => Product::factory(),
-            'type'              => 'cross-sell',
+            'type' => 'cross-sell',
         ];
     }
 }

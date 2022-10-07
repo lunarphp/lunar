@@ -86,7 +86,7 @@ class Cart extends BaseModel
      */
     protected $casts = [
         'completed_at' => 'datetime',
-        'meta'         => 'object',
+        'meta' => 'object',
     ];
 
     /**

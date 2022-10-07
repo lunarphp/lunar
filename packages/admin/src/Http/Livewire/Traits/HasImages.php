@@ -55,7 +55,7 @@ trait HasImages
     {
         return [
             'imageUploadQueue.*' => 'image|max:'.max_upload_filesize(),
-            'images.*.caption'   => 'nullable|string',
+            'images.*.caption' => 'nullable|string',
             'showImageSelectModal' => 'boolean',
             'selectedImages' => 'nullable|array|min:0',
         ];
@@ -75,14 +75,14 @@ trait HasImages
 
             return [
                 $key => [
-                    'id'        => $media->id,
-                    'sort_key'  => $key,
+                    'id' => $media->id,
+                    'sort_key' => $key,
                     'thumbnail' => $media->getFullUrl('medium'),
-                    'original'  => $media->getFullUrl(),
-                    'preview'   => false,
-                    'caption'   => $media->getCustomProperty('caption'),
-                    'primary'   => $media->getCustomProperty('primary'),
-                    'position'  => $media->getCustomProperty('position', 1),
+                    'original' => $media->getFullUrl(),
+                    'preview' => false,
+                    'caption' => $media->getCustomProperty('caption'),
+                    'primary' => $media->getCustomProperty('primary'),
+                    'position' => $media->getCustomProperty('position', 1),
                 ],
             ];
         })->sortBy('position')->values()->toArray();
@@ -159,13 +159,13 @@ trait HasImages
 
             $this->images[$key] = [
                 'thumbnail' => $file->temporaryUrl(),
-                'sort_key'  => $key,
-                'filename'  => $filename,
-                'original'  => $file->temporaryUrl(),
-                'caption'   => null,
-                'position'  => count($this->images) + 1,
-                'preview'   => false,
-                'primary'   => ! count($this->images),
+                'sort_key' => $key,
+                'filename' => $filename,
+                'original' => $file->temporaryUrl(),
+                'caption' => null,
+                'position' => count($this->images) + 1,
+                'preview' => false,
+                'primary' => ! count($this->images),
             ];
 
             unset($this->imageUploadQueue[$key]);
@@ -301,13 +301,13 @@ trait HasImages
             $this->images[$key] = [
                 'id' => $media->id,
                 'thumbnail' => $media->getUrl('small'),
-                'sort_key'  => $key,
-                'filename'  => $media->file_name,
-                'original'  => $media->getUrl(),
-                'caption'   => null,
-                'position'  => $media->getCustomProperty('position'),
-                'preview'   => false,
-                'primary'   => false,
+                'sort_key' => $key,
+                'filename' => $media->file_name,
+                'original' => $media->getUrl(),
+                'caption' => null,
+                'position' => $media->getCustomProperty('position'),
+                'preview' => false,
+                'primary' => false,
             ];
         }
 

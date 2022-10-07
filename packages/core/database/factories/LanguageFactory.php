@@ -3,7 +3,6 @@
 namespace Lunar\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use Lunar\Models\Language;
 
 class LanguageFactory extends Factory
@@ -13,8 +12,8 @@ class LanguageFactory extends Factory
     public function definition(): array
     {
         return [
-            'code'    => Str::random(2),
-            'name'    => $this->faker->name(),
+            'code' => $this->faker->unique()->languageCode,
+            'name' => $this->faker->name(),
             'default' => true,
         ];
     }

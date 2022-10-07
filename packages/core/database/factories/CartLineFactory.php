@@ -14,11 +14,11 @@ class CartLineFactory extends Factory
     public function definition(): array
     {
         return [
-            'cart_id'          => Cart::factory(),
-            'quantity'         => $this->faker->numberBetween(0, 1000),
+            'cart_id' => Cart::factory(),
+            'quantity' => $this->faker->numberBetween(0, 1000),
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => 1,
-            'meta'             => null,
+            'purchasable_id' => 1,
+            'meta' => null,
         ];
     }
 }

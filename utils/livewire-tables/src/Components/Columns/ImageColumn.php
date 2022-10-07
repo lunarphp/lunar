@@ -2,9 +2,6 @@
 
 namespace Lunar\LivewireTables\Components\Columns;
 
-use Livewire\Component;
-use Lunar\LivewireTables\TableManifest;
-
 class ImageColumn extends BaseColumn
 {
     /**

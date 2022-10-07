@@ -2,8 +2,6 @@
 
 namespace Lunar\LivewireTables\Components\Filters;
 
-use Lunar\LivewireTables\Components\Filters\BaseFilter;
-
 class DateFilter extends BaseFilter
 {
     public $view = 'l-tables::filters.date';
