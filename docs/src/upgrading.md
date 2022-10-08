@@ -139,6 +139,11 @@ We have created a command for this purpose to try make the switch as easy as pos
 php artisan lunar:migrate:getcandy
 ```
 
+#### Instructions for Custom Application (Optional)
+We realise that developers may have added their own fields to a number of the `getcandy_` tables.
+In order for your upgrade to include the custom fields. Please move any migration files which previously extended GetCandy over to `database/migrations/upgrade`
+Next step you will need to change the migration namespace from `GetCandy\Base\Migration` to `Lunar\Base\Migration`
+
 #### What this command will do
 
 - Remove any previous GetCandy migrations from the `migrations` table.
@@ -146,6 +151,9 @@ php artisan lunar:migrate:getcandy
 - Copy across the data from the old `getcandy_` tables into the new `lunar_` tables.
 - Update any polymorphic `GetCandy` classes to the `Lunar` namespace.
 - Update field types in `attribute_data` to the `Lunar` namespace.
+- Remove previous GetCandy migrations located in `database/migrations/upgrade` from the migrations table.
+- Run the upgrade migrations again with the lunar_ prefix, updating the new tables.
+- By default, this command will remove the `getcandy_` tables once checking the data has been transferred.
 
 
 #### What this command will not do
@@ -155,4 +163,4 @@ php artisan lunar:migrate:getcandy
 ---
 
 The intention of this is to provide a non-destructive way to migrate the data. Once the command has been run
-your `getcandy_` tables should remain intact, so you are free to check the data and remove when ready.
+your `getcandy_` tables will be removed only once checking data integrity across the old and new tables. You can opt out of this by passing `--cleanup=false`. 
