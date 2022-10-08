@@ -15,7 +15,8 @@ class MigrateGetCandy extends Command
      *
      * @var string
      */
-    protected $signature = 'lunar:migrate:getcandy';
+    protected $signature = 'lunar:migrate:getcandy
+        {--cleanup=true : Removes the getcandy tables after successful migration}';
 
     /**
      * The console command description.
@@ -25,9 +26,16 @@ class MigrateGetCandy extends Command
     protected $description = 'Migrate GetCandy into Lunar';
 
     /**
+     * Check if we need to run the application upgrade migtrations.
+     *
+     * @var bool
+     */
+    protected bool $runAppUpgradeMigrations = false;
+
+    /**
      * Execute the console command.
      *
-     * @return void
+     * @return int
      */
     public function handle()
     {
@@ -44,6 +52,7 @@ class MigrateGetCandy extends Command
         });
 
         if ($tables->count() && ! $lunarTables->count()) {
+            $this->prepareAppUpgradeMigrations();
             $this->migrateTableNames($tables);
         }
 
@@ -120,6 +129,10 @@ class MigrateGetCandy extends Command
             ]);
         }
 
+        if ($this->option('cleanup')) {
+            $this->cleanup();
+        }
+
         return Command::SUCCESS;
     }
 
@@ -144,6 +157,12 @@ class MigrateGetCandy extends Command
         DB::table('migrations')->whereIn('migration', $migrations)->delete();
 
         $this->call('migrate');
+
+        if ($this->runAppUpgradeMigrations) {
+            $this->call('migrate', [
+                '--path' => database_path('migrations/upgrade'),
+            ]);
+        }
 
         Schema::disableForeignKeyConstraints();
 
@@ -196,6 +215,66 @@ class MigrateGetCandy extends Command
 
         Schema::enableForeignKeyConstraints();
 
-        $this->info('Migration finished, you can safely delete the old getcandy_ tables.');
+        $this->info('Migration finished.');
+    }
+
+    protected function prepareAppUpgradeMigrations(): void
+    {
+        $upgradePath = database_path('migrations/upgrade');
+
+        try {
+            $appUpgradeMigrations = collect(File::files($upgradePath));
+        } catch (DirectoryNotFoundException $e) {
+            $appUpgradeMigrations = collect();
+        }
+
+        if ($appUpgradeMigrations->isEmpty()) {
+            return;
+        }
+
+        $this->runAppUpgradeMigrations = true;
+
+        $migrations = $appUpgradeMigrations->map(function ($file) {
+            return $file->getBasename('.'.$file->getExtension());
+        });
+
+        $this->line('Removing any existing upgrade migrations');
+
+        DB::table('migrations')->whereIn('migration', $migrations)->delete();
+    }
+
+    protected function cleanup(): void
+    {
+        $tableNames = collect(
+            DB::connection()->getDoctrineSchemaManager()->listTableNames()
+        );
+
+        $tables = $tableNames->filter(function ($table) {
+            return str_starts_with($table, 'getcandy_');
+        });
+
+        Schema::disableForeignKeyConstraints();
+
+        $removedCount = 0;
+        foreach ($tables as $table) {
+            $old = $table;
+            $new = str_replace('getcandy_', 'lunar_', $table);
+
+            $schemaExists = Schema::hasTable($old) && Schema::hasTable($new);
+            if ($schemaExists) {
+                $schemaMatchesCount = DB::table($old)->count() === DB::table($new)->count();
+                if ($schemaMatchesCount) {
+                    $this->line("Dropping {$old}");
+                    Schema::dropIfExists($old);
+                    $removedCount++;
+                }
+            }
+        }
+
+        Schema::enableForeignKeyConstraints();
+
+        if ($removedCount) {
+            $this->info("Cleanup finished removed {$removedCount} old tables");
+        }
     }
 }
