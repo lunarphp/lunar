@@ -23,19 +23,4 @@ class ChannelShowTest extends TestCase
                 route('hub.login')
             );
     }
-
-    /** @test */
-    public function can_view_page_when_authenticated()
-    {
-        $channel = Channel::factory()->create();
-
-        $staff = Staff::factory()->create([
-            'admin' => true,
-        ]);
-
-        $this->actingAs($staff, 'staff');
-
-        $this->get("/hub/settings/channels/{$channel->id}")
-            ->assertSeeLivewire('hub.components.settings.channels.show');
-    }
 }
