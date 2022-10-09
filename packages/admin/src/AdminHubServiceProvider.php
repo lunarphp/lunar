@@ -33,6 +33,8 @@ use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
+use Lunar\Hub\Http\Livewire\Components\Forms\ChannelForm;
+use Lunar\Hub\Http\Livewire\Components\Forms\CustomerDetailForm;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -102,7 +104,6 @@ use Lunar\Hub\Menu\MenuRegistry;
 use Lunar\Hub\Menu\OrderActionsMenu;
 use Lunar\Hub\Menu\SettingsMenu;
 use Lunar\Hub\Menu\SidebarMenu;
-use Lunar\Hub\Menu\SlotRegistry;
 use Lunar\Hub\Tables\Builders\CustomersTableBuilder;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
@@ -435,6 +436,7 @@ class AdminHubServiceProvider extends ServiceProvider
     public function registerFormComponents()
     {
         Livewire::component('hub.components.forms.channel-form', ChannelForm::class);
+        Livewire::component('hub.components.forms.customer-detail-form', CustomerDetailForm::class);
     }
 
     /**
