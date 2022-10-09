@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Forms\Fields\Input;
+namespace Lunar\Hub\Forms\Fields\Input;
 
-use GetCandy\Hub\Forms\InputField;
+use Lunar\Hub\Forms\InputField;
 
 class Datepicker extends InputField
 {

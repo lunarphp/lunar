@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Forms;
+namespace Lunar\Hub\Forms;
 
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 
-abstract class GetCandyForm extends Component
+abstract class LunarForm extends Component
 {
     use Traits\HasListeners;
     use Traits\InteractsWithModel;
@@ -64,7 +64,7 @@ abstract class GetCandyForm extends Component
      */
     protected function getRouteParams(): array
     {
-        $entity =  Str::of(class_basename($this->model))->lower()->__toString();
+        $entity = Str::of(class_basename($this->model))->lower()->__toString();
 
         return $this->model->exists ? [$entity => $this->model] : [];
     }

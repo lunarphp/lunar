@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Forms\Fields\Input\Autocomplete;
+namespace Lunar\Hub\Forms\Fields\Input\Autocomplete;
 
-use GetCandy\Hub\Forms\InputField;
+use Lunar\Hub\Forms\InputField;
 
 class Item extends InputField
 {

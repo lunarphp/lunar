@@ -16,7 +16,7 @@ return [
     /**
      * Important these need to match up with field names and relations.
      *
-     * @see \GetCandy\Models\Customer
+     * @see \Lunar\Models\Customer
      */
     'customer' => [
         'title' => 'Title',
@@ -32,7 +32,7 @@ return [
     /**
      * Important these need to match up with field names and relations.
      *
-     * @see \GetCandy\Models\Order
+     * @see \Lunar\Models\Order
      */
     'order' => [
 

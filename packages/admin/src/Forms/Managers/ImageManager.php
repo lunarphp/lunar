@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Forms\Managers;
+namespace Lunar\Hub\Forms\Managers;
 
-use GetCandy\Hub\Forms\Traits\CanResolveFromContainer;
 use Illuminate\Support\Manager;
+use Lunar\Hub\Forms\Traits\CanResolveFromContainer;
 
 class ImageManager extends Manager
 {
@@ -11,6 +11,6 @@ class ImageManager extends Manager
 
     public function getDefaultDriver(): string
     {
-        return config('getcandy.images.driver', 's3');
+        return config('lunar.images.driver', 's3');
     }
 }

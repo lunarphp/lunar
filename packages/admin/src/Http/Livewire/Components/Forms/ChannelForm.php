@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Forms;
+namespace Lunar\Hub\Http\Livewire\Components\Forms;
 
-use GetCandy\Hub\Forms;
-use GetCandy\Hub\Forms\GetCandyForm;
+use Lunar\Hub\Forms;
+use Lunar\Hub\Forms\LunarForm;
 
-class ChannelForm extends GetCandyForm
+class ChannelForm extends LunarForm
 {
     protected bool $showDeleteDangerZone = true;
 
@@ -19,9 +19,9 @@ class ChannelForm extends GetCandyForm
         $table = $this->model->getTable();
 
         return [
-            'model.name'    => 'required|string|max:255',
-            'model.handle'  => "required|string|unique:$table,handle,{$this->model->id}|max:255",
-            'model.url'     => 'nullable|url|max:255',
+            'model.name' => 'required|string|max:255',
+            'model.handle' => "required|string|unique:$table,handle,{$this->model->id}|max:255",
+            'model.url' => 'nullable|url|max:255',
             'model.default' => 'nullable',
         ];
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Forms;
+namespace Lunar\Hub\Http\Livewire\Components\Forms;
 
-use GetCandy\Hub\Forms;
-use GetCandy\Hub\Forms\GetCandyForm;
+use Lunar\Hub\Forms;
+use Lunar\Hub\Forms\LunarForm;
 
-class CustomerDetailForm extends GetCandyForm
+class CustomerDetailForm extends LunarForm
 {
     public string $layout = 'slideover';
 

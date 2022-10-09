@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Forms\Traits;
+namespace Lunar\Hub\Forms\Traits;
 
 trait HasRules
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Forms;
+namespace Lunar\Hub\Forms;
 
 use Illuminate\View\Component;
 

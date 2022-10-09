@@ -1,10 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Forms\Traits;
+namespace Lunar\Hub\Forms\Traits;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 
 trait CanUpdateModel
 {

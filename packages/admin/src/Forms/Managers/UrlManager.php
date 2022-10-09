@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Forms\Managers;
+namespace Lunar\Hub\Forms\Managers;
 
-use GetCandy\Hub\Forms\Traits\CanResolveFromContainer;
+use Lunar\Hub\Forms\Traits\CanResolveFromContainer;
 
 class UrlManager
 {
