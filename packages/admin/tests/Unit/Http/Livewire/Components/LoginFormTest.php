@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\Authentication\LoginForm;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\Stubs\User;
-use GetCandy\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Authentication\LoginForm;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\Stubs\User;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.auth
@@ -48,11 +48,11 @@ class LoginFormTest extends TestCase
     public function user_model_cannot_log_into_hub()
     {
         User::create([
-            'name'              => 'Test User',
-            'email'             => 'test@domain.com',
+            'name' => 'Test User',
+            'email' => 'test@domain.com',
             'email_verified_at' => now(),
-            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token'    => \Illuminate\Support\Str::random(10),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
         ]);
 
         Livewire::test(LoginForm::class)

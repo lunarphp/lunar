@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Jobs\Collections;
+namespace Lunar\Tests\Unit\Jobs\Collections;
 
-use GetCandy\Jobs\Collections\UpdateProductPositions;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Jobs\Collections\UpdateProductPositions;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.jobs
+ * @group lunar.jobs
  */
 class NumberTest extends TestCase
 {
@@ -40,10 +40,10 @@ class NumberTest extends TestCase
             foreach (Currency::get() as $currency) {
                 Price::factory()->create([
                     'priceable_type' => ProductVariant::class,
-                    'priceable_id'   => $variant->id,
-                    'currency_id'    => $currency->id,
-                    'tier'           => 1,
-                    'price'          => $prices[$index],
+                    'priceable_id' => $variant->id,
+                    'currency_id' => $currency->id,
+                    'tier' => 1,
+                    'price' => $prices[$index],
                 ]);
             }
         }
@@ -85,7 +85,7 @@ class NumberTest extends TestCase
         foreach ($products as $index => $product) {
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku'        => $skus[$index],
+                'sku' => $skus[$index],
             ]);
         }
 

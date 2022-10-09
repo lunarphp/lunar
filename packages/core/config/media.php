@@ -1,6 +1,6 @@
 <?php
 
-use GetCandy\Base\StandardMediaConversions;
+use Lunar\Base\StandardMediaConversions;
 
 return [
     'conversions' => [

@@ -1,11 +1,7 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Database\Factories\AttributeFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Database\Factories\AttributeFactory;
 
 class Attribute extends BaseModel
 {
@@ -24,7 +24,7 @@ class Attribute extends BaseModel
     {
         static::deleting(function (Model $model) {
             DB::table(
-                config('getcandy.database.table_prefix').'attributables'
+                config('lunar.database.table_prefix').'attributables'
             )->where('attribute_id', '=', $model->id)->delete();
         });
         parent::boot();
@@ -33,7 +33,7 @@ class Attribute extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\AttributeFactory
+     * @return \Lunar\Database\Factories\AttributeFactory
      */
     protected static function newFactory(): AttributeFactory
     {
@@ -54,7 +54,7 @@ class Attribute extends BaseModel
      * @var array
      */
     protected $casts = [
-        'name'          => AsCollection::class,
+        'name' => AsCollection::class,
         'configuration' => AsCollection::class,
     ];
 

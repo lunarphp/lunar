@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Products;
+namespace Lunar\Hub\Http\Livewire\Pages\Products;
 
 use Livewire\Component;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class Number implements FieldType, JsonSerializable
 {
@@ -87,7 +87,7 @@ class Number implements FieldType, JsonSerializable
     public function getConfig(): array
     {
         return [
-            'view'    => 'adminhub::field-types.number',
+            'view' => 'adminhub::field-types.number',
             'options' => [
                 'min' => 'numeric|min:1',
                 'max' => 'numeric',

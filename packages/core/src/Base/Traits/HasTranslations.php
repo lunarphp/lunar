@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Base\FieldType;
 use Illuminate\Support\Arr;
+use Lunar\Base\FieldType;
 
 trait HasTranslations
 {
@@ -75,5 +75,16 @@ trait HasTranslations
         }
 
         return $value ? $value->getValue() : null;
+    }
+
+    /**
+     * Shorthand to translate an attribute.
+     *
+     * @param $params
+     * @return void
+     */
+    public function attr(...$params)
+    {
+        return $this->translateAttribute(...$params);
     }
 }

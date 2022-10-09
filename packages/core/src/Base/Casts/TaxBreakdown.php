@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Base\Casts;
+namespace Lunar\Base\Casts;
 
-use GetCandy\DataTypes\Price;
-use GetCandy\Models\Currency;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Lunar\DataTypes\Price;
+use Lunar\Models\Currency;
 
 class TaxBreakdown implements CastsAttributes
 {
@@ -35,7 +35,7 @@ class TaxBreakdown implements CastsAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  \GetCandy\DataTypes\Price  $value
+     * @param  \Lunar\DataTypes\Price  $value
      * @param  array  $attributes
      * @return array
      */

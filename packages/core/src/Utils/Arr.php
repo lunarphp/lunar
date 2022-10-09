@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Utils;
+namespace Lunar\Utils;
 
 class Arr
 {

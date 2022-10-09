@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
 trait Notifies
 {
@@ -22,7 +22,7 @@ trait Notifies
 
         $this->dispatchBrowserEvent('notify', [
             'message' => $message,
-            'level'   => $level,
+            'level' => $level,
         ]);
     }
 }

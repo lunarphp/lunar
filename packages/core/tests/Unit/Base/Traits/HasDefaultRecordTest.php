@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Console;
+namespace Lunar\Tests\Unit\Console;
 
-use GetCandy\Models\Channel;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Channel;
+use Lunar\Tests\TestCase;
 
 /**
  * @group defaultrec

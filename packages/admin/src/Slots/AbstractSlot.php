@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Slots;
+namespace Lunar\Hub\Slots;
 
 interface AbstractSlot
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Channel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\Channel;
 
 class ChannelFactory extends Factory
 {
@@ -13,10 +13,10 @@ class ChannelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'    => $this->faker->name(),
-            'handle'  => Str::slug($this->faker->name()),
+            'name' => $this->faker->name(),
+            'handle' => Str::slug($this->faker->name()),
             'default' => true,
-            'url'     => $this->faker->url(),
+            'url' => $this->faker->url(),
         ];
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Tags;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Tags;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Tag;
 
 class TagShow extends Component
 {
@@ -27,7 +27,7 @@ class TagShow extends Component
 
     public function getTaggablesProperty()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return DB::table(
             "{$prefix}taggables"

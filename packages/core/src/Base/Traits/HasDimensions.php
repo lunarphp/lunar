@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 
@@ -16,7 +16,7 @@ trait HasDimensions
         self::retrieved(function ($model) {
             $model->mergeCasts([
                 'length_value' => 'float',
-                'width_value'  => 'float',
+                'width_value' => 'float',
                 'height_value' => 'float',
                 'volume_value' => 'float',
                 'weight_value' => 'float',

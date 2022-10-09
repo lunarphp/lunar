@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace Lunar\Hub\Views\Components;
 
-use GetCandy\Models\Language;
 use Illuminate\View\Component;
+use Lunar\Models\Language;
 
 class Translatable extends Component
 {
@@ -34,7 +34,7 @@ class Translatable extends Component
         $languages = Language::get();
 
         return view('adminhub::components.translatable', [
-            'default'   => $languages->first(fn ($lang) => $lang->default),
+            'default' => $languages->first(fn ($lang) => $lang->default),
             'languages' => $languages->filter(fn ($lang) => ! $lang->default),
         ]);
     }

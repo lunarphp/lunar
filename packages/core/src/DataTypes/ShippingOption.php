@@ -1,20 +1,22 @@
 <?php
 
-namespace GetCandy\DataTypes;
+namespace Lunar\DataTypes;
 
-use GetCandy\Base\Purchasable;
-use GetCandy\Models\TaxClass;
 use Illuminate\Support\Collection;
+use Lunar\Base\Purchasable;
+use Lunar\Models\TaxClass;
 
 class ShippingOption implements Purchasable
 {
     public function __construct(
+        public $name,
         public $description,
         public $identifier,
         public Price $price,
         public TaxClass $taxClass,
         public $taxReference = null,
-        public $option = null
+        public $option = null,
+        public $meta = null
     ) {
         //  ..
     }
@@ -22,7 +24,7 @@ class ShippingOption implements Purchasable
     /**
      * Get the price for the purchasable item.
      *
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function getPrice()
     {
@@ -77,6 +79,16 @@ class ShippingOption implements Purchasable
     public function getType()
     {
         return 'shipping';
+    }
+
+    /**
+     * Return the name for the purchasable.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**

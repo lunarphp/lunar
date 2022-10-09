@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\Url;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
+use Lunar\Tests\TestCase;
 
 /**
  * @group models
@@ -24,16 +24,16 @@ class UrlTest extends TestCase
         $language = Language::factory()->create();
 
         $data = [
-            'language_id'  => $language->id,
-            'element_id'   => $product->id,
+            'language_id' => $language->id,
+            'element_id' => $product->id,
             'element_type' => Product::class,
-            'slug'         => Str::slug($product->translateAttribute('name')),
-            'default'      => true,
+            'slug' => Str::slug($product->translateAttribute('name')),
+            'default' => true,
         ];
 
         Url::create($data);
 
-        $this->assertDatabaseHas('getcandy_urls', $data);
+        $this->assertDatabaseHas('lunar_urls', $data);
     }
 
     /** @test */
@@ -43,11 +43,11 @@ class UrlTest extends TestCase
         $language = Language::factory()->create();
 
         $data = [
-            'language_id'  => $language->id,
-            'element_id'   => $product->id,
+            'language_id' => $language->id,
+            'element_id' => $product->id,
             'element_type' => Product::class,
-            'slug'         => Str::slug($product->translateAttribute('name')),
-            'default'      => true,
+            'slug' => Str::slug($product->translateAttribute('name')),
+            'default' => true,
         ];
 
         $url = Url::create($data);

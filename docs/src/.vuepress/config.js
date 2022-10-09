@@ -4,7 +4,7 @@ module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#title
    */
-  title: 'GetCandy 2 Docs',
+  title: 'Lunar Docs',
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
@@ -24,6 +24,7 @@ module.exports = {
     ['link', { rel: "manifest", href: "/site.webmanifest"}],
     ['link', { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#5bbad5"}],
     ['meta', { name: "msapplication-TileColor", content: "#da532c"}],
+    ['meta', { property: 'og:image', content: '/images/og.jpg' }],
     ['meta', { name: "theme-color", content: "#ffffff"}],
     ['script', {
         async: true,
@@ -44,10 +45,10 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    logo: '/getcandy_icon.svg',
-    repo: 'getcandy/getcandy',
+    logo: '/images/lunar-icon.svg',
+    repo: 'lunarphp/lunar',
     docsDir: 'docs/src',
-    docsRepo: 'getcandy/getcandy',
+    docsRepo: 'lunarphp/lunar',
     docsBranch: 'main',
     editLinks: true,
     editLinkText: 'Help us improve this page!',
@@ -55,13 +56,13 @@ module.exports = {
     lastUpdated: false,
     algolia: {
       apiKey: '5b837c3914609051127d86be919e1724',
-      indexName: 'getcandy',
+      indexName: 'lunar',
       appId: 'LRDQ9JSQEG'
     },
     nav: [
       {
         text: 'Roadmap',
-        link: 'https://github.com/orgs/getcandy/projects/5',
+        link: 'https://github.com/orgs/lunarphp/projects/1',
       },
       {
         text: 'Discord',
@@ -94,28 +95,28 @@ module.exports = {
         title: 'Guide',
         collapsable: false, // optional, defaults to true
         children: [
-          '/getcandy/activity-log',
-          '/getcandy/addresses',
-          '/getcandy/associations',
-          '/getcandy/attributes',
-          '/getcandy/carts',
-          '/getcandy/channels',
-          '/getcandy/collections',
-          '/getcandy/currencies',
-          '/getcandy/customers',
-          '/getcandy/images',
-          '/getcandy/languages',
-          '/getcandy/orders',
-          '/getcandy/payments',
-          '/getcandy/products',
-          '/getcandy/search',
-          '/getcandy/tags',
-          '/getcandy/taxation',
-          '/getcandy/urls'
+          '/lunar/activity-log',
+          '/lunar/addresses',
+          '/lunar/associations',
+          '/lunar/attributes',
+          '/lunar/carts',
+          '/lunar/channels',
+          '/lunar/collections',
+          '/lunar/currencies',
+          '/lunar/customers',
+          '/lunar/images',
+          '/lunar/languages',
+          '/lunar/orders',
+          '/lunar/payments',
+          '/lunar/products',
+          '/lunar/search',
+          '/lunar/tags',
+          '/lunar/taxation',
+          '/lunar/urls'
         ]
       },
       {
-        title: 'Extending GetCandy',
+        title: 'Extending Lunar',
         collapsable: false, // optional, defaults to true
         children: [
           '/extending/activity-log',
@@ -128,6 +129,7 @@ module.exports = {
           '/extending/payments',
           '/extending/search',
           '/extending/shipping',
+          '/extending/tables',
           '/extending/taxation',
         ]
       }

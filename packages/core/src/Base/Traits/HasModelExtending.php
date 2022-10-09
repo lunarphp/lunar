@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
-use GetCandy\Facades\ModelManifest;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Facades\ModelManifest;
 use ReflectionClass;
 
 trait HasModelExtending

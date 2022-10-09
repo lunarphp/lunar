@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Products\ProductTypes;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products\ProductTypes;
 
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductTypes\ProductTypeCreate;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Attribute;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 
 /**
  * @group hub.product-types
@@ -27,12 +27,12 @@ class ProductTypeCreateTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code'    => 'fr',
+            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
@@ -61,7 +61,7 @@ class ProductTypeCreateTest extends TestCase
 
         Attribute::factory(2)->create([
             'attribute_type' => Product::class,
-            'system'         => true,
+            'system' => true,
         ]);
 
         Attribute::factory(2)->create([
@@ -88,7 +88,7 @@ class ProductTypeCreateTest extends TestCase
         ]);
 
         $variantAttribute = Attribute::factory()->create([
-            'handle'         => 'variant-attribute',
+            'handle' => 'variant-attribute',
             'attribute_type' => ProductVariant::class,
         ]);
 
@@ -107,14 +107,14 @@ class ProductTypeCreateTest extends TestCase
             'name' => 'Foobar',
         ]);
 
-        $tablePrefix = config('getcandy.database.table_prefix');
+        $tablePrefix = config('lunar.database.table_prefix');
 
         $productType = ProductType::whereName('Foobar')->first();
 
         $this->assertDatabaseHas("{$tablePrefix}attributables", [
-            'attributable_id'   => $productType->id,
+            'attributable_id' => $productType->id,
             'attributable_type' => ProductType::class,
-            'attribute_id'      => $attribute->id,
+            'attribute_id' => $attribute->id,
         ]);
     }
 }

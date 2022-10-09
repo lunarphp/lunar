@@ -1,21 +1,21 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Managers\CartManager;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\Order;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\Stubs\User as StubUser;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Lunar\Managers\CartManager;
+use Lunar\Models\Cart;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\Order;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Stubs\User as StubUser;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.carts
+ * @group lunar.carts
  */
 class CartTest extends TestCase
 {
@@ -23,7 +23,7 @@ class CartTest extends TestCase
 
     private function setAuthUserConfig()
     {
-        Config::set('auth.providers.users.model', 'GetCandy\Tests\Stubs\User');
+        Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
     }
 
     /** @test */
@@ -34,22 +34,22 @@ class CartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id'  => $channel->id,
-            'meta'        => ['foo' => 'bar'],
+            'channel_id' => $channel->id,
+            'meta' => ['foo' => 'bar'],
         ]);
 
         $this->assertDatabaseHas((new Cart())->getTable(), [
             'currency_id' => $currency->id,
-            'channel_id'  => $channel->id,
-            'meta'        => json_encode(['foo' => 'bar']),
+            'channel_id' => $channel->id,
+            'meta' => json_encode(['foo' => 'bar']),
         ]);
 
         $variant = ProductVariant::factory()->create();
 
         $cart->lines()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => $variant->id,
-            'quantity'         => 1,
+            'purchasable_id' => $variant->id,
+            'quantity' => 1,
         ]);
 
         $this->assertCount(1, $cart->lines()->get());
@@ -63,7 +63,7 @@ class CartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id'  => $channel->id,
+            'channel_id' => $channel->id,
         ]);
 
         // dd(CartManager::class);
@@ -81,8 +81,8 @@ class CartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id'  => $channel->id,
-            'user_id'     => $user->getKey(),
+            'channel_id' => $channel->id,
+            'user_id' => $user->getKey(),
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
@@ -100,8 +100,8 @@ class CartTest extends TestCase
         $cart = Cart::create([
             'order_id' => Order::factory()->create()->id,
             'currency_id' => $currency->id,
-            'channel_id'  => $channel->id,
-            'user_id'     => $user->getKey(),
+            'channel_id' => $channel->id,
+            'user_id' => $user->getKey(),
         ]);
 
         $this->assertNull(
@@ -120,8 +120,8 @@ class CartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id'  => $channel->id,
-            'user_id'     => $user->getKey(),
+            'channel_id' => $channel->id,
+            'user_id' => $user->getKey(),
         ]);
 
         $this->assertEquals(
@@ -144,8 +144,8 @@ class CartTest extends TestCase
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
-            'channel_id'  => $channel->id,
-            'user_id'     => $user->getKey(),
+            'channel_id' => $channel->id,
+            'user_id' => $user->getKey(),
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());

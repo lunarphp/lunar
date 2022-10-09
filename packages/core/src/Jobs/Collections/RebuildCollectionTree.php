@@ -1,14 +1,14 @@
 <?php
 
-namespace GetCandy\Jobs\Collections;
+namespace Lunar\Jobs\Collections;
 
-use GetCandy\Models\Collection;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Collection;
 
 class RebuildCollectionTree implements ShouldQueue
 {
@@ -45,7 +45,7 @@ class RebuildCollectionTree implements ShouldQueue
      *
      * @param  array  $newTree
      * @param  array  $currentTree
-     * @param  \GetCandy\Models\Collection|null  $parent
+     * @param  \Lunar\Models\Collection|null  $parent
      */
     public function __construct(array $newTree, array $currentTree, Collection $parent = null)
     {

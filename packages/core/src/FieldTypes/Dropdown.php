@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\FieldTypes;
+namespace Lunar\FieldTypes;
 
-use GetCandy\Base\FieldType;
-use GetCandy\Exceptions\FieldTypeException;
 use JsonSerializable;
+use Lunar\Base\FieldType;
+use Lunar\Exceptions\FieldTypeException;
 
 class Dropdown implements FieldType, JsonSerializable
 {
@@ -88,7 +88,7 @@ class Dropdown implements FieldType, JsonSerializable
     {
         return [
             'options' => [
-                'lookups'         => 'array',
+                'lookups' => 'array',
                 'lookups.*.label' => 'string|required',
                 'lookups.*.value' => 'nullable|string',
             ],

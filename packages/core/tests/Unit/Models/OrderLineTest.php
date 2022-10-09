@@ -1,19 +1,19 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Exceptions\NonPurchasableItemException;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Exceptions\NonPurchasableItemException;
+use Lunar\Models\CartLine;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.orderlines
+ * @group lunar.orderlines
  */
 class OrderLineTest extends TestCase
 {
@@ -29,10 +29,10 @@ class OrderLineTest extends TestCase
         ]);
 
         $data = [
-            'order_id'         => $order->id,
-            'quantity'         => 1,
+            'order_id' => $order->id,
+            'quantity' => 1,
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
         ];
 
         OrderLine::factory()->create($data);
@@ -51,10 +51,10 @@ class OrderLineTest extends TestCase
         $this->expectException(NonPurchasableItemException::class);
 
         $data = [
-            'order_id'         => $order->id,
-            'quantity'         => 1,
+            'order_id' => $order->id,
+            'quantity' => 1,
             'purchasable_type' => Channel::class,
-            'purchasable_id'   => Channel::factory()->create()->id,
+            'purchasable_id' => Channel::factory()->create()->id,
         ];
 
         OrderLine::factory()->create($data);

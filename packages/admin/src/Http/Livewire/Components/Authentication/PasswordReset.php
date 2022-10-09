@@ -1,10 +1,7 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Authentication;
+namespace Lunar\Hub\Http\Livewire\Components\Authentication;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Mail\ResetPasswordEmail;
-use GetCandy\Hub\Models\Staff;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +9,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\ComponentConcerns\PerformsRedirects;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Mail\ResetPasswordEmail;
+use Lunar\Hub\Models\Staff;
 use Throwable;
 
 class PasswordReset extends Component
@@ -56,8 +56,8 @@ class PasswordReset extends Component
      * {@inheritDoc}
      */
     protected $rules = [
-        'email'                 => 'required|email',
-        'password'              => 'nullable|confirmed',
+        'email' => 'required|email',
+        'password' => 'nullable|confirmed',
         'password_confirmation' => 'nullable',
     ];
 
@@ -118,7 +118,7 @@ class PasswordReset extends Component
     public function updatePasswordAndLogin()
     {
         $this->validate([
-            'password'              => 'min:8|required|confirmed',
+            'password' => 'min:8|required|confirmed',
             'password_confirmation' => 'required',
         ]);
 

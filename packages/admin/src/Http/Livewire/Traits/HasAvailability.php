@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Models\Channel;
-use GetCandy\Models\CustomerGroup;
+use Lunar\Models\Channel;
+use Lunar\Models\CustomerGroup;
 
 trait HasAvailability
 {

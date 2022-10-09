@@ -1,17 +1,17 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Traits;
+namespace Lunar\Hub\Http\Livewire\Traits;
 
-use GetCandy\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
-use GetCandy\Hub\Actions\Pricing\UpdatePrices;
-use GetCandy\Hub\Actions\Pricing\UpdateTieredPricing;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
-use GetCandy\Models\TaxClass;
-use GetCandy\Rules\MaxDecimalPlaces;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
+use Lunar\Hub\Actions\Pricing\UpdatePrices;
+use Lunar\Hub\Actions\Pricing\UpdateTieredPricing;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
+use Lunar\Models\TaxClass;
+use Lunar\Rules\MaxDecimalPlaces;
 
 trait HasPrices
 {
@@ -39,7 +39,7 @@ trait HasPrices
     /**
      * The currency currency.
      *
-     * @var \GetCandy\Models\Currency
+     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 
@@ -130,10 +130,10 @@ trait HasPrices
     {
         $this->tieredPrices[] = [
             'customer_group_id' => '*',
-            'tier'              => null,
-            'prices'            => collect($this->basePrices)->map(function ($price) {
+            'tier' => null,
+            'prices' => collect($this->basePrices)->map(function ($price) {
                 return [
-                    'price'       => null,
+                    'price' => null,
                     'currency_id' => $price['currency_id'],
                 ];
             })->toArray(),
@@ -179,8 +179,8 @@ trait HasPrices
             if (! ($groups[$group->id] ?? false)) {
                 $groups[$group->id] = collect($this->basePrices)->map(function ($price) use ($group) {
                     return [
-                        'price'             => $price['price'],
-                        'currency_id'       => $price['currency_id'],
+                        'price' => $price['price'],
+                        'currency_id' => $price['currency_id'],
                         'customer_group_id' => $group->id,
                     ];
                 })->toArray();
@@ -210,7 +210,7 @@ trait HasPrices
     /**
      * Return the computed default currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {
@@ -239,9 +239,9 @@ trait HasPrices
             ->mapWithKeys(function ($price) {
                 return [
                     $price->currency->code => [
-                        'id'            => $price->id,
-                        'currency_id'   => $price->currency_id,
-                        'price'         => $price->price->decimal,
+                        'id' => $price->id,
+                        'currency_id' => $price->currency_id,
+                        'price' => $price->price->decimal,
                         'compare_price' => $price->compare_price->value ? $price->compare_price->decimal : null,
                     ],
                 ];
@@ -252,9 +252,9 @@ trait HasPrices
         foreach ($this->currencies as $currency) {
             if (empty($prices[$currency->code])) {
                 $prices[$currency->code] = [
-                    'price'         => null,
+                    'price' => null,
                     'compare_price' => null,
-                    'currency_id'   => $currency->id,
+                    'currency_id' => $currency->id,
                 ];
             }
         }
@@ -277,7 +277,7 @@ trait HasPrices
                     if (! $prices->first(fn ($price) => $price->currency_id == $currency->id)) {
                         $prices->push(new Price([
                             'customer_group_id' => $groupId,
-                            'currency_id'       => $currency->id,
+                            'currency_id' => $currency->id,
                         ]));
                     }
                 }
@@ -286,11 +286,11 @@ trait HasPrices
                     $groupId => $prices->mapWithKeys(function ($price) {
                         return [
                             $price->currency->code => [
-                                'id'                => $price->id,
-                                'currency_id'       => $price->currency_id,
+                                'id' => $price->id,
+                                'currency_id' => $price->currency_id,
                                 'customer_group_id' => $price->customer_group_id,
-                                'price'             => $price->price->decimal,
-                                'compare_price'     => $price->compare_price->decimal,
+                                'price' => $price->price->decimal,
+                                'compare_price' => $price->compare_price->decimal,
                             ],
                         ];
                     }),
@@ -316,11 +316,11 @@ trait HasPrices
                     $prices = $prices->mapWithKeys(function ($price) {
                         return [
                             $price->currency->code => [
-                                'id'                => $price->id,
-                                'currency_id'       => $price->currency_id,
+                                'id' => $price->id,
+                                'currency_id' => $price->currency_id,
                                 'customer_group_id' => $price->customer_group_id,
-                                'price'             => $price->price->decimal,
-                                'compare_price'     => $price->compare_price->decimal,
+                                'price' => $price->price->decimal,
+                                'compare_price' => $price->compare_price->decimal,
                             ],
                         ];
                     });
@@ -328,7 +328,7 @@ trait HasPrices
                     foreach ($this->currencies as $currency) {
                         if (empty($prices[$currency->code])) {
                             $prices[$currency->code] = [
-                                'price'       => null,
+                                'price' => null,
                                 'currency_id' => $currency->id,
                             ];
                         }
@@ -336,8 +336,8 @@ trait HasPrices
 
                     return [
                         'customer_group_id' => $default->customer_group_id ?: '*',
-                        'tier'              => $default->tier,
-                        'prices'            => $prices,
+                        'tier' => $default->tier,
+                        'prices' => $prices,
                     ];
                 })->values()
             );
@@ -354,9 +354,9 @@ trait HasPrices
     protected function hasPriceValidationRules()
     {
         $rules = [
-            'customerPricingEnabled'           => 'boolean',
-            'customerGroupPrices'              => 'nullable|array',
-            'tieredPrices.*.tier'              => 'required|numeric|min:2',
+            'customerPricingEnabled' => 'boolean',
+            'customerGroupPrices' => 'nullable|array',
+            'tieredPrices.*.tier' => 'required|numeric|min:2',
             'tieredPrices.*.customer_group_id' => 'required',
         ];
 

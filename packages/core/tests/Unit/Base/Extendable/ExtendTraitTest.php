@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base\Extendable;
+namespace Lunar\Tests\Unit\Base\Extendable;
 
-use GetCandy\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Product;
 
 class ExtendTraitTest extends ExtendableTestCase
 {

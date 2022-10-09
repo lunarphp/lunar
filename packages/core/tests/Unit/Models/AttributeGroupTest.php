@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Tests\TestCase;
 
 class AttributeGroupTest extends TestCase
 {
@@ -16,10 +16,10 @@ class AttributeGroupTest extends TestCase
     {
         $attributeGroup = AttributeGroup::factory()->create([
             'attributable_type' => 'product_type',
-            'name'              => [
+            'name' => [
                 'en' => 'SEO',
             ],
-            'handle'   => 'seo',
+            'handle' => 'seo',
             'position' => 5,
         ]);
 
@@ -33,10 +33,10 @@ class AttributeGroupTest extends TestCase
     {
         $attributeGroup = AttributeGroup::factory()->create([
             'attributable_type' => 'product_type',
-            'name'              => [
+            'name' => [
                 'en' => 'SEO',
             ],
-            'handle'   => 'seo',
+            'handle' => 'seo',
             'position' => 5,
         ]);
 

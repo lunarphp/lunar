@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\CollectionGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Lunar\Models\CollectionGroup;
 
 class CollectionGroupFactory extends Factory
 {
@@ -15,7 +15,7 @@ class CollectionGroupFactory extends Factory
         $name = $this->faker->unique()->word;
 
         return [
-            'name'   => $name,
+            'name' => $name,
             'handle' => Str::slug($name),
         ];
     }

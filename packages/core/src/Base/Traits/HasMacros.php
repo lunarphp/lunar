@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use Illuminate\Support\Traits\Macroable;
 
