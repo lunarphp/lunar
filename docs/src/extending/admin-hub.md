@@ -75,7 +75,7 @@ class SeoSlot extends Component implements AbstractSlot
 
     public static function getName()
     {
-        return 'hub.product.slots.seo-slot';
+        return 'hub.components.products.slots.product-square-sync';
     }
 
     public function getSlotHandle()
