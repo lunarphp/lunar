@@ -44,21 +44,14 @@ class CartLine extends BaseModel
      */
     public ?Price $unitPrice = null;
 
-    public ?Discount $discount = null;
-
-    /**
-     * The discount total.
-     *
-     * @var Price|null
-     */
-    public ?Price $discountTotal = null;
-
     /**
      * All the tax breakdowns for the cart line.
      *
      * @var \Lunar\Base\DataTransferObjects\TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
+
+    public ?Price $discountTotal = null;
 
     /**
      * Return a new factory instance for the model.
@@ -110,6 +103,16 @@ class CartLine extends BaseModel
             $this->purchasable_type,
             'tax_class_id',
             'id'
+        );
+    }
+
+    public function discounts()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Discount::class,
+            "{$prefix}cart_line_discount"
         );
     }
 

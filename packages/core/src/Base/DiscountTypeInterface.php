@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 
 interface DiscountTypeInterface
@@ -19,5 +20,5 @@ interface DiscountTypeInterface
      * @param  CartLine  $cartLine
      * @return CartLine
      */
-    public function execute(CartLine $cartLine): CartLine;
+    public function apply(Cart $cart): Cart;
 }

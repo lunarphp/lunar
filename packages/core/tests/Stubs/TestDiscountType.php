@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Stubs;
 
 use Lunar\DiscountTypes\AbstractDiscountType;
+use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 
 class TestDiscountType extends AbstractDiscountType
@@ -22,8 +23,8 @@ class TestDiscountType extends AbstractDiscountType
      *
      * @return CartLine
      */
-    public function execute(CartLine $cartLine): CartLine
+    public function apply(Cart $cart): Cart
     {
-        return $cartLine;
+        return $cart;
     }
 }

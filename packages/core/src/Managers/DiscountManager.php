@@ -7,6 +7,7 @@ use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\DiscountTypes\Coupon;
 use Lunar\DiscountTypes\ProductDiscount;
+use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
 
@@ -57,16 +58,29 @@ class DiscountManager implements DiscountManagerInterface
         return $this->applied;
     }
 
-    public function apply(CartLine $cartLine)
+    public function setUp(CartLine $cartLine)
     {
         if (! $this->discounts) {
             $this->discounts = Discount::active()->orderBy('priority')->get();
         }
 
         foreach ($this->discounts as $discount) {
-            $cartLine = $discount->getType()->execute($cartLine);
+            $cartLine = $discount->getType()->setUp($cartLine);
         }
 
         return $cartLine;
+    }
+
+    public function apply(Cart $cart)
+    {
+        if (! $this->discounts) {
+            $this->discounts = Discount::active()->orderBy('priority')->get();
+        }
+
+        foreach ($this->discounts as $discount) {
+            $cart = $discount->getType()->apply($cart);
+        }
+
+        return $cart;
     }
 }

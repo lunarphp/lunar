@@ -5,6 +5,7 @@ namespace Lunar\Actions\Carts;
 use Illuminate\Support\Collection;
 use Lunar\Base\Addressable;
 use Lunar\DataTypes\Price;
+use Lunar\Facades\Discounts;
 use Lunar\Facades\Taxes;
 use Lunar\Models\CartLine;
 

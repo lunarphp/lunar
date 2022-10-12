@@ -5,6 +5,7 @@ namespace Lunar\DiscountTypes;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\Discounts;
+use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Collection;
 
@@ -25,69 +26,102 @@ class Coupon extends AbstractDiscountType
      *
      * @return CartLine
      */
-    public function execute(CartLine $cartLine): CartLine
+    public function apply(Cart $cart): Cart
     {
         $data = $this->discount->data;
 
-        $cartCoupon = strtoupper($cartLine->cart->meta->coupon ?? null);
+        $cartCoupon = strtoupper($cart->coupon_code ?? null);
         $conditionCoupon = strtoupper($data['coupon'] ?? null);
 
         $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
 
         if (! $passes) {
-            return $cartLine;
+            return $cart;
         }
-
-        $collectionIds = $this->discount->collections->pluck('id');
-
-        if ($collectionIds->count()) {
-            $passes = $cartLine->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
-                $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
-            })->exists();
-        }
-
-        if (! $passes) {
-            return $cartLine;
-        }
-
-        $cartLine->discount = $this->discount;
-
-        Discounts::addApplied(
-            new CartDiscount($cartLine, $this->discount)
-        );
 
         if ($data['fixed_value']) {
             return $this->applyFixedValue(
                 values: $data['fixed_values'],
-                cartLine: $cartLine
+                cart: $cart,
             );
         }
 
         return $this->applyPercentage(
             value: $data['percentage'],
-            cartLine: $cartLine
+            cart: $cart
         );
     }
 
-    private function applyFixedValue(array $values, CartLine $cartLine): CartLine
+    private function applyFixedValue(array $values, Cart $cart): Cart
     {
-        $currency = $cartLine->cart->currency;
+        $currency = $cart->currency;
 
         $value = ($values[$currency->code] ?? 0) * 100;
 
         if (! $value) {
-            return $cartLine;
+            return $cart;
         }
 
-        $amount = (int) (round($value / $cartLine->cart->lines->count(), 2));
+        $lines = $this->getEligibleLines($cart);
 
-        $cartLine->discountTotal = new Price(
-            $amount,
-            $currency,
-            1
-        );
+        if (!$lines->count()) {
+            return $cart;
+        }
 
-        return $cartLine;
+        $divisionalAmount = $value / $lines->count();
+        $roundedChunk = (int) (round($divisionalAmount, 2));
+
+        $remaining = $value;
+
+        foreach ($lines as $line) {
+            if ($line->subTotal->value < $roundedChunk) {
+                $amount = $roundedChunk - ($roundedChunk % $line->subTotal->value);
+            } else {
+                $amount = $roundedChunk;
+            }
+            $remaining -= $amount;
+
+            $line->discountTotal = new Price(
+                $amount,
+                $cart->currency,
+                1
+            );
+        }
+
+        // Do we have an amount left over? if so, grab the first line that has
+        // enough left to apply the remaining too.
+        if ($remaining) {
+            $line = $cart->lines->first(function ($line) use ($remaining) {
+                return !!($line->subTotal->value - $line->discountTotal->value) - $remaining;
+            });
+
+            $newDiscountTotal = $line->discountTotal->value + $remaining;
+
+            $line->discountTotal = new Price(
+                $newDiscountTotal,
+                $cart->currency,
+                1
+            );
+        }
+
+        return $cart;
+    }
+
+    private function getEligibleLines(Cart $cart)
+    {
+        $collectionIds = $this->discount->collections->pluck('id');
+
+        $lines = $cart->lines;
+
+        if ($collectionIds->count()) {
+            $lines = $cart->lines->filter(function ($line) use ($collectionIds) {
+                $passes = $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
+                    $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
+                })->exists();
+            });
+        }
+
+        return $lines;
     }
 
     /**
@@ -97,17 +131,21 @@ class Coupon extends AbstractDiscountType
      * @param  CartLine  $cartLine
      * @return CartLine
      */
-    private function applyPercentage($value, $cartLine): CartLine
+    private function applyPercentage($value, $cart): Cart
     {
-        $subTotal = $cartLine->subTotal->value;
-        $amount = (int) round($subTotal * ($value / 100));
+        $lines = $this->getEligibleLines($cart);
 
-        $cartLine->discountTotal = new Price(
-            $amount,
-            $cartLine->cart->currency,
-            1
-        );
+        foreach ($lines as $line) {
+            $subTotal = $line->subTotal->value;
+            $amount = (int) round($subTotal * ($value / 100));
 
-        return $cartLine;
+            $line->discountTotal = new Price(
+                $amount,
+                $cart->currency,
+                1
+            );
+        }
+
+        return $cart;
     }
 }

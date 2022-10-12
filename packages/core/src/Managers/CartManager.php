@@ -77,6 +77,10 @@ class CartManager
 
         $this->cart = $pipeline->via('calculating')->thenReturn();
 
+        $this->calculateLines();
+
+        Discounts::apply($this->cart);
+
         $lines = $this->calculateLines();
 
         // Get the line subtotals and add together.
@@ -486,13 +490,6 @@ class CartManager
      */
     private function calculateLines()
     {
-        // First we need to get the sub total for each line so we can
-        // run it through the discount manager.
-        foreach ($this->cart->lines as $cartLine) {
-            $cartLine = app(CalculateLineSubtotal::class)->execute($cartLine, $this->customerGroups);
-            Discounts::apply($cartLine);
-        }
-
         return $this->cart->lines->map(function ($line) {
             return (new CartLineManager($line))->calculate(
                 $this->customerGroups,
