@@ -4,6 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Support\Str;
 use Lunar\DiscountTypes\Coupon;
+use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 
 class DiscountCreate extends AbstractDiscount
@@ -27,6 +28,8 @@ class DiscountCreate extends AbstractDiscount
         ]);
 
         $this->syncCollections();
+
+        $this->currency = Currency::getDefault();
     }
 
     /**
@@ -34,7 +37,7 @@ class DiscountCreate extends AbstractDiscount
      */
     public function rules()
     {
-        return array_merge([
+        $rules = array_merge([
             'discount.name' => 'required|unique:'.Discount::class.',name',
             'discount.handle' => 'required|unique:'.Discount::class.',handle',
             'discount.starts_at' => 'date',
@@ -42,6 +45,12 @@ class DiscountCreate extends AbstractDiscount
             'discount.type' => 'string|required',
             'discount.data' => 'array',
         ], $this->getDiscountComponent()->rules());
+
+        foreach ($this->currencies as $currency) {
+            $rules['discount.data.min_prices.'.$currency->code] = 'nullable';
+        }
+
+        return $rules;
     }
 
     /**
