@@ -34,6 +34,7 @@ class DiscountShow extends AbstractDiscount
             'discount.starts_at' => 'date',
             'discount.ends_at' => 'nullable|date|after:starts_at',
             'discount.type' => 'string|required',
+            'selectedBrands' => 'array',
         ], $this->getDiscountComponent()->rules());
 
         foreach ($this->currencies as $currency) {

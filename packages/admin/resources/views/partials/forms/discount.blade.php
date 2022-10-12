@@ -46,6 +46,39 @@
                 </x-hub::input.group>
             </div>
 
+            <x-hub::input.group
+                label="Brands"
+                for="brands"
+                instructions="Limit discounts to products within the selected brands."
+            >
+              <div class="grid grid-cols-2 gap-4">
+                    <div class="border rounded">
+                      <div class="h-full max-h-64 overflow-y-auto">
+                        @foreach($this->allBrands as $brand)
+                          <label class="block border-b py-2 text-sm px-3 cursor-pointer hover:bg-gray-50" wire:key="av_brand_{{ $brand->id }}">
+                            {{ $brand->name }}
+                            <input type="checkbox" class="hidden" wire:model="selectedBrands" value="{{ $brand->id }}">
+                          </label>
+                        @endforeach
+                      </div>
+                    </div>
+
+                    <div class="h-full max-h-96 overflow-y-auto border rounded">
+                        @forelse($this->brands as $sbrand)
+                          <label class="block border-b py-2 text-sm px-3 cursor-pointer hover:bg-gray-50" wire:key="selected_brand_{{ $sbrand->id }}">
+                              {{ $sbrand->name }}
+                              <input type="checkbox" class="hidden" wire:model="selectedBrands" value="{{ $sbrand->id }}">
+                          </label>
+                        @empty
+                          <div class="flex h-full items-center text-center w-full">
+                             <span class="w-full block text-center text-xs text-gray-500">Brands you select will appear here</span>
+                          </div>
+                        @endforelse
+                    </div>
+              </div>
+            </x-hub::input.group>
+
+
 
             <x-hub::input.group for="type" label="Type">
                 <x-hub::input.select wire:model="discount.type">

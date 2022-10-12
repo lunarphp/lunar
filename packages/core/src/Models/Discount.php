@@ -72,6 +72,16 @@ class Discount extends BaseModel
         return $this->hasMany(DiscountCollection::class);
     }
 
+    public function brands()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Brand::class,
+            "{$prefix}brand_discount"
+        );
+    }
+
     /**
      * Return the active scope.
      *

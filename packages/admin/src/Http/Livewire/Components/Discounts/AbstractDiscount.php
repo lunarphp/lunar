@@ -9,6 +9,7 @@ use Lunar\Facades\Discounts;
 use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
@@ -27,6 +28,18 @@ abstract class AbstractDiscount extends Component
 
     public Collection $collections;
 
+    /**
+     * The brands to restrict the coupon for.
+     *
+     * @var array
+     */
+    public array $selectedBrands = [];
+
+    /**
+     * The current currency for editing
+     *
+     * @var Currency
+     */
     public Currency $currency;
 
     /**
@@ -59,6 +72,7 @@ abstract class AbstractDiscount extends Component
     {
         $this->currency = Currency::getDefault();
         $this->syncCollections();
+        $this->selectedBrands = $this->discount->brands->pluck('id')->toArray();
     }
 
     /**
@@ -162,6 +176,26 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
+     * Return a list of available countries.
+     *
+     * @return Collection
+     */
+    public function getBrandsProperty()
+    {
+        return Brand::whereIn('id', $this->selectedBrands)->get();
+    }
+
+    /**
+     * Return all available brands.
+     *
+     * @return Collection
+     */
+    public function getAllBrandsProperty()
+    {
+        return Brand::whereNotIn('id', $this->selectedBrands)->get();
+    }
+
+    /**
      * Save the discount.
      *
      * @return RedirectResponse
@@ -174,6 +208,10 @@ abstract class AbstractDiscount extends Component
         $this->discount->save();
 
         $existing = $this->discount->collections()->get();
+
+        $this->discount->brands()->sync(
+            $this->selectedBrands
+        );
 
         $collectionsToRemove = $existing->filter(function ($collection) {
             return ! $this->collections->pluck('id')->contains($collection->collection_id);
