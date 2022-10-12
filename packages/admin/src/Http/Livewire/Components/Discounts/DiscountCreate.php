@@ -40,6 +40,7 @@ class DiscountCreate extends AbstractDiscount
             'discount.starts_at' => 'date',
             'discount.ends_at' => 'nullable|date|after:starts_at',
             'discount.type' => 'string|required',
+            'discount.data' => 'array',
         ], $this->getDiscountComponent()->rules());
     }
 

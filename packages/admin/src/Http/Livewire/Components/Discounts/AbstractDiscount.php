@@ -10,6 +10,7 @@ use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 
 abstract class AbstractDiscount extends Component
@@ -25,6 +26,19 @@ abstract class AbstractDiscount extends Component
     public Discount $discount;
 
     public Collection $collections;
+
+    public Currency $currency;
+
+
+    /**
+     * Returns the currencies computed property.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getCurrenciesProperty()
+    {
+        return Currency::get();
+    }
 
     /**
      * {@inheritDoc}
@@ -44,6 +58,7 @@ abstract class AbstractDiscount extends Component
 
     public function mount()
     {
+        $this->currency = Currency::getDefault();
         $this->syncCollections();
     }
 

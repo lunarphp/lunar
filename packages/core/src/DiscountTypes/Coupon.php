@@ -33,7 +33,9 @@ class Coupon extends AbstractDiscountType
 
         $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
 
-        if (! $passes) {
+        $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
+
+        if (! $passes || ($minSpend && $minSpend < $cart->lines->sum('subTotal.value'))) {
             return $cart;
         }
 

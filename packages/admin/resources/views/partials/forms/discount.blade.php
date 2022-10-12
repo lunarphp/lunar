@@ -23,6 +23,30 @@
                 </div>
             </div>
 
+            <div>
+                <header class="flex items-center justify-end">
+                      <select wire:change="setCurrency($event.target.value)" class="py-1 pl-2 pr-8 text-base text-gray-600 bg-gray-100 border-none rounded-md form-select focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        @foreach($this->currencies as $c)
+                          <option value="{{ $c->id }}" @if($currency->id == $c->id) selected @endif>{{ $c->code }}</option>
+                        @endforeach
+                      </select>
+                </header>
+
+                <x-hub::input.group
+                  label="Minimum cart amount"
+                  instructions="The minimum cart sub total required for this discount to apply"
+                  for="basePrice"
+                  :errors="$errors->get('minPrices.*.price')"
+                >
+                  <x-hub::input.price
+                    wire:model="discount.data.min_prices.{{ $this->currency->code }}"
+                    :symbol="$this->currency->format"
+                    :currencyCode="$this->currency->code"
+                  />
+                </x-hub::input.group>
+            </div>
+
+
             <x-hub::input.group for="type" label="Type">
                 <x-hub::input.select wire:model="discount.type">
                 @foreach($this->discountTypes as $discountType)
