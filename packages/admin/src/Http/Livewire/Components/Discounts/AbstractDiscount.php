@@ -29,7 +29,6 @@ abstract class AbstractDiscount extends Component
 
     public Currency $currency;
 
-
     /**
      * Returns the currencies computed property.
      *
