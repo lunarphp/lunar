@@ -20,7 +20,7 @@ abstract class AbstractDiscountType extends Component
     protected $listeners = [
         'parentComponentErrorBag',
         'discount.saved' => 'save',
-        'product-search.selected' => 'selectProducts'
+        'product-search.selected' => 'selectProducts',
     ];
 
     public function save()

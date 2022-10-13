@@ -3,7 +3,6 @@
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Support\Str;
-use Lunar\DiscountTypes\Coupon;
 use Lunar\DiscountTypes\ProductDiscount;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
