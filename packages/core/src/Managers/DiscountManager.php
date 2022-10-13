@@ -58,19 +58,6 @@ class DiscountManager implements DiscountManagerInterface
         return $this->applied;
     }
 
-    public function setUp(CartLine $cartLine)
-    {
-        if (! $this->discounts) {
-            $this->discounts = Discount::active()->orderBy('priority')->get();
-        }
-
-        foreach ($this->discounts as $discount) {
-            $cartLine = $discount->getType()->setUp($cartLine);
-        }
-
-        return $cartLine;
-    }
-
     public function apply(Cart $cart)
     {
         if (! $this->discounts) {
