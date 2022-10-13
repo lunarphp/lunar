@@ -110,14 +110,21 @@ class Coupon extends AbstractDiscountType
     private function getEligibleLines(Cart $cart)
     {
         $collectionIds = $this->discount->collections->pluck('id');
+        $brandIds = $this->discount->brands->pluck('id');
 
         $lines = $cart->lines;
 
         if ($collectionIds->count()) {
-            $lines = $cart->lines->filter(function ($line) use ($collectionIds) {
-                $passes = $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
+            $lines = $lines->filter(function ($line) use ($collectionIds) {
+                return $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
                     $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
                 })->exists();
+            });
+        }
+
+        if ($brandIds->count()) {
+            $lines = $lines->reject(function ($line) use ($brandIds) {
+                return !$brandIds->contains($line->purchasable->product->brand_id);
             });
         }
 

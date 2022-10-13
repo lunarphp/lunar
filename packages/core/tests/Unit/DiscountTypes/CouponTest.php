@@ -5,10 +5,12 @@ namespace Lunar\Tests\Unit\DiscountTypes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\Coupon;
 use Lunar\Managers\CartManager;
+use Lunar\Models\Brand;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 use Lunar\Models\Price;
+use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\TestCase;
 
@@ -19,6 +21,89 @@ use Lunar\Tests\TestCase;
 class CouponTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** @test */
+    public function will_only_apply_to_lines_with_correct_brand()
+    {
+        $currency = Currency::factory()->create([
+            'code' => 'GBP',
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $brandA = Brand::factory()->create([
+            'name' => 'Brand A',
+        ]);
+
+        $brandB = Brand::factory()->create([
+            'name' => 'Brand B',
+        ]);
+
+        $productA = Product::factory()->create([
+            'brand_id' => $brandA->id,
+        ]);
+
+        $productB = Product::factory()->create([
+            'brand_id' => $brandB->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create([
+            'product_id' => $productA->id,
+        ]);
+        $purchasableB = ProductVariant::factory()->create([
+            'product_id' => $productB->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id' => $purchasableB->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableB),
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 1,
+        ]);
+
+        $manager = new CartManager($cart);
+
+        $discount = Discount::factory()->create([
+            'type' => Coupon::class,
+            'name' => 'Test Coupon',
+            'data' => [
+                'coupon' => '10OFF',
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
+
+        $discount->brands()->sync([$brandA->id]);
+
+        $cart = $manager->getCart();
+
+        $this->assertEquals(100, $cart->discountTotal->value);
+        $this->assertEquals(2080, $cart->total->value);
+    }
 
     /** @test */
     public function can_apply_fixed_amount_discount()
