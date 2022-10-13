@@ -2,7 +2,9 @@
 
 namespace Lunar\DiscountTypes;
 
+use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\DataTypes\Price;
+use Lunar\Facades\Discounts;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Collection;
@@ -86,6 +88,10 @@ class Coupon extends AbstractDiscountType
                 $cart->currency,
                 1
             );
+
+            Discounts::addApplied(
+                new CartDiscount($line, $this->discount)
+            );
         }
 
         // Do we have an amount left over? if so, grab the first line that has
@@ -150,6 +156,10 @@ class Coupon extends AbstractDiscountType
                 $amount,
                 $cart->currency,
                 1
+            );
+
+            Discounts::addApplied(
+                new CartDiscount($line, $this->discount)
             );
         }
 

@@ -10,5 +10,5 @@ return [
       | want to have custom logic for what determines whether a coupon can be used.
       |
       */
-    'coupon_validator' => \Lunar\Base\Validation\CouponValidator::Class,
+    'coupon_validator' => \Lunar\Base\Validation\CouponValidator::class,
 ];
