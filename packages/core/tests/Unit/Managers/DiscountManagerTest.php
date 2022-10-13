@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
+use Lunar\DiscountTypes\Coupon;
 use Lunar\Managers\DiscountManager;
 use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
@@ -96,5 +97,29 @@ class DiscountManagerTest extends TestCase
         });
 
         $this->assertInstanceOf(TestDiscountType::class, $testType);
+    }
+
+    /** @test */
+    public function can_validate_coupons()
+    {
+        $manager = app(DiscountManagerInterface::class);
+
+        Discount::factory()->create([
+            'type' => Coupon::class,
+            'name' => 'Test Coupon',
+            'data' => [
+                'coupon' => '10OFF',
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
+
+        $this->assertTrue(
+            $manager->validateCoupon('10OFF')
+        );
+
+        $this->assertFalse(
+            $manager->validateCoupon('20OFF')
+        );
     }
 }

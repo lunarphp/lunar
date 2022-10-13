@@ -5,6 +5,7 @@ namespace Lunar\Managers;
 use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
+use Lunar\Base\Validation\CouponValidator;
 use Lunar\DiscountTypes\Coupon;
 use Lunar\DiscountTypes\ProductDiscount;
 use Lunar\Models\Cart;
@@ -68,5 +69,12 @@ class DiscountManager implements DiscountManagerInterface
         }
 
         return $cart;
+    }
+
+    public function validateCoupon(string $coupon): bool
+    {
+        return app(
+            config('lunar.discounts.coupon_validator', CouponValidator::class)
+        )->validate($coupon);
     }
 }
