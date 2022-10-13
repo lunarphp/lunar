@@ -124,7 +124,7 @@ class Coupon extends AbstractDiscountType
 
         if ($brandIds->count()) {
             $lines = $lines->reject(function ($line) use ($brandIds) {
-                return !$brandIds->contains($line->purchasable->product->brand_id);
+                return ! $brandIds->contains($line->purchasable->product->brand_id);
             });
         }
 

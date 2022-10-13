@@ -8,7 +8,6 @@ use Lunar\Base\DiscountManagerInterface;
 use Lunar\DiscountTypes\Coupon;
 use Lunar\DiscountTypes\ProductDiscount;
 use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
 
 class DiscountManager implements DiscountManagerInterface
