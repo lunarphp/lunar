@@ -14,7 +14,7 @@
         </div>
         <div>
             @livewire('hub.components.product-search', [
-                'existing' => collect(),
+                'existing' => $this->conditions,
                 'ref' => 'discount-conditions',
                 'showBtn' => true,
             ])
@@ -23,7 +23,10 @@
 
     <div class="space-y-1">
         @foreach($this->purchasableConditions as $product)
-            <div wire:key="condition_product_{{ $product->id }}" class="rounded border px-3 py-2 flex items-center">
+            <div
+                wire:key="condition_product_{{ $product->id }}"
+                class="rounded border px-3 py-2 flex items-center"
+            >
                 <div>
                     <img class="w-8 rounded" src="{{ $product->thumbnail->getUrl('small') }}">
                 </div>
@@ -31,7 +34,7 @@
                     {{ $product->translateAttribute('name') }}
                 </div>
                 <div>
-                    <button>
+                    <button type="button" wire:click="removeCondition({{ $product->id }})">
                         <x-hub::icon ref="trash" class="w-4 h-4" />
                     </button>
                 </div>
@@ -46,7 +49,7 @@
         </div>
         <div>
             @livewire('hub.components.product-search', [
-                'existing' => collect(),
+                'existing' => $this->rewards,
                 'ref' => 'discount-rewards',
                 'showBtn' => true,
             ])

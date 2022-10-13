@@ -65,6 +65,8 @@ abstract class AbstractDiscount extends Component
      */
     protected $listeners = [
         'discountData.updated' => 'syncDiscountData',
+        'discount.conditions' => 'syncConditions',
+        'discount.purchasables' => 'syncPurchasables',
         'collectionSearch.selected' => 'selectCollections',
     ];
 
@@ -230,6 +232,8 @@ abstract class AbstractDiscount extends Component
         });
 
         $this->discount->collections()->createMany($newCollections->toArray());
+
+        $this->emit('discount.saved', $this->discount->id);
 
         $this->notify(
             __('adminhub::notifications.discount.saved')

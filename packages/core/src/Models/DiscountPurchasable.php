@@ -19,6 +19,12 @@ class DiscountPurchasable extends BaseModel
      */
     protected $casts = [];
 
+    protected $fillable = [
+        'purchasable_type',
+        'purchasable_id',
+        'type',
+    ];
+
     /**
      * Return a new factory instance for the model.
      *
