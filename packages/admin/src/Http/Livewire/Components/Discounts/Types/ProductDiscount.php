@@ -31,6 +31,7 @@ class ProductDiscount extends AbstractDiscountType
             'discount.data' => 'array',
             'discount.data.min_qty' => 'required',
             'discount.data.reward_qty' => 'required|numeric',
+            'discount.data.max_reward_qty' => 'required|numeric',
         ];
     }
 

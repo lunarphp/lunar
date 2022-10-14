@@ -5,8 +5,10 @@ namespace Lunar\DiscountTypes;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\Discounts;
+use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
+use Lunar\Models\Product;
 
 class ProductDiscount
 {
@@ -35,98 +37,86 @@ class ProductDiscount
         return 'Product Discount';
     }
 
+    public function getRewardQuantity($linesQuantity, $minQty, $rewardQty, $maxRewardQty = null)
+    {
+        $result = ($linesQuantity / $minQty) * $rewardQty;
+
+        if ($maxRewardQty && $result > $maxRewardQty) {
+            return $maxRewardQty;
+        }
+
+        return $result;
+    }
+
     /**
      * Called just before cart totals are calculated.
      *
      * @return CartLine
      */
-    public function execute(CartLine $cartLine)
+    public function apply(Cart $cart): Cart
     {
-        // Is this cart line item the one that's up for the reward?
-        $rewardIds = $this->discount->purchasableRewards()->pluck('purchasable_id');
-
-        // First off, is this purchasable relevant?
-        if (! $rewardIds->count() || ! $rewardIds->contains($cartLine->purchasable_id)) {
-            return $cartLine;
-        }
-
         $data = $this->discount->data;
 
-        // Get our conditions...
-        $conditions = $this->discount->purchasableConditions()
-            ->pluck('purchasable_id');
+        $minQty = $data['min_qty'] ?? null;
+        $rewardQty = $data['reward_qty'] ?? 1;
+        $maxRewardQty = $data['max_reward_qty'] ?? null;
 
-        // Do we have a cart item that matches this reward?
-        $match = $cartLine->cart->lines->first(function ($line) use ($conditions) {
-            return $conditions->contains($line->purchasable_id);
-        });
-
-        if (! $match || ($match && $match->quantity < $data['min_qty'])) {
-            return $cartLine;
-        }
-
-        // Get all currently applied discounts, filter them out and then
-        // if any of the other cart lines are more expensive than this one,
-        // remove the discount from the line so only the cheapest item has the
-        // discount applied.
-        $applied = Discounts::getApplied()->filter(function ($applied) {
-            return $applied->discount?->id == $this->discount->id;
-        });
-
-        if ($applied->count()) {
-            foreach ($applied as $appliedDiscount) {
-                if ($appliedDiscount->cartLine->unitPrice->value > $cartLine->unitPrice->value) {
-                    $appliedDiscount->cartLine->discount = null;
-                    $appliedDiscount->cartLine->discountTotal = null;
-                }
-            }
-
-            // Is our current cart line the lowest priced item?
-            $lowerPrice = $applied->first(function ($discount) use ($cartLine) {
-                return $discount->cartLine->unitPrice->value <= $cartLine->unitPrice->value;
+        // Get the first condition line where the qty check passes.
+        $conditions = $cart->lines->reject(function ($line) use ($minQty) {
+            $match = $this->discount->purchasableConditions->first(function ($item) use ($line) {
+                return $item->purchasable_type == Product::class &&
+                    $item->purchasable_id == $line->purchasable->product->id;
             });
 
-            if ($lowerPrice) {
-                return $cartLine;
-            }
+            return ! $match || ($minQty && $line->quantity < $minQty);
+        });
+
+        if (! $conditions->count()) {
+            return $cart;
         }
 
-        // Work out the quantity value we want to take off...
-        $discountQuantity = $cartLine->quantity - ($data['reward_qty'] + 1);
-
-        $cartLine->discount = $this->discount;
-
-        $cartLine->discountTotal = new Price(
-            $cartLine->unitPrice->value * $discountQuantity,
-            $cartLine->cart->currency,
-            1
+        // How many products are rewarded?
+        $totalRewardQty = $this->getRewardQuantity(
+            $conditions->sum('quantity'),
+            $minQty,
+            $rewardQty,
+            $maxRewardQty
         );
 
-        Discounts::addApplied(
-            new CartDiscount($cartLine, $this->discount)
-        );
+        $remainingRewardQty = $totalRewardQty;
 
-        // return $cartLine;
-    }
+        // Get the reward lines and sort by cheapest first.
+        $rewardLines = $cart->lines->filter(function ($line) {
+            return $this->discount->purchasableRewards->first(function ($item) use ($line) {
+                return $item->purchasable_type == Product::class &&
+                    $item->purchasable_id == $line->purchasable->product->id;
+            });
+        })->sortBy('subTotal.value');
 
-    /**
-     * Apply the percentage to the cart line.
-     *
-     * @param  int  $value
-     * @param  CartLine  $cartLine
-     * @return CartLine
-     */
-    private function applyPercentage($value, $cartLine): CartLine
-    {
-        $subTotal = $cartLine->subTotal->value;
-        $amount = (int) round($subTotal * ($value / 100));
+        foreach ($rewardLines as $rewardLine) {
+            if (! $remainingRewardQty) {
+                continue;
+            }
 
-        $cartLine->discountTotal = new Price(
-            $amount,
-            $cartLine->cart->currency,
-            1
-        );
+            $remainder = $rewardLine->quantity % $remainingRewardQty;
 
-        return $cartLine;
+            $qtyToAllocate = ($remainingRewardQty - $remainder) / $rewardLine->quantity;
+
+            $remainingRewardQty -= $qtyToAllocate;
+
+            $subTotal = $rewardLine->subTotal->value;
+
+            $rewardLine->discountTotal = new Price(
+                $subTotal * $qtyToAllocate,
+                $cart->currency,
+                1
+            );
+
+            Discounts::addApplied(
+                new CartDiscount($rewardLine, $this->discount)
+            );
+        }
+
+        return $cart;
     }
 }

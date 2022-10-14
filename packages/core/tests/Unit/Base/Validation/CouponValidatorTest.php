@@ -85,10 +85,7 @@ class CouponValidatorTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * @group thisthis
-     */
+    /** @test */
     public function can_validate_based_on_start_and_end_dates()
     {
         $validator = app(CouponValidator::class);
