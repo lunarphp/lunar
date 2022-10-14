@@ -37,6 +37,9 @@ Lunar\Models\Discount::create([
     'type' => 'Lunar\DiscountTypes\Coupon',
     'data' => [
         'coupon' => '20OFF',
+        'min_prices' => [
+            'USD' => 2000 // $20
+        ],
     ],
     'starts_at' => '2022-06-17 13:30:55',
     'ends_at' => null,

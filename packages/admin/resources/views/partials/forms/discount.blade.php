@@ -2,24 +2,49 @@
     <div class="overflow-hidden shadow sm:rounded-md">
         <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
             <x-hub::input.group for="name" :label="__('adminhub::inputs.name')" :error="$errors->first('discount.name')">
-                <x-hub::input.text wire:model.lazy="discount.name" />
+                <x-hub::input.text wire:model.lazy="discount.name" id="name" />
             </x-hub::input.group>
 
-            <x-hub::input.group for="name" :label="__('adminhub::inputs.handle')" :error="$errors->first('discount.handle')">
-                <x-hub::input.text wire:model.defer="discount.handle" />
+            <x-hub::input.group for="handle" :label="__('adminhub::inputs.handle')" :error="$errors->first('discount.handle')" required>
+                <x-hub::input.text wire:model.defer="discount.handle" id="handle" />
             </x-hub::input.group>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <x-hub::input.group for="starts_at" :label="__('adminhub::inputs.starts_at.label')">
-                        <x-hub::input.datepicker wire:model="discount.starts_at" :options="['enableTime' => true ]" />
+                        <x-hub::input.datepicker id="starts_at" wire:model="discount.starts_at" :options="['enableTime' => true ]" />
                     </x-hub::input.group>
                 </div>
 
                 <div>
-                    <x-hub::input.group for="starts_at" :label="__('adminhub::inputs.ends_at.label')" :error="$errors->first('discount.ends_at')">
-                        <x-hub::input.datepicker wire:model="discount.ends_at" :options="['enableTime' => true ]" />
+                    <x-hub::input.group for="ends_at" :label="__('adminhub::inputs.ends_at.label')" :error="$errors->first('discount.ends_at')">
+                        <x-hub::input.datepicker id="ends_at" wire:model="discount.ends_at" :options="['enableTime' => true ]" />
                     </x-hub::input.group>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <x-hub::input.group
+                        for="priority"
+                        label="Priority"
+                        :error="$errors->first('discount.priority')"
+                        required
+                    >
+                        <x-hub::input.text type="number" wire:model.defer="discount.priority" id="priority" />
+                    </x-hub::input.group>
+                </div>
+
+                <div>
+                    <x-hub::input.group
+                        for="stop"
+                        label="Stop"
+                        instructions="Whether this discount will stop others from propagating."
+                        :error="$errors->first('discount.stop')"
+                    >
+                        <x-hub::input.toggle id="stop" wire:model="discount.stop" />
+                    </x-hub::input.group>
+
                 </div>
             </div>
 
