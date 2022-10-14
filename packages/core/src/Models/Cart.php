@@ -13,7 +13,6 @@ use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\Managers\CartManager;
-use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class Cart extends BaseModel
 {
