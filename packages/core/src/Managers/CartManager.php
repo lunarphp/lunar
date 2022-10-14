@@ -58,6 +58,8 @@ class CartManager
                 return $customer->customerGroups;
             })->flatten()
         : collect([CustomerGroup::getDefault()]);
+
+        $this->cart->setManager($this);
     }
 
     /**
@@ -125,6 +127,8 @@ class CartManager
         });
 
         $this->cart = $pipeline->via('calculated')->thenReturn();
+
+        $this->cart->cacheProperties();
 
         return $this;
     }

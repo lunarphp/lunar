@@ -7,38 +7,62 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Address;
+use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\Managers\CartManager;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class Cart extends BaseModel
 {
     use HasFactory;
     use LogsActivity;
     use HasMacros;
+    use CachesProperties;
+
+    /**
+     * Array of cachable class properties.
+     *
+     * @var array
+     */
+    public $cachableProperties = [
+        'total',
+        'subTotal',
+        'taxTotal',
+        'discountTotal',
+        'taxBreakdown',
+        'shippingTotal',
+    ];
+
+    /**
+     * The cart manager.
+     *
+     * @var null|\Lunar\Managers\CartManager
+     */
+    protected ?CartManager $manager = null;
 
     /**
      * The cart total.
      *
      * @var null|\Lunar\DataTypes\Price
      */
-    public $total = null;
+    public ?Price $total = null;
 
     /**
      * The cart sub total.
      *
      * @var null|\Lunar\DataTypes\Price
      */
-    public $subTotal = null;
+    public ?Price $subTotal = null;
 
     /**
      * The cart tax total.
      *
      * @var null|\Lunar\DataTypes\Price
      */
-    public $taxTotal = null;
+    public ?Price $taxTotal = null;
 
     /**
      * The discount total.
@@ -88,6 +112,18 @@ class Cart extends BaseModel
         'completed_at' => 'datetime',
         'meta' => 'object',
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::retrieved(function ($cart) {
+            $cart->restoreProperties();
+        });
+    }
 
     /**
      * Return the cart lines relationship.
@@ -171,7 +207,17 @@ class Cart extends BaseModel
      */
     public function getManager()
     {
-        return new CartManager($this);
+        return $this->manager ?? new CartManager($this);
+    }
+
+    /**
+     * Set the cart manager.
+     *
+     * @var \Lunar\Managers\CartManager
+     */
+    public function setManager(CartManager $manager)
+    {
+        $this->manager = $manager;
     }
 
     /**
