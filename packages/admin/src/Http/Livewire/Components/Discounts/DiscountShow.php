@@ -4,7 +4,6 @@ namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
-use Livewire\Component;
 use Lunar\Models\Discount;
 
 class DiscountShow extends AbstractDiscount

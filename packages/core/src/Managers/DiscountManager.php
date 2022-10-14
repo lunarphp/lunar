@@ -13,8 +13,18 @@ use Lunar\Models\Discount;
 
 class DiscountManager implements DiscountManagerInterface
 {
-    protected $discounts = null;
+    /**
+     * The available discounts
+     *
+     * @var null|Collection
+     */
+    protected ?Collection $discounts = null;
 
+    /**
+     * The available discount types
+     *
+     * @var array
+     */
     protected $types = [
         Coupon::class,
         ProductDiscount::class,
@@ -32,14 +42,14 @@ class DiscountManager implements DiscountManagerInterface
         $this->applied = collect();
     }
 
-    public function addType($classname)
+    public function addType($classname): self
     {
         $this->types[] = $classname;
 
         return $this;
     }
 
-    public function getTypes()
+    public function getTypes(): Collection
     {
         return collect($this->types)->map(function ($class) {
             return app($class);
@@ -53,12 +63,12 @@ class DiscountManager implements DiscountManagerInterface
         return $this;
     }
 
-    public function getApplied()
+    public function getApplied(): Collection
     {
         return $this->applied;
     }
 
-    public function apply(Cart $cart)
+    public function apply(Cart $cart): Cart
     {
         if (! $this->discounts) {
             $this->discounts = Discount::active()->orderBy('priority')->get();

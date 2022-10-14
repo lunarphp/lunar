@@ -18,8 +18,18 @@ class ProductDiscount extends AbstractDiscountType
      */
     public Discount $discount;
 
+    /**
+     * The product discount conditions
+     *
+     * @var Collection
+     */
     public Collection $conditions;
 
+    /**
+     * The product discount rewards
+     *
+     * @var Collection
+     */
     public Collection $rewards;
 
     /**
@@ -35,6 +45,9 @@ class ProductDiscount extends AbstractDiscountType
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
         $this->conditions = $this->discount->purchasableConditions()
@@ -44,12 +57,13 @@ class ProductDiscount extends AbstractDiscountType
         $this->rewards = $this->discount->purchasableRewards()
             ->wherePurchasableType(Product::class)
             ->pluck('purchasable_id')->values();
-
-//         $this->conditions = $this->purchasableConditions->pluck('id')->unique()->values();
-//
-//         $this->rewards = $this->purchasableRewards->pluck('id')->unique()->values();
     }
 
+    /**
+     * Return the purchasable condition models.
+     *
+     * @return Collection
+     */
     public function getPurchasableConditionsProperty()
     {
         return Product::whereIn(
@@ -58,6 +72,11 @@ class ProductDiscount extends AbstractDiscountType
         )->get();
     }
 
+    /**
+     * Return the purchasable reward models.
+     *
+     * @return Collection
+     */
     public function getPurchasableRewardsProperty()
     {
         return Product::whereIn(
@@ -86,6 +105,13 @@ class ProductDiscount extends AbstractDiscountType
         $this->emitUp('discountData.updated', $this->discount->data);
     }
 
+    /**
+     * Remove a condition based on the product id
+     *
+     * @param string|int $productId
+     *
+     * @return void
+     */
     public function removeCondition($productId)
     {
         $index = $this->conditions->search($productId);
@@ -97,6 +123,13 @@ class ProductDiscount extends AbstractDiscountType
         $this->conditions = $conditions;
     }
 
+    /**
+     * Remove a reward based on the product id
+     *
+     * @param string|int $productId
+     *
+     * @return void
+     */
     public function removeReward($productId)
     {
         $index = $this->rewards->search($productId);
@@ -108,7 +141,15 @@ class ProductDiscount extends AbstractDiscountType
         $this->rewards = $rewards;
     }
 
-    public function selectProducts($ids, $ref = null)
+    /**
+     * Select products
+     *
+     * @param array $ids
+     * @param string|null $ref
+     *
+     * @return void
+     */
+    public function selectProducts(array $ids, $ref = null)
     {
         if ($ref == 'discount-conditions') {
             $this->conditions = collect($ids);
@@ -119,6 +160,11 @@ class ProductDiscount extends AbstractDiscountType
         }
     }
 
+    /**
+     * Save the product discount.
+     *
+     * @return void
+     */
     public function save()
     {
         DB::transaction(function () {

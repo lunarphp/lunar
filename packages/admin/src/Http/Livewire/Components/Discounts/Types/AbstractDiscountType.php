@@ -28,7 +28,7 @@ abstract class AbstractDiscountType extends Component
         // ..
     }
 
-    public function selectProducts($ids, $ref = null)
+    public function selectProducts(array $ids, $ref = null)
     {
         // ..
     }

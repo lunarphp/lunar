@@ -161,10 +161,6 @@ class CustomDiscount
 
         $cartLine->discount = $this->discount;
 
-        Discounts::addApplied(
-            new CartDiscount($cartLine, $this->discount)
-        );
-
         $cartLine->discountTotal = new Price(
             $cartLine->unitPrice->value * $discountQuantity,
             $cartLine->cart->currency,

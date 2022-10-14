@@ -54,6 +54,14 @@ class Coupon extends AbstractDiscountType
         );
     }
 
+    /**
+     * Apply fixed value discount
+     *
+     * @param array $values
+     * @param Cart $cart
+     *
+     * @return Cart
+     */
     private function applyFixedValue(array $values, Cart $cart): Cart
     {
         $currency = $cart->currency;
@@ -113,6 +121,13 @@ class Coupon extends AbstractDiscountType
         return $cart;
     }
 
+    /**
+     * Return the eligible lines for the discount.
+     *
+     * @param Cart $cart
+     *
+     * @return Collection
+     */
     private function getEligibleLines(Cart $cart)
     {
         $collectionIds = $this->discount->collections->pluck('id');
