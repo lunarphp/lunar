@@ -57,9 +57,8 @@ class Coupon extends AbstractDiscountType
     /**
      * Apply fixed value discount
      *
-     * @param array $values
-     * @param Cart $cart
-     *
+     * @param  array  $values
+     * @param  Cart  $cart
      * @return Cart
      */
     private function applyFixedValue(array $values, Cart $cart): Cart
@@ -124,8 +123,7 @@ class Coupon extends AbstractDiscountType
     /**
      * Return the eligible lines for the discount.
      *
-     * @param Cart $cart
-     *
+     * @param  Cart  $cart
      * @return Collection
      */
     private function getEligibleLines(Cart $cart)

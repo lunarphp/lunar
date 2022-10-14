@@ -40,11 +40,10 @@ class ProductDiscount
     /**
      * Return the reward quantity for the discount
      *
-     * @param int $linesQuantity
-     * @param int $minQty
-     * @param int $rewardQty
-     * @param int $maxRewardQty
-     *
+     * @param  int  $linesQuantity
+     * @param  int  $minQty
+     * @param  int  $rewardQty
+     * @param  int  $maxRewardQty
      * @return int
      */
     public function getRewardQuantity($linesQuantity, $minQty, $rewardQty, $maxRewardQty = null)

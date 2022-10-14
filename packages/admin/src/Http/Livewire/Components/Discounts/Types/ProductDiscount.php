@@ -108,8 +108,7 @@ class ProductDiscount extends AbstractDiscountType
     /**
      * Remove a condition based on the product id
      *
-     * @param string|int $productId
-     *
+     * @param  string|int  $productId
      * @return void
      */
     public function removeCondition($productId)
@@ -126,8 +125,7 @@ class ProductDiscount extends AbstractDiscountType
     /**
      * Remove a reward based on the product id
      *
-     * @param string|int $productId
-     *
+     * @param  string|int  $productId
      * @return void
      */
     public function removeReward($productId)
@@ -144,9 +142,8 @@ class ProductDiscount extends AbstractDiscountType
     /**
      * Select products
      *
-     * @param array $ids
-     * @param string|null $ref
-     *
+     * @param  array  $ids
+     * @param  string|null  $ref
      * @return void
      */
     public function selectProducts(array $ids, $ref = null)

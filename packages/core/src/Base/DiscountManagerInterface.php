@@ -11,8 +11,7 @@ interface DiscountManagerInterface
     /**
      * Add a discount type by classname
      *
-     * @param string $classname
-     *
+     * @param  string  $classname
      * @return self
      */
     public function addType($classname): self;
@@ -27,8 +26,7 @@ interface DiscountManagerInterface
     /**
      * Add an applied discount
      *
-     * @param CartDiscount $cartDiscount
-     *
+     * @param  CartDiscount  $cartDiscount
      * @return self
      */
     public function addApplied(CartDiscount $cartDiscount): self;
@@ -43,8 +41,7 @@ interface DiscountManagerInterface
     /**
      * Apply discounts for a given cart.
      *
-     * @param Cart $cart
-     *
+     * @param  Cart  $cart
      * @return Cart
      */
     public function apply(Cart $cart): Cart;
@@ -52,8 +49,7 @@ interface DiscountManagerInterface
     /**
      * Validate a given coupon against all system discounts.
      *
-     * @param string $coupon
-     *
+     * @param  string  $coupon
      * @return bool
      */
     public function validateCoupon(string $coupon): bool;
