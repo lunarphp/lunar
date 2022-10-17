@@ -5,7 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartAddressFactory;
@@ -28,35 +28,35 @@ class CartAddress extends BaseModel implements Addressable
     /**
      * The shipping sub total.
      *
-     * @var \Lunar\DataTypes\Price|null
+     * @var Price|null
      */
     public ?Price $shippingSubTotal;
 
     /**
      * The shipping tax total.
      *
-     * @var \Lunar\DataTypes\Price|null
+     * @var Price|null
      */
     public ?Price $shippingTaxTotal;
 
     /**
      * The shipping total.
      *
-     * @var \Lunar\DataTypes\Price|null
+     * @var Price|null
      */
     public ?Price $shippingTotal;
 
     /**
      * The tax breakdown.
      *
-     * @var \Lunar\Base\DataTransferObjects\TaxBreakdown
+     * @var TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
      *
-     * @return \Lunar\Database\Factories\CartAddressFactory
+     * @return CartAddressFactory
      */
     protected static function newFactory(): CartAddressFactory
     {

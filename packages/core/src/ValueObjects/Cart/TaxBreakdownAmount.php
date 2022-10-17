@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base\DataTransferObjects;
+namespace Lunar\ValueObjects\Cart;
 
 use Lunar\DataTypes\Price;
 
-class TaxBreakdownAmount
+final class TaxBreakdownAmount
 {
     public function __construct(
         public Price $price,

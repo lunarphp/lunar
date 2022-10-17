@@ -4,13 +4,13 @@ namespace Lunar\Drivers;
 
 use Lunar\Actions\Taxes\GetTaxZone;
 use Lunar\Base\Addressable;
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
-use Lunar\Base\DataTransferObjects\TaxBreakdownAmount;
 use Lunar\Base\Purchasable;
 use Lunar\Base\TaxDriver;
 use Lunar\DataTypes\Price;
 use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
+use Lunar\ValueObjects\Cart\TaxBreakdown;
+use Lunar\ValueObjects\Cart\TaxBreakdownAmount;
 
 class SystemTaxDriver implements TaxDriver
 {

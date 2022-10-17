@@ -2,9 +2,9 @@
 
 namespace Lunar\Base;
 
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
 use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
+use Lunar\ValueObjects\Cart\TaxBreakdown;
 
 interface TaxDriver
 {
@@ -52,7 +52,7 @@ interface TaxDriver
      * Return the tax breakdown from a given sub total.
      *
      * @param  int  $subTotal
-     * @return \Lunar\Base\DataTransferObjects\TaxBreakdown
+     * @return \Lunar\ValueObjects\Cart\TaxBreakdown
      */
     public function getBreakdown($subTotal): TaxBreakdown;
 }

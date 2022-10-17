@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base\DataTransferObjects;
+namespace Lunar\ValueObjects\Cart;
 
 use Illuminate\Support\Collection;
 
-class TaxBreakdown
+final class TaxBreakdown
 {
     public function __construct(
         public ?Collection $amounts = null

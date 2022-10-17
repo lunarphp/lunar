@@ -38,35 +38,35 @@ class Cart extends BaseModel
     /**
      * The cart manager.
      *
-     * @var null|\Lunar\Managers\CartManager
+     * @var null|CartManager
      */
     protected ?CartManager $manager = null;
 
     /**
      * The cart total.
      *
-     * @var null|\Lunar\DataTypes\Price
+     * @var null|Price
      */
     public ?Price $total = null;
 
     /**
      * The cart sub total.
      *
-     * @var null|\Lunar\DataTypes\Price
+     * @var null|Price
      */
     public ?Price $subTotal = null;
 
     /**
      * The cart tax total.
      *
-     * @var null|\Lunar\DataTypes\Price
+     * @var null|Price
      */
     public ?Price $taxTotal = null;
 
     /**
      * The discount total.
      *
-     * @var null|\Lunar\DataTypes\Price
+     * @var null|Price
      */
     public ?Price $discountTotal = null;
 
@@ -80,7 +80,7 @@ class Cart extends BaseModel
     /**
      * The shipping total for the cart.
      *
-     * @var Price|null
+     * @var null|Price
      */
     public ?Price $shippingTotal = null;
 
