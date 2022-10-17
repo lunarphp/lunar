@@ -5,53 +5,15 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
-use Lunar\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartAddressFactory;
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
 
 class CartAddress extends BaseModel implements Addressable
 {
     use HasFactory;
     use LogsActivity;
     use HasMacros;
-
-    /**
-     * The applied shipping option.
-     *
-     * @var ShippingOption|null
-     */
-    public ?ShippingOption $shippingOption = null;
-
-    /**
-     * The shipping sub total.
-     *
-     * @var Price|null
-     */
-    public ?Price $shippingSubTotal;
-
-    /**
-     * The shipping tax total.
-     *
-     * @var Price|null
-     */
-    public ?Price $shippingTaxTotal;
-
-    /**
-     * The shipping total.
-     *
-     * @var Price|null
-     */
-    public ?Price $shippingTotal;
-
-    /**
-     * The tax breakdown.
-     *
-     * @var TaxBreakdown
-     */
-    public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.

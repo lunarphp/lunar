@@ -4,14 +4,11 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Address;
-use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartFactory;
-use Lunar\DataTypes\Price;
 use Lunar\Managers\CartManager;
 
 class Cart extends BaseModel
@@ -19,75 +16,18 @@ class Cart extends BaseModel
     use HasFactory;
     use LogsActivity;
     use HasMacros;
-    use CachesProperties;
-
-    /**
-     * Array of cachable class properties.
-     *
-     * @var array
-     */
-    public $cachableProperties = [
-        'total',
-        'subTotal',
-        'taxTotal',
-        'discountTotal',
-        'taxBreakdown',
-        'shippingTotal',
-    ];
 
     /**
      * The cart manager.
      *
-     * @var null|CartManager
+     * @var CartManager|null
      */
     protected ?CartManager $manager = null;
 
     /**
-     * The cart total.
-     *
-     * @var null|Price
-     */
-    public ?Price $total = null;
-
-    /**
-     * The cart sub total.
-     *
-     * @var null|Price
-     */
-    public ?Price $subTotal = null;
-
-    /**
-     * The cart tax total.
-     *
-     * @var null|Price
-     */
-    public ?Price $taxTotal = null;
-
-    /**
-     * The discount total.
-     *
-     * @var null|Price
-     */
-    public ?Price $discountTotal = null;
-
-    /**
-     * All the tax breakdowns for the cart.
-     *
-     * @var Collection
-     */
-    public Collection $taxBreakdown;
-
-    /**
-     * The shipping total for the cart.
-     *
-     * @var null|Price
-     */
-    public ?Price $shippingTotal = null;
-
-    /**
      * Return a new factory instance for the model.
      *
-     * @return \Lunar\Database\Factories\CartFactory
+     * @return CartFactory
      */
     protected static function newFactory(): CartFactory
     {
@@ -122,6 +62,26 @@ class Cart extends BaseModel
         static::retrieved(function ($cart) {
             $cart->restoreProperties();
         });
+    }
+
+    /**
+     * Return the cart manager.
+     *
+     * @return \Lunar\Managers\CartManager
+     */
+    public function getManager()
+    {
+        return $this->manager ?? new CartManager($this);
+    }
+
+    /**
+     * Set the cart manager.
+     *
+     * @var \Lunar\Managers\CartManager
+     */
+    public function setManager(CartManager $manager)
+    {
+        $this->manager = $manager;
     }
 
     /**
@@ -197,26 +157,6 @@ class Cart extends BaseModel
     public function order()
     {
         return $this->belongsTo(Order::class);
-    }
-
-    /**
-     * Return the cart manager.
-     *
-     * @return \Lunar\Managers\CartManager
-     */
-    public function getManager()
-    {
-        return $this->manager ?? new CartManager($this);
-    }
-
-    /**
-     * Set the cart manager.
-     *
-     * @var \Lunar\Managers\CartManager
-     */
-    public function setManager(CartManager $manager)
-    {
-        $this->manager = $manager;
     }
 
     /**

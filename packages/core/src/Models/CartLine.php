@@ -7,56 +7,12 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartLineFactory;
-use Lunar\DataTypes\Price;
-use Lunar\ValueObjects\Cart\TaxBreakdown;
 
 class CartLine extends BaseModel
 {
     use HasFactory;
     use LogsActivity;
     use HasMacros;
-
-    /**
-     * The cart line total.
-     *
-     * @var Price|null
-     */
-    public ?Price $total = null;
-
-    /**
-     * The cart line sub total.
-     *
-     * @var Price|null
-     */
-    public ?Price $subTotal = null;
-
-    /**
-     * The cart line tax amount.
-     *
-     * @var Price|null
-     */
-    public ?Price $taxAmount = null;
-
-    /**
-     * The cart line unit price.
-     *
-     * @var Price|null
-     */
-    public ?Price $unitPrice = null;
-
-    /**
-     * The discount total.
-     *
-     * @var Price|null
-     */
-    public ?Price $discountTotal = null;
-
-    /**
-     * All the tax breakdowns for the cart line.
-     *
-     * @var TaxBreakdown
-     */
-    public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
