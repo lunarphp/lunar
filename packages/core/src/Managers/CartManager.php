@@ -26,9 +26,17 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\CartLine;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\TaxZone;
+use Lunar\ValueObjects\Cart\CartTotals;
 
 class CartManager
 {
+    /**
+     * The cart totals.
+     *
+     * @var CartTotals|null
+     */
+    protected ?CartTotals $totals;
+
     /**
      * The tax zone model.
      *
@@ -107,11 +115,11 @@ class CartManager
             $this->cart->shippingAddress->shippingTaxTotal = new Price($shippingTaxTotal, $this->cart->currency, 1);
             $this->cart->shippingAddress->shippingSubTotal = new Price($shippingOption->price->value, $this->cart->currency, 1);
 
-            $this->cart->shippingTotal = new Price($shippingOption->price->value, $this->cart->currency, 1);
+            $this->totals->shippingTotal = new Price($shippingOption->price->value, $this->cart->currency, 1);
         }
 
-        $this->cart->taxTotal = new Price($taxTotal, $this->cart->currency, 1);
-        $this->cart->total = new Price($total, $this->cart->currency, 1);
+        $this->totals->taxTotal = new Price($taxTotal, $this->cart->currency, 1);
+        $this->totals->total = new Price($total, $this->cart->currency, 1);
 
         // Need to include shipping tax breakdown...
         $this->cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) {
@@ -124,6 +132,8 @@ class CartManager
             ];
         });
 
+
+// BUGGER - Pipelines on Cart model
         $this->cart = $pipeline->via('calculated')->thenReturn();
 
         $this->cart->cacheProperties();

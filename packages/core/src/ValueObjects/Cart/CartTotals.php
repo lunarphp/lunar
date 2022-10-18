@@ -4,7 +4,7 @@ namespace Lunar\ValueObjects\Cart;
 
 use Lunar\DataTypes\Price;
 
-final class Totals
+final class CartTotals
 {
     /**
      * The cart sub total.
@@ -40,4 +40,9 @@ final class Totals
      * @var Price
      */
     public Price $total;
+
+    // Lines
+    // Shipping
+    // Discounts
+    // TaxBreakdown(s)
 }
