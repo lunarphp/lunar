@@ -14,8 +14,8 @@ class LanguageTest extends TestCase
     public function can_make_a_language()
     {
         $language = Language::factory()->create([
-            'code'    => 'fr',
-            'name'    => 'Français',
+            'code' => 'fr',
+            'name' => 'Français',
             'default' => true,
         ]);
 

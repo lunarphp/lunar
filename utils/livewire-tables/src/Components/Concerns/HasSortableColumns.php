@@ -2,8 +2,6 @@
 
 namespace Lunar\LivewireTables\Components\Concerns;
 
-use Illuminate\Support\Collection;
-
 trait HasSortableColumns
 {
     /**

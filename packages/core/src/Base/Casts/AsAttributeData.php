@@ -50,7 +50,7 @@ class AsAttributeData implements Castable
                 foreach ($value ?? [] as $handle => $item) {
                     $data[$handle] = [
                         'field_type' => get_class($item),
-                        'value'      => $item->getValue(),
+                        'value' => $item->getValue(),
                     ];
                 }
 

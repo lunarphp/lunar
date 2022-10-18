@@ -37,12 +37,12 @@ class CurrencyCreate extends Component
     protected function rules()
     {
         return [
-            'currency.code'           => 'required|max:255|unique:'.get_class($this->currency).',code',
-            'currency.name'           => 'required|max:255',
-            'currency.exchange_rate'  => 'required|numeric|min:0.0001|max:999999.9999',
+            'currency.code' => 'required|max:255|unique:'.get_class($this->currency).',code',
+            'currency.name' => 'required|max:255',
+            'currency.exchange_rate' => 'required|numeric|min:0.0001|max:999999.9999',
             'currency.decimal_places' => 'required|integer|max:4',
-            'currency.enabled'        => 'nullable',
-            'currency.default'        => 'nullable',
+            'currency.enabled' => 'nullable',
+            'currency.default' => 'nullable',
         ];
     }
 

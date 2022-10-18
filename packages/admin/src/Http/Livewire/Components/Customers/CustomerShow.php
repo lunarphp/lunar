@@ -124,14 +124,14 @@ class CustomerShow extends Component
     {
         return array_merge(
             [
-                'syncedGroups'          => 'array',
-                'customer.title'        => 'string|nullable',
-                'customer.first_name'   => 'string|required',
-                'customer.last_name'    => 'string|required',
+                'syncedGroups' => 'array',
+                'customer.title' => 'string|nullable',
+                'customer.first_name' => 'string|required',
+                'customer.last_name' => 'string|required',
                 'customer.company_name' => 'nullable|string',
-                'customer.account_ref'  => 'nullable|string',
-                'customer.vat_no'       => 'nullable|string',
-                'address'               => 'nullable',
+                'customer.account_ref' => 'nullable|string',
+                'customer.vat_no' => 'nullable|string',
+                'address' => 'nullable',
                 'address.postcode' => 'required|string|max:255',
                 'address.title' => 'nullable|string|max:255',
                 'address.first_name' => 'nullable|string|max:255',
@@ -145,7 +145,7 @@ class CustomerShow extends Component
                 'address.delivery_instructions' => 'nullable|string|max:255',
                 'address.contact_email' => 'nullable|email|max:255',
                 'address.contact_phone' => 'nullable|string|max:255',
-                'address.country_id'   => 'required',
+                'address.country_id' => 'required',
                 'address.billing_default' => 'nullable',
                 'address.shipping_default' => 'nullable',
             ],
@@ -472,7 +472,7 @@ class CustomerShow extends Component
 
         return collect([
             'chart' => [
-                'type'    => 'area',
+                'type' => 'area',
                 'toolbar' => [
                     'show' => false,
                 ],
@@ -482,12 +482,12 @@ class CustomerShow extends Component
                 'enabled' => false,
             ],
             'fill' => [
-                'type'     => 'gradient',
+                'type' => 'gradient',
                 'gradient' => [
                     'shadeIntensity' => 1,
-                    'opacityFrom'    => 0.45,
-                    'opacityTo'      => 0.05,
-                    'stops'          => [50, 100, 100, 100],
+                    'opacityFrom' => 0.45,
+                    'opacityTo' => 0.05,
+                    'stops' => [50, 100, 100, 100],
                 ],
             ],
             'series' => [
@@ -501,7 +501,7 @@ class CustomerShow extends Component
                 ],
             ],
             'xaxis' => [
-                'type'       => 'datetime',
+                'type' => 'datetime',
                 'categories' => $months->toArray(),
             ],
             'yaxis' => [

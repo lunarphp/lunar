@@ -76,4 +76,15 @@ trait HasTranslations
 
         return $value ? $value->getValue() : null;
     }
+
+    /**
+     * Shorthand to translate an attribute.
+     *
+     * @param $params
+     * @return void
+     */
+    public function attr(...$params)
+    {
+        return $this->translateAttribute(...$params);
+    }
 }

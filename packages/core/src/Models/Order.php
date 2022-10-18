@@ -45,13 +45,13 @@ class Order extends BaseModel
      * {@inheritDoc}
      */
     protected $casts = [
-        'tax_breakdown'  => TaxBreakdown::class,
-        'meta'           => 'object',
-        'placed_at'      => 'datetime',
-        'sub_total'      => Price::class,
+        'tax_breakdown' => TaxBreakdown::class,
+        'meta' => 'object',
+        'placed_at' => 'datetime',
+        'sub_total' => Price::class,
         'discount_total' => Price::class,
-        'tax_total'      => Price::class,
-        'total'          => Price::class,
+        'tax_total' => Price::class,
+        'total' => Price::class,
         'shipping_total' => Price::class,
     ];
 
@@ -260,26 +260,26 @@ class Order extends BaseModel
     protected function getSearchableAttributes()
     {
         $data = [
-            'id'        => $this->id,
-            'channel'    => $this->channel->name,
+            'id' => $this->id,
+            'channel' => $this->channel->name,
             'reference' => $this->reference,
             'customer_reference' => $this->customer_reference,
-            'status'    => $this->status,
+            'status' => $this->status,
             'placed_at' => optional($this->placed_at)->timestamp,
             'created_at' => $this->created_at->timestamp,
             'sub_total' => $this->sub_total->value,
-            'total'     => $this->total->value,
-            'currency_code'  => $this->currency_code,
-            'charges'   => $this->transactions->map(function ($transaction) {
+            'total' => $this->total->value,
+            'currency_code' => $this->currency_code,
+            'charges' => $this->transactions->map(function ($transaction) {
                 return [
                     'reference' => $transaction->reference,
                 ];
             }),
             'currency' => $this->currency_code,
-            'lines'    => $this->productLines->map(function ($line) {
+            'lines' => $this->productLines->map(function ($line) {
                 return [
                     'description' => $line->description,
-                    'identifier'  => $line->identifier,
+                    'identifier' => $line->identifier,
                 ];
             })->toArray(),
         ];

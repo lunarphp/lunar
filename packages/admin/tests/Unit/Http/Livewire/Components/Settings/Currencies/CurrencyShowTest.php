@@ -30,11 +30,11 @@ class CurrencyShowTest extends TestCase
         $this->actingAs($staff, 'staff');
 
         $properties = [
-            'name'           => 'Some currency name',
-            'code'           => 'TST',
-            'default'        => true,
-            'exchange_rate'  => 0.5,
-            'enabled'        => 0,
+            'name' => 'Some currency name',
+            'code' => 'TST',
+            'default' => true,
+            'exchange_rate' => 0.5,
+            'enabled' => 0,
         ];
 
         $component = Livewire::test(CurrencyShow::class, [
@@ -65,7 +65,7 @@ class CurrencyShowTest extends TestCase
 
         Currency::factory()->create([
             'default' => false,
-            'code'    => 'FOO',
+            'code' => 'FOO',
         ]);
 
         $currency = Currency::factory()->create([
@@ -90,7 +90,7 @@ class CurrencyShowTest extends TestCase
 
         $currency = Currency::factory()->create([
             'default' => false,
-            'code'    => 'FOO',
+            'code' => 'FOO',
         ]);
 
         $this->actingAs($staff, 'staff');
@@ -112,7 +112,7 @@ class CurrencyShowTest extends TestCase
 
         $currency = Currency::factory()->create([
             'default' => false,
-            'code'    => 'FOO',
+            'code' => 'FOO',
         ]);
 
         $this->actingAs($staff, 'staff');

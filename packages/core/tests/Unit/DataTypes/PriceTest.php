@@ -19,7 +19,7 @@ class PriceTest extends TestCase
     public function can_initiate_the_datatype()
     {
         $currency = Currency::factory()->create([
-            'code'           => 'GBP',
+            'code' => 'GBP',
             'decimal_places' => 2,
         ]);
 
@@ -36,7 +36,7 @@ class PriceTest extends TestCase
     public function can_handle_multiple_decimal_places()
     {
         $currency = Currency::factory()->create([
-            'code'           => 'GBP',
+            'code' => 'GBP',
             'decimal_places' => 3,
         ]);
 
@@ -57,7 +57,7 @@ class PriceTest extends TestCase
     public function can_handle_no_decimal_places()
     {
         $currency = Currency::factory()->create([
-            'code'           => 'VND',
+            'code' => 'VND',
             'decimal_places' => 0,
         ]);
 
@@ -72,7 +72,7 @@ class PriceTest extends TestCase
     public function can_format_numbers()
     {
         $currency = Currency::factory()->create([
-            'code'           => 'EUR',
+            'code' => 'EUR',
             'decimal_places' => 2,
         ]);
 
@@ -87,7 +87,7 @@ class PriceTest extends TestCase
     public function can_handle_decimals_being_passed()
     {
         $currency = Currency::factory()->create([
-            'code'           => 'GBP',
+            'code' => 'GBP',
             'decimal_places' => 2,
         ]);
 

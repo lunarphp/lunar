@@ -3,15 +3,12 @@
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Settings\Tables;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Livewire\Livewire;
 use Lunar\Facades\AttributeManifest;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
-use Lunar\Models\Channel;
-use Spatie\Activitylog\Models\Activity;
 
 /**
  * @group hub.tables

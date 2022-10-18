@@ -242,7 +242,7 @@ class HasTranslationsTest extends TestCase
 
         $product = Product::factory()->create([
             'attribute_data' => [
-                'name'        => new Text('English Name'),
+                'name' => new Text('English Name'),
                 'description' => new Text(null),
             ],
         ]);
@@ -264,18 +264,61 @@ class HasTranslationsTest extends TestCase
 
         $product = Product::factory()->create([
             'attribute_data' => [
-                'name'        => new Text('Test Name'),
-                'list'        => new ListField([
+                'name' => new Text('Test Name'),
+                'list' => new ListField([
                     'One',
                     'Two',
                     'Three',
                 ]),
-                'dropdown'        => new Dropdown('Foobar'),
+                'dropdown' => new Dropdown('Foobar'),
             ],
         ]);
 
         $this->assertEquals('Test Name', $product->translateAttribute('name'));
         $this->assertEquals('Foobar', $product->translateAttribute('dropdown'));
         $this->assertEquals(['One', 'Two', 'Three'], $product->translateAttribute('list'));
+    }
+
+    /** @test */
+    public function can_use_shorthand_function_to_translate_attributes()
+    {
+        $attributeGroup = AttributeGroup::factory()->create([
+            'name' => [
+                'en' => 'English',
+                'fr' => 'French',
+            ],
+        ]);
+
+        $productOption = ProductOption::factory()->create([
+            'name' => [
+                'en' => 'English Option',
+                'fr' => 'French Option',
+            ],
+        ]);
+
+        $this->assertEquals('English', $attributeGroup->translate('name', 'en'));
+        $this->assertEquals('French', $attributeGroup->translate('name', 'fr'));
+
+        $this->assertEquals('English Option', $productOption->translate('name', 'en'));
+        $this->assertEquals('French Option', $productOption->translate('name', 'fr'));
+
+        $product = Product::factory()->create([
+            'attribute_data' => [
+                'name' => new TranslatedText(collect([
+                    'en' => new Text('English Name'),
+                    'fr' => new Text('French Name'),
+                ])),
+                'description' => new TranslatedText(collect([
+                    'en' => new Text('English Description'),
+                    'fr' => new Text('French Description'),
+                ])),
+            ],
+        ]);
+
+        $this->assertEquals('English Name', $product->attr('name'));
+        $this->assertEquals('French Name', $product->attr('name', 'fr'));
+
+        $this->assertEquals('English Description', $product->attr('description'));
+        $this->assertEquals('French Description', $product->attr('description', 'fr'));
     }
 }

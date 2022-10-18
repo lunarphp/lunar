@@ -23,7 +23,7 @@ class Dashboard extends Component
      */
     public array $range = [
         'from' => null,
-        'to'   => null,
+        'to' => null,
     ];
 
     /**
@@ -41,7 +41,7 @@ class Dashboard extends Component
     {
         return [
             'range.from' => 'date',
-            'range.to'   => 'date,after:range.from',
+            'range.to' => 'date,after:range.from',
         ];
     }
 
@@ -185,7 +185,7 @@ class Dashboard extends Component
 
         return collect([
             'chart' => [
-                'type'    => 'area',
+                'type' => 'area',
                 'toolbar' => [
                     'show' => false,
                 ],
@@ -195,12 +195,12 @@ class Dashboard extends Component
                 'enabled' => false,
             ],
             'fill' => [
-                'type'     => 'gradient',
+                'type' => 'gradient',
                 'gradient' => [
                     'shadeIntensity' => 1,
-                    'opacityFrom'    => 0.45,
-                    'opacityTo'      => 0.05,
-                    'stops'          => [50, 100, 100, 100],
+                    'opacityFrom' => 0.45,
+                    'opacityTo' => 0.05,
+                    'stops' => [50, 100, 100, 100],
                 ],
             ],
             'series' => [
@@ -214,7 +214,7 @@ class Dashboard extends Component
                 ],
             ],
             'xaxis' => [
-                'type'       => 'datetime',
+                'type' => 'datetime',
                 'categories' => $months->toArray(),
             ],
             'yaxis' => [
@@ -338,7 +338,7 @@ class Dashboard extends Component
 
         return collect([
             'chart' => [
-                'type'    => 'donut',
+                'type' => 'donut',
                 'toolbar' => [
                     'show' => false,
                 ],

@@ -26,12 +26,12 @@ class WithLanguagesTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code'    => 'fr',
+            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
@@ -65,9 +65,9 @@ class WithLanguagesTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
