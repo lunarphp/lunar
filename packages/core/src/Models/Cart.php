@@ -29,56 +29,29 @@ class Cart extends BaseModel
      * @var array
      */
     public $cachableProperties = [
-        'total',
         'subTotal',
-        'taxTotal',
-        'discountTotal',
-        'taxBreakdown',
         'shippingTotal',
+        'taxTotal',
+        'discountAmount',
+        'total',
+        'taxBreakdown',
         'promotions',
     ];
 
     /**
      * The cart manager.
      *
-     * @var null|\Lunar\Managers\CartManager
+     * @var null|CartManager
      */
     protected ?CartManager $manager = null;
 
     /**
-     * The cart total.
-     *
-     * @var null|\Lunar\DataTypes\Price
-     */
-    public ?Price $total = null;
-
-    /**
      * The cart sub total.
+     * Sum of cart line amounts, before tax, shipping and cart-level discounts.
      *
-     * @var null|\Lunar\DataTypes\Price
+     * @var null|Price
      */
     public ?Price $subTotal = null;
-
-    /**
-     * The cart tax total.
-     *
-     * @var null|\Lunar\DataTypes\Price
-     */
-    public ?Price $taxTotal = null;
-
-    /**
-     * The discount total.
-     *
-     * @var null|\Lunar\DataTypes\Price
-     */
-    public ?Price $discountTotal = null;
-
-    /**
-     * All the tax breakdowns for the cart.
-     *
-     * @var null|Collection<TaxBreakdown>
-     */
-    public ?Collection $taxBreakdown;
 
     /**
      * The shipping total for the cart.
@@ -88,7 +61,38 @@ class Cart extends BaseModel
     public ?Price $shippingTotal = null;
 
     /**
-     * All the promotions for the cart.
+     * The cart tax total.
+     * Sum of all tax to pay across cart lines and shipping.
+     *
+     * @var null|Price
+     */
+    public ?Price $taxTotal = null;
+
+    /**
+     * The discount amount.
+     * The cart-level discount amount.
+     *
+     * @var null|Price
+     */
+    public ?Price $discountAmount = null;
+
+    /**
+     * The cart total.
+     * Sum of the cart-line amounts, shipping and tax, minus cart-level discount amount.
+     *
+     * @var null|Price
+     */
+    public ?Price $total = null;
+
+    /**
+     * All the tax breakdowns for the cart.
+     *
+     * @var null|Collection<TaxBreakdown>
+     */
+    public ?Collection $taxBreakdown;
+
+    /**
+     * The cart-level promotions.
      *
      * @var null|Collection<Promotion>
      */

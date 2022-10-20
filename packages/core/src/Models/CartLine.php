@@ -24,49 +24,49 @@ class CartLine extends BaseModel
      * @var array
      */
     public $cachableProperties = [
-        'total',
-        'subTotal',
-        'taxAmount',
         'unitPrice',
+        'subTotal',
         'discountTotal',
+        'taxAmount',
+        'total',
         'promotionDescription',
         'taxBreakdown',
     ];
 
     /**
-     * The cart line total.
-     *
-     * @var Price|null
-     */
-    public ?Price $total = null;
-
-    /**
-     * The cart line sub total.
-     *
-     * @var Price|null
-     */
-    public ?Price $subTotal = null;
-
-    /**
-     * The cart line tax amount.
-     *
-     * @var Price|null
-     */
-    public ?Price $taxAmount = null;
-
-    /**
      * The cart line unit price.
      *
-     * @var Price|null
+     * @var null|Price
      */
     public ?Price $unitPrice = null;
 
     /**
+     * The cart line sub total.
+     *
+     * @var null|Price
+     */
+    public ?Price $subTotal = null;
+
+    /**
      * The discount total.
      *
-     * @var Price|null
+     * @var null|Price
      */
     public ?Price $discountTotal = null;
+
+    /**
+     * The cart line tax amount.
+     *
+     * @var null|Price
+     */
+    public ?Price $taxAmount = null;
+
+    /**
+     * The cart line total.
+     *
+     * @var null|Price
+     */
+    public ?Price $total = null;
 
     /**
      * The promotion description.
