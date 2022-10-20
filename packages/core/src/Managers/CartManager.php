@@ -73,13 +73,16 @@ class CartManager
                 $this->getModifiers()->toArray()
             );
 
+        // Initialise ready for cart discounts
+        $this->cart->cartDiscountAmount = new Price(0, $this->cart->currency, 1);
+
         $this->cart = $pipeline->via('calculating')->thenReturn();
 
         $lines = $this->calculateLines();
 
         // Get the line subtotals and add together.
         $subTotal = $lines->sum('subTotal.value');
-        $discountTotal = $lines->sum('discountTotal.value');
+        $discountTotal = $lines->sum('discountTotal.value') + $this->cart->cartDiscountAmount->value;
         $taxTotal = $lines->sum('taxAmount.value');
         $total = $lines->sum('total.value');
         $taxBreakDownAmounts = $lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
