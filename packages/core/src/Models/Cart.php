@@ -88,7 +88,7 @@ class Cart extends BaseModel
     public ?Price $shippingTotal = null;
 
     /**
-     * All the discounts for the cart.
+     * All the promotions for the cart.
      *
      * @var null|Collection<Promotion>
      */
