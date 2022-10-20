@@ -79,13 +79,13 @@ class CartManager
 
         // Get the line subtotals and add together.
         $subTotal = $lines->sum('subTotal.value');
-        //$discountTotal = $lines->sum('discountTotal.value');
+        $discountTotal = $lines->sum('discountTotal.value');
         $taxTotal = $lines->sum('taxAmount.value');
         $total = $lines->sum('total.value');
         $taxBreakDownAmounts = $lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
 
         $this->cart->subTotal = new Price($subTotal, $this->cart->currency, 1);
-        //$this->cart->discountTotal = new Price($discountTotal, $this->cart->currency, 1);
+        $this->cart->discountTotal = new Price($discountTotal, $this->cart->currency, 1);
 
         if ($shippingOption = $this->getShippingOption()) {
             $shippingTax = Taxes::setShippingAddress($this->cart->shippingAddress)

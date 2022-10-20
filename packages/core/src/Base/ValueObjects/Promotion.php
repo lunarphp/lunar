@@ -21,7 +21,7 @@ class Promotion
     public string $reference = '';
 
     /**
-     * Promotion amount
+     * Discount amount
      *
      * @var Price
      */

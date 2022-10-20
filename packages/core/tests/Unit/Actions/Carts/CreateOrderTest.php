@@ -132,7 +132,7 @@ class CreateOrderTest extends TestCase
             'customer_reference' => null,
             'sub_total' => $cart->subTotal->value,
             'total' => $cart->total->value,
-            'discount_total' => $cart->discountAmount?->value,
+            'discount_total' => $cart->discountTotal?->value,
             'shipping_total' => $cart->shippingTotal?->value ?: 0,
             'tax_breakdown' => json_encode($breakdown),
         ];
