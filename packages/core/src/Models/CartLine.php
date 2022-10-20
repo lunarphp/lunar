@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\ValueObjects\TaxBreakdown;
@@ -15,6 +16,22 @@ class CartLine extends BaseModel
     use HasFactory;
     use LogsActivity;
     use HasMacros;
+    use CachesProperties;
+
+    /**
+     * Array of cachable class properties.
+     *
+     * @var array
+     */
+    public $cachableProperties = [
+        'total',
+        'subTotal',
+        'taxAmount',
+        'unitPrice',
+        'discountTotal',
+        'promotionDescription',
+        'taxBreakdown',
+    ];
 
     /**
      * The cart line total.
@@ -50,6 +67,13 @@ class CartLine extends BaseModel
      * @var Price|null
      */
     public ?Price $discountTotal = null;
+
+    /**
+     * The promotion description.
+     *
+     * @var string
+     */
+    public string $promotionDescription = '';
 
     /**
      * All the tax breakdowns for the cart line.

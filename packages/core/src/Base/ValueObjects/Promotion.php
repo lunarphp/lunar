@@ -4,24 +4,24 @@ namespace Lunar\Base\ValueObjects;
 
 use Lunar\DataTypes\Price;
 
-class Discount
+class Promotion
 {
     /**
-     * Description of the discount.
+     * Description of the promotion.
      *
      * @var string
      */
     public string $description = '';
 
     /**
-     * Discount reference.
+     * Promotion reference.
      *
      * @var string
      */
     public string $reference = '';
 
     /**
-     * Discount amount
+     * Promotion amount
      *
      * @var Price
      */

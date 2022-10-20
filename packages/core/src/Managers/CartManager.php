@@ -43,8 +43,6 @@ class CartManager
      */
     protected Collection $customerGroups;
 
-    // protected ShippingZone $shippingZone = null
-
     /**
      * Initialize the cart manager.
      *

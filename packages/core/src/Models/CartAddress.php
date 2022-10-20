@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\ValueObjects\TaxBreakdown;
@@ -17,6 +18,20 @@ class CartAddress extends BaseModel implements Addressable
     use HasFactory;
     use LogsActivity;
     use HasMacros;
+    use CachesProperties;
+
+    /**
+     * Array of cachable class properties.
+     *
+     * @var array
+     */
+    public $cachableProperties = [
+        'shippingOption',
+        'shippingSubTotal',
+        'shippingTaxTotal',
+        'shippingTotal',
+        'taxBreakdown',
+    ];
 
     /**
      * The applied shipping option.
