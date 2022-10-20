@@ -10,6 +10,8 @@ use Lunar\Base\Casts\Address;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\ValueObjects\Discount;
+use Lunar\Base\ValueObjects\TaxBreakdown;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\Managers\CartManager;
@@ -33,6 +35,7 @@ class Cart extends BaseModel
         'discountTotal',
         'taxBreakdown',
         'shippingTotal',
+        'discounts',
     ];
 
     /**
@@ -73,16 +76,23 @@ class Cart extends BaseModel
     /**
      * All the tax breakdowns for the cart.
      *
-     * @var Collection
+     * @var null|Collection<TaxBreakdown>
      */
-    public Collection $taxBreakdown;
+    public ?Collection $taxBreakdown;
 
     /**
      * The shipping total for the cart.
      *
-     * @var Price|null
+     * @var null|Price
      */
     public ?Price $shippingTotal = null;
+
+    /**
+     * All the discounts for the cart.
+     *
+     * @var null|Collection<Discount>
+     */
+    public ?Collection $discounts;
 
     /**
      * Return a new factory instance for the model.
