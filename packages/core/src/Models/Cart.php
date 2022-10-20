@@ -89,14 +89,14 @@ class Cart extends BaseModel
      *
      * @var null|Collection<TaxBreakdown>
      */
-    public ?Collection $taxBreakdown;
+    public ?Collection $taxBreakdown = null;
 
     /**
      * The cart-level promotions.
      *
      * @var null|Collection<Promotion>
      */
-    public ?Collection $promotions;
+    public ?Collection $promotions = null;
 
     /**
      * Return a new factory instance for the model.

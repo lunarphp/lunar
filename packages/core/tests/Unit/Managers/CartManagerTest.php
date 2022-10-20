@@ -5,7 +5,7 @@ namespace Lunar\Tests\Unit\Managers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Base\CartModifiers;
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\Base\ValueObjects\TaxBreakdown;
 use Lunar\Base\Purchasable;
 use Lunar\DataTypes\Price;
 use Lunar\Exceptions\CartLineIdMismatchException;
