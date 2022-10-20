@@ -10,8 +10,9 @@ use Lunar\Base\Casts\Address;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\ValueObjects\Promotion;
-use Lunar\Base\ValueObjects\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\FreeItem;
+use Lunar\Base\ValueObjects\Cart\Promotion;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\Managers\CartManager;
@@ -37,6 +38,7 @@ class Cart extends BaseModel
         'total',
         'taxBreakdown',
         'promotions',
+        'freeItems',
     ];
 
     /**
@@ -106,6 +108,13 @@ class Cart extends BaseModel
      * @var null|Collection<Promotion>
      */
     public ?Collection $promotions = null;
+
+    /**
+     * Qualifying promotional free items.
+     *
+     * @var null|Collection<FreeItem>
+     */
+    public ?Collection $freeItems = null;
 
     /**
      * Return a new factory instance for the model.

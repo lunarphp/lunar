@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Base\CartModifiers;
 use Lunar\Base\Purchasable;
-use Lunar\Base\ValueObjects\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DataTypes\Price;
 use Lunar\Exceptions\CartLineIdMismatchException;
 use Lunar\Exceptions\Carts\BillingAddressIncompleteException;

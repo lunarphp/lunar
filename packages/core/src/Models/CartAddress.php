@@ -8,7 +8,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\ValueObjects\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartAddressFactory;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
@@ -43,35 +43,35 @@ class CartAddress extends BaseModel implements Addressable
     /**
      * The shipping sub total.
      *
-     * @var \Lunar\DataTypes\Price|null
+     * @var Price|null
      */
     public ?Price $shippingSubTotal;
 
     /**
      * The shipping tax total.
      *
-     * @var \Lunar\DataTypes\Price|null
+     * @var Price|null
      */
     public ?Price $shippingTaxTotal;
 
     /**
      * The shipping total.
      *
-     * @var \Lunar\DataTypes\Price|null
+     * @var Price|null
      */
     public ?Price $shippingTotal;
 
     /**
      * The tax breakdown.
      *
-     * @var \Lunar\Base\ValueObjects\TaxBreakdown
+     * @var TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
      *
-     * @return \Lunar\Database\Factories\CartAddressFactory
+     * @return CartAddressFactory
      */
     protected static function newFactory(): CartAddressFactory
     {

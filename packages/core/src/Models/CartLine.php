@@ -7,7 +7,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\ValueObjects\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartLineFactory;
 use Lunar\DataTypes\Price;
 
@@ -78,7 +78,7 @@ class CartLine extends BaseModel
     /**
      * All the tax breakdowns for the cart line.
      *
-     * @var \Lunar\Base\ValueObjects\TaxBreakdown
+     * @var \Lunar\Base\ValueObjects\Cart\TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 
