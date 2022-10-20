@@ -4,7 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\Base\ValueObjects\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CartLineFactory;
@@ -54,7 +54,7 @@ class CartLine extends BaseModel
     /**
      * All the tax breakdowns for the cart line.
      *
-     * @var \Lunar\Base\DataTransferObjects\TaxBreakdown
+     * @var \Lunar\Base\ValueObjects\TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 

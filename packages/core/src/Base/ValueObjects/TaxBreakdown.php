@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Base\DataTransferObjects;
+namespace Lunar\Base\ValueObjects;
 
 use Illuminate\Support\Collection;
 
