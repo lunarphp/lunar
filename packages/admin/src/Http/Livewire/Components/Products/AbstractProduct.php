@@ -296,8 +296,7 @@ abstract class AbstractProduct extends Component
     /**
      * Set whether variants should be enabled.
      *
-     * @param bool $val
-     *
+     * @param  bool  $val
      * @return void
      */
     public function setVariantsEnabled($val)
@@ -393,8 +392,7 @@ abstract class AbstractProduct extends Component
             // We generating variants?
             $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
 
-            if (!$this->variantsEnabled && $this->getVariantsCount()) {
-
+            if (! $this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
 
                 $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
