@@ -22,7 +22,7 @@
       @endif
       @if(!$variantsEnabled && $this->getVariantsCount() > 1)
         <x-hub::alert level="danger">
-            This will remove all variants from this product
+            {{ __('adminhub::partials.products.variants.removal_message') }}
         </x-hub::alert>
       @endif
       @if($variantsEnabled)
