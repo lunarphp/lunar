@@ -35,7 +35,7 @@ class Cart extends BaseModel
         'discountTotal',
         'taxBreakdown',
         'shippingTotal',
-        'discounts',
+        'promotions',
     ];
 
     /**
