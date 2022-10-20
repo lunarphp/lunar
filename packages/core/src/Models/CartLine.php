@@ -4,9 +4,9 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
-use Lunar\Base\ValueObjects\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\ValueObjects\TaxBreakdown;
 use Lunar\Database\Factories\CartLineFactory;
 use Lunar\DataTypes\Price;
 
