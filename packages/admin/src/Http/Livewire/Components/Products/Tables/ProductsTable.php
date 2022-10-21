@@ -76,7 +76,7 @@ class ProductsTable extends Table
                 __('adminhub::tables.headings.brand')
             ),
             TextColumn::make('sku', function ($record) {
-                $skus = $record->variants()->pluck('sku');
+                $skus = $record->variants->pluck('sku');
 
                 if ($skus->count() > 1) {
                     return 'Multiple';
@@ -87,7 +87,7 @@ class ProductsTable extends Table
                 __('adminhub::tables.headings.sku')
             ),
             TextColumn::make('stock', function ($record) {
-                return $record->variants()->sum('stock');
+                return $record->variants_sum_stock;
             })->heading(
                 __('adminhub::tables.headings.stock')
             ),
@@ -178,9 +178,9 @@ class ProductsTable extends Table
         }
 
         return $this->tableBuilder
-        ->searchTerm($query)
-        ->queryStringFilters($filters)
-        ->perPage($this->perPage)
-        ->getData();
+            ->searchTerm($query)
+            ->queryStringFilters($filters)
+            ->perPage($this->perPage)
+            ->getData();
     }
 }
