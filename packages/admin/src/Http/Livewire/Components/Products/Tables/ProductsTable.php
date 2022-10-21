@@ -72,7 +72,9 @@ class ProductsTable extends Table
             })->heading(
                 __('adminhub::tables.headings.name')
             ),
-            TextColumn::make('brand.name')->heading(
+            TextColumn::make('brand.name', function ($record) {
+                return $record->brand?->name;
+            })->heading(
                 __('adminhub::tables.headings.brand')
             ),
             TextColumn::make('sku', function ($record) {
@@ -87,11 +89,13 @@ class ProductsTable extends Table
                 __('adminhub::tables.headings.sku')
             ),
             TextColumn::make('stock', function ($record) {
-                return $record->variants_sum_stock;
+                return $record->variants->sum('stock');
             })->heading(
                 __('adminhub::tables.headings.stock')
             ),
-            TextColumn::make('productType.name')->heading(
+            TextColumn::make('productType.name', function ($record) {
+                return $record->productType->name;
+            })->heading(
                 __('adminhub::tables.headings.product_type')
             ),
         ]);

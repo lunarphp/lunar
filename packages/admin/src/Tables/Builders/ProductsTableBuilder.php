@@ -20,8 +20,7 @@ class ProductsTableBuilder extends TableBuilder
     {
         $query = Product::orderBy($this->sortField, $this->sortDir)
             ->withTrashed()
-            ->withSum('variants', 'stock')
-            ->with(['thumbnail', 'variants']);
+            ->with(['thumbnail', 'variants', 'productType', 'brand']);
 
         if ($this->searchTerm) {
             $query->whereIn('id', Product::search($this->searchTerm)->keys());
