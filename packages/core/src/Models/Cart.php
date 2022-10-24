@@ -145,18 +145,6 @@ class Cart extends BaseModel
     ];
 
     /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
-    {
-        static::retrieved(function ($cart) {
-            $cart->restoreProperties();
-        });
-    }
-
-    /**
      * Return the cart lines relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

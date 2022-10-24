@@ -6,6 +6,13 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 trait CachesProperties
 {
+    public static function bootCachesProperties()
+    {
+        static::retrieved(function ($model) {
+            $model->restoreProperties();
+        });
+    }
+
     /**
      * Returns a unique key for the cache.
      *
@@ -36,6 +43,12 @@ trait CachesProperties
     public function restoreProperties()
     {
         foreach ($this->cachableProperties as $property) {
+            dump(
+                $this->cachePropertiesPrefix().$property,
+                Blink::has($this->cachePropertiesPrefix().$property),
+                    Blink::all(),
+
+            );
             if (Blink::has($this->cachePropertiesPrefix().$property)) {
                 $this->{$property} = Blink::get($this->cachePropertiesPrefix().$property);
             }
