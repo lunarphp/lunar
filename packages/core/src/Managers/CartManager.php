@@ -145,7 +145,7 @@ class CartManager
             $this->calculate();
         }
 
-        return $this->cart;
+        return $this->cart->refresh();
     }
 
     /**

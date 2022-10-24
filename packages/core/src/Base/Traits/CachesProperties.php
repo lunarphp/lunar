@@ -43,12 +43,6 @@ trait CachesProperties
     public function restoreProperties()
     {
         foreach ($this->cachableProperties as $property) {
-            dump(
-                $this->cachePropertiesPrefix().$property,
-                Blink::has($this->cachePropertiesPrefix().$property),
-                    Blink::all(),
-
-            );
             if (Blink::has($this->cachePropertiesPrefix().$property)) {
                 $this->{$property} = Blink::get($this->cachePropertiesPrefix().$property);
             }
