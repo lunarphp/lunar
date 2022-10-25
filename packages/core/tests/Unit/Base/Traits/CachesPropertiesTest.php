@@ -4,14 +4,11 @@ namespace Lunar\Tests\Unit\Console;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as DataTypesPrice;
-use Lunar\Managers\CartManager;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
-use Lunar\Models\Order;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\TestCase;
-use Spatie\LaravelBlink\BlinkFacade;
 
 /**
  * @group lunar.traits.cache
