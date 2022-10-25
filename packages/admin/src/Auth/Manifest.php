@@ -139,6 +139,11 @@ class Manifest
                 'catalogue:manage-customers',
                 __('adminhub::auth.permissions.catalogue.customers.description')
             ),
+            new Permission(
+                __('adminhub::auth.permissions.discounts.name'),
+                'catalogue:manage-discounts',
+                __('adminhub::auth.permissions.discounts.description')
+            ),
         ];
     }
 }
