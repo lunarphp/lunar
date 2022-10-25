@@ -90,7 +90,7 @@ class CartManager
         $discountTotal = $lines->sum('discountTotal.value') + $this->cart->cartDiscountAmount->value;
 
         $taxTotal = $lines->sum('taxAmount.value');
-        $total = $lines->sum('total.value');
+        $total = $lines->sum('total.value') - $this->cart->cartDiscountAmount->value;
         $taxBreakDownAmounts = $lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
 
         $this->cart->subTotal = new Price($subTotal, $this->cart->currency, 1);
@@ -120,7 +120,7 @@ class CartManager
         }
 
         $this->cart->taxTotal = new Price($taxTotal, $this->cart->currency, 1);
-        $this->cart->total = new Price($total - $discountTotal, $this->cart->currency, 1);
+        $this->cart->total = new Price($total, $this->cart->currency, 1);
 
         // Need to include shipping tax breakdown...
         $this->cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) {

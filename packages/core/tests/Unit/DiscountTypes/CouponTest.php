@@ -106,9 +106,9 @@ class CouponTest extends TestCase
     }
 
     /**
-     * @test
-     * @group thisdiscount
-     */
+    * @test
+    * @group thisdiscount
+    */
     public function can_apply_fixed_amount_discount()
     {
         $currency = Currency::factory()->create([
@@ -121,8 +121,6 @@ class CouponTest extends TestCase
         ]);
 
         $purchasableA = ProductVariant::factory()->create();
-        $purchasableB = ProductVariant::factory()->create();
-        $purchasableC = ProductVariant::factory()->create();
 
         Price::factory()->create([
             'price' => 1000, // £10
@@ -138,15 +136,6 @@ class CouponTest extends TestCase
             'quantity' => 2,
         ]);
 
-        // $manager = new CartManager($cart);
-
-        $cart = $cart->getManager()->getCart();
-
-        $this->assertEquals(0, $cart->discountTotal->value);
-        $this->assertEquals(2400, $cart->total->value);
-        $this->assertEquals(400, $cart->taxTotal->value);
-        $this->assertNull($cart->discounts);
-
         Discount::factory()->create([
             'type' => Coupon::class,
             'name' => 'Test Coupon',
@@ -159,9 +148,7 @@ class CouponTest extends TestCase
             ],
         ]);
 
-        $cart = $cart->getManager()->getCart(
-            refresh: true
-        );
+        $cart = $cart->getManager()->getCart();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
         $this->assertEquals(1400, $cart->total->value);
