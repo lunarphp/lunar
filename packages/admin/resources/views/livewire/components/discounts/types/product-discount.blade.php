@@ -1,17 +1,5 @@
 <div class="space-y-4">
-    <x-hub::input.group for="min_qty" label="Purchase amount" instructions="When there are X items in the cart, the discount applies">
-        <x-hub::input.text type="number" id="min_qty" wire:model="discount.data.min_qty" />
-    </x-hub::input.group>
 
-    <div class="grid grid-cols-2 gap-4">
-        <x-hub::input.group for="reward_qty" label="No. of free items" instructions="How many of each item are discounted">
-            <x-hub::input.text type="number" wire:model="discount.data.reward_qty" />
-        </x-hub::input.group>
-
-        <x-hub::input.group for="max_reward_qty" label="Maximum reward quantity" instructions="The maximum amount of products which can be discounted, regardless of criteria.">
-            <x-hub::input.text type="number" wire:model="discount.data.max_reward_qty" />
-        </x-hub::input.group>
-    </div>
 
     <header class="flex items-center justify-between">
         <div>
@@ -48,6 +36,10 @@
         @endforeach
     </div>
 
+    <x-hub::input.group for="min_qty" label="Purchase amount" instructions="Set how many of the above products are required to qualify for a reward">
+        <x-hub::input.text type="number" id="min_qty" wire:model="discount.data.min_qty" />
+    </x-hub::input.group>
+
     <header class="flex items-center justify-between">
         <div>
             <strong>Product rewards</strong>
@@ -83,4 +75,14 @@
     <x-hub::alert>
         If one or more items are in the cart, the cheapest item will be discounted.
     </x-hub::alert>
+
+    <div class="grid grid-cols-2 gap-4">
+        <x-hub::input.group for="reward_qty" label="No. of free items" instructions="How many of each item are discounted">
+            <x-hub::input.text type="number" wire:model="discount.data.reward_qty" />
+        </x-hub::input.group>
+
+        <x-hub::input.group for="max_reward_qty" label="Maximum reward quantity" instructions="The maximum amount of products which can be discounted, regardless of criteria.">
+            <x-hub::input.text type="number" wire:model="discount.data.max_reward_qty" />
+        </x-hub::input.group>
+    </div>
 </div>
