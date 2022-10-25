@@ -53,7 +53,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Lunar\\Discounts\\Tests\\": "packages/pro/discounts/tests",
             "Lunar\\Hub\\Tests\\": "packages/admin/tests",
             "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
             "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
