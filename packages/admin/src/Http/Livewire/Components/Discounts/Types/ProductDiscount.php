@@ -173,6 +173,7 @@ class ProductDiscount extends AbstractDiscountType
 
             foreach ($conditions as $condition) {
                 $this->discount->purchasables()->firstOrCreate([
+                    'discount_id' => $this->discount->id,
                     'type' => 'condition',
                     'purchasable_type' => Product::class,
                     'purchasable_id' => $condition,
@@ -187,6 +188,7 @@ class ProductDiscount extends AbstractDiscountType
 
             foreach ($rewards as $reward) {
                 $this->discount->purchasables()->firstOrCreate([
+                    'discount_id' => $this->discount->id,
                     'type' => 'reward',
                     'purchasable_type' => Product::class,
                     'purchasable_id' => $reward,
