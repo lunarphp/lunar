@@ -39,13 +39,13 @@ class CachesPropertiesTest extends TestCase
             'priceable_id' => $purchasable->id,
         ]);
 
-        $cart->lines()->create([
+        $line = $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
             'purchasable_id' => $purchasable->id,
             'quantity' => 1,
         ]);
 
-        $manager = new CartManager($cart);
+        $manager = $cart->getManager();
 
         $cart = $manager->getCart();
 
@@ -56,16 +56,14 @@ class CachesPropertiesTest extends TestCase
         $this->assertInstanceOf(DataTypesPrice::class, $cart->taxTotal);
         $this->assertEquals(20, $cart->taxTotal->value);
 
-        // Get the first line...
-        $line = $cart->lines->first();
+        // When now fetching from the database it should automatically be hydrated...
+        $cart = Cart::find($cart->id);
 
-        $lineCart = $line->cart;
-
-        $this->assertInstanceOf(DataTypesPrice::class, $lineCart->subTotal);
-        $this->assertEquals(100, $lineCart->subTotal->value);
-        $this->assertInstanceOf(DataTypesPrice::class, $lineCart->total);
-        $this->assertEquals(120, $lineCart->total->value);
-        $this->assertInstanceOf(DataTypesPrice::class, $lineCart->taxTotal);
-        $this->assertEquals(20, $lineCart->taxTotal->value);
+        $this->assertInstanceOf(DataTypesPrice::class, $cart->subTotal);
+        $this->assertEquals(100, $cart->subTotal->value);
+        $this->assertInstanceOf(DataTypesPrice::class, $cart->total);
+        $this->assertEquals(120, $cart->total->value);
+        $this->assertInstanceOf(DataTypesPrice::class, $cart->taxTotal);
+        $this->assertEquals(20, $cart->taxTotal->value);
     }
 }
