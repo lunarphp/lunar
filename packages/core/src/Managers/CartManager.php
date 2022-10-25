@@ -120,7 +120,7 @@ class CartManager
         }
 
         $this->cart->taxTotal = new Price($taxTotal, $this->cart->currency, 1);
-        $this->cart->total = new Price($total, $this->cart->currency, 1);
+        $this->cart->total = new Price($total - $discountTotal, $this->cart->currency, 1);
 
         // Need to include shipping tax breakdown...
         $this->cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) {
@@ -145,11 +145,11 @@ class CartManager
      *
      * @return \Lunar\Models\Cart
      */
-    public function getCart(): Cart
+    public function getCart($refresh = false): Cart
     {
-        if (is_null($this->cart->total)) {
+        if (is_null($this->cart->total) || $refresh) {
             $this->calculate();
-        }
+        };
 
         return $this->cart;
     }

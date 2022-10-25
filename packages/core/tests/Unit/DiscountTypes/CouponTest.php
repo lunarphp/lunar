@@ -105,7 +105,10 @@ class CouponTest extends TestCase
         $this->assertEquals(2080, $cart->total->value);
     }
 
-    /** @test */
+    /**
+    * @test
+    * @group thisdiscount
+    */
     public function can_apply_fixed_amount_discount()
     {
         $currency = Currency::factory()->create([
@@ -122,7 +125,7 @@ class CouponTest extends TestCase
         $purchasableC = ProductVariant::factory()->create();
 
         Price::factory()->create([
-            'price' => 450, // £5
+            'price' => 1000, // £10
             'tier' => 1,
             'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasableA),
@@ -132,38 +135,17 @@ class CouponTest extends TestCase
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasableA),
             'purchasable_id' => $purchasableA->id,
-            'quantity' => 1,
+            'quantity' => 2,
         ]);
 
-        Price::factory()->create([
-            'price' => 325, // £3.25
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasableB),
-            'priceable_id' => $purchasableB->id,
-        ]);
+        // $manager = new CartManager($cart);
 
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasableB),
-            'purchasable_id' => $purchasableB->id,
-            'quantity' => 1,
-        ]);
+        $cart = $cart->getManager()->getCart();
 
-        Price::factory()->create([
-            'price' => 325, // £3.25
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasableC),
-            'priceable_id' => $purchasableC->id,
-        ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasableC),
-            'purchasable_id' => $purchasableC->id,
-            'quantity' => 1,
-        ]);
-
-        $manager = new CartManager($cart);
+        $this->assertEquals(0, $cart->discountTotal->value);
+        $this->assertEquals(2400, $cart->total->value);
+        $this->assertEquals(400, $cart->taxTotal->value);
+        $this->assertNull($cart->discounts);
 
         Discount::factory()->create([
             'type' => Coupon::class,
@@ -177,10 +159,14 @@ class CouponTest extends TestCase
             ],
         ]);
 
-        $cart = $manager->getCart();
+        $cart = $cart->getManager()->getCart(
+            refresh: true
+        );
 
         $this->assertEquals(1000, $cart->discountTotal->value);
-        $this->assertEquals(120, $cart->total->value);
+        $this->assertEquals(1400, $cart->total->value);
+        $this->assertEquals(400, $cart->taxTotal->value);
+        $this->assertCount(1, $cart->discounts);
     }
 
     /** @test */
@@ -229,7 +215,7 @@ class CouponTest extends TestCase
 
         $cart = $manager->getCart();
 
-        $this->assertEquals(100, $cart->discountTotal->value);
+        $this->assertEquals(1000, $cart->discountTotal->value);
         $this->assertEquals(180, $cart->taxTotal->value);
         $this->assertEquals(1080, $cart->total->value);
     }

@@ -37,7 +37,9 @@ class Coupon extends AbstractDiscountType
 
         $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
 
-        if (! $passes || ($minSpend && $minSpend < $cart->lines->sum('subTotal.value'))) {
+        $lines = $this->getEligibleLines($cart);
+
+        if (! $passes || ($minSpend && $minSpend < $lines->sum('subTotal.value'))) {
             return $cart;
         }
 
@@ -67,55 +69,23 @@ class Coupon extends AbstractDiscountType
 
         $value = ($values[$currency->code] ?? 0) * 100;
 
-        if (! $value) {
-            return $cart;
-        }
-
         $lines = $this->getEligibleLines($cart);
 
-        if (! $lines->count()) {
+        if (! $value || $lines->sum('subTotal.value') < $value) {
             return $cart;
         }
 
-        $divisionalAmount = $value / $lines->count();
-        $roundedChunk = (int) (round($divisionalAmount, 2));
+        $cart->cartDiscountAmount = new Price(
+            $value,
+            $currency,
+            1
+        );
 
-        $remaining = $value;
-
-        foreach ($lines as $line) {
-            if ($line->subTotal->value < $roundedChunk) {
-                $amount = $roundedChunk - ($roundedChunk % $line->subTotal->value);
-            } else {
-                $amount = $roundedChunk;
-            }
-            $remaining -= $amount;
-
-            $line->discountTotal = new Price(
-                $amount,
-                $cart->currency,
-                1
-            );
-
-            Discounts::addApplied(
-                new CartDiscount($line, $this->discount)
-            );
+        if (!$cart->discounts) {
+            $cart->discounts = collect();
         }
 
-        // Do we have an amount left over? if so, grab the first line that has
-        // enough left to apply the remaining too.
-        if ($remaining) {
-            $line = $cart->lines->first(function ($line) use ($remaining) {
-                return (bool) ($line->subTotal->value - $line->discountTotal->value) - $remaining;
-            });
-
-            $newDiscountTotal = $line->discountTotal->value + $remaining;
-
-            $line->discountTotal = new Price(
-                $newDiscountTotal,
-                $cart->currency,
-                1
-            );
-        }
+        $cart->discounts->push($this);
 
         return $cart;
     }
@@ -170,11 +140,14 @@ class Coupon extends AbstractDiscountType
                 $cart->currency,
                 1
             );
-
-            Discounts::addApplied(
-                new CartDiscount($line, $this->discount)
-            );
         }
+
+
+        if (!$cart->discounts) {
+            $cart->discounts = collect();
+        }
+
+        $cart->discounts->push($this);
 
         return $cart;
     }

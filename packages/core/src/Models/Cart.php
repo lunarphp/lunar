@@ -252,17 +252,4 @@ class Cart extends BaseModel
     {
         return $query->whereDoesntHave('order');
     }
-
-    public function addDiscount(DiscountReward $reward)
-    {
-        if (! $this->discounts) {
-            $this->discounts = collect();
-        }
-
-        $this->discounts->push(
-            $reward
-        );
-
-        return true;
-    }
 }
