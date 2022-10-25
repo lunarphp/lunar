@@ -202,7 +202,7 @@ class CouponTest extends TestCase
 
         $cart = $manager->getCart();
 
-        $this->assertEquals(1000, $cart->discountTotal->value);
+        $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(180, $cart->taxTotal->value);
         $this->assertEquals(1080, $cart->total->value);
     }
