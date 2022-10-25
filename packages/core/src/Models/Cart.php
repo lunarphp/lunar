@@ -15,7 +15,6 @@ use Lunar\Base\ValueObjects\Cart\Promotion;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
-use Lunar\Discounts\Models\DiscountReward;
 use Lunar\Managers\CartManager;
 
 class Cart extends BaseModel

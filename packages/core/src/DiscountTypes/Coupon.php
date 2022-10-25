@@ -2,9 +2,7 @@
 
 namespace Lunar\DiscountTypes;
 
-use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\DataTypes\Price;
-use Lunar\Facades\Discounts;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Collection;
@@ -81,7 +79,7 @@ class Coupon extends AbstractDiscountType
             1
         );
 
-        if (!$cart->discounts) {
+        if (! $cart->discounts) {
             $cart->discounts = collect();
         }
 
@@ -142,8 +140,7 @@ class Coupon extends AbstractDiscountType
             );
         }
 
-
-        if (!$cart->discounts) {
+        if (! $cart->discounts) {
             $cart->discounts = collect();
         }
 

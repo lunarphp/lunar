@@ -149,7 +149,7 @@ class CartManager
     {
         if (is_null($this->cart->total) || $refresh) {
             $this->calculate();
-        };
+        }
 
         return $this->cart;
     }
