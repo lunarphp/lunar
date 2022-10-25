@@ -106,9 +106,9 @@ class CouponTest extends TestCase
     }
 
     /**
-    * @test
-    * @group thisdiscount
-    */
+     * @test
+     * @group thisdiscount
+     */
     public function can_apply_fixed_amount_discount()
     {
         $currency = Currency::factory()->create([
