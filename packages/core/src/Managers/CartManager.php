@@ -44,8 +44,6 @@ class CartManager
      */
     protected Collection $customerGroups;
 
-    // protected ShippingZone $shippingZone = null
-
     /**
      * Initialize the cart manager.
      *
@@ -59,6 +57,8 @@ class CartManager
                 return $customer->customerGroups;
             })->flatten()
         : collect([CustomerGroup::getDefault()]);
+
+        $this->cart->setManager($this);
     }
 
     /**
@@ -74,6 +74,9 @@ class CartManager
                 $this->getModifiers()->toArray()
             );
 
+        // Initialise ready for cart discounts
+        $this->cart->cartDiscountAmount = new Price(0, $this->cart->currency, 1);
+
         $this->cart = $pipeline->via('calculating')->thenReturn();
 
         $this->calculateLines();
@@ -84,7 +87,7 @@ class CartManager
 
         // Get the line subtotals and add together.
         $subTotal = $lines->sum('subTotal.value');
-        $discountTotal = $lines->sum('discountTotal.value');
+        $discountTotal = $lines->sum('discountTotal.value') + $this->cart->cartDiscountAmount->value;
 
         $taxTotal = $lines->sum('taxAmount.value');
         $total = $lines->sum('total.value');
@@ -131,6 +134,8 @@ class CartManager
         });
 
         $this->cart = $pipeline->via('calculated')->thenReturn();
+
+        $this->cart->cacheProperties();
 
         return $this;
     }

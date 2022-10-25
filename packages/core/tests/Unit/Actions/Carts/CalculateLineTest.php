@@ -4,7 +4,7 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Carts\CalculateLine;
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;

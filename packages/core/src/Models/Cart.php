@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Address;
+use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\ValueObjects\Cart\FreeItem;
+use Lunar\Base\ValueObjects\Cart\Promotion;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\Discounts\Models\DiscountReward;
@@ -19,50 +23,101 @@ class Cart extends BaseModel
     use HasFactory;
     use LogsActivity;
     use HasMacros;
+    use CachesProperties;
 
     /**
-     * The cart total.
+     * Array of cachable class properties.
      *
-     * @var null|\Lunar\DataTypes\Price
+     * @var array
      */
-    public $total = null;
+    public $cachableProperties = [
+        'subTotal',
+        'shippingTotal',
+        'taxTotal',
+        'cartDiscountAmount',
+        'discountTotal',
+        'total',
+        'taxBreakdown',
+        'promotions',
+        'freeItems',
+    ];
+
+    /**
+     * The cart manager.
+     *
+     * @var null|CartManager
+     */
+    protected ?CartManager $manager = null;
 
     /**
      * The cart sub total.
+     * Sum of cart line amounts, before tax, shipping and cart-level discounts.
      *
-     * @var null|\Lunar\DataTypes\Price
+     * @var null|Price
      */
-    public $subTotal = null;
-
-    /**
-     * The cart tax total.
-     *
-     * @var null|\Lunar\DataTypes\Price
-     */
-    public $taxTotal = null;
-
-    /**
-     * The discount total.
-     *
-     * @var null|\Lunar\DataTypes\Price
-     */
-    public ?Price $discountTotal = null;
-
-    /**
-     * All the tax breakdowns for the cart.
-     *
-     * @var Collection
-     */
-    public Collection $taxBreakdown;
+    public ?Price $subTotal = null;
 
     public ?Collection $discounts = null;
 
     /**
      * The shipping total for the cart.
      *
-     * @var Price|null
+     * @var null|Price
      */
     public ?Price $shippingTotal = null;
+
+    /**
+     * The cart tax total.
+     * Sum of all tax to pay across cart lines and shipping.
+     *
+     * @var null|Price
+     */
+    public ?Price $taxTotal = null;
+
+    /**
+     * The cart discount amount.
+     * Cart-level discount (ie. not cart-line discounts).
+     *
+     * @var null|Price
+     */
+    public ?Price $cartDiscountAmount = null;
+
+    /**
+     * The discount total.
+     * Sum of all cart line discounts and cart-level discounts.
+     *
+     * @var null|Price
+     */
+    public ?Price $discountTotal = null;
+
+    /**
+     * The cart total.
+     * Sum of the cart-line amounts, shipping and tax, minus cart-level discount amount.
+     *
+     * @var null|Price
+     */
+    public ?Price $total = null;
+
+    /**
+     * All the tax breakdowns for the cart.
+     *
+     * @var null|Collection<TaxBreakdown>
+     */
+    public ?Collection $taxBreakdown = null;
+
+    /**
+     * The cart-level promotions.
+     *
+     * @var null|Collection<Promotion>
+     */
+    public ?Collection $promotions = null;
+
+    /**
+     * Qualifying promotional free items.
+     *
+     * @var null|Collection<FreeItem>
+     */
+    public ?Collection $freeItems = null;
 
     /**
      * Return a new factory instance for the model.
@@ -174,7 +229,17 @@ class Cart extends BaseModel
      */
     public function getManager()
     {
-        return new CartManager($this);
+        return $this->manager ?? new CartManager($this);
+    }
+
+    /**
+     * Set the cart manager.
+     *
+     * @var \Lunar\Managers\CartManager
+     */
+    public function setManager(CartManager $manager)
+    {
+        $this->manager = $manager;
     }
 
     /**
