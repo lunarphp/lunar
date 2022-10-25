@@ -68,7 +68,7 @@ class DiscountManagerTest extends TestCase
         $cartLine = CartLine::factory()->create();
 
         $discount = new CartDiscount(
-            cartLine: $cartLine,
+            model: $cartLine,
             discount: $discount
         );
 
