@@ -36,7 +36,7 @@
         @endforeach
     </div>
 
-    <x-hub::input.group for="min_qty" label="Purchase amount" instructions="Set how many of the above products are required to qualify for a reward">
+    <x-hub::input.group for="min_qty" label="Product Quantity" instructions="Set how many of the above products are required to qualify for a reward">
         <x-hub::input.text type="number" id="min_qty" wire:model="discount.data.min_qty" />
     </x-hub::input.group>
 
