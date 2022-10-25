@@ -67,9 +67,6 @@
                 "Lunar\\Hub\\AdminHubServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
-        },
-        "getcandy": {
-            "name": "Discounts"
         }
     },
     "replace": {
