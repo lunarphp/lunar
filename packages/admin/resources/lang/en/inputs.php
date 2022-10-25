@@ -103,4 +103,5 @@ return [
     'priority.label' => 'Priority',
     'postcodes.label' => 'Postcodes',
     'postcodes.instructions' => 'List each postcode on a new line. Supports wildcards such as NW*',
+    'max_uses.label' => 'Max uses',
 ];

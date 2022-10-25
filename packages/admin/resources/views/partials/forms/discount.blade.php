@@ -9,7 +9,7 @@
                 <x-hub::input.text wire:model.defer="discount.handle" id="handle" />
             </x-hub::input.group>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-3 gap-4">
                 <div>
                     <x-hub::input.group for="starts_at" :label="__('adminhub::inputs.starts_at.label')">
                         <x-hub::input.datepicker id="starts_at" wire:model="discount.starts_at" :options="['enableTime' => true ]" />
@@ -19,6 +19,12 @@
                 <div>
                     <x-hub::input.group for="ends_at" :label="__('adminhub::inputs.ends_at.label')" :error="$errors->first('discount.ends_at')">
                         <x-hub::input.datepicker id="ends_at" wire:model="discount.ends_at" :options="['enableTime' => true ]" />
+                    </x-hub::input.group>
+                </div>
+
+                <div>
+                    <x-hub::input.group for="max_uses" :label="__('adminhub::inputs.max_uses.label')" :error="$errors->first('discount.ends_at')">
+                        <x-hub::input.text type="number" wire:model="discount.max_uses" />
                     </x-hub::input.group>
                 </div>
             </div>
