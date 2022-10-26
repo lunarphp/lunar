@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Address;
@@ -16,6 +17,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\Managers\CartManager;
+use Lunar\Pipelines\Cart\Calculate;
 
 class Cart extends BaseModel
 {
@@ -248,5 +250,19 @@ class Cart extends BaseModel
     public function scopeActive(Builder $query)
     {
         return $query->whereDoesntHave('order');
+    }
+
+    public function calculate()
+    {
+        return app(Pipeline::class)
+        ->send($this)
+        ->through(
+            config('lunar.cart.pipelines.cart', [
+                Calculate::class
+            ])
+        )->thenReturn(function ($cart) {
+            $cart->cacheProperties();
+            return $cart;
+        });
     }
 }

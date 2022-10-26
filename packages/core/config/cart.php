@@ -37,6 +37,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authentication policy
+    |--------------------------------------------------------------------------
+    |
+    | When a user logs in, by default, Lunar will merge the current (guest) cart
+    | with the users current cart, if they have one.
+    | Available options: 'merge', 'override'
+    |
+    */
+    'pipelines' => [
+        'cart' => [
+            \Lunar\Pipelines\Cart\CalculateLines::class,
+            \Lunar\Pipelines\Cart\ApplyShipping::class,
+            \Lunar\Pipelines\Cart\Calculate::class,
+        ],
+        'cart_lines' => [
+            \Lunar\Pipelines\CartLine\GetUnitPrice::class,
+        ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Default eager loading
     |--------------------------------------------------------------------------
     |

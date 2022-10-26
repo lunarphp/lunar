@@ -10,6 +10,7 @@ use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
+use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
@@ -149,5 +150,43 @@ class CartTest extends TestCase
         ]);
 
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
+    }
+
+    /**
+    * @test
+    * @group moomoo
+    */
+    public function can_calculate_the_cart()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+        ]);
+
+        $this->actingAs(
+            StubUser::factory()->create()
+        );
+
+        $cart->calculate();
+
+        dd($cart->lines->first());
+        // dd($cart);
     }
 }
