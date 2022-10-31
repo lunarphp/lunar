@@ -17,7 +17,7 @@
 
         <x-slot name="content">
           @if($deleting)
-            <div class="bg-red-50 text-red-700 p-3 text-sm">
+            <div class="p-3 text-sm text-red-700 bg-red-50">
               @if($this->variantCount)
                 {{ __('adminhub::settings.taxes.tax-classes.index.delete_message_disabled') }}
               @elseif($this->taxClass->default)
@@ -28,8 +28,8 @@
             </div>
           @else
             <div class="space-y-4">
-              <x-hub::input.group label="Name" for="name">
-                <x-hub::input.text wire:model="taxClass.name"  />
+              <x-hub::input.group label="Name" for="name" :error="$errors->first('taxClass.name')" required>
+                <x-hub::input.text wire:model="taxClass.name" :error="$errors->first('taxClass.name')" />
               </x-hub::input.group>
 
 
@@ -51,7 +51,7 @@
               {{ __('adminhub::global.delete') }}
             </x-hub::button>
           @else
-            <div class="flex w-full justify-between">
+            <div class="flex justify-between w-full">
               <x-hub::button type="button" wire:click.prevent="$set('deleting', true)" theme="danger">
                 {{ __('adminhub::global.delete') }}
               </x-hub::button>
