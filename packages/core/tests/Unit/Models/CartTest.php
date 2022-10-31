@@ -4,6 +4,7 @@ namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Lunar\Exceptions\Carts\CartException;
 use Lunar\Managers\CartManager;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
@@ -186,5 +187,35 @@ class CartTest extends TestCase
         $this->assertEquals(100, $cart->subTotal->value);
         $this->assertEquals(120, $cart->total->value);
         $this->assertCount(1, $cart->taxBreakdown);
+    }
+
+    /**
+    * @test
+    * @group moomoo
+    */
+    public function can_add_cart_lines()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->add($purchasable, 1);
+
+        $this->assertCount(1, $cart->lines);
     }
 }

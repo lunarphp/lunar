@@ -56,6 +56,16 @@ return [
         ]
     ],
 
+    'validators' => [
+        'cart_lines' => [
+            \Lunar\Validation\CartLine\CartLineQuantity::class,
+        ],
+    ],
+
+    'actions' => [
+        'add_to_cart' => \Lunar\Actions\Carts\AddOrUpdatePurchasable::class,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Default eager loading

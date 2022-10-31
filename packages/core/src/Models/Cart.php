@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Address;
+use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
@@ -264,5 +266,23 @@ class Cart extends BaseModel
             $cart->cacheProperties();
             return $cart;
         });
+    }
+
+    public function add(Purchasable $purchasable, $quantity = 1, $meta = [])
+    {
+        foreach (config('lunar.cart.validators.cart_lines', []) as $action) {
+            // Throws a validation exception?
+            app($action)->validate(
+                cart: $this,
+                purchasable: $purchasable,
+                quantity: $quantity,
+                meta: $meta
+            );
+        }
+
+        return app(
+            config('lunar.cart.actions.add_to_cart', AddOrUpdatePurchasable::class)
+        )->execute($this, $purchasable, $quantity, $meta)
+            ->then(fn () => $this->refresh()->calculate());
     }
 }
