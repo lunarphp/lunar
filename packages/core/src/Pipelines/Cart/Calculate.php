@@ -15,7 +15,28 @@ class Calculate
      */
     public function handle(Cart $cart, Closure $next)
     {
-        $cart->subTotal = new Price(123, $cart->currency, 1);
+        $subTotal = $cart->lines->sum('subTotal.value');
+        $discountTotal = $cart->lines->sum('discountTotal.value') + $cart->cartDiscountAmount?->value;
+        $taxTotal = $cart->lines->sum('taxAmount.value');
+        $total = $cart->lines->sum('total.value');
+        $taxBreakDownAmounts = $cart->lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
+
+        $cart->subTotal = new Price($subTotal, $cart->currency, 1);
+        $cart->discountTotal = new Price($discountTotal, $cart->currency, 1);
+        $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
+        $cart->total = new Price($total, $cart->currency, 1);
+
+        // Need to include shipping tax breakdown...
+        $cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) use ($cart) {
+            return [
+                'percentage' => $amounts->first()->percentage,
+                'description' => $amounts->first()->description,
+                'identifier' => $amounts->first()->identifier,
+                'amounts' => $amounts,
+                'total' => new Price($amounts->sum('price.value'), $cart->currency, 1),
+            ];
+        });
+
         return $next($cart);
     }
 }
