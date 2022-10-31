@@ -202,7 +202,7 @@ class CustomerShow extends Component
         $customerRules = collect($this->rules())
             ->filter(fn ($rule, $key) => Str::startsWith($key, 'customer.'))
             ->toArray();
-        // // dd($customerRules, $this->custo
+            
         $this->validate($customerRules);
 
         $this->customer->customerGroups()->sync(
