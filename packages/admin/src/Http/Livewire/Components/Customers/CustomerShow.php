@@ -187,7 +187,8 @@ class CustomerShow extends Component
 
     protected function getListeners()
     {
-        return array_merge([],
+        return array_merge(
+            [],
             $this->getHasSlotsListeners()
         );
     }
@@ -202,7 +203,7 @@ class CustomerShow extends Component
         $customerRules = collect($this->rules())
             ->filter(fn ($rule, $key) => Str::startsWith($key, 'customer.'))
             ->toArray();
-            
+
         $this->validate($customerRules);
 
         $this->customer->customerGroups()->sync(
@@ -440,19 +441,19 @@ class CustomerShow extends Component
             DB::RAW('SUM(sub_total) as sub_total'),
             db_date('placed_at', '%Y-%m', 'format_date')
         )->whereNotNull('placed_at')
-        ->whereBetween('placed_at', [
-            $start,
-            $end,
-        ])->groupBy('format_date')->get();
+            ->whereBetween('placed_at', [
+                $start,
+                $end,
+            ])->groupBy('format_date')->get();
 
         $previousPeriod = $this->customer->orders()->select(
             DB::RAW('SUM(sub_total) as sub_total'),
             db_date('placed_at', '%Y-%m', 'format_date')
         )->whereNotNull('placed_at')
-        ->whereBetween('placed_at', [
-            $start->clone()->subYear(),
-            $end->clone()->subYear(),
-        ])->groupBy('format_date')->get();
+            ->whereBetween('placed_at', [
+                $start->clone()->subYear(),
+                $end->clone()->subYear(),
+            ])->groupBy('format_date')->get();
 
         $period = CarbonPeriod::create($start, '1 month', $end);
 
@@ -542,12 +543,13 @@ class CustomerShow extends Component
             'identifier',
             DB::RAW("MAX({$column}) as last_ordered")
         )->join($ordersTable, "{$ordersTable}.id", '=', "{$orderLinesTable}.order_id")
-        ->whereIn(
-            'order_id', $this->customer->orders()->pluck('id')
-        )->orderBy('sub_total', 'desc')->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
-            perPage: 10,
-            pageName: 'phPage'
-        );
+            ->whereIn(
+                'order_id',
+                $this->customer->orders()->pluck('id')
+            )->orderBy('sub_total', 'desc')->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
+                perPage: 10,
+                pageName: 'phPage'
+            );
     }
 
     /**
