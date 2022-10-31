@@ -152,10 +152,7 @@ class CartTest extends TestCase
         $this->assertInstanceOf(CartManager::class, $cart->getManager());
     }
 
-    /**
-    * @test
-    * @group moomoo
-    */
+    /** @test */
     public function can_calculate_the_cart()
     {
         $currency = Currency::factory()->create();
@@ -186,7 +183,8 @@ class CartTest extends TestCase
 
         $cart->calculate();
 
-        dd($cart->lines->first());
-        // dd($cart);
+        $this->assertEquals(100, $cart->subTotal->value);
+        $this->assertEquals(120, $cart->total->value);
+        $this->assertCount(1, $cart->taxBreakdown);
     }
 }
