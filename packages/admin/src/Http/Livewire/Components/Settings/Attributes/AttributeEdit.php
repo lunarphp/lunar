@@ -87,7 +87,7 @@ class AttributeEdit extends Component
         ];
 
         if (! $this->attribute->id) {
-            $rules['attribute.handle'] = ['required', Rule::unique((new Attribute)->getTable(), 'handle')->where(function ($query) {
+            $rules['attribute.handle'] = ['required', Rule::unique(Attribute::class, 'handle')->where(function ($query) {
                 return $query->where('attribute_group_id', $this->group->id);
             })];
         }
