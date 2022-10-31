@@ -56,7 +56,7 @@ class PasswordReset extends Component
      * {@inheritDoc}
      */
     protected $rules = [
-        'email' => 'required|email',
+        'email' => 'required|email|exists:'.Staff::class.',email',
         'password' => 'nullable|confirmed',
         'password_confirmation' => 'nullable',
     ];
