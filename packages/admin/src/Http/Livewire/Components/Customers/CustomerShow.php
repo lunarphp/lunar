@@ -6,6 +6,7 @@ use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Lunar\DataTypes\Price;
@@ -198,7 +199,11 @@ class CustomerShow extends Component
      */
     public function save()
     {
-        $this->validateOnly('customer');
+        $customerRules = collect($this->rules())
+            ->filter(fn ($rule, $key) => Str::startsWith($key, 'customer.'))
+            ->toArray();
+        // // dd($customerRules, $this->custo
+        $this->validate($customerRules);
 
         $this->customer->customerGroups()->sync(
             $this->syncedGroups
