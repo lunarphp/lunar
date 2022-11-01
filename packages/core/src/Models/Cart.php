@@ -254,7 +254,12 @@ class Cart extends BaseModel
         return $query->whereDoesntHave('order');
     }
 
-    public function calculate()
+    /**
+     * Calculate the cart totals and cache the result.
+     *
+     * @return Cart
+     */
+    public function calculate(): Cart
     {
         return app(Pipeline::class)
         ->send($this)
@@ -268,7 +273,16 @@ class Cart extends BaseModel
         });
     }
 
-    public function add(Purchasable $purchasable, $quantity = 1, $meta = [])
+    /**
+     * Add or update a purchasable item to the cart
+     *
+     * @param Purchasable $purchasable
+     * @param integer $quantity
+     * @param Array $meta
+     *
+     * @return Cart
+     */
+    public function add(Purchasable $purchasable, $quantity = 1, $meta = []): Cart
     {
         foreach (config('lunar.cart.validators.cart_lines', []) as $action) {
             // Throws a validation exception?
