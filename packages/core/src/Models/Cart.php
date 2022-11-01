@@ -224,26 +224,6 @@ class Cart extends BaseModel
     }
 
     /**
-     * Return the cart manager.
-     *
-     * @return \Lunar\Managers\CartManager
-     */
-    public function getManager()
-    {
-        return $this->manager ?? new CartManager($this);
-    }
-
-    /**
-     * Set the cart manager.
-     *
-     * @var \Lunar\Managers\CartManager
-     */
-    public function setManager(CartManager $manager)
-    {
-        $this->manager = $manager;
-    }
-
-    /**
      * Apply scope to get active cart.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
@@ -297,6 +277,14 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.add_to_cart', AddOrUpdatePurchasable::class)
         )->execute($this, $purchasable, $quantity, $meta)
+            ->then(fn () => $this->refresh()->calculate());
+    }
+
+    public function remove($cartLineId)
+    {
+        return app(
+            config('lunar.cart.actions.remove_from_cart', AddOrUpdatePurchasable::class)
+        )->execute($this, $cartLineId)
             ->then(fn () => $this->refresh()->calculate());
     }
 }

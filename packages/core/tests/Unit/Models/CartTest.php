@@ -57,20 +57,6 @@ class CartTest extends TestCase
         $this->assertCount(1, $cart->lines()->get());
     }
 
-    /** @test */
-    public function can_get_cart_manager()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-        ]);
-
-        // dd(CartManager::class);
-        $this->assertInstanceOf(CartManager::class, $cart->getManager());
-    }
 
     /** @test */
     public function can_associate_cart_with_user_with_no_customer_attached()
@@ -81,13 +67,17 @@ class CartTest extends TestCase
         $channel = Channel::factory()->create();
         $user = StubUser::factory()->create();
 
-        $cart = Cart::create([
+        Cart::create([
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
             'user_id' => $user->getKey(),
         ]);
 
-        $this->assertInstanceOf(CartManager::class, $cart->getManager());
+        $this->assertDatabaseHas((new Cart)->getTable(), [
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'user_id' => $user->getKey(),
+        ]);
     }
 
     /** @test */
@@ -150,7 +140,11 @@ class CartTest extends TestCase
             'user_id' => $user->getKey(),
         ]);
 
-        $this->assertInstanceOf(CartManager::class, $cart->getManager());
+        $this->assertDatabaseHas((new Cart)->getTable(), [
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'user_id' => $user->getKey(),
+        ]);
     }
 
     /** @test */
@@ -216,6 +210,39 @@ class CartTest extends TestCase
         $cart->add($purchasable, 1);
 
         $this->assertCount(1, $cart->lines);
+    }
+
+    /**
+    * @test
+    */
+    public function can_remove_cart_lines()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->add($purchasable, 1);
+
+        $this->assertCount(1, $cart->lines);
+
+        $cart->remove($cart->lines->first()->id);
+
+        $this->assertCount(0, $cart->lines);
     }
 
     /** @test */

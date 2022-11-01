@@ -64,6 +64,7 @@ return [
 
     'actions' => [
         'add_to_cart' => \Lunar\Actions\Carts\AddOrUpdatePurchasable::class,
+        'remove_from_cart' => \Lunar\Actions\Carts\RemovePurchasable::class,
     ],
 
     /*
