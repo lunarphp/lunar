@@ -53,7 +53,7 @@ return [
         ],
         'cart_lines' => [
             \Lunar\Pipelines\CartLine\GetUnitPrice::class,
-        ]
+        ],
     ],
 
     'validators' => [

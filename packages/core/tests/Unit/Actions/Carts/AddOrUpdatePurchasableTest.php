@@ -21,8 +21,8 @@ class AddOrUpdatePurchasableTest extends TestCase
     use RefreshDatabase;
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function can_add_cart_lines()
     {
         $currency = Currency::factory()->create();
@@ -40,7 +40,6 @@ class AddOrUpdatePurchasableTest extends TestCase
             'priceable_type' => get_class($purchasable),
             'priceable_id' => $purchasable->id,
         ]);
-
 
         $this->assertCount(0, $cart->lines);
 

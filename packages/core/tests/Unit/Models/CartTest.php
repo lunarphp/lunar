@@ -5,7 +5,6 @@ namespace Lunar\Tests\Unit\Models;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Exceptions\Carts\CartException;
-use Lunar\Managers\CartManager;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
@@ -56,7 +55,6 @@ class CartTest extends TestCase
 
         $this->assertCount(1, $cart->lines()->get());
     }
-
 
     /** @test */
     public function can_associate_cart_with_user_with_no_customer_attached()
@@ -184,8 +182,8 @@ class CartTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function can_add_cart_lines()
     {
         $currency = Currency::factory()->create();
@@ -204,7 +202,6 @@ class CartTest extends TestCase
             'priceable_id' => $purchasable->id,
         ]);
 
-
         $this->assertCount(0, $cart->lines);
 
         $cart->add($purchasable, 1);
@@ -213,8 +210,8 @@ class CartTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function can_remove_cart_lines()
     {
         $currency = Currency::factory()->create();
@@ -232,7 +229,6 @@ class CartTest extends TestCase
             'priceable_type' => get_class($purchasable),
             'priceable_id' => $purchasable->id,
         ]);
-
 
         $this->assertCount(0, $cart->lines);
 

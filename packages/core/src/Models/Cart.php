@@ -245,10 +245,11 @@ class Cart extends BaseModel
         ->send($this)
         ->through(
             config('lunar.cart.pipelines.cart', [
-                Calculate::class
+                Calculate::class,
             ])
         )->thenReturn(function ($cart) {
             $cart->cacheProperties();
+
             return $cart;
         });
     }
@@ -256,10 +257,9 @@ class Cart extends BaseModel
     /**
      * Add or update a purchasable item to the cart
      *
-     * @param Purchasable $purchasable
-     * @param integer $quantity
-     * @param Array $meta
-     *
+     * @param  Purchasable  $purchasable
+     * @param  int  $quantity
+     * @param  array  $meta
      * @return Cart
      */
     public function add(Purchasable $purchasable, $quantity = 1, $meta = []): Cart

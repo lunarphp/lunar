@@ -13,10 +13,9 @@ class GetExistingCartLine extends AbstractAction
     /**
      * Execute the action
      *
-     * @param Cart $cart
-     * @param Purchasable $purchasable
-     * @param array $meta
-     *
+     * @param  Cart  $cart
+     * @param  Purchasable  $purchasable
+     * @param  array  $meta
      * @return CartLine|null
      */
     public function execute(
@@ -33,6 +32,7 @@ class GetExistingCartLine extends AbstractAction
 
         return $lines->first(function ($line) use ($meta) {
             $diff = Arr::diff($line->meta, $meta);
+
             return empty($diff->new) && empty($diff->edited) & empty($diff->removed);
         });
     }

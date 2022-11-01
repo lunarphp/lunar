@@ -20,8 +20,8 @@ class GetExistingCartLineTest extends TestCase
     use RefreshDatabase;
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function can_get_basic_cart_line()
     {
         $currency = Currency::factory()->create();
@@ -41,10 +41,10 @@ class GetExistingCartLineTest extends TestCase
         ]);
 
         $cartLine = $cart->lines()->create([
-           'purchasable_id' =>  $purchasable->id,
-           'purchasable_type' => ProductVariant::class,
-           'quantity' => 1,
-           'meta' => null,
+            'purchasable_id' => $purchasable->id,
+            'purchasable_type' => ProductVariant::class,
+            'quantity' => 1,
+            'meta' => null,
         ]);
 
         $action = new GetExistingCartLine;
@@ -56,8 +56,8 @@ class GetExistingCartLineTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function can_get_cart_line_with_different_meta()
     {
         $currency = Currency::factory()->create();
@@ -103,42 +103,46 @@ class GetExistingCartLineTest extends TestCase
 
         $cart->lines()->createMany([
             [
-               'purchasable_id' =>  $purchasable->id,
-               'purchasable_type' => ProductVariant::class,
-               'quantity' => 1,
-               'meta' => $cartLineAMeta,
+                'purchasable_id' => $purchasable->id,
+                'purchasable_type' => ProductVariant::class,
+                'quantity' => 1,
+                'meta' => $cartLineAMeta,
             ],
             [
-               'purchasable_id' =>  $purchasable->id,
-               'purchasable_type' => ProductVariant::class,
-               'quantity' => 1,
-               'meta' => $cartLineBMeta,
+                'purchasable_id' => $purchasable->id,
+                'purchasable_type' => ProductVariant::class,
+                'quantity' => 1,
+                'meta' => $cartLineBMeta,
             ],
             [
-                'purchasable_id' =>  $purchasable->id,
+                'purchasable_id' => $purchasable->id,
                 'purchasable_type' => ProductVariant::class,
                 'quantity' => 1,
                 'meta' => $cartLineCMeta,
-            ]
+            ],
         ]);
 
         $action = new GetExistingCartLine;
 
-        function shuffle_assoc($list) {
-          if (!is_array($list)) return $list;
+        function shuffle_assoc($list)
+        {
+            if (! is_array($list)) {
+                return $list;
+            }
 
-          $keys = array_keys($list);
-          shuffle($keys);
-          $random = array();
-          foreach ($keys as $key) {
-            $random[$key] = $list[$key];
-          }
-          return $random;
+            $keys = array_keys($list);
+            shuffle($keys);
+            $random = [];
+            foreach ($keys as $key) {
+                $random[$key] = $list[$key];
+            }
+
+            return $random;
         }
 
         foreach ($cart->lines as $line) {
             $meta = (array) $line->meta;
-            foreach(range(1, 10) as $i) {
+            foreach (range(1, 10) as $i) {
                 shuffle_assoc($meta);
                 $existing = $action->execute($cart, $purchasable, $meta);
                 $this->assertInstanceOf(CartLine::class, $existing);

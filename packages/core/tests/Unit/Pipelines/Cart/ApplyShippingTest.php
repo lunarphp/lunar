@@ -15,7 +15,6 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Pipelines\Cart\ApplyShipping;
-use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
 
 /**

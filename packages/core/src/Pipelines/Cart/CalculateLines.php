@@ -24,6 +24,7 @@ class CalculateLines
                 config('lunar.cart.pipelines.cart_lines', [])
             )->thenReturn(function ($cartLine) {
                 $cartLine->cacheProperties();
+
                 return $cartLine;
             });
 

@@ -6,19 +6,17 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Actions\AbstractAction;
 use Lunar\Exceptions\CartLineIdMismatchException;
 use Lunar\Models\Cart;
-use Yab\MySQLScout\Engines\Modes\Boolean;
 
 class RemovePurchasable extends AbstractAction
 {
     /**
      * Execute the action
      *
-     * @param Cart $cart
-     * @param integer $cartLineId
+     * @param  Cart  $cart
+     * @param  int  $cartLineId
+     * @return bool
      *
      * @throws CartLineIdMismatchException
-     *
-     * @return Boolean
      */
     public function execute(
         Cart $cart,

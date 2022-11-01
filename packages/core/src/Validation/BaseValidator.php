@@ -10,7 +10,7 @@ class BaseValidator
     public function fail($where, $reason)
     {
         $messages = new MessageBag([
-            $where => $reason
+            $where => $reason,
         ]);
 
         throw_if(

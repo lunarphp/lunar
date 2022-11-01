@@ -7,7 +7,6 @@ use Lunar\DataTypes\Price;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
 
 final class ApplyShipping
 {
@@ -41,7 +40,6 @@ final class ApplyShipping
             $cart->shippingAddress->shippingSubTotal = new Price($shippingOption->price->value, $cart->currency, 1);
 
             $shippingSubTotal = $shippingOption->price->value;
-
         }
 
         $cart->shippingTotal = new Price($shippingSubTotal, $cart->currency, 1);

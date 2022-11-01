@@ -19,8 +19,8 @@ class RemovePurchasableTest extends TestCase
     use RefreshDatabase;
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function can_remove_cart_line()
     {
         $currency = Currency::factory()->create();
