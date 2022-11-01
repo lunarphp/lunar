@@ -60,79 +60,6 @@ class CartManager
         $this->cart->setManager($this);
     }
 
-    /**
-     * Calculate the cart totals.
-     *
-     * @return self
-     */
-    public function calculate()
-    {
-        $pipeline = app(Pipeline::class)
-            ->send($this->cart)
-            ->through(
-                $this->getModifiers()->toArray()
-            );
-
-        // Initialise ready for cart discounts
-        $this->cart->cartDiscountAmount = new Price(0, $this->cart->currency, 1);
-
-        $this->cart = $pipeline->via('calculating')->thenReturn();
-
-        $lines = $this->calculateLines();
-
-        // Get the line subtotals and add together.
-        $subTotal = $lines->sum('subTotal.value');
-        $discountTotal = $lines->sum('discountTotal.value') + $this->cart->cartDiscountAmount->value;
-        $taxTotal = $lines->sum('taxAmount.value');
-        $total = $lines->sum('total.value');
-        $taxBreakDownAmounts = $lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
-
-        $this->cart->subTotal = new Price($subTotal, $this->cart->currency, 1);
-        $this->cart->discountTotal = new Price($discountTotal, $this->cart->currency, 1);
-
-        if ($shippingOption = $this->getShippingOption()) {
-            $shippingTax = Taxes::setShippingAddress($this->cart->shippingAddress)
-                            ->setCurrency($this->cart->currency)
-                            ->setPurchasable($shippingOption)
-                            ->getBreakdown($shippingOption->price->value);
-
-            $shippingSubTotal = $shippingOption->price->value;
-            $shippingTaxTotal = $shippingTax->amounts->sum('price.value');
-            $shippingTotal = $shippingSubTotal + $shippingTaxTotal;
-
-            $taxBreakDownAmounts = $taxBreakDownAmounts->merge($shippingTax->amounts);
-
-            $taxTotal += $shippingTaxTotal;
-            $total += $shippingTotal;
-
-            $this->cart->shippingAddress->taxBreakdown = $shippingTax;
-            $this->cart->shippingAddress->shippingTotal = new Price($shippingTotal, $this->cart->currency, 1);
-            $this->cart->shippingAddress->shippingTaxTotal = new Price($shippingTaxTotal, $this->cart->currency, 1);
-            $this->cart->shippingAddress->shippingSubTotal = new Price($shippingOption->price->value, $this->cart->currency, 1);
-
-            $this->cart->shippingTotal = new Price($shippingOption->price->value, $this->cart->currency, 1);
-        }
-
-        $this->cart->taxTotal = new Price($taxTotal, $this->cart->currency, 1);
-        $this->cart->total = new Price($total, $this->cart->currency, 1);
-
-        // Need to include shipping tax breakdown...
-        $this->cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) {
-            return [
-                'percentage' => $amounts->first()->percentage,
-                'description' => $amounts->first()->description,
-                'identifier' => $amounts->first()->identifier,
-                'amounts' => $amounts,
-                'total' => new Price($amounts->sum('price.value'), $this->cart->currency, 1),
-            ];
-        });
-
-        $this->cart = $pipeline->via('calculated')->thenReturn();
-
-        $this->cart->cacheProperties();
-
-        return $this;
-    }
 
     /**
      * Return the cart model instance.
@@ -148,53 +75,7 @@ class CartManager
         return $this->cart;
     }
 
-    /**
-     * Add a line to the cart.
-     *
-     * @param  Purchasable  $purchasable
-     * @param  int  $quantity
-     * @param  array  $meta
-     * @return bool
-     */
-    public function add(Purchasable $purchasable, int $quantity = 1, $meta = [])
-    {
-        if ($quantity < 1) {
-            throw new InvalidCartLineQuantityException(
-                __('lunar::exceptions.invalid_cart_line_quantity', [
-                    'quantity' => $quantity,
-                ])
-            );
-        }
 
-        if ($quantity > 1000000) {
-            throw new MaximumCartLineQuantityException();
-        }
-
-        // Do we already have this line?
-        $existing = $this->cart->load('lines')->lines->first(function ($line) use ($purchasable, $meta) {
-            return $line->purchasable_id == $purchasable->id &&
-            $line->purchasable_type == get_class($purchasable) &&
-            array_diff((array) ($line->meta ?? []), $meta ?? []) == [] &&
-            array_diff($meta ?? [], (array) ($line->meta ?? [])) == [];
-        });
-
-        if ($existing) {
-            $existing->update([
-                'quantity' => $existing->quantity + $quantity,
-            ]);
-
-            return true;
-        }
-
-        $this->cart->lines()->create([
-            'purchasable_id' => $purchasable->id,
-            'purchasable_type' => get_class($purchasable),
-            'quantity' => $quantity,
-            'meta' => $meta,
-        ]);
-
-        return true;
-    }
 
     /**
      * Add cart lines.
