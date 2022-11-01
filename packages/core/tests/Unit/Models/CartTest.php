@@ -191,7 +191,6 @@ class CartTest extends TestCase
 
     /**
     * @test
-    * @group moomoo
     */
     public function can_add_cart_lines()
     {
@@ -213,6 +212,62 @@ class CartTest extends TestCase
 
 
         $this->assertCount(0, $cart->lines);
+
+        $cart->add($purchasable, 1);
+
+        $this->assertCount(1, $cart->lines);
+    }
+
+    /** @test */
+    public function cannot_add_zero_quantity_line()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $this->assertCount(0, $cart->lines);
+
+        $this->expectException(CartException::class);
+
+        $cart->add($purchasable, 0);
+    }
+
+    /** @test */
+    public function can_update_existing_cart_line()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->add($purchasable, 1);
+
+        $this->assertCount(1, $cart->lines);
 
         $cart->add($purchasable, 1);
 

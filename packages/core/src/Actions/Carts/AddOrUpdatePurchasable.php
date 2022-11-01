@@ -4,6 +4,7 @@ namespace Lunar\Actions\Carts;
 
 use Lunar\Actions\AbstractAction;
 use Lunar\Base\Purchasable;
+use Lunar\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Models\Cart;
 
 class AddOrUpdatePurchasable extends AbstractAction
@@ -21,20 +22,20 @@ class AddOrUpdatePurchasable extends AbstractAction
         int $quantity = 1,
         array $meta = []
     ): self {
-        // Do we already have this line?
-        $existing = $cart->load('lines')->lines->first(function ($line) use ($purchasable, $meta) {
-            return $line->purchasable_id == $purchasable->id &&
-            $line->purchasable_type == get_class($purchasable) &&
-            array_diff((array) ($line->meta ?? []), $meta ?? []) == [] &&
-            array_diff($meta ?? [], (array) ($line->meta ?? [])) == [];
-        });
+
+        throw_if(!$quantity, InvalidCartLineQuantityException::class);
+
+        $existing = app(GetExistingCartLine::class)->execute(
+            cart: $cart,
+            purchasable: $purchasable,
+            meta: $meta
+        );
 
         if ($existing) {
             $existing->update([
                 'quantity' => $existing->quantity + $quantity,
             ]);
-
-            return true;
+            return $this;
         }
 
         $cart->lines()->create([
