@@ -37,34 +37,69 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication policy
+    | Cart Pipelines
     |--------------------------------------------------------------------------
     |
-    | When a user logs in, by default, Lunar will merge the current (guest) cart
-    | with the users current cart, if they have one.
-    | Available options: 'merge', 'override'
+    | Define which pipelines should be run when performing cart calculations.
+    | The default ones provided should suit most needs, however you are
+    | free to add your own as you see fit.
+    |
+    | Each pipeline class will be run from top to bottom.
     |
     */
     'pipelines' => [
+        /*
+         |--------------------------------------------------------------------------
+         | Run these pipelines when the cart is calculating.
+         |--------------------------------------------------------------------------
+         */
         'cart' => [
             \Lunar\Pipelines\Cart\CalculateLines::class,
             \Lunar\Pipelines\Cart\ApplyShipping::class,
             \Lunar\Pipelines\Cart\Calculate::class,
         ],
+        /*
+         |--------------------------------------------------------------------------
+         | Run these pipelines when the cart lines are being calculated.
+         |--------------------------------------------------------------------------
+         */
         'cart_lines' => [
             \Lunar\Pipelines\CartLine\GetUnitPrice::class,
         ],
     ],
 
-    'validators' => [
-        'cart_lines' => [
-            \Lunar\Validation\CartLine\CartLineQuantity::class,
-        ],
-    ],
-
+    /*
+    |--------------------------------------------------------------------------
+    | Cart Actions
+    |--------------------------------------------------------------------------
+    |
+    | Here you can decide what action should be run during a Carts lifecycle.
+    | The default actions should be fine for most cases.
+    |
+    */
     'actions' => [
         'add_to_cart' => \Lunar\Actions\Carts\AddOrUpdatePurchasable::class,
+        'update_cart_line' => \Lunar\Actions\Carts\UpdateCartLine::class,
         'remove_from_cart' => \Lunar\Actions\Carts\RemovePurchasable::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cart Action Validators
+    |--------------------------------------------------------------------------
+    |
+    | You may wish to provide additional validation when actions executed on
+    | the cart model. The defaults provided should be enough for most cases.
+    |
+    */
+    'validators' => [
+        'add_to_cart' => [
+            \Lunar\Validation\CartLine\CartLineQuantity::class,
+        ],
+        'update_cart_line' => [
+            \Lunar\Validation\CartLine\CartLineQuantity::class,
+        ],
+        'remove_from_cart' => [],
     ],
 
     /*
