@@ -11,7 +11,6 @@ use Lunar\Actions\Carts\ValidateCartForOrder;
 use Lunar\Base\Addressable;
 use Lunar\Base\CartModifiers;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\CartLineIdMismatchException;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\Carts\ShippingAddressMissingException;
 use Lunar\Exceptions\InvalidCartLineQuantityException;
@@ -87,31 +86,6 @@ class CartManager
         });
 
         return true;
-    }
-
-    /**
-     * Remove a cart line from the cart.
-     *
-     * @param  int|string  $cartLineId
-     * @return \Lunar\Models\Cart
-     *
-     * @throws \Lunar\Exceptions\CartLineIdMismatchException
-     */
-    public function removeLine($cartLineId)
-    {
-        // If we're trying to remove a line that does not
-        // belong to this cart, throw an exception.
-        $line = $this->cart->lines()->whereId($cartLineId)->first();
-
-        if (! $line) {
-            throw new CartLineIdMismatchException(
-                __('lunar::exceptions.cart_line_id_mismatch')
-            );
-        }
-
-        $line->delete();
-
-        return $this->calculate()->getCart();
     }
 
     /**
