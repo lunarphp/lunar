@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
@@ -290,10 +291,18 @@ class CartTest extends TestCase
 
         $cart->add($purchasable, 1);
 
-        $this->assertCount(1, $cart->lines);
+        $cartLine = $cart->refresh()->lines->first();
 
-        $cart->add($purchasable, 1);
+        $this->assertDatabaseHas((new CartLine())->getTable(), [
+            'quantity' => 1,
+            'id' => $cartLine->id,
+        ]);
 
-        $this->assertCount(1, $cart->lines);
+        $cart->updateLine($cartLine->id, 2);
+
+        $this->assertDatabaseHas((new CartLine())->getTable(), [
+            'quantity' => 2,
+            'id' => $cartLine->id,
+        ]);
     }
 }
