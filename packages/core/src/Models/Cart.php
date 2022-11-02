@@ -4,9 +4,12 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
+use Lunar\Actions\Carts\AssociateUser;
 use Lunar\Actions\Carts\RemovePurchasable;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\BaseModel;
@@ -264,7 +267,7 @@ class Cart extends BaseModel
      * @param  array  $meta
      * @return Cart
      */
-    public function add(Purchasable $purchasable, int $quantity = 1, array $meta = []): Cart
+    public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.add_to_cart', []) as $action) {
             // Throws a validation exception?
@@ -279,7 +282,29 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.add_to_cart', AddOrUpdatePurchasable::class)
         )->execute($this, $purchasable, $quantity, $meta)
-            ->then(fn () => $this->refresh()->calculate());
+            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+    }
+
+    /**
+     * Add cart lines.
+     *
+     * @param iterable  $lines
+     * @return bool
+     */
+    public function addLines(iterable $lines)
+    {
+        DB::transaction(function () use ($lines) {
+            collect($lines)->each(function ($line) {
+                $this->add(
+                    purchasable: $line['purchasable'],
+                    quantity: $line['quantity'],
+                    meta: $line['meta'] ?? null,
+                    refresh: false
+                );
+            });
+        });
+
+        return $this->refresh()->calculate();
     }
 
     /**
@@ -289,7 +314,7 @@ class Cart extends BaseModel
      *
      * @return Cart
      */
-    public function remove(int $cartLineId): Cart
+    public function remove(int $cartLineId, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.remove_from_cart', []) as $action) {
             app($action)->using(
@@ -301,7 +326,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.remove_from_cart', RemovePurchasable::class)
         )->execute($this, $cartLineId)
-            ->then(fn () => $this->refresh()->calculate());
+            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
     }
 
     /**
@@ -313,7 +338,7 @@ class Cart extends BaseModel
      *
      * @return Cart
      */
-    public function updateLine(int $cartLineId, int $quantity, array $meta = []): Cart
+    public function updateLine(int $cartLineId, int $quantity, array $meta = [], bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {
             app($action)->using(
@@ -327,6 +352,55 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.update_cart_line', UpdateCartLine::class)
         )->execute($cartLineId, $quantity, $meta)
-            ->then(fn () => $this->refresh()->calculate());
+            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+    }
+
+    /**
+     * Update cart lines.
+     *
+     * @param  Collection  $lines
+     * @return \Lunar\Models\Cart
+     */
+    public function updateLines(Collection $lines)
+    {
+        DB::transaction(function () use ($lines) {
+            $lines->each(function ($line) {
+                $this->updateLine(
+                    cartLineId: $line['id'],
+                    quantity: $line['quantity'],
+                    meta: $line['meta'] ?? null,
+                    refresh: false
+                );
+            });
+        });
+
+        return $this->refresh()->calculate();
+    }
+
+    /**
+     * Deletes all cart lines.
+     */
+    public function clear()
+    {
+        $this->lines()->delete();
+
+        return $this->refresh()->calculate();
+    }
+
+    /**
+     * Associate a user to the cart
+     *
+     * @param User $user
+     * @param string $policy
+     * @param boolean $refresh
+     *
+     * @return Cart
+     */
+    public function associate(User $user, $policy = 'merge', $refresh = true)
+    {
+        return app(
+            config('lunar.cart.actions.associate_user', AssociateUser::class)
+        )->execute($this, $user, $policy)
+            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
     }
 }
