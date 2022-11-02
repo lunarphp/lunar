@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
+use Lunar\Actions\Carts\RemovePurchasable;
+use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Address;
 use Lunar\Base\Purchasable;
@@ -262,16 +264,16 @@ class Cart extends BaseModel
      * @param  array  $meta
      * @return Cart
      */
-    public function add(Purchasable $purchasable, $quantity = 1, $meta = []): Cart
+    public function add(Purchasable $purchasable, int $quantity = 1, array $meta = []): Cart
     {
-        foreach (config('lunar.cart.validators.cart_lines', []) as $action) {
+        foreach (config('lunar.cart.validators.add_to_cart', []) as $action) {
             // Throws a validation exception?
-            app($action)->validate(
+            app($action)->using(
                 cart: $this,
                 purchasable: $purchasable,
                 quantity: $quantity,
                 meta: $meta
-            );
+            )->validate();
         }
 
         return app(
@@ -280,11 +282,51 @@ class Cart extends BaseModel
             ->then(fn () => $this->refresh()->calculate());
     }
 
-    public function remove($cartLineId)
+    /**
+     * Remove a cart line
+     *
+     * @param int $cartLineId
+     *
+     * @return Cart
+     */
+    public function remove(int $cartLineId): Cart
     {
+        foreach (config('lunar.cart.validators.remove_from_cart', []) as $action) {
+            app($action)->using(
+                cart: $this,
+                cartLineId: $cartLineId,
+            )->validate();
+        }
+
         return app(
-            config('lunar.cart.actions.remove_from_cart', AddOrUpdatePurchasable::class)
+            config('lunar.cart.actions.remove_from_cart', RemovePurchasable::class)
         )->execute($this, $cartLineId)
+            ->then(fn () => $this->refresh()->calculate());
+    }
+
+    /**
+     * Update cart line
+     *
+     * @param int $cartLineId
+     * @param int $quantity
+     * @param array $meta
+     *
+     * @return Cart
+     */
+    public function updateLine(int $cartLineId, int $quantity, array $meta = []): Cart
+    {
+        foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {
+            app($action)->using(
+                cart: $this,
+                cartLineId: $cartLineId,
+                quantity: $quantity,
+                meta: $meta
+            )->validate();
+        }
+
+        return app(
+            config('lunar.cart.actions.update_cart_line', UpdateCartLine::class)
+        )->execute($cartLineId, $quantity, $meta)
             ->then(fn () => $this->refresh()->calculate());
     }
 }
