@@ -2,14 +2,17 @@
 
 namespace Lunar\Validation\CartLine;
 
-use Lunar\Base\Purchasable;
-use Lunar\Models\Cart;
 use Lunar\Validation\BaseValidator;
 
 class CartLineQuantity extends BaseValidator
 {
-    public function validate(Cart $cart, Purchasable $purchasable, $quantity, $meta = [])
+    /**
+     * {@inheritDoc}
+     */
+    public function validate(): bool
     {
+        $quantity = $this->parameters['quantity'] ?? 0;
+
         if ($quantity < 1) {
             $this->fail(
                 'cart',
@@ -28,6 +31,6 @@ class CartLineQuantity extends BaseValidator
             );
         }
 
-        return true;
+        return $this->pass();
     }
 }
