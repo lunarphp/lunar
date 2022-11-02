@@ -55,9 +55,9 @@ module.exports = {
     smoothScroll: true,
     lastUpdated: false,
     algolia: {
-      apiKey: '5b837c3914609051127d86be919e1724',
-      indexName: 'lunar',
-      appId: 'LRDQ9JSQEG'
+      apiKey: '809abe406af06049bf984f7d9062386e',
+      indexName: 'lunarphp',
+      appId: 'ZHX0K72823'
     },
     nav: [
       {
