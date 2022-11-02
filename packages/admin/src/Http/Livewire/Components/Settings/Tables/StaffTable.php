@@ -75,7 +75,7 @@ class StaffTable extends Table
         );
     }
 
-        /**
+    /**
      * Save a search.
      *
      * @return void
