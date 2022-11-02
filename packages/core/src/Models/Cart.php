@@ -8,13 +8,14 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
 use Lunar\Actions\Carts\RemovePurchasable;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\Address;
 use Lunar\Base\Purchasable;
+use Lunar\Base\Addressable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
@@ -402,5 +403,52 @@ class Cart extends BaseModel
             config('lunar.cart.actions.associate_user', AssociateUser::class)
         )->execute($this, $user, $policy)
             ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+    }
+
+    /**
+     * Add an address to the Cart.
+     *
+     * @param array|Addressable $address
+     * @param string $type
+     * @param bool $refresh
+     *
+     * @return Cart
+     */
+    public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
+    {
+        foreach (config('lunar.cart.validators.add_address', []) as $action) {
+            app($action)->using(
+                cart: $this,
+                address: $type,
+                type: $type,
+            )->validate();
+        }
+
+        return app(
+            config('lunar.cart.actions.add_address', AddAddress::class)
+        )->execute($this, $address, $type)
+            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+    }
+
+    /**
+     * Set the shipping address.
+     *
+     * @param  \Lunar\Base\Addressable|array  $address
+     * @return \Lunar\Models\Cart
+     */
+    public function setShippingAddress(array|Addressable $address)
+    {
+        return $this->addAddress($address, 'shipping');
+    }
+
+    /**
+     * Set the billing address.
+     *
+     * @param  array|Addressable  $address
+     * @return self
+     */
+    public function setBillingAddress(array|Addressable $address)
+    {
+        return $this->addAddress($address, 'billing');
     }
 }
