@@ -82,6 +82,7 @@ return [
         'update_cart_line' => \Lunar\Actions\Carts\UpdateCartLine::class,
         'remove_from_cart' => \Lunar\Actions\Carts\RemovePurchasable::class,
         'add_address' => \Lunar\Actions\Carts\AddAddress::class,
+        'set_shipping_option' => \Lunar\Actions\Carts\SetShippingOption::class,
     ],
 
     /*
@@ -101,6 +102,9 @@ return [
             \Lunar\Validation\CartLine\CartLineQuantity::class,
         ],
         'remove_from_cart' => [],
+        'set_shipping_option' => [
+            \Lunar\Validation\Cart\ShippingOptionValidator::class,
+        ]
     ],
 
     /*

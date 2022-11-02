@@ -38,9 +38,11 @@ abstract class BaseValidator
      */
     public function fail($where, $reason): bool
     {
-        $messages = new MessageBag([
-            $where => $reason,
-        ]);
+        $messages = new MessageBag(
+            is_array($reason) ? $reason : [
+                $where => $reason,
+            ]
+        );
 
         throw_if(
             $messages->isNotEmpty(),

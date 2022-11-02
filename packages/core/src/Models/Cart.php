@@ -12,6 +12,7 @@ use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
 use Lunar\Actions\Carts\RemovePurchasable;
+use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
@@ -24,8 +25,12 @@ use Lunar\Base\ValueObjects\Cart\Promotion;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Exceptions\Carts\CartException;
+use Lunar\Facades\ShippingManifest;
 use Lunar\Managers\CartManager;
 use Lunar\Pipelines\Cart\Calculate;
+use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
 class Cart extends BaseModel
 {
@@ -450,5 +455,84 @@ class Cart extends BaseModel
     public function setBillingAddress(array|Addressable $address)
     {
         return $this->addAddress($address, 'billing');
+    }
+
+    /**
+     * Set the shipping option to the shipping address.
+     *
+     * @param  ShippingOption  $option
+     * @return Cart
+     *
+     */
+    public function setShippingOption(ShippingOption $option, $refresh = true): Cart
+    {
+        foreach (config('lunar.cart.validators.set_shipping_option', []) as $action) {
+            app($action)->using(
+                cart: $this,
+                shippingOption: $option,
+            )->validate();
+        }
+
+        return app(
+            config('lunar.cart.actions.set_shipping_option', SetShippingOption::class)
+        )->execute($this, $option)
+            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+    }
+
+    /**
+     * Get the shipping option for the cart
+     *
+     * @return ShippingOption|null
+     */
+    public function getShippingOption(): ShippingOption|null
+    {
+        if (! $this->shippingAddress) {
+            return null;
+        }
+
+        return ShippingManifest::getOptions($this)->first(function ($option) {
+            return $option->getIdentifier() == $this->shippingAddress->shipping_option;
+        });
+    }
+
+    /**
+     * Returns whether the cart has shippable items.
+     *
+     * @return bool
+     */
+    public function isShippable()
+    {
+        return (bool) $this->lines->filter(function ($line) {
+            return $line->purchasable->isShippable();
+        })->count();
+    }
+
+    /**
+     * Returns whether a cart has enough info to create an order.
+     *
+     * @return bool
+     */
+    public function canCreateOrder()
+    {
+        $passes = true;
+
+        foreach (config('lunar.cart.validators.order_create', [
+            ValidateCartForOrderCreation::class
+        ]) as $action) {
+            try {
+                app($action)->using(
+                    cart: $this,
+                )->validate();
+            } catch (CartException $e) {
+                $passes = false;
+            }
+        }
+        try {
+            app(ValidateCartForOrder::class)->execute($this);
+        } catch (CartException $e) {
+            return false;
+        }
+
+        return $passes;
     }
 }
