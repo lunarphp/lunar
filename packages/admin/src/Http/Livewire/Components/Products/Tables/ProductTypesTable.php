@@ -94,7 +94,9 @@ class ProductTypesTable extends Table
             'filters' => $this->filters,
         ]);
 
-        $this->notify('Search saved');
+        $this->notify(
+            __('adminhub::notifications.saved_searches.saved')
+        );
 
         $this->savedSearchName = null;
 
