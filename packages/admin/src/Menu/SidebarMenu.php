@@ -47,7 +47,7 @@ class SidebarMenu
     {
         $slot = Menu::slot('sidebar');
 
-        $orders = $slot->section('orders')
+        $orders = $slot->section('hub.orders')
             ->name(__('adminhub::menu.sidebar.orders'))
             ->route('hub.orders.index')
             ->icon('users');
@@ -60,7 +60,7 @@ class SidebarMenu
                 ->icon('cash');
         });
 
-        $products = $slot->section('products')
+        $products = $slot->section('hub.products')
             ->name(__('adminhub::menu.sidebar.products'))
             ->route('hub.products.index')
             ->icon('shopping-bag');
