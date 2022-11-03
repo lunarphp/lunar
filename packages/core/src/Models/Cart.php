@@ -29,7 +29,6 @@ use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\ShippingManifest;
-use Lunar\Managers\CartManager;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
@@ -56,13 +55,6 @@ class Cart extends BaseModel
         'promotions',
         'freeItems',
     ];
-
-    /**
-     * The cart manager.
-     *
-     * @var null|CartManager
-     */
-    protected ?CartManager $manager = null;
 
     /**
      * The cart sub total.

@@ -76,10 +76,10 @@ We've also tried to make Carts extendable as much as possible so, depending on
 what your stores requirements are, you are free to chop and change things as
 much as you need to.
 
-## The Cart Manager
+## Hydrating the cart totals
 
 ```php
-$cart = $cart->getManager()->getCart();
+$cart = $cart->calculate();
 ```
 
 This will return a "hydrated" version of your cart with the following:
@@ -144,8 +144,8 @@ $shippingAddress = [
 
 $billingAddress = /** .. */;
 
-$cart->getManager()->setShippingAddress($shippingAddress);
-$cart->getManager()->setBillingAddress($billingAddress);
+$cart->setShippingAddress($shippingAddress);
+$cart->setBillingAddress($billingAddress);
 ```
 
 You can also pass through a `\Lunar\Models\Address` model, or even another
@@ -154,9 +154,9 @@ You can also pass through a `\Lunar\Models\Address` model, or even another
 ```php
 $shippingAddress = \Lunar\Models\Address::first();
 
-$cart->getManager()->setShippingAddress($shippingAddress);
+$cart->setShippingAddress($shippingAddress);
 
-$cart->getManager()->setBillingAddress(
+$cart->setBillingAddress(
     $cart->shippingAddress
 );
 ```
@@ -224,12 +224,6 @@ CartSessionManager::use($cart);
 ```
 
 The other available methods are as follows:
-
-### Get the current `CartManager` for the cart.
-
-```php
-CartSession::manager();
-```
 
 ### Add a cart line
 
@@ -300,7 +294,7 @@ As outlined above, you can add shipping / billing addresses to the cart using
 the following methods:
 
 ```php
-$cart->getManager()->setShippingAddress([
+$cart->setShippingAddress([
     'first_name' => null,
     'last_name' => null,
     'line_one' => null,
@@ -311,7 +305,7 @@ $cart->getManager()->setShippingAddress([
     'postcode' => null,
     'country_id' => null,
 ]);
-$cart->getManager()->setBillingAddress([
+$cart->setBillingAddress([
     'first_name' => null,
     'last_name' => null,
     'line_one' => null,

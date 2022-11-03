@@ -122,7 +122,7 @@ module.exports = {
           '/extending/activity-log',
           '/extending/admin-hub',
           '/extending/assets',
-          '/extending/cart-modifiers',
+          '/extending/carts',
           '/extending/field-types',
           '/extending/models',
           '/extending/order-modifiers',
