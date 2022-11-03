@@ -28,11 +28,11 @@ class SidebarMenu
         $slot = Menu::slot('sidebar');
 
         $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.index')
-            )->handle('hub.index')
-            ->route('hub.index')
-            ->icon('chart-square-bar');
+            $item
+                ->name(__('adminhub::menu.sidebar.index'))
+                ->handle('hub.index')
+                ->route('hub.index')
+                ->icon('chart-square-bar');
         });
 
         return $this;
@@ -47,61 +47,49 @@ class SidebarMenu
     {
         $slot = Menu::slot('sidebar');
 
-        // $catalogueManager = $slot->section('catalogue-manager')->name(
-        //     __('adminhub::menu.sidebar.catalogue-manager')
-        // );
+        $orders = $slot->section('orders')
+            ->name(__('adminhub::menu.sidebar.orders'))
+            ->handle('hub.orders')
+            ->route('hub.orders.index')
+            ->icon('users');
 
-        $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.products')
-            )->handle('hub.products')
+        $orders->addItem(function ($item) {
+            $item
+                ->name(__('adminhub::menu.sidebar.customers'))
+                ->handle('hub.customers')
+                ->route('hub.customers.index')
+                ->icon('cash');
+        });
+
+        $products = $slot->section('products')
+            ->name(__('adminhub::menu.sidebar.products'))
+            ->handle('hub.products')
             ->route('hub.products.index')
             ->icon('shopping-bag');
+
+        $products->addItem(function ($item) {
+            $item
+                ->name(__('adminhub::menu.sidebar.product-types'))
+                ->handle('hub.product-types')
+                ->route('hub.product-types.index')
+                ->icon('pencil');
+        });
+
+        $products->addItem(function ($item) {
+            $item
+                ->name(__('adminhub::menu.sidebar.brands'))
+                ->handle('hub.brands')
+                ->route('hub.brands.index')
+                ->icon('view-grid');
         });
 
         $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.product-types')
-            )->handle('hub.product-type')
-            ->route('hub.product-types.index')
-            ->icon('pencil');
-        });
-
-        $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.brands')
-            )->handle('hub.brands')
-                 ->route('hub.brands.index')
-                 ->icon('view-grid');
-        });
-
-        $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.collections')
-            )->handle('hub.collection')
-            ->route('hub.collection-groups.index')
-            ->icon('collection');
+            $item
+                ->name(__('adminhub::menu.sidebar.collections'))
+                ->handle('hub.collection')
+                ->route('hub.collection-groups.index')
+                ->icon('collection');
         }, 'products');
-
-        // $orders = $slot->section('order-processing')->name(
-        //     __('adminhub::menu.sidebar.order-processing')
-        // );
-
-        $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.orders')
-            )->handle('hub.orders')
-            ->route('hub.orders.index')
-            ->icon('cash');
-        });
-
-        $slot->addItem(function ($item) {
-            $item->name(
-                __('adminhub::menu.sidebar.customers')
-            )->handle('hub.customers')
-            ->route('hub.customers.index')
-            ->icon('users');
-        });
 
         return $this;
     }
