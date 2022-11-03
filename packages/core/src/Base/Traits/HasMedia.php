@@ -22,6 +22,20 @@ trait HasMedia
             ->where('custom_properties->primary', true);
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images');
+
+        if (config('lunar.media.fallback.url') != null) {
+            $this->getMediaCollection('images')->useFallbackUrl(config('lunar.media.fallback.url'));
+        }
+
+        if (config('lunar.media.fallback.url') != null) {
+            $this->getMediaCollection('images')->useFallbackPath(config('lunar.media.fallback.url'));
+        }
+
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $conversionClasses = config('lunar.media.conversions', []);
