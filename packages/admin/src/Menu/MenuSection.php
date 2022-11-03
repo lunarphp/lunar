@@ -29,13 +29,6 @@ class MenuSection extends MenuSlot
     public $icon;
 
     /**
-     * The handle for the menu link.
-     *
-     * @var string
-     */
-    public $handle;
-
-    /**
      * Setter for the name property.
      *
      * @param  string  $name
@@ -44,19 +37,6 @@ class MenuSection extends MenuSlot
     public function name($name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Setter for the handle property.
-     *
-     * @param  string  $handle
-     * @return static
-     */
-    public function handle($handle)
-    {
-        $this->handle = $handle;
 
         return $this;
     }
