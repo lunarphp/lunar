@@ -17,8 +17,7 @@ abstract class BaseValidator
     /**
      * Set the parameters to use for validation
      *
-     * @param Array $args
-     *
+     * @param  array  $args
      * @return self
      */
     public function using(...$args): self
@@ -31,9 +30,8 @@ abstract class BaseValidator
     /**
      * Fail the validation
      *
-     * @param string $where
-     * @param string $reason
-     *
+     * @param  string  $where
+     * @param  string  $reason
      * @return bool
      */
     public function fail($where, $reason): bool
@@ -66,7 +64,7 @@ abstract class BaseValidator
     /**
      * Validate against the passed parameters.
      *
-     * @return boolean
+     * @return bool
      */
     abstract public function validate(): bool;
 }

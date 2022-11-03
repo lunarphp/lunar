@@ -104,7 +104,7 @@ return [
         'remove_from_cart' => [],
         'set_shipping_option' => [
             \Lunar\Validation\Cart\ShippingOptionValidator::class,
-        ]
+        ],
     ],
 
     /*

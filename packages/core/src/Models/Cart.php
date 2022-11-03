@@ -14,9 +14,9 @@ use Lunar\Actions\Carts\AssociateUser;
 use Lunar\Actions\Carts\RemovePurchasable;
 use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
+use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
-use Lunar\Base\Addressable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
@@ -294,7 +294,7 @@ class Cart extends BaseModel
     /**
      * Add cart lines.
      *
-     * @param iterable  $lines
+     * @param  iterable  $lines
      * @return bool
      */
     public function addLines(iterable $lines)
@@ -316,8 +316,7 @@ class Cart extends BaseModel
     /**
      * Remove a cart line
      *
-     * @param int $cartLineId
-     *
+     * @param  int  $cartLineId
      * @return Cart
      */
     public function remove(int $cartLineId, bool $refresh = true): Cart
@@ -338,10 +337,9 @@ class Cart extends BaseModel
     /**
      * Update cart line
      *
-     * @param int $cartLineId
-     * @param int $quantity
-     * @param array $meta
-     *
+     * @param  int  $cartLineId
+     * @param  int  $quantity
+     * @param  array  $meta
      * @return Cart
      */
     public function updateLine(int $cartLineId, int $quantity, array $meta = [], bool $refresh = true): Cart
@@ -396,10 +394,9 @@ class Cart extends BaseModel
     /**
      * Associate a user to the cart
      *
-     * @param User $user
-     * @param string $policy
-     * @param boolean $refresh
-     *
+     * @param  User  $user
+     * @param  string  $policy
+     * @param  bool  $refresh
      * @return Cart
      */
     public function associate(User $user, $policy = 'merge', $refresh = true)
@@ -413,10 +410,9 @@ class Cart extends BaseModel
     /**
      * Add an address to the Cart.
      *
-     * @param array|Addressable $address
-     * @param string $type
-     * @param bool $refresh
-     *
+     * @param  array|Addressable  $address
+     * @param  string  $type
+     * @param  bool  $refresh
      * @return Cart
      */
     public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
@@ -462,7 +458,6 @@ class Cart extends BaseModel
      *
      * @param  ShippingOption  $option
      * @return Cart
-     *
      */
     public function setShippingOption(ShippingOption $option, $refresh = true): Cart
     {
@@ -517,7 +512,7 @@ class Cart extends BaseModel
         $passes = true;
 
         foreach (config('lunar.cart.validators.order_create', [
-            ValidateCartForOrderCreation::class
+            ValidateCartForOrderCreation::class,
         ]) as $action) {
             try {
                 app($action)->using(

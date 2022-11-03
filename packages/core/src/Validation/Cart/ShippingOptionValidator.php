@@ -13,7 +13,7 @@ class ShippingOptionValidator extends BaseValidator
     {
         $cart = $this->parameters['cart'] ?? null;
 
-        if (!$cart) {
+        if (! $cart) {
             return $this->fail('cart', 'Unable to set shipping option on null');
         }
 

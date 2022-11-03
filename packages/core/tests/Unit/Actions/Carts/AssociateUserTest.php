@@ -4,9 +4,9 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Carts\AssociateUser;
-use Lunar\Tests\Stubs\User;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
+use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
 
 /**

@@ -2,23 +2,11 @@
 
 namespace Lunar\Managers;
 
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Lunar\Actions\Carts\CreateOrder;
-use Lunar\Actions\Carts\MergeCart;
 use Lunar\Actions\Carts\ValidateCartForOrder;
-use Lunar\Base\Addressable;
-use Lunar\Base\CartModifiers;
-use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
-use Lunar\Exceptions\Carts\ShippingAddressMissingException;
-use Lunar\Exceptions\InvalidCartLineQuantityException;
-use Lunar\Exceptions\MaximumCartLineQuantityException;
-use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
-use Lunar\Models\CartLine;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\TaxZone;
 

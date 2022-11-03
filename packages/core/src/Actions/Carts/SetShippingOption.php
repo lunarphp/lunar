@@ -24,6 +24,7 @@ class SetShippingOption extends AbstractAction
         $cart->shippingAddress->update([
             'shipping_option' => $shippingOption->getIdentifier(),
         ]);
+
         return $this;
     }
 }

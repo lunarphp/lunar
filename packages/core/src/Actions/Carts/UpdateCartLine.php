@@ -31,6 +31,7 @@ class UpdateCartLine extends AbstractAction
 
             CartLine::whereId($cartLineId)->update($data);
         });
+
         return $this;
     }
 }

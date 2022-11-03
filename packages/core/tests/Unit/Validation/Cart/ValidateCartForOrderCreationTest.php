@@ -5,10 +5,10 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Models\Cart;
-use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Currency;
 use Lunar\Tests\TestCase;
+use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
 /**
  * @group lunar.actions
