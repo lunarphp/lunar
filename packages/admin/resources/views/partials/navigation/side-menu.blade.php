@@ -7,13 +7,15 @@
          data-ref="layout-sidemenu">
         <div class="flex-1">
             <a href="{{ route('hub.index') }}"
-               class="flex items-center w-full h-16 px-4">
-                <x-hub::branding.logo x-show="showExpandedMenu" x-cloak />
+               class="flex items-center w-full h-16 px-2">
+                <x-hub::branding.logo x-show="showExpandedMenu"
+                                      x-cloak />
                 <x-hub::branding.logo x-show="!showExpandedMenu"
-                                      iconOnly x-cloak />
+                                      iconOnly
+                                      x-cloak />
             </a>
 
-            <div class="w-full px-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div class="w-full px-2 py-4 border-t border-gray-100 dark:border-gray-800">
                 @livewire('sidebar')
             </div>
         </div>
@@ -30,11 +32,11 @@
         </div>
 
         <button x-on:click="showExpandedMenu = !showExpandedMenu"
-                class="absolute z-50 p-1 bg-white border border-gray-100 dark:border-gray-700 dark:bg-gray-800 rounded -right-[13px] bottom-16 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                class="absolute z-50 p-1 -ml-[11px] text-gray-600 bg-white border border-gray-200 rounded left-full bottom-16">
             <span :class="{ '-rotate-180': showExpandedMenu }"
                   class="block">
                 <x-hub::icon ref="chevron-right"
-                             class="w-4 h-4"
+                             class="w-3 h-3"
                              style="solid" />
             </span>
         </button>

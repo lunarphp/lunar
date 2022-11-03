@@ -3,15 +3,15 @@
                  current="{{ request()->route()->getName() }}">
         <ul class="space-y-1">
             @foreach ($component->sections as $section)
-                <li x-data="{ subMenu: false }"
+                <li x-data="{ showSubMenu: false }"
                     class="relative">
-                    <button x-on:click.prevent="!showExpandedMenu && (subMenu = !subMenu)"
+                    <button x-on:click.prevent="!showExpandedMenu && (showSubMenu = !showSubMenu)"
                             :class="{ 'hidden': showExpandedMenu }"
-                            class="absolute z-10 grid w-6 h-6 -ml-1 text-gray-600 bg-gray-100 border border-gray-200 rounded -trangray-y-1/2 place-content-center top-1/2 left-full">
+                            class="absolute z-10 p-1 -ml-1 text-gray-600 -translate-y-1/2 bg-white border border-gray-200 rounded top-1/2 left-full">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 20 20"
                              fill="currentColor"
-                             class="w-3 h-3 opacity-75">
+                             class="w-3 h-3">
                             <path
                                   d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z" />
                         </svg>
@@ -45,14 +45,14 @@
                             x-transition:enter="transition-all duration-500"
                             x-transition:enter-start="opacity-0"
                             x-transition:enter-end="opacity-100"
-                            x-show="showExpandedMenu || subMenu"
-                            x-on:click.away="subMenu = false"
+                            x-show="showExpandedMenu || showSubMenu"
+                            x-on:click.away="showSubMenu = false"
                             :class="{
                                 'border-l border-gray-200 pl-5 ml-[calc(1rem_+_2px)]': showExpandedMenu,
-                                'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-gray-100 p-2 w-64':
+                                'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-white p-2 w-64 shadow-sm':
                                     !showExpandedMenu,
                             }"
-                            class="space-y-1">
+                            class="mt-1 space-y-1">
                             @foreach ($section->getItems() as $item)
                                 <li>
                                     <a href="{{ route($item->route) }}"
@@ -65,8 +65,6 @@
                                                $component->attributes->get('current')
                                            ),
                                        ])>
-                                        {!! $item->renderIcon('w-5 h-5') !!}
-
                                         <span class="text-sm">
                                             {{ $item->name }}
                                         </span>
