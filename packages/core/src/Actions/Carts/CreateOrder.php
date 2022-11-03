@@ -126,7 +126,7 @@ class CreateOrder extends AbstractAction
 
             $cart->save();
 
-            return $order->refresh();
+            return $this;
         });
     }
 }

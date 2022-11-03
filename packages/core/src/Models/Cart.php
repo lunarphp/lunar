@@ -253,17 +253,15 @@ class Cart extends BaseModel
      */
     public function calculate(): Cart
     {
-        return app(Pipeline::class)
+        $cart = app(Pipeline::class)
         ->send($this)
         ->through(
             config('lunar.cart.pipelines.cart', [
                 Calculate::class,
             ])
-        )->thenReturn(function ($cart) {
-            $cart->cacheProperties();
+        )->thenReturn();
 
-            return $cart;
-        });
+        return $cart->cacheProperties();
     }
 
     /**
@@ -511,7 +509,7 @@ class Cart extends BaseModel
     public function createOrder(): Order
     {
         foreach (config('lunar.cart.validators.order_create', [
-            ValidateCartForOrderCreation::class
+            ValidateCartForOrderCreation::class,
         ]) as $action) {
             app($action)->using(
                 cart: $this,

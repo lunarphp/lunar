@@ -36,7 +36,7 @@ class CachesPropertiesTest extends TestCase
             'priceable_id' => $purchasable->id,
         ]);
 
-        $line = $cart->lines()->create([
+        $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
             'purchasable_id' => $purchasable->id,
             'quantity' => 1,

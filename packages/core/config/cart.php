@@ -107,8 +107,8 @@ return [
             \Lunar\Validation\Cart\ShippingOptionValidator::class,
         ],
         'order_create' => [
-            \Lunar\Validation\Cart\ValidateCartForOrderCreation::class
-        ]
+            \Lunar\Validation\Cart\ValidateCartForOrderCreation::class,
+        ],
     ],
 
     /*

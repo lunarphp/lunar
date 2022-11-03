@@ -33,6 +33,8 @@ trait CachesProperties
         foreach ($this->cachableProperties as $property) {
             Blink::put($this->cachePropertiesPrefix().$property, $this->{$property});
         }
+
+        return $this;
     }
 
     /**

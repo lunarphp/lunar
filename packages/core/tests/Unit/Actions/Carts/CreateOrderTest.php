@@ -7,6 +7,7 @@ use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
 use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
@@ -157,7 +158,7 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function cannot_create_order_without_billing_address()
     {
-        $this->expectException(BillingAddressMissingException::class);
+        $this->expectException(CartException::class);
 
         $cart = Cart::factory()->create();
 
@@ -177,7 +178,7 @@ class CreateOrderTest extends TestCase
             'postcode' => 'H0H 0H0',
         ]);
 
-        $this->expectException(BillingAddressIncompleteException::class);
+        $this->expectException(CartException::class);
 
         $cart->createOrder();
 
@@ -268,7 +269,7 @@ class CreateOrderTest extends TestCase
 
         $this->assertEquals(
             $taxRateAmount->percentage,
-            $order->tax_breakdown->first()['percentage']
+            $order->tax_breakdown->first()->percentage
         );
     }
 }

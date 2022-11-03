@@ -15,7 +15,7 @@ final class ApplyShipping
      *
      * @return void
      */
-    public function handle(Cart $cart, Closure $next): Cart
+    public function handle(Cart $cart, Closure $next)
     {
         $shippingSubTotal = 0;
 
