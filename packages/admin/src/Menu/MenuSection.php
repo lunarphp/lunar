@@ -7,7 +7,7 @@ use Lunar\Hub\LunarHub;
 
 class MenuSection extends MenuSlot
 {
-     /**
+    /**
      * The display name of the menu link.
      *
      * @var string
