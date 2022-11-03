@@ -5,8 +5,6 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
-use Lunar\Exceptions\Carts\BillingAddressMissingException;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
