@@ -3,9 +3,7 @@
 namespace Lunar\Tests\Unit\Actions\Carts;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Actions\Carts\AddAddress;
 use Lunar\Exceptions\Carts\CartException;
-use Lunar\Models\Address;
 use Lunar\Models\Cart;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Models\CartAddress;
@@ -106,10 +104,7 @@ class ValidateCartForOrderCreationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     * @group moomoo
-     */
+    /** @test */
     public function can_validate_shippable_cart()
     {
         $currency = Currency::factory()->create();
