@@ -83,6 +83,7 @@ return [
         'remove_from_cart' => \Lunar\Actions\Carts\RemovePurchasable::class,
         'add_address' => \Lunar\Actions\Carts\AddAddress::class,
         'set_shipping_option' => \Lunar\Actions\Carts\SetShippingOption::class,
+        'order_create' => \Lunar\Actions\Carts\CreateOrder::class,
     ],
 
     /*
@@ -105,6 +106,9 @@ return [
         'set_shipping_option' => [
             \Lunar\Validation\Cart\ShippingOptionValidator::class,
         ],
+        'order_create' => [
+            \Lunar\Validation\Cart\ValidateCartForOrderCreation::class
+        ]
     ],
 
     /*

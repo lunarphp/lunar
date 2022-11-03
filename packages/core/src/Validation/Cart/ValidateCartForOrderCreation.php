@@ -30,16 +30,13 @@ class ValidateCartForOrderCreation extends BaseValidator
         );
 
         if ($billingValidator->fails()) {
-            $this->fail('cart', $billingValidator->errors()->getMessages());
+            return $this->fail('cart', $billingValidator->errors()->getMessages());
         }
 
         // Is this cart shippable and if so, does it have a shipping address.
         if ($cart->isShippable()) {
-            dd(1);
             if (! $cart->shippingAddress) {
-                throw new ShippingAddressMissingException(
-                    __('lunar::exceptions.carts.shipping_missing')
-                );
+                return $this->fail('cart', __('lunar::exceptions.carts.shipping_missing'));
             }
 
             $shippingValidator = Validator::make(
@@ -48,12 +45,12 @@ class ValidateCartForOrderCreation extends BaseValidator
             );
 
             if ($shippingValidator->fails()) {
-                throw new ShippingAddressIncompleteException();
+                return $this->fail('cart', $shippingValidator->errors()->getMessages());
             }
 
             // Do we have a shipping option applied?
-            if (! $cart->getManager()->getShippingOption()) {
-                throw new ShippingOptionMissingException();
+            if (! $cart->getShippingOption()) {
+                return $this->fail('cart', 'Missing Shipping Option');
             }
         }
 

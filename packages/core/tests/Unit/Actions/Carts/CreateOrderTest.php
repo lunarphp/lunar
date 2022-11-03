@@ -114,7 +114,7 @@ class CreateOrderTest extends TestCase
 
         $cart->shippingAddress->shippingOption = $shippingOption;
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $breakdown = $cart->taxBreakdown->map(function ($tax) {
             return [
@@ -161,7 +161,7 @@ class CreateOrderTest extends TestCase
 
         $cart = Cart::factory()->create();
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -179,7 +179,7 @@ class CreateOrderTest extends TestCase
 
         $this->expectException(BillingAddressIncompleteException::class);
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -264,7 +264,7 @@ class CreateOrderTest extends TestCase
             'shipping_option' => $shippingOption->getIdentifier(),
         ]);
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $this->assertEquals(
             $taxRateAmount->percentage,

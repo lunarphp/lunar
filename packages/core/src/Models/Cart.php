@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
+use Lunar\Actions\Carts\CreateOrder;
 use Lunar\Actions\Carts\RemovePurchasable;
 use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
@@ -503,6 +504,27 @@ class Cart extends BaseModel
     }
 
     /**
+     * Create an order from the Cart.
+     *
+     * @return Cart
+     */
+    public function createOrder(): Order
+    {
+        foreach (config('lunar.cart.validators.order_create', [
+            ValidateCartForOrderCreation::class
+        ]) as $action) {
+            app($action)->using(
+                cart: $this,
+            )->validate();
+        }
+
+        return app(
+            config('lunar.cart.actions.order_create', CreateOrder::class)
+        )->execute($this->refresh()->calculate())
+            ->then(fn () => $this->refresh()->order);
+    }
+
+    /**
      * Returns whether a cart has enough info to create an order.
      *
      * @return bool
@@ -521,11 +543,6 @@ class Cart extends BaseModel
             } catch (CartException $e) {
                 $passes = false;
             }
-        }
-        try {
-            app(ValidateCartForOrder::class)->execute($this);
-        } catch (CartException $e) {
-            return false;
         }
 
         return $passes;

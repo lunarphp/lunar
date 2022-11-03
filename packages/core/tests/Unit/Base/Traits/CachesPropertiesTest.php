@@ -42,9 +42,7 @@ class CachesPropertiesTest extends TestCase
             'quantity' => 1,
         ]);
 
-        $manager = $cart->getManager();
-
-        $cart = $manager->getCart();
+        $cart = $cart->calculate();
 
         $this->assertInstanceOf(DataTypesPrice::class, $cart->subTotal);
         $this->assertEquals(100, $cart->subTotal->value);
