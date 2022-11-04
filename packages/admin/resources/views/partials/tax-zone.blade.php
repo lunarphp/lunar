@@ -183,6 +183,7 @@
 
                             <x-hub::input.group :label="__('adminhub::inputs.priority.label')"
                                                 for="priority"
+                                                required
                                                 :error="$errors->first('taxRates.' . $taxRateIndex . '.priority')">
                                 <x-hub::input.text type="number"
                                                    wire:model="taxRates.{{ $taxRateIndex }}.priority" />
