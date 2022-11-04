@@ -290,7 +290,7 @@ abstract class AbstractProduct extends Component
 
         return array_merge(
             $attributes,
-            $this->withAttributesValidationAttributes()
+            $this->getUrlsValidationAttributes()
         );
     }
 
