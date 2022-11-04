@@ -70,7 +70,8 @@ Here's a guide on how to set-up your development environment ready for contribut
 
 When making a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), you will want to target the correct branch.
 
-If you are contributing documentation, the PR should be targeted straight to the `main` branch. However, code contributions should target the `develop` branch.
+* If you are contributing documentation or a hotfix, the PR should be targeted straight to the `main` branch.
+* However, new feature or enhancement contributions should target the `develop` branch for the next release.
 
 Please include a good description of what your pull request offers.
 
