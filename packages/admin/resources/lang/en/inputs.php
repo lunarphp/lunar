@@ -7,6 +7,8 @@ return [
     'name' => 'Name',
     'handle' => 'Handle',
     'code' => 'Code',
+    'min' => 'Min',
+    'max' => 'Max',
     'handle' => __('adminhub::global.handle'),
     'url' => __('adminhub::global.url'),
     'email' => __('adminhub::global.email'),
