@@ -12,7 +12,7 @@ class TaxZoneCreate extends AbstractTaxZone
     public function rules()
     {
         return [
-            'taxZone.name' => 'required|unique:'.(new TaxZone)->getTable().',name',
+            'taxZone.name' => 'required|unique:'.TaxZone::class.',name',
             'taxZone.zone_type' => 'required',
             'taxZone.price_display' => 'required',
             'taxZone.active' => 'boolean|nullable',
