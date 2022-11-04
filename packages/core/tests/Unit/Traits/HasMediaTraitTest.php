@@ -46,7 +46,7 @@ class HasMediaTraitTest extends TestCase
 
         $product = Product::factory()->create();
 
-        $this->assertEquals($product->getFirstMediaUrl('images'), $testImageUrl );
+        $this->assertEquals($product->getFirstMediaUrl('images'), $testImageUrl);
     }
 
     /** @test */
@@ -57,6 +57,6 @@ class HasMediaTraitTest extends TestCase
 
         $product = Product::factory()->create();
 
-        $this->assertEquals($product->getFirstMediaPath('images'), $testImagePath );
+        $this->assertEquals($product->getFirstMediaPath('images'), $testImagePath);
     }
 }

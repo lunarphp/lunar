@@ -42,7 +42,6 @@ trait HasMedia
             $this->addMediaCollection('images')
                 ->useFallbackPath($fallbackPath);
         }
-
     }
 
     public function registerMediaConversions(Media $media = null): void
