@@ -36,8 +36,8 @@ class TaxZoneCreate extends AbstractTaxZone
     protected function validationAttributes()
     {
         return [
-            'taxRates.*.priority' => lang('inputs.priority.label'),
-            'taxRates.*.name' => lang('inputs.name'),
+            'taxRates.*.priority' => lang(key:'inputs.priority.label', lower:true),
+            'taxRates.*.name' => lang(key:'inputs.name', lower:true),
         ];
     }
 

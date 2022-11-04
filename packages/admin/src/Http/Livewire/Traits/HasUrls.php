@@ -51,7 +51,7 @@ trait HasUrls
 
         foreach ($this->urls as $key => $value) {
             $sequence = (int) $key + 1;
-            $attributes["urls.{$key}.slug"] = lang('global.slug')." #{$sequence}";
+            $attributes["urls.{$key}.slug"] = lang(key:'global.slug', lower:true)." #{$sequence}";
         }
 
         return $attributes;

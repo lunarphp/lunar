@@ -63,12 +63,12 @@ class OptionCreator extends Component
     protected function validationAttributes()
     {
         $attributes = [
-            "name.{$this->defaultLanguage->code}" => lang('inputs.name'),
+            "name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
         ];
 
         foreach ($this->values as $key => $value) {
             $sequence = (int) $key + 1;
-            $attributes["values.{$key}.name.{$this->defaultLanguage->code}"] = lang('inputs.value')." #{$sequence}";
+            $attributes["values.{$key}.name.{$this->defaultLanguage->code}"] = lang(key:'inputs.value', lower: true)." #{$sequence}";
         }
 
         return $attributes;
