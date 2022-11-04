@@ -4,7 +4,7 @@
             <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
                 <x-hub::input.group :label="__('adminhub::inputs.name')"
                                     for="name"
-                                    :error="$errors->first('language.name')">
+                                    :error="$errors->first('language.name')" required>
                     <x-hub::input.text wire:model="language.name"
                                        name="name"
                                        id="name"
@@ -12,7 +12,7 @@
                 </x-hub::input.group>
                 <x-hub::input.group :label="__('adminhub::inputs.code')"
                                     for="code"
-                                    :error="$errors->first('language.code')">
+                                    :error="$errors->first('language.code')" required>
                     <x-hub::input.text wire:model="language.code"
                                        name="code"
                                        id="code"
