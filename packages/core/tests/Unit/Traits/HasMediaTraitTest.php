@@ -37,4 +37,26 @@ class HasMediaTraitTest extends TestCase
         $this->assertTrue($image->hasGeneratedConversion('large'));
         $this->assertTrue($image->hasGeneratedConversion('zoom'));
     }
+
+    /** @test */
+    public function images_can_have_fallback_url()
+    {
+        $testImageUrl = 'https://picsum.photos/200';
+        config()->set('lunar.media.fallback.url', $testImageUrl);
+
+        $product = Product::factory()->create();
+
+        $this->assertEquals($product->getFirstMediaUrl('images'), $testImageUrl );
+    }
+
+    /** @test */
+    public function images_can_have_fallback_path()
+    {
+        $testImagePath = public_path('test.jpg');
+        config()->set('lunar.media.fallback.path', $testImagePath);
+
+        $product = Product::factory()->create();
+
+        $this->assertEquals($product->getFirstMediaPath('images'), $testImagePath );
+    }
 }
