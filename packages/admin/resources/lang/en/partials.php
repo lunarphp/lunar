@@ -101,6 +101,7 @@ return [
     'products.variants.strapline' => 'This product has multiple options, like different sizes or colors.',
     'products.variants.table_row_action_text' => 'Edit',
     'products.variants.table_row_delete_text' => 'Delete',
+    'products.variants.removal_message' => 'This will remove all variants from this product',
     /**
      * Product type.
      */
