@@ -69,7 +69,8 @@
                     <div class="col-span-3 text-right lg:col-span-2">
                         <x-hub::button :disabled="!$this->canDelete"
                                        wire:click="delete"
-                                       type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
+                                       type="button"
+                                       theme="danger">{{ __('adminhub::global.delete') }}</x-hub::button>
                     </div>
                 </div>
             </div>
