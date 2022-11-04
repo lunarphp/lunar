@@ -14,6 +14,7 @@
       :label="__('adminhub::inputs.name')"
       for="name"
       :error="$errors->first('attribute.name.' . $this->defaultLanguage->code)"
+      required
     >
       <x-hub::translatable>
         <x-hub::input.text
@@ -37,6 +38,7 @@
       :label="__('adminhub::inputs.handle')"
       for="handle"
       :error="$errors->first('attribute.handle')"
+      required
     >
       <x-hub::input.text
         id="handle"
