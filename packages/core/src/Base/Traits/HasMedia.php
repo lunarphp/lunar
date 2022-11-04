@@ -24,23 +24,23 @@ trait HasMedia
 
     public function registerMediaCollections(): void
     {
-        $fallback_url = config('lunar.media.fallback.url');
-        $fallback_path = config('lunar.media.fallback.path');
+        $fallbackUrl = config('lunar.media.fallback.url');
+        $fallbackPath = config('lunar.media.fallback.path');
 
-        if ($fallback_url != null && $fallback_path != null) {
+        if ($fallbackUrl != null && $fallbackPath != null) {
             $this->addMediaCollection('images')
-                ->useFallbackUrl($fallback_url)
-                ->useFallbackPath($fallback_path);
+                ->useFallbackUrl($fallbackUrl)
+                ->useFallbackPath($fallbackPath);
         }
 
-        if ($fallback_url != null && $fallback_path == null) {
+        if ($fallbackUrl != null && $fallbackPath == null) {
             $this->addMediaCollection('images')
-                ->useFallbackUrl($fallback_url);
+                ->useFallbackUrl($fallbackUrl);
         }
 
-        if ($fallback_url == null && $fallback_path != null) {
+        if ($fallbackUrl == null && $fallbackPath != null) {
             $this->addMediaCollection('images')
-                ->useFallbackPath($fallback_path);
+                ->useFallbackPath($fallbackPath);
         }
 
     }
