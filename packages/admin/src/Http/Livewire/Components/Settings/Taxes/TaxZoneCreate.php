@@ -33,6 +33,17 @@ class TaxZoneCreate extends AbstractTaxZone
     /**
      * {@inheritDoc}
      */
+    protected function validationAttributes()
+    {
+        return [
+            'taxRates.*.priority' => lang('inputs.priority.label'),
+            'taxRates.*.name' => lang('inputs.name'),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
         $this->selectedCountries = $this->taxZone->countries->pluck('country_id')->toArray();
