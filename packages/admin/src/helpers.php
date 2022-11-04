@@ -82,7 +82,7 @@ if (! function_exists('impersonate_link')) {
 }
 
 if (! function_exists('lang')) {
-    function lang($key, $replace = [], $locale = null, $prefix = 'adminhub::', $lower = true)
+    function lang($key, $replace = [], $locale = null, $prefix = 'adminhub::', $lower = false)
     {
         $key = $prefix.$key;
 
