@@ -286,9 +286,12 @@ abstract class AbstractProduct extends Component
      */
     protected function validationAttributes()
     {
-        return [
-            ...$this->getUrlsValidationAttributes(),
-        ];
+        $attributes = [];
+
+        return array_merge(
+            $attributes,
+            $this->withAttributesValidationAttributes()
+        );
     }
 
     /**

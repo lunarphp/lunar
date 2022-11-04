@@ -140,9 +140,12 @@ class CollectionShow extends Component
 
     protected function validationAttributes()
     {
-        return [
-            ...$this->getUrlsValidationAttributes(),
-        ];
+        $attributes = [];
+
+        return array_merge(
+            $attributes,
+            $this->getUrlsValidationAttributes()
+        );
     }
 
     /**
