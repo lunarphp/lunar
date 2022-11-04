@@ -80,7 +80,7 @@
 
     <x-hub::input.group
       :label="__('adminhub::inputs.validation_rules.label')"
-      for="handle"
+      for="validation_rules"
       :error="$errors->first('attribute.validation_rules')"
       :instructions="__('adminhub::components.attribute-edit.validation.instructions')"
     >
@@ -89,10 +89,10 @@
 
     <x-hub::input.group
       :label="__('adminhub::inputs.type.label')"
-      for="handle"
+      for="attribute_type"
       :error="$errors->first('attribute.type')"
     >
-      <x-hub::input.select wire:model="attribute.type" :disabled="!!$attribute->system">
+      <x-hub::input.select id="attribute_type" wire:model="attribute.type" :disabled="!!$attribute->system">
         @foreach($this->fieldTypes as $fieldType)
           <option value="{{ get_class($fieldType) }}">{{ $fieldType->getLabel() }}</option>
         @endforeach
