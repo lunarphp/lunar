@@ -102,10 +102,6 @@ return [
         'When displaying, Lunar will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
         'You must always include <code>{value}</code> for this to work properly.',
     ],
-    /*
-     * Addons.
-     */
-    'addons.index.table_row_action_text' => 'View',
     /**
      * Attributes.
      */
