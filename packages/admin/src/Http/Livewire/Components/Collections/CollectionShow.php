@@ -138,6 +138,13 @@ class CollectionShow extends Component
         );
     }
 
+    protected function validationAttributes()
+    {
+        return [
+            ...$this->getUrlsValidationAttributes(),
+        ];
+    }
+
     /**
      * Add the selected products to the collection.
      *

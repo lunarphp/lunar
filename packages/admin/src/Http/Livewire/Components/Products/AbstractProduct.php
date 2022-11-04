@@ -286,14 +286,9 @@ abstract class AbstractProduct extends Component
      */
     protected function validationAttributes()
     {
-        $attributes = [];
-
-        foreach ($this->urls as $key => $value) {
-            $sequence = (int) $key + 1;
-            $attributes["urls.{$key}.slug"] = lang('global.slug')." #{$sequence}";
-        }
-
-        return $attributes;
+        return [
+            ...$this->getUrlsValidationAttributes(),
+        ];
     }
 
     /**
