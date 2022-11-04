@@ -280,6 +280,23 @@ abstract class AbstractProduct extends Component
     }
 
     /**
+     * Define the validation attributes.
+     *
+     * @return array
+     */
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        foreach ($this->urls as $key => $value) {
+            $sequence = (int) $key + 1;
+            $attributes["urls.{$key}.slug"] = lang('global.slug')." #{$sequence}";
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Set the options to be whatever we pass through.
      *
      * @param  array  $optionIds
