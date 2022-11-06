@@ -27,20 +27,14 @@ trait HasMedia
         $fallbackUrl = config('lunar.media.fallback.url');
         $fallbackPath = config('lunar.media.fallback.path');
 
-        if ($fallbackUrl != null && $fallbackPath != null) {
-            $this->addMediaCollection('images')
-                ->useFallbackUrl($fallbackUrl)
-                ->useFallbackPath($fallbackPath);
+        $collection = $this->addMediaCollection('images');
+
+        if ($fallbackUrl) {
+            $collection = $collection->useFallbackUrl($fallbackUrl);
         }
 
-        if ($fallbackUrl != null && $fallbackPath == null) {
-            $this->addMediaCollection('images')
-                ->useFallbackUrl($fallbackUrl);
-        }
-
-        if ($fallbackUrl == null && $fallbackPath != null) {
-            $this->addMediaCollection('images')
-                ->useFallbackPath($fallbackPath);
+        if ($fallbackPath) {
+            $collection = $collection->useFallbackPath($fallbackPath);
         }
     }
 
