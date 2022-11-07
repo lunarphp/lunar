@@ -17,19 +17,13 @@ jobs:
         ]
     steps:
       - uses: actions/checkout@v2
-      - name: Mark github workspace as safe
-        run: |
-          /usr/bin/git config --global --add safe.directory /github/workspace
-      - name: Mark github build dir as safe
-        run: |
-          /usr/bin/git config --global --add safe.directory /tmp/monorepo_split/build_directory
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.0
           coverage: none
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "!startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -46,7 +40,7 @@ jobs:
         run: echo "GITHUB_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -60,7 +54,7 @@ jobs:
 
       - name: Tag ${{ matrix.package }}
         if: "startsWith(github.ref, 'refs/tags/')"
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
@@ -82,19 +76,13 @@ jobs:
         ]
     steps:
       - uses: actions/checkout@v2
-      - name: Mark github workspace as safe
-        run: |
-          /usr/bin/git config --global --add safe.directory /github/workspace
-      - name: Mark github build dir as safe
-        run: |
-          /usr/bin/git config --global --add safe.directory /tmp/monorepo_split/build_directory
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.0
           coverage: none
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "!startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -111,7 +99,7 @@ jobs:
         run: echo "GITHUB_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -125,7 +113,7 @@ jobs:
 
       - name: Tag ${{ matrix.package }}
         if: "startsWith(github.ref, 'refs/tags/')"
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
