@@ -165,6 +165,7 @@
                                     @foreach ($this->bulkActions as $action)
                                         @livewire($action->getName(), [
                                             'label' => $action->label,
+                                            'livewire' => $action->getLivewire(),
                                         ])
                                     @endforeach
                                 </div>
