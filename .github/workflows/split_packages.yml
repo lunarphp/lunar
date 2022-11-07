@@ -16,13 +16,13 @@ jobs:
           'core'
         ]
     steps:
+      - uses: actions/checkout@v2
       - name: Mark github workspace as safe
         run: |
-          git config --global --add safe.directory /github/workspace
+          /usr/bin/git config --global --add safe.directory /github/workspace
       - name: Mark github build dir as safe
         run: |
-          git config --global --add safe.directory /tmp/monorepo_split/build_directory
-      - uses: actions/checkout@v2
+          /usr/bin/git config --global --add safe.directory /tmp/monorepo_split/build_directory
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.0
@@ -81,13 +81,13 @@ jobs:
           'scout-database-engine',
         ]
     steps:
+      - uses: actions/checkout@v2
       - name: Mark github workspace as safe
         run: |
-          git config --global --add safe.directory /github/workspace
+          /usr/bin/git config --global --add safe.directory /github/workspace
       - name: Mark github build dir as safe
         run: |
-          git config --global --add safe.directory /tmp/monorepo_split/build_directory
-      - uses: actions/checkout@v2
+          /usr/bin/git config --global --add safe.directory /tmp/monorepo_split/build_directory
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.0
