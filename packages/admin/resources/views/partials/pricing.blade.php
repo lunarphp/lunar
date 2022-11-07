@@ -143,11 +143,12 @@
                     <div class="col-span-6 sm:col-span-6 lg:col-span-2">
                         <x-hub::input.group 
                             :label="__('adminhub::global.customer_group')" 
-                            for="name"
+                            for="customer_group_id_field_{{ $index }}"
                             :error="$errors->first('tieredPrices.' . $index . '.customer_group_id')"
                             required
                         >
                             <x-hub::input.select
+                                id="customer_group_id_field_{{ $index }}"
                                 wire:model='tieredPrices.{{ $index }}.customer_group_id'
                                 :disabled="!$this->currency->default">
                                 <option value="*">{{ __('adminhub::global.any') }}</option>
@@ -160,7 +161,7 @@
                     <div class="col-span-6 sm:col-span-6 lg:col-span-2">
                         <x-hub::input.group 
                             :label="__('adminhub::global.lower_limit')"
-                            for="name"
+                            for="tier_field_{{ $index }}"
                             :error="$errors->first('tieredPrices.' . $index . '.tier')"
                             required
                         >
@@ -179,11 +180,12 @@
                     <div class="col-span-6 sm:col-span-6 lg:col-span-2">
                         <x-hub::input.group 
                             :label="__('adminhub::global.unit_price_excl_tax')"
-                            for="name"
+                            for="price_field_{{ $index }}_lang_{{ $currency->code }}"
                             :error="$errors->first('tieredPrices.' . $index . '.prices.' . $currency->code . '.price')"
                             required
                         >
                             <x-hub::input.price
+                                id="price_field_{{ $index }}_lang_{{ $currency->code }}"
                                 wire:model="tieredPrices.{{ $index }}.prices.{{ $currency->code }}.price"
                                 :symbol="$this->currency->format" 
                                 :currencyCode="$this->currency->code" 
