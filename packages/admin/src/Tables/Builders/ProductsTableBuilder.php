@@ -85,9 +85,9 @@ class ProductsTableBuilder extends TableBuilder
                 ) AS brand
             SQL),
         ])
-            ->leftJoin('media', function ($join) {
-                $join->on('media.model_id', '=', 'lunar_products.id')
-                    ->where('media.model_type', '=', Product::class)
+            ->leftJoin($mediaTable, function ($join) use ($productTable, $mediaTable) {
+                $join->on("{$mediaTable}.model_id", '=', "{$productTable}.id")
+                    ->where("{$mediaTable}.model_type", '=', Product::class)
                     ->where('custom_properties->primary', true);
             })
             ->orderBy($this->sortField, $this->sortDir)
