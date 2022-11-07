@@ -16,7 +16,6 @@ jobs:
           'core'
         ]
     steps:
-
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
@@ -24,7 +23,7 @@ jobs:
           coverage: none
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "!startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -41,7 +40,7 @@ jobs:
         run: echo "GITHUB_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -55,7 +54,7 @@ jobs:
 
       - name: Tag ${{ matrix.package }}
         if: "startsWith(github.ref, 'refs/tags/')"
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
@@ -83,7 +82,7 @@ jobs:
           coverage: none
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "!startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -100,7 +99,7 @@ jobs:
         run: echo "GITHUB_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         if: "startsWith(github.ref, 'refs/tags/')"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -114,7 +113,7 @@ jobs:
 
       - name: Tag ${{ matrix.package }}
         if: "startsWith(github.ref, 'refs/tags/')"
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
