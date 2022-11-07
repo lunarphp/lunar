@@ -111,7 +111,7 @@ If you need to programmatically change the Cart values, e.g. custom discounts or
 prices, you will want to extend the Cart.
 
 You can find out more in the Extending Lunar section for
-[Cart Extending](/extending/carts).
+[Cart Extending](/extending/carts.html).
 
 ## Calculating Tax
 
