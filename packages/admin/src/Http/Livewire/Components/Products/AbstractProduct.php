@@ -286,7 +286,9 @@ abstract class AbstractProduct extends Component
      */
     protected function validationAttributes()
     {
-        $attributes = [];
+        $attributes = [
+            'tieredPrices.*.tier' => lang(key: 'global.lower_limit', lower: true),
+        ];
 
         return array_merge(
             $attributes,
