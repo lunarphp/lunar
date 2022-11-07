@@ -179,14 +179,15 @@ abstract class AbstractProduct extends Component
 
     protected function getListeners()
     {
-        return array_merge([
-            'useProductOptions' => 'setOptions',
-            'productOptionCreated' => 'resetOptionView',
-            'option-manager.selectedValues' => 'setOptionValues',
-            'urlSaved' => 'refreshUrls',
-            'product-search.selected' => 'updateAssociations',
-            'collectionSearch.selected' => 'selectCollections',
-        ],
+        return array_merge(
+            [
+                'useProductOptions' => 'setOptions',
+                'productOptionCreated' => 'resetOptionView',
+                'option-manager.selectedValues' => 'setOptionValues',
+                'urlSaved' => 'refreshUrls',
+                'product-search.selected' => 'updateAssociations',
+                'collectionSearch.selected' => 'selectCollections',
+            ],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners()
         );
@@ -273,7 +274,6 @@ abstract class AbstractProduct extends Component
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            $this->withAttributesValidationRules(),
             $this->hasUrlsValidationRules(! $this->product->id),
             $this->withAttributesValidationRules()
         );
@@ -832,8 +832,7 @@ abstract class AbstractProduct extends Component
             [
                 'title' => __('adminhub::menu.product.availability'),
                 'id' => 'availability',
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.variants'),
@@ -867,15 +866,13 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.inventory'),
                 'id' => 'inventory',
                 'error_check' => [],
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.shipping'),
                 'id' => 'shipping',
                 'hidden' => $this->getVariantsCount() > 1,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.urls'),
@@ -890,15 +887,13 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.associations'),
                 'id' => 'associations',
                 'hidden' => false,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.collections'),
                 'id' => 'collections',
                 'hidden' => false,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
         ])->reject(fn ($item) => ($item['hidden'] ?? false));
     }
