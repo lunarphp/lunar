@@ -71,7 +71,7 @@ $cart->lines()->create([/* .. */]);
 ```
 
 Now you have a basic Cart up and running, it's time to show you how you would
-use the cart manager to get all the calculated totals and tax.
+use the cart to get all the calculated totals and tax.
 
 We've also tried to make Carts extendable as much as possible so, depending on
 what your stores requirements are, you are free to chop and change things as
@@ -80,10 +80,10 @@ much as you need to.
 ## Hydrating the cart totals
 
 ```php
-$cart = $cart->calculate();
+$cart->calculate();
 ```
 
-This will return a "hydrated" version of your cart with the following:
+This will create a "hydrated" version of your cart with the following:
 
 ::: tip 
 All values will return a `Lunar\Datatypes\Price` object. So you have
@@ -111,7 +111,7 @@ If you need to programmatically change the Cart values, e.g. custom discounts or
 prices, you will want to extend the Cart.
 
 You can find out more in the Extending Lunar section for
-[Cart Modifiers](/extending/cart-modifiers).
+[Cart Extending](/extending/carts).
 
 ## Calculating Tax
 
