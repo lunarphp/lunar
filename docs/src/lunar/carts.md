@@ -85,8 +85,10 @@ $cart = $cart->getManager()->getCart();
 
 This will return a "hydrated" version of your cart with the following:
 
-::: tip All values will return a `Lunar\Datatypes\Price` object. So you have
-access to the following: `value`, `formatted`, `decimal` :::
+::: tip 
+All values will return a `Lunar\Datatypes\Price` object. So you have
+access to the following: `value`, `formatted`, `decimal` 
+:::
 
 ```php
 $cart->total; // The total price value for the cart
@@ -164,8 +166,10 @@ $cart->getManager()->setBillingAddress(
 
 ## Cart Session Manager
 
-::: tip The cart session manager is useful if you're building a traditional
-Laravel storefront which makes use of sessions. :::
+::: tip 
+The cart session manager is useful if you're building a traditional
+Laravel storefront which makes use of sessions. 
+:::
 
 When building a store, you're going to want an easy way to fetch the cart for
 the current user (or guest user) by retrieving it from their current session.

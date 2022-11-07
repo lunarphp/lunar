@@ -94,6 +94,13 @@ class CustomColumnComponent extends Component
 }
 ```
 
+### Positioning
+
+You can specify a position for the new column by defining which column it should appear after.
+
+```php
+TextColumn::make('status')->after('name');
+```
 
 ### TextColumn
 
