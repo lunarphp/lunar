@@ -4,7 +4,7 @@
 
 ## Overview
 
-Carts are a central part of any E-Commerce storefront, we've designed Carts to be easily extended so you can add any logic you need for your storefront throughout it's lifetime.
+Carts are a central part of any E-Commerce storefront. We have designed Carts to be easily extended, so you can add any logic you need for your storefront throughout its lifetime.
 
 ## Pipelines
 
@@ -75,13 +75,13 @@ Pipelines will run from top to bottom
 
 ## Actions
 
-During the lifecycle of a Cart various actions are taken, while generally what Lunar provides will be fine for most storefronts, there's times where you may want something done slightly differently. For this reason we've made all actions configurable, so you can swap them out as you see fit.
+During the lifecycle of a Cart, various actions are taken. While generally what Lunar provides will be fine for most storefronts, there are times where you may want something done slightly differently. For this reason we have made all actions configurable, so you can swap them out as you see fit.
 
-Actions are defined in `config/lunar/carts` and if you need to replace an action, check the class of the action you want to change to see what it's expecting.
+Actions are defined in `config/lunar/carts` and if you need to replace an action, check the class of the action you want to change to see what it is expecting.
 
 ## Action validation
 
-You may which to provide some validation against actions before they run. Your own validation may look something like:
+You may wish to provide some validation against actions before they run. Your own validation may look something like:
 
 
 ```php
@@ -125,7 +125,7 @@ You can then register this class against the corresponding action in `config/lun
 ],
 ```
 
-If validation fails, a `Lunar\Exceptions\CartException` will be thrown, you will be able to access errors like you can on Laravel's own validation responses.
+If validation fails, a `Lunar\Exceptions\CartException` will be thrown. You will be able to access errors like you can on Laravel's own validation responses.
 
 ```php
 try {
