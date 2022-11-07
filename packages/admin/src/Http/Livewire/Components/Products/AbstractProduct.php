@@ -186,6 +186,7 @@ abstract class AbstractProduct extends Component
             'urlSaved' => 'refreshUrls',
             'product-search.selected' => 'updateAssociations',
             'collectionSearch.selected' => 'selectCollections',
+            'productOptionSelectorPanelToggled' => 'setVariantsEnabled',
         ],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners()
@@ -293,6 +294,17 @@ abstract class AbstractProduct extends Component
     }
 
     /**
+     * Set whether variants should be enabled.
+     *
+     * @param  bool  $val
+     * @return void
+     */
+    public function setVariantsEnabled($val)
+    {
+        $this->variantsEnabled = $val;
+    }
+
+    /**
      * Set option values.
      *
      * @param  array  $values
@@ -379,6 +391,21 @@ abstract class AbstractProduct extends Component
 
             // We generating variants?
             $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
+
+            if (! $this->variantsEnabled && $this->getVariantsCount()) {
+                $variantToKeep = $this->product->variants()->first();
+
+                $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
+                    return $variant->id != $variantToKeep->id;
+                });
+
+                DB::transaction(function () use ($variantsToRemove) {
+                    foreach ($variantsToRemove as $variant) {
+                        $variant->values()->detach();
+                        $variant->forceDelete();
+                    }
+                });
+            }
 
             if ($generateVariants) {
                 GenerateVariants::dispatch($this->product, $this->optionValues);

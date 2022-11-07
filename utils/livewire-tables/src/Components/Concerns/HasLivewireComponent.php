@@ -9,7 +9,7 @@ trait HasLivewireComponent
      *
      * @var string
      */
-    protected $livewire = null;
+    public $livewire = null;
 
     /**
      * Set the livewire component to render.

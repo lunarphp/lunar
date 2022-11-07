@@ -165,6 +165,7 @@
                                     @foreach ($this->bulkActions as $action)
                                         @livewire($action->getName(), [
                                             'label' => $action->label,
+                                            'livewire' => $action->getLivewire(),
                                         ])
                                     @endforeach
                                 </div>
@@ -247,7 +248,7 @@
                                     @endif
 
                                     @foreach ($this->columns as $column)
-                                        <x-l-tables::cell wire:key="loading_column_{{ $column->field }}">
+                                        <x-l-tables::cell wire:key="loading_column_{{ $column->field }}_{{ $id }}">
                                             <div class="lt-animate-pulse">
                                                 <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
                                             </div>
@@ -281,7 +282,7 @@
 
                                     @foreach ($this->columns as $column)
                                         <x-l-tables::cell :sort="true"
-                                                        wire:key="column_{{ $column->field }}">
+                                                        wire:key="column_{{ $column->field }}_{{ $row->id }}">
                                             @if ($column->isLivewire())
                                                 <livewire:is :component="$column->getLivewire()" />
                                             @elseif($column->isViewComponent())
