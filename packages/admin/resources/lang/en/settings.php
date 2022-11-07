@@ -139,6 +139,7 @@ return [
     'taxes.tax-zones.delete_btn' => 'Delete tax zone',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
     'taxes.tax-classes.index.title' => 'Tax Classes',
+    'taxes.tax-classes.index.create.title' => 'Create tax class',
     'taxes.tax-classes.index.update.title' => 'Update tax class',
     'taxes.tax-classes.create_btn' => 'Create tax class',
     'taxes.tax-zones.price_display.label' => 'Price Display',
