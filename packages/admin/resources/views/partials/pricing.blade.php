@@ -182,6 +182,7 @@
                             :label="__('adminhub::global.unit_price_excl_tax')"
                             for="price_field_{{ $index }}_lang_{{ $currency->code }}"
                             :error="$errors->first('tieredPrices.' . $index . '.prices.' . $currency->code . '.price')"
+                            :error-icon="false"
                             required
                         >
                             <x-hub::input.price
