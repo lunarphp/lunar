@@ -137,7 +137,6 @@
           @endif
           </div>
 
-          <!-- new -->
           @foreach ($tieredPrices as $index => $tier)
             <div class="relative flex divide-y divide-gray-100" wire:key="tier_{{ $index }}">
                 <div class="grid w-full grid-cols-6 gap-4 pr-8">
@@ -198,8 +197,6 @@
                 </button>
             </div>
           @endforeach
-          <!-- /new -->
-
         @else
         @endif
       </div>
