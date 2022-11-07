@@ -112,14 +112,14 @@ class AttributeEdit extends Component
         $attributes = [];
 
         foreach ($this->languages as $lang) {
-            $attributes["attribute.name.{$lang->code}"] = lang(key: 'inputs.name', locale: $lang->code);
+            $attributes["attribute.name.{$lang->code}"] = lang(key: 'inputs.name', locale: $lang->code, lower: true);
         }
 
         if ($this->getFieldType()) {
             $fieldTypeOptions = $this->getFieldTypeConfig()['options'] ?? [];
 
             foreach ($fieldTypeOptions as $field => $validation) {
-                $attributes["attribute.configuration.{$field}"] = lang(key: "inputs.{$field}", locale: $this->defaultLanguage->code);
+                $attributes["attribute.configuration.{$field}"] = lang(key: "inputs.{$field}", locale: $this->defaultLanguage->code, lower: true);
             }
         }
 
