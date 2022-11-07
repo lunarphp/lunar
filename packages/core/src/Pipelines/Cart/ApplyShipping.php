@@ -29,11 +29,6 @@ final class ApplyShipping
             $shippingTaxTotal = $shippingTax->amounts->sum('price.value');
             $shippingTotal = $shippingSubTotal + $shippingTaxTotal;
 
-            // $taxBreakDownAmounts = $taxBreakDownAmounts->merge($shippingTax->amounts);
-
-            // $taxTotal += $shippingTaxTotal;
-            // $total += $shippingTotal;
-
             $cart->shippingAddress->taxBreakdown = $shippingTax;
             $cart->shippingAddress->shippingTotal = new Price($shippingTotal, $cart->currency, 1);
             $cart->shippingAddress->shippingTaxTotal = new Price($shippingTaxTotal, $cart->currency, 1);

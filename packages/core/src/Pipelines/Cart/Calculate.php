@@ -21,6 +21,20 @@ class Calculate
         $total = $cart->lines->sum('total.value');
         $taxBreakDownAmounts = $cart->lines->pluck('taxBreakdown')->pluck('amounts')->flatten();
 
+        // Get the shipping address
+        if ($shippingAddress = $cart->shippingAddress) {
+            $subTotal += $shippingAddress->shippingSubTotal?->value;
+            $total += $shippingAddress->shippingTotal?->value;
+            $taxTotal += $shippingAddress->taxTotal?->value;
+            $shippingTaxBreakdown = $shippingAddress->taxBreakdown;
+
+            if ($shippingTaxBreakdown) {
+                $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
+                    $shippingTaxBreakdown->amounts
+                );
+            }
+        }
+
         $cart->subTotal = new Price($subTotal, $cart->currency, 1);
         $cart->discountTotal = new Price($discountTotal, $cart->currency, 1);
         $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);

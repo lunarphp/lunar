@@ -4,15 +4,25 @@ namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Lunar\DataTypes\Price as DataTypesPrice;
+use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
+use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
+use Lunar\Models\Country;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
 
@@ -304,5 +314,96 @@ class CartTest extends TestCase
             'quantity' => 2,
             'id' => $cartLine->id,
         ]);
+    }
+
+    /** @test */
+    public function can_calculate_shipping()
+    {
+        $country = Country::factory()->create();
+
+        $billing = CartAddress::factory()->make([
+            'type' => 'billing',
+            'country_id' => $country->id,
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'BILL',
+        ]);
+
+        $shipping = CartAddress::factory()->make([
+            'type' => 'shipping',
+            'country_id' => $country->id,
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'SHIPP',
+        ]);
+
+        $taxClass = TaxClass::factory()->create();
+
+        $taxZone = TaxZone::factory()->create();
+
+        TaxZonePostcode::factory()->create([
+            'country_id' => $country->id,
+            'tax_zone_id' => $taxZone->id,
+            'postcode' => 'SHIPP',
+        ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_zone_id' => $taxZone->id,
+        ]);
+
+        TaxRateAmount::factory()->create([
+            'tax_rate_id' => $taxRate->id,
+            'tax_class_id' => $taxClass->id,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->addresses()->createMany([
+            $billing->toArray(),
+            $shipping->toArray(),
+        ]);
+
+        $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new DataTypesPrice(500, $cart->currency, 1),
+            taxClass: $taxClass
+        );
+
+        ShippingManifest::addOption($shippingOption);
+
+        $cart->shippingAddress->update([
+            'shipping_option' => $shippingOption->getIdentifier(),
+        ]);
+
+        $cart->shippingAddress->shippingOption = $shippingOption;
+
+        $this->assertCount(0, $cart->lines);
+
+        $cart->add($purchasable, 1);
+
+        $cart->calculate();
+
+        $this->assertEquals(600, $cart->subTotal->value);
+        $this->assertEquals(700, $cart->total->value);
     }
 }
