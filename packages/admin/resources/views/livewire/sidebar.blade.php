@@ -52,7 +52,7 @@
                                 'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-white p-2 w-64 shadow-sm':
                                     !showExpandedMenu,
                             }"
-                            class="mt-1 space-y-1">
+                            class="mt-px space-y-1">
                             @foreach ($section->getItems() as $item)
                                 <li>
                                     <a href="{{ route($item->route) }}"
