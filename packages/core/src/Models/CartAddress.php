@@ -66,7 +66,7 @@ class CartAddress extends BaseModel implements Addressable
      *
      * @var TaxBreakdown
      */
-    public TaxBreakdown $taxBreakdown = null;
+    public ?TaxBreakdown $taxBreakdown = null;
 
     /**
      * Return a new factory instance for the model.
