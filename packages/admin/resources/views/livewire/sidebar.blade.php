@@ -49,7 +49,7 @@
                             x-on:click.away="showSubMenu = false"
                             :class="{
                                 'border-l border-gray-200 pl-5 ml-[calc(1rem_+_2px)]': showExpandedMenu,
-                                'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-white p-2 w-64 shadow-sm':
+                                'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-white p-2 w-64 shadow-sm z-50':
                                     !showExpandedMenu,
                             }"
                             class="mt-px space-y-1">
