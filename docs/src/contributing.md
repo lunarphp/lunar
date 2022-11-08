@@ -17,9 +17,7 @@ Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) to hou
 
 **Bug Fixes** should target the latest compatible branch version i.e `0.1`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
 
-**Minor Features** which maintain backwards compatibility with the current release should be sent to the latest stable version, please do not provide features for any versions prior. For example if the current version is `0.2.x` then features for `0.1.x` will not be accepted in any form.
-
-**Major Features** should target the `main` branch.
+**Features** should target the `main` branch.
 
 ## Contributing Code
 
