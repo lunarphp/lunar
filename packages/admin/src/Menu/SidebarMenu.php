@@ -47,19 +47,6 @@ class SidebarMenu
     {
         $slot = Menu::slot('sidebar');
 
-        $orders = $slot->section('hub.orders')
-            ->name(__('adminhub::menu.sidebar.orders'))
-            ->route('hub.orders.index')
-            ->icon('users');
-
-        $orders->addItem(function ($item) {
-            $item
-                ->name(__('adminhub::menu.sidebar.customers'))
-                ->handle('hub.customers')
-                ->route('hub.customers.index')
-                ->icon('cash');
-        });
-
         $products = $slot->section('hub.products')
             ->name(__('adminhub::menu.sidebar.products'))
             ->route('hub.products.index')
@@ -81,13 +68,26 @@ class SidebarMenu
                 ->icon('view-grid');
         });
 
-        $slot->addItem(function ($item) {
+        $products->addItem(function ($item) {
             $item
                 ->name(__('adminhub::menu.sidebar.collections'))
                 ->handle('hub.collection')
                 ->route('hub.collection-groups.index')
                 ->icon('collection');
-        }, 'products');
+        });
+
+        $orders = $slot->section('hub.orders')
+            ->name(__('adminhub::menu.sidebar.orders'))
+            ->route('hub.orders.index')
+            ->icon('users');
+
+        $orders->addItem(function ($item) {
+            $item
+                ->name(__('adminhub::menu.sidebar.customers'))
+                ->handle('hub.customers')
+                ->route('hub.customers.index')
+                ->icon('cash');
+        });
 
         return $this;
     }
