@@ -8,7 +8,7 @@ use Lunar\Hub\LunarHub;
 class MenuSection extends MenuSlot
 {
     /**
-     * The display name of the menu link.
+     * The display name of the menu section.
      *
      * @var string
      */
@@ -79,7 +79,7 @@ class MenuSection extends MenuSlot
     }
 
     /**
-     * Determines whether this menu link is considered active.
+     * Determines whether this menu section is considered active.
      *
      * @param  string  $path
      * @return bool
