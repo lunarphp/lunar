@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.1.2
+
+### Fixed
+
+- Call `validate` when creating a tax class before the DB transaction.
+- Fix product thumbnail on dashboard.
+- Fix issue with customer saving [#654](https://github.com/lunarphp/lunar/issues/654)
+- Use @js directive instead of @JSON
+- Fixed an issue where Spatie Media couldn't regenerate media transforms from within the hub in production.
+- Fixed issues with product editing when disabling variants.
+- Fixed issue where trying to add a saved search on product types has no effect.
+- Fixed an issue where the bulk action Livewire component wasn't registering correctly.
+- The orders table will now show the correct minutes in the timestamp.
+
+### Changed
+
+- When the hub password reset form is submitted, it will return a success message regardless.
+
+### Added
+
+- Added `top`, `bottom` slots to brands
+- Added unique validation to attribute handles.
+
 ## 0.1.1
 
 ### Fixed
