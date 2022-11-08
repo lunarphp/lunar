@@ -40,7 +40,7 @@ class Status extends Component
 
         $statuses = config('lunar.orders.statuses');
 
-        $match = $statuses[$record?->status ?: $status] ?? null;
+        $match = $statuses[$status] ?? null;
 
         $this->label = $match['label'] ?? $status;
         $this->color = $match['color'] ?? '#7C7C7C';
