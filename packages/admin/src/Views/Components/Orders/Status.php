@@ -34,6 +34,10 @@ class Status extends Component
      */
     public function __construct($record = null, $status = null)
     {
+        if ($record && ! $status) {
+            $status = $record->status;
+        }
+
         $statuses = config('lunar.orders.statuses');
 
         $match = $statuses[$record?->status ?: $status] ?? null;
