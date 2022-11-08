@@ -23,15 +23,17 @@ class Calculate
 
         // Get the shipping address
         if ($shippingAddress = $cart->shippingAddress) {
-            $subTotal += $shippingAddress->shippingSubTotal?->value;
-            $total += $shippingAddress->shippingTotal?->value;
-            $taxTotal += $shippingAddress->taxTotal?->value;
-            $shippingTaxBreakdown = $shippingAddress->taxBreakdown;
+            if ($shippingAddress->shippingSubTotal) {
+                $subTotal += $shippingAddress->shippingSubTotal?->value;
+                $total += $shippingAddress->shippingTotal?->value;
+                $taxTotal += $shippingAddress->taxTotal?->value;
+                $shippingTaxBreakdown = $shippingAddress->taxBreakdown;
 
-            if ($shippingTaxBreakdown) {
-                $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
-                    $shippingTaxBreakdown->amounts
-                );
+                if ($shippingTaxBreakdown) {
+                    $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
+                        $shippingTaxBreakdown->amounts
+                    );
+                }
             }
         }
 
