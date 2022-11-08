@@ -333,7 +333,7 @@ class Cart extends BaseModel
      * @param  array  $meta
      * @return Cart
      */
-    public function updateLine(int $cartLineId, int $quantity, array $meta = [], bool $refresh = true): Cart
+    public function updateLine(int $cartLineId, int $quantity, array $meta = null, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {
             app($action)->using(
