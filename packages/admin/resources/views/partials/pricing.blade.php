@@ -59,7 +59,7 @@
           >
             <x-hub::input.price
               wire:model="basePrices.{{ $this->currency->code }}.price"
-              :symbol="$this->currency->format"
+              :error="$errors->first('basePrices.'.$this->currency->code.'.price')"
               :currencyCode="$this->currency->code"
               required
             />
@@ -73,7 +73,6 @@
           >
             <x-hub::input.price
               wire:model="basePrices.{{ $this->currency->code }}.compare_price"
-              :symbol="$this->currency->format"
               :currencyCode="$this->currency->code"
               :error="$errors->first('basePrices.*.compare_price')"
             />
@@ -103,7 +102,7 @@
                 :label="null"
                 for="customerGroupPrices"
               >
-                <x-hub::input.price wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price" :symbol="$currency->format" :currencyCode="$currency->code" />
+                <x-hub::input.price wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price" :currencyCode="$currency->code" />
               </x-hub::input.group>
             </div>
             @foreach($errors->get('customerGroupPrices.'.$group->id.'.*') as $error)
@@ -163,6 +162,7 @@
                             :label="__('adminhub::global.lower_limit')"
                             for="tier_field_{{ $index }}"
                             :error="$errors->first('tieredPrices.' . $index . '.tier')"
+                            :error-icon="false"
                             required
                         >
                             <x-hub::input.text 
@@ -188,7 +188,6 @@
                             <x-hub::input.price
                                 id="price_field_{{ $index }}_lang_{{ $currency->code }}"
                                 wire:model="tieredPrices.{{ $index }}.prices.{{ $currency->code }}.price"
-                                :symbol="$this->currency->format" 
                                 :currencyCode="$this->currency->code" 
                                 :error="$errors->first('tieredPrices.' . $index . '.prices.' . $currency->code . '.price')" />
                         </x-hub::input.group>
