@@ -18,7 +18,7 @@ class UpdateCartLine extends AbstractAction
     public function execute(
         int $cartLineId,
         int $quantity,
-        array $meta = null
+        $meta = null
     ): self {
         DB::transaction(function () use ($cartLineId, $quantity, $meta) {
             $data = [
@@ -26,6 +26,9 @@ class UpdateCartLine extends AbstractAction
             ];
 
             if ($meta) {
+                if (is_object($meta)) {
+                    $meta = (array) $meta;
+                }
                 $data['meta'] = $meta;
             }
 
