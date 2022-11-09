@@ -172,7 +172,7 @@
                                 min="2" 
                                 steps="1" 
                                 required
-                                onkeydown="return event.keyCode !== 190" 
+                                @keydown="$event.keyCode === 190 ? $event.preventDefault() : null"
                                 :disabled="!$this->currency->default"
                                 :error="$errors->first('tieredPrices.' . $index . '.tier')" />
                         </x-hub::input.group>
