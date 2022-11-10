@@ -51,4 +51,47 @@ class UpdatePricingTest extends TestCase
             ]);
         }
     }
+
+    /** @test */
+    public function correctly_saves_pricing()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $product = Product::factory()->hasVariants(1)->create();
+        $variant = $product->variants->first();
+
+        $currencies = Currency::factory(5)->create();
+
+        $pricing = [];
+
+        $prices = [
+            1899 => 18.99,
+            999 => 9.99,
+            1459 => 14.59,
+            1099 => 10.99,
+            1098 => 10.98,
+        ];
+
+        foreach ($prices as $expected => $value) {
+            $pricing = [];
+            foreach ($currencies as $currency) {
+                $pricing[$currency->code] = [
+                    'price' => $value,
+                    'currency_id' => $currencies->first()->id,
+                    'tier' => 1,
+                ];
+            }
+
+            app(UpdatePrices::class)->execute($variant, collect($pricing));
+
+            $this->assertDatabaseHas((new Price())->getTable(), [
+                'price' => $expected,
+                'priceable_type' => get_class($variant),
+                'priceable_id' => $variant->id,
+                'tier' => 1,
+            ]);
+        }
+    }
 }

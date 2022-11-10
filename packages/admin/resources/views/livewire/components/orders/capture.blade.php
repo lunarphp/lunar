@@ -18,7 +18,6 @@
     <x-hub::input.group for="amount" :label="__('adminhub::inputs.amount.label')" required :error="$errors->first('amount')">
       <x-hub::input.price
         wire:model="amount"
-        :symbol="$order->currency->format"
         :currencyCode="$order->currency->code"
         required
       />

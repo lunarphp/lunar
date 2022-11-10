@@ -105,7 +105,7 @@ class BrandShow extends Component
      */
     public function getProductsCountProperty()
     {
-        return $this->brand->products()->count();
+        return $this->brand->products()->withTrashed()->count();
     }
 
     /**
