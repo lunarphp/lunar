@@ -216,8 +216,17 @@ trait HasImages
                     $file = TemporaryUploadedFile::createFromLivewire(
                         $image['filename']
                     );
-                    $media = $owner->addMedia($file->getRealPath())
-                        ->toMediaCollection('images');
+                    
+                    $media_libary_disk = config("media-library.disk_name");
+                    $media_libary_driver = Storage::disk($media_libary_disk)->getConfig()['driver'];
+
+                    if($media_libary_driver == "local") {
+                        $media = $owner->addMedia($file->getRealPath())
+                                    ->toMediaCollection('images');
+                    } else {
+                        $media = $owner->addMediaFromDisk($file->getRealPath())
+                                    ->toMediaCollection('images');
+                    }
 
                     activity()
                     ->performedOn($owner)
