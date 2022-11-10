@@ -24,7 +24,7 @@ Lunar uses dynamic menus in the UI which you can extend to add further links.
 
 ::: tip 
 Currently, only the side menu and settings menu are available to extend.
-But we will be adding further menus into the core editing screens soon.
+But we will be adding further menus into the core editing screens soon. 
 :::
 
 ### Adding a Link
@@ -70,13 +70,22 @@ $products->addItem(function ($item) {
         ->route('hub.tickets.index')
         ->icon('ticket');
 });
+```
 
-$products->addItem(function ($item) {
+### Extending a Section
+
+You can add new links to one of the existing menu sections.
+
+```php
+$ordersSection = $slot->section('hub.orders');
+$productsSection = $slot->section('hub.products');
+
+$productsSection->addItem(function ($item) {
     $item
-        ->name(__('menu.sidebar.tickets.expiring'))
-        ->handle('hub.tickets.expiring')
-        ->route('hub.tickets.expiring')
-        ->icon('times');
+        ->name(__('menu.sidebar.tickets'))
+        ->handle('hub.tickets')
+        ->route('hub.tickets.index')
+        ->icon('ticket');
 });
 ```
 
