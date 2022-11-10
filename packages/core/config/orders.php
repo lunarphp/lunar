@@ -42,5 +42,11 @@ return [
             'mailers' => [],
             'notifications' => [],
         ],
+        'paid' => [
+            'label' => 'Paid',
+            'color' => '#16A34A'
+            'mailers' => [],
+            'notifications' => [],
+        ],
     ],
 ];
