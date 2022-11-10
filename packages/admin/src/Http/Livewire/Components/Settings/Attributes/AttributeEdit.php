@@ -107,6 +107,25 @@ class AttributeEdit extends Component
         return $rules;
     }
 
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        foreach ($this->languages as $lang) {
+            $attributes["attribute.name.{$lang->code}"] = lang(key: 'inputs.name', locale: $lang->code, lower: true);
+        }
+
+        if ($this->getFieldType()) {
+            $fieldTypeOptions = $this->getFieldTypeConfig()['options'] ?? [];
+
+            foreach ($fieldTypeOptions as $field => $validation) {
+                $attributes["attribute.configuration.{$field}"] = lang(key: "inputs.{$field}", locale: $this->defaultLanguage->code, lower: true);
+            }
+        }
+
+        return $attributes;
+    }
+
     /**
      * Return the available field types.
      *

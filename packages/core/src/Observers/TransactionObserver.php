@@ -20,12 +20,12 @@ class TransactionObserver
             ->event($transaction->type)
             ->withProperties([
                 'amount' => $transaction->amount->value,
-                'refund' => $transaction->refund,
+                'type' => $transaction->type,
                 'status' => $transaction->status,
                 'card_type' => $transaction->card_type,
                 'last_four' => $transaction->last_four,
                 'reference' => $transaction->reference,
-                'notes' => $transaction->notes,
+                'notes' => $transaction->notes ?: '',
             ])->log('created');
     }
 }

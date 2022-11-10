@@ -35,11 +35,9 @@ class ChannelCreate extends Component
      */
     protected function rules()
     {
-        $table = $this->channel->getTable();
-
         return [
             'channel.name' => 'required|string|max:255',
-            'channel.handle' => "required|string|unique:$table,handle|max:255",
+            'channel.handle' => 'required|string|unique:'.Channel::class.',handle|max:255',
             'channel.url' => 'nullable|url|max:255',
             'channel.default' => 'boolean',
         ];
