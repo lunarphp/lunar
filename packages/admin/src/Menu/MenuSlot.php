@@ -4,7 +4,6 @@ namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class MenuSlot
 {
@@ -127,7 +126,7 @@ class MenuSlot
     public function section($handle)
     {
         $section = $this->sections->first(function ($section) use ($handle) {
-            return $section->getHandle() == Str::slug($handle);
+            return $section->getHandle() == $handle;
         });
 
         if ($section) {
@@ -135,6 +134,7 @@ class MenuSlot
         }
 
         $section = new MenuSection($handle);
+
         $this->sections->push($section);
 
         return $section;
