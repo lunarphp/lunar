@@ -894,6 +894,7 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.inventory'),
                 'id' => 'inventory',
                 'error_check' => [],
+                'hidden' => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
@@ -905,7 +906,6 @@ abstract class AbstractProduct extends Component
             [
                 'title' => __('adminhub::menu.product.urls'),
                 'id' => 'urls',
-                'hidden' => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
                     'urls',
                     'urls.*',
