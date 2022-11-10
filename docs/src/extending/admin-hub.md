@@ -22,8 +22,10 @@ php artisan vendor:publish --tag=lunar.hub.views
 
 Lunar uses dynamic menus in the UI which you can extend to add further links.
 
-::: tip Currently, only the side menu and settings menu are available to extend.
-But we will be adding further menus into the core editing screens soon. :::
+::: tip 
+Currently, only the side menu and settings menu are available to extend.
+But we will be adding further menus into the core editing screens soon.
+:::
 
 ### Adding a Link
 
