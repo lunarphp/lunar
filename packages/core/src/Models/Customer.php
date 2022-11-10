@@ -107,6 +107,8 @@ class Customer extends BaseModel
 
         $data['addresses'] = $this->addresses->toArray();
 
+        $data['user_emails'] = $this->users->pluck('email')->toArray();
+
         return $data;
     }
 
