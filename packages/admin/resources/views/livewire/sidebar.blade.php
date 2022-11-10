@@ -79,7 +79,7 @@
     </x-hub::menu>
 
     @if (Auth::user()->can('settings'))
-        <div class="flex flex-col w-full pt-4 mt-4 border-t border-gray-100 dark:border-gray-800"
+        <div class="flex flex-col w-full mt-4 "
              :class="{ 'items-center': !showExpandedMenu }">
             <a href="{{ route('hub.settings') }}"
                @class([
@@ -93,11 +93,6 @@
                 <span x-cloak
                       x-show="showExpandedMenu"
                       class="text-sm font-medium">
-                    {{ __('adminhub::global.settings') }}
-                </span>
-
-                <span
-                      class="absolute z-10 invisible p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>
