@@ -6,12 +6,12 @@ use Illuminate\Support\Collection;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tables\LunarTable;
 use Lunar\LivewireTables\Components\Columns\AvatarColumn;
 use Lunar\LivewireTables\Components\Columns\StatusColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
-use Lunar\LivewireTables\Components\Table;
 
-class StaffTable extends Table
+class StaffTable extends LunarTable
 {
     use Notifies;
 
