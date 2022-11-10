@@ -80,6 +80,8 @@ $products->addItem(function ($item) {
 });
 ```
 
+### Adding an Icon
+
 Lunar comes with a collection of icons you can use in the Resources folder. If
 you wish to supply your own, simply use an SVG instead, e.g.
 
