@@ -1,18 +1,17 @@
 <div class="hidden lg:flex lg:flex-shrink-0">
-    <div class="relative flex flex-col justify-between bg-white border-r border-gray-100 dark:bg-gray-900 dark:border-gray-800"
+    <div class="relative flex flex-col justify-between bg-white border-r border-gray-100 dark:bg-gray-900 dark:border-gray-800 app-sidemenu"
          :class="{
              'w-64': showExpandedMenu,
              'w-20': !showExpandedMenu
-         }"
-         data-ref="layout-sidemenu">
+         }">
         <div class="flex-1">
             <a href="{{ route('hub.index') }}"
                class="flex items-center w-full h-16 px-2">
-                <x-hub::branding.logo x-show="showExpandedMenu"
-                                      x-cloak />
-                <x-hub::branding.logo x-show="!showExpandedMenu"
-                                      iconOnly
-                                      x-cloak />
+                <x-hub::branding.logo x-cloak
+                                      x-show="showExpandedMenu" />
+                <x-hub::branding.logo x-cloak
+                                      x-show="!showExpandedMenu"
+                                      iconOnly />
             </a>
 
             <div class="w-full px-2 py-4 border-t border-gray-100 dark:border-gray-800">

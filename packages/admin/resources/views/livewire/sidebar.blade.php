@@ -1,9 +1,9 @@
 <div>
     <x-hub::menu handle="sidebar"
                  current="{{ request()->route()->getName() }}">
-        <ul class="flex flex-col">
+        <ul>
             @foreach ($component->items as $item)
-                <li class="my-1 order-{{ $item->position ?? $loop->iteration }}">
+                <li class="my-1">
                     <a href="{{ route($item->route) }}"
                        @class([
                            'menu-link',
@@ -15,12 +15,11 @@
                            ),
                        ])
                        :class="{ 'justify-center': !showExpandedMenu }">
-                        {!! $item->renderIcon('w-5 h-5') !!}
+                        <span x-cloak>
+                            {!! $item->renderIcon('w-5 h-5') !!}
+                        </span>
 
                         <span x-cloak
-                              x-transition.opacity
-                              x-transition:enter.duration.500ms
-                              x-transition:leave.duration.0ms
                               x-show="showExpandedMenu"
                               class="text-sm font-medium">
                             {{ $item->name }}
@@ -31,9 +30,10 @@
 
             @foreach ($component->sections as $section)
                 <li x-data="{ showSubMenu: false }"
-                    class="relative my-1 order-{{ $section->position ?? $loop->iteration }}">
-                    <button x-on:click.prevent="!showExpandedMenu && (showSubMenu = !showSubMenu)"
-                            :class="{ 'hidden': showExpandedMenu }"
+                    class="relative my-1">
+                    <button x-cloak
+                            x-show="!showExpandedMenu"
+                            x-on:click.prevent="!showExpandedMenu && (showSubMenu = !showSubMenu)"
                             class="absolute z-10 p-1 -ml-1 text-gray-600 -translate-y-1/2 bg-white border border-gray-200 rounded top-1/2 left-full">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 20 20"
@@ -55,12 +55,11 @@
                            ),
                        ])
                        :class="{ 'justify-center': !showExpandedMenu }">
-                        {!! $section->renderIcon('w-5 h-5') !!}
+                        <span x-cloak>
+                            {!! $section->renderIcon('w-5 h-5') !!}
+                        </span>
 
                         <span x-cloak
-                              x-transition.opacity
-                              x-transition:enter.duration.500ms
-                              x-transition:leave.duration.0ms
                               x-show="showExpandedMenu"
                               class="text-sm font-medium">
                             {{ $section->name }}
@@ -69,9 +68,6 @@
 
                     @if (count($section->getItems()))
                         <ul x-cloak
-                            x-transition:enter="transition-all duration-500"
-                            x-transition:enter-start="opacity-0"
-                            x-transition:enter-end="opacity-100"
                             x-show="showExpandedMenu || showSubMenu"
                             x-on:click.away="showSubMenu = false"
                             :class="{
@@ -79,9 +75,9 @@
                                 'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-white p-2 w-64 shadow-sm z-50':
                                     !showExpandedMenu,
                             }"
-                            class="flex flex-col mt-1">
+                            class="mt-1">
                             @foreach ($section->getItems() as $item)
-                                <li class="my-0.5 order-{{ $item->position ?? $loop->iteration }}">
+                                <li class="my-1">
                                     <a href="{{ route($item->route) }}"
                                        @class([
                                            'menu-link',
@@ -92,7 +88,9 @@
                                                $component->attributes->get('current')
                                            ),
                                        ])>
-                                        <span class="text-sm">
+                                        <span x-cloak
+                                              x-show="showExpandedMenu || showSubMenu"
+                                              class="text-sm">
                                             {{ $item->name }}
                                         </span>
                                     </a>
@@ -102,32 +100,28 @@
                     @endif
                 </li>
             @endforeach
+
+            @if (Auth::user()->can('settings'))
+                <li class="my-1">
+                    <a href="{{ route('hub.settings') }}"
+                       @class([
+                           'menu-link',
+                           'menu-link--active' => Str::contains(request()->url(), 'settings'),
+                           'menu-link--inactive' => !Str::contains(request()->url(), 'settings'),
+                       ])
+                       :class="{ 'group justify-center': !showExpandedMenu }">
+                        <span x-cloak>
+                            {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
+                        </span>
+
+                        <span x-cloak
+                              x-show="showExpandedMenu"
+                              class="text-sm font-medium">
+                            {{ __('adminhub::global.settings') }}
+                        </span>
+                    </a>
+                </li>
+            @endif
         </ul>
     </x-hub::menu>
-
-    @if (Auth::user()->can('settings'))
-        <div class="flex flex-col w-full mt-4 dark:border-gray-800"
-             :class="{ 'items-center': !showExpandedMenu }">
-            <a href="{{ route('hub.settings') }}"
-               @class([
-                   'menu-link',
-                   'menu-link--active' => Str::contains(request()->url(), 'settings'),
-                   'menu-link--inactive' => !Str::contains(request()->url(), 'settings'),
-               ])
-               :class="{ 'group': !showExpandedMenu }">
-                {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
-
-                <span x-cloak
-                      x-show="showExpandedMenu"
-                      class="text-sm font-medium">
-                    {{ __('adminhub::global.settings') }}
-                </span>
-
-                <span
-                      class="absolute z-10 invisible p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
-                    {{ __('adminhub::global.settings') }}
-                </span>
-            </a>
-        </div>
-    @endif
 </div>
