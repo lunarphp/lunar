@@ -4,6 +4,7 @@ namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class MenuSlot
 {
@@ -138,5 +139,83 @@ class MenuSlot
         $this->sections->push($section);
 
         return $section;
+    }
+
+    public function removeItem($handle)
+    {
+        $newItems = $this->items->filter(function ($item) use ($handle) {
+            return $item->handle != $handle;
+        });
+
+        $this->items = $newItems;
+
+        return $this;
+    }
+
+    public function removeSection($handle)
+    {
+        $newSections = $this->sections->filter(function ($section) use ($handle) {
+            return $section->handle != $handle;
+        });
+
+        $this->sections = $newSections;
+
+        return $this;
+    }
+
+    public function removeSectionItem($handle, $itemHandle)
+    {
+        $foundSection = $this->sections->first(function ($section) use ($handle) {
+            return $section->handle == $handle;
+        });
+
+        $foundSection->items = $foundSection->items->filter(function ($item) use ($itemHandle) {
+            return $item->handle != $itemHandle;
+        });
+
+        return $this;
+    }
+
+    public function updateItem($handle, $options = [])
+    {
+        $foundItem = $this->items->first(function ($item) use ($handle) {
+            return $item->handle == $handle;
+        });
+
+        collect($options)->each(function ($value, $key) use ($foundItem) {
+            $foundItem->{$key} = $value;
+        });
+
+        return $foundItem;
+    }
+
+    public function updateSection($handle, $options = [])
+    {
+        $foundSection = $this->sections->first(function ($item) use ($handle) {
+            return $item->handle == $handle;
+        });
+
+        collect($options)->each(function ($value, $key) use ($foundSection) {
+            $foundSection->{$key} = $value;
+        });
+
+        return $foundSection;
+    }
+
+    public function updateSectionItem($handle, $itemHandle, $options = [])
+    {
+        $foundSection = $this->sections->first(function ($section) use ($handle) {
+            return $section->handle == $handle;
+        });
+
+        $foundItem = $foundSection->items->first(function ($item) use ($itemHandle) {
+            return $item->handle == $itemHandle;
+        });
+
+        collect($options)->each(function ($value, $key) use ($foundItem) {
+            $foundItem->{$key} = $value;
+        });
+
+        return $foundItem;
     }
 }

@@ -49,6 +49,8 @@ class MenuLink implements MenuItem
      */
     public $component;
 
+    public $position;
+
     /**
      * Setter for the name property.
      *
@@ -117,6 +119,13 @@ class MenuLink implements MenuItem
     public function icon($icon)
     {
         $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function position($position)
+    {
+        $this->position = $position;
 
         return $this;
     }

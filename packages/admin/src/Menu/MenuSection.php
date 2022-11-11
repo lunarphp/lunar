@@ -28,6 +28,8 @@ class MenuSection extends MenuSlot
      */
     public $icon;
 
+    public $position;
+
     /**
      * Setter for the name property.
      *
@@ -66,6 +68,14 @@ class MenuSection extends MenuSlot
 
         return $this;
     }
+
+    public function position($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
 
     /**
      * Render the HTML for the icon.

@@ -1,10 +1,37 @@
 <div>
     <x-hub::menu handle="sidebar"
                  current="{{ request()->route()->getName() }}">
-        <ul class="space-y-1">
+        <ul class="flex flex-col">
+            @foreach ($component->items as $item)
+                <li class="my-1 order-{{ $item->position ?? $loop->iteration }}">
+                    <a href="{{ route($item->route) }}"
+                       @class([
+                           'menu-link',
+                           'menu-link--active' => $item->isActive(
+                               $component->attributes->get('current')
+                           ),
+                           'menu-link--inactive' => !$item->isActive(
+                               $component->attributes->get('current')
+                           ),
+                       ])
+                       :class="{ 'justify-center': !showExpandedMenu }">
+                        {!! $item->renderIcon('w-5 h-5') !!}
+
+                        <span x-cloak
+                              x-transition.opacity
+                              x-transition:enter.duration.500ms
+                              x-transition:leave.duration.0ms
+                              x-show="showExpandedMenu"
+                              class="text-sm font-medium">
+                            {{ $item->name }}
+                        </span>
+                    </a>
+                </li>
+            @endforeach
+
             @foreach ($component->sections as $section)
                 <li x-data="{ showSubMenu: false }"
-                    class="relative">
+                    class="relative my-1 order-{{ $section->position ?? $loop->iteration }}">
                     <button x-on:click.prevent="!showExpandedMenu && (showSubMenu = !showSubMenu)"
                             :class="{ 'hidden': showExpandedMenu }"
                             class="absolute z-10 p-1 -ml-1 text-gray-600 -translate-y-1/2 bg-white border border-gray-200 rounded top-1/2 left-full">
@@ -52,9 +79,9 @@
                                 'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-white p-2 w-64 shadow-sm z-50':
                                     !showExpandedMenu,
                             }"
-                            class="mt-px space-y-1">
+                            class="flex flex-col mt-1">
                             @foreach ($section->getItems() as $item)
-                                <li>
+                                <li class="my-0.5 order-{{ $item->position ?? $loop->iteration }}">
                                     <a href="{{ route($item->route) }}"
                                        @class([
                                            'menu-link',
@@ -79,7 +106,7 @@
     </x-hub::menu>
 
     @if (Auth::user()->can('settings'))
-        <div class="flex flex-col w-full mt-4 "
+        <div class="flex flex-col w-full mt-4 dark:border-gray-800"
              :class="{ 'items-center': !showExpandedMenu }">
             <a href="{{ route('hub.settings') }}"
                @class([
@@ -93,6 +120,11 @@
                 <span x-cloak
                       x-show="showExpandedMenu"
                       class="text-sm font-medium">
+                    {{ __('adminhub::global.settings') }}
+                </span>
+
+                <span
+                      class="absolute z-10 invisible p-2 ml-4 text-xs text-center text-white bg-gray-900 rounded dark:bg-gray-800 w-28 left-full group-hover:visible">
                     {{ __('adminhub::global.settings') }}
                 </span>
             </a>
