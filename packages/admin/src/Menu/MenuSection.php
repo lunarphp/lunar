@@ -76,7 +76,6 @@ class MenuSection extends MenuSlot
         return $this;
     }
 
-
     /**
      * Render the HTML for the icon.
      *

@@ -99,7 +99,7 @@ class SidebarMenu
         // ]);
         $slot->updateSection('hub.orders', [
             'position' => 'first',
-            'name' => 'Purchases'
+            'name' => 'Purchases',
         ]);
         // $slot->updateSectionItem('hub.products', 'hub.brands', [
         //     'position' => 1,
