@@ -219,14 +219,15 @@ trait HasImages
                     );
                     
                     $media_libary_disk = config('media-library.disk_name');
-                    $media_libary_driver = Storage::disk($media_libary_disk)->getConfig()['driver'];
+                    $media_libary_driver_config = Storage::disk($media_libary_disk)->getConfig();
+                    $media_libary_driver = $media_libary_driver_config['driver'];
 
                     if ($media_libary_driver == 'local') {
                         $media = $owner->addMedia($file->getRealPath())
-                                    ->toMediaCollection('images');
+                            ->toMediaCollection('images');
                     } else {
                         $media = $owner->addMediaFromDisk($file->getRealPath())
-                                    ->toMediaCollection('images');
+                            ->toMediaCollection('images');
                     }
 
                     activity()
