@@ -218,11 +218,11 @@ trait HasImages
                         $image['filename']
                     );
                     
-                    $media_libary_disk = config('media-library.disk_name');
-                    $media_libary_driver_config = Storage::disk($media_libary_disk)->getConfig();
-                    $media_libary_driver = $media_libary_driver_config['driver'];
+                    $mediaLibaryDisk = config('media-library.disk_name');
+                    $mediaLibaryDriverConfig = Storage::disk($mediaLibaryDisk)->getConfig();
+                    $mediaLibaryDriver = $mediaLibaryDriverConfig['driver'];
 
-                    if ($media_libary_driver == 'local') {
+                    if ($mediaLibaryDriver == 'local') {
                         $media = $owner->addMedia($file->getRealPath())
                             ->toMediaCollection('images');
                     } else {
