@@ -51,6 +51,16 @@ class AttributeGroupEdit extends Component
     /**
      * {@inheritDoc}
      */
+    protected function validationAttributes()
+    {
+        return [
+            "attributeGroup.name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
         $this->attributeGroup = $this->attributeGroup ?: new AttributeGroup();

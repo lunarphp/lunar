@@ -55,7 +55,6 @@ return [
     'products.show.restore_strapline' => 'Restore this product so it becomes available on your store.',
     'products.show.delete_btn' => 'Confirm delete',
     'products.show.restore_title' => 'Restore product',
-    'products.show.restore_strapline' => 'Restore this product so it becomes available on your store.',
     'products.show.restore_btn' => 'Confirm restore',
 
     /**

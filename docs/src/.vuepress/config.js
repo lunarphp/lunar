@@ -27,16 +27,11 @@ module.exports = {
     ['meta', { property: 'og:image', content: '/images/og.jpg' }],
     ['meta', { name: "theme-color", content: "#ffffff"}],
     ['script', {
-        async: true,
-        src: 'https://www.googletagmanager.com/gtag/js?id=G-QXEXZY8MY8'
+        src: 'https://cdn.usefathom.com/script.js',
+        'data-spa': 'auto',
+        'data-site': 'IKSUMZLE',
+        defer: true
     }],
-    ['script', {}, `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-QXEXZY8MY8');
-    `],
   ],
 
   /**
