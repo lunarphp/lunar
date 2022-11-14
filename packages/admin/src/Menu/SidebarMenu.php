@@ -89,23 +89,6 @@ class SidebarMenu
                 ->icon('cash');
         });
 
-        // $slot->removeItem('hub.index');
-        // $slot->removeSection('hub.orders');
-        // $slot->removeSectionItem('hub.products', 'hub.brands');
-
-        // $slot->updateItem('hub.index', [
-        //     'position' => 4,
-        //     'name' => 'Home'
-        // ]);
-        $slot->updateSection('hub.orders', [
-            'position' => 'first',
-            'name' => 'Purchases',
-        ]);
-        // $slot->updateSectionItem('hub.products', 'hub.brands', [
-        //     'position' => 1,
-        //     'name' => 'Manufactures'
-        // ]);
-
         return $this;
     }
 }
