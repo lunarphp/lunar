@@ -121,9 +121,11 @@ class ProductDiscount
                 1
             );
 
-            Discounts::addApplied(
-                new CartDiscount($rewardLine, $this->discount)
-            );
+            if (!$cart->freeItems) {
+                $cart->freeItems = collect();
+            }
+
+            $cart->freeItems->push($rewardLine->purchasable);
         }
 
         return $cart;

@@ -4,7 +4,6 @@ namespace Lunar\Tests\Unit\DiscountTypes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\ProductDiscount;
-use Lunar\Managers\CartManager;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
@@ -129,8 +128,6 @@ class ProductDiscountTest extends TestCase
             'quantity' => 1,
         ]);
 
-        $manager = new CartManager($cart);
-
         $discount = Discount::factory()->create([
             'type' => ProductDiscount::class,
             'name' => 'Test Product Discount',
@@ -151,7 +148,7 @@ class ProductDiscountTest extends TestCase
             'type' => 'reward',
         ]);
 
-        $cart = $manager->getCart();
+        $cart = $cart->calculate();
 
         $purchasableBCartLine = $cart->lines->first(function ($line) use ($purchasableB) {
             return $line->purchasable_id == $purchasableB->id;
@@ -184,9 +181,6 @@ class ProductDiscountTest extends TestCase
         $purchasableB = ProductVariant::factory()->create([
             'product_id' => $productB->id,
         ]);
-        $purchasableC = ProductVariant::factory()->create([
-            'product_id' => $productC->id,
-        ]);
 
         Price::factory()->create([
             'price' => 1000, // £10
@@ -204,14 +198,6 @@ class ProductDiscountTest extends TestCase
             'priceable_id' => $purchasableB->id,
         ]);
 
-        Price::factory()->create([
-            'price' => 1000, // £10
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasableC),
-            'priceable_id' => $purchasableC->id,
-        ]);
-
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasableA),
             'purchasable_id' => $purchasableA->id,
@@ -223,14 +209,6 @@ class ProductDiscountTest extends TestCase
             'purchasable_id' => $purchasableB->id,
             'quantity' => 1,
         ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasableC),
-            'purchasable_id' => $purchasableC->id,
-            'quantity' => 1,
-        ]);
-
-        $manager = new CartManager($cart);
 
         $discount = Discount::factory()->create([
             'type' => ProductDiscount::class,
@@ -252,23 +230,9 @@ class ProductDiscountTest extends TestCase
             'type' => 'reward',
         ]);
 
-        $discount->purchasableRewards()->create([
-            'purchasable_type' => Product::class,
-            'purchasable_id' => $productC->id,
-            'type' => 'reward',
-        ]);
+        $cart = $cart->calculate();
 
-        $cart = $manager->getCart();
-
-        $purchasableCartLine = $cart->lines->first(function ($line) use ($purchasableB) {
-            return $line->purchasable_id == $purchasableB->id;
-        });
-
-        $purchasableCCartLine = $cart->lines->first(function ($line) use ($purchasableC) {
-            return $line->purchasable_id == $purchasableC->id;
-        });
-
-        $this->assertEquals(1000, $purchasableCartLine->discountTotal->value);
-        $this->assertEquals(1000, $purchasableCCartLine->discountTotal->value);
+        $this->assertEquals(1200, $cart->total->value);
+        $this->assertCount(1, $cart->freeItems);
     }
 }
