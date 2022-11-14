@@ -2,8 +2,17 @@
 
 namespace Lunar\Utils;
 
+use TreeWalker;
+
 class Arr
 {
+    public static function diff($source, $incoming)
+    {
+        return json_decode(
+            (new TreeWalker([]))->getDiff($source, $incoming)
+        );
+    }
+
     public static function permutate(array $setTuples, $isRecursiveStep = false)
     {
         $countTuples = count($setTuples);
