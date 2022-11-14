@@ -32,29 +32,128 @@
   </button>
 </div>
 
-  @if($staff->id)
-    <div class="bg-white border border-red-300 rounded shadow">
-      <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
-        {{ __('adminhub::inputs.danger_zone.title') }}
-      </header>
-      <div class="p-6 space-y-4 text-sm">
-        <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-12 md:col-span-6">
-            <strong>{{ __('adminhub::settings.staff.form.danger_zone.label') }}</strong>
-            <p class="text-xs text-gray-600">{{ __('adminhub::settings.staff.form.danger_zone.instructions') }}</p>
-          </div>
-          <div class="col-span-9 lg:col-span-4">
-            <x-hub::input.text type="email" wire:model="deleteConfirm" />
-          </div>
-          <div class="col-span-3 text-right lg:col-span-2">
-            <x-hub::button theme="danger" :disabled="!$this->canDelete" wire:click="delete" type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
-          </div>
+@if ($staff->id)
+    <div
+        @class([
+            'bg-white border rounded shadow',
+            'border-red-300' => !$staff->deleted_at,
+            'border-gray-300' => $staff->deleted_at,
+        ])
+    >
+        <header
+            @class([
+                'px-6 py-4 bg-white border-b rounded-t',
+                'border-red-300 text-red-700' => !$staff->deleted_at,
+                'border-gray-300 text-gray-700' => $staff->deleted_at,
+            ])
+        >
+            @if($staff->deleted_at)
+                {{ __('adminhub::inputs.restore_zone.title') }}
+            @else
+                {{ __('adminhub::inputs.danger_zone.title') }}
+            @endif
+
+        </header>
+
+
+
+        <div class="p-6 text-sm space-y-4">
+
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 lg:col-span-8">
+                    <strong>
+                        @if($staff->deleted_at)
+                            {{ __('adminhub::inputs.restore_zone.label', ['model' => 'staff']) }}
+                        @else
+                            {{ __('adminhub::inputs.danger_zone.label', ['model' => 'staff']) }}
+                        @endif
+                    </strong>
+
+                    <p class="text-xs text-gray-600">
+                        @if($staff->deleted_at)
+                            {{ __('adminhub::settings.staff.form.danger_zone.restore_strapline') }}
+                        @else
+                            {{ __('adminhub::settings.staff.form.danger_zone.delete_strapline') }}
+                        @endif
+
+                    </p>
+                </div>
+
+                <div class="col-span-6 text-right lg:col-span-4">
+                    @if($staff->deleted_at)
+                        <x-hub::button :disabled="false"
+                                       wire:click="$set('showRestoreConfirm', true)"
+                                       type="button"
+                                       theme="green">
+                            {{ __('adminhub::global.restore') }}
+                        </x-hub::button>
+                    @else
+                        <x-hub::button :disabled="false"
+                                       wire:click="$set('showDeleteConfirm', true)"
+                                       type="button"
+                                       theme="danger">
+                            {{ __('adminhub::global.delete') }}
+                        </x-hub::button>
+                    @endif
+                </div>
+            </div>
+
+            @if($this->ownAccount)
+            <x-hub::alert level="danger" class="rounded-none">
+              {{ __('adminhub::settings.staff.form.danger_zone.own_account') }}
+            </x-hub:alert>
+            @endif
         </div>
-        @if($this->ownAccount)
-        <x-hub::alert level="danger">
-          {{ __('adminhub::settings.staff.form.danger_zone.own_account') }}
-        </x-hub:alert>
-        @endif
-      </div>
     </div>
-  @endif
+
+    <x-hub::modal.dialog wire:model="showRestoreConfirm">
+        <x-slot name="title">
+            {{ __('adminhub::catalogue.products.show.restore_title') }}
+        </x-slot>
+
+        <x-slot name="content">
+            {{ __('adminhub::catalogue.products.show.restore_strapline') }}
+        </x-slot>
+
+        <x-slot name="footer">
+            <div class="flex items-center justify-end space-x-4">
+                <x-hub::button theme="gray"
+                               type="button"
+                               wire:click.prevent="$set('showRestoreConfirm', false)">
+                    {{ __('adminhub::global.cancel') }}
+                </x-hub::button>
+
+                <x-hub::button wire:click="restore"
+                               type="button"
+                               theme="green">
+                    {{ __('adminhub::catalogue.products.show.restore_btn') }}
+                </x-hub::button>
+            </div>
+        </x-slot>
+    </x-hub::modal.dialog>
+
+    <x-hub::modal.dialog wire:model="showDeleteConfirm">
+        <x-slot name="title">
+            {{ __('adminhub::settings.staff.show.delete_title') }}
+        </x-slot>
+
+        <x-slot name="content">
+            {{ __('adminhub::settings.staff.form.danger_zone.delete_strapline') }}
+        </x-slot>
+
+        <x-slot name="footer">
+            <div class="flex items-center justify-end space-x-4">
+                <x-hub::button theme="gray"
+                               type="button"
+                               wire:click.prevent="$set('showDeleteConfirm', false)">
+                    {{ __('adminhub::global.cancel') }}
+                </x-hub::button>
+
+                <x-hub::button wire:click="delete"
+                               theme="danger">
+                    {{ __('adminhub::catalogue.products.show.delete_btn') }}
+                </x-hub::button>
+            </div>
+        </x-slot>
+    </x-hub::modal.dialog>
+@endif

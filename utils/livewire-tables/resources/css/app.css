@@ -26,3 +26,7 @@
     @apply lt-bg-red-600 lt-text-white lt-border-red-600 hover:lt-bg-red-700;
   }
 }
+
+.lt-pagination span[aria-current='page'] span {
+  @apply lt-text-blue-600 lt-bg-blue-50/75;
+}
