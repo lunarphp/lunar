@@ -31,7 +31,7 @@ class MenuSection extends MenuSlot
     /**
      * The positional order of the menu section.
      *
-     * @var int
+     * @var string|int
      */
     public $position;
 
@@ -77,7 +77,7 @@ class MenuSection extends MenuSlot
     /**
      * Setter for the position property.
      *
-     * @param  int  $position
+     * @param  string|int  $position
      * @return static
      */
     public function position($position)

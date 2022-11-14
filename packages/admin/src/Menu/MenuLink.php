@@ -52,7 +52,7 @@ class MenuLink implements MenuItem
     /**
      * The positional order of the menu link.
      *
-     * @var int
+     * @var string|int
      */
     public $position;
 
@@ -137,7 +137,7 @@ class MenuLink implements MenuItem
     /**
      * Setter for the position property.
      *
-     * @param  int  $position
+     * @param  string|int  $position
      * @return static
      */
     public function position($position)
