@@ -28,6 +28,11 @@ class MenuSection extends MenuSlot
      */
     public $icon;
 
+    /**
+     * The positional order of the menu section.
+     *
+     * @var int
+     */
     public $position;
 
     /**
@@ -69,6 +74,12 @@ class MenuSection extends MenuSlot
         return $this;
     }
 
+    /**
+     * Setter for the position property.
+     *
+     * @param  int  $position
+     * @return static
+     */
     public function position($position)
     {
         $this->position = $position;

@@ -49,6 +49,11 @@ class MenuLink implements MenuItem
      */
     public $component;
 
+    /**
+     * The positional order of the menu link.
+     *
+     * @var int
+     */
     public $position;
 
     /**
@@ -103,6 +108,12 @@ class MenuLink implements MenuItem
         return $this;
     }
 
+    /**
+     * Setter for the component property.
+     *
+     * @param  string  $component
+     * @return static
+     */
     public function component($component)
     {
         $this->component = $component;
@@ -123,6 +134,12 @@ class MenuLink implements MenuItem
         return $this;
     }
 
+    /**
+     * Setter for the position property.
+     *
+     * @param  int  $position
+     * @return static
+     */
     public function position($position)
     {
         $this->position = $position;
