@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Lunar\Facades\FieldTypeManifest;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -85,6 +86,12 @@ class AttributeEdit extends Component
             'attribute.validation_rules' => 'nullable|string',
         ];
 
+        if (! $this->attribute->id) {
+            $rules['attribute.handle'] = ['required', Rule::unique(Attribute::class, 'handle')->where(function ($query) {
+                return $query->where('attribute_group_id', $this->group->id);
+            })];
+        }
+
         foreach ($this->languages as $lang) {
             $rules["attribute.name.{$lang->code}"] = ($lang->default ? 'required' : 'nullable').'|string|max:255';
         }
@@ -98,6 +105,25 @@ class AttributeEdit extends Component
         }
 
         return $rules;
+    }
+
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        foreach ($this->languages as $lang) {
+            $attributes["attribute.name.{$lang->code}"] = lang(key: 'inputs.name', locale: $lang->code, lower: true);
+        }
+
+        if ($this->getFieldType()) {
+            $fieldTypeOptions = $this->getFieldTypeConfig()['options'] ?? [];
+
+            foreach ($fieldTypeOptions as $field => $validation) {
+                $attributes["attribute.configuration.{$field}"] = lang(key: "inputs.{$field}", locale: $this->defaultLanguage->code, lower: true);
+            }
+        }
+
+        return $attributes;
     }
 
     /**

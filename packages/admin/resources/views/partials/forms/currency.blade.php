@@ -2,21 +2,21 @@
   <div class="overflow-hidden shadow sm:rounded-md">
     <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
       <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
-        <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('currency.name')">
+        <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('currency.name')" required>
           <x-hub::input.text wire:model="currency.name" name="name" id="name" :error="$errors->first('currency.name')" />
         </x-hub::input.group>
 
-        <x-hub::input.group :label="__('adminhub::inputs.code')" for="code" :error="$errors->first('currency.code')">
+        <x-hub::input.group :label="__('adminhub::inputs.code')" for="code" :error="$errors->first('currency.code')" required>
           <x-hub::input.text wire:model="currency.code" name="code" id="code" :error="$errors->first('currency.code')" />
         </x-hub::input.group>
       </div>
 
       <div class="space-y-4 md:space-y-0 md:grid sm:grid-cols-2 lg:grid-cols-5 md:gap-4">
-        <x-hub::input.group :label="__('adminhub::inputs.exchange_rate')" for="exchange_rate" :error="$errors->first('currency.exchange_rate')">
+        <x-hub::input.group :label="__('adminhub::inputs.exchange_rate')" for="exchange_rate" :error="$errors->first('currency.exchange_rate')" required>
           <x-hub::input.text type="number" step="0.0001" wire:model="currency.exchange_rate" name="exchange_rate" id="exchange_rate" :error="$errors->first('currency.exchange_rate')" />
         </x-hub::input.group>
 
-        <x-hub::input.group :label="__('adminhub::inputs.decimal_places')" for="decimal_places" :error="$errors->first('currency.decimal_places')">
+        <x-hub::input.group :label="__('adminhub::inputs.decimal_places')" for="decimal_places" :error="$errors->first('currency.decimal_places')" required>
           <x-hub::input.text :disabled="$currency->id && !Auth::user()->admin" wire:model="currency.decimal_places" name="decimal_places" id="decimal_places" :error="$errors->first('currency.decimal_places')" />
         </x-hub::input.group>
       </div>

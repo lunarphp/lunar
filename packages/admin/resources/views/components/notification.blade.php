@@ -1,5 +1,5 @@
 <div x-data="{
-    messages: @json($messages),
+    messages: @js($messages),
     level: '{{ $level }}',
     timeout: null,
     remove(message) {
