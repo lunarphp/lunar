@@ -32,6 +32,7 @@ return [
      */
     'staff.show.title' => 'Edit Staff',
     'staff.show.delete_btn' => 'Deactivate account',
+    'staff.show.delete_title' => 'Delete Staff',
     /**
      * Staff create page.
      */
@@ -45,8 +46,10 @@ return [
     'staff.form.permissions_description' => 'Manage a staff members individual permissions.',
     'staff.form.admin_message' => 'An admin user has access to all permissions.',
     'staff.form.danger_zone.label' => 'Remove staff member',
-    'staff.form.danger_zone.instructions' => 'Enter the staff members email address to confirm removal.',
+    'staff.form.danger_zone.delete_strapline' => 'Removing a staff member will stop all access to the hub, you can restore it later.',
+    'staff.form.danger_zone.restore_strapline' => 'Restore this staff members account so they can access the hub.',
     'staff.form.danger_zone.own_account' => 'Removing your own account will instantly log you out.',
+
     /**
      * Addons listing page.
      */

@@ -55,6 +55,7 @@ return [
     'tax_class.deleted' => 'Tax class deleted',
     'clipboard.copied' => 'Copied to clipboard',
     'clipboard.failed_copy' => 'Unable to copy to clipboard',
+    'staff.restored' => 'Staff member restored',
 
     'default_url_protected' => 'Unable to delete the default URL',
 ];
