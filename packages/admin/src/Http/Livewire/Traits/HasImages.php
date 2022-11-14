@@ -265,7 +265,10 @@ trait HasImages
      */
     public function regenerateConversions($id)
     {
-        Artisan::call('media-library:regenerate --ids='.$id);
+        Artisan::call('media-library:regenerate', [
+            '--ids' => $id,
+            '--force' => true,
+        ]);
         $this->notify(
             __('adminhub::partials.image-manager.remake_transforms.notify.success')
         );

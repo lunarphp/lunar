@@ -87,7 +87,7 @@ This will create a "hydrated" version of your cart with the following:
 
 ::: tip 
 All values will return a `Lunar\Datatypes\Price` object. So you have
-access to the following: `value`, `formatted`, `decimal`
+access to the following: `value`, `formatted`, `decimal` 
 :::
 
 ```php

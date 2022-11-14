@@ -47,7 +47,7 @@ class OrdersTableBuilder extends TableBuilder
                 return $record->total->formatted;
             }),
             TextColumn::make('date')->value(function ($record) {
-                return $record->placed_at?->format('Y/m/d @ H:ma');
+                return $record->placed_at?->format('Y/m/d @ H:ia');
             }),
         ]);
 

@@ -1,11 +1,11 @@
 <div>
-  <label for="{{ $for }}" class="flex items-center block text-sm font-medium text-gray-700">
+  <label for="{{ $for }}" class="flex items-center text-sm font-medium text-gray-700">
     <span class="block">{{ $labelPrefix ?? null }}</span>
     <span class="block">{{ $label }}@if($required)<sup class="text-xs text-red-600">&#42;</sup>@endif</span>
   </label>
   <div class="relative mt-1">
     {{ $slot }}
-    @if($error)
+    @if($error && $errorIcon)
       <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
         <!-- Heroicon name: solid/exclamation-circle -->
         <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

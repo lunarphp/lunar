@@ -31,11 +31,9 @@ class ChannelShow extends Component
      */
     protected function rules()
     {
-        $table = $this->channel->getTable();
-
         return [
             'channel.name' => 'required|string|max:255',
-            'channel.handle' => "required|string|unique:$table,handle,{$this->channel->id}|max:255",
+            'channel.handle' => 'required|string|max:255|unique:'.Channel::class.',handle,'.$this->channel->id,
             'channel.url' => 'nullable|url|max:255',
             'channel.default' => 'nullable',
         ];
