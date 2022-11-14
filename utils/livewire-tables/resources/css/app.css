@@ -28,5 +28,5 @@
 }
 
 .lt-pagination span[aria-current='page'] span {
-  @apply lt-text-blue-600;
+  @apply lt-text-blue-600 lt-bg-blue-50/75;
 }
