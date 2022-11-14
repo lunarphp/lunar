@@ -217,7 +217,7 @@ trait HasImages
                     $file = TemporaryUploadedFile::createFromLivewire(
                         $image['filename']
                     );
-                    
+
                     $mediaLibaryDisk = config('media-library.disk_name');
                     $mediaLibaryDriverConfig = Storage::disk($mediaLibaryDisk)->getConfig();
                     $mediaLibaryDriver = $mediaLibaryDriverConfig['driver'];
