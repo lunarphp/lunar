@@ -140,6 +140,12 @@ class MenuSlot
         return $section;
     }
 
+    /**
+     * Remove an existing menu item on the slot.
+     *
+     * @param  string  $handle
+     * @return \Lunar\Hub\Menu\MenuSlot
+     */
     public function removeItem($handle)
     {
         $newItems = $this->items->filter(function ($item) use ($handle) {
@@ -151,6 +157,12 @@ class MenuSlot
         return $this;
     }
 
+    /**
+     * Remove an existing menu section on the slot.
+     *
+     * @param  string  $handle
+     * @return \Lunar\Hub\Menu\MenuSlot
+     */
     public function removeSection($handle)
     {
         $newSections = $this->sections->filter(function ($section) use ($handle) {
@@ -162,6 +174,14 @@ class MenuSlot
         return $this;
     }
 
+    /**
+     * Remove an existing menu item from an
+     * existing menu section on the slot.
+     *
+     * @param  string  $handle
+     * @param  string  $itemHandle
+     * @return \Lunar\Hub\Menu\MenuSlot
+     */
     public function removeSectionItem($handle, $itemHandle)
     {
         $foundSection = $this->sections->first(function ($section) use ($handle) {
@@ -175,6 +195,13 @@ class MenuSlot
         return $this;
     }
 
+    /**
+     * Update an existing menu item on the slot.
+     *
+     * @param  string  $handle
+     * @param  array  $options
+     * @return \Lunar\Hub\Menu\MenuItem
+     */
     public function updateItem($handle, $options = [])
     {
         $foundItem = $this->items->first(function ($item) use ($handle) {
@@ -188,6 +215,13 @@ class MenuSlot
         return $foundItem;
     }
 
+    /**
+     * Update an existing menu section on the slot.
+     *
+     * @param  string  $handle
+     * @param  array  $options
+     * @return \Lunar\Hub\Menu\MenuSection
+     */
     public function updateSection($handle, $options = [])
     {
         $foundSection = $this->sections->first(function ($item) use ($handle) {
@@ -201,6 +235,15 @@ class MenuSlot
         return $foundSection;
     }
 
+    /**
+     * Update an existing menu item from an
+     * existing menu section on the slot.
+     *
+     * @param  string  $handle
+     * @param  string  $itemHandle
+     * @param  array  $options
+     * @return \Lunar\Hub\Menu\MenuItem
+     */
     public function updateSectionItem($handle, $itemHandle, $options = [])
     {
         $foundSection = $this->sections->first(function ($section) use ($handle) {
