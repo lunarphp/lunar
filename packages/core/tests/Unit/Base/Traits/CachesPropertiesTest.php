@@ -36,15 +36,13 @@ class CachesPropertiesTest extends TestCase
             'priceable_id' => $purchasable->id,
         ]);
 
-        $line = $cart->lines()->create([
+        $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
             'purchasable_id' => $purchasable->id,
             'quantity' => 1,
         ]);
 
-        $manager = $cart->getManager();
-
-        $cart = $manager->getCart();
+        $cart = $cart->calculate();
 
         $this->assertInstanceOf(DataTypesPrice::class, $cart->subTotal);
         $this->assertEquals(100, $cart->subTotal->value);

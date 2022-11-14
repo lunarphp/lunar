@@ -45,28 +45,28 @@ class CartAddress extends BaseModel implements Addressable
      *
      * @var Price|null
      */
-    public ?Price $shippingSubTotal;
+    public ?Price $shippingSubTotal = null;
 
     /**
      * The shipping tax total.
      *
      * @var Price|null
      */
-    public ?Price $shippingTaxTotal;
+    public ?Price $shippingTaxTotal = null;
 
     /**
      * The shipping total.
      *
      * @var Price|null
      */
-    public ?Price $shippingTotal;
+    public ?Price $shippingTotal = null;
 
     /**
      * The tax breakdown.
      *
      * @var TaxBreakdown
      */
-    public TaxBreakdown $taxBreakdown;
+    public ?TaxBreakdown $taxBreakdown = null;
 
     /**
      * Return a new factory instance for the model.

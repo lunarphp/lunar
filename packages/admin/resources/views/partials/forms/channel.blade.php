@@ -3,7 +3,8 @@
         <div class="flex-col px-4 py-5 space-y-4 bg-white sm:p-6">
             <x-hub::input.group :label="__('adminhub::inputs.name')"
                                 for="name"
-                                :error="$errors->first('channel.name')">
+                                :error="$errors->first('channel.name')"
+                                required>
                 <x-hub::input.text wire:model="channel.name"
                                    name="name"
                                    id="name"
@@ -12,7 +13,8 @@
 
             <x-hub::input.group :label="__('adminhub::inputs.handle')"
                                 for="handle"
-                                :error="$errors->first('channel.handle')">
+                                :error="$errors->first('channel.handle')"
+                                required>
                 <x-hub::input.text wire:model.debounce.350ms="channel.handle"
                                    name="handle"
                                    id="handle"
@@ -67,7 +69,8 @@
                     <div class="col-span-3 text-right lg:col-span-2">
                         <x-hub::button :disabled="!$this->canDelete"
                                        wire:click="delete"
-                                       type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
+                                       type="button"
+                                       theme="danger">{{ __('adminhub::global.delete') }}</x-hub::button>
                     </div>
                 </div>
             </div>

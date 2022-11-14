@@ -102,10 +102,6 @@ return [
         'When displaying, Lunar will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
         'You must always include <code>{value}</code> for this to work properly.',
     ],
-    /*
-     * Addons.
-     */
-    'addons.index.table_row_action_text' => 'View',
     /**
      * Attributes.
      */
@@ -143,6 +139,7 @@ return [
     'taxes.tax-zones.delete_btn' => 'Delete tax zone',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
     'taxes.tax-classes.index.title' => 'Tax Classes',
+    'taxes.tax-classes.index.create.title' => 'Create tax class',
     'taxes.tax-classes.index.update.title' => 'Update tax class',
     'taxes.tax-classes.create_btn' => 'Create tax class',
     'taxes.tax-zones.price_display.label' => 'Price Display',

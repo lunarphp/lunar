@@ -42,6 +42,39 @@ class OptionCreator extends Component
     public Collection $languages;
 
     /**
+     * Define the validation rules.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return [
+            "name.{$this->defaultLanguage->code}" => 'string|required|max:255',
+            'values' => 'array|min:1',
+            "values.*.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
+        ];
+    }
+
+    /**
+     * Define the validation attributes.
+     *
+     * @return array
+     */
+    protected function validationAttributes()
+    {
+        $attributes = [
+            "name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
+        ];
+
+        foreach ($this->values as $key => $value) {
+            $sequence = (int) $key + 1;
+            $attributes["values.{$key}.name.{$this->defaultLanguage->code}"] = lang(key:'inputs.value', lower: true)." #{$sequence}";
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Called on the initial component mount.
      *
      * @return void
@@ -73,11 +106,7 @@ class OptionCreator extends Component
      */
     public function create()
     {
-        $this->validate([
-            "name.{$this->defaultLanguage->code}" => 'string|required|max:255',
-            'values' => 'array|min:1',
-            "values.*.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
-        ]);
+        $this->validate();
 
         $this->option->name = $this->name;
         $this->option->save();
