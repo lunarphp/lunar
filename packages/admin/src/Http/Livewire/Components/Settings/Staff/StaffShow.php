@@ -13,6 +13,20 @@ class StaffShow extends AbstractStaff
     use ConfirmsDelete;
 
     /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public $showRestoreConfirm = false;
+
+    /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public $showDeleteConfirm = false;
+
+    /**
      * Called when the component has been mounted.
      *
      * @return void
@@ -48,6 +62,20 @@ class StaffShow extends AbstractStaff
     {
         $this->staff->delete();
         $this->notify('Staff member was removed', 'hub.staff.index');
+    }
+
+    /**
+     * Restore the product.
+     *
+     * @return void
+     */
+    public function restore()
+    {
+        $this->staff->restore();
+        $this->showRestoreConfirm = false;
+        $this->notify(
+            __('adminhub::notifications.staff.restored')
+        );
     }
 
     /**
