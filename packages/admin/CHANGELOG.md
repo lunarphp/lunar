@@ -8,7 +8,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- Pagination should now highlight the current page better
 - Restoring a staff member has been fixed in the hub.
 
 ## 0.1.3
