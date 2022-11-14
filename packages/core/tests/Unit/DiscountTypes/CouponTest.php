@@ -85,8 +85,6 @@ class CouponTest extends TestCase
             'quantity' => 1,
         ]);
 
-        $manager = new CartManager($cart);
-
         $discount = Discount::factory()->create([
             'type' => Coupon::class,
             'name' => 'Test Coupon',
@@ -99,10 +97,10 @@ class CouponTest extends TestCase
 
         $discount->brands()->sync([$brandA->id]);
 
-        $cart = $manager->getCart();
+        $cart = $cart->calculate();
 
         $this->assertEquals(100, $cart->discountTotal->value);
-        $this->assertEquals(2080, $cart->total->value);
+        $this->assertEquals(2100, $cart->total->value);
     }
 
     /**
@@ -148,7 +146,7 @@ class CouponTest extends TestCase
             ],
         ]);
 
-        $cart = $cart->getManager()->getCart();
+        $cart = $cart->calculate();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
         $this->assertEquals(1400, $cart->total->value);
@@ -194,16 +192,14 @@ class CouponTest extends TestCase
             ],
         ]);
 
-        $manager = new CartManager($cart);
-
         $this->assertNull($cart->total);
         $this->assertNull($cart->taxTotal);
         $this->assertNull($cart->subTotal);
 
-        $cart = $manager->getCart();
+        $cart = $cart->calculate();
 
         $this->assertEquals(100, $cart->discountTotal->value);
-        $this->assertEquals(180, $cart->taxTotal->value);
-        $this->assertEquals(1080, $cart->total->value);
+        $this->assertEquals(200, $cart->taxTotal->value);
+        $this->assertEquals(1100, $cart->total->value);
     }
 }
