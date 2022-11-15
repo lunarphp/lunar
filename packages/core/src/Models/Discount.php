@@ -69,7 +69,12 @@ class Discount extends BaseModel
      */
     public function collections()
     {
-        return $this->hasMany(DiscountCollection::class);
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Collection::class,
+            "{$prefix}collection_discount"
+        )->withTimestamps();
     }
 
     public function brands()
@@ -79,7 +84,7 @@ class Discount extends BaseModel
         return $this->belongsToMany(
             Brand::class,
             "{$prefix}brand_discount"
-        );
+        )->withTimestamps();
     }
 
     /**

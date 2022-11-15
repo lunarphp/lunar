@@ -80,32 +80,6 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
-     * Map and add the selected collections.
-     *
-     * @param  array  $collectionIds
-     * @return void
-     */
-    public function selectCollections($collectionIds)
-    {
-        $selectedCollections = ModelsCollection::findMany($collectionIds)->map(function ($collection) {
-            return [
-                'id' => $collection->id,
-                'group_id' => $collection->collection_group_id,
-                'group_name' => $collection->group->name,
-                'name' => $collection->translateAttribute('name'),
-                'thumbnail' => optional($collection->thumbnail)->getUrl(),
-                'position' => optional($collection->pivot)->position,
-                'breadcrumb' => $collection->breadcrumb,
-                'type' => 'restriction',
-            ];
-        });
-
-        $this->collections = $this->collections->count()
-            ? $this->collections->merge($selectedCollections)
-            : $selectedCollections;
-    }
-
-    /**
      * Get the collection attribute data.
      *
      * @return void
