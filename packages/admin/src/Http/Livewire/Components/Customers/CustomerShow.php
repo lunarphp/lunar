@@ -127,6 +127,7 @@ class CustomerShow extends Component
      */
     protected $queryString = [
         'perPage',
+        'tab',
         'phPage',
         'ohPage',
         'uPage',
