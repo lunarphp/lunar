@@ -62,13 +62,6 @@ class CustomerShow extends Component
     public $tab = 'order_history';
 
     /**
-     * The number of records per page.
-     *
-     * @var int
-     */
-    public $perPage = 50;
-
-    /**
      * The purchase history page.
      *
      * @var int
@@ -301,7 +294,7 @@ class CustomerShow extends Component
     public function getOrdersProperty()
     {
         return $this->customer->orders()->orderBy('placed_at', 'desc')->paginate(
-            perPage: $this->perPage,
+            perPage: 10,
             pageName: 'ohPage'
         );
     }
@@ -314,7 +307,7 @@ class CustomerShow extends Component
     public function getUsersProperty()
     {
         return $this->customer->users()->paginate(
-            perPage: $this->perPage,
+            perPage: 10,
             pageName: 'uPage',
         );
     }
@@ -565,7 +558,7 @@ class CustomerShow extends Component
             )->orderBy('sub_total', 'desc')
             ->whereType('physical')
             ->groupBy(['identifier', 'description'])
-            ->paginate(perPage: $this->perPage, pageName: 'phPage');
+            ->paginate(perPage: 10, pageName: 'phPage');
     }
 
     /**
