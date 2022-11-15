@@ -119,7 +119,6 @@ class CustomerShow extends Component
      * {@inheritDoc}
      */
     protected $queryString = [
-        'perPage',
         'tab',
         'phPage',
         'ohPage',
