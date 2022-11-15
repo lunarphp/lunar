@@ -100,7 +100,7 @@
                                 </div>
                             @endif
 
-                            <div class="flex-shrink-0">
+                            <div class="flex flex-shrink-0">
                                 <button type="button"
                                         wire:click="$set('images.{{ $key }}.preview', true)">
                                     <img src="{{ $image['thumbnail'] }}"
