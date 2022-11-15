@@ -67,12 +67,12 @@ class UpdateTieredPricing
         $currency = Currency::find($currencyId);
 
         $priceModel->fill([
-            'price'             => (int) ($price * $currency->factor),
-            'currency_id'       => $currencyId,
+            'price' => (int) ($price * $currency->factor),
+            'currency_id' => $currencyId,
             'customer_group_id' => $groupId,
-            'tier'              => $tier,
-            'priceable_id'      => $owner->id,
-            'priceable_type'    => get_class($owner),
+            'tier' => $tier,
+            'priceable_id' => $owner->id,
+            'priceable_type' => get_class($owner),
         ]);
 
         $priceModel->save();

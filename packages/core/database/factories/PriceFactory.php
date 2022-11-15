@@ -13,9 +13,9 @@ class PriceFactory extends Factory
     public function definition(): array
     {
         return [
-            'price'         => $this->faker->numberBetween(1, 2500),
+            'price' => $this->faker->numberBetween(1, 2500),
             'compare_price' => $this->faker->numberBetween(1, 2500),
-            'currency_id'   => Currency::factory(),
+            'currency_id' => Currency::factory(),
         ];
     }
 }

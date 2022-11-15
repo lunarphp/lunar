@@ -34,6 +34,7 @@
     },
     "require": {
         "php": "^8.0",
+        "lunarphp/livewire-tables": "self.version",
         "lunarphp/core": "self.version",
         "livewire/livewire": "^2.0",
         "lunarphp/licensing": "dev-main",

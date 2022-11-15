@@ -38,6 +38,15 @@ $product->getMedia('images');
 ```
 For more information on what's available, see [Retrieving media](https://spatie.be/docs/laravel-medialibrary/v9/basic-usage/retrieving-media)
 
+## Fallback images
+If your model does not contain any images, calling getFirstMediaUrl or getFirstMediaPath will return null. You can provide a fallback path/url in the config `lunar/media` or `.env`.
+```php
+'fallback' => [
+    'url' => env('FALLBACK_IMAGE_URL', null),
+    'path' => env('FALLBACK_IMAGE_PATH', null)
+]
+```
+
 ## Conversions
 
 Lunar provides some useful conversions which come ready out the box. This is provided in the config `lunar/media`.
@@ -59,7 +68,7 @@ class StorefrontConversions
 {
     public function apply($model)
     {
-        // .. Register spatie media conversions here...
+        // .. Register media conversions here...
     }
 }
 ```

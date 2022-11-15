@@ -74,11 +74,11 @@
             <div wire:sort
                  sort.options='{group: "images", method: "sort"}'
                  class="relative mt-4 space-y-2">
-                @foreach ($this->images as $image)
+                @foreach ($this->images as $key => $image)
                     <div class="flex items-center justify-between p-4 bg-white border rounded-md shadow-sm"
                          sort.item="images"
-                         sort.id="{{ $image['sort_key'] }}"
-                         wire:key="image_{{ $image['sort_key'] }}">
+                         sort.id="{{ $key }}"
+                         wire:key="image_{{ $key }}">
                         <div class="flex items-center w-full space-x-6">
                             @if (count($images) > 1)
                                 <div class="cursor-move"
@@ -91,19 +91,19 @@
 
                             <div x-data="{ imageBlob: null }">
                                 <button type="button"
-                                        wire:click="$set('images.{{ $loop->index }}.preview', true)">
+                                        wire:click="$set('images.{{ $key }}.preview', true)">
                                     <img src="{{ $image['thumbnail'] }}"
                                          class="w-8 overflow-hidden rounded-md" />
                                 </button>
 
-                                @if($images[$loop->index]['preview'] )
-                                    <x-hub::modal wire:model="images.{{ $loop->index }}.preview">
+                                @if($images[$key]['preview'] )
+                                    <x-hub::modal wire:model="images.{{ $key }}.preview">
                                         <img src="{{ $image['original'] }}">
                                     </x-hub::modal>
                                 @endif
 
-                                @if($images[$loop->index]['edit'])
-                                    <x-hub::modal wire:model="images.{{ $loop->index }}.edit" max-width="5xl">
+                                @if($images[$key]['edit'])
+                                    <x-hub::modal wire:model="images.{{ $key }}.edit" max-width="5xl">
                                         <div
                                             x-data="{
                                                 filerobotImageEditor: null,
@@ -124,7 +124,7 @@
 
                                                     filerobotImageEditor.render({
                                                         onClose: (closingReason) => {
-                                                            @this.set('images.{{ $loop->index }}.edit', false)
+                                                            @this.set('images.{{ $key }}.edit', false)
 
                                                             filerobotImageEditor.terminate();
                                                         },
@@ -138,13 +138,13 @@
                                                                 .then(blob => {
                                                                     const file = new File([blob], imageData.fullName,{ type: imageData.mimeType })
 
-                                                                    @this.upload('images.{{ $loop->index }}.file', file)
+                                                                    @this.upload('images.{{ $key }}.file', file)
 
-                                                                    @this.set('images.{{ $loop->index }}.edit', false)
+                                                                    @this.set('images.{{ $key }}.edit', false)
 
-                                                                    @this.set('images.{{ $loop->index }}.thumbnail', imageData.imageBase64)
+                                                                    @this.set('images.{{ $key }}.thumbnail', imageData.imageBase64)
                                                                     
-                                                                    @this.set('images.{{ $loop->index }}.original', imageData.imageBase64)
+                                                                    @this.set('images.{{ $key }}.original', imageData.imageBase64)
                                                                 })
                                                         }
                                                     });
@@ -158,15 +158,14 @@
                             </div>
 
                             <div class="w-full">
-                                <x-hub::input.text wire:model="images.{{ $loop->index }}.caption"
+                                <x-hub::input.text wire:model="images.{{ $key }}.caption"
                                                    placeholder="Enter Alt. text" />
                             </div>
 
                             <div class="flex items-center ml-4 space-x-4">
                                 <x-hub::tooltip text="Make primary">
                                     <x-hub::input.toggle :disabled="$image['primary']"
-                                                         :on="$image['primary']"
-                                                         wire:click.prevent="setPrimary('{{ $loop->index }}')" />
+                                        wire:model="images.{{ $key }}.primary"/>
                                 </x-hub::tooltip>
 
                                 @if (!empty($image['id']))
@@ -182,19 +181,20 @@
                                 @endif
 
                                 <button type="button"
-                                    wire:click="$set('images.{{ $loop->index }}.edit', true)">
+                                    wire:click="$set('images.{{ $key }}.edit', true)">
                                     <x-hub::icon ref="pencil"
                                                  style="solid"
                                                  class="text-gray-400 hover:text-indigo-500" />
                                 </button>
 
                                 <button type="button"
-                                        wire:click.prevent="removeImage('{{ $image['sort_key'] }}')">
+                                        wire:click.prevent="removeImage('{{ $key }}')">
+                                        class="text-gray-400 hover:text-red-500 "
+                                        @if($image['primary']) disabled @endif>
                                     <x-hub::icon ref="trash"
                                                  style="solid"
                                                  class="text-gray-400 hover:text-red-500" />
                                 </button>
-
                             </div>
                         </div>
                     </div>

@@ -29,7 +29,7 @@ class SortProductsBySkuTest extends TestCase
         foreach ($products as $index => $product) {
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku'        => $skus[$index],
+                'sku' => $skus[$index],
             ]);
         }
 
@@ -67,12 +67,12 @@ class SortProductsBySkuTest extends TestCase
         foreach ($products as $index => $product) {
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku'        => $skus[$index][0],
+                'sku' => $skus[$index][0],
             ]);
 
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku'        => $skus[$index][1],
+                'sku' => $skus[$index][1],
             ]);
         }
 

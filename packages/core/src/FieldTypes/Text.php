@@ -97,7 +97,7 @@ class Text implements FieldType, JsonSerializable
     public function getConfig(): array
     {
         return [
-            'view'    => 'adminhub::field-types.text',
+            'view' => 'adminhub::field-types.text',
             'options' => [
                 'richtext' => 'nullable',
                 'options' => [

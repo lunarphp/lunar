@@ -24,18 +24,14 @@ module.exports = {
     ['link', { rel: "manifest", href: "/site.webmanifest"}],
     ['link', { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#5bbad5"}],
     ['meta', { name: "msapplication-TileColor", content: "#da532c"}],
+    ['meta', { property: 'og:image', content: '/images/og.jpg' }],
     ['meta', { name: "theme-color", content: "#ffffff"}],
     ['script', {
-        async: true,
-        src: 'https://www.googletagmanager.com/gtag/js?id=G-QXEXZY8MY8'
+        src: 'https://cdn.usefathom.com/script.js',
+        'data-spa': 'auto',
+        'data-site': 'IKSUMZLE',
+        defer: true
     }],
-    ['script', {}, `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-QXEXZY8MY8');
-    `],
   ],
 
   /**
@@ -54,14 +50,14 @@ module.exports = {
     smoothScroll: true,
     lastUpdated: false,
     algolia: {
-      apiKey: '5b837c3914609051127d86be919e1724',
-      indexName: 'lunar',
-      appId: 'LRDQ9JSQEG'
+      apiKey: '42f3d86ed75f289e5cb75e9d7c6f43f9',
+      indexName: 'lunarphp',
+      appId: 'ZHX0K72823'
     },
     nav: [
       {
         text: 'Roadmap',
-        link: 'https://github.com/orgs/lunarphp/projects/5',
+        link: 'https://github.com/orgs/lunarphp/projects/1',
       },
       {
         text: 'Discord',
@@ -121,13 +117,14 @@ module.exports = {
           '/extending/activity-log',
           '/extending/admin-hub',
           '/extending/assets',
-          '/extending/cart-modifiers',
+          '/extending/carts',
           '/extending/field-types',
           '/extending/models',
           '/extending/order-modifiers',
           '/extending/payments',
           '/extending/search',
           '/extending/shipping',
+          '/extending/tables',
           '/extending/taxation',
         ]
       }

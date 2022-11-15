@@ -31,6 +31,14 @@
     <div class="mt-8 lg:gap-8 lg:flex lg:items-start">
         <div class="space-y-6 lg:flex-1">
 
+            @foreach ($this->getSlotsByPosition('top') as $slot)
+                <div id="{{ $slot->handle }}">
+                    <div>
+                        @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
+                    </div>
+                </div>
+            @endforeach
+
             <div>
                 @include('adminhub::partials.forms.brand')
             </div>
@@ -46,25 +54,35 @@
             <div id="urls">
                 @include('adminhub::partials.urls')
             </div>
+
+            @foreach ($this->getSlotsByPosition('bottom') as $slot)
+                <div id="{{ $slot->handle }}">
+                    <div>
+                        @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
+
     @if ($brand->id && !$brand->getOriginal('default') && !$brand->wasRecentlyCreated)
-        <div class="bg-white border border-red-300 rounded shadow">
+        <div class="mb-24 bg-white border border-red-300 rounded shadow">
             <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
                 {{ __('adminhub::inputs.danger_zone.title') }}
             </header>
 
             <div class="p-6 text-sm">
-                <div class="grid grid-cols-12 gap-4 items-center">
+                <div class="grid items-center grid-cols-12 gap-4">
                     <div class="col-span-12 md:col-span-6">
                         <strong>{{ __('adminhub::partials.forms.brand_delete_brand') }}</strong>
 
                         <p class="text-xs text-gray-600">
-                            {{ __('adminhub::partials.forms.brand_name_delete') }}</p>
+                            {{ __('adminhub::partials.forms.brand_name_delete') }}
+                        </p>
                     </div>
 
-                    @if($this->productsCount > 0)
-                        <div class="col-span-12 md:col-span-6 text-red-600 text-right">
+                    @if ($this->productsCount > 0)
+                        <div class="col-span-12 text-right text-red-600 md:col-span-6">
                             {{ __('adminhub::notifications.brands.delete_protected') }}
                         </div>
                     @else
@@ -76,11 +94,11 @@
                             <x-hub::button :disabled="!$this->canDelete"
                                            theme="danger"
                                            wire:click="delete"
-                                           type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
+                                           type="button">
+                                {{ __('adminhub::global.delete') }}
+                            </x-hub::button>
                         </div>
                     @endif
-
-
                 </div>
             </div>
         </div>

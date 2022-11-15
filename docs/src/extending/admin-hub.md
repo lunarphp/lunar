@@ -13,7 +13,7 @@ You should develop your additional functionality using Laravel Livewire using th
 You can now modify the hub logo and fav icon, please publish views using the command below.
 
 ```bash
-php artisan vendor:publish --tag=lunar-hub-views
+php artisan vendor:publish --tag=lunar.hub.views
 ```
 
 ## Adding to Menus
@@ -63,7 +63,7 @@ A Slot is a Livewire component that implements the `AbstractSlot` interface. Her
 ```php
 <?php
 
-namespace App\Slots;
+namespace App\Hub\Components\Slots;
 
 use Lunar\Hub\Slots\AbstractSlot;
 use Lunar\Hub\Slots\Traits\HubSlot;
@@ -75,7 +75,7 @@ class SeoSlot extends Component implements AbstractSlot
 
     public static function getName()
     {
-        return 'hub.product.slots.seo-slot';
+        return 'hub.components.products.slots.seo-slot';
     }
 
     public function getSlotHandle()
@@ -113,6 +113,10 @@ class SeoSlot extends Component implements AbstractSlot
     }
 }
 ```
+
+:::warning
+When creating a slot the namespace should contain either `Lunar` or `Hub` in order for the middleware to apply correctly.
+:::
 
 ### Available Methods
 
@@ -234,114 +238,3 @@ Rendered on the product creation screen
 |:-|:-|
 |`top`|Displayed at the top of both the product variant editing sections
 |`bottom`|Displayed at the bottom of both the product variant editing sections
-
-
-## Customising Tables
-
-Throughout Lunar there are a number of data tables on pages, such as product, orders etc. We want to make these flexible and allow you to extend them by adding functionality such as additional columns and filters.
-
-We'll be working towards adding this functionality across as many data tables as possible, but for now the supported tables are:
-
-- `Lunar\Facades\OrdersTable`
-
-### Adding Columns
-
-The signature for adding a column is below, the closure will receive and instance of the `Model` for that row.
-
-```php
-addColumn(string $header, bool $sortable = false, Closure $callback = null): TableColumn
-```
-
-```php
-OrdersTable::addColumn('Delivery Area', false, function (Order $order) {
-  return 'Worldwide';
-});
-```
-
-### Adding Filters
-
-The signature for adding a filter is below, the closure will receive the value of the filter when looping through the available options. e.g. If we're filtering by `status` we'd receive `awaiting-payment`. Whatever is returned from the closure will be the value in the dropdown.
-
-```php
-addFilter(string $header, string $attribute, Closure $formatter = null): TableFilter
-```
-
-::: warning
-The column should be an attribute that appears in the search index. For example if you wanted to filter on `status`
-then that attribute must be indexed in either Meilisearch or Algolia and be enabled for filtering.
-:::
-
-```php
-OrdersTable::addFilter('Status', 'status', function ($value) {
-  return Str::slug($value);
-});
-```
-
-### Exporting Records
-
-Lunar comes with basic exporter for each supported table. You're free to add your own, here's what it could look like:
-
-```php
-<?php
-
-namespace App\Exporters;
-
-use Lunar\Models\Order;
-use Illuminate\Support\Facades\Storage;
-
-class OrderExporter
-{
-    /**
-     * Export the orders.
-     *
-     * @param  array  $orderIds
-     * @return void
-     */
-    public function export($orderIds)
-    {
-        $data = [$this->getHeadings()];
-
-        $orders = Order::findMany($orderIds)->map(function ($order) {
-            return collect([
-                $order->id,
-                $order->status,
-                $order->reference,
-                $order->billingAddress->full_name,
-                $order->total->decimal,
-                $order->created_at->format('Y-m-d'),
-                $order->created_at->format('H:ma'),
-            ])->join(',');
-        })->toArray();
-
-        $data = collect(array_merge($data, $orders))->join("\n");
-
-        Storage::put('order_export.csv', $data);
-
-        return Storage::download('order_export.csv');
-    }
-
-    /**
-     * Return the csv headings.
-     *
-     * @return string
-     */
-    public function getHeadings()
-    {
-        return collect([
-            'ID',
-            'Status',
-            'Reference',
-            'Customer',
-            'Total',
-            'Date',
-            'Time',
-        ])->join(',');
-    }
-}
-```
-
-Then just tell the table to use it:
-
-```php
-OrdersTable::exportUsing(OrderExporter::class);
-```

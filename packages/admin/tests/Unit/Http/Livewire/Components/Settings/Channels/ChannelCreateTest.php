@@ -18,11 +18,11 @@ class ChannelCreateTest extends TestCase
     public function can_create_channel()
     {
         $user = User::create([
-            'name'              => 'Test User',
-            'email'             => 'test@domain.com',
+            'name' => 'Test User',
+            'email' => 'test@domain.com',
             'email_verified_at' => now(),
-            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token'    => \Illuminate\Support\Str::random(10),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
         ]);
 
         $this->actingAs($user);
@@ -37,9 +37,9 @@ class ChannelCreateTest extends TestCase
             ->call('create');
 
         $this->assertDatabaseHas((new Channel())->getTable(), [
-            'name'    => 'Some channel name',
-            'handle'  => 'some-handle',
-            'url'     => 'http://google.co.uk',
+            'name' => 'Some channel name',
+            'handle' => 'some-handle',
+            'url' => 'http://google.co.uk',
             'default' => '1',
         ]);
     }
@@ -48,11 +48,11 @@ class ChannelCreateTest extends TestCase
     public function can_channel_has_appropriate_validation_in_place()
     {
         $user = User::create([
-            'name'              => 'Test User',
-            'email'             => 'test@domain.com',
+            'name' => 'Test User',
+            'email' => 'test@domain.com',
             'email_verified_at' => now(),
-            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token'    => \Illuminate\Support\Str::random(10),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
         ]);
 
         $this->actingAs($user);
@@ -61,7 +61,7 @@ class ChannelCreateTest extends TestCase
             'channel' => new Channel(),
         ])->call('create')
             ->assertHasErrors([
-                'channel.name'   => 'required',
+                'channel.name' => 'required',
                 'channel.handle' => 'required',
             ]);
     }
@@ -70,15 +70,15 @@ class ChannelCreateTest extends TestCase
     public function channel_name_should_not_be_unique()
     {
         $user = User::create([
-            'name'              => 'Test User',
-            'email'             => 'test@domain.com',
+            'name' => 'Test User',
+            'email' => 'test@domain.com',
             'email_verified_at' => now(),
-            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token'    => \Illuminate\Support\Str::random(10),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
         ]);
 
         $channel = Channel::factory()->create([
-            'name'   => 'Some Channel',
+            'name' => 'Some Channel',
             'handle' => 'channel-one',
         ]);
 
@@ -93,12 +93,12 @@ class ChannelCreateTest extends TestCase
         ->assertRedirect();
 
         $this->assertDatabaseHas((new Channel())->getTable(), [
-            'name'   => $channel->name,
+            'name' => $channel->name,
             'handle' => 'channel-one',
         ]);
 
         $this->assertDatabaseHas((new Channel())->getTable(), [
-            'name'   => $channel->name,
+            'name' => $channel->name,
             'handle' => 'channel-two',
         ]);
     }
@@ -107,11 +107,11 @@ class ChannelCreateTest extends TestCase
     public function affected_inputs_have_suitable_length_validation()
     {
         $user = User::create([
-            'name'              => 'Test User',
-            'email'             => 'test@domain.com',
+            'name' => 'Test User',
+            'email' => 'test@domain.com',
             'email_verified_at' => now(),
-            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token'    => \Illuminate\Support\Str::random(10),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
         ]);
 
         $this->actingAs($user);
@@ -123,7 +123,7 @@ class ChannelCreateTest extends TestCase
             ->set('channel.url', Str::random(260))
             ->call('create')
             ->assertHasErrors([
-                'channel.name'   => 'max',
+                'channel.name' => 'max',
                 'channel.handle' => 'max',
             ]);
     }

@@ -20,9 +20,9 @@ class AccountTest extends TestCase
     public function can_mount_component()
     {
         $staff = Staff::factory()->create([
-            'email'     => 'test@domain.com',
+            'email' => 'test@domain.com',
             'firstname' => 'Bob',
-            'lastname'  => 'Smith',
+            'lastname' => 'Smith',
         ]);
 
         Livewire::test(Account::class, ['staff' => $staff])
@@ -37,9 +37,9 @@ class AccountTest extends TestCase
     public function can_update_details()
     {
         $staff = Staff::factory()->create([
-            'email'     => 'test@domain.com',
+            'email' => 'test@domain.com',
             'firstname' => 'Bob',
-            'lastname'  => 'Smith',
+            'lastname' => 'Smith',
         ]);
 
         Livewire::test(Account::class, ['staff' => $staff])
@@ -66,9 +66,9 @@ class AccountTest extends TestCase
     public function can_save_without_changing_email()
     {
         $staff = Staff::factory()->create([
-            'email'     => 'test@domain.com',
+            'email' => 'test@domain.com',
             'firstname' => 'Bob',
-            'lastname'  => 'Smith',
+            'lastname' => 'Smith',
         ]);
 
         Livewire::test(Account::class, ['staff' => $staff])
@@ -86,7 +86,7 @@ class AccountTest extends TestCase
     public function password_doesnt_update_if_unchanged()
     {
         $staff = Staff::factory()->create([
-            'email'    => 'test@domain.com',
+            'email' => 'test@domain.com',
             'password' => Hash::make('password'),
         ]);
 
@@ -130,7 +130,7 @@ class AccountTest extends TestCase
     public function can_update_password()
     {
         $staff = Staff::factory()->create([
-            'email'    => 'test@domain.com',
+            'email' => 'test@domain.com',
             'password' => Hash::make('password'),
         ]);
 
@@ -151,7 +151,7 @@ class AccountTest extends TestCase
     public function cant_update_password_if_current_is_wrong()
     {
         $staff = Staff::factory()->create([
-            'email'    => 'test@domain.com',
+            'email' => 'test@domain.com',
             'password' => Hash::make('password'),
         ]);
 

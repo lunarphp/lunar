@@ -109,7 +109,7 @@ class CollectionGroupShow extends Component
     public function rules()
     {
         $rules = [
-            'group.name'      => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
+            'group.name' => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
             'collection.name' => 'required|string|max:255',
             'deletionConfirm' => 'nullable|boolean',
         ];
@@ -409,7 +409,7 @@ class CollectionGroupShow extends Component
 
         $collection = Collection::create([
             'collection_group_id' => $this->group->id,
-            'attribute_data'      => collect([
+            'attribute_data' => collect([
                 'name' => new TranslatedText([
                     $this->defaultLanguage => $this->collection['name'],
                 ]),

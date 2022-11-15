@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
@@ -35,7 +36,6 @@ use Lunar\Base\ShippingModifiers;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
-use Lunar\Console\Commands\MeilisearchSetup;
 use Lunar\Console\Commands\MigrateGetCandy;
 use Lunar\Console\Commands\ScoutIndexer;
 use Lunar\Console\InstallLunar;
@@ -169,10 +169,7 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerBlueprintMacros();
-
-        if (! $this->app->environment('testing')) {
-            $this->registerStateListeners();
-        }
+        $this->registerStateListeners();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -183,12 +180,11 @@ class LunarServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
-            ], 'lunar-migrations');
+            ], 'lunar.migrations');
 
             $this->commands([
                 InstallLunar::class,
                 AddonsDiscover::class,
-                MeilisearchSetup::class,
                 AddressData::class,
                 ScoutIndexer::class,
                 MigrateGetCandy::class,
@@ -236,9 +232,16 @@ class LunarServiceProvider extends ServiceProvider
         ];
 
         foreach ($states as $state) {
+            $class = new $state;
+
+            Event::listen(
+                [MigrationsStarted::class],
+                [$class, 'prepare']
+            );
+
             Event::listen(
                 [MigrationsEnded::class, NoPendingMigrations::class],
-                [$state, 'run']
+                [$class, 'run']
             );
         }
     }

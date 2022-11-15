@@ -54,13 +54,13 @@ class UpdatePrices
         $currency = Currency::find($currencyId);
 
         $priceModel->fill([
-            'price'             => (int) ($price * $currency->factor),
-            'compare_price'     => $comparePrice ? (int) ($comparePrice * $currency->factor) : null,
-            'currency_id'       => $currencyId,
+            'price' => (int) bcmul($price, $currency->factor),
+            'compare_price' => $comparePrice ? (int) bcmul($price, $currency->factor) : null,
+            'currency_id' => $currencyId,
             'customer_group_id' => $groupId,
-            'tier'              => $tier,
-            'priceable_id'      => $owner->id,
-            'priceable_type'    => get_class($owner),
+            'tier' => $tier,
+            'priceable_id' => $owner->id,
+            'priceable_type' => get_class($owner),
         ]);
 
         $priceModel->save();

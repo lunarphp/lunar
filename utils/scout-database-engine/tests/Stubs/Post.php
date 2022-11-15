@@ -3,7 +3,6 @@
 namespace Lunar\ScoutDatabaseEngine\Tests\Stubs;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Laravel\Scout\Searchable;
 
 class Post extends Model
@@ -34,10 +33,11 @@ class Post extends Model
      */
     public function toSearchableArray()
     {
-        $array = $this->toArray();
-
-        // Customize the data array...
-
-        return Arr::only($array, ['title', 'body']);
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'body' => $this->body,
+            'array' => ['one', 'two', 'three' => ['four', 'five', 'six']],
+        ];
     }
 }

@@ -9,6 +9,11 @@ use Lunar\Models\ProductType;
 
 class ConvertProductTypeAttributesToProducts
 {
+    public function prepare()
+    {
+        //
+    }
+
     public function run()
     {
         $prefix = config('lunar.database.table_prefix');
