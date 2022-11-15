@@ -28,11 +28,11 @@ class MenuLinkTest extends TestCase
         $menuLink = new MenuLink();
 
         $properties = [
-            'name'   => 'Foo',
+            'name' => 'Foo',
             'handle' => 'foo',
-            'gate'   => 'foo.gate',
-            'icon'   => 'cog',
-            'route'  => 'some.route',
+            'gate' => 'foo.gate',
+            'icon' => 'cog',
+            'route' => 'some.route',
         ];
 
         foreach ($properties as $property => $value) {

@@ -4,7 +4,6 @@ namespace Lunar\Hub\Http\Livewire\Components\Settings\Languages;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Lunar\Models\Language;
 
 class LanguagesIndex extends Component
 {

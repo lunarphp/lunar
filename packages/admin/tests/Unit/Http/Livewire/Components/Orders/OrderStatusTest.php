@@ -29,11 +29,11 @@ class OrderStatusTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Currency::factory()->create([
-            'default'        => true,
+            'default' => true,
             'decimal_places' => 2,
         ]);
     }
@@ -46,10 +46,10 @@ class OrderStatusTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -61,7 +61,7 @@ class OrderStatusTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 
@@ -79,10 +79,10 @@ class OrderStatusTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -94,7 +94,7 @@ class OrderStatusTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 
@@ -122,10 +122,10 @@ class OrderStatusTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -137,7 +137,7 @@ class OrderStatusTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 
@@ -153,7 +153,7 @@ class OrderStatusTest extends TestCase
                 'label' => 'Payment Received',
                 'color' => '#6a67ce',
             ],
-            'dispatched'  => [
+            'dispatched' => [
                 'label' => 'Dispatched',
             ],
         ]);
@@ -179,10 +179,10 @@ class OrderStatusTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -194,7 +194,7 @@ class OrderStatusTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 
@@ -235,10 +235,10 @@ class OrderStatusTest extends TestCase
         ]);
 
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -250,7 +250,7 @@ class OrderStatusTest extends TestCase
 
         OrderLine::factory()->create([
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
             'order_id' => $order->id,
         ]);
 

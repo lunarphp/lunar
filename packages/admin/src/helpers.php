@@ -80,3 +80,14 @@ if (! function_exists('impersonate_link')) {
         return app($class)->getUrl($authenticatable);
     }
 }
+
+if (! function_exists('lang')) {
+    function lang($key, $replace = [], $locale = null, $prefix = 'adminhub::', $lower = false)
+    {
+        $key = $prefix.$key;
+
+        $value = __($key, $replace, $locale);
+
+        return $lower ? mb_strtolower($value) : $value;
+    }
+}

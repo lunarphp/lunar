@@ -29,10 +29,10 @@ class OrderLineTest extends TestCase
         ]);
 
         $data = [
-            'order_id'         => $order->id,
-            'quantity'         => 1,
+            'order_id' => $order->id,
+            'quantity' => 1,
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id'   => ProductVariant::factory()->create()->id,
+            'purchasable_id' => ProductVariant::factory()->create()->id,
         ];
 
         OrderLine::factory()->create($data);
@@ -51,10 +51,10 @@ class OrderLineTest extends TestCase
         $this->expectException(NonPurchasableItemException::class);
 
         $data = [
-            'order_id'         => $order->id,
-            'quantity'         => 1,
+            'order_id' => $order->id,
+            'quantity' => 1,
             'purchasable_type' => Channel::class,
-            'purchasable_id'   => Channel::factory()->create()->id,
+            'purchasable_id' => Channel::factory()->create()->id,
         ];
 
         OrderLine::factory()->create($data);

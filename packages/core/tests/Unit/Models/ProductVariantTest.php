@@ -30,7 +30,7 @@ class ProductVariantTest extends TestCase
         ]);
 
         $variant->prices()->create([
-            'price'       => 199,
+            'price' => 199,
             'currency_id' => $currency->id,
         ]);
 
@@ -45,48 +45,48 @@ class ProductVariantTest extends TestCase
             'product_id' => $product->id,
         ]);
         $currency = Currency::factory()->create([
-            'default'        => true,
+            'default' => true,
             'decimal_places' => 2,
         ]);
 
         $groupA = CustomerGroup::factory()->create([
-            'handle'  => 'default',
+            'handle' => 'default',
             'default' => true,
         ]);
 
         $groupB = CustomerGroup::factory()->create([
-            'handle'  => 'non_default',
+            'handle' => 'non_default',
             'default' => false,
         ]);
 
         $variant->prices()->createMany([
             [
-                'price'       => 100,
+                'price' => 100,
                 'currency_id' => $currency->id,
-                'tier'        => 1,
+                'tier' => 1,
             ],
             [
-                'price'             => 90,
-                'currency_id'       => $currency->id,
+                'price' => 90,
+                'currency_id' => $currency->id,
                 'customer_group_id' => $groupA->id,
-                'tier'              => 1,
+                'tier' => 1,
             ],
             [
-                'price'             => 80,
-                'currency_id'       => $currency->id,
-                'customer_group_id' => $groupB->id,
-                'tier'              => 1,
-            ],
-            [
-                'price'             => 30,
-                'currency_id'       => $currency->id,
-                'customer_group_id' => $groupB->id,
-                'tier'              => 5,
-            ],
-            [
-                'price'       => 60,
+                'price' => 80,
                 'currency_id' => $currency->id,
-                'tier'        => 5,
+                'customer_group_id' => $groupB->id,
+                'tier' => 1,
+            ],
+            [
+                'price' => 30,
+                'currency_id' => $currency->id,
+                'customer_group_id' => $groupB->id,
+                'tier' => 5,
+            ],
+            [
+                'price' => 60,
+                'currency_id' => $currency->id,
+                'tier' => 5,
             ],
         ]);
 
@@ -109,29 +109,29 @@ class ProductVariantTest extends TestCase
 
         $currencyA = Currency::factory()->create([
             'decimal_places' => 2,
-            'default'        => true,
+            'default' => true,
         ]);
 
         $currencyB = Currency::factory()->create([
             'decimal_places' => 2,
-            'default'        => false,
+            'default' => false,
         ]);
 
         $currencyC = Currency::factory()->create([
             'decimal_places' => 2,
-            'default'        => false,
+            'default' => false,
         ]);
 
         $variant->prices()->createMany([
             [
-                'price'       => 100,
+                'price' => 100,
                 'currency_id' => $currencyA->id,
-                'tier'        => 1,
+                'tier' => 1,
             ],
             [
-                'price'       => 200,
+                'price' => 200,
                 'currency_id' => $currencyB->id,
-                'tier'        => 1,
+                'tier' => 1,
             ],
         ]);
 

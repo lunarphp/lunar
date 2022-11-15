@@ -30,6 +30,15 @@
 
     <div class="mt-8 lg:gap-8 lg:flex lg:items-start">
         <div class="space-y-6 lg:flex-1">
+
+            @foreach ($this->getSlotsByPosition('top') as $slot)
+                <div id="{{ $slot->handle }}">
+                    <div>
+                        @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
+                    </div>
+                </div>
+            @endforeach
+
             <div>
                 @include('adminhub::partials.forms.brand')
             </div>
@@ -45,6 +54,14 @@
             <div id="urls">
                 @include('adminhub::partials.urls')
             </div>
+
+            @foreach ($this->getSlotsByPosition('bottom') as $slot)
+                <div id="{{ $slot->handle }}">
+                    <div>
+                        @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 

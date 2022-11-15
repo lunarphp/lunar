@@ -35,8 +35,8 @@ class LanguageCreate extends Component
     protected function rules()
     {
         return [
-            'language.name'    => 'required|string|max:255',
-            'language.code'    => 'required|string|max:255',
+            'language.name' => 'required|string|max:255',
+            'language.code' => 'required|string|max:255|unique:'.Language::class.',code',
             'language.default' => 'nullable|boolean',
         ];
     }

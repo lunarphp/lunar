@@ -9,7 +9,7 @@ use Lunar\Hub\Models\Staff;
 class InstallHub extends Command
 {
     protected $commands = [
-        'vendor:publish --tag=lunar:hub:public --force',
+        'vendor:publish --tag=lunar.hub.public --force',
         'vendor:publish --tag=lunar.livewiretables.public --force',
     ];
 
@@ -51,10 +51,10 @@ class InstallHub extends Command
 
             Staff::create([
                 'firstname' => $firstname,
-                'lastname'  => $lastname,
-                'email'     => $email,
-                'password'  => bcrypt($password),
-                'admin'     => true,
+                'lastname' => $lastname,
+                'email' => $email,
+                'password' => bcrypt($password),
+                'admin' => true,
             ]);
         }
     }

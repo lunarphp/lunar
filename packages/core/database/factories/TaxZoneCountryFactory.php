@@ -15,7 +15,7 @@ class TaxZoneCountryFactory extends Factory
     {
         return [
             'tax_zone_id' => TaxZone::factory(),
-            'country_id'  => Country::factory(),
+            'country_id' => Country::factory(),
         ];
     }
 }

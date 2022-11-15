@@ -88,7 +88,7 @@ class Dropdown implements FieldType, JsonSerializable
     {
         return [
             'options' => [
-                'lookups'         => 'array',
+                'lookups' => 'array',
                 'lookups.*.label' => 'string|required',
                 'lookups.*.value' => 'nullable|string',
             ],

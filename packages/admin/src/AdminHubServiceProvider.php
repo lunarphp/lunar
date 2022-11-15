@@ -13,7 +13,6 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
-use Lunar\Hub\Base\OrdersTableInterface;
 use Lunar\Hub\Console\Commands\InstallHub;
 use Lunar\Hub\Facades\ActivityLog;
 use Lunar\Hub\Http\Livewire\Components\Account;
@@ -109,7 +108,6 @@ use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
-use Lunar\Hub\Tables\Orders;
 use Lunar\Models\Product;
 
 class AdminHubServiceProvider extends ServiceProvider
@@ -203,16 +201,16 @@ class AdminHubServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
-            ], 'lunar-migrations');
+            ], 'lunar.migrations');
 
             $this->publishes([
                 __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
                 __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
-            ], 'lunar-hub-views');
+            ], 'lunar.hub.views');
 
             $this->publishes([
                 __DIR__.'/../resources/lang' => resource_path('lang/vendor/adminhub'),
-            ], 'lunar-hub-translations');
+            ], 'lunar.hub.translations');
 
             $this->commands([
                 InstallHub::class,
@@ -442,7 +440,7 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunar/admin-hub/'),
-        ], 'lunar:hub:public');
+        ], 'lunar.hub.public');
     }
 
     /**

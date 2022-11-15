@@ -74,11 +74,11 @@
             <div wire:sort
                  sort.options='{group: "images", method: "sort"}'
                  class="relative mt-4 space-y-2">
-                @foreach ($this->images as $image)
+                @foreach ($this->images as $key => $image)
                     <div class="flex items-center justify-between p-4 bg-white border rounded-md shadow-sm"
                          sort.item="images"
-                         sort.id="{{ $image['sort_key'] }}"
-                         wire:key="image_{{ $image['sort_key'] }}">
+                         sort.id="{{ $key }}"
+                         wire:key="image_{{ $key }}">
                         <div class="flex items-center w-full space-x-6">
                             @if (count($images) > 1)
                                 <div class="cursor-move"
@@ -91,26 +91,26 @@
 
                             <div>
                                 <button type="button"
-                                        wire:click="$set('images.{{ $loop->index }}.preview', true)">
+                                        wire:click="$set('images.{{ $key }}.preview', true)">
                                     <img src="{{ $image['thumbnail'] }}"
                                          class="w-8 overflow-hidden rounded-md" />
                                 </button>
-                                <x-hub::modal wire:model="images.{{ $loop->index }}.preview">
+                                <x-hub::modal wire:model="images.{{ $key }}.preview">
                                     <img src="{{ $image['original'] }}">
                                 </x-hub::modal>
                             </div>
 
                             <div class="w-full">
-                                <x-hub::input.text wire:model="images.{{ $loop->index }}.caption"
+                                <x-hub::input.text wire:model="images.{{ $key }}.caption"
                                                    placeholder="Enter Alt. text" />
                             </div>
 
                             <div class="flex items-center ml-4 space-x-4">
                                 <x-hub::tooltip text="Make primary">
                                     <x-hub::input.toggle :disabled="$image['primary']"
-                                                         wire:model="images.{{ $loop->index }}.primary"
-                                                         :on="$image['primary']"
-                                                         wire:click.prevent="setPrimary('{{ $loop->index }}')" />
+                                       wire:model="images.{{ $key }}.primary"
+                                       :on="$image['primary']"
+                                       wire:click.prevent="setPrimary('{{ $key }}')" />
                                 </x-hub::tooltip>
 
                                 @if (!empty($image['id']))
@@ -126,13 +126,12 @@
                                 @endif
 
                                 <button type="button"
-                                        wire:click.prevent="removeImage('{{ $image['sort_key'] }}')"
+                                        wire:click.prevent="removeImage('{{ $key }}')"
                                         class="text-gray-400 hover:text-red-500 "
                                         @if($image['primary']) disabled @endif>
                                     <x-hub::icon ref="trash"
                                                  style="solid" />
                                 </button>
-
                             </div>
                         </div>
                     </div>

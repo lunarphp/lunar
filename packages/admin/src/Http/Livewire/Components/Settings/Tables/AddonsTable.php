@@ -8,7 +8,6 @@ use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Tables\LunarTable;
 use Lunar\LivewireTables\Components\Columns\StatusColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
-use Spatie\Activitylog\Models\Activity;
 
 class AddonsTable extends LunarTable
 {
@@ -50,7 +49,7 @@ class AddonsTable extends LunarTable
                 'name' => $addon['name'],
                 'verified' => $addon['marketplaceId'] ?? false,
                 'version' => $addon['version'],
-                'author'    => $addon['author'],
+                'author' => $addon['author'],
                 'latest_version' => $addon['latestVersion'],
             ];
         });

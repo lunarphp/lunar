@@ -5,8 +5,7 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
-use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
@@ -36,21 +35,21 @@ class CreateOrderTest extends TestCase
     public function can_create_order()
     {
         $billing = CartAddress::factory()->make([
-            'type'       => 'billing',
+            'type' => 'billing',
             'country_id' => Country::factory(),
             'first_name' => 'Santa',
-            'line_one'   => '123 Elf Road',
-            'city'       => 'Lapland',
-            'postcode'   => 'BILL',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'BILL',
         ]);
 
         $shipping = CartAddress::factory()->make([
-            'type'       => 'shipping',
+            'type' => 'shipping',
             'country_id' => Country::factory(),
             'first_name' => 'Santa',
-            'line_one'   => '123 Elf Road',
-            'city'       => 'Lapland',
-            'postcode'   => 'SHIPP',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'SHIPP',
         ]);
 
         $taxClass = TaxClass::factory()->create();
@@ -69,28 +68,28 @@ class CreateOrderTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 100,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $cart->addresses()->createMany([
@@ -99,6 +98,7 @@ class CreateOrderTest extends TestCase
         ]);
 
         $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
             price: new PriceDataType(500, $cart->currency, 1),
@@ -113,27 +113,27 @@ class CreateOrderTest extends TestCase
 
         $cart->shippingAddress->shippingOption = $shippingOption;
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $breakdown = $cart->taxBreakdown->map(function ($tax) {
             return [
-                'description'       => $tax['description'],
-                'identifier'   => $tax['identifier'],
+                'description' => $tax['description'],
+                'identifier' => $tax['identifier'],
                 'percentage' => $tax['amounts']->min('percentage'),
-                'total'      => $tax['total']->value,
+                'total' => $tax['total']->value,
             ];
         })->values();
 
         $datacheck = [
-            'user_id'            => $cart->user_id,
-            'channel_id'         => $cart->channel_id,
-            'status'             => config('lunar.orders.draft_status'),
+            'user_id' => $cart->user_id,
+            'channel_id' => $cart->channel_id,
+            'status' => config('lunar.orders.draft_status'),
             'customer_reference' => null,
-            'sub_total'          => $cart->subTotal->value,
-            'total'              => $cart->total->value,
-            'discount_total'     => $cart->discountTotal?->value,
-            'shipping_total'     => $cart->shippingTotal?->value ?: 0,
-            'tax_breakdown'      => json_encode($breakdown),
+            'sub_total' => $cart->subTotal->value,
+            'total' => $cart->total->value,
+            'discount_total' => $cart->discountTotal?->value,
+            'shipping_total' => $cart->shippingTotal?->value ?: 0,
+            'tax_breakdown' => json_encode($breakdown),
         ];
 
         $cart = $cart->refresh();
@@ -156,11 +156,11 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function cannot_create_order_without_billing_address()
     {
-        $this->expectException(BillingAddressMissingException::class);
+        $this->expectException(CartException::class);
 
         $cart = Cart::factory()->create();
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -172,13 +172,13 @@ class CreateOrderTest extends TestCase
         $cart = Cart::factory()->create();
 
         $cart->addresses()->create([
-            'type'     => 'billing',
+            'type' => 'billing',
             'postcode' => 'H0H 0H0',
         ]);
 
-        $this->expectException(BillingAddressIncompleteException::class);
+        $this->expectException(CartException::class);
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -188,21 +188,21 @@ class CreateOrderTest extends TestCase
     public function can_set_tax_breakdown_correctly()
     {
         $billing = CartAddress::factory()->make([
-            'type'       => 'billing',
+            'type' => 'billing',
             'country_id' => Country::factory(),
             'first_name' => 'Santa',
-            'line_one'   => '123 Elf Road',
-            'city'       => 'Lapland',
-            'postcode'   => 'BILL',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'BILL',
         ]);
 
         $shipping = CartAddress::factory()->make([
-            'type'       => 'shipping',
+            'type' => 'shipping',
             'country_id' => Country::factory(),
             'first_name' => 'Santa',
-            'line_one'   => '123 Elf Road',
-            'city'       => 'Lapland',
-            'postcode'   => 'SHIPP',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'SHIPP',
         ]);
 
         $currency = Currency::factory()->create([
@@ -220,28 +220,28 @@ class CreateOrderTest extends TestCase
         $taxRate = TaxRate::factory()->create();
 
         $taxRateAmount = TaxRateAmount::factory()->create([
-            'percentage'   => 20,
+            'percentage' => 20,
             'tax_class_id' => $taxClass->id,
             'tax_rate_id' => $taxRate->id,
         ]);
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 100,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $cart->addresses()->createMany([
@@ -250,6 +250,7 @@ class CreateOrderTest extends TestCase
         ]);
 
         $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
             price: new PriceDataType(500, $cart->currency, 1),
@@ -262,11 +263,11 @@ class CreateOrderTest extends TestCase
             'shipping_option' => $shippingOption->getIdentifier(),
         ]);
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $this->assertEquals(
             $taxRateAmount->percentage,
-            $order->tax_breakdown->first()['percentage']
+            $order->tax_breakdown->first()->percentage
         );
     }
 }
