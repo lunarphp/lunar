@@ -77,19 +77,28 @@
                 </x-hub::input.group>
             </div>
 
-            @foreach($this->collectionTree as $collectionNode)
-                @include('adminhub::partials.forms.discount.collection-tree-node', [
-                    'node' => $collectionNode,
-                ])
-            @endforeach
+            <x-hub::input.group
+                label="Limit by collection"
+                for="brands"
+            >
+
+            <div class="rounded border h-full overflow-y-scroll max-h-96 bg-gray-50 px-2">
+                @foreach($this->collectionTree as $collectionNode)
+                    @include('adminhub::partials.forms.discount.collection-tree-node', [
+                        'node' => $collectionNode,
+                    ])
+                @endforeach
+            </div>
+
+            </x-hub::input.group>
 
             <x-hub::input.group
                 label="Limit by brand"
                 for="brands"
             >
-              <div class="rounded border h-full overflow-y max-h-96">
+              <div class="rounded border h-full overflow-y-scroll max-h-96 p-2 bg-gray-50 space-y-2">
                 @foreach($this->brands as $brand)
-                    <label class="flex items-center space-x-2 py-2 border-b last:border-b-0 text-sm px-3 cursor-pointer hover:bg-gray-50" wire:key="av_brand_{{ $brand->id }}">
+                    <label class="flex items-center space-x-2  bg-white py-2 rounded shadow text-sm px-3 cursor-pointer hover:bg-gray-50" wire:key="av_brand_{{ $brand->id }}">
                       <input type="checkbox" wire:model="selectedBrands" value="{{ $brand->id }}">
                       <div>{{ $brand->name }}</div>
                     </label>

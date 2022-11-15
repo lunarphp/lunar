@@ -35,6 +35,8 @@ abstract class AbstractDiscount extends Component
      */
     public array $selectedBrands = [];
 
+    public array $selectedCollections = [];
+
     /**
      * The current currency for editing
      *
@@ -73,8 +75,8 @@ abstract class AbstractDiscount extends Component
     public function mount()
     {
         $this->currency = Currency::getDefault();
-        $this->syncCollections();
         $this->selectedBrands = $this->discount->brands->pluck('id')->toArray();
+        $this->selectedCollections = $this->discount->collections->pluck('id')->toArray();
     }
 
     /**
@@ -145,28 +147,6 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
-     * Sync the discount collections with the UI.
-     *
-     * @return void
-     */
-    public function syncCollections()
-    {
-        $this->collections = $this->discount->collections()
-        ->with(['collection.group', 'collection.thumbnail'])
-        ->get()
-        ->map(function ($dc) {
-            return [
-                'id' => $dc->collection->id,
-                'group_id' => $dc->collection->collection_group_id,
-                'group_name' => $dc->collection->group->name,
-                'name' => $dc->collection->translateAttribute('name'),
-                'thumbnail' => optional($dc->collection->thumbnail)->getUrl(),
-                'breadcrumb' => $dc->collection->breadcrumb,
-            ];
-        });
-    }
-
-    /**
      * Remove the collection by it's index.
      *
      * @param  int|string  $index
@@ -184,7 +164,7 @@ abstract class AbstractDiscount extends Component
      */
     public function getBrandsProperty()
     {
-        return Brand::get();
+        return Brand::orderBy('name')->get();
     }
 
     /**
@@ -209,29 +189,13 @@ abstract class AbstractDiscount extends Component
         $this->validate();
         $this->discount->save();
 
-        $existing = $this->discount->collections()->get();
-
         $this->discount->brands()->sync(
             $this->selectedBrands
         );
 
-        $collectionsToRemove = $existing->filter(function ($collection) {
-            return ! $this->collections->pluck('id')->contains($collection->collection_id);
-        })->pluck('collection_id');
-
-        $this->discount->collections()->whereIn('collection_id', $collectionsToRemove->toArray())->delete();
-
-        $newCollections = $this->collections->filter(function ($collection) use ($existing) {
-            return ! $existing->pluck('collection_id')->contains($collection['id']);
-        })->map(function ($collection) {
-            return [
-                'collection_id' => $collection['id'],
-                'discount_id' => $this->discount->id,
-                'type' => 'restriction',
-            ];
-        });
-
-        $this->discount->collections()->createMany($newCollections->toArray());
+        $this->discount->collections()->sync(
+            $this->selectedCollections
+        );
 
         $this->emit('discount.saved', $this->discount->id);
 

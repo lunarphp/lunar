@@ -27,8 +27,6 @@ class DiscountCreate extends AbstractDiscount
             'data' => [],
         ]);
 
-        $this->syncCollections();
-
         $this->currency = Currency::getDefault();
     }
 
@@ -47,6 +45,7 @@ class DiscountCreate extends AbstractDiscount
             'discount.ends_at' => 'nullable|date|after:starts_at',
             'discount.type' => 'string|required',
             'discount.data' => 'array',
+            'selectedCollections' => 'array',
             'selectedBrands' => 'array',
         ], $this->getDiscountComponent()->rules());
 
