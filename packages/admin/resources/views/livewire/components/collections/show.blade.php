@@ -121,10 +121,10 @@
 
                                 <div
                                      class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded sort-item-element">
-                                    <div class="flex items-center">
+                                    <div class="flex items-center gap-4">
                                         @if ($product['thumbnail'])
                                             <img src="{{ $product['thumbnail'] }}"
-                                                 class="w-6 mr-2 rounded" />
+                                                 class="w-16 h-16 rounded" />
                                         @endif
 
                                         <div>
