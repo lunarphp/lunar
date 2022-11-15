@@ -55,6 +55,13 @@ class CustomerShow extends Component
     public $userIdToRemove = null;
 
     /**
+     * The tab to show.
+     *
+     * @var string
+     */
+    public $tab = 'order_history';
+
+    /**
      * The purchase history page.
      *
      * @var int
@@ -546,10 +553,10 @@ class CustomerShow extends Component
             ->whereIn(
                 'order_id',
                 $this->customer->orders()->pluck('id')
-            )->orderBy('sub_total', 'desc')->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
-                perPage: 10,
-                pageName: 'phPage'
-            );
+            )->orderBy('sub_total', 'desc')
+            ->whereType('physical')
+            ->groupBy(['identifier', 'description'])
+            ->paginate(perPage: 10, pageName: 'phPage');
     }
 
     /**
