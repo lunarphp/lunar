@@ -44,8 +44,7 @@
                 <div>
                     <x-hub::input.group
                         for="stop"
-                        label="Stop"
-                        instructions="Whether this discount will stop others from propagating."
+                        label="Prevent other discounts applying after this one"
                         :error="$errors->first('discount.stop')"
                     >
                         <x-hub::input.toggle id="stop" wire:model="discount.stop" />

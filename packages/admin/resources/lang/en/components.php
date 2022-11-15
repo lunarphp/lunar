@@ -206,6 +206,10 @@ return [
      * Discounts.
      */
     'discounts.index.title' => 'Discounts',
+    'discounts.index.status.pending' => 'Pending',
+    'discounts.index.status.active' => 'Active',
+    'discounts.index.status.scheduled' => 'Scheduled',
+    'discounts.index.status.expired' => 'Expired',
     'discounts.index.create_discount' => 'Create Discount',
     'discounts.create.title' => 'Create Discount',
     'discounts.create_btn' => 'Create Discount',

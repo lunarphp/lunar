@@ -36,6 +36,7 @@ use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountCreate;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsTable;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Coupon;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\ProductDiscount;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
@@ -442,6 +443,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.discounts.index', DiscountsIndex::class);
         Livewire::component('hub.components.discounts.show', DiscountShow::class);
         Livewire::component('hub.components.discounts.create', DiscountCreate::class);
+        Livewire::component('hub.components.discounts.table', DiscountsTable::class);
 
         Livewire::component('lunar.hub.http.livewire.components.discounts.types.coupon', Coupon::class);
         Livewire::component('lunar.hub.http.livewire.components.discounts.types.product-discount', ProductDiscount::class);

@@ -4,6 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Lunar\Facades\Discounts;
 use Lunar\Hub\Editing\DiscountTypes;
@@ -160,7 +161,17 @@ abstract class AbstractDiscount extends Component
     {
         $redirect = ! $this->discount->id;
 
-        $this->validate();
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                if ($validator->errors()->count()) {
+                    $this->notify(
+                        __('adminhub::validation.generic'),
+                        level: 'error'
+                    );
+                }
+            });
+        })->validate();
+
         $this->discount->save();
 
         $this->discount->brands()->sync(
