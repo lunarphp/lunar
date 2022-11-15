@@ -184,17 +184,17 @@ abstract class AbstractDiscount extends Component
      */
     public function getBrandsProperty()
     {
-        return Brand::whereIn('id', $this->selectedBrands)->get();
+        return Brand::get();
     }
 
     /**
-     * Return all available brands.
+     * Return the category tree.
      *
      * @return Collection
      */
-    public function getAllBrandsProperty()
+    public function getCollectionTreeProperty()
     {
-        return Brand::whereNotIn('id', $this->selectedBrands)->get();
+        return ModelsCollection::get()->toTree();
     }
 
     /**
