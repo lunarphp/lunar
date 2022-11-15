@@ -104,7 +104,7 @@
                                 <button type="button"
                                         wire:click="$set('images.{{ $key }}.preview', true)">
                                     <img src="{{ $image['thumbnail'] }}"
-                                         class="w-16 h-16 rounded-md" />
+                                         class="w-16 h-16 rounded shrink-0" />
                                 </button>
 
                                 <x-hub::modal wire:model="images.{{ $key }}.preview">
