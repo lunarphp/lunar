@@ -100,11 +100,11 @@
                                 </div>
                             @endif
 
-                            <div>
+                            <div class="shrink-0">
                                 <button type="button"
                                         wire:click="$set('images.{{ $key }}.preview', true)">
                                     <img src="{{ $image['thumbnail'] }}"
-                                         class="w-16 h-16 rounded shrink-0" />
+                                         class="w-16 h-16 rounded" />
                                 </button>
 
                                 <x-hub::modal wire:model="images.{{ $key }}.preview">
