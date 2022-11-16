@@ -126,6 +126,12 @@ class CustomerShow extends Component
         'usPage',
     ];
 
+    protected $pageNames = [
+        'order_history' => 'ohPage',
+        'purchase_history' => 'phPage',
+        'users' => 'uPage',
+    ];
+
     /**
      * {@inheritDoc}
      */
@@ -169,6 +175,8 @@ class CustomerShow extends Component
      */
     public function mount()
     {
+        $this->resetPage($this->pageNames[$this->tab] ?? null);
+
         $this->address = new Address;
         $this->syncedGroups = $this->customer->customerGroups->pluck('id')->map(fn ($id) => (string) $id)->toArray();
     }
@@ -294,7 +302,7 @@ class CustomerShow extends Component
     {
         return $this->customer->orders()->orderBy('placed_at', 'desc')->paginate(
             perPage: 10,
-            pageName: 'ohPage'
+            pageName: $this->pageNames['order_history']
         );
     }
 
@@ -307,7 +315,7 @@ class CustomerShow extends Component
     {
         return $this->customer->users()->paginate(
             perPage: 10,
-            pageName: 'uPage',
+            pageName: $this->pageNames['users'],
         );
     }
 
@@ -557,7 +565,10 @@ class CustomerShow extends Component
             )->orderBy('sub_total', 'desc')
             ->whereType('physical')
             ->groupBy(['identifier', 'description'])
-            ->paginate(perPage: 10, pageName: 'phPage');
+            ->paginate(
+                perPage: 10,
+                pageName: $this->pageNames['purchase_history']
+            );
     }
 
     /**
