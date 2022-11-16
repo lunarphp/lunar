@@ -47,6 +47,11 @@ class ProductVariantsTable extends Table
                 }
 
                 return $thumbnail->getUrl('small');
+            })->url(function ($record) {
+                return route('hub.products.variants.show', [
+                    'product' => $this->product,
+                    'variant' => $record,
+                ]);
             })->heading(false),
             TextColumn::make('sku')->url(function ($record) {
                 return route('hub.products.variants.show', [
