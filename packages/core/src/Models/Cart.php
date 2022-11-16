@@ -159,7 +159,7 @@ class Cart extends BaseModel
      */
     public function lines()
     {
-        return $this->hasMany(CartLine::class, 'cart_id', 'id');
+        return $this->hasMany(CartLine::class, 'cart_id', 'id')->whereHas('purchasable');
     }
 
     /**
