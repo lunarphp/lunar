@@ -6,7 +6,7 @@
          }">
         <div class="flex-1">
             <a href="{{ route('hub.index') }}"
-               class="flex items-center w-full h-16 px-2">
+               class="flex items-center w-full h-16 px-4">
                 <x-hub::branding.logo x-cloak
                                       x-show="showExpandedMenu" />
                 <x-hub::branding.logo x-cloak

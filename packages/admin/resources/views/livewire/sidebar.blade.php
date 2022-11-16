@@ -1,7 +1,7 @@
 <div>
     <x-hub::menu handle="sidebar"
                  current="{{ request()->route()->getName() }}">
-        <ul>
+        <ul class="px-2">
             @foreach ($component->items as $item)
                 <li class="my-1">
                     <a href="{{ route($item->route) }}"

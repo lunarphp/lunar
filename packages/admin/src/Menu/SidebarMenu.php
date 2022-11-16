@@ -68,26 +68,20 @@ class SidebarMenu
                 ->icon('view-grid');
         });
 
-        $products->addItem(function ($item) {
-            $item
-                ->name(__('adminhub::menu.sidebar.collections'))
-                ->handle('hub.collection')
-                ->route('hub.collection-groups.index')
-                ->icon('collection');
-        });
+        $collections = $slot->section('hub.collections')
+            ->name(__('adminhub::menu.sidebar.collections'))
+            ->route('hub.collection-groups.index')
+            ->icon('collection');
 
         $orders = $slot->section('hub.orders')
             ->name(__('adminhub::menu.sidebar.orders'))
             ->route('hub.orders.index')
-            ->icon('users');
+            ->icon('cash');
 
-        $orders->addItem(function ($item) {
-            $item
-                ->name(__('adminhub::menu.sidebar.customers'))
-                ->handle('hub.customers')
-                ->route('hub.customers.index')
-                ->icon('cash');
-        });
+        $customers = $slot->section('hub.customers')
+            ->name(__('adminhub::menu.sidebar.customers'))
+            ->route('hub.customers.index')
+            ->icon('users');
 
         return $this;
     }
