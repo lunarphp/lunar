@@ -83,13 +83,6 @@ class CustomerShow extends Component
     public $uPage = 1;
 
     /**
-     * The users search page.
-     *
-     * @var int
-     */
-    public $usPage = 1;
-
-    /**
      * The search term for finding users.
      *
      * @var string
@@ -123,7 +116,6 @@ class CustomerShow extends Component
         'phPage',
         'ohPage',
         'uPage',
-        'usPage',
     ];
 
     protected $pageNames = [
