@@ -167,7 +167,7 @@ class CustomerShow extends Component
      */
     public function mount()
     {
-        $this->resetPage($this->pageNames[$this->tab] ?? null);
+        $this->resetPage($this->pageNames[$this->tab] ?? 'ohPage');
 
         $this->address = new Address;
         $this->syncedGroups = $this->customer->customerGroups->pluck('id')->map(fn ($id) => (string) $id)->toArray();
