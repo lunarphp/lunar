@@ -118,7 +118,12 @@ class CustomerShow extends Component
         'uPage',
     ];
 
-    protected $pageNames = [
+    /**
+     * The pagination page name.
+     *
+     * @var array
+     */
+    public $pageNames = [
         'order_history' => 'ohPage',
         'purchase_history' => 'phPage',
         'users' => 'uPage',
