@@ -30,7 +30,8 @@ class CustomShippingModifier extends ShippingModifier
 
         ShippingManifest::addOption(
             new ShippingOption(
-                description: 'Basic Delivery',
+                name: 'Basic Delivery',
+                description: 'A basic delivery option',
                 identifier: 'BASDEL',
                 price: new Price(500, $cart->currency, 1),
                 taxClass: $taxClass
