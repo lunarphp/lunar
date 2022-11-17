@@ -168,9 +168,11 @@
                         <tbody>
                             @foreach ($this->recentOrders as $order)
                                 <tr>
-                                    <td class="pt-4 text-sm"><a href="#"
-                                           class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">
-                                            {{ $order->reference }}</a>
+                                    <td class="pt-4 text-sm">
+                                        <a href="{{ route('hub.orders.show', $order->id) }}"
+                                           class="text-blue-600 hover:underline">
+                                            {{ $order->reference }}
+                                        </a>
                                     </td>
                                     <td class="pt-4 text-sm text-center">{{ $order->billingAddress->full_name }}</td>
                                     <td class="pt-4 text-sm text-center">{{ $order->lines_count }}</td>
