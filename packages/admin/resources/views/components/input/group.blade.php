@@ -3,7 +3,9 @@
            class="flex items-center text-sm font-medium text-gray-700">
         <span class="block">{{ $labelPrefix ?? null }}</span>
 
-        <span class="block">{{ $label }}>
+        <span class="block">
+            {{ $label }}
+
             @if ($required)
                 <sup class="text-xs text-red-600">&#42;</sup>
             @endif
@@ -12,14 +14,6 @@
 
     <div class="relative mt-1">
         {{ $slot }}
-
-        @if ($error && $errorIcon)
-            <div
-                 class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none peer-focus:hidden peer-hover:hidden">
-                <x-hub::icon ref="exclamation-circle"
-                             class="w-5 h-5 text-red-500" />
-            </div>
-        @endif
     </div>
 
     @if ($instructions)
@@ -27,7 +21,14 @@
     @endif
 
     @if ($error)
-        <p class="mt-2 text-sm text-red-600">{{ $error }}</p>
+        <div class="flex items-center gap-1 mt-2">
+            @if ($errorIcon)
+                <x-hub::icon ref="exclamation-circle"
+                             class="w-5 h-5 text-red-500" />
+            @endif
+
+            <p class="text-sm text-red-600">{{ $error }}</p>
+        </div>
     @endif
 
     @if (count($errors))
