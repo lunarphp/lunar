@@ -92,18 +92,8 @@
                          wire:key="image_{{ $key }}">
                         <div class="flex items-center w-full space-x-6">
                             @if (count($images) > 1)
-                            <div class="text-gray-400 cursor-grab hover:text-gray-500"
-                                 sort.handle>
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5">
-                                        <path stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                                    </svg>
+                                <div class="text-gray-400 cursor-grab hover:text-gray-700" sort.handle>
+                                    <x-hub::icon ref="selector" style="solid" />
                                 </div>
                             @endif
 
