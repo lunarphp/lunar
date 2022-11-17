@@ -3,8 +3,8 @@
 namespace Lunar\Tests\Unit\Facades;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
 use Lunar\Base\TaxManagerInterface;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Facades\Taxes;
 use Lunar\Tests\Stubs\TestTaxDriver;
 use Lunar\Tests\TestCase;

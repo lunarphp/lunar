@@ -103,11 +103,11 @@ class PasswordReset extends Component
             Mail::to($staff->email)->send(new ResetPasswordEmail(
                 encrypt($staff->id.'|'.$token)
             ));
-
-            $this->notify(
-                __('adminhub::notifications.password-reset.email_sent')
-            );
         }
+
+        $this->notify(
+            __('adminhub::notifications.password-reset.email_sent')
+        );
     }
 
     /**

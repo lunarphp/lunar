@@ -75,6 +75,7 @@ class ShippingManifestTest extends TestCase
 
         ShippingManifest::addOption(
             new ShippingOption(
+                name: 'Basic Delivery',
                 description: 'Basic Delivery',
                 identifier: 'BASDEL',
                 price: new Price(500, $this->cart->currency, 1),
@@ -94,6 +95,7 @@ class ShippingManifestTest extends TestCase
 
         ShippingManifest::addOption(
             new ShippingOption(
+                name: 'Basic Delivery',
                 description: 'Basic Delivery',
                 identifier: 'BASDEL',
                 price: new Price(500, $this->cart->currency, 1),
@@ -103,6 +105,7 @@ class ShippingManifestTest extends TestCase
 
         ShippingManifest::addOption(
             new ShippingOption(
+                name: 'Basic Delivery',
                 description: 'Basic Delivery',
                 identifier: 'BASDEL',
                 price: new Price(500, $this->cart->currency, 1),

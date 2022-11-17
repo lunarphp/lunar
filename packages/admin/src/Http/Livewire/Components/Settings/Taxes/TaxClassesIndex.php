@@ -53,6 +53,8 @@ class TaxClassesIndex extends Component
      */
     public function updatedTaxClassId($val)
     {
+        $this->resetErrorBag();
+
         if ($val == 'new') {
             $this->taxClass = new TaxClass([
                 'default' => false,
@@ -111,6 +113,8 @@ class TaxClassesIndex extends Component
      */
     public function save()
     {
+        $this->validate();
+
         DB::transaction(function () {
             if ($this->deleting) {
                 $this->taxClass->taxRateAmounts()->delete();

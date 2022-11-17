@@ -20,6 +20,7 @@
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
         "livewire/livewire": "^2.0",
+        "lukascivil/treewalker": "0.9.1",
         "lunarphp/licensing": "dev-main",
         "lunarphp/livewire-tables": "self.version",
         "php": "^8.0",
