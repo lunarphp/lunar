@@ -59,12 +59,17 @@ class Price
      *
      * @return string
      */
-    protected function decimal()
+    protected function decimal($locale = null)
     {
-        return round(
-            ($this->value / $this->currency->factor),
-            $this->currency->decimal_places
-        );
+        if (! $locale) {
+            $locale = App::currentLocale();
+        }
+
+        $formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+
+        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $this->currency->decimal_places);
+
+        return $formatter->format($this->value / $this->currency->factor);
     }
 
     /**
@@ -83,6 +88,8 @@ class Price
         $formatter->setTextAttribute(NumberFormatter::CURRENCY_CODE, $this->currency->code);
         $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $this->currency->decimal_places);
 
-        return $formatter->format($this->decimal());
+        return $formatter->format(
+            $this->decimal($locale)
+        );
     }
 }
