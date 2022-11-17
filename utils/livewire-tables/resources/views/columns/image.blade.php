@@ -4,9 +4,7 @@
     @endif
 
     @if ($thumbnail = $value)
-        <img class="lt-rounded lt-w-16 lt-h-16"
-             src="{{ $thumbnail }}"
-             loading="lazy" />
+        <x-hub::thumbnail :src="$thumbnail" />
     @else
         <x-hub::icon ref="photograph"
                      class="lt-w-16 lt-h-16 lt-text-gray-300" />

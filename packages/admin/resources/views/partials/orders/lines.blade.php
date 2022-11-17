@@ -10,8 +10,7 @@
 
                 <div class="flex-shrink-0">
                     @if ($thumbnail = $line->purchasable->getThumbnail())
-                        <img class="w-16 h-16 rounded"
-                             src="{{ $thumbnail->getUrl('small') }}" />
+                        <x-hub::thumbnail :src="$thumbnail->getUrl('small')" />
                     @else
                         <x-hub::icon ref="photograph"
                                      class="w-16 h-16 text-gray-300" />

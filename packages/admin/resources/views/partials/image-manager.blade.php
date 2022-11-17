@@ -103,8 +103,7 @@
                             <div class="flex flex-shrink-0">
                                 <button type="button"
                                         wire:click="$set('images.{{ $key }}.preview', true)">
-                                    <img src="{{ $image['thumbnail'] }}"
-                                         class="w-16 h-16 rounded" />
+                                    <x-hub::thumbnail :src="$image['thumbnail']" />
                                 </button>
 
                                 <x-hub::modal wire:model="images.{{ $key }}.preview">
