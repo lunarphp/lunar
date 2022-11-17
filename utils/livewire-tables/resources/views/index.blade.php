@@ -76,7 +76,7 @@
                                            id="Search"
                                            placeholder="{{ $this->searchPlaceholder }}"
                                            wire:model.debounce.500ms="query"
-                                           class="lt-w-full lt-pl-10 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md lt-form-input focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 peer">
+                                           class="lt-w-full lt-pl-10 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md lt-form-input focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 lt-peer">
 
                                     <button wire:click="$set('query', '')"
                                             class="lt-absolute lt-top-1/2 -lt-translate-y-1/2 lt-right-2 lt-rounded-full lt-p-1 hover:lt-bg-gray-100 lt-transition peer-placeholder-shown:lt-hidden">
