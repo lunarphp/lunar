@@ -81,6 +81,9 @@ class BrandShow extends Component
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function validationAttributes()
     {
         $attributes = [];
