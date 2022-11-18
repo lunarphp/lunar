@@ -3,7 +3,7 @@
     <x-l-tables::button size="xs"
                         aria-label="Toggle Menu"
                         x-on:click="isActive = !isActive">
-        <span :class="{ 'lt-rotate-45': isActive }"
+        <span :class="{ 'lt-rotate-90': isActive }"
               class="lt-transition -lt-ml-1">
             <svg xmlns="http://www.w3.org/2000/svg"
                  viewBox="0 0 20 20"
@@ -26,7 +26,7 @@
          x-on:click.away="isActive = false"
          x-on:keydown.escape.window="isActive = false"
          role="menu"
-         class="lt-absolute lt-right-[calc(100%_+_1.5rem)] lt-z-50 lt-top-0 lt-w-48 lt-text-left lt-origin-top-right lt-bg-white lt-border lt-border-gray-100 lt-rounded-lg lt-shadow-sm">
+         class="lt-absolute lt-right-[calc(100%_+_1.5rem)] lt-z-50 lt-top-0 lt-w-48 lt-text-left lt-origin-top-right lt-bg-white lt-border lt-border-gray-100 lt-rounded-md lt-shadow-sm">
         <div class="p-2">
             @foreach ($this->actions as $actionIndex => $action)
                 @php
