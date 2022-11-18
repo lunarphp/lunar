@@ -277,7 +277,8 @@
                                     @endforeach
 
                                     @if (count($this->actions))
-                                        <x-l-tables::cell class="lt-text-right">
+                                        <x-l-tables::cell
+                                                          class="lt-text-right lt-sticky lt-inset-y-0 lt-right-0 lt-bg-white">
                                             <div class="lt-animate-pulse">
                                                 <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
                                             </div>
