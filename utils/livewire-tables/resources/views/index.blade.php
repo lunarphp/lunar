@@ -292,7 +292,8 @@
                                 <tr class="lt-bg-white even:lt-bg-gray-50"
                                     wire:key="table_row_{{ $row->id }}">
                                     @if ($this->bulkActions->count())
-                                        <x-l-tables::cell class="lt-w-10 lt-pr-0 lt-leading-none">
+                                        <x-l-tables::cell
+                                                          class="lt-w-10 lt-leading-none lt-sticky lt-left-0 lt-inset-y-0 {{ $loop->odd ? 'lt-bg-white' : 'lt-bg-gray-50' }}">
                                             <input type="checkbox"
                                                    x-model="selected"
                                                    value="{{ $row->id }}"
@@ -315,7 +316,8 @@
                                     @endforeach
 
                                     @if (count($this->actions))
-                                        <x-l-tables::cell class="lt-text-right">
+                                        <x-l-tables::cell
+                                                          class="lt-text-right lt-sticky lt-inset-y-0 lt-right-0 {{ $loop->odd ? 'lt-bg-white' : 'lt-bg-gray-50' }}">
                                             <x-l-tables::action-cell :actions="$this->actions"
                                                                      :record="$row" />
                                         </x-l-tables::cell>
