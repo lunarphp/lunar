@@ -3,21 +3,18 @@
     <x-l-tables::button size="xs"
                         aria-label="Toggle Menu"
                         x-on:click="isActive = !isActive">
-        <span :class="{ 'lt-rotate-90': isActive }"
-              class="lt-transition -lt-ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 20 20"
-                 fill="currentColor"
-                 class="lt-w-4 lt-h-4">
-                <path fill-rule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clip-rule="evenodd" />
-            </svg>
-        </span>
+        <span class="sr-only">Row actions</span>
 
-        <span>
-            Actions
-        </span>
+        <svg xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke-width="1.5"
+             stroke="currentColor"
+             class="w-5 h-5">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+        </svg>
     </x-l-tables::button>
 
     <div x-cloak
