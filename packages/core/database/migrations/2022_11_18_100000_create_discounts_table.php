@@ -12,6 +12,7 @@ class CreateDiscountsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('handle')->unique();
+            $table->string('coupon')->nullable()->unique();
             $table->string('type')->index();
             $table->dateTime('starts_at')->index();
             $table->dateTime('ends_at')->nullable()->index();

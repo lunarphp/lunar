@@ -193,6 +193,27 @@ abstract class AbstractDiscount extends Component
         }
     }
 
+    public function getSideMenuProperty()
+    {
+        return collect([
+            [
+                'title' => __('adminhub::menu.product.basic-information'),
+                'id' => 'basic-information',
+                'has_errors' => $this->errorBag->hasAny([
+                    'discount.name',
+                    'discount.handle',
+                    'discount.starts_at',
+                    'discount.ends_at',
+                ]),
+            ],
+            [
+                'title' => __('adminhub::menu.product.availability'),
+                'id' => 'availability',
+                'has_errors' => false,
+            ],
+        ]);
+    }
+
     /**
      * Render the livewire component.
      *
