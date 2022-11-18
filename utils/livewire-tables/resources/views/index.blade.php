@@ -217,7 +217,8 @@
                         <thead class="lt-bg-white">
                             <tr>
                                 @if (count($this->bulkActions))
-                                    <td class="lt-w-10 lt-py-3 lt-pl-4 lt-leading-none">
+                                    <td
+                                        class="lt-w-10 lt-py-3 lt-px-4 lt-leading-none lt-bg-white lt-sticky lt-inset-y-0 lt-left-0">
                                         <input type="checkbox"
                                                x-model="selectedAll"
                                                class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
