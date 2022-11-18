@@ -10,7 +10,7 @@ use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
 
-class ProductDiscount
+class BuyXGetY
 {
     protected Discount $discount;
 

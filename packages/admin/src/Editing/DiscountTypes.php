@@ -2,16 +2,16 @@
 
 namespace Lunar\Hub\Editing;
 
-use Lunar\DiscountTypes\Coupon;
-use Lunar\DiscountTypes\ProductDiscount;
-use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Coupon as TypesCoupon;
-use Lunar\Hub\Http\Livewire\Components\Discounts\Types\ProductDiscount as TypesProductDiscount;
+use Lunar\DiscountTypes\Discount;
+use Lunar\DiscountTypes\BuyXGetY;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY as TypesBuyXGetY;
 
 class DiscountTypes
 {
     protected $mapping = [
-        Coupon::class => TypesCoupon::class,
-        ProductDiscount::class => TypesProductDiscount::class,
+        Discount::class => TypesDiscount::class,
+        BuyXGetY::class => TypesBuyXGetY::class,
     ];
 
     public function getComponent($type)

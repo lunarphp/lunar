@@ -158,7 +158,7 @@ abstract class AbstractDiscount extends Component
                         'customer_group_id' => $group->id,
                         'scheduling' => false,
                         'enabled' => false,
-                        'status' => null,
+                        'status' => 'hidden',
                         'starts_at' => $pivot?->starts_at ?? null,
                         'ends_at' => $pivot?->ends_at ?? null,
                     ],
@@ -255,6 +255,21 @@ abstract class AbstractDiscount extends Component
             [
                 'title' => __('adminhub::menu.product.availability'),
                 'id' => 'availability',
+                'has_errors' => false,
+            ],
+            [
+                'title' => 'Limitations',
+                'id' => 'limitations',
+                'has_errors' => false,
+            ],
+            [
+                'title' => 'Conditions',
+                'id' => 'conditions',
+                'has_errors' => false,
+            ],
+            [
+                'title' => 'Discount Type',
+                'id' => 'type',
                 'has_errors' => false,
             ],
         ]);

@@ -9,7 +9,7 @@ use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
 
-class ProductDiscount extends AbstractDiscountType
+class BuyXGetY extends AbstractDiscountType
 {
     /**
      * The instance of the discount.
@@ -214,7 +214,7 @@ class ProductDiscount extends AbstractDiscountType
      */
     public function render()
     {
-        return view('adminhub::livewire.components.discounts.types.product-discount')
+        return view('adminhub::livewire.components.discounts.types.buy-x-get-y')
             ->layout('adminhub::layouts.base');
     }
 }

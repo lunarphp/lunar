@@ -6,8 +6,7 @@
     <div class="col-span-7">
         {{-- availability.customerGroups.{{ $group->id }}.enabled --}}
 
-        {{ $availability['customerGroups'][$group->id]['enabled'] ?? '0' }}
-      @if($availability['customerGroups'][$group->id]['status'] != 'hidden' || isset($availability['customerGroups'][$group->id]['enabled']))
+      @if($availability['customerGroups'][$group->id]['status'] != 'hidden' || $availability['customerGroups'][$group->id]['enabled'] ?? false)
       <button type="button" class="text-indigo-500 hover:underline" wire:click="$set('availability.customerGroups.{{ $group->id }}.scheduling', true)">
         @if($startDate = $availability['customerGroups'][$group->id]['starts_at'])
           @if($endDate = $availability['customerGroups'][$group->id]['ends_at'])

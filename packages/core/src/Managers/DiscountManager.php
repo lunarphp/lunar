@@ -6,8 +6,8 @@ use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\Validation\CouponValidator;
-use Lunar\DiscountTypes\Coupon;
-use Lunar\DiscountTypes\ProductDiscount;
+use Lunar\DiscountTypes\Discount as TypesDiscount;
+use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Models\Cart;
 use Lunar\Models\Discount;
 
@@ -26,8 +26,8 @@ class DiscountManager implements DiscountManagerInterface
      * @var array
      */
     protected $types = [
-        Coupon::class,
-        ProductDiscount::class,
+        TypesDiscount::class,
+        BuyXGetY::class,
     ];
 
     /**

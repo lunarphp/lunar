@@ -7,7 +7,7 @@ use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Collection;
 
-class Coupon extends AbstractDiscountType
+class Discount extends AbstractDiscountType
 {
     /**
      * Return the name of the discount.
@@ -16,7 +16,7 @@ class Coupon extends AbstractDiscountType
      */
     public function getName(): string
     {
-        return 'Coupon';
+        return 'Discount';
     }
 
     /**

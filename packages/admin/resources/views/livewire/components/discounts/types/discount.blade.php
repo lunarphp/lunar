@@ -1,13 +1,4 @@
 <div class="space-y-4">
-    <x-hub::input.group
-        for="coupon"
-        label="Coupon"
-        instructions="Coupon codes are case insensitive"
-        :error="$errors->first('discount.data.coupon')"
-    >
-        <x-hub::input.text wire:model.lazy="discount.data.coupon" />
-    </x-hub::input.group>
-
     <div>
         <button
             wire:click="$set('discount.data.fixed_value', false)"
