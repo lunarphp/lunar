@@ -21,7 +21,12 @@
                 </div>
 
                 <div id="availability">
-                    @include('adminhub::partials.forms.discount.availability')
+                    @include('adminhub::partials.availability', [
+                        'channels' => true,
+                        'type' => 'discount',
+                        'customerGroups' => true,
+                        'customerGroupType' => 'toggle',
+                    ])
                 </div>
             </div>
         </div>

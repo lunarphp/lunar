@@ -14,11 +14,13 @@ use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 
 abstract class AbstractDiscount extends Component
 {
     use WithLanguages;
     use Notifies;
+    use HasAvailability;
 
     /**
      * The instance of the discount.
@@ -44,6 +46,13 @@ abstract class AbstractDiscount extends Component
      * @var Currency
      */
     public Currency $currency;
+
+    /**
+     * Define availability properties.
+     *
+     * @var array
+     */
+    public $availability = [];
 
     /**
      * Returns the currencies computed property.
@@ -78,6 +87,7 @@ abstract class AbstractDiscount extends Component
         $this->currency = Currency::getDefault();
         $this->selectedBrands = $this->discount->brands->pluck('id')->toArray();
         $this->selectedCollections = $this->discount->collections->pluck('id')->toArray();
+        $this->syncAvailability();
     }
 
     /**
@@ -119,6 +129,42 @@ abstract class AbstractDiscount extends Component
     public function syncDiscountData(array $data)
     {
         $this->discount->data = $data;
+    }
+
+    public function syncAvailability()
+    {
+        $this->availability = [
+            'channels' => $this->channels->mapWithKeys(function ($channel) {
+                // $productChannel = $this->deal->channels->first(fn ($assoc) => $assoc->id == $channel->id);
+                $productChannel = null;
+                return [
+                    $channel->id => [
+                        'channel_id' => $channel->id,
+                        'starts_at' => $productChannel ? $productChannel->pivot->starts_at : null,
+                        'ends_at' => $productChannel ? $productChannel->pivot->ends_at : null,
+                        'enabled' => $productChannel ? $productChannel->pivot->enabled : false,
+                        'scheduling' => false,
+                    ],
+                ];
+            }),
+            'customerGroups' => $this->customerGroups->mapWithKeys(function ($group) {
+                // $productGroup = $this->product->customerGroups->where('id', $group->id)->first();
+
+                // $pivot = $productGroup->pivot ?? null;
+
+                $pivot = null;
+                return [
+                    $group->id => [
+                        'customer_group_id' => $group->id,
+                        'scheduling' => false,
+                        'enabled' => false,
+                        'status' => null,
+                        'starts_at' => $pivot?->starts_at ?? null,
+                        'ends_at' => $pivot?->ends_at ?? null,
+                    ],
+                ];
+            }),
+        ];
     }
 
     /**
