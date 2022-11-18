@@ -319,7 +319,7 @@
 
                                     @if (count($this->actions))
                                         <x-l-tables::cell
-                                                          class="lt-text-right lt-sticky lt-inset-y-0 lt-right-0 -lt-z-10 {{ $loop->odd ? 'lt-bg-white' : 'lt-bg-gray-50' }}">
+                                                          class="lt-text-right lt-sticky lt-inset-y-0 lt-right-0 {{ $loop->odd ? 'lt-bg-white' : 'lt-bg-gray-50' }}">
                                             <x-l-tables::action-cell :actions="$this->actions"
                                                                      :record="$row" />
                                         </x-l-tables::cell>
