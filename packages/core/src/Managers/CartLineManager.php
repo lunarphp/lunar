@@ -40,7 +40,11 @@ class CartLineManager
             $billingAddress
         );
 
-        return $pipeline->send($line)->via('calculated')->thenReturn();
+        $this->cartLine = $pipeline->send($line)->via('calculated')->thenReturn();
+
+        $this->cartLine->cacheProperties();
+
+        return $this->cartLine;
     }
 
     /**

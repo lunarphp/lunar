@@ -23,7 +23,7 @@
                     </div>
 
                     <x-l-tables::button theme="primary"
-                                      wire:click="saveSearch">
+                                        wire:click="saveSearch">
                         Save Search
                     </x-l-tables::button>
                 </div>
@@ -105,9 +105,9 @@
                                 <div
                                      class="lt-flex lt-items-stretch lt-overflow-hidden lt-text-gray-600 lt-transition lt-bg-white lt-border lt-border-gray-200 lt-rounded-md hover:lt-shadow-sm focus-within:lt-ring focus-within:lt-ring-blue-100">
                                     <x-l-tables::button size="xs"
-                                                      aria-label="Delete Saved Search"
-                                                      wire:click="deleteSavedSearch({{ $savedSearch['key'] }})"
-                                                      class="!lt-border-0 !lt-rounded-r-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
+                                                        aria-label="Delete Saved Search"
+                                                        wire:click="deleteSavedSearch({{ $savedSearch['key'] }})"
+                                                        class="!lt-border-0 !lt-rounded-r-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              fill="none"
                                              viewBox="0 0 24 24"
@@ -121,9 +121,9 @@
                                     </x-l-tables::button>
 
                                     <x-l-tables::button size="xs"
-                                                      aria-label="Apply Saved Search"
-                                                      wire:click="applySavedSearch({{ $savedSearch['key'] }})"
-                                                      class="!lt-border-y-0 !lt-border-r-0 !lt-rounded-l-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
+                                                        aria-label="Apply Saved Search"
+                                                        wire:click="applySavedSearch({{ $savedSearch['key'] }})"
+                                                        class="!lt-border-y-0 !lt-border-r-0 !lt-rounded-l-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
                                         <span @class([
                                             'lt-inline-flex lt-items-center lt-gap-2',
                                             'lt-text-blue-600' => $this->savedSearch == $savedSearch['key'],
@@ -248,7 +248,8 @@
                                     @endif
 
                                     @foreach ($this->columns as $column)
-                                        <x-l-tables::cell wire:key="loading_column_{{ $column->field }}_{{ $id }}">
+                                        <x-l-tables::cell
+                                                          wire:key="loading_column_{{ $column->field }}_{{ $id }}">
                                             <div class="lt-animate-pulse">
                                                 <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
                                             </div>
@@ -282,7 +283,7 @@
 
                                     @foreach ($this->columns as $column)
                                         <x-l-tables::cell :sort="true"
-                                                        wire:key="column_{{ $column->field }}_{{ $row->id }}">
+                                                          wire:key="column_{{ $column->field }}_{{ $row->id }}">
                                             @if ($column->isLivewire())
                                                 <livewire:is :component="$column->getLivewire()" />
                                             @elseif($column->isViewComponent())
@@ -297,7 +298,7 @@
                                     @if (count($this->actions))
                                         <x-l-tables::cell class="lt-text-right">
                                             <x-l-tables::action-cell :actions="$this->actions"
-                                                                   :record="$row" />
+                                                                     :record="$row" />
                                         </x-l-tables::cell>
                                     @endif
                                 </tr>
@@ -312,7 +313,7 @@
     </div>
 
     @if ($hasPagination)
-        <div class="lt-mt-4">
+        <div class="lt-mt-4 lt-pagination">
             {{ $this->rows->links() }}
         </div>
     @endif

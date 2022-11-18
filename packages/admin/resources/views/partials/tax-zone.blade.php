@@ -178,14 +178,16 @@
                                                 for="name"
                                                 required
                                                 :error="$errors->first('taxRates.' . $taxRateIndex . '.name')">
-                                <x-hub::input.text wire:model="taxRates.{{ $taxRateIndex }}.name" />
+                                <x-hub::input.text wire:model="taxRates.{{ $taxRateIndex }}.name" :error="$errors->first('taxRates.' . $taxRateIndex . '.name')" />
                             </x-hub::input.group>
 
                             <x-hub::input.group :label="__('adminhub::inputs.priority.label')"
                                                 for="priority"
+                                                required
                                                 :error="$errors->first('taxRates.' . $taxRateIndex . '.priority')">
                                 <x-hub::input.text type="number"
-                                                   wire:model="taxRates.{{ $taxRateIndex }}.priority" />
+                                                   wire:model="taxRates.{{ $taxRateIndex }}.priority"
+                                                   :error="$errors->first('taxRates.' . $taxRateIndex . '.priority')" />
                             </x-hub::input.group>
                         </div>
 

@@ -52,7 +52,7 @@ class CartSessionManager implements CartSessionInterface
             $this->fetchOrCreate(create:true);
         }
 
-        return $this->cart->getManager();
+        return $this->cart;
     }
 
     /**
@@ -61,7 +61,7 @@ class CartSessionManager implements CartSessionInterface
     public function associate(Cart $cart, Authenticatable $user, $policy)
     {
         $this->use(
-            $cart->getManager()->associate($user, $policy)
+            $cart->associate($user, $policy)
         );
     }
 
@@ -106,7 +106,7 @@ class CartSessionManager implements CartSessionInterface
             return $this->createNewCart();
         }
 
-        return $this->cart->getManager()->getCart();
+        return $this->cart->calculate();
     }
 
     /**
@@ -210,6 +210,9 @@ class CartSessionManager implements CartSessionInterface
 
     public function __call($method, $args)
     {
-        return $this->manager()->{$method}(...$args);
+        if (!$this->cart) {
+            $this->cart = $this->fetchOrCreate(true);
+        }
+        return $this->cart->{$method}(...$args);
     }
 }
