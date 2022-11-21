@@ -151,9 +151,9 @@ trait Searchable
     {
         $engines = config('lunar.search.engine_map', []);
 
-        if (isset($engines[self::class])) {
+        if (isset($engines[static::class])) {
             return app(EngineManager::class)->engine(
-                $engines[self::class]
+                $engines[static::class]
             );
         }
 
