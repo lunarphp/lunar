@@ -3,7 +3,9 @@
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Lunar\Facades\Discounts;
@@ -135,14 +137,13 @@ abstract class AbstractDiscount extends Component
     {
         $this->availability = [
             'channels' => $this->channels->mapWithKeys(function ($channel) {
-                // $productChannel = $this->deal->channels->first(fn ($assoc) => $assoc->id == $channel->id);
-                $productChannel = null;
+                $discountChannel = $this->discount->channels->first(fn ($assoc) => $assoc->id == $channel->id);
                 return [
                     $channel->id => [
                         'channel_id' => $channel->id,
-                        'starts_at' => $productChannel ? $productChannel->pivot->starts_at : null,
-                        'ends_at' => $productChannel ? $productChannel->pivot->ends_at : null,
-                        'enabled' => $productChannel ? $productChannel->pivot->enabled : false,
+                        'starts_at' => $discountChannel ? $discountChannel->pivot->starts_at : null,
+                        'ends_at' => $discountChannel ? $discountChannel->pivot->ends_at : null,
+                        'enabled' => $discountChannel ? $discountChannel->pivot->enabled : false,
                         'scheduling' => false,
                     ],
                 ];
@@ -218,15 +219,47 @@ abstract class AbstractDiscount extends Component
             });
         })->validate();
 
-        $this->discount->save();
+        DB::transaction(function () {
 
-        $this->discount->brands()->sync(
-            $this->selectedBrands
-        );
+            $this->discount->save();
 
-        $this->discount->collections()->sync(
-            $this->selectedCollections
-        );
+            $this->discount->brands()->sync(
+                $this->selectedBrands
+            );
+
+            $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
+                return [
+                    $channel['channel_id'] => [
+                        'starts_at' => ! $channel['enabled'] ? null : $channel['starts_at'],
+                        'ends_at' => ! $channel['enabled'] ? null : $channel['ends_at'],
+                        'enabled' => $channel['enabled'],
+                    ],
+                ];
+            });
+
+            $cgAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
+                $data = Arr::only($group, ['starts_at', 'ends_at']);
+
+                $data['visible'] = in_array($group['status'], ['purchasable', 'visible']);
+                $data['enabled'] = $group['enabled'];
+
+                return [
+                    $group['customer_group_id'] => $data,
+                ];
+            });
+
+
+            $this->discount->customerGroups()->sync($cgAvailability);
+
+            $this->discount->channels()->sync($channels);
+
+            $this->discount->collections()->sync(
+                $this->selectedCollections
+            );
+
+        });
+
+
 
         $this->emit('discount.saved', $this->discount->id);
 

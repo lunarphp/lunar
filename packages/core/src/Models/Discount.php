@@ -4,15 +4,20 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasChannels;
+use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\DiscountFactory;
 
 class Discount extends BaseModel
 {
     use HasFactory,
-        HasTranslations;
+        HasTranslations,
+        HasChannels,
+        HasCustomerGroups;
 
     protected $guarded = [];
 
@@ -75,6 +80,27 @@ class Discount extends BaseModel
             Collection::class,
             "{$prefix}collection_discount"
         )->withTimestamps();
+    }
+
+    /**
+     * Return the customer groups relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function customerGroups(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            CustomerGroup::class,
+            "{$prefix}customer_group_discount"
+        )->withPivot([
+            'purchasable',
+            'visible',
+            'enabled',
+            'starts_at',
+            'ends_at',
+        ])->withTimestamps();
     }
 
     public function brands()

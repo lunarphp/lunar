@@ -12,8 +12,11 @@
             {{ $discount->name }}
         </h1>
     </div>
-
-    @include('adminhub::partials.forms.discount')
+    <form action="#"
+      method="POST"
+      wire:submit.prevent="save">
+        @include('adminhub::partials.forms.discount')
+    </form>
 
     {{-- <div class="space-y-4">
 
