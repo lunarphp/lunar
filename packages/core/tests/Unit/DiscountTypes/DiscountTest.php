@@ -17,7 +17,7 @@ use Lunar\Tests\TestCase;
  * @group getcandy.discounts
  * @group getcandy.discounts.coupon
  */
-class CouponTest extends TestCase
+class DiscountTest extends TestCase
 {
     use RefreshDatabase;
 

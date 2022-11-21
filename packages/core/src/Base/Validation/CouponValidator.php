@@ -14,6 +14,6 @@ class CouponValidator implements CouponValidatorInterface
             ->where(function ($query) {
                 $query->whereNull('max_uses')
                     ->orWhereRaw('uses < max_uses');
-            })->where('data->coupon', '=', strtoupper($coupon))->exists();
+            })->where('coupon', '=', strtoupper($coupon))->exists();
     }
 }

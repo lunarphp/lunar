@@ -15,7 +15,8 @@ use Lunar\Tests\Stubs\TestDiscountType;
 use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.discounts
+ * @group lunar.discounts
+ * @group lunar.discounts.managers
  */
 class DiscountManagerTest extends TestCase
 {
@@ -107,8 +108,8 @@ class DiscountManagerTest extends TestCase
         Discount::factory()->create([
             'type' => Coupon::class,
             'name' => 'Test Coupon',
+            'coupon' => '10OFF',
             'data' => [
-                'coupon' => '10OFF',
                 'fixed_value' => false,
                 'percentage' => 10,
             ],
