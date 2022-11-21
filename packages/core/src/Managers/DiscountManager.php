@@ -3,16 +3,25 @@
 namespace Lunar\Managers;
 
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\Validation\CouponValidator;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\DiscountTypes\Discount as TypesDiscount;
 use Lunar\Models\Cart;
+use Lunar\Models\Channel;
 use Lunar\Models\Discount;
 
 class DiscountManager implements DiscountManagerInterface
 {
+    /**
+     * The current channels.
+     *
+     * @var null|Collection<Channel>
+     */
+    protected ?Collection $channels = null;
+
     /**
      * The available discounts
      *
@@ -37,9 +46,50 @@ class DiscountManager implements DiscountManagerInterface
      */
     protected Collection $applied;
 
+    /**
+     * Instantiate the class.
+     */
     public function __construct()
     {
         $this->applied = collect();
+        $this->channels = collect();
+    }
+
+    /**
+     * Set a single channel or a collection.
+     *
+     * @param Channel|iterable $channel
+     *
+     * @return self
+     */
+    public function channel(Channel|iterable $channel): self
+    {
+        $channels = collect(
+            !is_iterable($channel) ? [$channel] : $channel
+        );
+
+        if ($nonChannel = $channels->filter(fn($channel) => !$channel instanceof Channel)->first()) {
+            throw new InvalidArgumentException(
+                __('lunar::exceptions.discounts.invalid_channel_type', [
+                    'expected' => Channel::class,
+                    'actual' => get_class($nonChannel),
+
+                ])
+            );
+        }
+        $this->channels = $channels;
+
+        return $this;
+    }
+
+    /**
+     * Return the applied channels.
+     *
+     * @return Collection
+     */
+    public function getChannels(): Collection
+    {
+        return $this->channels;
     }
 
     public function addType($classname): self

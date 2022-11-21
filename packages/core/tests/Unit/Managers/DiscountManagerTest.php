@@ -4,12 +4,15 @@ namespace Lunar\Tests\Unit\Managers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\DiscountTypes\Coupon;
 use Lunar\Managers\DiscountManager;
 use Lunar\Models\CartLine;
+use Lunar\Models\Channel;
 use Lunar\Models\Discount;
+use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\TestDiscountType;
 use Lunar\Tests\TestCase;
@@ -29,6 +32,40 @@ class DiscountManagerTest extends TestCase
     {
         $manager = app(DiscountManagerInterface::class);
         $this->assertInstanceOf(DiscountManager::class, $manager);
+    }
+
+    /** @test */
+    public function can_set_channel()
+    {
+        $manager = app(DiscountManagerInterface::class);
+
+        $channel = Channel::factory()->create();
+
+        $this->assertCount(0, $manager->getChannels());
+
+        $manager->channel($channel);
+
+        $this->assertCount(1, $manager->getChannels());
+
+        $channels = Channel::factory(2)->create();
+
+        $manager->channel($channels);
+
+        $this->assertCount(2, $manager->getChannels());
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $manager->channel(Product::factory(2)->create());
+    }
+
+
+    /**
+    * @test
+    * @group moomoo
+    */
+    public function can_restrict_discounts_to_channel()
+    {
+
     }
 
     /**
