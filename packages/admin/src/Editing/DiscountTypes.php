@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Editing;
 
-use Lunar\DiscountTypes\Discount;
 use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
+use Lunar\DiscountTypes\Discount;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY as TypesBuyXGetY;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
 
 class DiscountTypes
 {

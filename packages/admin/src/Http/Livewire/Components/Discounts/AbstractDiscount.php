@@ -10,13 +10,13 @@ use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Lunar\Facades\Discounts;
 use Lunar\Hub\Editing\DiscountTypes;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
-use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 
 abstract class AbstractDiscount extends Component
 {
@@ -138,6 +138,7 @@ abstract class AbstractDiscount extends Component
         $this->availability = [
             'channels' => $this->channels->mapWithKeys(function ($channel) {
                 $discountChannel = $this->discount->channels->first(fn ($assoc) => $assoc->id == $channel->id);
+
                 return [
                     $channel->id => [
                         'channel_id' => $channel->id,
@@ -154,6 +155,7 @@ abstract class AbstractDiscount extends Component
                 // $pivot = $productGroup->pivot ?? null;
 
                 $pivot = null;
+
                 return [
                     $group->id => [
                         'customer_group_id' => $group->id,
@@ -220,7 +222,6 @@ abstract class AbstractDiscount extends Component
         })->validate();
 
         DB::transaction(function () {
-
             $this->discount->save();
 
             $this->discount->brands()->sync(
@@ -248,7 +249,6 @@ abstract class AbstractDiscount extends Component
                 ];
             });
 
-
             $this->discount->customerGroups()->sync($cgAvailability);
 
             $this->discount->channels()->sync($channels);
@@ -256,10 +256,7 @@ abstract class AbstractDiscount extends Component
             $this->discount->collections()->sync(
                 $this->selectedCollections
             );
-
         });
-
-
 
         $this->emit('discount.saved', $this->discount->id);
 

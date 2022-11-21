@@ -4,7 +4,6 @@ namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\LivewireTables\Components\Columns\BadgeColumn;
-use Lunar\LivewireTables\Components\Columns\ImageColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\LivewireTables\Components\Table;
 use Lunar\Models\Discount;
@@ -30,7 +29,7 @@ class DiscountsTable extends Table
     {
         $this->tableBuilder->baseColumns([
             BadgeColumn::make('status', function ($record) {
-                $active = $record->starts_at?->isPast() && !$record->ends_at?->isPast();
+                $active = $record->starts_at?->isPast() && ! $record->ends_at?->isPast();
                 $expired = $record->ends_at?->isPast();
                 $future = $record->starts_at?->isFuture();
 
@@ -48,8 +47,8 @@ class DiscountsTable extends Table
             })->states(function ($record) {
                 return [
                     'info' => $record->starts_at?->isFuture(),
-                    'pending' => !$record->starts_at?->isPast(),
-                    'success' => $record->starts_at?->isPast() && !$record->ends_at?->isPast(),
+                    'pending' => ! $record->starts_at?->isPast(),
+                    'success' => $record->starts_at?->isPast() && ! $record->ends_at?->isPast(),
                     'danger' => $record->ends_at?->isPast(),
                 ];
             }),

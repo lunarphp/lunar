@@ -2,9 +2,7 @@
 
 namespace Lunar\DiscountTypes;
 
-use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\DataTypes\Price;
-use Lunar\Facades\Discounts;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
@@ -121,7 +119,7 @@ class BuyXGetY
                 1
             );
 
-            if (!$cart->freeItems) {
+            if (! $cart->freeItems) {
                 $cart->freeItems = collect();
             }
 

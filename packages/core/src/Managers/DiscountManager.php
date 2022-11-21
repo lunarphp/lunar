@@ -6,8 +6,8 @@ use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\Validation\CouponValidator;
-use Lunar\DiscountTypes\Discount as TypesDiscount;
 use Lunar\DiscountTypes\BuyXGetY;
+use Lunar\DiscountTypes\Discount as TypesDiscount;
 use Lunar\Models\Cart;
 use Lunar\Models\Discount;
 

@@ -4,7 +4,6 @@ namespace Lunar\Tests\Unit\DiscountTypes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\Coupon;
-use Lunar\Managers\CartManager;
 use Lunar\Models\Brand;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;

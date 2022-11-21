@@ -4,7 +4,6 @@ namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Support\Str;
 use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
-use Lunar\DiscountTypes\ProductDiscount;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 
@@ -29,7 +28,7 @@ class DiscountCreate extends AbstractDiscount
         ]);
 
         $this->currency = Currency::getDefault();
-            $this->syncAvailability();
+        $this->syncAvailability();
     }
 
     /**

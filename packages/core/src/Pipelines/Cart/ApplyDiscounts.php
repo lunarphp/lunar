@@ -3,8 +3,8 @@
 namespace Lunar\Pipelines\Cart;
 
 use Closure;
-use Lunar\Models\Cart;
 use Lunar\Facades\Discounts;
+use Lunar\Models\Cart;
 
 final class ApplyDiscounts
 {

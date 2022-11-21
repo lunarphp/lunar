@@ -41,7 +41,6 @@ class Discount extends AbstractDiscountType
             return $cart;
         }
 
-
         if ($data['fixed_value']) {
             return $this->applyFixedValue(
                 values: $data['fixed_values'],
