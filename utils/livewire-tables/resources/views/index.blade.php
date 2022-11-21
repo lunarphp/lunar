@@ -322,7 +322,7 @@
                                                           class="lt-text-right lt-sticky lt-inset-y-0 lt-right-0 {{ $loop->odd ? 'lt-bg-white' : 'lt-bg-gray-50' }}">
                                             <x-l-tables::action-cell :actions="$this->actions"
                                                                      :record="$row"
-                                                                     :halfway="$loop->iteration > $loop->count / 2" /> />
+                                                                     :halfway="$loop->iteration > $loop->count / 2" />
                                         </x-l-tables::cell>
                                     @endif
                                 </tr>
