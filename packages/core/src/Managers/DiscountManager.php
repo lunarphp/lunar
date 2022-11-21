@@ -11,6 +11,7 @@ use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\DiscountTypes\Discount as TypesDiscount;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 
 class DiscountManager implements DiscountManagerInterface
@@ -21,6 +22,13 @@ class DiscountManager implements DiscountManagerInterface
      * @var null|Collection<Channel>
      */
     protected ?Collection $channels = null;
+
+    /**
+     * The current customer groups
+     *
+     * @var null|Collection<CustomerGroup>
+     */
+    protected ?Collection $customerGroups = null;
 
     /**
      * The available discounts
@@ -53,6 +61,7 @@ class DiscountManager implements DiscountManagerInterface
     {
         $this->applied = collect();
         $this->channels = collect();
+        $this->customerGroups = collect();
     }
 
     /**
@@ -70,14 +79,41 @@ class DiscountManager implements DiscountManagerInterface
 
         if ($nonChannel = $channels->filter(fn($channel) => !$channel instanceof Channel)->first()) {
             throw new InvalidArgumentException(
-                __('lunar::exceptions.discounts.invalid_channel_type', [
+                __('lunar::exceptions.discounts.invalid_type', [
                     'expected' => Channel::class,
                     'actual' => get_class($nonChannel),
 
                 ])
             );
         }
+
         $this->channels = $channels;
+
+        return $this;
+    }
+
+    /**
+     * Set a single customer group or a collection.
+     *
+     * @param CustomerGroup|iterable $customerGroups
+     *
+     * @return self
+     */
+    public function customerGroup(CustomerGroup|iterable $customerGroups): self
+    {
+        $customerGroups = collect(
+            !is_iterable($customerGroups) ? [$customerGroups] : $customerGroups
+        );
+
+        if ($nonGroup = $customerGroups->filter(fn($channel) => !$channel instanceof CustomerGroup)->first()) {
+            throw new InvalidArgumentException(
+                __('lunar::exceptions.discounts.invalid_type', [
+                    'expected' => CustomerGroup::class,
+                    'actual' => get_class($nonGroup),
+                ])
+            );
+        }
+        $this->customerGroups = $customerGroups;
 
         return $this;
     }
@@ -90,6 +126,16 @@ class DiscountManager implements DiscountManagerInterface
     public function getChannels(): Collection
     {
         return $this->channels;
+    }
+
+    /**
+     * Return the applied customer groups.
+     *
+     * @return Collection
+     */
+    public function getCustomerGroups(): Collection
+    {
+        return $this->customerGroups;
     }
 
     public function addType($classname): self

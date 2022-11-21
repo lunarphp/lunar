@@ -11,6 +11,7 @@ use Lunar\DiscountTypes\Coupon;
 use Lunar\Managers\DiscountManager;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
@@ -58,6 +59,30 @@ class DiscountManagerTest extends TestCase
         $manager->channel(Product::factory(2)->create());
     }
 
+    /** @test */
+    public function can_set_customer_group()
+    {
+        $manager = app(DiscountManagerInterface::class);
+
+        $customerGroup = CustomerGroup::factory()->create();
+
+        $this->assertCount(0, $manager->getCustomerGroups());
+
+        $manager->customerGroup($customerGroup);
+
+        $this->assertCount(1, $manager->getCustomerGroups());
+
+        $customerGroups = CustomerGroup::factory(2)->create();
+
+        $manager->customerGroup($customerGroups);
+
+        $this->assertCount(2, $manager->getCustomerGroups());
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $manager->channel(Product::factory(2)->create());
+    }
+
 
     /**
     * @test
@@ -65,7 +90,7 @@ class DiscountManagerTest extends TestCase
     */
     public function can_restrict_discounts_to_channel()
     {
-
+        $this->markTestSkipped();
     }
 
     /**
