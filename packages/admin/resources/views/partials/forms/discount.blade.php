@@ -1,6 +1,23 @@
 <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
     <div class="space-y-6 lg:flex-1">
         <div class="space-y-6">
+            <div class="bg-white p-4 shadow rounded">
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <x-hub::input.group label="Priority" for="priority" instructions="Discounts with higher priority will be applied first.">
+                        <x-hub::input.select wire:model="discount.priority" id="priority">
+                            <option value="1">Low</option>
+                            <option value="10">High</option>
+                        </x-hub::input.select>
+                    </x-hub::input.group>
+
+                    <div class="flex items-center space-x-2">
+                        <x-hub::input.toggle wire:model="discount.stop" id="stop" />
+                        <label for="stop" class="cursor-pointer text-gray-800">
+                            {{ __('adminhub::components.discounts.show.stop.label') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div id="basic-information">
                 @include('adminhub::partials.forms.discount.basic-information')
             </div>
