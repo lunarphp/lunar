@@ -11,6 +11,8 @@ class ActionCell extends Component
 
     public $record;
 
+    public $halfway;
+
     /**
      * Create the component instance.
      *
@@ -18,10 +20,11 @@ class ActionCell extends Component
      * @param  null|string  $direction
      * @param  null|string  $multiColumn
      */
-    public function __construct(Collection $actions, $record)
+    public function __construct(Collection $actions, $record, $halfway)
     {
         $this->actions = $actions;
         $this->record = $record;
+        $this->halfway = $halfway;
     }
 
     /**
