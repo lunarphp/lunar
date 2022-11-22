@@ -16,6 +16,12 @@
     </header>
 
     <div class="space-y-1">
+        @if(!$this->purchasableConditions->count())
+            <div class="text-sm text-gray-600 border p-4 rounded">
+                No products currently selected
+            </div>
+        @endif
+
         @foreach($this->purchasableConditions as $product)
             <div
                 wire:key="condition_product_{{ $product->id }}"
@@ -44,7 +50,7 @@
 
     <header class="flex items-center justify-between">
         <div>
-            <strong>Product rewards</strong>
+            <strong>Qualifying Products</strong>
             <p class="text-sm text-gray-600">Select which products will be discounted if they exist in the cart and the above conditions are met.</p>
         </div>
         <div>
@@ -55,6 +61,12 @@
             ])
         </div>
     </header>
+
+    @if(!$this->purchasableRewards->count())
+        <div class="text-sm text-gray-600 border p-4 rounded">
+            No products currently selected
+        </div>
+    @endif
 
     <div class="space-y-1">
         @foreach($this->purchasableRewards as $product)
