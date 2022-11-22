@@ -103,6 +103,17 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
+     * Set the currency using the provided id.
+     *
+     * @param  int|string  $currencyId
+     * @return void
+     */
+    public function setCurrency($currencyId)
+    {
+        $this->currency = $this->currencies->first(fn ($currency) => $currency->id == $currencyId);
+    }
+
+    /**
      * Return the available discount types.
      *
      * @return array
