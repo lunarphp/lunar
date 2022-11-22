@@ -7,13 +7,15 @@
         </header>
 
         <div class="space-y-4">
-            <x-hub::input.group for="name" :label="__('adminhub::inputs.name')" :error="$errors->first('discount.name')">
-                <x-hub::input.text wire:model.lazy="discount.name" id="name" />
-            </x-hub::input.group>
+            <div class="grid grid-cols-2 gap-4">
+                <x-hub::input.group for="name" :label="__('adminhub::inputs.name')" :error="$errors->first('discount.name')">
+                    <x-hub::input.text wire:model.lazy="discount.name" id="name" />
+                </x-hub::input.group>
 
-            <x-hub::input.group for="handle" :label="__('adminhub::inputs.handle')" :error="$errors->first('discount.handle')" required>
-                <x-hub::input.text wire:model.defer="discount.handle" id="handle" />
-            </x-hub::input.group>
+                <x-hub::input.group for="handle" :label="__('adminhub::inputs.handle')" :error="$errors->first('discount.handle')" required>
+                    <x-hub::input.text wire:model.defer="discount.handle" id="handle" />
+                </x-hub::input.group>
+            </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
