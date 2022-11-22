@@ -47,45 +47,45 @@ class SidebarMenu
     {
         $slot = Menu::slot('sidebar');
 
-        $catalogGroup = $slot
-            ->group('hub.catalog')
-            ->name('Catalogue');
+        $catalogueGroup = $slot
+            ->group('hub.catalogue')
+            ->name(__('adminhub::menu.sidebar.catalogue'));
 
         $salesGroup = $slot
             ->group('hub.sales')
-            ->name('Sales');
+            ->name(__('adminhub::menu.sidebar.sales'));
 
-        $productGroup = $catalogGroup
+        $productGroup = $catalogueGroup
             ->section('hub.products')
-            ->name('Products')
+            ->name(__('adminhub::menu.sidebar.products'))
             ->handle('hub.products')
             ->route('hub.products.index')
             ->icon('shopping-bag');
 
-        $catalogGroup
+        $catalogueGroup
             ->section('hub.collections')
-            ->name('Collections')
+            ->name(__('adminhub::menu.sidebar.collections'))
             ->handle('hub.collection-groups')
             ->route('hub.collection-groups.index')
             ->icon('collection');
 
         $productGroup->addItem(function ($menuItem) {
             $menuItem
-                ->name('Products Types')
+                ->name(__('adminhub::menu.sidebar.product-types'))
                 ->handle('hub.product-types')
                 ->route('hub.product-types.index');
         });
 
         $productGroup->addItem(function ($menuItem) {
             $menuItem
-                ->name('Brands')
+                ->name(__('adminhub::menu.sidebar.brands'))
                 ->handle('hub.brands')
                 ->route('hub.brands.index');
         });
 
         $salesGroup->addItem(function ($menuItem) {
             $menuItem
-                ->name('Orders')
+                ->name(__('adminhub::menu.sidebar.orders'))
                 ->handle('hub.orders')
                 ->route('hub.orders.index')
                 ->icon('cash');
@@ -93,7 +93,7 @@ class SidebarMenu
 
         $salesGroup->addItem(function ($menuItem) {
             $menuItem
-                ->name('Customers')
+                ->name(__('adminhub::menu.sidebar.customers'))
                 ->handle('hub.customers')
                 ->route('hub.customers.index')
                 ->icon('users');
@@ -101,7 +101,7 @@ class SidebarMenu
 
         $salesGroup->addItem(function ($menuItem) {
             $menuItem
-                ->name('Discounts')
+                ->name(__('adminhub::menu.sidebar.discounts'))
                 ->handle('hub.discounts')
                 ->route('hub.index')
                 ->icon('ticket');
