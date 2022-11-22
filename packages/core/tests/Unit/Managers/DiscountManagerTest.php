@@ -90,7 +90,13 @@ class DiscountManagerTest extends TestCase
     */
     public function can_restrict_discounts_to_channel()
     {
-        $this->markTestSkipped();
+        $discount = Discount::factory()->create();
+
+        $this->assertEmpty($discount->channels);
+
+        $manager = app(DiscountManagerInterface::class);
+
+        $this->assertEmpty($manager->availableDiscounts());
     }
 
     /**
