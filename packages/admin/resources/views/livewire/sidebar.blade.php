@@ -1,9 +1,9 @@
 <div>
     <x-hub::menu handle="sidebar"
                  current="{{ request()->route()->getName() }}">
-        <ul class="px-2">
+        <ul class="px-2 space-y-4">
             @foreach ($component->items as $item)
-                <li class="my-1">
+                <li>
                     <a href="{{ route($item->route) }}"
                        @class([
                            'menu-link',
@@ -30,7 +30,7 @@
 
             @foreach ($component->sections as $section)
                 <li x-data="{ showSubMenu: false }"
-                    class="relative my-1">
+                    class="relative">
                     <button x-cloak
                             x-show="!showExpandedMenu"
                             x-on:click.prevent="!showExpandedMenu && (showSubMenu = !showSubMenu)"
@@ -44,37 +44,16 @@
                         </svg>
                     </button>
 
-                    <a href="{{ route($section->route) }}"
-                       @class([
-                           'menu-link',
-                           'menu-link--active' => $section->isActive(
-                               $component->attributes->get('current')
-                           ),
-                           'menu-link--inactive' => !$section->isActive(
-                               $component->attributes->get('current')
-                           ),
-                       ])
-                       :class="{ 'justify-center': !showExpandedMenu }">
-                        <span x-cloak>
-                            {!! $section->renderIcon('w-5 h-5') !!}
-                        </span>
-
-                        <span x-cloak
-                              x-show="showExpandedMenu"
-                              class="text-sm font-medium">
-                            {{ $section->name }}
-                        </span>
-                    </a>
+                    <p x-cloak
+                       x-show="showExpandedMenu"
+                       class="text-xs font-bold tracking-wide text-gray-600 uppercase">
+                        {{ $section->name }}
+                    </p>
 
                     @if (count($section->getItems()))
                         <ul x-cloak
                             x-show="showExpandedMenu || showSubMenu"
                             x-on:click.away="showSubMenu = false"
-                            :class="{
-                                'border-l border-gray-200 pl-5 ml-[calc(1rem_+_2px)]': showExpandedMenu,
-                                'absolute top-1.5 left-full ml-9 border border-gray-200 rounded-md bg-white p-2 w-64 shadow-sm z-50':
-                                    !showExpandedMenu,
-                            }"
                             class="mt-1">
                             @foreach ($section->getItems() as $item)
                                 <li class="my-1">
@@ -88,12 +67,36 @@
                                                $component->attributes->get('current')
                                            ),
                                        ])>
+                                        <span x-cloak>
+                                            {!! $item->renderIcon('w-5 h-5') !!}
+                                        </span>
+
                                         <span x-cloak
                                               x-show="showExpandedMenu || showSubMenu"
-                                              class="text-sm">
+                                              class="text-sm font-medium">
                                             {{ $item->name }}
                                         </span>
                                     </a>
+
+                                    <ul class="pl-4 ml-4 space-y-1 border-l border-gray-100">
+                                        <li>
+                                            <a href="#"
+                                               class="menu-link menu-link--inactive">
+                                                <span class="text-xs">
+                                                    Test
+                                                </span>
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a href="#"
+                                               class="menu-link menu-link--inactive">
+                                                <span class="text-xs">
+                                                    Test
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                             @endforeach
                         </ul>
