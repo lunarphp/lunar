@@ -15,14 +15,8 @@ class MenuSectionTest extends TestCase
     {
         $section = new MenuSection('products');
 
-        $section
-            ->name('Products')
-            ->route('hub.products.index')
-            ->icon('shopping-bag');
+        $section->name('Products');
 
         $this->assertEquals('Products', $section->name);
-        $this->assertEquals('hub.products.index', $section->route);
-        $this->assertEquals('shopping-bag', $section->icon);
-        $this->assertEquals('products', $section->getHandle());
     }
 }
