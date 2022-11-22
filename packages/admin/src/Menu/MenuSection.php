@@ -7,8 +7,8 @@ use Lunar\Hub\LunarHub;
 
 class MenuSection extends MenuSlot
 {
-    /**
-     * The display name of the menu section.
+        /**
+     * The display name of the menu group.
      *
      * @var string
      */
@@ -22,18 +22,18 @@ class MenuSection extends MenuSlot
     public $route;
 
     /**
+     * The handle for the menu group.
+     *
+     * @var string
+     */
+    public $handle;
+
+    /**
      * Reference to icon or full SVG.
      *
      * @var string
      */
     public $icon;
-
-    /**
-     * The positional order of the menu section.
-     *
-     * @var string|int
-     */
-    public $position;
 
     /**
      * Setter for the name property.
@@ -62,6 +62,19 @@ class MenuSection extends MenuSlot
     }
 
     /**
+     * Setter for the handle property.
+     *
+     * @param  string  $handle
+     * @return static
+     */
+    public function handle($handle)
+    {
+        $this->handle = $handle;
+
+        return $this;
+    }
+
+    /**
      * Setter for the icon property.
      *
      * @param  string  $icon
@@ -70,19 +83,6 @@ class MenuSection extends MenuSlot
     public function icon($icon)
     {
         $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Setter for the position property.
-     *
-     * @param  string|int  $position
-     * @return static
-     */
-    public function position($position)
-    {
-        $this->position = $position;
 
         return $this;
     }
@@ -99,7 +99,7 @@ class MenuSection extends MenuSlot
     }
 
     /**
-     * Determines whether this menu section is considered active.
+     * Determines whether this menu group is considered active.
      *
      * @param  string  $path
      * @return bool

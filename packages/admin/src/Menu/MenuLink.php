@@ -50,13 +50,6 @@ class MenuLink implements MenuItem
     public $component;
 
     /**
-     * The positional order of the menu link.
-     *
-     * @var string|int
-     */
-    public $position;
-
-    /**
      * Setter for the name property.
      *
      * @param  string  $name
@@ -130,19 +123,6 @@ class MenuLink implements MenuItem
     public function icon($icon)
     {
         $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Setter for the position property.
-     *
-     * @param  string|int  $position
-     * @return static
-     */
-    public function position($position)
-    {
-        $this->position = $position;
 
         return $this;
     }

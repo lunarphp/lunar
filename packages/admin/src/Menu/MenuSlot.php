@@ -4,6 +4,7 @@ namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Lunar\Hub\Menu\MenuGroup;
 
 class MenuSlot
 {
@@ -13,6 +14,13 @@ class MenuSlot
      * @var \Illuminate\Support\Collection
      */
     protected $sections;
+
+    /**
+     * The groups which are in the slot.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $groups;
 
     /**
      * The items which are in the slot.
@@ -38,6 +46,7 @@ class MenuSlot
         $this->handle = $handle;
         $this->items = collect();
         $this->sections = collect();
+        $this->groups = collect();
     }
 
     /**
@@ -108,6 +117,16 @@ class MenuSlot
     }
 
     /**
+     * Get the sections available.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
      * Get the handle of the slot.
      *
      * @return string
@@ -141,123 +160,25 @@ class MenuSlot
     }
 
     /**
-     * Remove an existing menu item on the slot.
+     * Get an existing or create a new section on the slot.
      *
      * @param  string  $handle
-     * @return \Lunar\Hub\Menu\MenuSlot
+     * @return \Lunar\Hub\Menu\MenuGroup
      */
-    public function removeItem($handle)
+    public function group($handle)
     {
-        $newItems = $this->items->filter(function ($item) use ($handle) {
-            return $item->handle != $handle;
+        $group = $this->groups->first(function ($group) use ($handle) {
+            return $group->getHandle() == $handle;
         });
 
-        $this->items = $newItems;
+        if ($group) {
+            return $group;
+        }
 
-        return $this;
-    }
+        $group = new MenuGroup($handle);
 
-    /**
-     * Remove an existing menu section on the slot.
-     *
-     * @param  string  $handle
-     * @return \Lunar\Hub\Menu\MenuSlot
-     */
-    public function removeSection($handle)
-    {
-        $newSections = $this->sections->filter(function ($section) use ($handle) {
-            return $section->handle != $handle;
-        });
+        $this->groups->push($group);
 
-        $this->sections = $newSections;
-
-        return $this;
-    }
-
-    /**
-     * Remove an existing menu item from an
-     * existing menu section on the slot.
-     *
-     * @param  string  $handle
-     * @param  string  $itemHandle
-     * @return \Lunar\Hub\Menu\MenuSlot
-     */
-    public function removeSectionItem($handle, $itemHandle)
-    {
-        $foundSection = $this->sections->first(function ($section) use ($handle) {
-            return $section->handle == $handle;
-        });
-
-        $foundSection->items = $foundSection->items->filter(function ($item) use ($itemHandle) {
-            return $item->handle != $itemHandle;
-        });
-
-        return $this;
-    }
-
-    /**
-     * Update an existing menu item on the slot.
-     *
-     * @param  string  $handle
-     * @param  array  $options
-     * @return \Lunar\Hub\Menu\MenuItem
-     */
-    public function updateItem($handle, $options = [])
-    {
-        $foundItem = $this->items->first(function ($item) use ($handle) {
-            return $item->handle == $handle;
-        });
-
-        collect($options)->each(function ($value, $key) use ($foundItem) {
-            $foundItem->{$key} = $value;
-        });
-
-        return $foundItem;
-    }
-
-    /**
-     * Update an existing menu section on the slot.
-     *
-     * @param  string  $handle
-     * @param  array  $options
-     * @return \Lunar\Hub\Menu\MenuSection
-     */
-    public function updateSection($handle, $options = [])
-    {
-        $foundSection = $this->sections->first(function ($item) use ($handle) {
-            return $item->handle == $handle;
-        });
-
-        collect($options)->each(function ($value, $key) use ($foundSection) {
-            $foundSection->{$key} = $value;
-        });
-
-        return $foundSection;
-    }
-
-    /**
-     * Update an existing menu item from an
-     * existing menu section on the slot.
-     *
-     * @param  string  $handle
-     * @param  string  $itemHandle
-     * @param  array  $options
-     * @return \Lunar\Hub\Menu\MenuItem
-     */
-    public function updateSectionItem($handle, $itemHandle, $options = [])
-    {
-        $foundSection = $this->sections->first(function ($section) use ($handle) {
-            return $section->handle == $handle;
-        });
-
-        $foundItem = $foundSection->items->first(function ($item) use ($itemHandle) {
-            return $item->handle == $itemHandle;
-        });
-
-        collect($options)->each(function ($value, $key) use ($foundItem) {
-            $foundItem->{$key} = $value;
-        });
-
-        return $foundItem;
+        return $group;
     }
 }
