@@ -4,7 +4,7 @@ namespace Lunar\Tests\Unit\Base\Validation;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\Validation\CouponValidator;
-use Lunar\DiscountTypes\Coupon;
+use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
 use Lunar\Models\Discount;
 use Lunar\Tests\TestCase;
 
@@ -21,10 +21,10 @@ class CouponValidatorTest extends TestCase
         $validator = app(CouponValidator::class);
 
         Discount::factory()->create([
-            'type' => Coupon::class,
+            'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
+            'coupon' => '10OFF',
             'data' => [
-                'coupon' => '10OFF',
                 'fixed_value' => false,
                 'percentage' => 10,
             ],
@@ -53,12 +53,12 @@ class CouponValidatorTest extends TestCase
         $validator = app(CouponValidator::class);
 
         $discount = Discount::factory()->create([
-            'type' => Coupon::class,
+            'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
             'uses' => 10,
             'max_uses' => 20,
+            'coupon' => '10OFF',
             'data' => [
-                'coupon' => '10OFF',
                 'fixed_value' => false,
                 'percentage' => 10,
             ],
@@ -91,14 +91,14 @@ class CouponValidatorTest extends TestCase
         $validator = app(CouponValidator::class);
 
         $discount = Discount::factory()->create([
-            'type' => Coupon::class,
+            'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
             'uses' => 0,
             'max_uses' => null,
             'starts_at' => now()->startOfDay(),
             'ends_at' => now()->endOfWeek(),
+            'coupon' => '10OFF',
             'data' => [
-                'coupon' => '10OFF',
                 'fixed_value' => false,
                 'percentage' => 10,
             ],

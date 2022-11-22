@@ -29,7 +29,7 @@ class Discount extends AbstractDiscountType
         $data = $this->discount->data;
 
         $cartCoupon = strtoupper($cart->coupon_code ?? null);
-        $conditionCoupon = strtoupper($data['coupon'] ?? null);
+        $conditionCoupon = strtoupper($this->discount->coupon ?? null);
 
         $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
 

@@ -67,17 +67,16 @@ class DiscountManager implements DiscountManagerInterface
     /**
      * Set a single channel or a collection.
      *
-     * @param Channel|iterable $channel
-     *
+     * @param  Channel|iterable  $channel
      * @return self
      */
     public function channel(Channel|iterable $channel): self
     {
         $channels = collect(
-            !is_iterable($channel) ? [$channel] : $channel
+            ! is_iterable($channel) ? [$channel] : $channel
         );
 
-        if ($nonChannel = $channels->filter(fn($channel) => !$channel instanceof Channel)->first()) {
+        if ($nonChannel = $channels->filter(fn ($channel) => ! $channel instanceof Channel)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
                     'expected' => Channel::class,
@@ -95,17 +94,16 @@ class DiscountManager implements DiscountManagerInterface
     /**
      * Set a single customer group or a collection.
      *
-     * @param CustomerGroup|iterable $customerGroups
-     *
+     * @param  CustomerGroup|iterable  $customerGroups
      * @return self
      */
     public function customerGroup(CustomerGroup|iterable $customerGroups): self
     {
         $customerGroups = collect(
-            !is_iterable($customerGroups) ? [$customerGroups] : $customerGroups
+            ! is_iterable($customerGroups) ? [$customerGroups] : $customerGroups
         );
 
-        if ($nonGroup = $customerGroups->filter(fn($channel) => !$channel instanceof CustomerGroup)->first()) {
+        if ($nonGroup = $customerGroups->filter(fn ($channel) => ! $channel instanceof CustomerGroup)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
                     'expected' => CustomerGroup::class,
@@ -126,6 +124,45 @@ class DiscountManager implements DiscountManagerInterface
     public function getChannels(): Collection
     {
         return $this->channels;
+    }
+
+    /**
+     * Returns the available discounts.
+     *
+     * @return Collection
+     */
+    public function getDiscounts(): Collection
+    {
+        if ($this->channels->isEmpty() && $defaultChannel = Channel::getDefault()) {
+            $this->channel($defaultChannel);
+        }
+
+        if ($this->customerGroups->isEmpty() && $defaultGroup = CustomerGroup::getDefault()) {
+            $this->customerGroup($defaultGroup);
+        }
+
+        return Discount::active()->whereHas('channels', function ($query) {
+            $joinTable = (new Discount)->channels()->getTable();
+            $query->whereIn("{$joinTable}.channel_id", $this->channels->pluck('id'))
+                ->where("{$joinTable}.enabled", true)
+                ->whereNotNull("{$joinTable}.starts_at")
+                ->where("{$joinTable}.starts_at", '<=', now())
+                ->where(function ($query) use ($joinTable) {
+                    $query->whereNull("{$joinTable}.ends_at")
+                        ->orWhereDate("{$joinTable}.ends_at", '>', now());
+                });
+        })->whereHas('customerGroups', function ($query) {
+            $joinTable = (new Discount)->customerGroups()->getTable();
+
+            $query->whereIn("{$joinTable}.customer_group_id", $this->customerGroups->pluck('id'))
+            ->where("{$joinTable}.enabled", true)
+            ->whereNotNull("{$joinTable}.starts_at")
+            ->where("{$joinTable}.starts_at", '<=', now())
+            ->where(function ($query) use ($joinTable) {
+                $query->whereNull("{$joinTable}.ends_at")
+                    ->orWhereDate("{$joinTable}.ends_at", '>', now());
+            });
+        })->orderBy('priority')->get();
     }
 
     /**
@@ -167,7 +204,7 @@ class DiscountManager implements DiscountManagerInterface
     public function apply(Cart $cart): Cart
     {
         if (! $this->discounts) {
-            $this->discounts = Discount::active()->orderBy('priority')->get();
+            $this->discounts = $this->getDiscounts();
         }
 
         foreach ($this->discounts as $discount) {

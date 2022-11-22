@@ -3,10 +3,12 @@
 namespace Lunar\Tests\Unit\DiscountTypes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DiscountTypes\Coupon;
+use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
 use Lunar\Models\Brand;
 use Lunar\Models\Cart;
+use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
@@ -15,7 +17,7 @@ use Lunar\Tests\TestCase;
 
 /**
  * @group getcandy.discounts
- * @group getcandy.discounts.coupon
+ * @group getcandy.discounts.discounts
  */
 class DiscountTest extends TestCase
 {
@@ -24,11 +26,20 @@ class DiscountTest extends TestCase
     /** @test */
     public function will_only_apply_to_lines_with_correct_brand()
     {
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
         $currency = Currency::factory()->create([
             'code' => 'GBP',
         ]);
 
         $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
             'currency_id' => $currency->id,
             'coupon_code' => '10OFF',
         ]);
@@ -85,12 +96,26 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => Coupon::class,
+            'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
+            'coupon' => '10OFF',
             'data' => [
-                'coupon' => '10OFF',
                 'fixed_value' => false,
                 'percentage' => 10,
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
             ],
         ]);
 
@@ -112,8 +137,17 @@ class DiscountTest extends TestCase
             'code' => 'GBP',
         ]);
 
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
             'coupon_code' => '10OFF',
         ]);
 
@@ -133,15 +167,29 @@ class DiscountTest extends TestCase
             'quantity' => 2,
         ]);
 
-        Discount::factory()->create([
-            'type' => Coupon::class,
+        $discount = Discount::factory()->create([
+            'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
+            'coupon' => '10OFF',
             'data' => [
-                'coupon' => '10OFF',
                 'fixed_value' => true,
                 'fixed_values' => [
                     'GBP' => 10,
                 ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
             ],
         ]);
 
@@ -156,11 +204,20 @@ class DiscountTest extends TestCase
     /** @test */
     public function can_apply_percentage_discount()
     {
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
         $currency = Currency::factory()->create([
             'code' => 'GBP',
         ]);
 
         $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
             'currency_id' => $currency->id,
             'coupon_code' => '10PERCENTOFF',
         ]);
@@ -181,13 +238,27 @@ class DiscountTest extends TestCase
             'quantity' => 1,
         ]);
 
-        Discount::factory()->create([
-            'type' => Coupon::class,
+        $discount = Discount::factory()->create([
+            'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
+            'coupon' => '10PERCENTOFF',
             'data' => [
-                'coupon' => '10PERCENTOFF',
                 'percentage' => 10,
                 'fixed_value' => false,
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
             ],
         ]);
 

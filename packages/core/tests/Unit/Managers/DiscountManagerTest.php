@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
-use Lunar\DiscountTypes\Coupon;
+use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
 use Lunar\Managers\DiscountManager;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
@@ -83,20 +83,141 @@ class DiscountManagerTest extends TestCase
         $manager->channel(Product::factory(2)->create());
     }
 
-
-    /**
-    * @test
-    * @group moomoo
-    */
+    /** @test */
     public function can_restrict_discounts_to_channel()
     {
-        $discount = Discount::factory()->create();
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
 
-        $this->assertEmpty($discount->channels);
+        $channelTwo = Channel::factory()->create([
+            'default' => false,
+        ]);
+
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $discount = Discount::factory()->create();
 
         $manager = app(DiscountManagerInterface::class);
 
-        $this->assertEmpty($manager->availableDiscounts());
+        $this->assertEmpty($manager->getDiscounts());
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'visible' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+            $channelTwo->id => [
+                'enabled' => false,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $this->assertCount(1, $manager->getDiscounts());
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->addHour(),
+            ],
+            $channelTwo->id => [
+                'enabled' => false,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $this->assertEmpty($manager->getDiscounts());
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subDay(),
+                'ends_at' => now(),
+            ],
+            $channelTwo->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $this->assertEmpty($manager->getDiscounts());
+
+        $manager->channel($channelTwo);
+
+        $this->assertCount(1, $manager->getDiscounts());
+    }
+
+    /** @test */
+    public function can_restrict_discounts_to_customer_group()
+    {
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $customerGroupTwo = CustomerGroup::factory()->create([
+            'default' => false,
+        ]);
+
+        $discount = Discount::factory()->create();
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'visible' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $manager = app(DiscountManagerInterface::class);
+
+        $this->assertCount(1, $manager->getDiscounts());
+
+        $discount->customerGroups()->sync([
+            $channel->id => [
+                'enabled' => false,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $this->assertEmpty($manager->getDiscounts());
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'visible' => true,
+                'starts_at' => now(),
+            ],
+            $customerGroupTwo->id => [
+                'enabled' => true,
+                'visible' => false,
+                'starts_at' => null,
+            ],
+        ]);
+
+        $manager->customerGroup($customerGroupTwo);
+
+        $this->assertEmpty($manager->getDiscounts());
     }
 
     /**
@@ -174,7 +295,7 @@ class DiscountManagerTest extends TestCase
         $manager = app(DiscountManagerInterface::class);
 
         Discount::factory()->create([
-            'type' => Coupon::class,
+            'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
             'coupon' => '10OFF',
             'data' => [

@@ -3,9 +3,11 @@
 namespace Lunar\Tests\Unit\DiscountTypes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DiscountTypes\ProductDiscount;
+use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Models\Cart;
+use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
@@ -16,14 +18,14 @@ use Lunar\Tests\TestCase;
  * @group getcandy.discounts
  * @group getcandy.discounts.products
  */
-class ProductDiscountTest extends TestCase
+class BuyXGetYTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
     public function can_determine_correct_reward_qty()
     {
-        $driver = new ProductDiscount;
+        $driver = new BuyXGetY;
 
         $checks = [
             [
@@ -81,11 +83,20 @@ class ProductDiscountTest extends TestCase
     /** @test */
     public function can_discount_eligible_product()
     {
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
         $currency = Currency::factory()->create([
             'code' => 'GBP',
         ]);
 
         $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
             'currency_id' => $currency->id,
         ]);
 
@@ -129,7 +140,7 @@ class ProductDiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => ProductDiscount::class,
+            'type' => BuyXGetY::class,
             'name' => 'Test Product Discount',
             'data' => [
                 'min_qty' => 1,
@@ -148,6 +159,20 @@ class ProductDiscountTest extends TestCase
             'type' => 'reward',
         ]);
 
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
         $cart = $cart->calculate();
 
         $purchasableBCartLine = $cart->lines->first(function ($line) use ($purchasableB) {
@@ -163,11 +188,20 @@ class ProductDiscountTest extends TestCase
      */
     public function can_discount_eligible_products()
     {
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
         $currency = Currency::factory()->create([
             'code' => 'GBP',
         ]);
 
         $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
             'currency_id' => $currency->id,
         ]);
 
@@ -211,11 +245,25 @@ class ProductDiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => ProductDiscount::class,
+            'type' => BuyXGetY::class,
             'name' => 'Test Product Discount',
             'data' => [
                 'min_qty' => 1,
                 'reward_qty' => 2,
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
             ],
         ]);
 

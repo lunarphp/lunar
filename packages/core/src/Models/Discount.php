@@ -95,7 +95,6 @@ class Discount extends BaseModel
             CustomerGroup::class,
             "{$prefix}customer_group_discount"
         )->withPivot([
-            'purchasable',
             'visible',
             'enabled',
             'starts_at',
@@ -122,10 +121,10 @@ class Discount extends BaseModel
     public function scopeActive(Builder $query)
     {
         return $query->whereNotNull('starts_at')
-            ->whereDate('starts_at', '<=', now())
+            ->where('starts_at', '<=', now())
             ->where(function ($query) {
                 $query->whereNull('ends_at')
-                    ->orWhereDate('ends_at', '>', now());
+                    ->orWhere('ends_at', '>', now());
             });
     }
 }
