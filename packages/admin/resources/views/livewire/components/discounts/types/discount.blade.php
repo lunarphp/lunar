@@ -24,7 +24,7 @@
         </button>
     </div>
 
-    <div @class(['hidden' => !($this->discount->data['fixed_value'] ?? false)])>
+    <div @class(['grid grid-cols-2 gap-4', 'hidden' => !($this->discount->data['fixed_value'] ?? false)])>
         @foreach($this->currencies as $currency)
             <x-hub::input.group
                 for="{{ $currency->code }}"
