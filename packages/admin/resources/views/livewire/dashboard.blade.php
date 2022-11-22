@@ -113,7 +113,7 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-4 bg-white rounded-lg h-96">
+                <div class="p-4 bg-white rounded-lg shadow h-96">
                     <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}
                     </h3>
@@ -125,7 +125,7 @@
             </div>
 
             <div class="basis-1/3">
-                <div class="p-4 bg-white rounded-lg h-96">
+                <div class="p-4 bg-white rounded-lg shadow h-96">
                     <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.customer_group_orders') }}
                     </h3>
@@ -141,7 +141,7 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-8 bg-white rounded-lg h-96">
+                <div class="p-8 bg-white rounded-lg shadow h-96">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.orders.dashboard.recent_orders') }}</h3>
                     <table class="w-full mt-8 table-auto font-sm">
@@ -188,7 +188,7 @@
             </div>
 
             <div class="basis-1/3">
-                <div class="p-8 bg-white rounded-lg h-96">
+                <div class="p-8 bg-white rounded-lg shadow h-96">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.top_selling_products') }}</h3>
 
