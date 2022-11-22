@@ -6,15 +6,17 @@
             </h3>
         </header>
 
-        <x-hub::input.group for="type" label="Type">
-            <x-hub::input.select wire:model="discount.type">
-            @foreach($this->discountTypes as $discountType)
-                <option value="{{ get_class($discountType) }}">
-                    {{ $discountType->getName() }}
-                </option>
-            @endforeach
-            </x-hub::input.select>
-        </x-hub::input.group>
+        <div class="grid grid-cols-2">
+            <x-hub::input.group for="type" label="Type">
+                <x-hub::input.select wire:model="discount.type">
+                @foreach($this->discountTypes as $discountType)
+                    <option value="{{ get_class($discountType) }}">
+                        {{ $discountType->getName() }}
+                    </option>
+                @endforeach
+                </x-hub::input.select>
+            </x-hub::input.group>
+        </div>
 
         @if($discountComponent = $this->getDiscountComponent())
             @livewire($discountComponent->getName(), [

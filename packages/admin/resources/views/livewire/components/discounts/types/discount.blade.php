@@ -38,10 +38,10 @@
     </div>
 
     <div @class(['hidden' => $this->discount->data['fixed_value'] ?? false])>
-        <x-hub::input.group for="type" label="Percentage" :error="$errors->first('discount.data.percentage')" >
-            <x-hub::input.text wire:model="discount.data.percentage" type="number" step="any" max="100" />
-        </x-hub::input.group>
+        <div class="grid grid-cols-2">
+            <x-hub::input.group for="type" label="Percentage" :error="$errors->first('discount.data.percentage')" >
+                <x-hub::input.text wire:model="discount.data.percentage" type="number" step="any" max="100" />
+            </x-hub::input.group>
+        </div>
     </div>
-
-
 </div>

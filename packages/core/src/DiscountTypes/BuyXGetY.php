@@ -32,7 +32,7 @@ class BuyXGetY
      */
     public function getName(): string
     {
-        return 'Product Discount';
+        return 'Buy X Get Y';
     }
 
     /**
