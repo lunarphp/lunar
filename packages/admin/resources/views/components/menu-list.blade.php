@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-2">
     @if (count($items))
         <ul class="space-y-2">
             @foreach ($items as $item)
