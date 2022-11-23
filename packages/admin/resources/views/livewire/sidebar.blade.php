@@ -1,9 +1,9 @@
 <div>
     <x-hub::menu handle="sidebar"
                  current="{{ request()->route()->getName() }}">
-        <ul class="px-2">
+        <ul class="px-2 space-y-2">
             @foreach ($component->items as $item)
-                <li class="relative my-1">
+                <li class="relative">
                     <a href="{{ route($item->route) }}"
                        @class([
                            'menu-link group',
@@ -35,7 +35,7 @@
 
             @foreach ($component->groups as $group)
                 <li x-data="{ showSubMenu: false }"
-                    class="relative my-1">
+                    class="relative">
                     <header x-cloak
                             x-show="showExpandedMenu"
                             class="text-sm font-semibold text-gray-600">
@@ -164,37 +164,37 @@
                     @endif
                 </li>
             @endforeach
-
-            @if (Auth::user()->can('settings'))
-                <li class="pt-4 mt-4 border-t border-gray-100">
-                    <a href="{{ route('hub.settings') }}"
-                       @class([
-                           'menu-link group',
-                           'menu-link--active' => Str::contains(request()->url(), 'settings'),
-                           'menu-link--inactive !text-gray-700' => !Str::contains(
-                               request()->url(),
-                               'settings'
-                           ),
-                       ])
-                       :class="{ 'group justify-center': !showExpandedMenu }">
-                        <span x-cloak
-                              :class="{ 'mx-auto': !showExpandedMenu }">
-                            {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
-                        </span>
-
-                        <span x-cloak
-                              x-show="showExpandedMenu"
-                              class="font-medium group-hover:!block"
-                              :class="{
-                                  'absolute top-1/2 -translate-y-1/2 left-full ml-2 bg-blue-700 z-50 text-white rounded py-1.5 px-3 text-xs':
-                                      !showExpandedMenu,
-                                  'text-sm': showExpandedMenu
-                              }">
-                            {{ __('adminhub::global.settings') }}
-                        </span>
-                    </a>
-                </li>
-            @endif
         </ul>
+
+        @if (Auth::user()->can('settings'))
+            <div class="pt-4 mt-4 border-t border-gray-100">
+                <a href="{{ route('hub.settings') }}"
+                   @class([
+                       'menu-link group',
+                       'menu-link--active' => Str::contains(request()->url(), 'settings'),
+                       'menu-link--inactive !text-gray-700' => !Str::contains(
+                           request()->url(),
+                           'settings'
+                       ),
+                   ])
+                   :class="{ 'group justify-center': !showExpandedMenu }">
+                    <span x-cloak
+                          :class="{ 'mx-auto': !showExpandedMenu }">
+                        {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
+                    </span>
+
+                    <span x-cloak
+                          x-show="showExpandedMenu"
+                          class="font-medium group-hover:!block"
+                          :class="{
+                              'absolute top-1/2 -translate-y-1/2 left-full ml-2 bg-blue-700 z-50 text-white rounded py-1.5 px-3 text-xs':
+                                  !showExpandedMenu,
+                              'text-sm': showExpandedMenu
+                          }">
+                        {{ __('adminhub::global.settings') }}
+                    </span>
+                </a>
+            </div>
+        @endif
     </x-hub::menu>
 </div>

@@ -1,8 +1,8 @@
 <div class="space-y-4">
     @if (count($items))
-        <ul>
+        <ul class="space-y-2">
             @foreach ($items as $item)
-                <li class="my-1">
+                <li>
                     <a href="{{ route($item->route) }}"
                        @class([
                            'menu-link group',
