@@ -18,7 +18,8 @@
          class="lt-flex lt-relative lt-mt-1">
         <x-hub::input.text x-ref="input"
                            type="text"
-                           x-bind:value="value" />
+                           x-bind:value="value"
+                           class="lt-min-w-[-webkit-fill-available]" />
         <div x-show="value"
              class="lt-absolute lt-right-0 lt-mr-3">
             <button x-on:click="value = null"
@@ -29,5 +30,4 @@
             </button>
         </div>
     </div>
-
 </div>
