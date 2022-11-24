@@ -358,7 +358,10 @@ abstract class AbstractDiscount extends Component
             [
                 'title' => 'Conditions',
                 'id' => 'conditions',
-                'has_errors' => false,
+                'has_errors' => $this->errorBag->hasAny([
+                    'minPrices.*.price',
+                    'discount.max_uses',
+                ]),
             ],
             [
                 'title' => 'Discount Type',
