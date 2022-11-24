@@ -33,6 +33,8 @@ class Discount extends AbstractDiscountType
      */
     public function mount()
     {
+        parent::mount();
+
         if ($this->discount->id) {
             $this->discount = $this->discount->refresh();
         }

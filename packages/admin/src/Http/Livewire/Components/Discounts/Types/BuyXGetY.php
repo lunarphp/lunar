@@ -4,7 +4,6 @@ namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Livewire\Component;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
@@ -50,6 +49,8 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function mount()
     {
+        parent::mount();
+
         $this->conditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
             ->pluck('purchasable_id')->values();
@@ -155,6 +156,15 @@ class BuyXGetY extends AbstractDiscountType
         if ($ref == 'discount-rewards') {
             $this->rewards = collect($ids);
         }
+    }
+
+    public function getValidationMessages()
+    {
+        return [
+            'discount.data.min_qty.required' => 'This field is required',
+            'discount.data.reward_qty.required' => 'This field is required',
+            'discount.data.max_reward_qty.required' => 'This field is required',
+        ];
     }
 
     /**

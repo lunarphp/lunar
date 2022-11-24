@@ -44,6 +44,7 @@
             </div>
 
             <div id="discount-type">
+                {{ json_encode($errors->all()) }}
                 @include('adminhub::partials.forms.discount.discount-type')
             </div>
 
@@ -56,6 +57,7 @@
             </div>
         </div>
     </div>
+
     <x-hub::layout.page-menu>
         @foreach ($this->sideMenu as $item)
             <a href="#{{ $item['id'] }}"

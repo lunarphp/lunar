@@ -43,7 +43,7 @@
     </div>
 
     <div class="grid grid-cols-2">
-        <x-hub::input.group for="min_qty" label="Product Quantity" instructions="Set how many of the above products are required to qualify for a reward">
+        <x-hub::input.group for="min_qty" :error="$errors->first('discount.data.min_qty')" label="Product Quantity" instructions="Set how many of the above products are required to qualify for a reward">
             <x-hub::input.text type="number" id="min_qty" wire:model="discount.data.min_qty" />
         </x-hub::input.group>
     </div>
@@ -91,11 +91,11 @@
     </x-hub::alert>
 
     <div class="grid grid-cols-2 gap-4">
-        <x-hub::input.group for="reward_qty" label="No. of free items" instructions="How many of each item are discounted">
+        <x-hub::input.group for="reward_qty" :error="$errors->first('discount.data.reward_qty')" label="No. of free items" instructions="How many of each item are discounted">
             <x-hub::input.text type="number" wire:model="discount.data.reward_qty" />
         </x-hub::input.group>
 
-        <x-hub::input.group for="max_reward_qty" label="Maximum reward quantity" instructions="The maximum amount of products which can be discounted, regardless of criteria.">
+        <x-hub::input.group for="max_reward_qty" label="Maximum reward quantity" :error="$errors->first('discount.data.max_reward_qty')" instructions="The maximum amount of products which can be discounted, regardless of criteria.">
             <x-hub::input.text type="number" wire:model="discount.data.max_reward_qty" />
         </x-hub::input.group>
     </div>

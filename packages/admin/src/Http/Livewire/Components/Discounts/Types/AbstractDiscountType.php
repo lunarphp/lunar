@@ -23,6 +23,12 @@ abstract class AbstractDiscountType extends Component
         'product-search.selected' => 'selectProducts',
     ];
 
+
+    public function getValidationMessages()
+    {
+        return [];
+    }
+
     public function save()
     {
         // ..

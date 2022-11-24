@@ -92,6 +92,11 @@ abstract class AbstractDiscount extends Component
         $this->syncAvailability();
     }
 
+    public function getValidationMessages()
+    {
+        return $this->getDiscountComponent()->getValidationMessages();
+    }
+
     /**
      * Get the collection attribute data.
      *
@@ -242,7 +247,7 @@ abstract class AbstractDiscount extends Component
                     );
                 }
             });
-        })->validate();
+        })->validate(null, $this->getValidationMessages());
 
         DB::transaction(function () {
             $this->discount->save();
