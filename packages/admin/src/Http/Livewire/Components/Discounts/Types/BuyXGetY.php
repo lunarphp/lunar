@@ -2,10 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
