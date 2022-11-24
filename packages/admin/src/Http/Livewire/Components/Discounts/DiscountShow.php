@@ -30,7 +30,7 @@ class DiscountShow extends AbstractDiscount
         $rules = array_merge([
             'discount.name' => 'required|unique:'.Discount::class.',name,'.$this->discount->id,
             'discount.handle' => 'required|unique:'.Discount::class.',handle,'.$this->discount->id,
-            'discount.max_uses' => 'nullable|numeric',
+            'discount.max_uses' => 'nullable|numeric|min:0',
             'discount.priority' => 'required|min:1',
             'discount.stop' => 'nullable',
             'discount.coupon' => 'nullable',

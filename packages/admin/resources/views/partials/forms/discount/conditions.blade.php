@@ -18,7 +18,7 @@
                 </x-hub::input.group>
 
                 <div>
-                    <x-hub::input.group for="max_uses" :label="__('adminhub::inputs.max_uses.label')" instructions="Leave blank for unlimited uses." :error="$errors->first('discount.ends_at')">
+                    <x-hub::input.group for="max_uses" :error="$errors->first('discount.max_uses')" :label="__('adminhub::inputs.max_uses.label')" instructions="Leave blank for unlimited uses.">
                         <x-hub::input.text type="number" wire:model="discount.max_uses" />
                     </x-hub::input.group>
                 </div>

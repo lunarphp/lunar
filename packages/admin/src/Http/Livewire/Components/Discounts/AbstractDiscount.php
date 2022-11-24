@@ -249,6 +249,8 @@ abstract class AbstractDiscount extends Component
         })->validate(null, $this->getValidationMessages());
 
         DB::transaction(function () {
+
+            $this->discount->max_uses = $this->discount->max_uses ?: null;
             $this->discount->save();
 
             $this->discount->brands()->sync(
