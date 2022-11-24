@@ -44,7 +44,6 @@
             </div>
 
             <div id="discount-type">
-                {{ json_encode($errors->all()) }}
                 @include('adminhub::partials.forms.discount.discount-type')
             </div>
 
