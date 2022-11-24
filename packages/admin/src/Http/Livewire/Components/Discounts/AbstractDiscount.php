@@ -17,6 +17,7 @@ use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
+use Lunar\Models\Product;
 
 abstract class AbstractDiscount extends Component
 {
@@ -41,6 +42,20 @@ abstract class AbstractDiscount extends Component
     public array $selectedBrands = [];
 
     public array $selectedCollections = [];
+
+    /**
+     * The selected conditions
+     *
+     * @var array
+     */
+    public array $selectedConditions = [];
+
+    /**
+     * The selected rewards.
+     *
+     * @var array
+     */
+    public array $selectedRewards = [];
 
     /**
      * The current currency for editing
@@ -80,6 +95,7 @@ abstract class AbstractDiscount extends Component
     protected $listeners = [
         'discountData.updated' => 'syncDiscountData',
         'discount.conditions' => 'syncConditions',
+        'discount.rewards' => 'syncRewards',
         'discount.purchasables' => 'syncPurchasables',
         'collectionTreeSelect.updated' => 'selectCollections',
     ];
@@ -89,7 +105,21 @@ abstract class AbstractDiscount extends Component
         $this->currency = Currency::getDefault();
         $this->selectedBrands = $this->discount->brands->pluck('id')->toArray();
         $this->selectedCollections = $this->discount->collections->pluck('id')->toArray();
+
+        $this->selectedConditions = $this->discount->purchasableConditions()
+            ->wherePurchasableType(Product::class)
+            ->pluck('purchasable_id')->values()->toArray();
+
+        $this->selectedRewards = $this->discount->purchasableRewards()
+            ->wherePurchasableType(Product::class)
+            ->pluck('purchasable_id')->values()->toArray();
+
         $this->syncAvailability();
+    }
+
+    public function syncConditions($conditions)
+    {
+        $this->selectedConditions = $conditions;
     }
 
     public function getValidationMessages()
@@ -158,6 +188,11 @@ abstract class AbstractDiscount extends Component
     public function selectCollections(array $ids)
     {
         $this->selectedCollections = $ids;
+    }
+
+    public function syncRewards(array $ids)
+    {
+        $this->selectedRewards = $ids;
     }
 
     public function syncAvailability()
@@ -329,7 +364,10 @@ abstract class AbstractDiscount extends Component
             [
                 'title' => 'Discount Type',
                 'id' => 'type',
-                'has_errors' => false,
+                'has_errors' => $this->errorBag->hasAny(array_merge(
+                    $this->getDiscountComponent()->rules(),
+                    ['selectedConditions', 'selectedRewards']
+                )),
             ],
         ]);
     }

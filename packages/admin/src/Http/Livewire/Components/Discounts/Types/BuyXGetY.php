@@ -2,8 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
@@ -41,6 +43,8 @@ class BuyXGetY extends AbstractDiscountType
             'discount.data.min_qty' => 'required',
             'discount.data.reward_qty' => 'required|numeric',
             'discount.data.max_reward_qty' => 'required|numeric',
+            'selectedConditions' => 'array|min:1',
+            'selectedRewards' => 'array|min:1',
         ];
     }
 
@@ -121,6 +125,8 @@ class BuyXGetY extends AbstractDiscountType
         $conditions->forget($index);
 
         $this->conditions = $conditions;
+
+        $this->emit('discount.conditions', $conditions->toArray());
     }
 
     /**
@@ -151,10 +157,12 @@ class BuyXGetY extends AbstractDiscountType
     {
         if ($ref == 'discount-conditions') {
             $this->conditions = collect($ids);
+            $this->emit('discount.conditions', $this->conditions->toArray());
         }
 
         if ($ref == 'discount-rewards') {
             $this->rewards = collect($ids);
+            $this->emit('discount.rewards', $this->rewards->toArray());
         }
     }
 

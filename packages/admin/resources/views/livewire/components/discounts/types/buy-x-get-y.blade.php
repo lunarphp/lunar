@@ -16,9 +16,14 @@
     </header>
 
     <div class="space-y-1">
+        @if($errors->first('selectedConditions'))
+            <x-hub::alert level="danger">
+                You must select at least 1 qualifying product.
+            </x-hub::alert>
+        @endif
         @if(!$this->purchasableConditions->count())
             <div class="text-sm text-gray-700 border p-4 rounded bg-gray-50">
-                No products currently selected
+                No products currently selected.
             </div>
         @endif
 
@@ -27,9 +32,11 @@
                 wire:key="condition_product_{{ $product->id }}"
                 class="rounded border px-3 py-2 flex items-center"
             >
+                @if($thumbnail = $product->thumbnail)
                 <div>
-                    <img class="w-8 rounded" src="{{ $product->thumbnail->getUrl('small') }}">
+                    <img class="w-8 rounded" src="{{ $thumbnail->getUrl('small') }}">
                 </div>
+                @endif
                 <div class="grow ml-4">
                     {{ $product->translateAttribute('name') }}
                 </div>
@@ -61,6 +68,12 @@
             ])
         </div>
     </header>
+
+    @if($errors->first('selectedRewards'))
+        <x-hub::alert level="danger">
+            You must select at least 1 qualifying product.
+        </x-hub::alert>
+    @endif
 
     @if(!$this->purchasableRewards->count())
         <div class="text-sm text-gray-600 border p-4 rounded">

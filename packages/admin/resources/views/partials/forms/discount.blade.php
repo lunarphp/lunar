@@ -1,6 +1,13 @@
 <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
     <div class="space-y-6 lg:flex-1">
         <div class="space-y-6">
+            <div>
+                @if (!$this->hasChannelAvailability)
+                    <x-hub::alert level="danger">
+                        This discount has no availability across channels
+                    </x-hub::alert>
+                @endif
+            </div>
             <div id="basic-information">
                 @include('adminhub::partials.forms.discount.basic-information')
             </div>
