@@ -33,6 +33,7 @@ class DiscountShow extends AbstractDiscount
             'discount.max_uses' => 'nullable|numeric',
             'discount.priority' => 'required|min:1',
             'discount.stop' => 'nullable',
+            'discount.coupon' => 'nullable',
             'discount.starts_at' => 'date',
             'discount.ends_at' => 'nullable|date|after:starts_at',
             'discount.type' => 'string|required',

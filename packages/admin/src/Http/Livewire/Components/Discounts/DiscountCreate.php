@@ -22,6 +22,7 @@ class DiscountCreate extends AbstractDiscount
     public function mount()
     {
         $this->discount = new Discount([
+            'priority' => 1,
             'type' => DiscountTypesDiscount::class,
             'starts_at' => now()->startOfHour(),
             'data' => [],
@@ -43,6 +44,7 @@ class DiscountCreate extends AbstractDiscount
             'discount.max_uses' => 'nullable|numeric',
             'discount.priority' => 'required|min:1',
             'discount.starts_at' => 'date',
+            'discount.coupon' => 'nullable',
             'discount.ends_at' => 'nullable|date|after:starts_at',
             'discount.type' => 'string|required',
             'discount.data' => 'array',

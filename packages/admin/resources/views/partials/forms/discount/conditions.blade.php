@@ -14,7 +14,7 @@
                     :error="$errors->first('discount.coupon')"
                     instructions="Enter the coupon required for the discount to apply, if left blank it will apply automatically."
                 >
-                    <x-hub::input.text wire:model.defer="discount.discount" id="discount" />
+                    <x-hub::input.text wire:model.defer="discount.coupon" id="discount" />
                 </x-hub::input.group>
 
                 <div>

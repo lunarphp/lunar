@@ -15,7 +15,6 @@ class Discount extends AbstractDiscountType
     {
         $rules = [
             'discount.data' => 'array',
-            'discount.data.coupon' => 'required',
             'discount.data.percentage' => 'nullable|numeric',
             'discount.data.fixed_values' => 'array|min:0',
             'discount.data.fixed_value' => 'boolean',
