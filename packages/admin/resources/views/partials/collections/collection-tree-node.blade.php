@@ -2,6 +2,9 @@
     <label class="flex items-center space-x-2  bg-white py-2 rounded shadow text-sm px-3 cursor-pointer hover:bg-gray-50">
         <input type="checkbox" wire:model="selectedCollections" value="{{ $node->id }}">
         <div>
+            @if($this->searchTerm || $showOnlySelected)
+                <span class="text-gray-500">{{ $node->group->name }} //</span>
+            @endif
             {{ $node->attr('name') }}
         </div>
     </label>
@@ -15,7 +18,7 @@
         @else
         <div class="space-y-2 ml-4">
             @foreach($node->children as $childNode)
-                @include('adminhub::partials.forms.discount.collection-tree-node', [
+                @include('adminhub::partials.collections.collection-tree-node', [
                     'node' => $childNode
                 ])
             @endforeach

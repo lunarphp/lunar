@@ -81,7 +81,7 @@ abstract class AbstractDiscount extends Component
         'discountData.updated' => 'syncDiscountData',
         'discount.conditions' => 'syncConditions',
         'discount.purchasables' => 'syncPurchasables',
-        'collectionSearch.selected' => 'selectCollections',
+        'collectionTreeSelect.updated' => 'selectCollections',
     ];
 
     public function mount()
@@ -142,6 +142,18 @@ abstract class AbstractDiscount extends Component
     public function syncDiscountData(array $data)
     {
         $this->discount->data = $data;
+    }
+
+    /**
+     * Select collections given an array of IDs
+     *
+     * @param array $ids
+     *
+     * @return void
+     */
+    public function selectCollections(array $ids)
+    {
+        $this->selectedCollections = $ids;
     }
 
     public function syncAvailability()

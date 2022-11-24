@@ -27,6 +27,7 @@ use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionTree;
+use Lunar\Hub\Http\Livewire\Components\Collections\CollectionTreeSelect;
 use Lunar\Hub\Http\Livewire\Components\Collections\SideMenu;
 use Lunar\Hub\Http\Livewire\Components\CollectionSearch;
 use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
@@ -365,6 +366,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.collections.collection-groups.show', CollectionGroupShow::class);
         Livewire::component('hub.components.collections.show', CollectionShow::class);
         Livewire::component('hub.components.collections.collection-tree', CollectionTree::class);
+            Livewire::component('hub.components.collections.collection-tree-select', CollectionTreeSelect::class);
     }
 
     /**

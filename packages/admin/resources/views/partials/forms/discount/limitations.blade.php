@@ -8,18 +8,15 @@
 
         <div class="space-y-4">
 
+
             <x-hub::input.group
                 label="Limit by collection"
                 for="brands"
             >
 
-            <div class="rounded border h-full overflow-y-scroll max-h-96 bg-gray-50 px-2">
-                @foreach($this->collectionTree as $collectionNode)
-                    @include('adminhub::partials.forms.discount.collection-tree-node', [
-                        'node' => $collectionNode,
-                    ])
-                @endforeach
-            </div>
+            @livewire('hub.components.collections.collection-tree-select', [
+                'selectedCollections' => $selectedCollections,
+            ])
 
             </x-hub::input.group>
 

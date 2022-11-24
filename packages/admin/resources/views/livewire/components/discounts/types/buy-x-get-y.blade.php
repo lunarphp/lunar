@@ -17,7 +17,7 @@
 
     <div class="space-y-1">
         @if(!$this->purchasableConditions->count())
-            <div class="text-sm text-gray-600 border p-4 rounded">
+            <div class="text-sm text-gray-700 border p-4 rounded bg-gray-50">
                 No products currently selected
             </div>
         @endif
