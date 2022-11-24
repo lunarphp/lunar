@@ -366,7 +366,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.collections.collection-groups.show', CollectionGroupShow::class);
         Livewire::component('hub.components.collections.show', CollectionShow::class);
         Livewire::component('hub.components.collections.collection-tree', CollectionTree::class);
-            Livewire::component('hub.components.collections.collection-tree-select', CollectionTreeSelect::class);
+        Livewire::component('hub.components.collections.collection-tree-select', CollectionTreeSelect::class);
     }
 
     /**

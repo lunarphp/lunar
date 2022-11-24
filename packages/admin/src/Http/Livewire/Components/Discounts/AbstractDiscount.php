@@ -152,8 +152,7 @@ abstract class AbstractDiscount extends Component
     /**
      * Select collections given an array of IDs
      *
-     * @param array $ids
-     *
+     * @param  array  $ids
      * @return void
      */
     public function selectCollections(array $ids)

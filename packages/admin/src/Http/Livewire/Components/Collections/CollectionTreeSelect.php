@@ -33,7 +33,7 @@ class CollectionTreeSelect extends Component
 
     public function toggleSelected()
     {
-        $this->showOnlySelected = !$this->showOnlySelected;
+        $this->showOnlySelected = ! $this->showOnlySelected;
     }
 
     public function getCollectionsProperty()
@@ -45,6 +45,7 @@ class CollectionTreeSelect extends Component
         if ($this->searchTerm) {
             return Collection::search($this->searchTerm)->get();
         }
+
         return Collection::inGroup($this->collectionGroupId)->get()->toTree();
     }
 
