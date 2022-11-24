@@ -120,16 +120,32 @@
                                                   'absolute top-1/2 -translate-y-1/2 left-full ml-2 bg-blue-700 z-50 text-white rounded py-1.5 px-3 text-xs':
                                                       !showExpandedMenu,
                                                   'text-sm': showExpandedMenu,
-                                                  'group-hover:!hidden': showSubMenu
+                                                  'group-hover:!hidden': !showExpandedMenu && showSubMenu
                                               }">
                                             {{ $section->name }}
                                         </span>
+
+                                        @if (count($section->getItems()))
+                                            <button x-cloak
+                                                    x-show="showExpandedMenu"
+                                                    x-on:click.prevent="showSubMenu = !showSubMenu"
+                                                    class="p-1 ml-auto bg-white rounded">
+                                                <span :class="{ '-rotate-180': showSubMenu }"
+                                                      class="block transition">
+                                                    <x-hub::icon ref="chevron-down"
+                                                                 class="w-3 h-3" />
+                                                </span>
+                                            </button>
+                                        @endif
                                     </a>
 
                                     @if (count($section->getItems()))
-                                        <div x-show="showExpandedMenu || showSubMenu"
+                                        <div x-show="showSubMenu"
                                              class="bg-white"
-                                             :class="{ 'absolute top-0 left-full ml-10 shadow-sm z-50 rounded': showSubMenu }"
+                                             :class="{
+                                                 'absolute top-0 left-full ml-10 shadow-sm z-50 rounded': !
+                                                     showExpandedMenu && showSubMenu
+                                             }"
                                              x-on:click.away="showSubMenu = false"
                                              x-on:keydown.escape.window="showSubMenu = false">
                                             <ul
