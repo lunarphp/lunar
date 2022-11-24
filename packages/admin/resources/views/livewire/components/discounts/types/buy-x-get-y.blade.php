@@ -84,9 +84,11 @@
     <div class="space-y-1">
         @foreach($this->purchasableRewards as $product)
             <div wire:key="reward_product_{{ $product->id }}" class="rounded border px-3 py-2 flex items-center">
+                @if($thumbnail = $product->thumbnail)
                 <div>
-                    <img class="w-8 rounded" src="{{ $product->thumbnail->getUrl('small') }}">
+                    <img class="w-8 rounded" src="{{ $thumbnail->getUrl('small') }}">
                 </div>
+                @endif
                 <div class="grow ml-4">
                     {{ $product->translateAttribute('name') }}
                 </div>
