@@ -76,7 +76,7 @@
     @endif
 
     @if(!$this->purchasableRewards->count())
-        <div class="text-sm text-gray-600 border p-4 rounded">
+        <div class="text-sm text-gray-600 border p-4 rounded bg-gray-50">
             No products currently selected
         </div>
     @endif
@@ -93,7 +93,7 @@
                     {{ $product->translateAttribute('name') }}
                 </div>
                 <div>
-                    <button>
+                    <button type="button" wire:click="removeReward({{ $product->id }})">
                         <x-hub::icon ref="trash" class="w-4 h-4" />
                     </button>
                 </div>

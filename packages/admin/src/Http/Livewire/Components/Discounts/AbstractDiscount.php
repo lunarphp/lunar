@@ -176,7 +176,10 @@ abstract class AbstractDiscount extends Component
      */
     public function syncDiscountData(array $data)
     {
-        $this->discount->data = $data;
+        $this->discount->data = array_merge(
+            $this->discount->data,
+            $data
+        );
     }
 
     /**

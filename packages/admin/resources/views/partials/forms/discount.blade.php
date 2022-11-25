@@ -63,6 +63,10 @@
     </div>
 
     <x-hub::layout.page-menu>
+        <nav class="space-y-2"
+         aria-label="Sidebar"
+         x-data="{ activeAnchorLink: '' }"
+         x-init="activeAnchorLink = window.location.hash">
         @foreach ($this->sideMenu as $item)
             <a href="#{{ $item['id'] }}"
                @class([
@@ -86,6 +90,7 @@
                 </span>
             </a>
         @endforeach
+        </nav>
     </x-hub::layout.page-menu>
 
 </div>
