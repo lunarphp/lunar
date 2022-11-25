@@ -47,4 +47,5 @@ return [
     'headings.empty' => 'No Entries Found',
     'headings.starts_at' => 'Starts At',
     'headings.ends_at' => 'Ends At',
+    'headings.type' => 'Type',
 ];

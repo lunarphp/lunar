@@ -57,6 +57,9 @@ class DiscountsTable extends Table
             )->url(function ($record) {
                 return route('hub.discounts.show', $record->id);
             }),
+            TextColumn::make('type', function ($record) {
+               return (new $record->type)->getName();
+            }),
             TextColumn::make('starts_at'),
             TextColumn::make('ends_at'),
         ]);
