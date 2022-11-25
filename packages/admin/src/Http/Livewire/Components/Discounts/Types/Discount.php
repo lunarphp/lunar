@@ -15,16 +15,31 @@ class Discount extends AbstractDiscountType
     {
         $rules = [
             'discount.data' => 'array',
-            'discount.data.percentage' => 'nullable|numeric',
+            'discount.data.percentage' => 'required_if:discount.data.fixed_value,false|nullable|numeric|min:1',
             'discount.data.fixed_values' => 'array|min:0',
             'discount.data.fixed_value' => 'boolean',
         ];
 
         foreach ($this->currencies as $currency) {
-            $rules["discount.data.fixed_values.{$currency->code}"] = 'nullable|numeric';
+            $rules["discount.data.fixed_values.{$currency->code}"] = 'required_if:discount.data.fixed_value,true|nullable|numeric|min:1';
         }
 
         return $rules;
+    }
+
+    public function getValidationMessages()
+    {
+        $messages = [
+            'discount.data.percentage.required_if' => 'This field is required',
+            'discount.data.percentage.min' => 'Percentage must be at least :min',
+            'discount.data.max_reward_qty.required' => 'This field is required',
+        ];
+
+        foreach ($this->currencies as $currency) {
+            $messages["discount.data.fixed_values.{$currency->code}.required_if"] = 'This field is required';
+        }
+
+        return $messages;
     }
 
     /**
