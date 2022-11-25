@@ -11,7 +11,7 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 bg-blue-200 rounded-full">
                         <svg width="24"
                              height="24"
@@ -35,7 +35,7 @@
             </div>
 
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-amber-100">
                         <svg width="24"
                              height="24"
@@ -60,7 +60,7 @@
             </div>
 
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 bg-red-100 rounded-full">
                         <svg width="24"
                              height="24"
@@ -85,7 +85,7 @@
             </div>
 
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-indigo-50">
                         <svg width="24"
                              height="24"
@@ -113,7 +113,7 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-4 bg-white rounded-lg h-96">
+                <div class="p-4 bg-white rounded-lg shadow h-96">
                     <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}
                     </h3>
@@ -125,7 +125,7 @@
             </div>
 
             <div class="basis-1/3">
-                <div class="p-4 bg-white rounded-lg h-96">
+                <div class="p-4 bg-white rounded-lg shadow h-96">
                     <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.customer_group_orders') }}
                     </h3>
@@ -141,7 +141,7 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-8 bg-white rounded-lg h-96">
+                <div class="p-8 bg-white rounded-lg shadow h-96">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.orders.dashboard.recent_orders') }}</h3>
                     <table class="w-full mt-8 table-auto font-sm">
@@ -168,9 +168,11 @@
                         <tbody>
                             @foreach ($this->recentOrders as $order)
                                 <tr>
-                                    <td class="pt-4 text-sm"><a href="#"
-                                           class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">
-                                            {{ $order->reference }}</a>
+                                    <td class="pt-4 text-sm">
+                                        <a href="{{ route('hub.orders.show', $order->id) }}"
+                                           class="text-blue-600 hover:underline">
+                                            {{ $order->reference }}
+                                        </a>
                                     </td>
                                     <td class="pt-4 text-sm text-center">{{ $order->billingAddress->full_name }}</td>
                                     <td class="pt-4 text-sm text-center">{{ $order->lines_count }}</td>
@@ -186,7 +188,7 @@
             </div>
 
             <div class="basis-1/3">
-                <div class="p-8 bg-white rounded-lg h-96">
+                <div class="p-8 bg-white rounded-lg shadow h-96">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.top_selling_products') }}</h3>
 

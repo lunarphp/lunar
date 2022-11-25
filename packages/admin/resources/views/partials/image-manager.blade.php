@@ -92,11 +92,8 @@
                          wire:key="image_{{ $key }}">
                         <div class="flex items-center w-full space-x-6">
                             @if (count($images) > 1)
-                                <div class="cursor-move"
-                                     sort.handle>
-                                    <x-hub::icon ref="dots-vertical"
-                                                 style="solid"
-                                                 class="text-gray-400 cursor-grab" />
+                                <div class="text-gray-400 cursor-grab hover:text-gray-700" sort.handle>
+                                    <x-hub::icon ref="selector" style="solid" />
                                 </div>
                             @endif
 
