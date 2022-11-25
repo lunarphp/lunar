@@ -24,7 +24,7 @@
          x-on:keydown.escape.window="isActive = false"
          role="menu"
          @class([
-             'lt-absolute lt-right-[calc(100%_+_20px)] lt-z-50 lt-w-48 lt-text-left lt-origin-top-right lt-bg-white lt-border lt-border-gray-100 lt-rounded-md',
+             'lt-absolute lt-right-[calc(100%_+_20px)] lt-z-50 lt-w-48 lt-text-left lt-origin-top-right lt-bg-white lt-shadow-sm lt-border lt-border-gray-100 lt-rounded-md',
              'lt-top-0' => !$halfway,
              'lt-bottom-0' => $halfway,
          ])>
