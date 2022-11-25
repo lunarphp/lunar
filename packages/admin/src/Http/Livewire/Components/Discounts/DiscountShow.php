@@ -30,15 +30,16 @@ class DiscountShow extends AbstractDiscount
         $rules = array_merge([
             'discount.name' => 'required|unique:'.Discount::class.',name,'.$this->discount->id,
             'discount.handle' => 'required|unique:'.Discount::class.',handle,'.$this->discount->id,
+            'discount.stop' => 'nullable',
             'discount.max_uses' => 'nullable|numeric|min:0',
             'discount.priority' => 'required|min:1',
-            'discount.stop' => 'nullable',
-            'discount.coupon' => 'nullable',
             'discount.starts_at' => 'date',
+            'discount.coupon' => 'nullable',
             'discount.ends_at' => 'nullable|date|after:starts_at',
             'discount.type' => 'string|required',
-            'selectedBrands' => 'array',
+            'discount.data' => 'array',
             'selectedCollections' => 'array',
+            'selectedBrands' => 'array',
         ], $this->getDiscountComponent()->rules());
 
         foreach ($this->currencies as $currency) {

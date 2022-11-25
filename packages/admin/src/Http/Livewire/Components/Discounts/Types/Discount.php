@@ -34,10 +34,6 @@ class Discount extends AbstractDiscountType
     {
         parent::mount();
 
-        if ($this->discount->id) {
-            $this->discount = $this->discount->refresh();
-        }
-
         if (empty($this->discount->data)) {
             $this->discount->data = [
                 'coupon' => null,
