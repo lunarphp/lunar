@@ -3,7 +3,7 @@
 
     <header class="flex items-center justify-between">
         <div>
-            <strong>Products</strong>
+            <strong>Qualify Products</strong>
             <p class="text-sm text-gray-600">Select the products required for the discount to apply</p>
         </div>
         <div>
@@ -57,7 +57,7 @@
 
     <header class="flex items-center justify-between">
         <div>
-            <strong>Qualifying Products</strong>
+            <strong>Product Rewards</strong>
             <p class="text-sm text-gray-600">Select which products will be discounted if they exist in the cart and the above conditions are met.</p>
         </div>
         <div>
