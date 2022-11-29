@@ -8,11 +8,18 @@ use Lunar\Hub\LunarHub;
 class MenuGroup extends MenuSlot
 {
     /**
-     * The display name of the menu section.
+     * The display name of the menu group.
      *
      * @var string
      */
     public $name;
+
+    /**
+     * The display name of the menu group.
+     *
+     * @var string
+     */
+    public $handle;
 
     /**
      * Setter for the name property.
@@ -39,7 +46,7 @@ class MenuGroup extends MenuSlot
     }
 
     /**
-     * Determines whether this menu section is considered active.
+     * Determines whether this menu group is considered active.
      *
      * @param  string  $path
      * @return bool

@@ -7,8 +7,8 @@ use Lunar\Hub\LunarHub;
 
 class MenuSection extends MenuSlot
 {
-        /**
-     * The display name of the menu group.
+    /**
+     * The display name of the menu section.
      *
      * @var string
      */
@@ -22,7 +22,7 @@ class MenuSection extends MenuSlot
     public $route;
 
     /**
-     * The handle for the menu group.
+     * The handle for the menu section.
      *
      * @var string
      */
@@ -99,7 +99,7 @@ class MenuSection extends MenuSlot
     }
 
     /**
-     * Determines whether this menu group is considered active.
+     * Determines whether this menu section is considered active.
      *
      * @param  string  $path
      * @return bool
@@ -107,5 +107,22 @@ class MenuSection extends MenuSlot
     public function isActive($path)
     {
         return Str::startsWith($path, $this->handle);
+    }
+
+    /**
+     * Determines whether this menu section has any active items.
+     *
+     * @param  string  $path
+     * @return bool
+     */
+    public function hasActive($path)
+    {
+        if ($this->isActive(($path))) {
+            return true;
+        }
+
+        return (bool) $this->items->first(function ($item) use ($path) {
+            return Str::startsWith($path, $item->handle);
+        });
     }
 }
