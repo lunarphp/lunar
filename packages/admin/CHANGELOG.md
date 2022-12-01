@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.1.4
+
+### Fixed
+
+- Restoring a staff member has been fixed in the hub.
+
+## 0.1.3
+
+### Fixed
+
+- Added missing translations for min,max inputs
+- Removed redundant `$symbol` on price input.
+- Fixed readable validation error messages
+- Input groups now support `$errorIcon` to help UI issue when validation errors are present.
+- Tiered pricing UI now displays correctly under headings
+- Staff table can now save searches properly.
+- Order status UI will now fallback on the original if it doesn't exist in config.
+- The side menu should now display the correct menu items when variants aren't present.
+- The `bcmul` function is now used when saving prices to avoid rounding issues.
+
 ## 0.1.2
 
 ### Fixed

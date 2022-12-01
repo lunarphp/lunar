@@ -49,6 +49,13 @@ class Group extends Component
     public bool $required = false;
 
     /**
+     * Determine whether error icon should be shown.
+     *
+     * @var bool
+     */
+    public bool $errorIcon = true;
+
+    /**
      * Create the component instance.
      *
      * @param  string  $label
@@ -56,7 +63,7 @@ class Group extends Component
      * @param  string  $error
      * @param  string  $instructions
      */
-    public function __construct($label, $for, $error = null, $instructions = null, $required = false, $errors = [])
+    public function __construct($label, $for, $error = null, $instructions = null, $required = false, $errors = [], $errorIcon = true)
     {
         $this->label = $label;
         $this->for = $for;
@@ -64,6 +71,7 @@ class Group extends Component
         $this->instructions = $instructions;
         $this->required = $required;
         $this->errors = $errors;
+        $this->errorIcon = $errorIcon;
     }
 
     /**
