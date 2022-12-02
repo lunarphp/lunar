@@ -12,6 +12,7 @@ use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\LivewireTables\Components\Filters\CheckboxFilter;
 use Lunar\LivewireTables\Components\Filters\SelectFilter;
 use Lunar\LivewireTables\Components\Table;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductsTable extends Table
 {
@@ -86,15 +87,18 @@ class ProductsTable extends Table
                 ];
             }),
             ImageColumn::make('thumbnail', function ($record) {
-                if ($record->thumbnail) {
-                    return $record->thumbnail->getUrl('small');
+                if ($record->media_id) {
+                    $media = new Media();
+                    $media->fill([
+                        'id' => $record->media_id,
+                        'model_type' => $record->media_model_type,
+                        'model_id' => $record->media_model_id,
+                        'file_name' => $record->media_file_name,
+                        'conversions_disk' => $record->media_conversions_disk,
+                    ]);
+
+                    return $media->getUrl('small');
                 }
-
-                $variant = $record->variants->first(function ($variant) {
-                    return $variant->thumbnail;
-                });
-
-                return $variant?->thumbnail?->getUrl('small');
             })->heading(false),
             TextColumn::make('name', function ($record) {
                 return $record->translateAttribute('name');
@@ -103,28 +107,29 @@ class ProductsTable extends Table
             })->heading(
                 __('adminhub::tables.headings.name')
             ),
-            TextColumn::make('brand.name')->heading(
+            TextColumn::make('brand', function ($record) {
+                return $record->brand;
+            })->heading(
                 __('adminhub::tables.headings.brand')
             ),
             TextColumn::make('sku', function ($record) {
-                $skus = $record->variants()->pluck('sku');
-
-                if ($skus->count() > 1) {
-                    return 'Multiple';
-                }
-
-                return $skus->first();
-            })->heading(
-                __('adminhub::tables.headings.sku')
-            ),
+                return $record->sku;
+            })
+                ->heading(
+                    __('adminhub::tables.headings.sku')
+                ),
             TextColumn::make('stock', function ($record) {
-                return $record->variants()->sum('stock');
-            })->heading(
-                __('adminhub::tables.headings.stock')
-            ),
-            TextColumn::make('productType.name')->heading(
-                __('adminhub::tables.headings.product_type')
-            ),
+                return $record->stock;
+            })
+                ->heading(
+                    __('adminhub::tables.headings.stock')
+                ),
+            TextColumn::make('productType', function ($record) {
+                return $record->product_type;
+            })
+                ->heading(
+                    __('adminhub::tables.headings.product_type')
+                ),
         ]);
     }
 
@@ -209,9 +214,9 @@ class ProductsTable extends Table
         }
 
         return $this->tableBuilder
-        ->searchTerm($query)
-        ->queryStringFilters($filters)
-        ->perPage($this->perPage)
-        ->getData();
+            ->searchTerm($query)
+            ->queryStringFilters($filters)
+            ->perPage($this->perPage)
+            ->getData();
     }
 }

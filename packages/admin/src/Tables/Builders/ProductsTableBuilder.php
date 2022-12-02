@@ -2,8 +2,13 @@
 
 namespace Lunar\Hub\Tables\Builders;
 
+use Illuminate\Support\Facades\DB;
 use Lunar\Hub\Tables\TableBuilder;
+use Lunar\Models\Brand;
 use Lunar\Models\Product;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductsTableBuilder extends TableBuilder
 {
@@ -18,7 +23,74 @@ class ProductsTableBuilder extends TableBuilder
      */
     public function getData(): iterable
     {
-        $query = Product::orderBy($this->sortField, $this->sortDir)
+        $productTable = (new Product())->getTable();
+        $productVariantTable = (new ProductVariant())->getTable();
+        $productTypeTable = (new ProductType())->getTable();
+        $brandTable = (new Brand())->getTable();
+        $mediaTable = (new Media())->getTable();
+
+        $query = Product::select([
+            "{$productTable}.*",
+            "{$mediaTable}.id AS media_id",
+            "{$mediaTable}.model_id AS media_model_id",
+            "{$mediaTable}.model_type AS media_model_type",
+            "{$mediaTable}.file_name AS media_file_name",
+            "{$mediaTable}.conversions_disk AS media_conversions_disk",
+            DB::raw(<<<SQL
+                (
+                    CASE
+                        WHEN (
+                            SELECT
+                                COUNT(*)
+                            FROM
+                                {$productVariantTable}
+                            WHERE
+                                {$productVariantTable}.product_id = {$productTable}.id
+                        ) > 1 THEN 'Multiple'
+                        ELSE (
+                            SELECT
+                                sku
+                            FROM
+                                {$productVariantTable}
+                            WHERE
+                                {$productVariantTable}.product_id = {$productTable}.id
+                            LIMIT
+                                1
+                        )
+                    END
+                ) AS sku,
+                (
+                    SELECT
+                        SUM(stock)
+                    FROM
+                        {$productVariantTable}
+                    WHERE
+                        {$productVariantTable}.product_id = {$productTable}.id
+                ) AS stock,
+                (
+                    SELECT
+                        name
+                    FROM
+                        {$productTypeTable}
+                    WHERE
+                        {$productTypeTable}.id = {$productTable}.product_type_id
+                ) AS product_type,
+                (
+                    SELECT
+                        name
+                    FROM
+                        {$brandTable}
+                    WHERE
+                        {$brandTable}.id = {$productTable}.brand_id
+                ) AS brand
+            SQL),
+        ])
+            ->leftJoin($mediaTable, function ($join) use ($productTable, $mediaTable) {
+                $join->on("{$mediaTable}.model_id", '=', "{$productTable}.id")
+                    ->where("{$mediaTable}.model_type", '=', Product::class)
+                    ->where('custom_properties->primary', true);
+            })
+            ->orderBy($this->sortField, $this->sortDir)
             ->withTrashed();
 
         if ($this->searchTerm) {
