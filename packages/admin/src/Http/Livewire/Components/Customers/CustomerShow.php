@@ -55,6 +55,13 @@ class CustomerShow extends Component
     public $userIdToRemove = null;
 
     /**
+     * The tab to show.
+     *
+     * @var string
+     */
+    public $tab = 'order_history';
+
+    /**
      * The purchase history page.
      *
      * @var int
@@ -74,13 +81,6 @@ class CustomerShow extends Component
      * @var int
      */
     public $uPage = 1;
-
-    /**
-     * The users search page.
-     *
-     * @var int
-     */
-    public $usPage = 1;
 
     /**
      * The search term for finding users.
@@ -112,10 +112,21 @@ class CustomerShow extends Component
      * {@inheritDoc}
      */
     protected $queryString = [
+        'tab',
         'phPage',
         'ohPage',
         'uPage',
-        'usPage',
+    ];
+
+    /**
+     * The pagination page name.
+     *
+     * @var array
+     */
+    public $pageNames = [
+        'order_history' => 'ohPage',
+        'purchase_history' => 'phPage',
+        'users' => 'uPage',
     ];
 
     /**
@@ -161,6 +172,8 @@ class CustomerShow extends Component
      */
     public function mount()
     {
+        $this->resetPage($this->pageNames[$this->tab] ?? 'ohPage');
+
         $this->address = new Address;
         $this->syncedGroups = $this->customer->customerGroups->pluck('id')->map(fn ($id) => (string) $id)->toArray();
     }
@@ -286,7 +299,7 @@ class CustomerShow extends Component
     {
         return $this->customer->orders()->orderBy('placed_at', 'desc')->paginate(
             perPage: 10,
-            pageName: 'ohPage'
+            pageName: $this->pageNames['order_history']
         );
     }
 
@@ -299,7 +312,7 @@ class CustomerShow extends Component
     {
         return $this->customer->users()->paginate(
             perPage: 10,
-            pageName: 'uPage',
+            pageName: $this->pageNames['users'],
         );
     }
 
@@ -546,9 +559,12 @@ class CustomerShow extends Component
             ->whereIn(
                 'order_id',
                 $this->customer->orders()->pluck('id')
-            )->orderBy('sub_total', 'desc')->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
+            )->orderBy('sub_total', 'desc')
+            ->whereType('physical')
+            ->groupBy(['identifier', 'description'])
+            ->paginate(
                 perPage: 10,
-                pageName: 'phPage'
+                pageName: $this->pageNames['purchase_history']
             );
     }
 

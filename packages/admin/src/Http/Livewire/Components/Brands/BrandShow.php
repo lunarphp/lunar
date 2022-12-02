@@ -73,9 +73,25 @@ class BrandShow extends Component
      */
     protected function rules()
     {
-        return [
-            'brand.name' => 'required|string|max:255',
-        ];
+        return array_merge(
+            [
+                'brand.name' => 'required|string|max:255',
+            ],
+            $this->hasUrlsValidationRules()
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        return array_merge(
+            $attributes,
+            $this->getUrlsValidationAttributes()
+        );
     }
 
     /**

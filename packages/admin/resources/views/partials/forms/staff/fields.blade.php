@@ -57,7 +57,7 @@
 
 
 
-        <div class="p-6 text-sm space-y-4">
+        <div class="p-6 space-y-4 text-sm">
 
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-12 lg:col-span-8">
@@ -108,11 +108,11 @@
 
     <x-hub::modal.dialog wire:model="showRestoreConfirm">
         <x-slot name="title">
-            {{ __('adminhub::catalogue.products.show.restore_title') }}
+            {{ __('adminhub::settings.staff.show.restore_title') }}
         </x-slot>
 
         <x-slot name="content">
-            {{ __('adminhub::catalogue.products.show.restore_strapline') }}
+            {{ __('adminhub::settings.staff.form.danger_zone.restore_strapline') }}
         </x-slot>
 
         <x-slot name="footer">
