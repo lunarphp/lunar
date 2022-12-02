@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.1.5
+
+### Fixed
+
+- Fixed incorrect translations when restoring staff members.
+- Brand name validation has been improved.
+- Fixed an issue where users would be unable to remove newly added URLs before saving.
+- Fixed an issue where users were unable to remove product associations.
+
+### Added
+
+- Added a `<x-hub::thumbnail>` component to keep image appearance consistent.
+- Various UI improvements
+
+### Changed
+
+- Lunar version is no longer hard coded to `2.0-beta` if no suitable version is found.
+- Improved layout for error messages when editing customer group pricing.
+
 ## 0.1.4
 
 ### Fixed
