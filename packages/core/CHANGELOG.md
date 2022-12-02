@@ -8,12 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- Fixed incorrect translations when restoring staff members.
-
-### Added
-
-### Changed
-
+- Cart manager will now check for active order before associating and merging carts.
+- Price update will now correctly save the compare price.
 
 ## 0.1.4
 
