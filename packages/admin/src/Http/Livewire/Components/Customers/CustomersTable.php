@@ -141,9 +141,9 @@ class CustomersTable extends Table
         }
 
         return $this->tableBuilder
-        ->searchTerm($query)
-        ->queryStringFilters($filters)
-        ->perPage($this->perPage)
-        ->getData();
+            ->searchTerm($query)
+            ->queryStringFilters($filters)
+            ->perPage($this->perPage)
+            ->getData();
     }
 }

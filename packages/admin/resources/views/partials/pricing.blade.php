@@ -101,15 +101,17 @@
               <x-hub::input.group
                 :label="null"
                 for="customerGroupPrices"
+                :error="$errors->first('customerGroupPrices.'.$group->id.'.'.$currency->code.'.price')"
+                :error-icon="false"
               >
-                <x-hub::input.price wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price" :currencyCode="$currency->code" />
+                <x-hub::input.price 
+                  wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price" 
+                  :currencyCode="$currency->code"
+                  :error="$errors->first('customerGroupPrices.'.$group->id.'.'.$currency->code.'.price')"
+                  :error-icon="false"
+                />
               </x-hub::input.group>
             </div>
-            @foreach($errors->get('customerGroupPrices.'.$group->id.'.*') as $error)
-              @foreach($error as $text)
-                <p class="mt-2 text-sm text-red-600">{{ $text }}</p>
-              @endforeach
-            @endforeach
           </div>
         @endforeach
       @endif

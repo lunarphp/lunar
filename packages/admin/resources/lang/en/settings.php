@@ -33,6 +33,7 @@ return [
     'staff.show.title' => 'Edit Staff',
     'staff.show.delete_btn' => 'Deactivate account',
     'staff.show.delete_title' => 'Delete Staff',
+    'staff.show.restore_title' => 'Restore Staff',
     /**
      * Staff create page.
      */

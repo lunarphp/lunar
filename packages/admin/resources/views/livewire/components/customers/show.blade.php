@@ -162,7 +162,7 @@
     </div>
 
     <div>
-        <div x-data="{ tab: 'order_history' }">
+        <div x-data="{ tab: @entangle('tab') }">
             <div>
                 <div class="hidden sm:block">
                     <nav class="flex space-x-4"
