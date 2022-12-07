@@ -28,15 +28,15 @@
 
                         <div>
                             <x-hub::input.group for="first_name"
-                                                :label="__('adminhub::inputs.firstname')">
-                                <x-hub::input.text wire:model.defer="customer.first_name" />
+                                                :label="__('adminhub::inputs.firstname')" :error="$errors->first('customer.first_name')" required>
+                                <x-hub::input.text wire:model.defer="customer.first_name" :error="$errors->first('customer.first_name')" />
                             </x-hub::input.group>
                         </div>
 
                         <div>
                             <x-hub::input.group for="last_name"
-                                                :label="__('adminhub::inputs.lastname')">
-                                <x-hub::input.text wire:model.defer="customer.last_name" />
+                                                :label="__('adminhub::inputs.lastname')" :error="$errors->first('customer.last_name')" required>
+                                <x-hub::input.text wire:model.defer="customer.last_name" :error="$errors->first('customer.last_name')" />
                             </x-hub::input.group>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
     </div>
 
     <div>
-        <div x-data="{ tab: 'order_history' }">
+        <div x-data="{ tab: @entangle('tab') }">
             <div>
                 <div class="hidden sm:block">
                     <nav class="flex space-x-4"

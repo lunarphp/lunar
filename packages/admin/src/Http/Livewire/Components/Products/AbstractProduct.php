@@ -179,14 +179,16 @@ abstract class AbstractProduct extends Component
 
     protected function getListeners()
     {
-        return array_merge([
-            'useProductOptions' => 'setOptions',
-            'productOptionCreated' => 'resetOptionView',
-            'option-manager.selectedValues' => 'setOptionValues',
-            'urlSaved' => 'refreshUrls',
-            'product-search.selected' => 'updateAssociations',
-            'collectionSearch.selected' => 'selectCollections',
-        ],
+        return array_merge(
+            [
+                'useProductOptions' => 'setOptions',
+                'productOptionCreated' => 'resetOptionView',
+                'option-manager.selectedValues' => 'setOptionValues',
+                'urlSaved' => 'refreshUrls',
+                'product-search.selected' => 'updateAssociations',
+                'collectionSearch.selected' => 'selectCollections',
+                'productOptionSelectorPanelToggled' => 'setVariantsEnabled',
+            ],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners()
         );
@@ -273,9 +275,25 @@ abstract class AbstractProduct extends Component
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            $this->withAttributesValidationRules(),
             $this->hasUrlsValidationRules(! $this->product->id),
             $this->withAttributesValidationRules()
+        );
+    }
+
+    /**
+     * Define the validation attributes.
+     *
+     * @return array
+     */
+    protected function validationAttributes()
+    {
+        $attributes = [
+            'tieredPrices.*.tier' => lang(key: 'global.lower_limit', lower: true),
+        ];
+
+        return array_merge(
+            $attributes,
+            $this->getUrlsValidationAttributes()
         );
     }
 
@@ -290,6 +308,17 @@ abstract class AbstractProduct extends Component
         $this->options = ProductOption::findMany($optionIds);
         $this->emit('products.options.updated', $optionIds);
         $this->optionsPanelVisible = false;
+    }
+
+    /**
+     * Set whether variants should be enabled.
+     *
+     * @param  bool  $val
+     * @return void
+     */
+    public function setVariantsEnabled($val)
+    {
+        $this->variantsEnabled = $val;
     }
 
     /**
@@ -379,6 +408,21 @@ abstract class AbstractProduct extends Component
 
             // We generating variants?
             $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
+
+            if (! $this->variantsEnabled && $this->getVariantsCount()) {
+                $variantToKeep = $this->product->variants()->first();
+
+                $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
+                    return $variant->id != $variantToKeep->id;
+                });
+
+                DB::transaction(function () use ($variantsToRemove) {
+                    foreach ($variantsToRemove as $variant) {
+                        $variant->values()->detach();
+                        $variant->forceDelete();
+                    }
+                });
+            }
 
             if ($generateVariants) {
                 GenerateVariants::dispatch($this->product, $this->optionValues);
@@ -669,6 +713,7 @@ abstract class AbstractProduct extends Component
     {
         $selectedProducts = Product::findMany($selectedIds)->map(function ($product) {
             return [
+                'is_temp' => true,
                 'inverse' => (bool) $this->showInverseAssociations,
                 'target_id' => $product->id,
                 'thumbnail' => optional($product->thumbnail)->getUrl('small'),
@@ -704,9 +749,16 @@ abstract class AbstractProduct extends Component
      */
     public function removeAssociation($index)
     {
-        $this->associationsToRemove[] = $this->associations[$index]['id'];
+        $association = $this->associations[$index];
 
-        $this->associations->forget($index);
+        if (isset($association['is_temp'])) {
+            $this->associations->forget($index);
+        } else {
+            $this->associationsToRemove[] = $this->associations[$index]['id'];
+            $this->associations->forget($index);
+        }
+
+        $this->emit('updatedExistingProductAssociations', $this->associatedProductIds);
     }
 
     /**
@@ -817,8 +869,7 @@ abstract class AbstractProduct extends Component
             [
                 'title' => __('adminhub::menu.product.availability'),
                 'id' => 'availability',
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.variants'),
@@ -852,20 +903,18 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.inventory'),
                 'id' => 'inventory',
                 'error_check' => [],
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'hidden' => $this->getVariantsCount() > 1,
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.shipping'),
                 'id' => 'shipping',
                 'hidden' => $this->getVariantsCount() > 1,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.urls'),
                 'id' => 'urls',
-                'hidden' => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([
                     'urls',
                     'urls.*',
@@ -875,15 +924,13 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.associations'),
                 'id' => 'associations',
                 'hidden' => false,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.product.collections'),
                 'id' => 'collections',
                 'hidden' => false,
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
         ])->reject(fn ($item) => ($item['hidden'] ?? false));
     }

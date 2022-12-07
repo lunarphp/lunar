@@ -32,6 +32,8 @@ return [
      */
     'staff.show.title' => 'Edit Staff',
     'staff.show.delete_btn' => 'Deactivate account',
+    'staff.show.delete_title' => 'Delete Staff',
+    'staff.show.restore_title' => 'Restore Staff',
     /**
      * Staff create page.
      */
@@ -45,8 +47,10 @@ return [
     'staff.form.permissions_description' => 'Manage a staff members individual permissions.',
     'staff.form.admin_message' => 'An admin user has access to all permissions.',
     'staff.form.danger_zone.label' => 'Remove staff member',
-    'staff.form.danger_zone.instructions' => 'Enter the staff members email address to confirm removal.',
+    'staff.form.danger_zone.delete_strapline' => 'Removing a staff member will stop all access to the hub, you can restore it later.',
+    'staff.form.danger_zone.restore_strapline' => 'Restore this staff members account so they can access the hub.',
     'staff.form.danger_zone.own_account' => 'Removing your own account will instantly log you out.',
+
     /**
      * Addons listing page.
      */
@@ -102,10 +106,6 @@ return [
         'When displaying, Lunar will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
         'You must always include <code>{value}</code> for this to work properly.',
     ],
-    /*
-     * Addons.
-     */
-    'addons.index.table_row_action_text' => 'View',
     /**
      * Attributes.
      */
@@ -143,6 +143,7 @@ return [
     'taxes.tax-zones.delete_btn' => 'Delete tax zone',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
     'taxes.tax-classes.index.title' => 'Tax Classes',
+    'taxes.tax-classes.index.create.title' => 'Create tax class',
     'taxes.tax-classes.index.update.title' => 'Update tax class',
     'taxes.tax-classes.create_btn' => 'Create tax class',
     'taxes.tax-zones.price_display.label' => 'Price Display',

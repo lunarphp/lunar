@@ -9,6 +9,8 @@ use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
 use Lunar\LivewireTables\Components\Columns\BadgeColumn;
 use Lunar\LivewireTables\Components\Columns\ImageColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
+use Lunar\LivewireTables\Components\Filters\CheckboxFilter;
+use Lunar\LivewireTables\Components\Filters\SelectFilter;
 use Lunar\LivewireTables\Components\Table;
 
 class ProductsTable extends Table
@@ -42,6 +44,35 @@ class ProductsTable extends Table
      */
     public function build()
     {
+        $this->tableBuilder->addFilter(
+            SelectFilter::make('status')->options(function () {
+                $statuses = collect([
+                    'published' => 'Published',
+                    'draft' => 'Draft',
+                ]);
+
+                return collect([
+                    null => 'All Statuses',
+                ])->merge($statuses);
+            })->query(function ($filters, $query) {
+                $value = $filters->get('status');
+
+                if ($value) {
+                    $query->whereStatus($value);
+                }
+            })
+        );
+
+        $this->tableBuilder->addFilter(
+            CheckboxFilter::make('deleted')->query(function ($filters, $query) {
+                $value = $filters->get('deleted');
+
+                if ($value) {
+                    $query->onlyTrashed();
+                }
+            })
+        );
+
         $this->tableBuilder->baseColumns([
             BadgeColumn::make('status', function ($record) {
                 return __(

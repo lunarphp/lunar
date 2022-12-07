@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'headings.deleted' => 'Deleted',
     'headings.status' => 'Status',
     'headings.reference' => 'Reference',
     'headings.customer' => 'Customer',
