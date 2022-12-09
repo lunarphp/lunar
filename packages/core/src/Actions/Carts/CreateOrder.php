@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Actions\AbstractAction;
 use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\DataTypes\ShippingOption;
+use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
@@ -125,6 +126,8 @@ class CreateOrder extends AbstractAction
             $cart->order()->associate($order);
 
             $cart->save();
+
+            MarkAsNewCustomer::dispatch($order);
 
             return $this;
         });
