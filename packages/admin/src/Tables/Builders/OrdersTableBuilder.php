@@ -49,6 +49,9 @@ class OrdersTableBuilder extends TableBuilder
             TextColumn::make('date')->value(function ($record) {
                 return $record->placed_at?->format('Y/m/d @ H:ia');
             }),
+            TextColumn::make('tags')->value(function ($record) {
+                return $record->tags->pluck('value')->join(', ');
+            }),
         ]);
 
         return $this->resolveColumnPositions(
@@ -73,6 +76,7 @@ class OrdersTableBuilder extends TableBuilder
             'billingAddress',
             'currency',
             'customer',
+            'tags',
         ])->orderBy($this->sortField, $this->sortDir);
 
         if ($this->searchTerm) {
