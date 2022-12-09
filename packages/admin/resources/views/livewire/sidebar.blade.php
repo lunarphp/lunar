@@ -41,7 +41,7 @@
                     </header>
 
                     @if (count($group->getItems()))
-                        <ul class="mt-1 space-y-0.5">
+                        <ul class="mt-1 space-y-1">
                             @foreach ($group->getItems() as $item)
                                 <li class="relative">
                                     <a href="{{ route($item->route) }}"
@@ -76,7 +76,7 @@
 
                     @if (count($group->getSections()))
                         <ul x-cloak
-                            class="mt-1 space-y-0.5">
+                            class="mt-1 space-y-1">
                             @foreach ($group->getSections() as $section)
                                 <li x-data="{
                                     showSubMenu: false,
@@ -144,10 +144,8 @@
                                              :class="{
                                                  'absolute top-0 left-[calc(100%_+_40px)] shadow-sm z-50 rounded': !
                                                      showExpandedMenu && showSubMenu
-                                             }"
-                                             x-on:click.away="showSubMenu = false"
-                                             x-on:keydown.escape.window="showSubMenu = false">
-                                            <ul class="space-y-0.5"
+                                             }">
+                                            <ul class="space-y-1"
                                                 :class="{
                                                     'border-l border-gray-100 ml-[18px] pl-[18px] mt-1': showExpandedMenu &&
                                                         showSubMenu,
