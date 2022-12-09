@@ -111,7 +111,6 @@
               'taggable' => $order,
               'independant' => true,
             ])
-            {{-- <x-hub::input.tags id="tags"/> --}}
         </section>
             @if ($order->customer)
                 <header class="flex items-center justify-between">
