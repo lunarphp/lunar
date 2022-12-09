@@ -62,7 +62,7 @@
             @foreach($associations->filter(fn($product) => $product['inverse'] == $showInverseAssociations) as $index => $product)
               <tr class="lt-bg-white even:lt-bg-gray-50" wire:key="table_row_{{ $product['target_id'] }}">
                 <x-l-tables::cell>
-                  <img src="{{ $product['thumbnail']}}" class="w-12 rounded">
+                    <x-hub::thumbnail src="{{ $product['thumbnail'] }}" />
                 </x-l-tables::cell>
 
                 <x-l-tables::cell>
