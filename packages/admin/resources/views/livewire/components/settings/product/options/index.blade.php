@@ -43,23 +43,12 @@
                             {{ $option->translate('name') }}
                         </div>
                         <div class="flex">
-                            @if ($option->values->count())
-                                <button @click="expanded = !expanded">
-                                    <div class="transition-transform"
-                                         :class="{
-                                             '-rotate-90 ': expanded
-                                         }">
-                                        <x-hub::icon ref="chevron-left"
-                                                     style="solid" />
-                                    </div>
-                                </button>
-                            @endif
                             <x-hub::dropdown minimal>
                                 <x-slot name="options">
-                                    <x-hub::dropdown.button wire:click="$set('editOptionId', {{ $option->id }})"
+                                    <x-hub::dropdown.link href="{{ route('hub.product.options.edit', $option->id) }}"
                                                             class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
                                         {{ __('adminhub::components.option.edit_group_btn') }}
-                                    </x-hub::dropdown.button>
+                                    </x-hub::dropdown.link>
 
                                     <x-hub::dropdown.button wire:click="$set('valueCreateOptionId', {{ $option->id }})"
                                                             class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
@@ -76,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
+                {{-- <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
                      @if ($option->values->count()) x-show="expanded" @endif>
                     <div class="space-y-2"
                          wire:sort
@@ -126,7 +115,7 @@
                             {{ __('adminhub::components.option.no_option_values_text') }}
                         </span>
                     @endif
-                </div>
+                </div> --}}
             </div>
         @empty
             <div class="w-full text-center text-gray-500">
@@ -143,7 +132,7 @@
         <x-slot name="footer"></x-slot>
     </x-hub::modal.dialog>
 
-    @if ($this->optionToEdit)
+    {{-- @if ($this->optionToEdit)
         <x-hub::modal.dialog wire:model="editOptionId">
             <x-slot name="title">{{ __('adminhub::components.option.edit_title') }}</x-slot>
             <x-slot name="content">
@@ -153,7 +142,7 @@
             </x-slot>
             <x-slot name="footer"></x-slot>
         </x-hub::modal.dialog>
-    @endif
+    @endif --}}
 
     @if ($this->optionToDelete)
         <x-hub::modal.dialog wire:model="deleteOptionId">

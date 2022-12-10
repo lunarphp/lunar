@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionEdit;
 use Lunar\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
@@ -120,6 +121,7 @@ Route::group([
     'prefix' => 'product',
 ], function () {
     Route::get('options', OptionsIndex::class)->name('hub.product.options.index');
+    Route::get('options/{productOption}', OptionEdit::class)->name('hub.product.options.edit');
 });
 
 /**

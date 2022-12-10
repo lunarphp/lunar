@@ -2,11 +2,13 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 
 class OptionEdit extends Component
 {
@@ -20,6 +22,24 @@ class OptionEdit extends Component
      */
     public ?ProductOption $productOption = null;
 
+    public array $values = [];
+
+    public function mount()
+    {
+        $this->buildValueTree();
+    }
+
+    protected function buildValueTree()
+    {
+        $this->values = $this->productOption->refresh()->values->map(function ($value) {
+            return [
+                'id' => $value->id,
+                'value' => $value->translate('name'),
+                'position' => $value->position,
+            ];
+        })->toArray();
+    }
+
     /**
      * Return the validation rules.
      *
@@ -28,6 +48,7 @@ class OptionEdit extends Component
     public function rules()
     {
         $rules = [
+            'values' => 'array',
             'productOption.handle' => [
                 'required',
                 Rule::unique(ProductOption::class, 'handle')->ignore(1, 'id'),
@@ -42,11 +63,27 @@ class OptionEdit extends Component
     }
 
     /**
-     * {@inheritDoc}
+     * Sort the option values.
+     *
+     * @param  array  $optionValues
+     * @return void
      */
-    public function mount()
+    public function sortOptionValues(array $optionValues)
     {
-        $this->productOption = $this->productOption ?: new ProductOption();
+        DB::transaction(function () use ($optionValues) {
+            foreach ($optionValues['items'] as $item) {
+                ProductOptionValue::whereId($item['id'])->update([
+                    'position' => $item['order'],
+                    'product_option_id' => $item['parent'],
+                ]);
+            }
+        });
+
+        $this->buildValueTree();
+
+        $this->notify(
+            __('adminhub::notifications.attributes.reordered')
+        );
     }
 
     public function create()
@@ -86,6 +123,6 @@ class OptionEdit extends Component
     public function render()
     {
         return view('adminhub::livewire.components.settings.product.options.option-edit')
-            ->layout('adminhub::layouts.base');
+            ->layout('adminhub::layouts.settings');
     }
 }
