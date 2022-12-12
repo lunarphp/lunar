@@ -25,7 +25,7 @@ class MarkAsNewCustomer implements ShouldQueue
      *
      * @var \Illuminate\Database\Eloquent\Model
      */
-    protected Order $order;
+    protected $orderId;
 
     /**
      * Create a new job instance.
@@ -34,9 +34,9 @@ class MarkAsNewCustomer implements ShouldQueue
      * @param  \Illuminate\Support\Collection  $tags
      * @return void
      */
-    public function __construct(Order $order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->orderId = $orderId;
     }
 
     /**
@@ -47,7 +47,13 @@ class MarkAsNewCustomer implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
-            $billingAddress = $this->order->billingAddress;
+            $order = Order::find($this->orderId);
+
+            if (!$order) {
+                return;
+            }
+
+            $billingAddress = $order->billingAddress;
 
             if (!$billingAddress) {
                 return;
@@ -55,18 +61,21 @@ class MarkAsNewCustomer implements ShouldQueue
 
             $ordersTable = (new Order)->getTable();
 
-            $hasPreviousOrder = OrderAddress::where('order_id', '!=', $this->order->id)
+
+            $previousOrder = OrderAddress::where('order_id', '!=', $order->id)
                 ->whereType('billing')
                 ->whereContactEmail($billingAddress->contact_email)
+                ->whereNotNull('contact_email')
                 ->join(
                     $ordersTable,
                     "{$ordersTable}.id",
                     '=',
                     'order_id'
-                )->whereDate('placed_at', '<', $this->order->placed_at)->exists();
+                )->whereDate('placed_at', '<', $order->placed_at)->first();
 
-            $this->order->new_customer = !$hasPreviousOrder;
-            $this->order->saveQuietly();
+
+            $order->new_customer = !$previousOrder;
+            $order->saveQuietly();
         });
     }
 }
