@@ -10,7 +10,6 @@ use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
 use Lunar\Models\Product;
 
@@ -68,24 +67,23 @@ class Dashboard extends Component
         $orders = Order::select(
             DB::RAW('COUNT(*) as count'),
             'new_customer'
-        )->whereBetween("created_at", [
+        )->whereBetween('created_at', [
             now()->parse($this->range['from']),
             now()->parse($this->range['to']),
         ])->groupBy('new_customer')->get();
-
 
         if ($orders->isEmpty()) {
             return 0;
         }
 
-        $returning = $orders->first(fn ($order) => !$order->new_customer);
+        $returning = $orders->first(fn ($order) => ! $order->new_customer);
         $new = $orders->first(fn ($order) => $order->new_customer);
 
         if (! $returning || ! $returning->count) {
             return 0;
         }
 
-        if (! $new || !$new->count) {
+        if (! $new || ! $new->count) {
             return 100;
         }
 
