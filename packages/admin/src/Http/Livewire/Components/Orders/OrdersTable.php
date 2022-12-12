@@ -78,6 +78,24 @@ class OrdersTable extends Table
         );
 
         $this->tableBuilder->addFilter(
+            SelectFilter::make('new_returning')->options(function () {
+                return collect([
+                    null => 'Both',
+                    'new' => 'New',
+                    'returning' => 'Returning',
+                ]);
+            })->query(function ($filters, $query) {
+                $value = $filters->get('new_returning');
+
+                if ($value) {
+                    $query->whereNewCustomer(
+                        $value == 'new'
+                    );
+                }
+            })
+        );
+
+        $this->tableBuilder->addFilter(
             DateFilter::make('placed_at')
                 ->heading('Placed at')
                 ->query(function ($filters, $query) {

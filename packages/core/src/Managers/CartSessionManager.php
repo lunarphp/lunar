@@ -210,9 +210,10 @@ class CartSessionManager implements CartSessionInterface
 
     public function __call($method, $args)
     {
-        if (!$this->cart) {
+        if (! $this->cart) {
             $this->cart = $this->fetchOrCreate(true);
         }
+
         return $this->cart->{$method}(...$args);
     }
 }

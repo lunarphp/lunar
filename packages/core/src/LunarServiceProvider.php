@@ -37,6 +37,7 @@ use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
+use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\ScoutIndexer;
 use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
@@ -188,6 +189,7 @@ class LunarServiceProvider extends ServiceProvider
                 AddressData::class,
                 ScoutIndexer::class,
                 MigrateGetCandy::class,
+                SyncNewCustomerOrders::class,
             ]);
         }
 

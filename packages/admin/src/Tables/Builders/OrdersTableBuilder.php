@@ -4,6 +4,7 @@ namespace Lunar\Hub\Tables\Builders;
 
 use Illuminate\Support\Collection;
 use Lunar\Hub\Tables\TableBuilder;
+use Lunar\LivewireTables\Components\Columns\BadgeColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\Models\Order;
 

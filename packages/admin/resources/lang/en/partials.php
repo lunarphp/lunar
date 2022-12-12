@@ -182,6 +182,9 @@ return [
     'orders.details.channel' => 'Channel',
     'orders.details.date_created' => 'Date Created',
     'orders.details.date_placed' => 'Date Placed',
+    'orders.details.new_returning' => 'New / Returning',
+    'orders.details.new_customer' => 'New Customer',
+    'orders.details.returning_customer' => 'Returning Customer',
     'orders.address.not_set' => 'No address set',
     /**
      * Forms.
