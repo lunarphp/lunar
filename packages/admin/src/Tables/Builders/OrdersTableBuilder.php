@@ -4,6 +4,8 @@ namespace Lunar\Hub\Tables\Builders;
 
 use Illuminate\Support\Collection;
 use Lunar\Hub\Tables\TableBuilder;
+use Lunar\LivewireTables\Components\Columns\BadgeColumn;
+use Lunar\LivewireTables\Components\Columns\StatusColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\Models\Order;
 
@@ -22,6 +24,16 @@ class OrdersTableBuilder extends TableBuilder
     public function getColumns(): Collection
     {
         $baseColumns = collect([
+            BadgeColumn::make('new_customer', function ($record) {
+                return __(
+                    'adminhub::components.orders.index.'.($record->new_customer ? 'new_customer' : 'returning_customer')
+                );
+            })->heading(false)->states(function ($record) {
+                return [
+                    'success' => $record->new_customer,
+                    'info' => !$record->new_customer,
+                ];
+            }),
             TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status'),
             TextColumn::make('reference')->value(function ($record) {
                 return $record->reference;
