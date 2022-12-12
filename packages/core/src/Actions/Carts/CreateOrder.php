@@ -127,7 +127,7 @@ class CreateOrder extends AbstractAction
 
             $cart->save();
 
-            MarkAsNewCustomer::dispatch($order);
+            MarkAsNewCustomer::dispatch($order->id);
 
             return $this;
         });
