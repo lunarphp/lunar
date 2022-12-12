@@ -56,6 +56,7 @@ class Order extends BaseModel
         'tax_total' => Price::class,
         'total' => Price::class,
         'shipping_total' => Price::class,
+        'new_customer' => 'boolean',
     ];
 
     /**

@@ -47,4 +47,6 @@ return [
     'headings.products_count' => 'No. Products',
     'headings.empty' => 'No Entries Found',
     'headings.tags' => 'Tags',
+    'headings.new_customer' => 'New Customer',
+    'headings.new_returning' => 'New/Returning Customers',
 ];

@@ -109,6 +109,11 @@ return [
     'customers.show.remove_address.title' => 'Remove address',
     'customers.show.remove_address.confirm' => 'Are you sure you want to remove this address?',
     /**
+     * Orders Index
+     */
+    'orders.index.returning_customer' => 'Returning Customer',
+    'orders.index.new_customer' => 'New Customer',
+    /**
      * Order Show.
      */
     'orders.show.title' => 'Order',
