@@ -55,7 +55,7 @@ class WithLanguagesTest extends TestCase
             'default' => false,
             'code' => 'bb',
         ]);
-        
+
         $product = Product::factory()->create([
             'status' => 'published',
         ]);

@@ -49,18 +49,17 @@ class MarkAsNewCustomer implements ShouldQueue
         DB::transaction(function () {
             $order = Order::find($this->orderId);
 
-            if (!$order) {
+            if (! $order) {
                 return;
             }
 
             $billingAddress = $order->billingAddress;
 
-            if (!$billingAddress) {
+            if (! $billingAddress) {
                 return;
             }
 
             $ordersTable = (new Order)->getTable();
-
 
             $previousOrder = OrderAddress::where('order_id', '!=', $order->id)
                 ->whereType('billing')
@@ -73,8 +72,7 @@ class MarkAsNewCustomer implements ShouldQueue
                     'order_id'
                 )->whereDate('placed_at', '<', $order->placed_at)->first();
 
-
-            $order->new_customer = !$previousOrder;
+            $order->new_customer = ! $previousOrder;
             $order->saveQuietly();
         });
     }

@@ -3,15 +3,9 @@
 namespace Lunar\Tests\Unit\Jobs\Collections;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Jobs\Collections\UpdateProductPositions;
 use Lunar\Jobs\Orders\MarkAsNewCustomer;
-use Lunar\Models\Collection;
-use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
-use Lunar\Models\Price;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
 use Lunar\Tests\TestCase;
 
 /**

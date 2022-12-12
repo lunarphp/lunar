@@ -5,7 +5,6 @@ namespace Lunar\Hub\Tables\Builders;
 use Illuminate\Support\Collection;
 use Lunar\Hub\Tables\TableBuilder;
 use Lunar\LivewireTables\Components\Columns\BadgeColumn;
-use Lunar\LivewireTables\Components\Columns\StatusColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\Models\Order;
 
@@ -31,7 +30,7 @@ class OrdersTableBuilder extends TableBuilder
             })->heading(false)->states(function ($record) {
                 return [
                     'success' => $record->new_customer,
-                    'info' => !$record->new_customer,
+                    'info' => ! $record->new_customer,
                 ];
             }),
             TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status'),
