@@ -106,9 +106,10 @@ class OrdersTable extends Table
                     $query->whereHas('tags', function ($query) use ($value) {
                         $query->whereValue($value);
                     });
+                }
             })
         );
-        
+
         $this->tableBuilder->addFilter(
             SelectFilter::make('new_returning')->options(function () {
                 return collect([
