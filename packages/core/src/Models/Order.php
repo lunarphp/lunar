@@ -7,6 +7,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Casts\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasTags;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\OrderFactory;
@@ -15,6 +16,7 @@ class Order extends BaseModel
 {
     use HasFactory,
         Searchable,
+        HasTags,
         LogsActivity,
         HasMacros;
 
@@ -28,6 +30,7 @@ class Order extends BaseModel
         'status',
         'created_at',
         'placed_at',
+        'tags',
     ];
 
     /**
@@ -306,6 +309,8 @@ class Order extends BaseModel
 
             $data["{$address->type}_country"] = optional($address->country)->name;
         }
+
+        $data['tags'] = $this->tags->pluck('value')->toArray();
 
         return $data;
     }

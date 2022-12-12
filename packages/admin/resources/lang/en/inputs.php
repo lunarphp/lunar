@@ -97,6 +97,7 @@ return [
     'text' => 'Text',
     'richtext' => 'Richtext',
     'transaction.label' => 'Transaction',
+    'tag.label' => 'Tag',
     'active.label' => 'Active',
     'priority.label' => 'Priority',
     'postcodes.label' => 'Postcodes',

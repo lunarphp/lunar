@@ -4,6 +4,7 @@ namespace Lunar\Hub\Tables\Builders;
 
 use Illuminate\Support\Collection;
 use Lunar\Hub\Tables\TableBuilder;
+use Lunar\LivewireTables\Components\Columns\TagsColumn;
 use Lunar\LivewireTables\Components\Columns\BadgeColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\Models\Order;
@@ -50,6 +51,9 @@ class OrdersTableBuilder extends TableBuilder
             TextColumn::make('date')->value(function ($record) {
                 return $record->placed_at?->format('Y/m/d @ H:ia');
             }),
+            TagsColumn::make('tags')->value(function ($record) {
+                return $record->tags->pluck('value');
+            }),
         ]);
 
         return $this->resolveColumnPositions(
@@ -74,6 +78,7 @@ class OrdersTableBuilder extends TableBuilder
             'billingAddress',
             'currency',
             'customer',
+            'tags',
         ])->orderBy($this->sortField, $this->sortDir);
 
         if ($this->searchTerm) {
