@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
@@ -12,7 +13,6 @@ use Lunar\LivewireTables\Components\Filters\DateFilter;
 use Lunar\LivewireTables\Components\Filters\SelectFilter;
 use Lunar\LivewireTables\Components\Table;
 use Lunar\Models\Order;
-use Illuminate\Support\Facades\DB;
 use Lunar\Models\Tag;
 
 class OrdersTable extends Table
@@ -95,6 +95,7 @@ class OrdersTable extends Table
                         'label' => $value,
                     ];
                 });
+
                 return collect([
                     null => 'None',
                 ])->merge($tags);
