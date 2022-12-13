@@ -66,8 +66,7 @@ class CollectionShow extends Component
     public function mount()
     {
         $this->products = collect();
-
-        if ($this->productCount <= 100) {
+        if ($this->productCount <= 30) {
             $this->loadProducts();
         }
 

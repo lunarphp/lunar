@@ -101,7 +101,7 @@
                             </x-hub::input.group>
                         </div>
                     @endif
-                    @if(!$products->count() && $this->productCount >= 100)
+                    @if(!$products->count() && $this->productCount >= 30)
                         <div wire:loading.remove wire:target="loadProducts">
                             <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
                         </div>
