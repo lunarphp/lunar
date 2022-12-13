@@ -65,10 +65,25 @@ class CollectionShow extends Component
      */
     public function mount()
     {
+        $this->products = collect();
+
+        if (!$this->productCount >= 100) {
+            $this->loadProducts();
+        }
+
+        $this->syncAvailability();
+    }
+
+    public function getProductCountProperty()
+    {
+        return $this->collection->products()->count();
+    }
+
+    public function loadProducts()
+    {
         $this->products = $this->mapProducts(
             $this->collection->load('products.variants.basePrices.currency')->products
         );
-        $this->syncAvailability();
     }
 
     /**
