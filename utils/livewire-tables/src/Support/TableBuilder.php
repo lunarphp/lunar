@@ -211,7 +211,7 @@ class TableBuilder implements TableBuilderInterface
                 return $existing->field == $column->after;
             });
 
-            if ($position) {
+            if (!is_null($position)) {
                 $existing->splice($position + 1, 0, [$column]);
             } else {
                 $existing->push($column);

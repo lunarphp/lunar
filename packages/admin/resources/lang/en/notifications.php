@@ -57,6 +57,7 @@ return [
     'clipboard.failed_copy' => 'Unable to copy to clipboard',
     'discount.saved' => 'Discount saved',
     'discount.deleted' => 'Discount deleted',
+    'tags.updated' => 'Tags updated',
     'staff.restored' => 'Staff member restored',
     'default_url_protected' => 'Unable to delete the default URL',
 ];

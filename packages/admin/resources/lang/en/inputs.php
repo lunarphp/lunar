@@ -99,6 +99,7 @@ return [
     'transaction.label' => 'Transaction',
     'starts_at.label' => 'Starts at',
     'ends_at.label' => 'Ends at',
+    'tag.label' => 'Tag',
     'active.label' => 'Active',
     'priority.label' => 'Priority',
     'postcodes.label' => 'Postcodes',

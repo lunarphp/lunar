@@ -49,4 +49,7 @@ return [
     'headings.starts_at' => 'Starts At',
     'headings.ends_at' => 'Ends At',
     'headings.type' => 'Type',
+    'headings.tags' => 'Tags',
+    'headings.new_customer' => 'New Customer',
+    'headings.new_returning' => 'New/Returning Customers',
 ];

@@ -109,6 +109,11 @@ return [
     'customers.show.remove_address.title' => 'Remove address',
     'customers.show.remove_address.confirm' => 'Are you sure you want to remove this address?',
     /**
+     * Orders Index
+     */
+    'orders.index.returning_customer' => 'Returning Customer',
+    'orders.index.new_customer' => 'New Customer',
+    /**
      * Order Show.
      */
     'orders.show.title' => 'Order',
@@ -133,7 +138,9 @@ return [
     'orders.show.partially_refunded' => 'This order has been partially refunded.',
     'orders.show.refunded' => 'This order has been refunded.',
     'orders.show.view_customer' => 'View customer',
+    'orders.show.tags_header' => 'Tags',
     'orders.show.download_pdf' => 'Download PDF',
+
     /**
      * Order Refund.
      */

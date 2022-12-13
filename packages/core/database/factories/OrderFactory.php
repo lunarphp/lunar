@@ -17,6 +17,7 @@ class OrderFactory extends Factory
 
         return [
             'channel_id' => Channel::factory(),
+            'new_customer' => $this->faker->boolean,
             'user_id' => null,
             'status' => 'awaiting-payment',
             'reference' => $this->faker->unique()->regexify('[A-Z]{8}'),
