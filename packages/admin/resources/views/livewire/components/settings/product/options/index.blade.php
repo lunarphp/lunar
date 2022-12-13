@@ -65,57 +65,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
-                     @if ($option->values->count()) x-show="expanded" @endif>
-                    <div class="space-y-2"
-                         wire:sort
-                         sort.options='{group: "values", method: "sortOptionValues", owner: {{ $option->id }}}'
-                         x-show="expanded">
-                        @foreach ($option->values as $optionValue)
-                            <div class="flex items-center justify-between w-full p-3 text-sm bg-white border border-transparent rounded shadow-sm sort-item-element hover:border-gray-300"
-                                 wire:key="attribute_{{ $optionValue->id }}"
-                                 sort.item="values"
-                                 sort.parent="{{ $option->id }}"
-                                 sort.id="{{ $optionValue->id }}">
-                                <div sort.handle
-                                     class="cursor-grab">
-                                    <x-hub::icon ref="selector"
-                                                 style="solid"
-                                                 class="mr-2 text-gray-400 hover:text-gray-700" />
-                                </div>
-                                <span class="truncate grow">{{ $optionValue->translate('name') }}</span>
-                                <div class="mr-4 text-xs text-gray-500">
-                                    {{ class_basename($optionValue->type) }}
-                                </div>
-                                <div>
-                                    <x-hub::dropdown minimal>
-                                        <x-slot name="options">
-                                            <x-hub::dropdown.button type="button"
-                                                                    wire:click="$set('editOptionValueId', {{ $optionValue->id }})"
-                                                                    class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
-                                                {{ __('adminhub::components.option.edit_option.value.btn') }}
-                                                <x-hub::icon ref="pencil"
-                                                             style="solid"
-                                                             class="w-4" />
-                                            </x-hub::dropdown.button>
-
-                                            <x-hub::dropdown.button wire:click="$set('deleteOptionValueId', {{ $optionValue->id }})"
-                                                                    class="flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-50">
-                                                <span
-                                                        class="text-red-500">{{ __('adminhub::components.option.delete_option.value.btn') }}</span>
-                                            </x-hub::dropdown.button>
-                                        </x-slot>
-                                    </x-hub::dropdown>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    @if (!$option->values->count())
-                        <span class="mx-4 text-sm text-gray-500">
-                            {{ __('adminhub::components.option.no_option_values_text') }}
-                        </span>
-                    @endif
-                </div> --}}
             </div>
         @empty
             <div class="w-full text-center text-gray-500">
@@ -124,25 +73,23 @@
         @endforelse
     </div>
 
-    {{-- <x-hub::modal.dialog wire:model="showOptionCreate">
+    <x-hub::modal.dialog wire:model="showOptionCreate">
         <x-slot name="title">{{ __('adminhub::components.option.create_title') }}</x-slot>
         <x-slot name="content">
-            @livewire('hub.components.settings.product.option-edit')
+            Hallo
         </x-slot>
         <x-slot name="footer"></x-slot>
-    </x-hub::modal.dialog> --}}
+    </x-hub::modal.dialog>
 
-    {{-- @if ($this->optionToEdit)
+    @if ($this->optionToEdit)
         <x-hub::modal.dialog wire:model="editOptionId">
             <x-slot name="title">{{ __('adminhub::components.option.edit_title') }}</x-slot>
             <x-slot name="content">
-                @livewire('hub.components.settings.product.option-edit', [
-                    'productOption' => $this->optionToEdit,
-                ])
+                helo
             </x-slot>
             <x-slot name="footer"></x-slot>
         </x-hub::modal.dialog>
-    @endif --}}
+    @endif
 
     @if ($this->optionToDelete)
         <x-hub::modal.dialog wire:model="deleteOptionId">
