@@ -67,7 +67,7 @@ class CollectionShow extends Component
     {
         $this->products = collect();
 
-        if (!$this->productCount >= 100) {
+        if ($this->productCount <= 100) {
             $this->loadProducts();
         }
 
