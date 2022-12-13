@@ -1,7 +1,7 @@
 <div class="space-y-4">
   <header>
     <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
-      {{ __('adminhub::settings.staff.show.title') }}
+      {{ $productOption->translate('name') }}
     </h1>
   </header>
   <div class="overflow-hidden shadow sm:rounded-md">

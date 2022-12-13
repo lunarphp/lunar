@@ -124,13 +124,13 @@
         @endforelse
     </div>
 
-    <x-hub::modal.dialog wire:model="showOptionCreate">
+    {{-- <x-hub::modal.dialog wire:model="showOptionCreate">
         <x-slot name="title">{{ __('adminhub::components.option.create_title') }}</x-slot>
         <x-slot name="content">
             @livewire('hub.components.settings.product.option-edit')
         </x-slot>
         <x-slot name="footer"></x-slot>
-    </x-hub::modal.dialog>
+    </x-hub::modal.dialog> --}}
 
     {{-- @if ($this->optionToEdit)
         <x-hub::modal.dialog wire:model="editOptionId">

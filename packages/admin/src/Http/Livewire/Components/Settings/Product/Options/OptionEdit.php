@@ -51,7 +51,7 @@ class OptionEdit extends Component
             'values' => 'array',
             'productOption.handle' => [
                 'required',
-                Rule::unique(ProductOption::class, 'handle')->ignore(1, 'id'),
+                'unique:' . ProductOption::class . ',handle,' . $this->productOption->id,
             ],
         ];
 
