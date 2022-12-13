@@ -99,14 +99,6 @@ class SidebarMenu
                 ->icon('users');
         });
 
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.index')
-                ->icon('ticket');
-        });
-
         return $this;
     }
 }
