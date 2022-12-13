@@ -169,6 +169,7 @@ return [
     'orders.totals.shipping_total' => 'Shipping Total',
     'orders.totals.total' => 'Total',
     'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.totals.discount_total' => 'Discount Total',
     'orders.lines.unit_price' => 'Unit Price',
     'orders.lines.quantity' => 'Quantity',
     'orders.lines.sub_total' => 'Sub Total',

@@ -97,9 +97,12 @@ return [
     'text' => 'Text',
     'richtext' => 'Richtext',
     'transaction.label' => 'Transaction',
+    'starts_at.label' => 'Starts at',
+    'ends_at.label' => 'Ends at',
     'tag.label' => 'Tag',
     'active.label' => 'Active',
     'priority.label' => 'Priority',
     'postcodes.label' => 'Postcodes',
     'postcodes.instructions' => 'List each postcode on a new line. Supports wildcards such as NW*',
+    'max_uses.label' => 'Max uses',
 ];

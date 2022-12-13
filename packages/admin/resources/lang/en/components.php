@@ -209,4 +209,19 @@ return [
     'activity-log.orders.capture' => 'Payment of :amount on card ending :last_four',
     'activity-log.orders.authorized' => 'Authorized of :amount on card ending :last_four',
     'activity-log.orders.refund' => 'refund of :amount on card ending :last_four',
+    /**
+     * Discounts.
+     */
+    'discounts.index.title' => 'Discounts',
+    'discounts.index.status.pending' => 'Pending',
+    'discounts.index.status.active' => 'Active',
+    'discounts.index.status.scheduled' => 'Scheduled',
+    'discounts.index.status.expired' => 'Expired',
+    'discounts.index.create_discount' => 'Create Discount',
+    'discounts.create.title' => 'Create Discount',
+    'discounts.create_btn' => 'Create Discount',
+    'discounts.save_btn' => 'Save Discount',
+    'discounts.show.stop.label' => 'Stop other discounts applying after this one',
+    'discounts.show.danger_zone.label' => 'Delete discount',
+    'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
 ];

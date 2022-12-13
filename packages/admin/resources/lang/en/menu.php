@@ -10,6 +10,7 @@ return [
     'sidebar.order-processing' => 'Order Processing',
     'sidebar.orders' => 'Orders',
     'sidebar.customers' => 'Customers',
+    'sidebar.discounts' => 'Discounts',
     /**
      * Product side menu.
      */

@@ -11,4 +11,5 @@ return [
     'missing_currency_price' => 'No price for currency ":currency" exists',
     'fieldtype_missing' => 'FieldType ":class" does not exist',
     'invalid_fieldtype' => 'Class ":class" does not implement the FieldType interface.',
+    'discounts.invalid_type' => 'Collection must only contain ":expected", found ":actual"',
 ];
