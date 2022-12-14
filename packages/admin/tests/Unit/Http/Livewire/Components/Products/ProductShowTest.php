@@ -10,6 +10,7 @@ use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\Attribute;
+use Lunar\Models\Brand;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
@@ -33,16 +34,16 @@ class ProductShowTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code'    => 'fr',
+            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
-            'default'        => true,
+            'default' => true,
             'decimal_places' => 2,
         ]);
     }
@@ -65,9 +66,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -97,9 +98,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -127,9 +128,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -159,10 +160,10 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'price'          => 1.99,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'price' => 1.99,
+                'tier' => 1,
             ]);
         }
 
@@ -214,10 +215,10 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'price'          => 1.99,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'price' => 1.99,
+                'tier' => 1,
             ]);
         }
 
@@ -260,12 +261,14 @@ class ProductShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
+        $brand = Brand::factory()->create();
+
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -276,6 +279,7 @@ class ProductShowTest extends TestCase
                                  'product' => $product->refresh(),
                              ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
                              ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription')
+                             ->set('product.brand_id', $brand->id)
                              ->call('addUrl')
                              ->set('urls.0.slug', 'foo-bar');
 
@@ -311,9 +315,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -341,9 +345,9 @@ class ProductShowTest extends TestCase
 
         foreach ($product->variants as $variant) {
             Price::factory()->create([
-                'currency_id'    => $currency->id,
+                'currency_id' => $currency->id,
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
+                'priceable_id' => $variant->id,
             ]);
         }
 
@@ -371,9 +375,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -402,12 +406,14 @@ class ProductShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
+        $brand = Brand::factory()->create();
+
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -426,6 +432,7 @@ class ProductShowTest extends TestCase
                     'product' => $product,
                 ])->set('optionValues', $values->pluck('id')->toArray())
                 ->call('addUrl')
+                ->set('product.brand_id', $brand->id)
                 ->set('urls.0.slug', 'foo-bar')
                 ->call('save')
                 ->assertHasNoErrors();
@@ -451,9 +458,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -485,9 +492,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -520,6 +527,8 @@ class ProductShowTest extends TestCase
             'status' => 'published',
         ]);
 
+        $brand = Brand::factory()->create();
+
         $variant = ProductVariant::factory()->create([
             'product_id' => $product->id,
         ]);
@@ -527,9 +536,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -541,6 +550,7 @@ class ProductShowTest extends TestCase
                              ])->call('addUrl')
                              ->set('urls.0.slug', 'foo-bar')
                              ->assertCount('collections', 0)
+                             ->set('product.brand_id', $brand->id)
                              ->set('collections', collect([[
                                  'id' => $collection->id,
                                  'name' => $collection->translateAttribute('name'),
@@ -572,6 +582,8 @@ class ProductShowTest extends TestCase
             'handle' => 'description',
         ]);
 
+        $brand = Brand::factory()->create();
+
         $product = Product::factory()->create([
             'status' => 'published',
         ]);
@@ -587,9 +599,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -600,6 +612,7 @@ class ProductShowTest extends TestCase
                     'product' => $product->refresh(),
                 ])->call('addUrl')
                 ->set('urls.0.slug', 'foo-bar')
+                ->set('product.brand_id', $brand->id)
                 ->assertCount('associations', 0)
                 ->set('associations', collect([
                     [
@@ -641,6 +654,8 @@ class ProductShowTest extends TestCase
             'status' => 'published',
         ]);
 
+        $brand = Brand::factory()->create();
+
         $variant = ProductVariant::factory()->create([
             'product_id' => $product->id,
         ]);
@@ -648,9 +663,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -662,6 +677,7 @@ class ProductShowTest extends TestCase
                 ])->call('addUrl')
                 ->set('urls.0.slug', 'foo-bar')
                 ->assertCount('associations', 0)
+                ->set('product.brand_id', $brand->id)
                 ->set('associations', collect([
                     [
                         'inverse' => true,
@@ -699,9 +715,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -733,9 +749,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -764,12 +780,14 @@ class ProductShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
+        $brand = Brand::factory()->create();
+
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -787,6 +805,7 @@ class ProductShowTest extends TestCase
                 ->test(ProductShow::class, [
                     'product' => $product,
                 ])->call('addUrl')
+                ->set('product.brand_id', $brand->id)
                 ->set('urls.0.slug', 'foo-bar')
                 ->set('optionValues', $values->pluck('id')->toArray())
                 ->call('save')

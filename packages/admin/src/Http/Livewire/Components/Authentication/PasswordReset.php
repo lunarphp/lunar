@@ -56,8 +56,8 @@ class PasswordReset extends Component
      * {@inheritDoc}
      */
     protected $rules = [
-        'email'                 => 'required|email',
-        'password'              => 'nullable|confirmed',
+        'email' => 'required|email',
+        'password' => 'nullable|confirmed',
         'password_confirmation' => 'nullable',
     ];
 
@@ -103,11 +103,11 @@ class PasswordReset extends Component
             Mail::to($staff->email)->send(new ResetPasswordEmail(
                 encrypt($staff->id.'|'.$token)
             ));
-
-            $this->notify(
-                __('adminhub::notifications.password-reset.email_sent')
-            );
         }
+
+        $this->notify(
+            __('adminhub::notifications.password-reset.email_sent')
+        );
     }
 
     /**
@@ -118,7 +118,7 @@ class PasswordReset extends Component
     public function updatePasswordAndLogin()
     {
         $this->validate([
-            'password'              => 'min:8|required|confirmed',
+            'password' => 'min:8|required|confirmed',
             'password_confirmation' => 'required',
         ]);
 

@@ -36,8 +36,8 @@ class GetTaxZonePostcodeTest extends TestCase
         $postcodes = [
             // UK
             [
-                'exact'          => 'SW1 1TX',
-                'wildcard'       => 'SW*',
+                'exact' => 'SW1 1TX',
+                'wildcard' => 'SW*',
                 'wildcard_tests' => [
                     'SW',
                     'SW2',
@@ -46,8 +46,8 @@ class GetTaxZonePostcodeTest extends TestCase
             ],
             // US
             [
-                'exact'          => '90210',
-                'wildcard'       => '90*',
+                'exact' => '90210',
+                'wildcard' => '90*',
                 'wildcard_tests' => [
                     '90',
                     '902',
@@ -56,8 +56,8 @@ class GetTaxZonePostcodeTest extends TestCase
             ],
             // Canada
             [
-                'exact'          => 'A9A-9A9',
-                'wildcard'       => 'A9A*',
+                'exact' => 'A9A-9A9',
+                'wildcard' => 'A9A*',
                 'wildcard_tests' => [
                     'A9A-8A8',
                     'A9A',
@@ -66,8 +66,8 @@ class GetTaxZonePostcodeTest extends TestCase
             ],
             // Costa Rica
             [
-                'exact'          => '999-99',
-                'wildcard'       => '999*',
+                'exact' => '999-99',
+                'wildcard' => '999*',
                 'wildcard_tests' => [
                     '999-98',
                     '999',
@@ -75,8 +75,8 @@ class GetTaxZonePostcodeTest extends TestCase
             ],
             // Argentina
             [
-                'exact'          => 'A9999AAA',
-                'wildcard'       => 'A9999*',
+                'exact' => 'A9999AAA',
+                'wildcard' => 'A9999*',
                 'wildcard_tests' => [
                     'A9999BBB',
                     'A9999AAB',

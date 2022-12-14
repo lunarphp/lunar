@@ -101,7 +101,14 @@
                             </x-hub::input.group>
                         </div>
                     @endif
-
+                    @if(!$products->count() && $this->productCount >= 30)
+                        <div wire:loading.remove wire:target="loadProducts">
+                            <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
+                        </div>
+                        <div wire:loading wire:target="loadProducts">
+                            <x-hub::loading-indicator class="w-4" />
+                        </div>
+                    @else
                     <div wire:sort
                          sort.options='{ group: "products", method: "sortProducts" }'
                          class="space-y-2">
@@ -121,10 +128,9 @@
 
                                 <div
                                      class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded sort-item-element">
-                                    <div class="flex items-center">
+                                    <div class="flex items-center gap-4">
                                         @if ($product['thumbnail'])
-                                            <img src="{{ $product['thumbnail'] }}"
-                                                 class="w-6 mr-2 rounded" />
+                                            <x-hub::thumbnail :src="$product['thumbnail']" />
                                         @endif
 
                                         <div>
@@ -136,7 +142,7 @@
                                         @if (strpos($collection->sort, 'base_price') !== false)
                                             {{ $product['base_price'] }}
                                         @elseif(strpos($collection->sort, 'sku') !== false)
-                                            <div class="truncate">{{ $product['sku'] }}</div>
+                                             <div class="truncate">{{ $product['sku'] }}</div>
                                         @endif
                                     </div>
                                 </div>
@@ -155,6 +161,7 @@
                             </x-hub::alert>
                         @endforelse
                     </div>
+                    @endif
                 </div>
             </div>
 

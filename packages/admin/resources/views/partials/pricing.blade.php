@@ -59,7 +59,7 @@
           >
             <x-hub::input.price
               wire:model="basePrices.{{ $this->currency->code }}.price"
-              :symbol="$this->currency->format"
+              :error="$errors->first('basePrices.'.$this->currency->code.'.price')"
               :currencyCode="$this->currency->code"
               required
             />
@@ -73,7 +73,6 @@
           >
             <x-hub::input.price
               wire:model="basePrices.{{ $this->currency->code }}.compare_price"
-              :symbol="$this->currency->format"
               :currencyCode="$this->currency->code"
               :error="$errors->first('basePrices.*.compare_price')"
             />
@@ -102,15 +101,17 @@
               <x-hub::input.group
                 :label="null"
                 for="customerGroupPrices"
+                :error="$errors->first('customerGroupPrices.'.$group->id.'.'.$currency->code.'.price')"
+                :error-icon="false"
               >
-                <x-hub::input.price wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price" :symbol="$currency->format" :currencyCode="$currency->code" />
+                <x-hub::input.price 
+                  wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price" 
+                  :currencyCode="$currency->code"
+                  :error="$errors->first('customerGroupPrices.'.$group->id.'.'.$currency->code.'.price')"
+                  :error-icon="false"
+                />
               </x-hub::input.group>
             </div>
-            @foreach($errors->get('customerGroupPrices.'.$group->id.'.*') as $error)
-              @foreach($error as $text)
-                <p class="mt-2 text-sm text-red-600">{{ $text }}</p>
-              @endforeach
-            @endforeach
           </div>
         @endforeach
       @endif
@@ -136,54 +137,70 @@
             </x-hub::alert>
           @endif
           </div>
-          <div class="space-y-2">
-            <div class="grid grid-cols-3 gap-4">
-              <label class="block text-sm font-medium text-gray-700">{{ __('adminhub::global.customer_group') }}</label>
-              <label class="block text-sm font-medium text-gray-700">{{ __('adminhub::global.lower_limit') }}</label>
-              <label class="block text-sm font-medium text-gray-700">
-                {{ __('adminhub::global.unit_price_excl_tax') }}
-              </label>
-            </div>
 
-            <div class="space-y-2">
-              @foreach($tieredPrices as $index => $tier)
-                <div wire:key="tier_{{ $index }}">
-                  <div class="flex items-center">
-                    <div class="grid grid-cols-3 gap-4">
-                        <x-hub::input.select wire:model='tieredPrices.{{ $index }}.customer_group_id' :disabled="!$this->currency->default">
-                          <option value="*">{{ __('adminhub::global.any') }}</option>
-                          @foreach($this->customerGroups as $group)
-                            <option value="{{ $group->id }}">{{ $group->name }}</option>
-                          @endforeach
-                        </x-hub::input.select>
-
-                        <x-hub::input.text
-                          id="tier_field_{{ $index }}"
-                          wire:model='tieredPrices.{{ $index }}.tier'
-                          type="number"
-                          min="2"
-                          steps="1"
-                          required
-                          onkeydown="return event.keyCode !== 190"
-                          :disabled="!$this->currency->default"
-                          :error="$errors->first('tieredPrices.'.$index.'.tier')"
-                        />
-
-                      <x-hub::input.price wire:model="tieredPrices.{{ $index }}.prices.{{ $currency->code }}.price" :symbol="$this->currency->format" :currencyCode="$this->currency->code" />
+          @foreach ($tieredPrices as $index => $tier)
+            <div class="relative flex divide-y divide-gray-100" wire:key="tier_{{ $index }}">
+                <div class="grid w-full grid-cols-6 gap-4 pr-8">
+                    <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                        <x-hub::input.group 
+                            :label="__('adminhub::global.customer_group')" 
+                            for="customer_group_id_field_{{ $index }}"
+                            :error="$errors->first('tieredPrices.' . $index . '.customer_group_id')"
+                            required
+                        >
+                            <x-hub::input.select
+                                id="customer_group_id_field_{{ $index }}"
+                                wire:model='tieredPrices.{{ $index }}.customer_group_id'
+                                :disabled="!$this->currency->default">
+                                <option value="*">{{ __('adminhub::global.any') }}</option>
+                                @foreach ($this->customerGroups as $group)
+                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                @endforeach
+                            </x-hub::input.select>
+                        </x-hub::input.group>
                     </div>
-                    <div class="ml-4">
-                      <button class="text-gray-500 hover:text-red-500" wire:click.prevent="removeTier('{{ $index }}')"><x-hub::icon ref="trash" class="w-4" /></button>
+                    <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                        <x-hub::input.group 
+                            :label="__('adminhub::global.lower_limit')"
+                            for="tier_field_{{ $index }}"
+                            :error="$errors->first('tieredPrices.' . $index . '.tier')"
+                            :error-icon="false"
+                            required
+                        >
+                            <x-hub::input.text 
+                                id="tier_field_{{ $index }}"
+                                wire:model='tieredPrices.{{ $index }}.tier' 
+                                type="number"
+                                min="2" 
+                                steps="1" 
+                                required
+                                @keydown="$event.keyCode === 190 ? $event.preventDefault() : null"
+                                :disabled="!$this->currency->default"
+                                :error="$errors->first('tieredPrices.' . $index . '.tier')" />
+                        </x-hub::input.group>
                     </div>
-                  </div>
-                  @foreach($errors->get('tieredPrices.'.$index.'*') as $error)
-                    @foreach($error as $text)
-                      <p class="mt-2 text-sm text-red-600">{{ $text }}</p>
-                    @endforeach
-                  @endforeach
+                    <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                        <x-hub::input.group 
+                            :label="__('adminhub::global.unit_price_excl_tax')"
+                            for="price_field_{{ $index }}_lang_{{ $currency->code }}"
+                            :error="$errors->first('tieredPrices.' . $index . '.prices.' . $currency->code . '.price')"
+                            :error-icon="false"
+                            required
+                        >
+                            <x-hub::input.price
+                                id="price_field_{{ $index }}_lang_{{ $currency->code }}"
+                                wire:model="tieredPrices.{{ $index }}.prices.{{ $currency->code }}.price"
+                                :currencyCode="$this->currency->code" 
+                                :error="$errors->first('tieredPrices.' . $index . '.prices.' . $currency->code . '.price')" />
+                        </x-hub::input.group>
+                    </div>
                 </div>
-              @endforeach
+                <button class="absolute right-0 text-gray-500 hover:text-red-500 top-6"
+                    wire:click.prevent="removeTier('{{ $index }}')">
+                    <x-hub::icon ref="trash" class="w-4" />
+                </button>
             </div>
-          </div>
+          @endforeach
         @else
         @endif
       </div>

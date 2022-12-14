@@ -3,7 +3,9 @@
     {{-- <div class="flex justify-end w-full">
       <x-hub::button>Associate User</x-hub::button>
     </div> --}}
-    {{ $this->users->links() }}
+    <div class="lt-pagination">
+      {{ $this->users->links() }}
+    </div>
 
     @foreach($this->users as $user)
       <div wire:key="user_{{ $user->id }}" class="flex items-center justify-between p-4 bg-white rounded-md shadow">

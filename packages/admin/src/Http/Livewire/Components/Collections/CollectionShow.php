@@ -65,10 +65,24 @@ class CollectionShow extends Component
      */
     public function mount()
     {
+        $this->products = collect();
+        if ($this->productCount <= 30) {
+            $this->loadProducts();
+        }
+
+        $this->syncAvailability();
+    }
+
+    public function getProductCountProperty()
+    {
+        return $this->collection->products()->count();
+    }
+
+    public function loadProducts()
+    {
         $this->products = $this->mapProducts(
             $this->collection->load('products.variants.basePrices.currency')->products
         );
-        $this->syncAvailability();
     }
 
     /**
@@ -135,6 +149,16 @@ class CollectionShow extends Component
             $this->withAttributesValidationRules(),
             $this->hasImagesValidationRules(),
             $this->hasUrlsValidationRules()
+        );
+    }
+
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        return array_merge(
+            $attributes,
+            $this->getUrlsValidationAttributes()
         );
     }
 
@@ -245,8 +269,8 @@ class CollectionShow extends Component
             return [
                 $channel['channel_id'] => [
                     'starts_at' => ! $channel['enabled'] ? null : $channel['starts_at'],
-                    'ends_at'   => ! $channel['enabled'] ? null : $channel['ends_at'],
-                    'enabled'   => $channel['enabled'],
+                    'ends_at' => ! $channel['enabled'] ? null : $channel['ends_at'],
+                    'enabled' => $channel['enabled'],
                 ],
             ];
         });
@@ -269,15 +293,17 @@ class CollectionShow extends Component
         });
 
         DB::transaction(function () {
-            $this->collection->products()->sync(
-                $this->products->mapWithKeys(function ($product, $index) {
-                    return [
-                        $product['id'] => [
-                            'position' => $index + 1,
-                        ],
-                    ];
-                })
-            );
+            if ($this->productCount <= 30) {
+                $this->collection->products()->sync(
+                    $this->products->mapWithKeys(function ($product, $index) {
+                        return [
+                            $product['id'] => [
+                                'position' => $index + 1,
+                            ],
+                        ];
+                    })
+                );
+            }
         });
 
         $this->updateImages();
@@ -295,40 +321,40 @@ class CollectionShow extends Component
     {
         return collect([
             [
-                'title'      => __('adminhub::menu.attributes'),
-                'id'         => 'attributes',
+                'title' => __('adminhub::menu.attributes'),
+                'id' => 'attributes',
                 'has_errors' => $this->errorBag->hasAny([
                     'attributeMapping.*',
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.images'),
-                'id'         => 'images',
+                'title' => __('adminhub::menu.images'),
+                'id' => 'images',
                 'has_errors' => $this->errorBag->hasAny([
                     'newImages.*',
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.availability'),
-                'id'         => 'availability',
+                'title' => __('adminhub::menu.availability'),
+                'id' => 'availability',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.urls'),
-                'id'         => 'urls',
+                'title' => __('adminhub::menu.urls'),
+                'id' => 'urls',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.products'),
-                'id'         => 'products',
+                'title' => __('adminhub::menu.products'),
+                'id' => 'products',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.collections'),
-                'id'         => 'collections',
+                'title' => __('adminhub::menu.collections'),
+                'id' => 'collections',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
@@ -393,13 +419,13 @@ class CollectionShow extends Component
         })->flatten()->first();
 
         return [
-            'id'             => $product->id,
-            'sort_key'       => Str::random(),
-            'name'           => $product->translateAttribute('name'),
+            'id' => $product->id,
+            'sort_key' => Str::random(),
+            'name' => $product->translateAttribute('name'),
             'recently_added' => $pendingSave,
-            'thumbnail'      => $product->thumbnail ? $product->thumbnail->getUrl('small') : null,
-            'position'       => $product->pivot->position ?? 9999,
-            'sku'            => $product->variants->map(function ($variant) {
+            'thumbnail' => $product->thumbnail ? $product->thumbnail->getUrl('small') : null,
+            'position' => $product->pivot->position ?? 9999,
+            'sku' => $product->variants->map(function ($variant) {
                 return $variant->sku;
             })->join(','),
             'base_price' => $basePrice->load('currency')->formatted,
@@ -414,16 +440,16 @@ class CollectionShow extends Component
     protected function syncAvailability()
     {
         $this->availability = [
-            'channels'                                                              => $this->channels->mapWithKeys(function ($channel) {
+            'channels' => $this->channels->mapWithKeys(function ($channel) {
                 $collectionChannel = $this->collection->channels->first(fn ($assoc) => $assoc->id == $channel->id);
 
                 return [
                     $channel->id => [
-                        'channel_id'   => $channel->id,
-                        'starts_at'    => $collectionChannel ? $collectionChannel->pivot->starts_at : null,
-                        'ends_at'      => $collectionChannel ? $collectionChannel->pivot->ends_at : null,
-                        'enabled'      => $collectionChannel ? $collectionChannel->pivot->enabled : false,
-                        'scheduling'   => false,
+                        'channel_id' => $channel->id,
+                        'starts_at' => $collectionChannel ? $collectionChannel->pivot->starts_at : null,
+                        'ends_at' => $collectionChannel ? $collectionChannel->pivot->ends_at : null,
+                        'enabled' => $collectionChannel ? $collectionChannel->pivot->enabled : false,
+                        'scheduling' => false,
                     ],
                 ];
             }),
@@ -445,10 +471,10 @@ class CollectionShow extends Component
                 return [
                     $group->id => [
                         'customer_group_id' => $group->id,
-                        'scheduling'        => false,
-                        'status'            => $status,
-                        'starts_at'         => $pivot->starts_at ?? null,
-                        'ends_at'           => $pivot->ends_at ?? null,
+                        'scheduling' => false,
+                        'status' => $status,
+                        'starts_at' => $pivot->starts_at ?? null,
+                        'ends_at' => $pivot->ends_at ?? null,
                     ],
                 ];
             }),

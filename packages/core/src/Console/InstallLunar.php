@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Lunar\FieldTypes\TranslatedText;
-use Lunar\Hub\Models\Staff;
+use Lunar\Hub\AdminHubServiceProvider;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Channel;
@@ -43,47 +43,28 @@ class InstallLunar extends Command
      */
     public function handle(): void
     {
-        $this->warn('**************************************************************************');
-        $this->warn('*                              WARNING                                   *');
-        $this->warn('*    We take security very seriously in Lunar and every effort is     *');
-        $this->warn('*          made to stay in line with security best practices.            *');
-        $this->warn('*                                                                        *');
-        $this->warn('*   In order to provide rich search functionality, some sensitive data   *');
-        $this->warn('*    is likely to be indexed in the search engine. Depending on your     *');
-        $this->warn('*     search engine of choice, you must ensure this data is secure.      *');
-        $this->warn('*                                                                        *');
-        $this->warn('* Lunar accepts no liability for compromised data as a result of your *');
-        $this->warn('*  storefront not following guidelines set out by third party providers. *');
-        $this->warn('*                                                                        *');
-        $this->warn('*      Find out more: https://docs.lunarphp.io/securing-your-site        *');
-        $this->warn('**************************************************************************');
+        $this->newLine();
+        $this->comment('Installing Lunar...');
 
-        $confirmed = $this->confirm('I understand, lets do this 🚀');
+        $this->newLine();
+        $this->info('Publishing configuration...');
 
-        if (! $confirmed) {
-            $this->info('😔 Understood, if you have concerns, please reach out to us on Discord, https://discord.gg/v6qVWaf');
+        if (! $this->configExists('lunar')) {
+            $this->publishConfiguration();
+        } else {
+            if ($this->shouldOverwriteConfig()) {
+                $this->line('Overwriting configuration file...');
+                $this->publishConfiguration($force = true);
+            } else {
+                $this->line('Existing configuration was not overwritten');
+            }
+        }
 
-            return;
+        if ($this->confirm('Run database migrations?', true)) {
+            $this->call('migrate');
         }
 
         DB::transaction(function () {
-            $this->info('Installing Lunar...');
-
-            $this->info('Publishing configuration...');
-
-            if (! $this->configExists('lunar')) {
-                $this->publishConfiguration();
-            } else {
-                if ($this->shouldOverwriteConfig()) {
-                    $this->info('Overwriting configuration file...');
-                    $this->publishConfiguration($force = true);
-                } else {
-                    $this->info('Existing configuration was not overwritten');
-                }
-            }
-
-            $this->info('Publishing hub assets');
-
             if (! Country::count()) {
                 $this->info('Importing countries');
                 $this->call('lunar:import:address-data');
@@ -93,27 +74,10 @@ class InstallLunar extends Command
                 $this->info('Setting up default channel');
 
                 Channel::create([
-                    'name'    => 'Webstore',
-                    'handle'  => 'webstore',
+                    'name' => 'Webstore',
+                    'handle' => 'webstore',
                     'default' => true,
-                    'url'     => 'localhost',
-                ]);
-            }
-
-            if (! Staff::whereAdmin(true)->exists()) {
-                $this->info('Create an admin user');
-
-                $firstname = $this->ask('Whats your first name?');
-                $lastname = $this->ask('Whats your last name?');
-                $email = $this->ask('Whats your email address?');
-                $password = $this->secret('Enter a password');
-
-                Staff::create([
-                    'firstname' => $firstname,
-                    'lastname'  => $lastname,
-                    'email'     => $email,
-                    'password'  => bcrypt($password),
-                    'admin'     => true,
+                    'url' => 'http://localhost',
                 ]);
             }
 
@@ -121,8 +85,8 @@ class InstallLunar extends Command
                 $this->info('Adding default language');
 
                 Language::create([
-                    'code'    => 'en',
-                    'name'    => 'English',
+                    'code' => 'en',
+                    'name' => 'English',
                     'default' => true,
                 ]);
             }
@@ -131,12 +95,12 @@ class InstallLunar extends Command
                 $this->info('Adding a default currency (USD)');
 
                 Currency::create([
-                    'code'           => 'USD',
-                    'name'           => 'US Dollar',
-                    'exchange_rate'  => 1,
+                    'code' => 'USD',
+                    'name' => 'US Dollar',
+                    'exchange_rate' => 1,
                     'decimal_places' => 2,
-                    'default'        => true,
-                    'enabled'        => true,
+                    'default' => true,
+                    'enabled' => true,
                 ]);
             }
 
@@ -144,8 +108,8 @@ class InstallLunar extends Command
                 $this->info('Adding a default customer group.');
 
                 CustomerGroup::create([
-                    'name'    => 'Retail',
-                    'handle'  => 'retail',
+                    'name' => 'Retail',
+                    'handle' => 'retail',
                     'default' => true,
                 ]);
             }
@@ -154,7 +118,7 @@ class InstallLunar extends Command
                 $this->info('Adding an initial collection group');
 
                 CollectionGroup::create([
-                    'name'   => 'Main',
+                    'name' => 'Main',
                     'handle' => 'main',
                 ]);
             }
@@ -163,7 +127,7 @@ class InstallLunar extends Command
                 $this->info('Adding a default tax class.');
 
                 TaxClass::create([
-                    'name'    => 'Default Tax Class',
+                    'name' => 'Default Tax Class',
                     'default' => true,
                 ]);
             }
@@ -173,33 +137,33 @@ class InstallLunar extends Command
 
                 $group = AttributeGroup::create([
                     'attributable_type' => Product::class,
-                    'name'              => collect([
+                    'name' => collect([
                         'en' => 'Details',
                     ]),
-                    'handle'   => 'details',
+                    'handle' => 'details',
                     'position' => 1,
                 ]);
 
                 $collectionGroup = AttributeGroup::create([
                     'attributable_type' => Collection::class,
-                    'name'              => collect([
+                    'name' => collect([
                         'en' => 'Details',
                     ]),
-                    'handle'   => 'collection_details',
+                    'handle' => 'collection_details',
                     'position' => 1,
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Product::class,
+                    'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
-                    'position'           => 1,
-                    'name'               => [
+                    'position' => 1,
+                    'name' => [
                         'en' => 'Name',
                     ],
-                    'handle'        => 'name',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => true,
+                    'handle' => 'name',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => true,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => false,
@@ -208,16 +172,16 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Collection::class,
+                    'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position'           => 1,
-                    'name'               => [
+                    'position' => 1,
+                    'name' => [
                         'en' => 'Name',
                     ],
-                    'handle'        => 'name',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => true,
+                    'handle' => 'name',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => true,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => false,
@@ -226,16 +190,16 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Product::class,
+                    'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
-                    'position'           => 2,
-                    'name'               => [
+                    'position' => 2,
+                    'name' => [
                         'en' => 'Description',
                     ],
-                    'handle'        => 'description',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => false,
+                    'handle' => 'description',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => false,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => true,
@@ -244,16 +208,16 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type'     => Collection::class,
+                    'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position'           => 2,
-                    'name'               => [
+                    'position' => 2,
+                    'name' => [
                         'en' => 'Description',
                     ],
-                    'handle'        => 'description',
-                    'section'       => 'main',
-                    'type'          => TranslatedText::class,
-                    'required'      => false,
+                    'handle' => 'description',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => false,
                     'default_value' => null,
                     'configuration' => [
                         'richtext' => true,
@@ -273,17 +237,21 @@ class InstallLunar extends Command
                     Attribute::whereAttributeType(Product::class)->get()->pluck('id')
                 );
             }
-
-            $this->info('Lunar is now installed.');
-
-            if ($this->confirm('Would you like to show some love by starring the repo?')) {
-                $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';
-
-                exec("{$exec} https://github.com/lunarphp/lunar");
-
-                $this->line("Thanks, you're awesome!");
-            }
         });
+
+        if ($this->isHubInstalled()) {
+            $this->newLine();
+            $this->line('Installing Admin Hub.');
+            $this->call('lunar:hub:install');
+        }
+
+        $this->newLine();
+        $this->comment('Lunar is now installed 🚀');
+        $this->newLine();
+
+        $this->line('Please show some love for Lunar by giving us a star on GitHub ⭐️');
+        $this->info('https://github.com/lunarphp/lunar️');
+        $this->newLine(3);
     }
 
     /**
@@ -324,7 +292,7 @@ class InstallLunar extends Command
     {
         $params = [
             '--provider' => "Lunar\LunarServiceProvider",
-            '--tag'      => 'lunar',
+            '--tag' => 'lunar',
         ];
 
         if ($forcePublish === true) {
@@ -332,5 +300,15 @@ class InstallLunar extends Command
         }
 
         $this->call('vendor:publish', $params);
+    }
+
+    /**
+     * Determines if the admin hub is installed.
+     *
+     * @return bool
+     */
+    private function isHubInstalled()
+    {
+        return class_exists(AdminHubServiceProvider::class);
     }
 }

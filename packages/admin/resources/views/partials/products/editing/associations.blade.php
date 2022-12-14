@@ -42,48 +42,59 @@
     </header>
 
     <div>
-      <x-hub::table>
-        <x-slot name="head">
-            <x-hub::table.heading class="w-24">
+      <div class="lt-overflow-hidden lt-border lt-border-gray-200 lt-rounded-lg">
+        <table class="lt-min-w-full lt-divide-y lt-divide-gray-200">
+          <thead class="lt-bg-white">
+            <th></th>
 
-            </x-hub::table.heading>
-            <x-hub::table.heading>
+            <th class="lt-px-4 lt-py-3 lt-text-sm lt-font-medium lt-text-left lt-text-gray-700">
               {{ __('adminhub::global.product') }}
-            </x-hub::table.heading>
-            <x-hub::table.heading>
+            </th>
+
+            <th class="lt-px-4 lt-py-3 lt-text-sm lt-font-medium lt-text-left lt-text-gray-700">
               {{ __('adminhub::global.type') }}
-            </x-hub::table.heading>
-            <x-hub::table.heading></x-hub::table.heading>
-        </x-slot>
-        <x-slot name="body">
-          @foreach($associations->filter(fn($product) => $product['inverse'] == $showInverseAssociations) as $index => $product)
-          <x-hub::table.row>
-            <x-hub::table.cell>
-              <img src="{{ $product['thumbnail']}}" class="w-12 rounded">
-            </x-hub::table.cell>
-            <x-hub::table.cell>{{ $product['name'] }}</x-hub::table.cell>
-            <x-hub::table.cell>
-              <x-hub::input.select wire:model="associations.{{ $index }}.type">
-                <option value="alternate">
-                  {{ __('adminhub::partials.products.associations.alternate') }}
-                </option>
-                <option value="cross-sell">
-                  {{ __('adminhub::partials.products.associations.cross-sell') }}
-                </option>
-                <option value="up-sell">
-                  {{ __('adminhub::partials.products.associations.up-sell') }}
-                </option>
-              </x-hub::input.select>
-            </x-hub::table.cell>
-            <x-hub::table.cell>
-              <button type="button" wire:click.prevent="removeAssociation({{ $index }})" class="text-red-500 hover:underline">
-                {{ __('adminhub::global.remove') }}
-              </button>
-            </x-hub::table.cell>
-          </x-hub::table.row>
-          @endforeach
-        </x-slot>
-      </x-hub::table>
+            </th>
+
+            <th></th>
+          </thead>
+
+          <tbody>
+            @foreach($associations->filter(fn($product) => $product['inverse'] == $showInverseAssociations) as $index => $product)
+              <tr class="lt-bg-white even:lt-bg-gray-50" wire:key="table_row_{{ $product['target_id'] }}">
+                <x-l-tables::cell>
+                    <x-hub::thumbnail src="{{ $product['thumbnail'] }}" />
+                </x-l-tables::cell>
+
+                <x-l-tables::cell>
+                  <a href="{{ route('hub.products.show', $product['target_id']) }}" class="lt-text-blue-600 hover:underline">
+                    {{ $product['name'] }}
+                  </a>
+                </x-l-tables::cell>
+
+                <x-l-tables::cell>
+                  <x-hub::input.select wire:model="associations.{{ $index }}.type">
+                    <option value="alternate">
+                      {{ __('adminhub::partials.products.associations.alternate') }}
+                    </option>
+                    <option value="cross-sell">
+                      {{ __('adminhub::partials.products.associations.cross-sell') }}
+                    </option>
+                    <option value="up-sell">
+                      {{ __('adminhub::partials.products.associations.up-sell') }}
+                    </option>
+                  </x-hub::input.select>
+                </x-l-tables::cell>
+
+                <x-l-tables::cell>
+                  <button type="button" wire:click.prevent="removeAssociation({{ $index }})" class="text-red-500 hover:underline">
+                    {{ __('adminhub::global.remove') }}
+                  </button>
+                </x-l-tables::cell>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

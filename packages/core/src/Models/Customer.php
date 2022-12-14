@@ -84,11 +84,11 @@ class Customer extends BaseModel
         $metaFields = (array) $this->meta;
 
         $data = [
-            'id'           => $this->id,
-            'name'         => $this->fullName,
+            'id' => $this->id,
+            'name' => $this->fullName,
             'company_name' => $this->company_name,
-            'vat_no'       => $this->vat_no,
-            'account_ref'  => $this->account_ref,
+            'vat_no' => $this->vat_no,
+            'account_ref' => $this->account_ref,
         ];
 
         foreach ($metaFields as $key => $value) {
@@ -106,6 +106,8 @@ class Customer extends BaseModel
         }
 
         $data['addresses'] = $this->addresses->toArray();
+
+        $data['user_emails'] = $this->users->pluck('email')->toArray();
 
         return $data;
     }

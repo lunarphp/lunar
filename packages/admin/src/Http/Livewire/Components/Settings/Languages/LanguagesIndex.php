@@ -4,7 +4,6 @@ namespace Lunar\Hub\Http\Livewire\Components\Settings\Languages;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Lunar\Models\Language;
 
 class LanguagesIndex extends Component
 {
@@ -17,8 +16,7 @@ class LanguagesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.languages.index', [
-            'languages' => Language::paginate(5),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.languages.index')
+            ->layout('adminhub::layouts.base');
     }
 }

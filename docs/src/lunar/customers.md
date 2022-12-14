@@ -20,6 +20,8 @@ Lunar\Models\Customer
 |`last_name`||
 |`company_name`|nullable|
 |`vat_no`|nullable|
+|`account_ref`|nullable|
+|`attribute_data`|JSON|
 |`meta`|JSON|
 |`created_at`||
 |`updated_at`||

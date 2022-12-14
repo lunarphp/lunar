@@ -157,11 +157,35 @@ class MigrateGetCandy extends Command
 
             $this->line("Migrating {$old} into {$new}");
 
-            DB::table($old)->orderBy('id')->chunk(100, function ($rows) use ($new) {
+            if ($old == 'getcandy_products') {
+                if (Schema::hasColumn('getcandy_products', 'brand')) {
+                    $brands = DB::table('getcandy_products')->select('brand')->distinct()->get();
+
+                    DB::table('lunar_brands')->insert(
+                        $brands->filter()->map(function ($brand) {
+                            return [
+                                'name' => $brand->brand,
+                            ];
+                        })->toArray()
+                    );
+                }
+            }
+
+            $brands = DB::table('lunar_brands')->get();
+
+            DB::table($old)->orderBy('id')->chunk(100, function ($rows) use ($new, $brands) {
                 $insert = [];
 
                 foreach ($rows as $row) {
-                    $insert[] = (array) $row;
+                    $data = (array) $row;
+                    if (! empty($data['brand'])) {
+                        $brand = $brands->first(function ($brand) use ($data) {
+                            return $brand->name == $data['brand'];
+                        });
+                        $data['brand_id'] = $brand?->id ?: $brands->first()->id;
+                        unset($data['brand']);
+                    }
+                    $insert[] = $data;
                 }
 
                 DB::table($new)->insert($insert);

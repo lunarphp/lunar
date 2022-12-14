@@ -14,6 +14,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Require brand
+    |--------------------------------------------------------------------------
+    |
+    | If products are required to have a brand associated to them, set this to
+    | true, otherwise if brand is optional, set to false.
+    |
+    */
+    'require_brand' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Product identifiers
     |--------------------------------------------------------------------------
     |
@@ -25,18 +36,18 @@ return [
     */
     'sku' => [
         'required' => true,
-        'unique'   => true,
+        'unique' => true,
     ],
     'gtin' => [
         'required' => false,
-        'unique'   => false,
+        'unique' => false,
     ],
     'mpn' => [
         'required' => false,
-        'unique'   => false,
+        'unique' => false,
     ],
     'ean' => [
         'required' => false,
-        'unique'   => false,
+        'unique' => false,
     ],
 ];

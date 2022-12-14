@@ -5,14 +5,15 @@ namespace Lunar\Hub\Http\Livewire\Components\Brands;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Brand;
-use Lunar\Models\Product;
 
 class BrandShow extends Component
 {
+    use HasSlots;
     use Notifies;
     use HasImages;
     use WithFileUploads;
@@ -38,7 +39,11 @@ class BrandShow extends Component
      */
     protected function getListeners()
     {
-        return array_merge([], $this->getHasImagesListeners());
+        return array_merge(
+            [],
+            $this->getHasImagesListeners(),
+            $this->getHasSlotsListeners(),
+        );
     }
 
     /**
@@ -68,9 +73,25 @@ class BrandShow extends Component
      */
     protected function rules()
     {
-        return [
-            'brand.name' => 'required|string|max:255',
-        ];
+        return array_merge(
+            [
+                'brand.name' => 'required|string|max:255',
+            ],
+            $this->hasUrlsValidationRules()
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        return array_merge(
+            $attributes,
+            $this->getUrlsValidationAttributes()
+        );
     }
 
     /**
@@ -85,6 +106,7 @@ class BrandShow extends Component
 
         $this->updateImages();
         $this->saveUrls();
+        $this->updateSlots();
 
         $this->notify(
             __('adminhub::notifications.brands.updated'),
@@ -99,7 +121,7 @@ class BrandShow extends Component
      */
     public function getProductsCountProperty()
     {
-        return $this->brand->products()->count();
+        return $this->brand->products()->withTrashed()->count();
     }
 
     /**
@@ -140,6 +162,26 @@ class BrandShow extends Component
     public function getCanDeleteProperty()
     {
         return $this->deleteConfirm === $this->brand->name;
+    }
+
+    /*
+     * Returns the model which has slots associated.
+     *
+     * @return \Lunar\Models\Customer
+     */
+    protected function getSlotModel()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * Returns the contexts for any slots.
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['brand.show'];
     }
 
     /**

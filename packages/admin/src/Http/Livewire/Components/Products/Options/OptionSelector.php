@@ -45,6 +45,11 @@ class OptionSelector extends Component
      */
     protected $listeners = ['productOptionCreated' => 'selectNewOption'];
 
+    public function updatedMainPanelVisible($val)
+    {
+        $this->emit('productOptionSelectorPanelToggled', $val);
+    }
+
     /**
      * Returns the options based on search terms.
      *

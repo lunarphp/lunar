@@ -13,10 +13,10 @@ class ChannelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'    => $this->faker->name(),
-            'handle'  => Str::slug($this->faker->name()),
+            'name' => $this->faker->name(),
+            'handle' => Str::slug($this->faker->name()),
             'default' => true,
-            'url'     => $this->faker->url(),
+            'url' => $this->faker->url(),
         ];
     }
 }

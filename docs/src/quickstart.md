@@ -80,7 +80,7 @@ Link the storage directory
 php artisan storage:link
 ```
 
-## Finished 🥳
+## Finished 🚀
 
 You are now installed! 
 
@@ -88,11 +88,3 @@ You are now installed!
 - You can access the admin hub at `http://<yoursite>/hub`
 
 You can review the source code at the GitHub Repository: [https://github.com/lunarphp/demo-store](https://github.com/lunarphp/demo-store)
-
-## Spread the Word
-
-If you enjoy our project, please share it with others. The more developers using Lunar the more we can put back into the project.
-
-Get sharing on Twitter, Reddit, Medium, Dev.to, Laravel News, Slack, Discord, etc.
-
-Go Team Lunar! 🤟

@@ -1,5 +1,7 @@
 <div class="space-y-4">
-  {{ $this->purchaseHistory->links() }}
+  <div class="lt-pagination">
+    {{ $this->purchaseHistory->links() }}
+  </div>
 
   <x-hub::table>
     <x-slot name="head">

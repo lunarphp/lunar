@@ -14,7 +14,7 @@ Products also belong to a `ProductType` and aside from the attributes, which you
 Lunar\Models\Product::create([
     'product_type_id' => $productTypeId,
     'status' => 'published',
-    'brand' => 'Foo',
+    'brand_id' => $brandId,
     'attribute_data' => [
         'name' => new TranslatedText(collect([
             'en' => new Text('FooBar'),
@@ -601,7 +601,7 @@ This example assumes we already have Attributes set up for name and description 
 Lunar\Models\Product::create([
     'product_type_id' => $productType->id,
     'status' => 'published',
-    'brand' => 'Dr. Martens',
+    'brand_id' => $brandId,
     'sku' => 'DRBOOT',
     'attribute_data' => [
         'name' => new TranslatedText(collect([

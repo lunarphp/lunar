@@ -16,10 +16,10 @@ class AttributeGroupTest extends TestCase
     {
         $attributeGroup = AttributeGroup::factory()->create([
             'attributable_type' => 'product_type',
-            'name'              => [
+            'name' => [
                 'en' => 'SEO',
             ],
-            'handle'   => 'seo',
+            'handle' => 'seo',
             'position' => 5,
         ]);
 
@@ -33,10 +33,10 @@ class AttributeGroupTest extends TestCase
     {
         $attributeGroup = AttributeGroup::factory()->create([
             'attributable_type' => 'product_type',
-            'name'              => [
+            'name' => [
                 'en' => 'SEO',
             ],
-            'handle'   => 'seo',
+            'handle' => 'seo',
             'position' => 5,
         ]);
 

@@ -32,7 +32,7 @@ class Price extends BaseModel
     protected $guarded = [];
 
     protected $casts = [
-        'price'         => CastsPrice::class,
+        'price' => CastsPrice::class,
         'compare_price' => CastsPrice::class,
     ];
 

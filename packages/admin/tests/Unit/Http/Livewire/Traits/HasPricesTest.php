@@ -26,12 +26,12 @@ class HasPricesTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code'    => 'fr',
+            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
@@ -56,7 +56,6 @@ class HasPricesTest extends TestCase
 
         $product = Product::factory()->create([
             'status' => 'published',
-            'brand'  => 'BAR',
         ]);
 
         $variant = ProductVariant::factory()->create([
@@ -66,9 +65,9 @@ class HasPricesTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -79,8 +78,8 @@ class HasPricesTest extends TestCase
         foreach (Currency::get() as $currency) {
             $newPricing[$currency->code] = [
                 'currency_id' => $currency->id,
-                'price'   => 123,
-                'tier'    => 1,
+                'price' => 123,
+                'tier' => 1,
             ];
 
             $newTierPricing[$currency->code] = [
@@ -88,7 +87,7 @@ class HasPricesTest extends TestCase
                     'price' => 124,
                     'currency_id' => $currency->id,
                 ]],
-                'tier'           => 2,
+                'tier' => 2,
                 'customer_group_id' => '*',
             ];
         }

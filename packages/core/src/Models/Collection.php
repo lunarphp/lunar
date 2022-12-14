@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
@@ -31,7 +32,7 @@ class Collection extends BaseModel implements SpatieHasMedia
         HasMacros,
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
-    }
+        }
 
     /**
      * Define our base filterable attributes.
@@ -78,6 +79,11 @@ class Collection extends BaseModel implements SpatieHasMedia
     public function group()
     {
         return $this->belongsTo(CollectionGroup::class, 'collection_group_id');
+    }
+
+    public function scopeInGroup(Builder $builder, $id)
+    {
+        return $builder->where('collection_group_id', $id);
     }
 
     /**

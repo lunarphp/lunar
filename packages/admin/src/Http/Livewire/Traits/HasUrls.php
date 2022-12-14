@@ -45,6 +45,18 @@ trait HasUrls
         return $rules;
     }
 
+    public function getUrlsValidationAttributes()
+    {
+        $attributes = [];
+
+        foreach ($this->urls as $key => $value) {
+            $sequence = (int) $key + 1;
+            $attributes["urls.{$key}.slug"] = lang(key:'global.slug', lower:true)." #{$sequence}";
+        }
+
+        return $attributes;
+    }
+
     /**
      * Computed property for existing tags.
      *
@@ -55,15 +67,25 @@ trait HasUrls
     public function addUrl()
     {
         $this->urls[] = [
-            'slug'        => null,
-            'key'         => Str::random(),
-            'default'     => ! collect($this->urls)->count(),
+            'slug' => null,
+            'key' => Str::random(),
+            'default' => ! collect($this->urls)->count(),
             'language_id' => $this->defaultLanguage->id,
         ];
     }
 
     public function removeUrl($index)
     {
+        $url = $this->urls[$index];
+
+        if ($url['default'] && $url['slug']) {
+            $this->notify(
+                message: __('adminhub::notifications.default_url_protected'),
+                level: 'error',
+            );
+
+            return;
+        }
         unset($this->urls[$index]);
     }
 
@@ -91,7 +113,7 @@ trait HasUrls
         Arr::set($this->urls, $key, Str::slug($value));
     }
 
-    public function saveUrls()
+    protected function validateUrls()
     {
         $rules = [];
 
@@ -144,7 +166,10 @@ trait HasUrls
                 'urls.*.slug.unique' => __('adminhub::validation.url_slug_unique'),
             ]);
         }
+    }
 
+    public function saveUrls()
+    {
         $model = $this->getHasUrlsModel();
 
         DB::transaction(function () use ($model) {

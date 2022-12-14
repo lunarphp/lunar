@@ -27,8 +27,9 @@ class SideMenu extends Component
     public function createCollectionGroup()
     {
         $this->validate();
+
         $newGroup = CollectionGroup::create([
-            'name'   => $this->name,
+            'name' => $this->name,
             'handle' => Str::slug($this->name),
         ]);
 
@@ -44,6 +45,8 @@ class SideMenu extends Component
 
         $this->name = '';
         $this->showCreateModal = false;
+
+        return redirect()->route('hub.collection-groups.show', $newGroup);
     }
 
     public function getCollectionGroupsProperty()

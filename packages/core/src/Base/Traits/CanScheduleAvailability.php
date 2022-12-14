@@ -52,8 +52,8 @@ trait CanScheduleAvailability
         $relation->syncWithoutDetaching(
             $this->getScheduleMapping($models, array_merge([
                 'starts_at' => $starts,
-                'ends_at'   => $ends,
-                'enabled'   => true,
+                'ends_at' => $ends,
+                'enabled' => true,
             ], $pivotData))
         );
     }
@@ -84,8 +84,8 @@ trait CanScheduleAvailability
         $relation->syncWithoutDetaching(
             $this->getScheduleMapping($models, array_merge([
                 'starts_at' => null,
-                'ends_at'   => null,
-                'enabled'   => false,
+                'ends_at' => null,
+                'enabled' => false,
             ], $pivotData))
         );
     }

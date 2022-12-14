@@ -16,27 +16,28 @@ class OrderFactory extends Factory
         $taxTotal = ($total - 100) * .2;
 
         return [
-            'channel_id'     => Channel::factory(),
-            'user_id'        => null,
-            'status'         => 'pending_payment',
-            'reference'      => $this->faker->unique()->regexify('[A-Z]{8}'),
-            'sub_total'      => $total - $taxTotal,
+            'channel_id' => Channel::factory(),
+            'new_customer' => $this->faker->boolean,
+            'user_id' => null,
+            'status' => 'awaiting-payment',
+            'reference' => $this->faker->unique()->regexify('[A-Z]{8}'),
+            'sub_total' => $total - $taxTotal,
             'discount_total' => 0,
             'shipping_total' => 0,
-            'tax_breakdown'  => [
+            'tax_breakdown' => [
                 [
-                    'description'       => 'VAT',
-                    'total'      => 200,
+                    'description' => 'VAT',
+                    'total' => 200,
                     'percentage' => 20,
                 ],
             ],
-            'tax_total'             => $taxTotal,
-            'total'                 => $total,
-            'notes'                 => null,
-            'currency_code'         => 'GBP',
+            'tax_total' => $taxTotal,
+            'total' => $total,
+            'notes' => null,
+            'currency_code' => 'GBP',
             'compare_currency_code' => 'GBP',
-            'exchange_rate'         => 1,
-            'meta'                  => ['foo' => 'bar'],
+            'exchange_rate' => 1,
+            'meta' => ['foo' => 'bar'],
         ];
     }
 }
