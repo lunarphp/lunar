@@ -13,11 +13,14 @@ class Menu extends Component
 
     public $items;
 
+    public $groups;
+
     public function __construct($handle = null)
     {
         $slot = MenuFacade::slot($handle);
         $this->items = $slot->getItems();
         $this->sections = $slot->getSections();
+        $this->groups = $slot->getGroups();
     }
 
     /**
