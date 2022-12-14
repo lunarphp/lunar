@@ -12,20 +12,20 @@ if (! function_exists('max_upload_filesize')) {
     }
 }
 
-if (!function_exists('get_validation')) {
+if (! function_exists('get_validation')) {
     function get_validation($reference, $field, $defaults = [], Model $model = null)
     {
         $config = config("lunar-hub.{$reference}.{$field}", []);
 
         $rules = $defaults;
 
-        $rules[] = !empty($config['required']) ? 'required' : 'nullable';
+        $rules[] = ! empty($config['required']) ? 'required' : 'nullable';
 
         if (($config['unique'] ?? false) && $model) {
-            $rule = 'unique:' . get_class($model) . ',' . $field;
+            $rule = 'unique:'.get_class($model).','.$field;
 
             if ($model->id) {
-                $rule .= ',' . $model->id;
+                $rule .= ','.$model->id;
             }
 
             $rules[] = $rule;

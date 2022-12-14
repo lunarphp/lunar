@@ -2,13 +2,13 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
-use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
@@ -278,7 +278,7 @@ abstract class AbstractProduct extends Component
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            $this->hasUrlsValidationRules(!$this->product->id),
+            $this->hasUrlsValidationRules(! $this->product->id),
             $this->withAttributesValidationRules(),
             $this->getExtendedValidationRules([
                 'product' => $this->product,
@@ -393,11 +393,11 @@ abstract class AbstractProduct extends Component
             $this->product->save();
 
             if (($this->getVariantsCount() <= 1) || $isNew) {
-                if (!$this->variant->product_id) {
+                if (! $this->variant->product_id) {
                     $this->variant->product_id = $this->product->id;
                 }
 
-                if (!$this->manualVolume) {
+                if (! $this->manualVolume) {
                     $this->variant->volume_unit = null;
                     $this->variant->volume_value = null;
                 }
@@ -412,7 +412,7 @@ abstract class AbstractProduct extends Component
             }
 
             // We generating variants?
-            $generateVariants = (bool) count($this->optionValues) && !$this->variantsDisabled;
+            $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
 
             if (! $this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
@@ -433,7 +433,7 @@ abstract class AbstractProduct extends Component
                 GenerateVariants::dispatch($this->product, $this->optionValues);
             }
 
-            if (!$generateVariants && $this->product->variants->count() <= 1 && !$isNew) {
+            if (! $generateVariants && $this->product->variants->count() <= 1 && ! $isNew) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
@@ -477,7 +477,7 @@ abstract class AbstractProduct extends Component
             }
 
             $this->associations->each(function ($assoc) {
-                if (!empty($assoc['id'])) {
+                if (! empty($assoc['id'])) {
                     ProductAssociation::find($assoc['id'])->update([
                         'type' => $assoc['type'],
                     ]);
@@ -604,7 +604,7 @@ abstract class AbstractProduct extends Component
                 if ($pivot) {
                     if ($pivot->purchasable) {
                         $status = 'purchasable';
-                    } elseif (!$pivot->visible && !$pivot->enabled) {
+                    } elseif (! $pivot->visible && ! $pivot->enabled) {
                         $status = 'hidden';
                     } elseif ($pivot->visible) {
                         $status = 'visible';

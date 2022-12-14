@@ -6,7 +6,6 @@ use Closure;
 
 trait CanExtendValidation
 {
-
     public static array $extendedValidationRules = [];
 
     public static array $extendedValidationMessages = [];
@@ -31,9 +30,10 @@ trait CanExtendValidation
     {
         return collect(self::$extendedValidationRules)
             ->map(function ($rules) use ($parameters) {
-
                 if (is_array($rules) || $rules instanceof Closure) {
-                    if ($rules instanceof Closure) $rules = [$rules];
+                    if ($rules instanceof Closure) {
+                        $rules = [$rules];
+                    }
 
                     return collect($rules)->map(function ($rule) use ($parameters) {
                         if ($rule instanceof Closure) {
