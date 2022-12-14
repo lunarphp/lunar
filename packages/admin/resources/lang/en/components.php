@@ -228,6 +228,9 @@ return [
      */
     'option.create_group_btn' => 'Create option',
     'option.create_option_value' => 'Create option value',
+    'option.update_option_value' => 'Update option value',
+    'option.value_title' => 'Product Option Values',
+    'option.save_positions' => 'Save Positions',
     'option.edit_group_btn' => 'Edit option',
     'option.edit_option.value.btn' => 'Edit option value',
     'option.delete_group_btn' => 'Delete option',

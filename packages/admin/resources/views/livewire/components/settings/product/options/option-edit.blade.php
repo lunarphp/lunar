@@ -32,20 +32,20 @@
     </div>
     <div class="flex justify-between items-center">
         <div>
-            <h3>Product Option Values</h3>
+            <h3>{{ __('adminhub::components.option.value_title') }}</h3>
         </div>
         <div>
             <x-hub::button
                 theme="gray"
                 type="button"
                 wire:click="$set('showValueCreate', true)"
-            >Add value</x-hub::button>
+            >{{ __('adminhub::components.option.create_option_value') }}</x-hub::button>
 
             <x-hub::button
                 theme="gray"
                 type="button"
                 wire:click="savePositions"
-            >Save positions</x-hub::button>
+            >{{ __('adminhub::components.option.save_positions') }}</x-hub::button>
         </div>
     </div>
     <div>
@@ -122,7 +122,9 @@
 
 
     <x-hub::modal.dialog wire:model="optionValueIdToEdit" form="updateOptionValue">
-        <x-slot name="title">Update option value</x-slot>
+        <x-slot name="title">
+            {{ __('adminhub::components.option.update_option_value') }}
+        </x-slot>
         <x-slot name="content">
             <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('productOptionValue.name.' . $this->defaultLanguage->code)">
                 <x-hub::translatable>
@@ -137,13 +139,13 @@
         </x-slot>
         <x-slot name="footer">
             <div class="flex w-full justify-end">
-                <x-hub::button>Update option value</x-hub::button>
+                <x-hub::button>{{ __('adminhub::components.option.update_option_value') }}</x-hub::button>
             </div>
         </x-slot>
     </x-hub::modal.dialog>
 
     <x-hub::modal.dialog wire:model="showValueCreate" form="createOptionValue">
-        <x-slot name="title">Create production option value</x-slot>
+        <x-slot name="title">{{ __('adminhub::components.option.create_option_value') }}</x-slot>
         <x-slot name="content">
             <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('newProductOptionValue.name.' . $this->defaultLanguage->code)">
                 <x-hub::translatable>
@@ -158,7 +160,7 @@
         </x-slot>
         <x-slot name="footer">
             <div class="flex w-full justify-end">
-                <x-hub::button>Create option value</x-hub::button>
+                <x-hub::button>{{ __('adminhub::components.option.create_option_value') }}</x-hub::button>
             </div>
         </x-slot>
     </x-hub::modal.dialog>
