@@ -214,6 +214,7 @@ return [
      */
     'option.value.edit.create_title' => 'Create option value',
     'option.value.edit.update_title' => 'Update option value',
+    'option.value.edit.delete_locked' => 'This option value cannot be removed as it is required by :count product variants',
     'option.value.edit.system_locked' => 'This option value is required by the system so some fields are disabled.',
     'option.value.edit.name.placeholder' => 'e.g. Name',
     'option.value.edit.required.instructions' => 'Is this option value required when editing/creating?',

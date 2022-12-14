@@ -59,4 +59,16 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
     {
         return $this->belongsTo(ProductOption::class, 'product_option_id');
     }
+
+    public function variants()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            ProductVariant::class,
+            "{$prefix}product_option_value_product_variant",
+            'value_id',
+            'variant_id',
+        );
+    }
 }

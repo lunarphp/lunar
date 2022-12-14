@@ -65,12 +65,44 @@
                     <x-hub::icon ref="selector" style="solid" class="mr-2 text-gray-400 hover:text-gray-700" />
                 </div>
                 <span class="truncate grow">{{ $value['value'] }}</span>
+                <span class="text-gray-500 text-xs">{{ number_format($value['variants_count']) }} variant(s)</span>
+                <button class="ml-2" type="button" wire:click="$set('optionValueToDeleteId', {{ $value['id'] }})">
+                    <x-hub::icon ref="trash" class="w-4" />
+                </button>
             </div>
             @empty
             @endforelse
         </div>
     </div>
 
+
+    @if($this->optionValueToDelete)
+        <x-hub::modal.dialog wire:model="optionValueToDeleteId">
+            <x-slot name="title">{{ __('adminhub::components.option.delete_title') }}</x-slot>
+            <x-slot name="content">
+                <x-hub::alert level="danger">
+                    {{ __('adminhub::components.option.value.edit.delete_locked', [
+                        'count' => $this->optionValueToDelete->variants_count
+                    ]) }}
+                </x-hub::alert>
+            </x-slot>
+            <x-slot name="footer">
+                <div class="flex justify-between">
+                    <x-hub::button theme="gray"
+                                   wire:click="$set('optionValueToDeleteId', null)"
+                                   type="button">
+                        {{ __('adminhub::global.cancel') }}
+                    </x-hub::button>
+                    <x-hub::button theme="danger"
+                                   type="button"
+                                   wire:click="deleteOptionValue"
+                                   :disabled="!!$this->optionValueToDelete->variants_count">
+                        {{ __('adminhub::global.delete') }}
+                    </x-hub::button>
+                </div>
+            </x-slot>
+        </x-hub::modal.dialog>
+    @endif
     <x-hub::modal.dialog wire:model="showValueCreate" form="createOptionValue">
         <x-slot name="title">Create production option value</x-slot>
         <x-slot name="content">

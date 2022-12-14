@@ -3,7 +3,6 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -22,6 +21,11 @@ class OptionEdit extends Component
      */
     public ?ProductOption $productOption = null;
 
+    /**
+     * The new option value to create.
+     *
+     * @var ProductOptionValue
+     */
     public ProductOptionValue $newProductOptionValue;
 
     /**
@@ -39,6 +43,13 @@ class OptionEdit extends Component
     public $showValueCreate = false;
 
     /**
+     * The ID for the product option value we want to remove.
+     *
+     * @var int|null
+     */
+    public $optionValueToDeleteId = null;
+
+    /**
      * {@inheritDoc}
      */
     public function mount()
@@ -54,13 +65,22 @@ class OptionEdit extends Component
      */
     protected function buildValueTree()
     {
-        $this->values = $this->productOption->refresh()->values->map(function ($value) {
+        $this->values = $this->productOption->refresh()
+            ->values()->withCount(['variants'])->get()->map(function ($value) {
             return [
                 'id' => $value->id,
                 'value' => $value->translate('name'),
+                'variants_count' => $value->variants_count,
                 'position' => $value->position,
             ];
         })->toArray();
+    }
+
+    public function getOptionValueToDeleteProperty()
+    {
+        return ProductOptionValue::withCount(['variants'])->find(
+            $this->optionValueToDeleteId
+        );
     }
 
     /**
