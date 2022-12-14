@@ -76,13 +76,13 @@ class OptionEdit extends Component
     {
         $this->values = $this->productOption->refresh()
             ->values()->withCount(['variants'])->get()->map(function ($value) {
-            return [
-                'id' => $value->id,
-                'value' => $value->translate('name'),
-                'variants_count' => $value->variants_count,
-                'position' => $value->position,
-            ];
-        })->toArray();
+                return [
+                    'id' => $value->id,
+                    'value' => $value->translate('name'),
+                    'variants_count' => $value->variants_count,
+                    'position' => $value->position,
+                ];
+            })->toArray();
     }
 
     public function getOptionValueToDeleteProperty()
@@ -103,7 +103,7 @@ class OptionEdit extends Component
             'values' => 'array',
             'productOption.handle' => [
                 'required',
-                'unique:' . ProductOption::class . ',handle,' . $this->productOption->id,
+                'unique:'.ProductOption::class.',handle,'.$this->productOption->id,
             ],
         ];
 
@@ -131,7 +131,7 @@ class OptionEdit extends Component
         foreach ($this->values as $value) {
             // Get the new position
             $item = $items->first(
-                fn($item) => $item['id'] == $value['id']
+                fn ($item) => $item['id'] == $value['id']
             );
 
             $value['position'] = $item['order'];
@@ -172,12 +172,13 @@ class OptionEdit extends Component
         );
         $this->buildValueTree();
     }
+
     public function savePositions()
     {
         DB::transaction(function () {
             foreach ($this->values as $item) {
                 ProductOptionValue::whereId($item['id'])->update([
-                    'position' => $item['position']
+                    'position' => $item['position'],
                 ]);
             }
         });
@@ -221,7 +222,7 @@ class OptionEdit extends Component
         $rules = [];
 
         foreach ($this->languages as $language) {
-            $rules["newProductOptionValue.name.{$language->code}"] =  ($language->default ? 'required' : 'nullable').'|max:255';
+            $rules["newProductOptionValue.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
         }
 
         $this->validateOnly('newProductOptionValue', $rules);

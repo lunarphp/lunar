@@ -46,7 +46,6 @@ class OptionsIndex extends Component
      */
     public $valueCreateOptionId = null;
 
-
     /**
      * The id of the option to delete.
      *
@@ -75,6 +74,7 @@ class OptionsIndex extends Component
         foreach ($this->languages as $language) {
             $rules["newProductOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
         }
+
         return $rules;
     }
 

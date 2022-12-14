@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionEdit;
 use Lunar\Hub\Http\Livewire\Pages\Settings\ActivityLog\ActivityLogIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
@@ -16,6 +15,7 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionEdit;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
