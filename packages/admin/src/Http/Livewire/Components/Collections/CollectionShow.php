@@ -293,15 +293,17 @@ class CollectionShow extends Component
         });
 
         DB::transaction(function () {
-            $this->collection->products()->sync(
-                $this->products->mapWithKeys(function ($product, $index) {
-                    return [
-                        $product['id'] => [
-                            'position' => $index + 1,
-                        ],
-                    ];
-                })
-            );
+            if ($this->productCount <= 30) {
+                $this->collection->products()->sync(
+                    $this->products->mapWithKeys(function ($product, $index) {
+                        return [
+                            $product['id'] => [
+                                'position' => $index + 1,
+                            ],
+                        ];
+                    })
+                );
+            }
         });
 
         $this->updateImages();
