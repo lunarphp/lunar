@@ -73,23 +73,35 @@
         @endforelse
     </div>
 
-    <x-hub::modal.dialog wire:model="showOptionCreate">
+    <x-hub::modal.dialog wire:model="showOptionCreate" form="createOption">
         <x-slot name="title">{{ __('adminhub::components.option.create_title') }}</x-slot>
         <x-slot name="content">
-            Hallo
+            <x-hub::input.group label="Name" for="optionName" :error="$errors->first('newProductOption.name.'.$this->defaultLanguage->code)">
+                <div class="flex space-x-4">
+                  <div class="relative w-full">
+                    <x-hub::translatable :expanded="false">
+                      <x-hub::input.text
+                        wire:model="newProductOption.name.{{ $this->defaultLanguage->code }}"
+                        :error="$errors->first('name.'.$this->defaultLanguage->code)"
+                        placeholder="Size"
+                      />
+                      @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
+                        <x-slot :name="$language['code']">
+                          <x-hub::input.text
+                            wire:model="name.{{ $language->code }}"
+                            :error="$errors->first('newProductOption.name.'.$language->code)"
+                          />
+                        </x-slot>
+                      @endforeach
+                    </x-hub::translatable>
+                  </div>
+                </div>
+            </x-hub::input.group>
         </x-slot>
-        <x-slot name="footer"></x-slot>
+        <x-slot name="footer">
+            <x-hub::button>Create option</x-hub::button>
+        </x-slot>
     </x-hub::modal.dialog>
-
-    @if ($this->optionToEdit)
-        <x-hub::modal.dialog wire:model="editOptionId">
-            <x-slot name="title">{{ __('adminhub::components.option.edit_title') }}</x-slot>
-            <x-slot name="content">
-                helo
-            </x-slot>
-            <x-slot name="footer"></x-slot>
-        </x-hub::modal.dialog>
-    @endif
 
     @if ($this->optionToDelete)
         <x-hub::modal.dialog wire:model="deleteOptionId">
@@ -113,56 +125,6 @@
                     </x-hub::button>
                 </div>
             </x-slot>
-        </x-hub::modal.dialog>
-    @endif
-
-    @if ($this->optionValueToDelete)
-        <x-hub::modal.dialog wire:model="deleteOptionValueId">
-            <x-slot name="title">{{ __('adminhub::components.option.delete_option.value.title') }}</x-slot>
-            <x-slot name="content">
-                <x-hub::alert level="danger">
-                    {{ __('adminhub::components.option.delete_option.value.warning') }}
-                </x-hub::alert>
-            </x-slot>
-            <x-slot name="footer">
-                <div class="flex justify-between">
-                    <x-hub::button theme="gray"
-                                   wire:click="$set('deleteOptionValueId', null)"
-                                   type="button">
-                        {{ __('adminhub::global.cancel') }}
-                    </x-hub::button>
-                    @if (!$this->optionValueToDelete->system)
-                        <x-hub::button theme="danger"
-                                       type="button"
-                                       wire:click="deleteOptionValue">
-                            {{ __('adminhub::global.delete') }}
-                        </x-hub::button>
-                    @endif
-                </div>
-            </x-slot>
-        </x-hub::modal.dialog>
-    @endif
-
-    @if ($this->valueCreateOption)
-        <x-hub::modal.dialog wire:model="valueCreateOptionId">
-            <x-slot name="title">{{ __('adminhub::components.option.value.edit.create_title') }}</x-slot>
-            <x-slot name="content">
-                @livewire('hub.components.settings.product.option-value-edit', [
-                    'option' => $this->valueCreateOption,
-                ])
-            </x-slot>
-            <x-slot name="footer"></x-slot>
-        </x-hub::modal.dialog>
-    @endif
-    @if ($this->optionValueToEdit)
-        <x-hub::modal.dialog wire:model="editOptionValueId">
-            <x-slot name="title">{{ __('adminhub::components.option.value.edit.update_title') }}</x-slot>
-            <x-slot name="content">
-                @livewire('hub.components.settings.product.option-value-edit', [
-                    'optionValue' => $this->optionValueToEdit,
-                ])
-            </x-slot>
-            <x-slot name="footer"></x-slot>
         </x-hub::modal.dialog>
     @endif
 </div>

@@ -22,13 +22,36 @@ class OptionEdit extends Component
      */
     public ?ProductOption $productOption = null;
 
+    public ProductOptionValue $newProductOptionValue;
+
+    /**
+     * The option values.
+     *
+     * @var array
+     */
     public array $values = [];
 
+    /**
+     * Whether to show the value create modal.
+     *
+     * @var bool
+     */
+    public $showValueCreate = false;
+
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
+        $this->newProductOptionValue = new ProductOptionValue();
         $this->buildValueTree();
     }
 
+    /**
+     * Build out the option value tree
+     *
+     * @return void
+     */
     protected function buildValueTree()
     {
         $this->values = $this->productOption->refresh()->values->map(function ($value) {
@@ -57,6 +80,7 @@ class OptionEdit extends Component
 
         foreach ($this->languages as $language) {
             $rules["productOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
+            $rules["newProductOptionValue.name.{$language->code}"] = 'nullable|max:255';
         }
 
         return $rules;
@@ -70,23 +94,39 @@ class OptionEdit extends Component
      */
     public function sortOptionValues(array $optionValues)
     {
-        DB::transaction(function () use ($optionValues) {
-            foreach ($optionValues['items'] as $item) {
+        $values = collect();
+
+        $items = collect($optionValues['items']);
+
+        foreach ($this->values as $value) {
+            // Get the new position
+            $item = $items->first(
+                fn($item) => $item['id'] == $value['id']
+            );
+
+            $value['position'] = $item['order'];
+            $values->push($value);
+        }
+
+        $this->values = $values->sortBy('position')->values()->toArray();
+    }
+
+    public function savePositions()
+    {
+        DB::transaction(function () {
+            foreach ($this->values as $item) {
                 ProductOptionValue::whereId($item['id'])->update([
-                    'position' => $item['order'],
-                    'product_option_id' => $item['parent'],
+                    'position' => $item['position']
                 ]);
             }
         });
-
-        $this->buildValueTree();
 
         $this->notify(
             __('adminhub::notifications.attributes.reordered')
         );
     }
 
-    public function create()
+    public function save()
     {
         $this->validate();
 
@@ -113,6 +153,26 @@ class OptionEdit extends Component
         $this->notify(
             __('adminhub::notifications.attribute-groups.created')
         );
+    }
+
+    public function createOptionValue()
+    {
+        $rules = [];
+
+        foreach ($this->languages as $language) {
+            $rules["newProductOptionValue.name.{$language->code}"] =  ($language->default ? 'required' : 'nullable').'|max:255';
+        }
+
+        $this->validateOnly('newProductOptionValue', $rules);
+
+        $this->newProductOptionValue->product_option_id = $this->productOption->id;
+        $this->newProductOptionValue->save();
+
+        $this->newProductOptionValue = new ProductOptionValue();
+
+        $this->buildValueTree();
+
+        $this->notify('Product option value created');
     }
 
     /**

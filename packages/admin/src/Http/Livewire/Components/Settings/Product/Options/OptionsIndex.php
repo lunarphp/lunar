@@ -4,6 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -14,6 +15,8 @@ class OptionsIndex extends Component
 {
     use Notifies;
     use WithLanguages;
+
+    public ProductOption $newProductOption;
 
     /**
      * The type property.
@@ -34,7 +37,7 @@ class OptionsIndex extends Component
      *
      * @var bool
      */
-    public $showOptionCreate = true;
+    public $showOptionCreate = false;
 
     /**
      * The option id to use for creating an attribute.
@@ -59,29 +62,44 @@ class OptionsIndex extends Component
     public $editOptionValueId = null;
 
     /**
-     * The ID of the attribute we want to delete.
-     *
-     * @var int|null
-     */
-    public $deleteOptionValueId = null;
-
-    /**
      * {@inheritDoc}
      */
     protected $listeners = [
         'option-edit.created' => 'refreshGroups',
         'option-edit.updated' => 'resetGroupEdit',
-        'option-value-edit.created' => 'resetOptionValueEdit',
-        'option-value-edit.updated' => 'resetOptionValueEdit',
-        'option-value-edit.closed' => 'resetOptionValueEdit',
     ];
+
+    public function rules()
+    {
+        $rules = [];
+        foreach ($this->languages as $language) {
+            $rules["newProductOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
+        }
+        return $rules;
+    }
 
     /**
      * {@inheritDoc}
      */
     public function mount()
     {
+        $this->newProductOption = new ProductOption;
         $this->sortedProductOptions = $this->productOptions;
+    }
+
+    public function createOption()
+    {
+        $handle = Str::slug(
+            $this->newProductOption->translate('name')
+        );
+        $this->newProductOption->handle = $handle;
+        $this->newProductOption->save();
+
+        $this->showOptionCreate = false;
+        $this->newProductOption = new ProductOption;
+        $this->sortedProductOptions = $this->productOptions;
+
+        $this->notify('Product option created');
     }
 
     /**
@@ -129,30 +147,6 @@ class OptionsIndex extends Component
     }
 
     /**
-     * Sort the option values.
-     *
-     * @param  array  $optionValues
-     * @return void
-     */
-    public function sortOptionValues(array $optionValues)
-    {
-        DB::transaction(function () use ($optionValues) {
-            foreach ($optionValues['items'] as $item) {
-                ProductOptionValue::whereId($item['id'])->update([
-                    'position' => $item['order'],
-                    'product_option_id' => $item['parent'],
-                ]);
-            }
-        });
-
-        $this->refreshGroups();
-
-        $this->notify(
-            __('adminhub::notifications.attributes.reordered')
-        );
-    }
-
-    /**
      * Refresh the options.
      *
      * @return void
@@ -160,10 +154,8 @@ class OptionsIndex extends Component
     public function refreshGroups()
     {
         $this->sortedProductOptions = ProductOption::orderBy('position')->get();
-
-        // $this->showOptionCreate = false;
+        $this->showOptionCreate = false;
     }
-
 
     /**
      * Return the option marked for deletion.
@@ -183,16 +175,6 @@ class OptionsIndex extends Component
     public function getOptionValueToEditProperty()
     {
         return ProductOptionValue::find($this->editOptionValueId);
-    }
-
-    /**
-     * Return the option value to delete.
-     *
-     * @return \Lunar\Models\ProductOptionValue|null
-     */
-    public function getOptionValueToDeleteProperty(): ?ProductOptionValue
-    {
-        return ProductOptionValue::find($this->deleteOptionValueId);
     }
 
     /**
@@ -226,24 +208,6 @@ class OptionsIndex extends Component
 
         $this->deleteOptionId = null;
         $this->refreshGroups();
-    }
-
-    /**
-     * Delete the option value.
-     *
-     * @return void
-     */
-    public function deleteOptionValue()
-    {
-        DB::transaction(function () {
-            $this->optionValueToDelete->delete();
-        });
-
-        $this->notify(
-            __('adminhub::notifications.attributes.deleted')
-        );
-
-        $this->resetOptionValueEdit();
     }
 
     /**
