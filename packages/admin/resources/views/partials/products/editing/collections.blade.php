@@ -81,11 +81,5 @@
                 </div>
             @endforeach
         </div>
-        @error('collections')
-            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-        @error('collections.*')
-            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-        @enderror
     </div>
 </div>

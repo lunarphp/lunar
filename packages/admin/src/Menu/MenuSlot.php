@@ -4,6 +4,7 @@ namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Lunar\Hub\Menu\MenuGroup;
 
 class MenuSlot
 {
