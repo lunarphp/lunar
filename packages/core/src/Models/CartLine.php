@@ -135,6 +135,16 @@ class CartLine extends BaseModel
         );
     }
 
+    public function discounts()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Discount::class,
+            "{$prefix}cart_line_discount"
+        );
+    }
+
     /**
      * Return the polymorphic relation.
      *

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Actions\AbstractAction;
 use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\DataTypes\ShippingOption;
+use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
@@ -44,6 +45,7 @@ class CreateOrder extends AbstractAction
                 'currency_code' => $cart->currency->code,
                 'exchange_rate' => $cart->currency->exchange_rate,
                 'compare_currency_code' => Currency::getDefault()?->code,
+                'meta' => $cart->meta,
             ]);
 
             $order->update([
@@ -125,6 +127,8 @@ class CreateOrder extends AbstractAction
             $cart->order()->associate($order);
 
             $cart->save();
+
+            MarkAsNewCustomer::dispatch($order->id);
 
             return $this;
         });

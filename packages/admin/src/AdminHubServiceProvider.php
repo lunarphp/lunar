@@ -27,12 +27,19 @@ use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionTree;
+use Lunar\Hub\Http\Livewire\Components\Collections\CollectionTreeSelect;
 use Lunar\Hub\Http\Livewire\Components\Collections\SideMenu;
 use Lunar\Hub\Http\Livewire\Components\CollectionSearch;
 use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountCreate;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsTable;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -94,6 +101,7 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZoneShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
 use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
+use Lunar\Hub\Http\Livewire\Components\Tags;
 use Lunar\Hub\Http\Livewire\Dashboard;
 use Lunar\Hub\Http\Livewire\HubLicense;
 use Lunar\Hub\Http\Livewire\Sidebar;
@@ -249,6 +257,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerSettingsComponents();
         $this->registerOrderComponents();
         $this->registerCustomerComponents();
+        $this->registerDiscountComponents();
 
         // Blade Components
         Blade::componentNamespace('Lunar\\Hub\\Views\\Components', 'hub');
@@ -270,6 +279,8 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.account', Account::class);
         Livewire::component('hub.components.avatar', Avatar::class);
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
+
+        Livewire::component('hub.components.tags', Tags::class);
     }
 
     /**
@@ -358,6 +369,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.collections.collection-groups.show', CollectionGroupShow::class);
         Livewire::component('hub.components.collections.show', CollectionShow::class);
         Livewire::component('hub.components.collections.collection-tree', CollectionTree::class);
+        Livewire::component('hub.components.collections.collection-tree-select', CollectionTreeSelect::class);
     }
 
     /**
@@ -429,6 +441,17 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
+    }
+
+    public function registerDiscountComponents()
+    {
+        Livewire::component('hub.components.discounts.index', DiscountsIndex::class);
+        Livewire::component('hub.components.discounts.show', DiscountShow::class);
+        Livewire::component('hub.components.discounts.create', DiscountCreate::class);
+        Livewire::component('hub.components.discounts.table', DiscountsTable::class);
+
+        Livewire::component('lunar.hub.http.livewire.components.discounts.types.discount', TypesDiscount::class);
+        Livewire::component('lunar.hub.http.livewire.components.discounts.types.buy-x-get-y', BuyXGetY::class);
     }
 
     /**
