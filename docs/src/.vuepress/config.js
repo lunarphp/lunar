@@ -97,6 +97,7 @@ module.exports = {
           '/lunar/carts',
           '/lunar/channels',
           '/lunar/collections',
+          '/lunar/discounts',
           '/lunar/currencies',
           '/lunar/customers',
           '/lunar/images',

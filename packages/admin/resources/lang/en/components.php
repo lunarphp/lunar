@@ -109,6 +109,11 @@ return [
     'customers.show.remove_address.title' => 'Remove address',
     'customers.show.remove_address.confirm' => 'Are you sure you want to remove this address?',
     /**
+     * Orders Index
+     */
+    'orders.index.returning_customer' => 'Returning Customer',
+    'orders.index.new_customer' => 'New Customer',
+    /**
      * Order Show.
      */
     'orders.show.title' => 'Order',
@@ -133,7 +138,9 @@ return [
     'orders.show.partially_refunded' => 'This order has been partially refunded.',
     'orders.show.refunded' => 'This order has been refunded.',
     'orders.show.view_customer' => 'View customer',
+    'orders.show.tags_header' => 'Tags',
     'orders.show.download_pdf' => 'Download PDF',
+
     /**
      * Order Refund.
      */
@@ -240,4 +247,19 @@ return [
     'option-edit.create_btn' => 'Create option',
     'option-edit.update_btn' => 'Update option',
     'option.value.edit.save_option.value.btn' => 'Save Option value',
+    /**
+     * Discounts.
+     */
+    'discounts.index.title' => 'Discounts',
+    'discounts.index.status.pending' => 'Pending',
+    'discounts.index.status.active' => 'Active',
+    'discounts.index.status.scheduled' => 'Scheduled',
+    'discounts.index.status.expired' => 'Expired',
+    'discounts.index.create_discount' => 'Create Discount',
+    'discounts.create.title' => 'Create Discount',
+    'discounts.create_btn' => 'Create Discount',
+    'discounts.save_btn' => 'Save Discount',
+    'discounts.show.stop.label' => 'Stop other discounts applying after this one',
+    'discounts.show.danger_zone.label' => 'Delete discount',
+    'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
 ];

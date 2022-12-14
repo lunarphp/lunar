@@ -21,6 +21,7 @@ use Lunar\Base\AttributeManifestInterface;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Base\CartModifiers;
 use Lunar\Base\CartSessionInterface;
+use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Base\ModelManifest;
@@ -37,6 +38,7 @@ use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
+use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\ScoutIndexer;
 use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
@@ -45,6 +47,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
+use Lunar\Managers\DiscountManager;
 use Lunar\Managers\PaymentManager;
 use Lunar\Managers\PricingManager;
 use Lunar\Managers\TaxManager;
@@ -151,6 +154,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(PaymentManagerInterface::class, function ($app) {
             return $app->make(PaymentManager::class);
         });
+
+        $this->app->singleton(DiscountManagerInterface::class, function ($app) {
+            return $app->make(DiscountManager::class);
+        });
     }
 
     /**
@@ -188,6 +195,7 @@ class LunarServiceProvider extends ServiceProvider
                 AddressData::class,
                 ScoutIndexer::class,
                 MigrateGetCandy::class,
+                SyncNewCustomerOrders::class,
             ]);
         }
 

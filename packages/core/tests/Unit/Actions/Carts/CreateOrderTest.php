@@ -11,6 +11,7 @@ use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
@@ -34,6 +35,10 @@ class CreateOrderTest extends TestCase
     /** @test  */
     public function can_create_order()
     {
+        CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
         $billing = CartAddress::factory()->make([
             'type' => 'billing',
             'country_id' => Country::factory(),
@@ -187,6 +192,10 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function can_set_tax_breakdown_correctly()
     {
+        CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
         $billing = CartAddress::factory()->make([
             'type' => 'billing',
             'country_id' => Country::factory(),
