@@ -80,11 +80,14 @@
         <x-hub::modal.dialog wire:model="optionValueToDeleteId">
             <x-slot name="title">{{ __('adminhub::components.option.delete_title') }}</x-slot>
             <x-slot name="content">
+                @if($this->optionValueToDelete->variants_count)
                 <x-hub::alert level="danger">
                     {{ __('adminhub::components.option.value.edit.delete_locked', [
                         'count' => $this->optionValueToDelete->variants_count
                     ]) }}
                 </x-hub::alert>
+                @else
+                @endif
             </x-slot>
             <x-slot name="footer">
                 <div class="flex justify-between">

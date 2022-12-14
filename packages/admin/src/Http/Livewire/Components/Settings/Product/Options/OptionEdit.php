@@ -131,6 +131,20 @@ class OptionEdit extends Component
         $this->values = $values->sortBy('position')->values()->toArray();
     }
 
+    /**
+     * Remove the selected product option value
+     *
+     * @return void
+     */
+    public function deleteOptionValue()
+    {
+        $this->optionValueToDelete->delete();
+        $this->optionValueToDeleteId = null;
+        $this->notify(
+            __('adminhub::notifications.product_option_value.deleted')
+        );
+        $this->buildValueTree();
+    }
     public function savePositions()
     {
         DB::transaction(function () {
