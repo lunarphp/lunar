@@ -62,4 +62,5 @@ return [
     'staff.restored' => 'Staff member restored',
     'default_url_protected' => 'Unable to delete the default URL',
     'product_option_value.deleted' => 'Product Option Value deleted',
+    'product_option_value.updated' => 'Product OptionValue updated',
 ];

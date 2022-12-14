@@ -66,9 +66,22 @@
                 </div>
                 <span class="truncate grow">{{ $value['value'] }}</span>
                 <span class="text-gray-500 text-xs">{{ number_format($value['variants_count']) }} variant(s)</span>
-                <button class="ml-2" type="button" wire:click="$set('optionValueToDeleteId', {{ $value['id'] }})">
-                    <x-hub::icon ref="trash" class="w-4" />
-                </button>
+                <div>
+                    <x-hub::dropdown minimal>
+                        <x-slot name="options">
+                            <x-hub::dropdown.button
+                                wire:click="$set('optionValueIdToEdit', {{ $value['id'] }})"
+                                class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
+                                {{ __('adminhub::components.option.edit_option.value.btn') }}
+                            </x-hub::dropdown.button>
+
+                            <x-hub::dropdown.button wire:click="$set('optionValueToDeleteId', {{ $value['id'] }})"
+                                class="flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-50">
+                                <span class="text-red-500">{{ __('adminhub::components.option.delete_option.value.btn') }}</span>
+                            </x-hub::dropdown.button>
+                        </x-slot>
+                    </x-hub::dropdown>
+                </div>
             </div>
             @empty
             @endforelse
@@ -106,6 +119,29 @@
             </x-slot>
         </x-hub::modal.dialog>
     @endif
+
+
+    <x-hub::modal.dialog wire:model="optionValueIdToEdit" form="updateOptionValue">
+        <x-slot name="title">Update option value</x-slot>
+        <x-slot name="content">
+            <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('productOptionValue.name.' . $this->defaultLanguage->code)">
+                <x-hub::translatable>
+                    <x-hub::input.text wire:model.defer="productOptionValue.name.{{ $this->defaultLanguage->code }}" :error="$errors->first('productOptionValue.name.' . $this->defaultLanguage->code)" />
+                    @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
+                    <x-slot :name="$language['code']">
+                        <x-hub::input.text wire:model="productOptionValue.name.{{ $language->code }}"/>
+                    </x-slot>
+                    @endforeach
+                </x-hub::translatable>
+            </x-hub::input.group>
+        </x-slot>
+        <x-slot name="footer">
+            <div class="flex w-full justify-end">
+                <x-hub::button>Update option value</x-hub::button>
+            </div>
+        </x-slot>
+    </x-hub::modal.dialog>
+
     <x-hub::modal.dialog wire:model="showValueCreate" form="createOptionValue">
         <x-slot name="title">Create production option value</x-slot>
         <x-slot name="content">

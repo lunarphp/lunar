@@ -21,6 +21,15 @@ class OptionEdit extends Component
      */
     public ?ProductOption $productOption = null;
 
+    public ?ProductOptionValue $productOptionValue = null;
+
+    /**
+     * The option value ID to edit.
+     *
+     * @var int|null
+     */
+    public $optionValueIdToEdit = null;
+
     /**
      * The new option value to create.
      *
@@ -101,6 +110,7 @@ class OptionEdit extends Component
         foreach ($this->languages as $language) {
             $rules["productOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
             $rules["newProductOptionValue.name.{$language->code}"] = 'nullable|max:255';
+            $rules["productOptionValue.name.{$language->code}"] = 'nullable|max:255';
         }
 
         return $rules;
@@ -129,6 +139,23 @@ class OptionEdit extends Component
         }
 
         $this->values = $values->sortBy('position')->values()->toArray();
+    }
+
+    public function updatedOptionValueIdToEdit($id)
+    {
+        $this->productOptionValue = $id ? ProductOptionValue::find($id) : null;
+    }
+
+    public function updateOptionValue()
+    {
+        $this->productOptionValue->save();
+        $this->optionValueIdToEdit = null;
+
+        $this->notify(
+            __('adminhub::notifications.product_option_value.updated')
+        );
+
+        $this->buildValueTree();
     }
 
     /**
