@@ -41,13 +41,6 @@ class OptionsIndex extends Component
     public $showOptionCreate = false;
 
     /**
-     * The option id to use for creating an attribute.
-     *
-     * @var int|null
-     */
-    public $valueCreateOptionId = null;
-
-    /**
      * The id of the option to delete.
      *
      * @var int|null
@@ -129,16 +122,6 @@ class OptionsIndex extends Component
     }
 
     /**
-     * Return the option to be used when creating an attribute.
-     *
-     * @return \Lunar\Models\ProductOption
-     */
-    public function getValueCreateOptionProperty()
-    {
-        return ProductOption::find($this->valueCreateOptionId);
-    }
-
-    /**
      * Sort the options.
      *
      * @param  array  $groups
@@ -201,7 +184,6 @@ class OptionsIndex extends Component
     public function resetOptionValueEdit()
     {
         $this->optionValueToDelete = null;
-        $this->valueCreateOptionId = null;
         $this->editOptionValueId = null;
         $this->refreshGroups();
     }
