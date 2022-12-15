@@ -65,7 +65,7 @@
                     <x-hub::icon ref="selector" style="solid" class="mr-2 text-gray-400 hover:text-gray-700" />
                 </div>
                 <span class="truncate grow">{{ $value['value'] }}</span>
-                <span class="text-gray-500 text-xs">{{ number_format($value['variants_count']) }} variant(s)</span>
+                <span class="text-gray-500 text-xs block mr-2">{{ number_format($value['variants_count']) }} variant(s)</span>
                 <div>
                     <x-hub::dropdown minimal>
                         <x-slot name="options">
