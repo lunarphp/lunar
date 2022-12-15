@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\CustomerGroups;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups;
 
 use Livewire\Component;
 

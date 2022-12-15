@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\CustomerGroups;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups;
 
-use GetCandy\Models\CustomerGroup;
+use Lunar\Models\CustomerGroup;
 use Livewire\Component;
 
 class CustomerGroupShow extends Component

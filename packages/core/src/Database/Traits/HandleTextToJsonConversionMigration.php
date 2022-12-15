@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Database\Traits;
+namespace Lunar\Database\Traits;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +25,7 @@ trait HandleTextToJsonConversionMigration
      */
     public function setup()
     {
-        $this->prefix = config('getcandy.database.table_prefix');
+        $this->prefix = config('lunar.database.table_prefix');
 
         if (blank($this->table) || blank($this->fieldName)) {
             throw new \Exception('Both table and field names must be set.');

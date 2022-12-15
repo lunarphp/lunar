@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\CustomerGroups;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\CustomerGroup;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\CustomerGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
 

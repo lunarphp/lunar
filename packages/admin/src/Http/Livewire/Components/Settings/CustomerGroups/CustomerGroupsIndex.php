@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\CustomerGroups;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups;
 
-use GetCandy\Models\CustomerGroup;
+use Lunar\Models\CustomerGroup;
 use Livewire\Component;
 use Livewire\WithPagination;
 

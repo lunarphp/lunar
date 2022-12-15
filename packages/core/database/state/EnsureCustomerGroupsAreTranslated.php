@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\State;
+namespace Lunar\Database\State;
 
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Models\CustomerGroup;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\CustomerGroup;
 
 class EnsureCustomerGroupsAreTranslated
 {

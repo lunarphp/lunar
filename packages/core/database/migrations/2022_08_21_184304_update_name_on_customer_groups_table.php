@@ -1,7 +1,7 @@
 <?php
 
-use GetCandy\Base\Migration;
-use GetCandy\Database\Traits\HandleTextToJsonConversionMigration;
+use Lunar\Base\Migration;
+use Lunar\Database\Traits\HandleTextToJsonConversionMigration;
 
 class UpdateNameOnCustomerGroupsTable extends Migration
 {

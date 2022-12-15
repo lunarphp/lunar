@@ -7,6 +7,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\CustomerGroupFactory;
 
 class CustomerGroup extends BaseModel
@@ -45,7 +46,7 @@ class CustomerGroup extends BaseModel
      */
     public function customers()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             Customer::class,

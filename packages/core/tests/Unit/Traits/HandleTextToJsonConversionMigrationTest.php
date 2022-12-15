@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Traits;
+namespace Lunar\Tests\Unit\Traits;
 
-use GetCandy\Base\Migration;
-use GetCandy\Database\Traits\HandleTextToJsonConversionMigration;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Tests\TestCase;
+use Lunar\Base\Migration;
+use Lunar\Database\Traits\HandleTextToJsonConversionMigration;
+use Lunar\Models\CustomerGroup;
+use Lunar\Tests\TestCase;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Schema;
@@ -96,7 +96,7 @@ class HandleTextToJsonConversionMigrationTest extends TestCase
         });
 
         $groupNames->each(function ($groupName) {
-            $this->assertDatabaseHas(config('getcandy.database.table_prefix').'customer_groups', [
+            $this->assertDatabaseHas(config('lunar.database.table_prefix').'customer_groups', [
                 'name' => $groupName,
             ]);
         });
@@ -105,7 +105,7 @@ class HandleTextToJsonConversionMigrationTest extends TestCase
 
         CustomerGroup::all()->each(function (CustomerGroup $group) {
             $this->assertJson($group->name);
-            $this->assertDatabaseHas(config('getcandy.database.table_prefix').'customer_groups', [
+            $this->assertDatabaseHas(config('lunar.database.table_prefix').'customer_groups', [
                 'name' => json_encode($group->name),
             ]);
         });
@@ -123,7 +123,7 @@ class HandleTextToJsonConversionMigrationTest extends TestCase
         CustomerGroup::all()->each(function (CustomerGroup $group) {
             $name = $group->getRawOriginal('name');
             $this->assertIsString($name);
-            $this->assertDatabaseHas(config('getcandy.database.table_prefix').'customer_groups', [
+            $this->assertDatabaseHas(config('lunar.database.table_prefix').'customer_groups', [
                 'name' => $name,
             ]);
         });
