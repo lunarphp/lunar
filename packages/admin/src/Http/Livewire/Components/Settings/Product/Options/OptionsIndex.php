@@ -109,7 +109,7 @@ class OptionsIndex extends Component
      */
     public function getProductOptionsProperty()
     {
-        return ProductOption::orderBy('position')->get();
+        return ProductOption::orderBy('position')->withCount(['values'])->get();
     }
 
     /**

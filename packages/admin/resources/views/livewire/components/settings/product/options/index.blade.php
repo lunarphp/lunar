@@ -42,7 +42,9 @@
                         <div class="flex items-center justify-between expand">
                             {{ $option->translate('name') }}
                         </div>
+
                         <div class="flex">
+                            <span class="text-gray-500 text-xs">{{ number_format($option->values_count) }} value(s)</span>
                             <x-hub::dropdown minimal>
                                 <x-slot name="options">
                                     <x-hub::dropdown.link href="{{ route('hub.product.options.edit', $option->id) }}"
