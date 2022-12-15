@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Traits;
+namespace Lunar\Tests\Unit\Traits;
 
-use GetCandy\Base\StandardMediaConversions;
-use GetCandy\Models\Product;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Lunar\Base\StandardMediaConversions;
+use Lunar\Models\Product;
+use Lunar\Tests\TestCase;
 
 /**
  * @group traits
@@ -18,7 +18,7 @@ class HasMediaTraitTest extends TestCase
     /** @test */
     public function conversions_are_loaded()
     {
-        $conversions = config('getcandy.media.conversions');
+        $conversions = config('lunar.media.conversions');
 
         $this->assertCount(1, $conversions);
 
@@ -28,13 +28,35 @@ class HasMediaTraitTest extends TestCase
 
         $product = Product::factory()->create();
 
-        $product->addMedia($file)->toMediaCollection('tests');
+        $product->addMedia($file)->toMediaCollection('images');
 
-        $media = $product->media->first();
+        $image = $product->images->first();
 
-        $this->assertTrue($media->hasGeneratedConversion('small'));
-        $this->assertTrue($media->hasGeneratedConversion('medium'));
-        $this->assertTrue($media->hasGeneratedConversion('large'));
-        $this->assertTrue($media->hasGeneratedConversion('zoom'));
+        $this->assertTrue($image->hasGeneratedConversion('small'));
+        $this->assertTrue($image->hasGeneratedConversion('medium'));
+        $this->assertTrue($image->hasGeneratedConversion('large'));
+        $this->assertTrue($image->hasGeneratedConversion('zoom'));
+    }
+
+    /** @test */
+    public function images_can_have_fallback_url()
+    {
+        $testImageUrl = 'https://picsum.photos/200';
+        config()->set('lunar.media.fallback.url', $testImageUrl);
+
+        $product = Product::factory()->create();
+
+        $this->assertEquals($product->getFirstMediaUrl('images'), $testImageUrl);
+    }
+
+    /** @test */
+    public function images_can_have_fallback_path()
+    {
+        $testImagePath = public_path('test.jpg');
+        config()->set('lunar.media.fallback.path', $testImagePath);
+
+        $product = Product::factory()->create();
+
+        $this->assertEquals($product->getFirstMediaPath('images'), $testImagePath);
     }
 }

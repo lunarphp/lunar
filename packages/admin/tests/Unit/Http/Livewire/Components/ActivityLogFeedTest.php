@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Components\ActivityLogFeed;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\ActivityLogFeed;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
 use Spatie\Activitylog\Models\Activity;
 
 /**
@@ -25,11 +25,11 @@ class ActivityLogFeedTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Currency::factory()->create([
-            'default'        => true,
+            'default' => true,
             'decimal_places' => 2,
         ]);
     }
@@ -38,11 +38,11 @@ class ActivityLogFeedTest extends TestCase
     public function can_mount_component()
     {
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [
@@ -56,18 +56,18 @@ class ActivityLogFeedTest extends TestCase
 
         Livewire::actingAs($staff, 'staff')->test(ActivityLogFeed::class, [
             'subject' => $order,
-        ]);
+        ])->assertViewIs('adminhub::livewire.components.activity-log-feed');
     }
 
     /** @test */
     public function can_add_comment()
     {
         $order = Order::factory()->create([
-            'user_id'   => null,
+            'user_id' => null,
             'placed_at' => now(),
             'status' => 'awaiting-payment',
             'currency_code' => Currency::getDefault()->code,
-            'meta'      => [
+            'meta' => [
                 'foo' => 'bar',
             ],
             'tax_breakdown' => [

@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Base\ActivityLog\Orders;
+namespace Lunar\Hub\Base\ActivityLog\Orders;
 
-use GetCandy\Hub\Base\ActivityLog\AbstractRender;
+use Lunar\Hub\Base\ActivityLog\AbstractRender;
 use Spatie\Activitylog\Models\Activity;
 
 class EmailNotification extends AbstractRender

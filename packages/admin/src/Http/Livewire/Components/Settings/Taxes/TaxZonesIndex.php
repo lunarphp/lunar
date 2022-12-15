@@ -1,15 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Models\TaxZone;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class TaxZonesIndex extends Component
 {
-    use WithPagination;
-
     /**
      * Render the livewire component.
      *
@@ -17,8 +13,7 @@ class TaxZonesIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.taxes.tax-zones.index', [
-            'taxZones' => TaxZone::paginate(),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.taxes.tax-zones.index')
+        ->layout('adminhub::layouts.base');
     }
 }

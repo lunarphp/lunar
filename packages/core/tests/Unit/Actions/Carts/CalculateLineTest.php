@@ -1,23 +1,23 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Actions\Carts;
+namespace Lunar\Tests\Unit\Actions\Carts;
 
-use GetCandy\Actions\Carts\CalculateLine;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\DataTypes\Price as DataTypesPrice;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Price;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Actions\Carts\CalculateLine;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\DataTypes\Price as DataTypesPrice;
+use Lunar\Models\Cart;
+use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Price;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.actions
- * @group getcandy.actions.carts
+ * @group lunar.actions
+ * @group lunar.actions.carts
  */
 class CalculateLineTest extends TestCase
 {
@@ -41,28 +41,28 @@ class CalculateLineTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 100,
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
+            'price' => 100,
+            'currency_id' => $currency->id,
+            'tier' => 1,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $line = app(CalculateLine::class)->execute(
@@ -108,28 +108,28 @@ class CalculateLineTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 2,
         ]);
 
         Price::factory()->create([
-            'price'          => 100,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $line = app(CalculateLine::class)->execute(
@@ -175,28 +175,28 @@ class CalculateLineTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 100,
         ]);
 
         Price::factory()->create([
-            'price'          => 1000,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 1000,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $line = app(CalculateLine::class)->execute(
@@ -242,28 +242,28 @@ class CalculateLineTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 100,
-            'tier'           => 1,
-            'currency_id'    => $currency->id,
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 10,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 10,
         ]);
 
         $line = app(CalculateLine::class)->execute(
@@ -308,28 +308,28 @@ class CalculateLineTest extends TestCase
 
         $taxClass->taxRateAmounts()->create(
             TaxRateAmount::factory()->make([
-                'percentage'   => 20,
+                'percentage' => 20,
                 'tax_class_id' => $taxClass->id,
             ])->toArray()
         );
 
         $purchasable = ProductVariant::factory()->create([
-            'tax_class_id'  => $taxClass->id,
+            'tax_class_id' => $taxClass->id,
             'unit_quantity' => 1,
         ]);
 
         Price::factory()->create([
-            'price'          => 912, //Known failing value
-            'currency_id'    => $currency->id,
-            'tier'           => 1,
+            'price' => 912, //Known failing value
+            'currency_id' => $currency->id,
+            'tier' => 1,
             'priceable_type' => get_class($purchasable),
-            'priceable_id'   => $purchasable->id,
+            'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasable),
-            'purchasable_id'   => $purchasable->id,
-            'quantity'         => 1,
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
         ]);
 
         $line = app(CalculateLine::class)->execute(

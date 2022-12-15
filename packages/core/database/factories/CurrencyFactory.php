@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Database\Factories;
+namespace Lunar\Database\Factories;
 
-use GetCandy\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Currency;
 
 class CurrencyFactory extends Factory
 {
@@ -12,12 +12,12 @@ class CurrencyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'           => $this->faker->name(),
-            'code'           => $this->faker->unique()->currencyCode,
-            'enabled'        => true,
-            'exchange_rate'  => $this->faker->randomFloat(2, 0.1, 5),
+            'name' => $this->faker->name(),
+            'code' => $this->faker->unique()->currencyCode,
+            'enabled' => true,
+            'exchange_rate' => $this->faker->randomFloat(2, 0.1, 5),
             'decimal_places' => 2,
-            'default'        => true,
+            'default' => true,
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use GetCandy\Base\OrderReferenceGenerator;
+use Lunar\Base\OrderReferenceGenerator;
 
 return [
     /*
@@ -24,7 +24,7 @@ return [
     |
     */
     'draft_status' => 'awaiting-payment',
-    'statuses'     => [
+    'statuses' => [
         'awaiting-payment' => [
             'label' => 'Awaiting Payment',
             'color' => '#848a8c',
@@ -37,7 +37,7 @@ return [
             'mailers' => [],
             'notifications' => [],
         ],
-        'dispatched'  => [
+        'dispatched' => [
             'label' => 'Dispatched',
             'mailers' => [],
             'notifications' => [],

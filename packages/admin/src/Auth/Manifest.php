@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Auth;
+namespace Lunar\Hub\Auth;
 
 use Illuminate\Support\Collection;
 
@@ -57,7 +57,7 @@ class Manifest
      * Returns the parent permission based on handle naming.
      *
      * @param  Permission  $permission
-     * @return null|\GetCandy\Hub\Acl\Permission
+     * @return null|\Lunar\Hub\Acl\Permission
      */
     protected function getParentPermission(Permission $permission)
     {
@@ -92,7 +92,7 @@ class Manifest
     }
 
     /**
-     * Returns the base permissions which are required by GetCandy.
+     * Returns the base permissions which are required by Lunar.
      *
      * @return array
      */
@@ -138,6 +138,11 @@ class Manifest
                 __('adminhub::auth.permissions.catalogue.customers.name'),
                 'catalogue:manage-customers',
                 __('adminhub::auth.permissions.catalogue.customers.description')
+            ),
+            new Permission(
+                __('adminhub::auth.permissions.discounts.name'),
+                'catalogue:manage-discounts',
+                __('adminhub::auth.permissions.discounts.description')
             ),
         ];
     }

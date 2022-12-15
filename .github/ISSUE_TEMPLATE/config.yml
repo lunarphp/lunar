@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Support Questions & Other
-    url: https://github.com/getcandy/getcandy/discussions
+    url: https://github.com/lunarphp/lunar/discussions
     about: 'If you have a question, or need some support from the community'

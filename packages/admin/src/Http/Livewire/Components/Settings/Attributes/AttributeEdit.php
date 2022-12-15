@@ -1,14 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\Facades\FieldTypeManifest;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\AttributeGroup;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Lunar\Facades\FieldTypeManifest;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
 
 class AttributeEdit extends Component
 {
@@ -25,7 +26,7 @@ class AttributeEdit extends Component
     /**
      * The attribute instance.
      *
-     * @var \GetCandy\Models\Attribute
+     * @var \Lunar\Models\Attribute
      */
     public ?Attribute $attribute = null;
 
@@ -51,10 +52,10 @@ class AttributeEdit extends Component
         $this->attribute = $this->attribute ?: new Attribute([
             'searchable' => true,
             'filterable' => false,
-            'required'   => false,
-            'section'    => 'main',
-            'system'     => false,
-            'type'       => get_class($this->fieldTypes->first()),
+            'required' => false,
+            'section' => 'main',
+            'system' => false,
+            'type' => get_class($this->fieldTypes->first()),
         ]);
 
         if ($this->attribute->id) {
@@ -73,17 +74,23 @@ class AttributeEdit extends Component
     public function rules()
     {
         $rules = [
-            'attribute.name'                                => 'required',
-            'attribute.handle'                              => 'required',
-            'attribute.required'                            => 'nullable|boolean',
-            'attribute.searchable'                          => 'nullable|boolean',
-            'attribute.filterable'                          => 'nullable|boolean',
-            'attribute.configuration'                       => 'nullable|array',
-            'attribute.section'                             => 'string',
-            'attribute.system'                              => 'boolean',
-            'attribute.type'                                => 'required',
-            'attribute.validation_rules'                    => 'nullable|string',
+            'attribute.name' => 'required',
+            'attribute.handle' => 'required',
+            'attribute.required' => 'nullable|boolean',
+            'attribute.searchable' => 'nullable|boolean',
+            'attribute.filterable' => 'nullable|boolean',
+            'attribute.configuration' => 'nullable|array',
+            'attribute.section' => 'string',
+            'attribute.system' => 'boolean',
+            'attribute.type' => 'required',
+            'attribute.validation_rules' => 'nullable|string',
         ];
+
+        if (! $this->attribute->id) {
+            $rules['attribute.handle'] = ['required', Rule::unique(Attribute::class, 'handle')->where(function ($query) {
+                return $query->where('attribute_group_id', $this->group->id);
+            })];
+        }
 
         foreach ($this->languages as $lang) {
             $rules["attribute.name.{$lang->code}"] = ($lang->default ? 'required' : 'nullable').'|string|max:255';
@@ -98,6 +105,25 @@ class AttributeEdit extends Component
         }
 
         return $rules;
+    }
+
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        foreach ($this->languages as $lang) {
+            $attributes["attribute.name.{$lang->code}"] = lang(key: 'inputs.name', locale: $lang->code, lower: true);
+        }
+
+        if ($this->getFieldType()) {
+            $fieldTypeOptions = $this->getFieldTypeConfig()['options'] ?? [];
+
+            foreach ($fieldTypeOptions as $field => $validation) {
+                $attributes["attribute.configuration.{$field}"] = lang(key: "inputs.{$field}", locale: $this->defaultLanguage->code, lower: true);
+            }
+        }
+
+        return $attributes;
     }
 
     /**

@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Actions\Carts;
+namespace Lunar\Actions\Carts;
 
-use GetCandy\Models\Cart;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Cart;
 
 class MergeCart
 {
     /**
      * Execute the action.
      *
-     * @param  \GetCandy\Models\Cart  $target
-     * @param  \GetCandy\Models\Cart  $source
-     * @return \GetCandy\Models\Cart
+     * @param  \Lunar\Models\Cart  $target
+     * @param  \Lunar\Models\Cart  $source
+     * @return \Lunar\Models\Cart
      */
     public function execute(Cart $target, Cart $source)
     {
@@ -33,10 +33,10 @@ class MergeCart
                 // If no target, we are creating...
                 if (empty($lines['target'])) {
                     $target->lines()->create([
-                        'purchasable_id'   => $lines['source']->purchasable_id,
+                        'purchasable_id' => $lines['source']->purchasable_id,
                         'purchasable_type' => $lines['source']->purchasable_type,
-                        'quantity'         => $lines['source']->quantity,
-                        'meta'             => $lines['source']->meta,
+                        'quantity' => $lines['source']->quantity,
+                        'meta' => $lines['source']->meta,
                     ]);
 
                     return;
@@ -48,7 +48,7 @@ class MergeCart
 
                 $lines['target']->update([
                     'quantity' => $lines['target']->quantity + $lines['source']->quantity,
-                    'meta'     => $newMeta,
+                    'meta' => $newMeta,
                 ]);
             });
 

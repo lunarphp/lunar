@@ -34,12 +34,13 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::PACKAGE_DIRECTORIES, [
         // default value
         __DIR__.'/packages',
+        __DIR__.'/utils',
     ]);
 
     // for "merge" command
     $parameters->set(Option::DATA_TO_APPEND, [
         ComposerJsonSection::REQUIRE_DEV => [
-            'phpunit/phpunit'           => '^9.5',
+            'phpunit/phpunit' => '^9.5',
             'symplify/monorepo-builder' => '^10.0',
         ],
     ]);

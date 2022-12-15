@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Tests\Stubs;
+namespace Lunar\Tests\Stubs;
 
-use GetCandy\Base\Traits\GetCandyUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lunar\Base\Traits\LunarUser;
 
 class User extends Authenticatable
 {
-    use GetCandyUser;
+    use LunarUser;
     use HasFactory;
     use Notifiable;
-    use GetCandyUser;
+    use LunarUser;
 
     /**
      * The attributes that are mass assignable.
@@ -47,7 +47,7 @@ class User extends Authenticatable
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Tests\Stubs\UserFactory
+     * @return \Lunar\Tests\Stubs\UserFactory
      */
     protected static function newFactory(): UserFactory
     {

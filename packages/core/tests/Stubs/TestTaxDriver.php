@@ -1,31 +1,31 @@
 <?php
 
-namespace GetCandy\Tests\Stubs;
+namespace Lunar\Tests\Stubs;
 
-use GetCandy\Base\Addressable;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\DataTransferObjects\TaxBreakdownAmount;
-use GetCandy\Base\Purchasable;
-use GetCandy\Base\TaxDriver;
-use GetCandy\DataTypes\Price;
-use GetCandy\Models\CartLine;
-use GetCandy\Models\Currency;
-use GetCandy\Models\ProductVariant;
-use GetCandy\Models\TaxRateAmount;
+use Lunar\Base\Addressable;
+use Lunar\Base\Purchasable;
+use Lunar\Base\TaxDriver;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
+use Lunar\DataTypes\Price;
+use Lunar\Models\CartLine;
+use Lunar\Models\Currency;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxRateAmount;
 
 class TestTaxDriver implements TaxDriver
 {
     /**
      * The taxable shipping address.
      *
-     * @var \GetCandy\Base\Addressable|null
+     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $shippingAddress = null;
 
     /**
      * The taxable billing address.
      *
-     * @var \GetCandy\Base\Addressable|null
+     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $billingAddress = null;
 

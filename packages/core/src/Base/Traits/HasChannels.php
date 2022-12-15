@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use DateTime;
-use GetCandy\Models\Channel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Channel;
 
 trait HasChannels
 {
@@ -16,9 +16,9 @@ trait HasChannels
             $channels = Channel::get()->mapWithKeys(function ($channel) {
                 return [
                     $channel->id => [
-                        'enabled'      => false,
-                        'starts_at'    => null,
-                        'ends_at'      => null,
+                        'enabled' => false,
+                        'starts_at' => null,
+                        'ends_at' => null,
                     ],
                 ];
             });
@@ -32,7 +32,7 @@ trait HasChannels
      */
     public function channels()
     {
-        $prefix = config('getcandy.database.table_prefix');
+        $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
             Channel::class,
@@ -56,9 +56,9 @@ trait HasChannels
                 $channel->mapWithKeys(function ($channel) use ($startsAt, $endsAt) {
                     return [
                         $channel->id => [
-                            'enabled'      => true,
-                            'starts_at'    => $startsAt,
-                            'ends_at'      => $endsAt,
+                            'enabled' => true,
+                            'starts_at' => $startsAt,
+                            'ends_at' => $endsAt,
                         ],
                     ];
                 })

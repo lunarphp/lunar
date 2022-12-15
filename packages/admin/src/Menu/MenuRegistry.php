@@ -1,7 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class MenuRegistry
@@ -11,7 +12,7 @@ class MenuRegistry
      *
      * @var \Illuminate\Support\Collection
      */
-    protected $slots;
+    protected Collection $slots;
 
     /**
      * Initialise the class.
@@ -28,13 +29,13 @@ class MenuRegistry
      * then a new one will be added to the slots property and returned.
      *
      * @param  string  $handle
-     * @return \GetCandy\Hub\Menu\MenuSlot
+     * @return \Lunar\Hub\Menu\MenuSlot
      */
     public function slot($handle): MenuSlot
     {
         $handle = Str::slug($handle);
 
-        $slot = $this->slots->first(function ($slot) use ($handle) {
+        $slot = $this->slots->first(function (MenuSlot $slot) use ($handle) {
             return $slot->getHandle() == $handle;
         });
 

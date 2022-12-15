@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Products\Options;
+namespace Lunar\Hub\Http\Livewire\Components\Products\Options;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Language;
-use GetCandy\Models\ProductOption;
-use GetCandy\Models\ProductOptionValue;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Language;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 
 class OptionCreator extends Component
 {
@@ -23,7 +23,7 @@ class OptionCreator extends Component
     /**
      * The instance of the option to be created.
      *
-     * @var \GetCandy\Models\ProductOption
+     * @var \Lunar\Models\ProductOption
      */
     public ProductOption $option;
 
@@ -40,6 +40,39 @@ class OptionCreator extends Component
      * @var \Illuminate\Support\Collection
      */
     public Collection $languages;
+
+    /**
+     * Define the validation rules.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return [
+            "name.{$this->defaultLanguage->code}" => 'string|required|max:255',
+            'values' => 'array|min:1',
+            "values.*.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
+        ];
+    }
+
+    /**
+     * Define the validation attributes.
+     *
+     * @return array
+     */
+    protected function validationAttributes()
+    {
+        $attributes = [
+            "name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
+        ];
+
+        foreach ($this->values as $key => $value) {
+            $sequence = (int) $key + 1;
+            $attributes["values.{$key}.name.{$this->defaultLanguage->code}"] = lang(key:'inputs.value', lower: true)." #{$sequence}";
+        }
+
+        return $attributes;
+    }
 
     /**
      * Called on the initial component mount.
@@ -73,11 +106,7 @@ class OptionCreator extends Component
      */
     public function create()
     {
-        $this->validate([
-            "name.{$this->defaultLanguage->code}"          => 'string|required|max:255',
-            'values'                                       => 'array|min:1',
-            "values.*.name.{$this->defaultLanguage->code}" => 'required|string|max:255',
-        ]);
+        $this->validate();
 
         $this->option->name = $this->name;
         $this->option->save();

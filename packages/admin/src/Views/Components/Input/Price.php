@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components\Input;
+namespace Lunar\Hub\Views\Components\Input;
 
 use Illuminate\View\Component;
 
@@ -13,8 +13,6 @@ class Price extends Component
      */
     public bool $error = false;
 
-    public $symbol;
-
     public $currencyCode;
 
     /**
@@ -22,9 +20,8 @@ class Price extends Component
      *
      * @param  bool  $error
      */
-    public function __construct($symbol, $currencyCode, $error = false)
+    public function __construct($currencyCode, $error = false)
     {
-        $this->symbol = $symbol;
         $this->currencyCode = $currencyCode;
         $this->error = $error;
     }

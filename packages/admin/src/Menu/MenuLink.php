@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Menu;
+namespace Lunar\Hub\Menu;
 
-use GetCandy\Hub\GetCandyHub;
 use Illuminate\Support\Str;
+use Lunar\Hub\LunarHub;
 
 class MenuLink implements MenuItem
 {
@@ -101,6 +101,12 @@ class MenuLink implements MenuItem
         return $this;
     }
 
+    /**
+     * Setter for the component property.
+     *
+     * @param  string  $component
+     * @return static
+     */
     public function component($component)
     {
         $this->component = $component;
@@ -129,7 +135,7 @@ class MenuLink implements MenuItem
      */
     public function renderIcon($attrs = null)
     {
-        return GetCandyHub::icon($this->icon, $attrs);
+        return LunarHub::icon($this->icon, $attrs);
     }
 
     /**

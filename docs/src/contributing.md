@@ -4,53 +4,24 @@
 
 ## Overview
 
-GetCandy is an open source project, and so by its very nature, welcomes contributions.
+Lunar is an open source project, and so by its very nature, welcomes contributions.
 
 You can contribute to the project in many different ways. Reporting bugs, fixing bugs, helping with the documentation, making suggestions and submitting improvements to the software.
 
 ## Monorepo
 
-GetCandy uses a monorepo [getcandy/getcandy](https://github.com/getcandy/getcandy) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
+Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
+
 
 ## Repository Branching
 
-There are two branches you need to be aware of when contributing to GetCandy - `main` and `develop`.
+**Bug Fixes** should target the latest compatible branch version i.e `0.1`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
 
-The `main` branch hosts the latest stable version of the software and documentation. Whereas the `develop` branch hosts new features and updates in active development between releases.
-
-## Documentation
-
-If you would like to contribute to the documentation you can do easily by following these instructions...
-
-1. Fork the monorepo `getcandy/getcandy`
-2. Clone your fork locally
-3. In your terminal change to the `/docs` directory
-4. Run `npm install`
-5. Run `npm run dev` to preview the documentation locally
-6. Make your changes
-7. Submit a pull request
-
-GetCandy uses [VuePress](https://vuepress.vuejs.org/) for our documentation site which uses [Markdown](https://www.markdownguide.org/basic-syntax/) files to store the content. You'll find these Markdown files in the `/docs/src` directory.
-
-## Found a Bug?
-
-If you find a bug in the software please raise a GitHub Issue on the [getcandy/getcandy](https://github.com/getcandy/getcandy/issues) repository. 
-
-Even better would be a pull request with a test that fails demonstrating the bug.
-
-## Proposing a Feature
-
-Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/getcandy/getcandy/issues/new/choose) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into GetCandy.
-
-However, you're more than welcome to code away on your idea if you think it will help the discussion. 
-
-## Issue Not Getting Attention?
-
-If you need a bug fixed and nobody is fixing it, your best bet is to provide a fix for it and make a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request). Open source code belongs to all of us, and it's all of our responsibility to push it forward.
+**Features** should target the `main` branch.
 
 ## Contributing Code
 
-The basic process for contributing to GetCandy is as follows...
+The basic process for contributing to Lunar is as follows...
 
 1. Fork the monorepo
 2. Clone your fork locally
@@ -61,17 +32,70 @@ The basic process for contributing to GetCandy is as follows...
 However, if you're not used to working with monorepo's and setting them up inside a test Laravel application, no problem!
 
 ::: tip Development Guide
-Here's a guide on how to set-up your development environent ready for contributing to GetCandy.
+Here's a guide on how to set-up your development environment ready for contributing to Lunar.
 
-[Setting Up GetCandy For Local Development](/local-development.html)
+[Setting Up Lunar For Local Development](/local-development.html)
 :::
+
+## Found a Bug?
+
+If you find a bug in the software please raise a GitHub Issue on the [lunarphp/lunar](https://github.com/lunarphp/lunar/issues) repository. Please ensure that your issue includes the following:
+
+**Minimum**
+
+- Clear title and description of the issue
+- Steps on how to reproduce the issue
+
+**Ideal**
+
+- An accompanying Pull Request with a test to demonstrate the issue.
+
+Lunar is an open source project and as such we want contribution to be as accessible as possible and to enable contributors to actively collaborate on features and issues. By making sure you provide as much information as possible you are giving your issue the best chance to get the attention it needs.
+
+Be aware that creating an issue does not mean it will get activity straight away, please be patient and understand we will do our best to look into it as soon as possible.
+
+Open source code belongs to all of us, and it's all of our responsibility to push it forward.
+
+## Proposing a Feature
+
+Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/lunarphp/lunar/issues/new/choose) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into Lunar.
+
+However, you're more than welcome to code away on your idea if you think it will help the discussion.
 
 ## Making a Pull Request
 
-When making a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), you will want to target the correct branch. 
+When making a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), there should be a suitable template for you to follow to ensure the bug or feature can be reviewed in a timely manner.
+If the pull request is missing information or unclear as to what it offers or solves, it could any delay movement or be closed.
 
-If you are contributing documentation, the PR should be targeted straight to the `main` branch. However, code contributions should target the `develop` branch.
+A PR should be able to include the following:
 
-Please include a good description of what your pull request offers.
+- Clearly show in the title the version the PR is targeting i.e. `[0.1]` or `[0.2]`.
+- A clear description of the feature or fix
+- Any relevant documentation updates
+- Unit tests with adequate code coverage
+- Changelog entry
 
-When contributing code, please ensure you include suitable tests, documentation and changelog entries, as applicable.
+## Code Styles
+
+Lunar currently uses [Laravel Pint](https://laravel.com/docs/9.x/pint) for code styling. This is not automatically triggered, so you will need to run `vendor/bin/pint` on your branch.
+
+## Asset compiling
+
+The Lunar hub and some other add-ons/utils will provide their own assets. Please do not commit these files as they will be overwritten by the core team when the release is being finalised.
+
+## Documentation Updates
+
+When providing updates to the documentation, your pull request should target the relevant branch for the version you are updating. For documentation of new features in an upcoming release, target the `main` branch.
+
+If you would like to contribute to the documentation you can do easily by following these instructions...
+
+1. Fork the monorepo `lunarphp/lunar`
+2. Clone your fork locally
+3. In your terminal change to the `/docs` directory
+4. Run `npm install`
+5. Run `npm run dev` to preview the documentation locally
+6. Make your changes
+7. Submit a pull request
+
+Lunar uses [VuePress](https://vuepress.vuejs.org/) for our documentation site which uses [Markdown](https://www.markdownguide.org/basic-syntax/) files to store the content. You'll find these Markdown files in the `/docs/src` directory.
+

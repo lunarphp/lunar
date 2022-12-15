@@ -1,11 +1,11 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Models\Staff;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Models\Staff;
 
 class Account extends Component
 {
@@ -39,10 +39,10 @@ class Account extends Component
     {
         return [
             'staff.firstname' => 'required|string',
-            'staff.lastname'  => 'nullable',
-            'staff.email'     => 'email|required|unique:'.get_class($this->staff).',email,'.$this->staff->id,
+            'staff.lastname' => 'nullable',
+            'staff.email' => 'email|required|unique:'.get_class($this->staff).',email,'.$this->staff->id,
             'currentPassword' => 'nullable|current_password:staff',
-            'password'        => 'nullable|min:8',
+            'password' => 'nullable|min:8',
         ];
     }
 

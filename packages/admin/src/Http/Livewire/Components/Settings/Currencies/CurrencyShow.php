@@ -1,11 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Currencies;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Currencies;
 
-use GetCandy\Hub\Http\Livewire\Traits\ConfirmsDelete;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Currency;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\ConfirmsDelete;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Currency;
 
 class CurrencyShow extends Component
 {
@@ -15,7 +16,7 @@ class CurrencyShow extends Component
     /**
      * The instance of the currency we're viewing.
      *
-     * @var \GetCandy\Models\Currency
+     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 
@@ -34,12 +35,12 @@ class CurrencyShow extends Component
     protected function rules()
     {
         return [
-            'currency.code'           => 'required|max:255|unique:'.get_class($this->currency).',code,'.$this->currency->id,
-            'currency.name'           => 'required|max:255',
-            'currency.exchange_rate'  => 'required|numeric|min:0.0001|max:999999.9999',
+            'currency.code' => 'required|max:255|unique:'.get_class($this->currency).',code,'.$this->currency->id,
+            'currency.name' => 'required|max:255',
+            'currency.exchange_rate' => 'required|numeric|min:0.0001|max:999999.9999',
             'currency.decimal_places' => 'required|integer|max:4',
-            'currency.enabled'        => 'nullable',
-            'currency.default'        => 'nullable',
+            'currency.enabled' => 'nullable',
+            'currency.default' => 'nullable',
         ];
     }
 
@@ -51,7 +52,10 @@ class CurrencyShow extends Component
     public function delete()
     {
         if ($this->canDelete) {
-            $this->currency->delete();
+            DB::transaction(function () {
+                $this->currency->prices()->delete();
+                $this->currency->delete();
+            });
             $this->notify('Currency was removed', 'hub.currencies.index');
         }
     }

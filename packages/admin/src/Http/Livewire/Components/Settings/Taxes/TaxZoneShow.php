@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Models\TaxZone;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Models\TaxZone;
 
 class TaxZoneShow extends AbstractTaxZone
 {

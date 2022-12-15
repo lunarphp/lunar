@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Pages\Settings\Taxes;
+namespace Lunar\Hub\Http\Livewire\Pages\Settings\Taxes;
 
 use Livewire\Component;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Models;
+namespace Lunar\Tests\Unit\Models;
 
-use GetCandy\Models\TaxClass;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\TaxClass;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.models
+ * @group lunar.models
  */
 class TaxClassTest extends TestCase
 {
@@ -21,7 +21,7 @@ class TaxClassTest extends TestCase
         ]);
 
         $this->assertDatabaseHas((new TaxClass())->getTable(), [
-            'name'    => 'Clothing',
+            'name' => 'Clothing',
             'default' => false,
         ]);
     }
@@ -30,12 +30,12 @@ class TaxClassTest extends TestCase
     public function can_get_default_tax_class()
     {
         $taxClassA = TaxClass::factory()->create([
-            'name'    => 'Tax Class A',
+            'name' => 'Tax Class A',
             'default' => false,
         ]);
 
         $taxClassB = TaxClass::factory()->create([
-            'name'    => 'Tax Class B',
+            'name' => 'Tax Class B',
             'default' => true,
         ]);
 

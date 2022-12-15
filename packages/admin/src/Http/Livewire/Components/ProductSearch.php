@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components;
+namespace Lunar\Hub\Http\Livewire\Components;
 
-use GetCandy\Models\Product;
 use Livewire\Component;
+use Lunar\Models\Product;
 
 class ProductSearch extends Component
 {
@@ -93,7 +93,7 @@ class ProductSearch extends Component
 
     public function triggerSelect()
     {
-        $this->emit('product-search.selected', $this->selected);
+        $this->emit('product-search.selected', $this->selected, $this->ref);
         $this->showBrowser = false;
     }
 

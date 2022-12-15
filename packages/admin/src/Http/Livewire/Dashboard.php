@@ -1,18 +1,17 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire;
+namespace Lunar\Hub\Http\Livewire;
 
 use Carbon\CarbonPeriod;
-use GetCandy\DataTypes\Price;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderAddress;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\DataTypes\Price;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
+use Lunar\Models\Product;
 
 class Dashboard extends Component
 {
@@ -23,7 +22,7 @@ class Dashboard extends Component
      */
     public array $range = [
         'from' => null,
-        'to'   => null,
+        'to' => null,
     ];
 
     /**
@@ -41,7 +40,7 @@ class Dashboard extends Component
     {
         return [
             'range.from' => 'date',
-            'range.to'   => 'date,after:range.from',
+            'range.to' => 'date,after:range.from',
         ];
     }
 
@@ -65,33 +64,30 @@ class Dashboard extends Component
      */
     public function getReturningCustomersPercentProperty()
     {
-        $table = (new OrderAddress())->getTable();
+        $orders = Order::select(
+            DB::RAW('COUNT(*) as count'),
+            'new_customer'
+        )->whereBetween('created_at', [
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
+        ])->groupBy('new_customer')->get();
 
-        $query = DB::connection((new OrderAddress())->getConnectionName())->table($table)->where("{$table}.type", '=', 'billing')
-            ->select(
-                DB::RAW('COUNT(*) as count'),
-                "{$table}.contact_email"
-            )
-            ->whereBetween("{$table}.created_at", [
-                now()->parse($this->range['from']),
-                now()->parse($this->range['to']),
-            ])->whereNotNull("{$table}.contact_email")
-            ->leftJoin(
-                DB::raw($table.' address_join'),
-                'address_join.contact_email',
-                '=',
-                "{$table}.contact_email"
-            )->groupBy("{$table}.id", "{$table}.contact_email");
-
-        $total = $query->clone()->get()->count();
-
-        $returning = $query->clone()->having(DB::RAW('COUNT(*)'), '<=', 1)->count();
-
-        if (! $returning) {
+        if ($orders->isEmpty()) {
             return 0;
         }
 
-        return round(($returning / $total) * 100, 2);
+        $returning = $orders->first(fn ($order) => ! $order->new_customer);
+        $new = $orders->first(fn ($order) => $order->new_customer);
+
+        if (! $returning || ! $returning->count) {
+            return 0;
+        }
+
+        if (! $new || ! $new->count) {
+            return 100;
+        }
+
+        return round(($returning->count / ($new->count + $returning->count)) * 100, 2);
     }
 
     /**
@@ -110,7 +106,7 @@ class Dashboard extends Component
     /**
      * Return the computed property for default currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {
@@ -120,7 +116,7 @@ class Dashboard extends Component
     /**
      * Return computed property for order totals.
      *
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function getOrderTotalProperty()
     {
@@ -185,7 +181,7 @@ class Dashboard extends Component
 
         return collect([
             'chart' => [
-                'type'    => 'area',
+                'type' => 'area',
                 'toolbar' => [
                     'show' => false,
                 ],
@@ -195,12 +191,12 @@ class Dashboard extends Component
                 'enabled' => false,
             ],
             'fill' => [
-                'type'     => 'gradient',
+                'type' => 'gradient',
                 'gradient' => [
                     'shadeIntensity' => 1,
-                    'opacityFrom'    => 0.45,
-                    'opacityTo'      => 0.05,
-                    'stops'          => [50, 100, 100, 100],
+                    'opacityFrom' => 0.45,
+                    'opacityTo' => 0.05,
+                    'stops' => [50, 100, 100, 100],
                 ],
             ],
             'series' => [
@@ -214,7 +210,7 @@ class Dashboard extends Component
                 ],
             ],
             'xaxis' => [
-                'type'       => 'datetime',
+                'type' => 'datetime',
                 'categories' => $months->toArray(),
             ],
             'yaxis' => [
@@ -340,7 +336,7 @@ class Dashboard extends Component
 
         return collect([
             'chart' => [
-                'type'    => 'donut',
+                'type' => 'donut',
                 'toolbar' => [
                     'show' => false,
                 ],

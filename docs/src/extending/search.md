@@ -4,7 +4,7 @@
 
 ## Overview
 
-Good search is the backbone of any storefront so GetCandy aims to make this as extensible as possible so you can index what you need for your front-end, without compromising on what we require our side in the hub.
+Good search is the backbone of any storefront so Lunar aims to make this as extensible as possible so you can index what you need for your front-end, without compromising on what we require our side in the hub.
 
 There are three things to consider when you want to extend the search:
 
@@ -14,11 +14,11 @@ There are three things to consider when you want to extend the search:
 
 Each of these can be extended using Model Observers in Laravel. The following models can be extended:
 
-- `GetCandy\Models\Collection`
-- `GetCandy\Models\Customer`
-- `GetCandy\Models\Order`
-- `GetCandy\Models\Product`
-- `GetCandy\Models\ProductOption`
+- `Lunar\Models\Collection`
+- `Lunar\Models\Customer`
+- `Lunar\Models\Order`
+- `Lunar\Models\Product`
+- `Lunar\Models\ProductOption`
 
 ## Creating and using an Observer
 
@@ -29,7 +29,7 @@ As mentioned, you simply need to add a [Model Observer](https://laravel.com/docs
 
 namespace App\Observers;
 
-use GetCandy\Models\Order;
+use Lunar\Models\Order;
 
 class OrderObserver
 {
@@ -46,7 +46,7 @@ class OrderObserver
 
     /**
      * Called when we are setting up the index via
-     * php artisan getcandy:meilisearch:update
+     * php artisan lunar:meilisearch:update
      * */
     public function searchSetup(Order $order)
     {

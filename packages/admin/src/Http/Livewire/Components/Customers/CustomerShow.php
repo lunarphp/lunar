@@ -1,29 +1,32 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Customers;
+namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
 use Carbon\CarbonPeriod;
 use Exception;
-use GetCandy\DataTypes\Price;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Address;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Customer;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Order;
-use GetCandy\Models\OrderLine;
-use GetCandy\Models\State;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\DataTypes\Price;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithCountries;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Address;
+use Lunar\Models\Attribute;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
+use Lunar\Models\State;
 
 class CustomerShow extends Component
 {
+    use HasSlots;
     use Notifies;
     use WithAttributes;
     use WithPagination;
@@ -33,7 +36,7 @@ class CustomerShow extends Component
     /**
      * The current customer in view.
      *
-     * @var \GetCandy\Models\Customer
+     * @var \Lunar\Models\Customer
      */
     public Customer $customer;
 
@@ -50,6 +53,13 @@ class CustomerShow extends Component
      * @var string|int
      */
     public $userIdToRemove = null;
+
+    /**
+     * The tab to show.
+     *
+     * @var string
+     */
+    public $tab = 'order_history';
 
     /**
      * The purchase history page.
@@ -71,13 +81,6 @@ class CustomerShow extends Component
      * @var int
      */
     public $uPage = 1;
-
-    /**
-     * The users search page.
-     *
-     * @var int
-     */
-    public $usPage = 1;
 
     /**
      * The search term for finding users.
@@ -109,10 +112,21 @@ class CustomerShow extends Component
      * {@inheritDoc}
      */
     protected $queryString = [
+        'tab',
         'phPage',
         'ohPage',
         'uPage',
-        'usPage',
+    ];
+
+    /**
+     * The pagination page name.
+     *
+     * @var array
+     */
+    public $pageNames = [
+        'order_history' => 'ohPage',
+        'purchase_history' => 'phPage',
+        'users' => 'uPage',
     ];
 
     /**
@@ -122,13 +136,14 @@ class CustomerShow extends Component
     {
         return array_merge(
             [
-                'syncedGroups'          => 'array',
-                'customer.title'        => 'string|nullable',
-                'customer.first_name'   => 'string|required',
-                'customer.last_name'    => 'string|required',
+                'syncedGroups' => 'array',
+                'customer.title' => 'string|nullable',
+                'customer.first_name' => 'string|required',
+                'customer.last_name' => 'string|required',
                 'customer.company_name' => 'nullable|string',
-                'customer.vat_no'       => 'nullable|string',
-                'address'               => 'nullable',
+                'customer.account_ref' => 'nullable|string',
+                'customer.vat_no' => 'nullable|string',
+                'address' => 'nullable',
                 'address.postcode' => 'required|string|max:255',
                 'address.title' => 'nullable|string|max:255',
                 'address.first_name' => 'nullable|string|max:255',
@@ -142,7 +157,7 @@ class CustomerShow extends Component
                 'address.delivery_instructions' => 'nullable|string|max:255',
                 'address.contact_email' => 'nullable|email|max:255',
                 'address.contact_phone' => 'nullable|string|max:255',
-                'address.country_id'   => 'required',
+                'address.country_id' => 'required',
                 'address.billing_default' => 'nullable',
                 'address.shipping_default' => 'nullable',
             ],
@@ -157,6 +172,8 @@ class CustomerShow extends Component
      */
     public function mount()
     {
+        $this->resetPage($this->pageNames[$this->tab] ?? 'ohPage');
+
         $this->address = new Address;
         $this->syncedGroups = $this->customer->customerGroups->pluck('id')->map(fn ($id) => (string) $id)->toArray();
     }
@@ -181,6 +198,14 @@ class CustomerShow extends Component
         return Attribute::whereAttributeType(Customer::class)->orderBy('position')->get();
     }
 
+    protected function getListeners()
+    {
+        return array_merge(
+            [],
+            $this->getHasSlotsListeners()
+        );
+    }
+
     /**
      * Save the customer record.
      *
@@ -188,7 +213,11 @@ class CustomerShow extends Component
      */
     public function save()
     {
-        $this->validateOnly('customer');
+        $customerRules = collect($this->rules())
+            ->filter(fn ($rule, $key) => Str::startsWith($key, 'customer.'))
+            ->toArray();
+
+        $this->validate($customerRules);
 
         $this->customer->customerGroups()->sync(
             $this->syncedGroups
@@ -197,6 +226,8 @@ class CustomerShow extends Component
         $this->customer->attribute_data = $this->prepareAttributeData();
 
         $this->customer->save();
+
+        $this->updateSlots();
 
         $this->notify(
             __('adminhub::notifications.customer.updated')
@@ -268,7 +299,7 @@ class CustomerShow extends Component
     {
         return $this->customer->orders()->orderBy('placed_at', 'desc')->paginate(
             perPage: 10,
-            pageName: 'ohPage'
+            pageName: $this->pageNames['order_history']
         );
     }
 
@@ -281,7 +312,7 @@ class CustomerShow extends Component
     {
         return $this->customer->users()->paginate(
             perPage: 10,
-            pageName: 'uPage',
+            pageName: $this->pageNames['users'],
         );
     }
 
@@ -383,7 +414,7 @@ class CustomerShow extends Component
     /**
      * Return the average spend for the customer.
      *
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function getAvgSpendProperty()
     {
@@ -397,7 +428,7 @@ class CustomerShow extends Component
     /**
      * Return the average spend for the customer.
      *
-     * @return \GetCandy\DataTypes\Price
+     * @return \Lunar\DataTypes\Price
      */
     public function getTotalSpendProperty()
     {
@@ -411,7 +442,7 @@ class CustomerShow extends Component
     /**
      * Return the spending chart data.
      *
-     * @return \GetCandy\Models\Collection
+     * @return \Lunar\Models\Collection
      */
     public function getSpendingChartProperty()
     {
@@ -423,19 +454,19 @@ class CustomerShow extends Component
             DB::RAW('SUM(sub_total) as sub_total'),
             db_date('placed_at', '%Y-%m', 'format_date')
         )->whereNotNull('placed_at')
-        ->whereBetween('placed_at', [
-            $start,
-            $end,
-        ])->groupBy('format_date')->get();
+            ->whereBetween('placed_at', [
+                $start,
+                $end,
+            ])->groupBy('format_date')->get();
 
         $previousPeriod = $this->customer->orders()->select(
             DB::RAW('SUM(sub_total) as sub_total'),
             db_date('placed_at', '%Y-%m', 'format_date')
         )->whereNotNull('placed_at')
-        ->whereBetween('placed_at', [
-            $start->clone()->subYear(),
-            $end->clone()->subYear(),
-        ])->groupBy('format_date')->get();
+            ->whereBetween('placed_at', [
+                $start->clone()->subYear(),
+                $end->clone()->subYear(),
+            ])->groupBy('format_date')->get();
 
         $period = CarbonPeriod::create($start, '1 month', $end);
 
@@ -460,7 +491,7 @@ class CustomerShow extends Component
 
         return collect([
             'chart' => [
-                'type'    => 'area',
+                'type' => 'area',
                 'toolbar' => [
                     'show' => false,
                 ],
@@ -470,12 +501,12 @@ class CustomerShow extends Component
                 'enabled' => false,
             ],
             'fill' => [
-                'type'     => 'gradient',
+                'type' => 'gradient',
                 'gradient' => [
                     'shadeIntensity' => 1,
-                    'opacityFrom'    => 0.45,
-                    'opacityTo'      => 0.05,
-                    'stops'          => [50, 100, 100, 100],
+                    'opacityFrom' => 0.45,
+                    'opacityTo' => 0.05,
+                    'stops' => [50, 100, 100, 100],
                 ],
             ],
             'series' => [
@@ -489,7 +520,7 @@ class CustomerShow extends Component
                 ],
             ],
             'xaxis' => [
-                'type'       => 'datetime',
+                'type' => 'datetime',
                 'categories' => $months->toArray(),
             ],
             'yaxis' => [
@@ -525,12 +556,16 @@ class CustomerShow extends Component
             'identifier',
             DB::RAW("MAX({$column}) as last_ordered")
         )->join($ordersTable, "{$ordersTable}.id", '=', "{$orderLinesTable}.order_id")
-        ->whereIn(
-            'order_id', $this->customer->orders()->pluck('id')
-        )->orderBy('sub_total', 'desc')->whereType('physical')->groupBy(['identifier', 'description'])->paginate(
-            perPage: 10,
-            pageName: 'phPage'
-        );
+            ->whereIn(
+                'order_id',
+                $this->customer->orders()->pluck('id')
+            )->orderBy('sub_total', 'desc')
+            ->whereType('physical')
+            ->groupBy(['identifier', 'description'])
+            ->paginate(
+                perPage: 10,
+                pageName: $this->pageNames['purchase_history']
+            );
     }
 
     /**
@@ -542,5 +577,25 @@ class CustomerShow extends Component
     {
         return view('adminhub::livewire.components.customers.show')
             ->layout('adminhub::layouts.base');
+    }
+
+    /*
+     * Returns the model which has slots associated.
+     *
+     * @return \Lunar\Models\Customer
+     */
+    protected function getSlotModel()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * Returns the contexts for any slots.
+     *
+     * @return array
+     */
+    protected function getSlotContexts()
+    {
+        return ['customer.show'];
     }
 }

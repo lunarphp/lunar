@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Models\TaxZone;
+use Lunar\Models\TaxZone;
 
 class TaxZoneCreate extends AbstractTaxZone
 {
@@ -12,7 +12,7 @@ class TaxZoneCreate extends AbstractTaxZone
     public function rules()
     {
         return [
-            'taxZone.name' => 'required|unique:'.(new TaxZone)->getTable().',name',
+            'taxZone.name' => 'required|unique:'.TaxZone::class.',name',
             'taxZone.zone_type' => 'required',
             'taxZone.price_display' => 'required',
             'taxZone.active' => 'boolean|nullable',
@@ -27,6 +27,17 @@ class TaxZoneCreate extends AbstractTaxZone
             'taxRates.*.amounts.*.percentage' => 'numeric|min:0',
             'customerGroups' => 'array',
             'customerGroups.*.linked' => 'boolean|nullable',
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function validationAttributes()
+    {
+        return [
+            'taxRates.*.priority' => lang(key:'inputs.priority.label', lower:true),
+            'taxRates.*.name' => lang(key:'inputs.name', lower:true),
         ];
     }
 

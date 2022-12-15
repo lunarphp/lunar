@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
 
@@ -21,5 +21,10 @@ class CartModifiers
     public function add($modifier)
     {
         $this->modifiers->push($modifier);
+    }
+
+    public function remove($modifier)
+    {
+        $this->modifiers->forget($modifier);
     }
 }

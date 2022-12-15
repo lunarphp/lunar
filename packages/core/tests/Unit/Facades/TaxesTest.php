@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Facades;
+namespace Lunar\Tests\Unit\Facades;
 
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\TaxManagerInterface;
-use GetCandy\Facades\Taxes;
-use GetCandy\Tests\Stubs\TestTaxDriver;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\TaxManagerInterface;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Facades\Taxes;
+use Lunar\Tests\Stubs\TestTaxDriver;
+use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.taxes
+ * @group lunar.taxes
  */
 class TaxesTest extends TestCase
 {

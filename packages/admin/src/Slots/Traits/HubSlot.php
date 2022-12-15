@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Slots\Traits;
+namespace Lunar\Hub\Slots\Traits;
 
 trait HubSlot
 {

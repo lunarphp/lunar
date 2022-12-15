@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components;
+namespace Lunar\Hub\Views\Components;
 
-use GetCandy\Hub\Facades\Menu as MenuFacade;
 use Illuminate\View\Component;
+use Lunar\Hub\Facades\Menu as MenuFacade;
 
 class Menu extends Component
 {
@@ -13,11 +13,14 @@ class Menu extends Component
 
     public $items;
 
+    public $groups;
+
     public function __construct($handle = null)
     {
         $slot = MenuFacade::slot($handle);
         $this->items = $slot->getItems();
         $this->sections = $slot->getSections();
+        $this->groups = $slot->getGroups();
     }
 
     /**

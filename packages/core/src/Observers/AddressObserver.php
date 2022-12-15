@@ -1,15 +1,15 @@
 <?php
 
-namespace GetCandy\Observers;
+namespace Lunar\Observers;
 
-use GetCandy\Models\Address;
+use Lunar\Models\Address;
 
 class AddressObserver
 {
     /**
      * Handle the Address "creating" event.
      *
-     * @param  \GetCandy\Models\Address  $address
+     * @param  \Lunar\Models\Address  $address
      * @return void
      */
     public function creating(Address $address)
@@ -21,7 +21,7 @@ class AddressObserver
     /**
      * Handle the Address "updating" event.
      *
-     * @param  \GetCandy\Models\Address  $address
+     * @param  \Lunar\Models\Address  $address
      * @return void
      */
     public function updating(Address $address)

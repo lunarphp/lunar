@@ -3,12 +3,21 @@
     value: @entangle($attributes->wire('model')),
     init() {
       this.$nextTick(() => {
-        flatpickr($refs.input, {{ json_encode($options) }})
+
+        passedOptions = {{ json_encode($options) }}
+
+        options = {
+            altFormat: passedOptions.enableTime ? 'Y-m-d H:i' : 'Y-m-d',
+            altInput: true,
+        }
+
+        flatpickr($refs.input, {...options, ...passedOptions})
       })
     }
   }"
   @change="value = $event.target.value"
   class="flex relative"
+  wire:ignore
 >
   <x-hub::input.text
     x-ref="input"

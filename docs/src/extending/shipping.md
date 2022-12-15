@@ -13,13 +13,13 @@ Create your own custom shipping provider:
 ```php
 namespace App\Modifiers;
 
-use GetCandy\Base\ShippingModifier;
-use GetCandy\DataTypes\Price;
-use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Facades\ShippingManifest;
-use GetCandy\Models\Cart;
-use GetCandy\Models\Currency;
-use GetCandy\Models\TaxClass;
+use Lunar\Base\ShippingModifier;
+use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Cart;
+use Lunar\Models\Currency;
+use Lunar\Models\TaxClass;
 
 class CustomShippingModifier extends ShippingModifier
 {
@@ -30,7 +30,8 @@ class CustomShippingModifier extends ShippingModifier
 
         ShippingManifest::addOption(
             new ShippingOption(
-                description: 'Basic Delivery',
+                name: 'Basic Delivery',
+                description: 'A basic delivery option',
                 identifier: 'BASDEL',
                 price: new Price(500, $cart->currency, 1),
                 taxClass: $taxClass
@@ -44,7 +45,7 @@ class CustomShippingModifier extends ShippingModifier
 In your service provider:
 
 ```php
-public function boot(\GetCandy\Base\ShippingModifiers $shippingModifiers)
+public function boot(\Lunar\Base\ShippingModifiers $shippingModifiers)
 {
     $shippingModifiers->add(
         CustomShippingModifier::class

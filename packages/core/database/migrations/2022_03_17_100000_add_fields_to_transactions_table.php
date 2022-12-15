@@ -1,8 +1,9 @@
 <?php
 
-use GetCandy\Base\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Base\Migration;
 
 class AddFieldsToTransactionsTable extends Migration
 {
@@ -24,9 +25,10 @@ class AddFieldsToTransactionsTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'transactions', function ($table) {
-            $table->dropForeign(['parent_transaction_id']);
-            $table->dropColumn('parent_transaction_id');
-            $table->dropColumn('type');
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign(['parent_transaction_id']);
+            }
+            $table->dropColumn(['parent_transaction_id', 'type']);
         });
 
         Schema::table($this->prefix.'transactions', function ($table) {

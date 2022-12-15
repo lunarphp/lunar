@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Hub\Views\Components\Orders;
+namespace Lunar\Hub\Views\Components\Orders;
 
 use Illuminate\View\Component;
 
@@ -11,7 +11,7 @@ class Status extends Component
      *
      * @var string
      */
-    public string $status = '';
+    public ?string $status = '';
 
     /**
      * The status label.
@@ -32,15 +32,19 @@ class Status extends Component
      *
      * @param  string  $email
      */
-    public function __construct($status)
+    public function __construct($record = null, $status = null)
     {
-        $statuses = config('getcandy.orders.statuses');
+        if ($record && ! $status) {
+            $status = $record->status;
+        }
+
+        $statuses = config('lunar.orders.statuses');
 
         $match = $statuses[$status] ?? null;
 
         $this->label = $match['label'] ?? $status;
         $this->color = $match['color'] ?? '#7C7C7C';
-        $this->status = $status;
+        $this->status = $record?->status ?: $status;
     }
 
     /**

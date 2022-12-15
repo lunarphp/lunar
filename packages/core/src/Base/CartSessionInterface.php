@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
-use GetCandy\Models\Cart;
-use GetCandy\Models\Channel;
-use GetCandy\Models\Currency;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Lunar\Models\Cart;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
 
 interface CartSessionInterface
 {
     /**
      * Return the current cart.
      *
-     * @return \GetCandy\Models\Cart|null
+     * @return \Lunar\Models\Cart|null
      */
     public function current();
 
@@ -24,16 +24,9 @@ interface CartSessionInterface
     public function forget();
 
     /**
-     * Return the cart manager instance.
-     *
-     * @return \GetCandy\Managers\CartManager
-     */
-    public function manager();
-
-    /**
      * Associate a cart to a user.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param  \Lunar\Models\Cart  $cart
      * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @param  string  $policy
      * @return void
@@ -43,7 +36,7 @@ interface CartSessionInterface
     /**
      * Use the given cart and set to the session.
      *
-     * @param  \GetCandy\Models\Cart  $cart
+     * @param  \Lunar\Models\Cart  $cart
      * @return void
      */
     public function use(Cart $cart);
@@ -58,7 +51,7 @@ interface CartSessionInterface
     /**
      * Set the cart session channel.
      *
-     * @param  \GetCandy\Models\Channel  $channel
+     * @param  \Lunar\Models\Channel  $channel
      * @return self
      */
     public function setChannel(Channel $channel);
@@ -66,7 +59,7 @@ interface CartSessionInterface
     /**
      * Set the cart session currency.
      *
-     * @param  \GetCandy\Models\Currency  $currency
+     * @param  \Lunar\Models\Currency  $currency
      * @return self
      */
     public function setCurrency(Currency $currency);
@@ -74,14 +67,14 @@ interface CartSessionInterface
     /**
      * Return the current currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getCurrency(): Currency;
 
     /**
      * Return the current channel.
      *
-     * @return \GetCandy\Models\Channel
+     * @return \Lunar\Models\Channel
      */
     public function getChannel(): Channel;
 }

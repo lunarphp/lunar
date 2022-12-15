@@ -1,0 +1,3 @@
+<span>
+    {{ $installedVersion }}
+</span>

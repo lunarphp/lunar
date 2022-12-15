@@ -1,13 +1,15 @@
 <?php
 
-namespace GetCandy\Tests\Unit\Base;
+namespace Lunar\Tests\Unit\Base;
 
-use GetCandy\Models\Collection as ModelsCollection;
-use GetCandy\Models\Product;
-use GetCandy\Models\Url;
-use GetCandy\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasModelExtending;
+use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Product;
+use Lunar\Models\Url;
+use Lunar\Tests\TestCase;
 
 /**
  * @group models.base
@@ -74,5 +76,12 @@ class BaseModelTest extends TestCase
             route('test.collections', $collection->defaultUrl->slug),
             $collection->getPermalink()
         );
+    }
+
+    /** @test */
+    public function base_model_includes_trait()
+    {
+        $uses = class_uses_recursive(BaseModel::class);
+        $this->assertTrue(in_array(HasModelExtending::class, $uses));
     }
 }

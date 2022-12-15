@@ -1,10 +1,15 @@
 <?php
 
-namespace GetCandy\Hub\Facades;
+namespace Lunar\Hub\Facades;
 
-use GetCandy\Hub\Menu\MenuRegistry;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Hub\Menu\MenuRegistry;
 
+/**
+ * @method static MenuSlot slot(string $handle)
+ *
+ * @see \Lunar\Hub\Menu\MenuRegistry
+ */
 class Menu extends Facade
 {
     /**

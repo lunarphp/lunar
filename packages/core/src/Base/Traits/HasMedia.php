@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Base\Traits;
+namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Image\Manipulations;
@@ -22,9 +22,25 @@ trait HasMedia
             ->where('custom_properties->primary', true);
     }
 
+    public function registerMediaCollections(): void
+    {
+        $fallbackUrl = config('lunar.media.fallback.url');
+        $fallbackPath = config('lunar.media.fallback.path');
+
+        $collection = $this->addMediaCollection('images');
+
+        if ($fallbackUrl) {
+            $collection = $collection->useFallbackUrl($fallbackUrl);
+        }
+
+        if ($fallbackPath) {
+            $collection = $collection->useFallbackPath($fallbackPath);
+        }
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
-        $conversionClasses = config('getcandy.media.conversions', []);
+        $conversionClasses = config('lunar.media.conversions', []);
 
         foreach ($conversionClasses as $classname) {
             app($classname)->apply($this);

@@ -1,67 +1,91 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\CartLineFactory;
-use GetCandy\DataTypes\Price;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\CachesProperties;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Database\Factories\CartLineFactory;
+use Lunar\DataTypes\Price;
 
 class CartLine extends BaseModel
 {
     use HasFactory;
     use LogsActivity;
     use HasMacros;
+    use CachesProperties;
 
     /**
-     * The cart line total.
+     * Array of cachable class properties.
      *
-     * @var Price|null
+     * @var array
      */
-    public ?Price $total = null;
-
-    /**
-     * The cart line sub total.
-     *
-     * @var Price|null
-     */
-    public ?Price $subTotal = null;
-
-    /**
-     * The cart line tax amount.
-     *
-     * @var Price|null
-     */
-    public ?Price $taxAmount = null;
+    public $cachableProperties = [
+        'unitPrice',
+        'subTotal',
+        'discountTotal',
+        'taxAmount',
+        'total',
+        'promotionDescription',
+        'taxBreakdown',
+    ];
 
     /**
      * The cart line unit price.
      *
-     * @var Price|null
+     * @var null|Price
      */
     public ?Price $unitPrice = null;
 
     /**
+     * The cart line sub total.
+     *
+     * @var null|Price
+     */
+    public ?Price $subTotal = null;
+
+    /**
      * The discount total.
      *
-     * @var Price|null
+     * @var null|Price
      */
     public ?Price $discountTotal = null;
 
     /**
+     * The cart line tax amount.
+     *
+     * @var null|Price
+     */
+    public ?Price $taxAmount = null;
+
+    /**
+     * The cart line total.
+     *
+     * @var null|Price
+     */
+    public ?Price $total = null;
+
+    /**
+     * The promotion description.
+     *
+     * @var string
+     */
+    public string $promotionDescription = '';
+
+    /**
      * All the tax breakdowns for the cart line.
      *
-     * @var \GetCandy\Base\DataTransferObjects\TaxBreakdown
+     * @var \Lunar\Base\ValueObjects\Cart\TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CartLineFactory
+     * @return \Lunar\Database\Factories\CartLineFactory
      */
     protected static function newFactory(): CartLineFactory
     {
@@ -83,7 +107,7 @@ class CartLine extends BaseModel
      */
     protected $casts = [
         'quantity' => 'integer',
-        'meta'     => 'object',
+        'meta' => 'object',
     ];
 
     /**
@@ -108,6 +132,16 @@ class CartLine extends BaseModel
             $this->purchasable_type,
             'tax_class_id',
             'id'
+        );
+    }
+
+    public function discounts()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Discount::class,
+            "{$prefix}cart_line_discount"
         );
     }
 

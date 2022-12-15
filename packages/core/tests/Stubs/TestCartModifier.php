@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Tests\Stubs;
+namespace Lunar\Tests\Stubs;
 
 use Closure;
-use GetCandy\Base\CartModifier;
-use GetCandy\Models\Cart;
+use Lunar\Base\CartModifier;
+use Lunar\Models\Cart;
 
 class TestCartModifier extends CartModifier
 {

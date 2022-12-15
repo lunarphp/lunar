@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Actions\Pricing;
+namespace Lunar\Hub\Actions\Pricing;
 
-use GetCandy\Models\Currency;
-use GetCandy\Models\Price;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
 
 class UpdateTieredPricing
 {
@@ -57,7 +57,7 @@ class UpdateTieredPricing
      * @param  float  $price
      * @param  int  $currencyId
      * @param  int|null  $id
-     * @return \GetCandy\Models\Price
+     * @return \Lunar\Models\Price
      */
     private function createOrUpdatePrice(Model $owner, $tier, $price, $currencyId, $groupId = null, $id = null)
     {
@@ -67,12 +67,12 @@ class UpdateTieredPricing
         $currency = Currency::find($currencyId);
 
         $priceModel->fill([
-            'price'             => (int) ($price * $currency->factor),
-            'currency_id'       => $currencyId,
+            'price' => (int) ($price * $currency->factor),
+            'currency_id' => $currencyId,
             'customer_group_id' => $groupId,
-            'tier'              => $tier,
-            'priceable_id'      => $owner->id,
-            'priceable_type'    => get_class($owner),
+            'tier' => $tier,
+            'priceable_id' => $owner->id,
+            'priceable_type' => get_class($owner),
         ]);
 
         $priceModel->save();

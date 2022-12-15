@@ -1,17 +1,17 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components\Authentication;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Authentication;
 
-use GetCandy\Hub\Http\Livewire\Components\Authentication\PasswordReset;
-use GetCandy\Hub\Mail\ResetPasswordEmail;
-use GetCandy\Hub\Models\Staff;
-use GetCandy\Hub\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Lunar\Hub\Http\Livewire\Components\Authentication\PasswordReset;
+use Lunar\Hub\Mail\ResetPasswordEmail;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.auth

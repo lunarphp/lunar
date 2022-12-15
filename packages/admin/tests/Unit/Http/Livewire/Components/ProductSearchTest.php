@@ -1,13 +1,13 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Http\Livewire\Components;
+namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components;
 
-use GetCandy\FieldTypes\Text;
-use GetCandy\Hub\Http\Livewire\Components\ProductSearch;
-use GetCandy\Hub\Tests\TestCase;
-use GetCandy\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Lunar\FieldTypes\Text;
+use Lunar\Hub\Http\Livewire\Components\ProductSearch;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Product;
 
 /**
  * @group hub.components

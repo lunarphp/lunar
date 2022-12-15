@@ -1,14 +1,13 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasDefaultRecord;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Database\Factories\CustomerGroupFactory;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasDefaultRecord;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Database\Factories\CustomerGroupFactory;
 
 class CustomerGroup extends BaseModel
 {
@@ -32,7 +31,7 @@ class CustomerGroup extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CustomerGroupFactory
+     * @return \Lunar\Database\Factories\CustomerGroupFactory
      */
     protected static function newFactory(): CustomerGroupFactory
     {

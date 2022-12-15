@@ -1,22 +1,37 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\Addressable;
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\DataTransferObjects\TaxBreakdown;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\LogsActivity;
-use GetCandy\Database\Factories\CartAddressFactory;
-use GetCandy\DataTypes\Price;
-use GetCandy\DataTypes\ShippingOption;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\Addressable;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\CachesProperties;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Database\Factories\CartAddressFactory;
+use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
 
 class CartAddress extends BaseModel implements Addressable
 {
     use HasFactory;
     use LogsActivity;
     use HasMacros;
+    use CachesProperties;
+
+    /**
+     * Array of cachable class properties.
+     *
+     * @var array
+     */
+    public $cachableProperties = [
+        'shippingOption',
+        'shippingSubTotal',
+        'shippingTaxTotal',
+        'shippingTotal',
+        'taxBreakdown',
+    ];
 
     /**
      * The applied shipping option.
@@ -28,35 +43,35 @@ class CartAddress extends BaseModel implements Addressable
     /**
      * The shipping sub total.
      *
-     * @var \GetCandy\DataTypes\Price|null
+     * @var Price|null
      */
-    public ?Price $shippingSubTotal;
+    public ?Price $shippingSubTotal = null;
 
     /**
      * The shipping tax total.
      *
-     * @var \GetCandy\DataTypes\Price|null
+     * @var Price|null
      */
-    public ?Price $shippingTaxTotal;
+    public ?Price $shippingTaxTotal = null;
 
     /**
      * The shipping total.
      *
-     * @var \GetCandy\DataTypes\Price|null
+     * @var Price|null
      */
-    public ?Price $shippingTotal;
+    public ?Price $shippingTotal = null;
 
     /**
      * The tax breakdown.
      *
-     * @var \GetCandy\Base\DataTransferObjects\TaxBreakdown
+     * @var TaxBreakdown
      */
-    public TaxBreakdown $taxBreakdown;
+    public ?TaxBreakdown $taxBreakdown = null;
 
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\CartAddressFactory
+     * @return CartAddressFactory
      */
     protected static function newFactory(): CartAddressFactory
     {

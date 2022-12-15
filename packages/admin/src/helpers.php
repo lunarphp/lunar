@@ -1,9 +1,9 @@
 <?php
 
-use GetCandy\DataTypes\Price;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Lunar\DataTypes\Price;
 
 if (! function_exists('max_upload_filesize')) {
     function max_upload_filesize()
@@ -15,7 +15,7 @@ if (! function_exists('max_upload_filesize')) {
 if (! function_exists('get_validation')) {
     function get_validation($reference, $field, $defaults = [], Model $model = null)
     {
-        $config = config("getcandy-hub.{$reference}.{$field}", []);
+        $config = config("lunar-hub.{$reference}.{$field}", []);
 
         $rules = $defaults;
 
@@ -71,12 +71,23 @@ if (! function_exists('price')) {
 if (! function_exists('impersonate_link')) {
     function impersonate_link(Authenticatable $authenticatable)
     {
-        $class = config('getcandy-hub.customers.impersonate');
+        $class = config('lunar-hub.customers.impersonate');
 
         if (! $class) {
             return null;
         }
 
         return app($class)->getUrl($authenticatable);
+    }
+}
+
+if (! function_exists('lang')) {
+    function lang($key, $replace = [], $locale = null, $prefix = 'adminhub::', $lower = false)
+    {
+        $key = $prefix.$key;
+
+        $value = __($key, $replace, $locale);
+
+        return $lower ? mb_strtolower($value) : $value;
     }
 }

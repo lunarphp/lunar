@@ -1,18 +1,18 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Country;
-use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\State;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\TaxRate;
-use GetCandy\Models\TaxRateAmount;
-use GetCandy\Models\TaxZone;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Country;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\State;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Models\TaxZone;
 
 abstract class AbstractTaxZone extends Component
 {

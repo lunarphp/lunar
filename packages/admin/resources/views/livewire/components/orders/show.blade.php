@@ -48,7 +48,7 @@
                     </ul>
                 </div>
 
-                @if ($this->physicalLines->count() > $maxLines)
+                @if ($this->physicalAndDigitalLines->count() > $maxLines)
                     <div class="mt-4 text-center">
                         @if (!$allLinesVisible)
                             <div class="relative">
@@ -57,7 +57,7 @@
                                 <div class="relative">
                                     <span class="px-2 text-xs font-medium text-red-600 bg-white">
                                         {{ __('adminhub::components.orders.show.additional_lines_text', [
-                                            'count' => $this->physicalLines->count() - $maxLines,
+                                            'count' => $this->physicalAndDigitalLines->count() - $maxLines,
                                         ]) }}
                                     </span>
                                 </div>
@@ -101,6 +101,17 @@
         </div>
 
         <div class="space-y-4">
+        <section class="p-4 bg-white rounded-lg shadow">
+            <header>
+                <strong class="text-gray-700">
+                  {{ __('adminhub::components.orders.show.tags_header') }}
+                </strong>
+            </header>
+            @livewire('hub.components.tags', [
+              'taggable' => $order,
+              'independant' => true,
+            ])
+        </section>
             @if ($order->customer)
                 <header class="flex items-center justify-between">
                     <strong class="text-gray-700 truncate">
@@ -147,6 +158,8 @@
             </section>
 
             <section class="p-4 bg-white rounded-lg shadow">
+
+
                 <header>
                     <strong class="text-gray-700">
                         {{ __('adminhub::components.orders.show.additional_fields_header') }}
@@ -171,6 +184,9 @@
                     @endforeach
                 </dl>
             </section>
+
+
+
 
             @foreach($this->getSlotsByPosition('bottom') as $slot)
              <div id="{{ $slot->handle }}">

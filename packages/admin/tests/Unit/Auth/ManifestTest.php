@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Auth;
+namespace Lunar\Hub\Tests\Unit\Auth;
 
-use GetCandy\Hub\Auth\Manifest;
-use GetCandy\Hub\Auth\Permission;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Auth\Permission;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.auth

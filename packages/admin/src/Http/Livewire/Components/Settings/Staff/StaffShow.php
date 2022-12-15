@@ -1,16 +1,30 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Staff;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
-use GetCandy\Hub\Auth\Manifest;
-use GetCandy\Hub\Http\Livewire\Traits\ConfirmsDelete;
-use GetCandy\Hub\Models\Staff;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Http\Livewire\Traits\ConfirmsDelete;
+use Lunar\Hub\Models\Staff;
 
 class StaffShow extends AbstractStaff
 {
     use ConfirmsDelete;
+
+    /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public $showRestoreConfirm = false;
+
+    /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public $showDeleteConfirm = false;
 
     /**
      * Called when the component has been mounted.
@@ -31,11 +45,11 @@ class StaffShow extends AbstractStaff
     {
         return [
             'staffPermissions' => 'array',
-            'staff.email'      => 'required|email|unique:'.get_class($this->staff).',email,'.$this->staff->id,
-            'staff.firstname'  => 'string|max:255',
-            'staff.lastname'   => 'string|max:255',
-            'staff.admin'      => 'nullable|boolean',
-            'password'         => 'nullable|min:8|max:255|confirmed',
+            'staff.email' => 'required|email|unique:'.get_class($this->staff).',email,'.$this->staff->id,
+            'staff.firstname' => 'string|max:255',
+            'staff.lastname' => 'string|max:255',
+            'staff.admin' => 'nullable|boolean',
+            'password' => 'nullable|min:8|max:255|confirmed',
         ];
     }
 
@@ -48,6 +62,20 @@ class StaffShow extends AbstractStaff
     {
         $this->staff->delete();
         $this->notify('Staff member was removed', 'hub.staff.index');
+    }
+
+    /**
+     * Restore the product.
+     *
+     * @return void
+     */
+    public function restore()
+    {
+        $this->staff->restore();
+        $this->showRestoreConfirm = false;
+        $this->notify(
+            __('adminhub::notifications.staff.restored')
+        );
     }
 
     /**

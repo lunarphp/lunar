@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Attributes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\AttributeGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\AttributeGroup;
 
 class AttributeGroupEdit extends Component
 {
@@ -45,6 +45,16 @@ class AttributeGroupEdit extends Component
                 'string',
                 'max:255',
             ],
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function validationAttributes()
+    {
+        return [
+            "attributeGroup.name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
         ];
     }
 

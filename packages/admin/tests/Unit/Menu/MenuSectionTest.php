@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Hub\Tests\Unit\Menu;
+namespace Lunar\Hub\Tests\Unit\Menu;
 
-use GetCandy\Hub\Menu\MenuSection;
-use GetCandy\Hub\Tests\TestCase;
+use Lunar\Hub\Menu\MenuSection;
+use Lunar\Hub\Tests\TestCase;
 
 /**
  * @group hub.menu
@@ -13,18 +13,10 @@ class MenuSectionTest extends TestCase
     /** @test */
     public function can_initialise_a_new_section()
     {
-        $section = new MenuSection('Foo Bar');
+        $section = new MenuSection('products');
 
-        $this->assertEquals('Foo Bar', $section->name);
-        $this->assertEquals('foo-bar', $section->getHandle());
-    }
+        $section->name('Products');
 
-    /** @test */
-    public function can_set_name_on_section()
-    {
-        $section = new MenuSection('Foo Bar');
-        $this->assertEquals('Foo Bar', $section->name);
-        $section->name('Another Name');
-        $this->assertEquals('Another Name', $section->name);
+        $this->assertEquals('Products', $section->name);
     }
 }

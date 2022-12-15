@@ -1,17 +1,17 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Collections;
+namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use GetCandy\FieldTypes\TranslatedText;
-use GetCandy\Hub\Http\Livewire\Traits\MapsCollectionTree;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Collection;
-use GetCandy\Models\CollectionGroup;
-use GetCandy\Models\Language;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Hub\Http\Livewire\Traits\MapsCollectionTree;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
+use Lunar\Models\Language;
 
 class CollectionGroupShow extends Component
 {
@@ -109,7 +109,7 @@ class CollectionGroupShow extends Component
     public function rules()
     {
         $rules = [
-            'group.name'      => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
+            'group.name' => 'required|string|max:255|unique:'.CollectionGroup::class.',name,'.$this->group->id,
             'collection.name' => 'required|string|max:255',
             'deletionConfirm' => 'nullable|boolean',
         ];
@@ -317,7 +317,7 @@ class CollectionGroupShow extends Component
     /**
      * Get the target collection to move into.
      *
-     * @return null|\GetCandy\Models\Collection
+     * @return null|\Lunar\Models\Collection
      */
     public function getTargetCollectionProperty()
     {
@@ -331,7 +331,7 @@ class CollectionGroupShow extends Component
     /**
      * Get the source collection we want to move.
      *
-     * @return null|\GetCandy\Models\Collection
+     * @return null|\Lunar\Models\Collection
      */
     public function getSourceCollectionProperty()
     {
@@ -349,8 +349,8 @@ class CollectionGroupShow extends Component
      */
     public function getSlugIsRequiredProperty()
     {
-        return config('getcandy.urls.required', false) &&
-            ! config('getcandy.urls.generator', null);
+        return config('lunar.urls.required', false) &&
+            ! config('lunar.urls.generator', null);
     }
 
     /**
@@ -409,7 +409,7 @@ class CollectionGroupShow extends Component
 
         $collection = Collection::create([
             'collection_group_id' => $this->group->id,
-            'attribute_data'      => collect([
+            'attribute_data' => collect([
                 'name' => new TranslatedText([
                     $this->defaultLanguage => $this->collection['name'],
                 ]),
@@ -451,7 +451,7 @@ class CollectionGroupShow extends Component
     /**
      * Getter for returning the collection to remove.
      *
-     * @return \GetCandy\Models\Collection|null
+     * @return \Lunar\Models\Collection|null
      */
     public function getCollectionToRemoveProperty()
     {
@@ -463,7 +463,7 @@ class CollectionGroupShow extends Component
     /**
      * Getter for the collection parent.
      *
-     * @return \GetCandy\Models\Collection|null
+     * @return \Lunar\Models\Collection|null
      */
     public function getCollectionParentProperty()
     {

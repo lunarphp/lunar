@@ -1,6 +1,6 @@
 # Admin Hub Overview
 
-The admin hub is an open source app that allows you to manage all aspects of your GetCandy store.
+The admin hub is an open source app that allows you to manage all aspects of your Lunar store.
 
 ## Accessing the hub
 

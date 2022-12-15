@@ -1,15 +1,17 @@
 <?php
 
-namespace GetCandy\Models;
+namespace Lunar\Models;
 
-use GetCandy\Base\BaseModel;
-use GetCandy\Base\Traits\HasMacros;
-use GetCandy\Base\Traits\HasMedia;
-use GetCandy\Base\Traits\HasTranslations;
-use GetCandy\Database\Factories\ProductOptionValueFactory;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasTranslations;
+use Lunar\Database\Factories\ProductOptionValueFactory;
+use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
-class ProductOptionValue extends BaseModel
+class ProductOptionValue extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
     use HasMedia;
@@ -17,9 +19,18 @@ class ProductOptionValue extends BaseModel
     use HasMacros;
 
     /**
+     * Define which attributes should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'name' => AsCollection::class,
+    ];
+
+    /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Database\Factories\ProductOptionValueFactory
+     * @return \Lunar\Database\Factories\ProductOptionValueFactory
      */
     protected static function newFactory(): ProductOptionValueFactory
     {
@@ -47,5 +58,17 @@ class ProductOptionValue extends BaseModel
     public function option()
     {
         return $this->belongsTo(ProductOption::class, 'product_option_id');
+    }
+
+    public function variants()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            ProductVariant::class,
+            "{$prefix}product_option_value_product_variant",
+            'value_id',
+            'variant_id',
+        );
     }
 }

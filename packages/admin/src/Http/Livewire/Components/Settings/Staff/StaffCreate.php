@@ -1,10 +1,10 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Staff;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
-use GetCandy\Hub\Auth\Manifest;
-use GetCandy\Hub\Models\Staff;
 use Illuminate\Support\Facades\Hash;
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Models\Staff;
 
 class StaffCreate extends AbstractStaff
 {
@@ -27,12 +27,12 @@ class StaffCreate extends AbstractStaff
     protected function rules()
     {
         return [
-            'staffPermissions'      => 'array',
-            'staff.email'           => 'required|email|unique:'.get_class($this->staff).',email',
-            'staff.firstname'       => 'string|max:255',
-            'staff.lastname'        => 'string|max:255',
-            'staff.admin'           => 'nullable|boolean',
-            'password'              => 'required|min:8|max:255|confirmed',
+            'staffPermissions' => 'array',
+            'staff.email' => 'required|email|unique:'.get_class($this->staff).',email',
+            'staff.firstname' => 'string|max:255',
+            'staff.lastname' => 'string|max:255',
+            'staff.admin' => 'nullable|boolean',
+            'password' => 'required|min:8|max:255|confirmed',
             'password_confirmation' => 'string',
         ];
     }

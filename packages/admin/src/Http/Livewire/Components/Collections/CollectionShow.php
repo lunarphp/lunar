@@ -1,24 +1,24 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Collections;
+namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use GetCandy\Hub\Http\Livewire\Traits\HasAvailability;
-use GetCandy\Hub\Http\Livewire\Traits\HasImages;
-use GetCandy\Hub\Http\Livewire\Traits\HasUrls;
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
-use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
-use GetCandy\Models\Attribute;
-use GetCandy\Models\Collection;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Product;
-use GetCandy\Models\Tag;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasUrls;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
+use Lunar\Models\Collection;
+use Lunar\Models\Currency;
+use Lunar\Models\Product;
+use Lunar\Models\Tag;
 
 class CollectionShow extends Component
 {
@@ -33,7 +33,7 @@ class CollectionShow extends Component
     /**
      * The collection we are currently editing.
      *
-     * @var \GetCandy\Models\Collection
+     * @var \Lunar\Models\Collection
      */
     public Collection $collection;
 
@@ -65,10 +65,24 @@ class CollectionShow extends Component
      */
     public function mount()
     {
+        $this->products = collect();
+        if ($this->productCount <= 30) {
+            $this->loadProducts();
+        }
+
+        $this->syncAvailability();
+    }
+
+    public function getProductCountProperty()
+    {
+        return $this->collection->products()->count();
+    }
+
+    public function loadProducts()
+    {
         $this->products = $this->mapProducts(
             $this->collection->load('products.variants.basePrices.currency')->products
         );
-        $this->syncAvailability();
     }
 
     /**
@@ -94,7 +108,7 @@ class CollectionShow extends Component
     /**
      * Return the model with media.
      *
-     * @return \GetCandy\Models\Collection
+     * @return \Lunar\Models\Collection
      */
     public function getMediaModel()
     {
@@ -104,7 +118,7 @@ class CollectionShow extends Component
     /**
      * Return the model with URLs.
      *
-     * @return \GetCandy\Models\Collection
+     * @return \Lunar\Models\Collection
      */
     public function getHasUrlsModel()
     {
@@ -114,7 +128,7 @@ class CollectionShow extends Component
     /**
      * Return the default currency.
      *
-     * @return \GetCandy\Models\Currency
+     * @return \Lunar\Models\Currency
      */
     public function getDefaultCurrencyProperty()
     {
@@ -135,6 +149,16 @@ class CollectionShow extends Component
             $this->withAttributesValidationRules(),
             $this->hasImagesValidationRules(),
             $this->hasUrlsValidationRules()
+        );
+    }
+
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        return array_merge(
+            $attributes,
+            $this->getUrlsValidationAttributes()
         );
     }
 
@@ -245,8 +269,8 @@ class CollectionShow extends Component
             return [
                 $channel['channel_id'] => [
                     'starts_at' => ! $channel['enabled'] ? null : $channel['starts_at'],
-                    'ends_at'   => ! $channel['enabled'] ? null : $channel['ends_at'],
-                    'enabled'   => $channel['enabled'],
+                    'ends_at' => ! $channel['enabled'] ? null : $channel['ends_at'],
+                    'enabled' => $channel['enabled'],
                 ],
             ];
         });
@@ -254,7 +278,7 @@ class CollectionShow extends Component
         $this->collection->channels()->sync($channels);
 
         DB::transaction(function () {
-            $gcAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
+            $cgAvailability = collect($this->availability['customerGroups'])->mapWithKeys(function ($group) {
                 $data = Arr::only($group, ['starts_at', 'ends_at']);
 
                 $data['visible'] = in_array($group['status'], ['purchasable', 'visible']);
@@ -265,19 +289,21 @@ class CollectionShow extends Component
                 ];
             });
 
-            $this->collection->customerGroups()->sync($gcAvailability);
+            $this->collection->customerGroups()->sync($cgAvailability);
         });
 
         DB::transaction(function () {
-            $this->collection->products()->sync(
-                $this->products->mapWithKeys(function ($product, $index) {
-                    return [
-                        $product['id'] => [
-                            'position' => $index + 1,
-                        ],
-                    ];
-                })
-            );
+            if ($this->productCount <= 30) {
+                $this->collection->products()->sync(
+                    $this->products->mapWithKeys(function ($product, $index) {
+                        return [
+                            $product['id'] => [
+                                'position' => $index + 1,
+                            ],
+                        ];
+                    })
+                );
+            }
         });
 
         $this->updateImages();
@@ -295,40 +321,40 @@ class CollectionShow extends Component
     {
         return collect([
             [
-                'title'      => __('adminhub::menu.attributes'),
-                'id'         => 'attributes',
+                'title' => __('adminhub::menu.attributes'),
+                'id' => 'attributes',
                 'has_errors' => $this->errorBag->hasAny([
                     'attributeMapping.*',
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.images'),
-                'id'         => 'images',
+                'title' => __('adminhub::menu.images'),
+                'id' => 'images',
                 'has_errors' => $this->errorBag->hasAny([
                     'newImages.*',
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.availability'),
-                'id'         => 'availability',
+                'title' => __('adminhub::menu.availability'),
+                'id' => 'availability',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.urls'),
-                'id'         => 'urls',
+                'title' => __('adminhub::menu.urls'),
+                'id' => 'urls',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.products'),
-                'id'         => 'products',
+                'title' => __('adminhub::menu.products'),
+                'id' => 'products',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
             [
-                'title'      => __('adminhub::menu.collections'),
-                'id'         => 'collections',
+                'title' => __('adminhub::menu.collections'),
+                'id' => 'collections',
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],
@@ -393,13 +419,13 @@ class CollectionShow extends Component
         })->flatten()->first();
 
         return [
-            'id'             => $product->id,
-            'sort_key'       => Str::random(),
-            'name'           => $product->translateAttribute('name'),
+            'id' => $product->id,
+            'sort_key' => Str::random(),
+            'name' => $product->translateAttribute('name'),
             'recently_added' => $pendingSave,
-            'thumbnail'      => $product->thumbnail ? $product->thumbnail->getUrl('small') : null,
-            'position'       => $product->pivot->position ?? 9999,
-            'sku'            => $product->variants->map(function ($variant) {
+            'thumbnail' => $product->thumbnail ? $product->thumbnail->getUrl('small') : null,
+            'position' => $product->pivot->position ?? 9999,
+            'sku' => $product->variants->map(function ($variant) {
                 return $variant->sku;
             })->join(','),
             'base_price' => $basePrice->load('currency')->formatted,
@@ -414,16 +440,16 @@ class CollectionShow extends Component
     protected function syncAvailability()
     {
         $this->availability = [
-            'channels'                                                              => $this->channels->mapWithKeys(function ($channel) {
+            'channels' => $this->channels->mapWithKeys(function ($channel) {
                 $collectionChannel = $this->collection->channels->first(fn ($assoc) => $assoc->id == $channel->id);
 
                 return [
                     $channel->id => [
-                        'channel_id'   => $channel->id,
-                        'starts_at'    => $collectionChannel ? $collectionChannel->pivot->starts_at : null,
-                        'ends_at'      => $collectionChannel ? $collectionChannel->pivot->ends_at : null,
-                        'enabled'      => $collectionChannel ? $collectionChannel->pivot->enabled : false,
-                        'scheduling'   => false,
+                        'channel_id' => $channel->id,
+                        'starts_at' => $collectionChannel ? $collectionChannel->pivot->starts_at : null,
+                        'ends_at' => $collectionChannel ? $collectionChannel->pivot->ends_at : null,
+                        'enabled' => $collectionChannel ? $collectionChannel->pivot->enabled : false,
+                        'scheduling' => false,
                     ],
                 ];
             }),
@@ -445,10 +471,10 @@ class CollectionShow extends Component
                 return [
                     $group->id => [
                         'customer_group_id' => $group->id,
-                        'scheduling'        => false,
-                        'status'            => $status,
-                        'starts_at'         => $pivot->starts_at ?? null,
-                        'ends_at'           => $pivot->ends_at ?? null,
+                        'scheduling' => false,
+                        'status' => $status,
+                        'starts_at' => $pivot->starts_at ?? null,
+                        'ends_at' => $pivot->ends_at ?? null,
                     ],
                 ];
             }),

@@ -1,5 +1,12 @@
 <dl class="text-sm text-gray-600">
   <div class="grid items-center grid-cols-2 gap-2 px-4 py-3 border-b">
+    <dt class="font-medium text-gray-500">{{ __('adminhub::partials.orders.details.new_returning') }}</dt>
+    <dd class="text-right">
+      {{ __('adminhub::partials.orders.details.'.($order->new_customer ? 'new' : 'returning').'_customer') }}
+    </dd>
+  </div>
+
+  <div class="grid items-center grid-cols-2 gap-2 px-4 py-3 border-b">
     <dt class="font-medium text-gray-500">{{ __('adminhub::partials.orders.details.status') }}</dt>
     <dd class="text-right"><x-hub::orders.status :status="$order->status" /></dd>
   </div>

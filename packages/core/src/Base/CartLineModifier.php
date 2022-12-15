@@ -1,9 +1,9 @@
 <?php
 
-namespace GetCandy\Base;
+namespace Lunar\Base;
 
 use Closure;
-use GetCandy\Models\CartLine;
+use Lunar\Models\CartLine;
 
 abstract class CartLineModifier
 {
@@ -23,6 +23,16 @@ abstract class CartLineModifier
      * @return CartLine
      */
     public function calculated(CartLine $cartLine, Closure $next): CartLine
+    {
+        return $next($cartLine);
+    }
+
+    /**
+     * Called just after cart sub total is calculated.
+     *
+     * @return CartLine
+     */
+    public function subtotalled(CartLine $cartLine, Closure $next): CartLine
     {
         return $next($cartLine);
     }

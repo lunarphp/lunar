@@ -11,7 +11,7 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 bg-blue-200 rounded-full">
                         <svg width="24"
                              height="24"
@@ -24,6 +24,7 @@
                                   fill="#5B93FF" />
                         </svg>
                     </div>
+
                     <div class="flex items-center ml-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->newProductsCount }}</strong>
@@ -32,8 +33,9 @@
                     </div>
                 </div>
             </div>
+
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-amber-100">
                         <svg width="24"
                              height="24"
@@ -44,17 +46,21 @@
                                   fill="#FFC227" />
                         </svg>
                     </div>
+
                     <div class="flex items-center ml-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->returningCustomersPercent }}%</strong>
-                            <span
-                                  class="block text-xs">{{ __('adminhub::catalogue.customer.dashboard.returning_customers') }}</span>
+
+                            <span class="block text-xs">
+                                {{ __('adminhub::catalogue.customer.dashboard.returning_customers') }}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 bg-red-100 rounded-full">
                         <svg width="24"
                              height="24"
@@ -65,17 +71,21 @@
                                   fill="#FF8F6B" />
                         </svg>
                     </div>
+
                     <div class="flex items-center ml-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->orderTotal->formatted }}</strong>
-                            <span
-                                  class="block text-xs">{{ __('adminhub::catalogue.customer.dashboard.turnover') }}</span>
+
+                            <span class="block text-xs">
+                                {{ __('adminhub::catalogue.customer.dashboard.turnover') }}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="basis-1/4">
-                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg">
+                <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-indigo-50">
                         <svg width="24"
                              height="24"
@@ -86,11 +96,13 @@
                                   fill="#605BFF" />
                         </svg>
                     </div>
+
                     <div class="flex items-center ml-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->orderCount }}</strong>
-                            <span
-                                  class="block text-xs">{{ __('adminhub::catalogue.customer.dashboard.no_of_orders') }}</span>
+                            <span class="block text-xs">
+                                {{ __('adminhub::catalogue.customer.dashboard.no_of_orders') }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -101,9 +113,11 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-4 bg-white rounded-lg h-96">
+                <div class="p-4 bg-white rounded-lg shadow h-96">
                     <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
-                        {{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}</h3>
+                        {{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}
+                    </h3>
+
                     <div class="h-80">
                         @livewire('hub.components.reporting.apex-chart', ['options' => $this->salesPerformance])
                     </div>
@@ -111,9 +125,11 @@
             </div>
 
             <div class="basis-1/3">
-                <div class="p-4 bg-white rounded-lg h-96">
+                <div class="p-4 bg-white rounded-lg shadow h-96">
                     <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
-                        {{ __('adminhub::catalogue.customer.dashboard.customer_group_orders') }}</h3>
+                        {{ __('adminhub::catalogue.customer.dashboard.customer_group_orders') }}
+                    </h3>
+
                     <div class="h-80">
                         @livewire('hub.components.reporting.apex-chart', ['options' => $this->customerGroupOrders])
                     </div>
@@ -125,34 +141,44 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-8 bg-white rounded-lg h-96">
+                <div class="p-8 bg-white rounded-lg shadow h-96">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.orders.dashboard.recent_orders') }}</h3>
                     <table class="w-full mt-8 table-auto font-sm">
                         <thead>
                             <tr class="border-b">
-                                <th class="pb-2 text-sm font-normal text-left">{{ __('adminhub::global.order_ref') }}
+                                <th class="pb-2 text-sm font-normal text-left">
+                                    {{ __('adminhub::global.order_ref') }}
                                 </th>
                                 <th class="pb-2 text-sm font-normal text-center">
-                                    {{ __('adminhub::global.customer') }}</th>
+                                    {{ __('adminhub::global.customer') }}
+                                </th>
                                 <th class="pb-2 text-sm font-normal text-center">
-                                    {{ __('adminhub::global.no_items') }}</th>
+                                    {{ __('adminhub::global.no_items') }}
+                                </th>
                                 <th class="pb-2 text-sm font-normal text-center">
-                                    {{ __('adminhub::global.placed_at') }}</th>
-                                <th class="pb-2 text-sm font-normal text-right">{{ __('adminhub::global.total') }}
+                                    {{ __('adminhub::global.placed_at') }}
+                                </th>
+                                <th class="pb-2 text-sm font-normal text-right">
+                                    {{ __('adminhub::global.total') }}
                                 </th>
                             </tr>
                         </thead>
+
                         <tbody>
                             @foreach ($this->recentOrders as $order)
                                 <tr>
-                                    <td class="pt-4 text-sm"><a href="#"
-                                           class="underline-offset-2 hover:decoration-blue-500 hover:underline hover:decoration-dashed">{{ $order->reference }}</a>
+                                    <td class="pt-4 text-sm">
+                                        <a href="{{ route('hub.orders.show', $order->id) }}"
+                                           class="text-blue-600 hover:underline">
+                                            {{ $order->reference }}
+                                        </a>
                                     </td>
                                     <td class="pt-4 text-sm text-center">{{ $order->billingAddress->full_name }}</td>
                                     <td class="pt-4 text-sm text-center">{{ $order->lines_count }}</td>
                                     <td class="pt-4 text-sm text-center">
-                                        {{ optional($order->placed_at)->format('jS F Y h:ma') }}</td>
+                                        {{ optional($order->placed_at)->format('jS F Y h:ma') }}
+                                    </td>
                                     <td class="pt-4 text-sm text-right">{{ $order->total->formatted }}</td>
                                 </tr>
                             @endforeach
@@ -160,8 +186,9 @@
                     </table>
                 </div>
             </div>
+
             <div class="basis-1/3">
-                <div class="p-8 bg-white rounded-lg h-96">
+                <div class="p-8 bg-white rounded-lg shadow h-96">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.top_selling_products') }}</h3>
 
@@ -169,24 +196,26 @@
                         <div class="relative flex items-center py-8 space-x-3 bg-white border-b border-slate-100">
                             <div class="flex-shrink-0">
                                 @if ($thumbnail = $product->purchasable->getThumbnail())
-                                    <img src="{{ $thumbnail }}"
-                                         class="w-24 h-24 rounded-lg" />
+                                    <x-hub::thumbnail :src="$thumbnail->getUrl('small')" />
                                 @else
                                     <x-hub::icon ref="photograph"
-                                                 class="w-24 h-24 text-gray-200 rounded-lg" />
+                                                 class="w-16 h-16 text-gray-300" />
                                 @endif
-
                             </div>
+
                             <div class="flex-1 min-w-0">
                                 <a href="#"
                                    class="focus:outline-none">
                                     <span class="absolute inset-0"
                                           aria-hidden="true"></span>
+
                                     <p class="text-sm font-medium text-gray-900">
                                         {{ $product->purchasable->getDescription() }}
-                                        <span
-                                              class="block text-sm">{{ $product->purchasable->getIdentifier() }}</span>
+                                        <span class="block text-sm">
+                                            {{ $product->purchasable->getIdentifier() }}
+                                        </span>
                                     </p>
+
                                     <p class="text-sm text-gray-500 truncate">
                                         {{ $product->count }} orders
                                     </p>

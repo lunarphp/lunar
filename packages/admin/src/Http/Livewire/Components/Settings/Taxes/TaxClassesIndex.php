@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Hub\Http\Livewire\Components\Settings\Taxes;
+namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\TaxClass;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\TaxClass;
 
 class TaxClassesIndex extends Component
 {
@@ -53,6 +53,8 @@ class TaxClassesIndex extends Component
      */
     public function updatedTaxClassId($val)
     {
+        $this->resetErrorBag();
+
         if ($val == 'new') {
             $this->taxClass = new TaxClass([
                 'default' => false,
@@ -111,6 +113,8 @@ class TaxClassesIndex extends Component
      */
     public function save()
     {
+        $this->validate();
+
         DB::transaction(function () {
             if ($this->deleting) {
                 $this->taxClass->taxRateAmounts()->delete();
