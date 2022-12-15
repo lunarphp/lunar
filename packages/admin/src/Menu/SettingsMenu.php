@@ -69,11 +69,11 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function (MenuLink $item) {
-            $item->name('Taxes')
-                ->handle('hub.taxes')
-                ->route('hub.taxes.index')
-                ->gate('settings:core')
-                ->icon('receipt-tax');
+            $item->name('Customer Groups')
+                 ->handle('hub.customer-groups')
+                 ->route('hub.customer-groups.index')
+                 ->gate('settings:manage-staff')
+                 ->icon('user');
         });
 
         $storeSection->addItem(function ($item) {
@@ -90,6 +90,14 @@ class SettingsMenu
                  ->route('hub.tags.index')
                  ->gate('settings:core')
                  ->icon('tag');
+        });
+
+        $storeSection->addItem(function (MenuLink $item) {
+            $item->name('Taxes')
+                ->handle('hub.taxes')
+                ->route('hub.taxes.index')
+                ->gate('settings:core')
+                ->icon('receipt-tax');
         });
     }
 
@@ -134,14 +142,6 @@ class SettingsMenu
                  ->route('hub.addons.index')
                  ->gate('settings:core')
                  ->icon('puzzle');
-        });
-
-        $adminSection->addItem(function (MenuLink $item) {
-            $item->name('Customer Groups')
-                 ->handle('hub.customer-groups')
-                 ->route('hub.customer-groups.index')
-                 ->gate('settings:manage-staff')
-                 ->icon('user');
         });
 
         $adminSection->addItem(function (MenuLink $item) {
