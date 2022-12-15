@@ -101,7 +101,7 @@ abstract class BaseColumn extends Component
     /**
      * Return the column value.
      *
-     * @return void
+     * @return mixed
      */
     public function getValue()
     {
