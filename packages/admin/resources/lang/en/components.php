@@ -237,7 +237,7 @@ return [
     'option.edit_title' => 'Edit option',
     'option.create_title' => 'Create option',
     'option.delete_title' => 'Delete option',
-    'option.delete_warning' => 'Removing this option will also remove all option values associated to it. This action cannot be reversed.',
+    'option.delete_warning' => 'You cannot delete an option which has associated values.',
     'option.group_protected' => 'This group contains option values required by the system so cannot be removed.',
     'option.no_option_values_text' => 'No option values exist.',
     'option.delete_option.value.btn' => 'Delete option value',

@@ -14,11 +14,11 @@
     <div wire:sort
          sort.options='{group: "groups", method: "sortGroups"}'
          class="space-y-2">
-        @forelse($sortedProductOptions as $option)
-            <div wire:key="group_{{ $option->id }}"
+        @forelse($productOptions as $option)
+            <div wire:key="group_{{ $option['id'] }}"
                  x-data="{ expanded: false }"
                  sort.item="groups"
-                 sort.id="{{ $option->id }}">
+                 sort.id="{{ $option['id'] }}">
                 <div class="flex items-center">
                     <div wire:loading
                          wire:target="sort">
@@ -40,19 +40,19 @@
                     <div
                             class="flex items-center justify-between w-full p-3 text-sm bg-white border border-transparent rounded shadow-sm sort-item-element hover:border-gray-300">
                         <div class="flex items-center justify-between expand">
-                            {{ $option->translate('name') }}
+                            {{ $option['name'] }}
                         </div>
 
                         <div class="flex">
-                            <span class="text-gray-500 text-xs mr-2 block">{{ number_format($option->values_count) }} value(s)</span>
+                            <span class="text-gray-500 text-xs mr-2 block">{{ number_format($option['values_count']) }} value(s)</span>
                             <x-hub::dropdown minimal>
                                 <x-slot name="options">
-                                    <x-hub::dropdown.link href="{{ route('hub.product.options.edit', $option->id) }}"
+                                    <x-hub::dropdown.link href="{{ route('hub.product.options.edit', $option['id']) }}"
                                                             class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50">
                                         {{ __('adminhub::components.option.edit_group_btn') }}
                                     </x-hub::dropdown.link>
 
-                                    <x-hub::dropdown.button wire:click="$set('deleteOptionId', {{ $option->id }})"
+                                    <x-hub::dropdown.button wire:click="$set('deleteOptionId', {{ $option['id'] }})"
                                                             class="flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-50">
                                         <span
                                                 class="text-red-500">{{ __('adminhub::components.option.delete_group_btn') }}</span>
@@ -112,9 +112,11 @@
         <x-hub::modal.dialog wire:model="deleteOptionId">
             <x-slot name="title">{{ __('adminhub::components.option.delete_title') }}</x-slot>
             <x-slot name="content">
+                @if($this->optionToDelete->values_count)
                 <x-hub::alert level="danger">
                     {{ __('adminhub::components.option.delete_warning') }}
                 </x-hub::alert>
+                @endif
             </x-slot>
             <x-slot name="footer">
                 <div class="flex justify-between">
@@ -125,7 +127,8 @@
                     </x-hub::button>
                     <x-hub::button theme="danger"
                                    type="button"
-                                   wire:click="deleteOption">
+                                   wire:click="deleteOption"
+                                   :disabled="!!$this->optionToDelete->values_count">
                         {{ __('adminhub::global.delete') }}
                     </x-hub::button>
                 </div>

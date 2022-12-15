@@ -31,7 +31,7 @@ class OptionsIndex extends Component
      *
      * @var Collection
      */
-    public Collection $sortedProductOptions;
+    public Collection $productOptions;
 
     /**
      * Whether we should show the panel to create a new group.
@@ -78,7 +78,7 @@ class OptionsIndex extends Component
     public function mount()
     {
         $this->newProductOption = new ProductOption;
-        $this->sortedProductOptions = $this->productOptions;
+        $this->productOptions = $this->mapProductOptions();
     }
 
     public function createOption()
@@ -112,13 +112,20 @@ class OptionsIndex extends Component
     }
 
     /**
-     * Return the product options.
+     * Map the product options.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    public function getProductOptionsProperty()
+    public function mapProductOptions()
     {
-        return ProductOption::orderBy('position')->withCount(['values'])->get();
+        return ProductOption::withCount(['values'])->orderBy('position')->get()->map(function ($option) {
+            return [
+                'id' => $option->id,
+                'name' => $option->translate('name'),
+                'position' => $option->position,
+                'values_count' => $option->values_count,
+            ];
+        });
     }
 
     /**
@@ -130,15 +137,19 @@ class OptionsIndex extends Component
     public function sortGroups($groups)
     {
         DB::transaction(function () use ($groups) {
-            $this->sortedProductOptions = $this->productOptions->map(function ($group) use ($groups) {
+            $this->productOptions->map(function ($group) use ($groups) {
                 $updatedOrder = collect($groups['items'])->first(function ($updated) use ($group) {
-                    return $updated['id'] == $group->id;
+                    return $updated['id'] == $group['id'];
                 });
-                $group->position = $updatedOrder['order'];
-                $group->save();
-
+                $group = ProductOption::where(
+                    'id', '=', $group['id']
+                )->update([
+                    'position' => $updatedOrder['order']
+                ]);
                 return $group;
             })->sortBy('position');
+
+            $this->productOptions = $this->mapProductOptions();
         });
         $this->notify(
             __('adminhub::notifications.attribute-groups.reordered')
@@ -152,7 +163,7 @@ class OptionsIndex extends Component
      */
     public function refreshGroups()
     {
-        $this->sortedProductOptions = ProductOption::orderBy('position')->get();
+        $this->sortedProductOptions = $this->productOptions;
         $this->showOptionCreate = false;
     }
 
@@ -163,7 +174,7 @@ class OptionsIndex extends Component
      */
     public function getOptionToDeleteProperty(): ?ProductOption
     {
-        return ProductOption::find($this->deleteOptionId);
+        return ProductOption::withCount(['values'])->find($this->deleteOptionId);
     }
 
     /**
