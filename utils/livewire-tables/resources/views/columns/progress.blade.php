@@ -12,7 +12,7 @@
     <div class="flex items-center space-x-4 px-4">
         <div class="min-h w-full bg-gray-200 rounded-full dark:bg-gray-700">
             <div @class([
-                'p-0.5 text-xs text-white text-center leading-none rounded-full',
+                'px-4 py-0.5 text-xs text-white text-center leading-none rounded-full',
                 $background,
             ]) style="width: {{ $progress }}%"> {{ $label }}</div>
         </div>
