@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -38,13 +39,6 @@ class OptionsIndex extends Component
      * @var bool
      */
     public $showOptionCreate = false;
-
-    /**
-     * The option id to use for creating an attribute.
-     *
-     * @var int|null
-     */
-    public $valueCreateOptionId = null;
 
     /**
      * The id of the option to delete.
@@ -92,6 +86,21 @@ class OptionsIndex extends Component
         $handle = Str::slug(
             $this->newProductOption->translate('name')
         );
+
+        $this->withValidator(function (Validator $validator) use ($handle) {
+            $validator->after(function ($validator) use ($handle) {
+                if (ProductOption::whereHandle($handle)->exists()) {
+                    $validator->errors()->add(
+                        'option_handle',
+                        __('adminhub::validation.name_taken')
+                    );
+                }
+            });
+        })->validate();
+
+        $handle = Str::slug(
+            $this->newProductOption->translate('name')
+        );
         $this->newProductOption->handle = $handle;
         $this->newProductOption->save();
 
@@ -110,16 +119,6 @@ class OptionsIndex extends Component
     public function getProductOptionsProperty()
     {
         return ProductOption::orderBy('position')->withCount(['values'])->get();
-    }
-
-    /**
-     * Return the option to be used when creating an attribute.
-     *
-     * @return \Lunar\Models\ProductOption
-     */
-    public function getValueCreateOptionProperty()
-    {
-        return ProductOption::find($this->valueCreateOptionId);
     }
 
     /**
@@ -185,7 +184,6 @@ class OptionsIndex extends Component
     public function resetOptionValueEdit()
     {
         $this->optionValueToDelete = null;
-        $this->valueCreateOptionId = null;
         $this->editOptionValueId = null;
         $this->refreshGroups();
     }

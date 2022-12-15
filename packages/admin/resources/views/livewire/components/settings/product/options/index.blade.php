@@ -52,11 +52,6 @@
                                         {{ __('adminhub::components.option.edit_group_btn') }}
                                     </x-hub::dropdown.link>
 
-                                    <x-hub::dropdown.button wire:click="$set('valueCreateOptionId', {{ $option->id }})"
-                                                            class="flex items-center justify-between px-4 py-2 text-sm border-b hover:bg-gray-50">
-                                        {{ __('adminhub::components.option.create_option_value') }}
-                                    </x-hub::dropdown.button>
-
                                     <x-hub::dropdown.button wire:click="$set('deleteOptionId', {{ $option->id }})"
                                                             class="flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-50">
                                         <span
@@ -96,6 +91,14 @@
                         </x-slot>
                       @endforeach
                     </x-hub::translatable>
+
+                    @error('option_handle')
+                        <div  class="mt-2">
+                        <x-hub::alert level="danger">
+                            {{ $message }}
+                        </x-hub::alert>
+                        </div>
+                    @enderror
                   </div>
                 </div>
             </x-hub::input.group>

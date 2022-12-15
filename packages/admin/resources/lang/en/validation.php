@@ -12,4 +12,5 @@ return [
     'url_default_unique' => 'You can only have 1 default per language.',
     'url_slug_unique' => 'The slug must be unique for this language.',
     'variant_option_required' => 'You must select an option value',
+    'name_taken' => 'This name is already taken',
 ];
