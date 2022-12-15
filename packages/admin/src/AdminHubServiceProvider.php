@@ -82,6 +82,9 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Product\Options\OptionEdit;
+use Lunar\Hub\Http\Livewire\Components\Settings\Product\Options\OptionsIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Product\Options\OptionValueEdit;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
@@ -433,6 +436,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.addons.index', AddonsIndex::class);
         Livewire::component('hub.components.settings.addons.table', AddonsTable::class);
         Livewire::component('hub.components.settings.addons.show', AddonShow::class);
+
+        // Product Options
+        Livewire::component('hub.components.settings.product.options.index', OptionsIndex::class);
+        Livewire::component('hub.components.settings.product.option-edit', OptionEdit::class);
+        Livewire::component('hub.components.settings.product.option-value-edit', OptionValueEdit::class);
 
         // Taxes
         Livewire::component('hub.components.settings.taxes.tax-zones.index', TaxZonesIndex::class);

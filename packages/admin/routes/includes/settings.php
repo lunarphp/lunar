@@ -15,6 +15,8 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionEdit;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
@@ -109,6 +111,17 @@ Route::group([
     Route::get('/', TagsIndex::class)->name('hub.tags.index');
     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
+});
+
+/**
+ * Product options routes.
+ */
+Route::group([
+    'middleware' => 'can:settings:core',
+    'prefix' => 'product',
+], function () {
+    Route::get('options', OptionsIndex::class)->name('hub.product.options.index');
+    Route::get('options/{productOption}', OptionEdit::class)->name('hub.product.options.edit');
 });
 
 /**
