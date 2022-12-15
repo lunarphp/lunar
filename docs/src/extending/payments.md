@@ -58,7 +58,7 @@ class CustomPayment extends AbstractPayment
     {
         if (!$this->order) {
             if (!$this->order = $this->cart->order) {
-                $this->order = $this->cart->getManager()->createOrder();
+                $this->order = $this->cart->createOrder();
             }
         }
 

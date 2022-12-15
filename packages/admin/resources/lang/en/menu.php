@@ -10,6 +10,9 @@ return [
     'sidebar.order-processing' => 'Order Processing',
     'sidebar.orders' => 'Orders',
     'sidebar.customers' => 'Customers',
+    'sidebar.catalogue' => 'Catalogue',
+    'sidebar.sales' => 'Sales',
+    'sidebar.discounts' => 'Discounts',
     /**
      * Product side menu.
      */
@@ -44,5 +47,4 @@ return [
     'dropdown-options' => 'Open options',
     'open-sidebar' => 'Open sidebar',
     'close-sidebar' => 'Close sidebar',
-
 ];

@@ -51,7 +51,6 @@
         })
     </script>
 
-
     @livewireStyles
 </head>
 

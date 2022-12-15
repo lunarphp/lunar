@@ -55,7 +55,7 @@ class UpdatePrices
 
         $priceModel->fill([
             'price' => (int) bcmul($price, $currency->factor),
-            'compare_price' => $comparePrice ? (int) bcmul($price, $currency->factor) : null,
+            'compare_price' => $comparePrice ? (int) bcmul($comparePrice, $currency->factor) : null,
             'currency_id' => $currencyId,
             'customer_group_id' => $groupId,
             'tier' => $tier,

@@ -20,6 +20,8 @@ return [
     'permissions.catalogue.orders.description' => 'Allow the staff member to manage orders.',
     'permissions.catalogue.customers.name' => 'Manage Customers',
     'permissions.catalogue.customers.description' => 'Allow the staff member to manage customers.',
+    'permissions.discounts.name' => 'Manage Discounts',
+    'permissions.discounts.description' => 'Allow the staff member to manage discounts',
     /**
      * Reset password.
      */
