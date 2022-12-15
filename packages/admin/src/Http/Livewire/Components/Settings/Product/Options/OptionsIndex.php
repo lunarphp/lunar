@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -89,6 +90,21 @@ class OptionsIndex extends Component
 
     public function createOption()
     {
+        $handle = Str::slug(
+            $this->newProductOption->translate('name')
+        );
+
+        $this->withValidator(function (Validator $validator) use ($handle) {
+            $validator->after(function ($validator) use ($handle) {
+                if (ProductOption::whereHandle($handle)->exists()) {
+                    $validator->errors()->add(
+                        'option_handle',
+                        __('adminhub::validation.name_taken')
+                    );
+                }
+            });
+        })->validate();
+
         $handle = Str::slug(
             $this->newProductOption->translate('name')
         );
