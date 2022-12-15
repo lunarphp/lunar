@@ -73,14 +73,14 @@
     <x-hub::modal.dialog wire:model="showOptionCreate" form="createOption">
         <x-slot name="title">{{ __('adminhub::components.option.create_title') }}</x-slot>
         <x-slot name="content">
-            <x-hub::input.group label="Name" for="optionName" :error="$errors->first('newProductOption.name.'.$this->defaultLanguage->code)">
+            <x-hub::input.group :label="__('adminhub::inputs.name')" for="optionName" :error="$errors->first('newProductOption.name.'.$this->defaultLanguage->code)">
                 <div class="flex space-x-4">
                   <div class="relative w-full">
                     <x-hub::translatable :expanded="false">
                       <x-hub::input.text
                         wire:model="newProductOption.name.{{ $this->defaultLanguage->code }}"
                         :error="$errors->first('name.'.$this->defaultLanguage->code)"
-                        placeholder="Size"
+                        :placeholder="__('adminhub::inputs.size.placeholder')"
                       />
                       @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
                         <x-slot :name="$language['code']">
@@ -104,7 +104,9 @@
             </x-hub::input.group>
         </x-slot>
         <x-slot name="footer">
-            <x-hub::button>Create option</x-hub::button>
+            <x-hub::button>
+                {{ __('adminhub::settings.product.options.index.create_btn') }}
+            </x-hub::button>
         </x-slot>
     </x-hub::modal.dialog>
 
