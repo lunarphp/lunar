@@ -43,6 +43,8 @@ class PriceObserver
             return;
         }
 
-        $autoConversion['price_update_job']::dispatch($savedPrice);
+        $autoConversion['price_update_job']::dispatch($savedPrice)
+            ->onConnection($autoConversion['connection'])
+            ->onQueue($autoConversion['queue']);
     }
 }

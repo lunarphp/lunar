@@ -99,6 +99,8 @@ class CurrencyObserver
             return;
         }
 
-        $autoConversion['currency_update_job']::dispatch($savedCurrency);
+        $autoConversion['currency_update_job']::dispatch($savedCurrency)
+            ->onConnection($autoConversion['connection'])
+            ->onQueue($autoConversion['queue']);
     }
 }
