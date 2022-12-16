@@ -58,6 +58,10 @@ class ConvertPrices implements ShouldQueue
 
         // mass update prices records
         $prefix = config('lunar.database.table_prefix');
-        DB::table("{$prefix}prices")->upsert($data, ['id'], ['price']);
+        try {
+            DB::table("{$prefix}prices")->upsert($data, ['id'], ['price']);
+        } catch (\Throwable $e) {
+            $this->fail($e);
+        }
     }
 }
