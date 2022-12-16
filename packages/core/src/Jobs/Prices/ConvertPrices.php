@@ -41,7 +41,7 @@ class ConvertPrices implements ShouldQueue
         // prepare price data to update
         // NOTE: we include priceable_id/priceable_type in data, but don't update them.
         // if we don't include them, rdbms complains about not-null fields
-        foreach ($this->records as $record) {
+        foreach ($this->records->unique('quote_price_id') as $record) {
             /** @var Currency $quoteCurrency */
             $quoteCurrency = $record['quote_currency'];
 
