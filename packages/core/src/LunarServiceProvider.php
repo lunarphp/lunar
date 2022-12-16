@@ -57,6 +57,7 @@ use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
+use Lunar\Models\Price;
 use Lunar\Models\Transaction;
 use Lunar\Models\Url;
 use Lunar\Observers\AddressObserver;
@@ -67,6 +68,7 @@ use Lunar\Observers\CurrencyObserver;
 use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
+use Lunar\Observers\PriceObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
 
@@ -82,6 +84,7 @@ class LunarServiceProvider extends ServiceProvider
         'urls',
         'search',
         'payments',
+        'pricing',
     ];
 
     protected $root = __DIR__.'/..';
@@ -272,6 +275,7 @@ class LunarServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
+        Price::observe(PriceObserver::class);
         Transaction::observe(TransactionObserver::class);
     }
 

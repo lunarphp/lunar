@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
+use Lunar\Base\Traits\HasJobBatches;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CurrencyFactory;
@@ -16,6 +17,7 @@ class Currency extends BaseModel
     use LogsActivity;
     use HasDefaultRecord;
     use HasMacros;
+    use HasJobBatches;
 
     /**
      * Define which attributes should be

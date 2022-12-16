@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price as CastsPrice;
+use Lunar\Base\Traits\HasJobBatches;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\PriceFactory;
 
@@ -12,6 +13,7 @@ class Price extends BaseModel
 {
     use HasFactory;
     use HasMacros;
+    use HasJobBatches;
 
     /**
      * Return a new factory instance for the model.
