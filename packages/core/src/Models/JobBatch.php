@@ -34,6 +34,12 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 class JobBatch extends BaseModel
 {
 
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_FAILED = 'failed';
+    public const STATUS_UNHEALTHY = 'unhealthy';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_SUCCESSFUL = 'successful';
+
     /**
      * The table associated with the model.
      *
@@ -177,11 +183,11 @@ class JobBatch extends BaseModel
     {
         return AttributeCast::make(
             get: fn() => match (true) {
-                $this->hasPendingJobs() => 'pending',
-                $this->isFailed() => 'failed',
-                $this->hasFailures() => 'unhealthy',
-                $this->isCancelled() => 'cancelled',
-                default => 'successful'
+                $this->hasPendingJobs() => self::STATUS_PENDING,
+                $this->isFailed() => self::STATUS_FAILED,
+                $this->hasFailures() => self::STATUS_UNHEALTHY,
+                $this->isCancelled() => self::STATUS_CANCELLED,
+                default => self::STATUS_SUCCESSFUL,
             },
         );
     }
