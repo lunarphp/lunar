@@ -9,7 +9,7 @@ use Lunar\Models\Discount;
 use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.discounts.validators
+ * @group lunar.discounts.validators
  */
 class CouponValidatorTest extends TestCase
 {
