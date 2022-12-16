@@ -45,6 +45,7 @@ class CreateOrder extends AbstractAction
                 'currency_code' => $cart->currency->code,
                 'exchange_rate' => $cart->currency->exchange_rate,
                 'compare_currency_code' => Currency::getDefault()?->code,
+                'meta' => $cart->meta,
             ]);
 
             $order->update([

@@ -27,12 +27,19 @@ use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionTree;
+use Lunar\Hub\Http\Livewire\Components\Collections\CollectionTreeSelect;
 use Lunar\Hub\Http\Livewire\Components\Collections\SideMenu;
 use Lunar\Hub\Http\Livewire\Components\CollectionSearch;
 use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountCreate;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
+use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsTable;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -76,6 +83,9 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Product\Options\OptionEdit;
+use Lunar\Hub\Http\Livewire\Components\Settings\Product\Options\OptionsIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\Product\Options\OptionValueEdit;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
@@ -252,6 +262,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerSettingsComponents();
         $this->registerOrderComponents();
         $this->registerCustomerComponents();
+        $this->registerDiscountComponents();
 
         // Blade Components
         Blade::componentNamespace('Lunar\\Hub\\Views\\Components', 'hub');
@@ -363,6 +374,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.collections.collection-groups.show', CollectionGroupShow::class);
         Livewire::component('hub.components.collections.show', CollectionShow::class);
         Livewire::component('hub.components.collections.collection-tree', CollectionTree::class);
+        Livewire::component('hub.components.collections.collection-tree-select', CollectionTreeSelect::class);
     }
 
     /**
@@ -431,6 +443,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.addons.table', AddonsTable::class);
         Livewire::component('hub.components.settings.addons.show', AddonShow::class);
 
+        // Product Options
+        Livewire::component('hub.components.settings.product.options.index', OptionsIndex::class);
+        Livewire::component('hub.components.settings.product.option-edit', OptionEdit::class);
+        Livewire::component('hub.components.settings.product.option-value-edit', OptionValueEdit::class);
+
         // Taxes
         Livewire::component('hub.components.settings.taxes.tax-zones.index', TaxZonesIndex::class);
         Livewire::component('hub.components.settings.taxes.tax-zones.show', TaxZoneShow::class);
@@ -438,6 +455,17 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
+    }
+
+    public function registerDiscountComponents()
+    {
+        Livewire::component('hub.components.discounts.index', DiscountsIndex::class);
+        Livewire::component('hub.components.discounts.show', DiscountShow::class);
+        Livewire::component('hub.components.discounts.create', DiscountCreate::class);
+        Livewire::component('hub.components.discounts.table', DiscountsTable::class);
+
+        Livewire::component('lunar.hub.http.livewire.components.discounts.types.discount', TypesDiscount::class);
+        Livewire::component('lunar.hub.http.livewire.components.discounts.types.buy-x-get-y', BuyXGetY::class);
     }
 
     /**

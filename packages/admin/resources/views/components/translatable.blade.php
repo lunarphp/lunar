@@ -36,7 +36,7 @@
     @if ($languages->count())
         <button x-on:click.prevent="showTranslations = !showTranslations"
                 class="inline-flex items-center gap-2 px-2 py-1 mt-2 text-gray-700 bg-white border rounded shadow-sm hover:bg-gray-100"
-                :class="{ 'bg-gray-100': showTranslations }">
+                :class="{ 'bg-gray-100': showTranslations }" type="button">
             <x-hub::icon ref="translate"
                          class="w-4 h-4" />
 

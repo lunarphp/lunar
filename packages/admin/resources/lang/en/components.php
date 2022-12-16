@@ -209,4 +209,61 @@ return [
     'activity-log.orders.capture' => 'Payment of :amount on card ending :last_four',
     'activity-log.orders.authorized' => 'Authorized of :amount on card ending :last_four',
     'activity-log.orders.refund' => 'refund of :amount on card ending :last_four',
+    /**
+     * Option value edit.
+     */
+    'option.value.edit.create_title' => 'Create option value',
+    'option.value.edit.update_title' => 'Update option value',
+    'option.value.edit.delete_locked' => 'This option value cannot be removed as it is required by :count product variants',
+    'option.value.edit.system_locked' => 'This option value is required by the system so some fields are disabled.',
+    'option.value.edit.name.placeholder' => 'e.g. Name',
+    'option.value.edit.required.instructions' => 'Is this option value required when editing/creating?',
+    'option.value.edit.searchable.instructions' => 'Should users be able to search via this option.value.',
+    'option.value.edit.filterable.instructions' => 'Should users be able to filter results based on this option.value.',
+    'option.value.edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
+    'option.value.edit.cancel_btn' => 'Cancel',
+    'option.value.edit.save_feature.value.btn' => 'Save option value',
+    /**
+     * Option value show.
+     */
+    'option.create_group_btn' => 'Create option',
+    'option.create_option_value' => 'Create option value',
+    'option.update_option_value' => 'Update option value',
+    'option.value_title' => 'Product Option values',
+    'option.save_positions' => 'Save positions',
+    'option.edit_group_btn' => 'Edit option',
+    'option.edit_option.value.btn' => 'Edit option value',
+    'option.delete_group_btn' => 'Delete option',
+    'option.edit_title' => 'Edit option',
+    'option.create_title' => 'Create option',
+    'option.delete_title' => 'Delete option',
+    'option.delete_warning' => 'You cannot delete an option which has associated values.',
+    'option.group_protected' => 'This group contains option values required by the system so cannot be removed.',
+    'option.no_option_values_text' => 'No option values exist.',
+    'option.delete_option.value.btn' => 'Delete option value',
+    'option.delete_option.value.title' => 'Delete Feature value',
+    'option.delete_option.value.warning' => 'Are you sure you want to remove this option value?',
+    'option.delete_option.value.protected' => 'You cannot delete a system option.value.',
+    'option.no_groups' => 'No options found, add your first one before you can add option values to it.',
+    /**
+     * Option value edit.
+     */
+    'option-edit.create_btn' => 'Create option',
+    'option-edit.update_btn' => 'Update option',
+    'option.value.edit.save_option.value.btn' => 'Save Option value',
+    /**
+     * Discounts.
+     */
+    'discounts.index.title' => 'Discounts',
+    'discounts.index.status.pending' => 'Pending',
+    'discounts.index.status.active' => 'Active',
+    'discounts.index.status.scheduled' => 'Scheduled',
+    'discounts.index.status.expired' => 'Expired',
+    'discounts.index.create_discount' => 'Create Discount',
+    'discounts.create.title' => 'Create Discount',
+    'discounts.create_btn' => 'Create Discount',
+    'discounts.save_btn' => 'Save Discount',
+    'discounts.show.stop.label' => 'Stop other discounts applying after this one',
+    'discounts.show.danger_zone.label' => 'Delete discount',
+    'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
 ];

@@ -21,6 +21,7 @@ use Lunar\Base\AttributeManifestInterface;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Base\CartModifiers;
 use Lunar\Base\CartSessionInterface;
+use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Base\ModelManifest;
@@ -46,6 +47,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
+use Lunar\Managers\DiscountManager;
 use Lunar\Managers\PaymentManager;
 use Lunar\Managers\PricingManager;
 use Lunar\Managers\TaxManager;
@@ -154,6 +156,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(PaymentManagerInterface::class, function ($app) {
             return $app->make(PaymentManager::class);
+        });
+
+        $this->app->singleton(DiscountManagerInterface::class, function ($app) {
+            return $app->make(DiscountManager::class);
         });
 
         $this->app->extend(\Illuminate\Bus\BatchRepository::class, function () {
