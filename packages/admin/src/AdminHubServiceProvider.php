@@ -66,6 +66,7 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeEdit;
 use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupEdit;
 use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributesIndex;
+use Lunar\Hub\Http\Livewire\Components\Settings\BackgroundJobs\BackgroundJobsIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelsIndex;
@@ -81,6 +82,7 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Staff\StaffShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\ActivityLogTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AddonsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\BackgroundJobsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\LanguagesTable;
@@ -383,6 +385,10 @@ class AdminHubServiceProvider extends ServiceProvider
         // Activity Log
         Livewire::component('hub.components.settings.activity-log.index', ActivityLogIndex::class);
         Livewire::component('hub.components.settings.activity-log.table', ActivityLogTable::class);
+
+        // Background Jobs
+        Livewire::component('hub.components.settings.background-jobs.index', BackgroundJobsIndex::class);
+        Livewire::component('hub.components.settings.background-jobs.table', BackgroundJobsTable::class);
 
         // Attributes
         Livewire::component('hub.components.settings.attributes.index', AttributesIndex::class);

@@ -6,6 +6,7 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Addons\AddonsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Attributes\AttributeShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Attributes\AttributesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\BackgroundJobs\BackgroundJobsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelsIndex;
@@ -33,6 +34,11 @@ Route::get('/', function () {
  * Activity Log.
  */
 Route::get('activity-log', ActivityLogIndex::class)->name('hub.activity-log.index');
+
+/**
+ * Activity Log.
+ */
+Route::get('background-jobs', BackgroundJobsIndex::class)->name('hub.background-jobs.index');
 
 /**
  * Attribute routes.

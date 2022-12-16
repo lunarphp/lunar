@@ -123,4 +123,5 @@ return [
     'not_provided' => 'Not Provided',
     'billing_email' => 'Billing Email',
     'add_new' => 'Add new',
+    'background_jobs' => 'Background Jobs',
 ];

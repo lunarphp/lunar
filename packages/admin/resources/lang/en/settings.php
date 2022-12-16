@@ -131,6 +131,11 @@ return [
     'activity_log.index.title' => 'Activity Log',
 
     /**
+     * Background jobs page.
+     */
+    'background_jobs.index.title' => 'Background Jobs',
+
+    /**
      * Taxes.
      */
     'taxes.tax-zones.index.title' => 'Tax Zones',

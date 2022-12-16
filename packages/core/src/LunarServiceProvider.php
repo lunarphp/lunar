@@ -152,6 +152,14 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(PaymentManagerInterface::class, function ($app) {
             return $app->make(PaymentManager::class);
         });
+
+        $this->app->extend(\Illuminate\Bus\BatchRepository::class, function () {
+            return new \Lunar\Base\BatchRepository(
+                resolve(\Illuminate\Bus\BatchFactory::class),
+                resolve(\Illuminate\Database\Connection::class),
+                'job_batches'
+            );
+        });
     }
 
     /**
