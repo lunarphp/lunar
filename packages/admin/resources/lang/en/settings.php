@@ -166,8 +166,8 @@ return [
     /**
      * Customer Groups.
      */
-    'customer-groups.index.title'                 => 'Customer Groups',
-    'customer-groups.index.create_btn'            => 'Create Customer Group',
+    'customer-groups.index.title' => 'Customer Groups',
+    'customer-groups.index.create_btn' => 'Create Customer Group',
     'customer-groups.index.table_row_action_text' => 'Edit Group',
     /**
      * Customer Groups show page.

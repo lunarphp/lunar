@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups;
 
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Models\CustomerGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\CustomerGroup;
 
 class CustomerGroupCreate extends Component
 {

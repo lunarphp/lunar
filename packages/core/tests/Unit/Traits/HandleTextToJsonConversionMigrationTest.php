@@ -2,13 +2,13 @@
 
 namespace Lunar\Tests\Unit\Traits;
 
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 use Lunar\Database\Traits\HandleTextToJsonConversionMigration;
 use Lunar\Models\CustomerGroup;
 use Lunar\Tests\TestCase;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * @group traits

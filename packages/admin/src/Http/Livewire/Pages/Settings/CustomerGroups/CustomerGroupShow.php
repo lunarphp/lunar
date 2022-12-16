@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups;
 
-use Lunar\Models\CustomerGroup;
 use Livewire\Component;
+use Lunar\Models\CustomerGroup;
 
 class CustomerGroupShow extends Component
 {

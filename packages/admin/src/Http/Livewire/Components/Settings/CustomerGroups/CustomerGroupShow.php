@@ -2,11 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups;
 
+use Illuminate\Support\Str;
+use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\CustomerGroup;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class CustomerGroupShow extends Component
 {
@@ -42,8 +42,8 @@ class CustomerGroupShow extends Component
     protected function rules()
     {
         $rules = [
-            'customerGroup.name' => "required|string|unique:".CustomerGroup::class.",name,{$this->customerGroup->id}",
-            'customerGroup.handle' => "required|string|unique:".CustomerGroup::class.",handle,{$this->customerGroup->id}|max:255",
+            'customerGroup.name' => 'required|string|unique:'.CustomerGroup::class.",name,{$this->customerGroup->id}",
+            'customerGroup.handle' => 'required|string|unique:'.CustomerGroup::class.",handle,{$this->customerGroup->id}|max:255",
         ];
 
         return $rules;
