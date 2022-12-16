@@ -96,6 +96,7 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AddonsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\CustomerGroupsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\LanguagesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\StaffTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\TagsTable;
@@ -422,6 +423,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.customer-groups.index', CustomerGroupsIndex::class);
         Livewire::component('hub.components.settings.customer-groups.show', CustomerGroupShow::class);
         Livewire::component('hub.components.settings.customer-groups.create', CustomerGroupCreate::class);
+        Livewire::component('hub.components.settings.customer-groups.table', CustomerGroupsTable::class);
 
         // Languages
         Livewire::component('hub.components.settings.languages.index', LanguagesIndex::class);

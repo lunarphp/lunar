@@ -32,7 +32,7 @@ class CustomerGroupShow extends Component
      *
      * @var bool
      */
-    public bool $manualHandle = false;
+    public bool $manualHandle = true;
 
     /**
      * Returns validation rules.
@@ -41,15 +41,10 @@ class CustomerGroupShow extends Component
      */
     protected function rules()
     {
-        $table = $this->customerGroup->getTable();
-
         $rules = [
-            'customerGroup.handle' => "required|string|unique:$table,handle,{$this->customerGroup->id}|max:255",
+            'customerGroup.name' => "required|string|unique:".CustomerGroup::class.",name,{$this->customerGroup->id}",
+            'customerGroup.handle' => "required|string|unique:".CustomerGroup::class.",handle,{$this->customerGroup->id}|max:255",
         ];
-
-        foreach ($this->languages as $language) {
-            $rules["customerGroup.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
-        }
 
         return $rules;
     }
@@ -99,7 +94,7 @@ class CustomerGroupShow extends Component
      */
     public function getCanDeleteProperty()
     {
-        return $this->deleteConfirm === $this->customerGroup->name[$this->defaultLanguage->code];
+        return $this->deleteConfirm === $this->customerGroup->name;
     }
 
     /**
@@ -111,7 +106,7 @@ class CustomerGroupShow extends Component
     {
         if (! $this->manualHandle) {
             $this->customerGroup->handle = Str::handle(
-                $this->customerGroup->name[$this->defaultLanguage->code] ?? null
+                $this->customerGroup->name
             );
         }
     }

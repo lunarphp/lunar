@@ -3,7 +3,6 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups;
 
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\CustomerGroup;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -11,7 +10,6 @@ use Livewire\Component;
 class CustomerGroupCreate extends Component
 {
     use Notifies;
-    use WithLanguages;
 
     /**
      * A new instance of the customer group model.
@@ -45,17 +43,10 @@ class CustomerGroupCreate extends Component
      */
     protected function rules()
     {
-        $table = $this->customerGroup->getTable();
-
-        $rules = [
-            'customerGroup.handle' => "required|string|unique:$table,handle,{$this->customerGroup->id}|max:255",
+        return [
+            'customerGroup.name' => 'required|string|unique:'.CustomerGroup::class.',name|max:255',
+            'customerGroup.handle' => 'required|string|unique:'.CustomerGroup::class.',handle|max:255',
         ];
-
-        foreach ($this->languages as $language) {
-            $rules["customerGroup.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
-        }
-
-        return $rules;
     }
 
     /**
@@ -84,7 +75,7 @@ class CustomerGroupCreate extends Component
     {
         if (! $this->manualHandle) {
             $this->customerGroup->handle = Str::handle(
-                $this->customerGroup->name[$this->defaultLanguage->code] ?? null
+                $this->customerGroup->name
             );
         }
     }

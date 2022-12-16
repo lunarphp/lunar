@@ -4,24 +4,14 @@
             <x-hub::input.group
                     :label="__('adminhub::inputs.name')"
                     for="name"
-                    :error="$errors->first('customerGroup.name.' . $this->defaultLanguage->code)"
+                    :error="$errors->first('customerGroup.name')"
             >
-                <x-hub::translatable>
-                    <x-hub::input.text
-                            wire:model="customerGroup.name.{{ $this->defaultLanguage->code }}"
-                            :error="$errors->first('customerGroup.name.' . $this->defaultLanguage->code)"
-                            :placeholder="__('adminhub::components.attribute-edit.name.placeholder')"
-                            wire:change="formatHandle"
-                    />
-                    @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
-                        <x-slot :name="$language['code']">
-                            <x-hub::input.text
-                                    wire:model="customerGroup.name.{{ $language->code }}"
-                                    :placeholder="__('adminhub::components.attribute-edit.name.placeholder')"
-                            />
-                        </x-slot>
-                    @endforeach
-                </x-hub::translatable>
+                <x-hub::input.text
+                        wire:model="customerGroup.name"
+                        :error="$errors->first('customerGroup.name')"
+                        :placeholder="__('adminhub::components.attribute-edit.name.placeholder')"
+                        wire:change="formatHandle"
+                />
             </x-hub::input.group>
 
             <x-hub::input.group :label="__('adminhub::inputs.handle')"
@@ -42,32 +32,33 @@
         </div>
     </div>
 
-{{--    @if ($customerGroup->id && !$customerGroup->getOriginal('default') && !$customerGroup->wasRecentlyCreated)--}}
-{{--        <div class="bg-white border border-red-300 rounded shadow">--}}
-{{--            <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">--}}
-{{--                {{ __('adminhub::inputs.danger_zone.title') }}--}}
-{{--            </header>--}}
+   @if ($customerGroup->id && !$customerGroup->getOriginal('default'))
+       <div class="bg-white border border-red-300 rounded shadow">
+            <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
+               {{ __('adminhub::inputs.danger_zone.title') }}
+            </header>
 
-{{--            <div class="p-6 text-sm">--}}
-{{--                <div class="grid grid-cols-12 gap-4">--}}
-{{--                    <div class="col-span-12 md:col-span-6">--}}
-{{--                        <strong>{{ __('adminhub::partials.forms.customer-group.delete_channel') }}</strong>--}}
+           <div class="p-6 text-sm">
+               <div class="grid grid-cols-12 gap-4">
+                   <div class="col-span-12 md:col-span-6">
+                       <strong>{{ __('adminhub::partials.forms.customer-group.delete_customer_group') }}</strong>
 
-{{--                        <p class="text-xs text-gray-600">--}}
-{{--                            {{ __('adminhub::partials.forms.customer-group.channel_name_delete') }}</p>--}}
-{{--                    </div>--}}
+                       <p class="text-xs text-gray-600">
+                           {{ __('adminhub::partials.forms.customer-group.customer_group_name_delete') }}</p>
+                   </div>
 
-{{--                    <div class="col-span-9 lg:col-span-4">--}}
-{{--                        <x-hub::input.text wire:model="deleteConfirm" />--}}
-{{--                    </div>--}}
+                   <div class="col-span-9 lg:col-span-4">
+                       <x-hub::input.text wire:model="deleteConfirm" />
+                   </div>
 
-{{--                    <div class="col-span-3 text-right lg:col-span-2">--}}
-{{--                        <x-hub::button :disabled="!$this->canDelete"--}}
-{{--                                       wire:click="delete"--}}
-{{--                                       type="button">{{ __('adminhub::global.delete') }}</x-hub::button>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    @endif--}}
+                   <div class="col-span-3 text-right lg:col-span-2">
+                       <x-hub::button :disabled="!$this->canDelete"
+                                    theme="danger"
+                                    wire:click="delete"
+                                    type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
+                   </div>
+               </div>
+           </div>
+       </div>
+   @endif
 </div>

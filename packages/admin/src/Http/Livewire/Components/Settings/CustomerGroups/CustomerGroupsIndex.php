@@ -2,7 +2,6 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups;
 
-use Lunar\Models\CustomerGroup;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -17,8 +16,7 @@ class CustomerGroupsIndex extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.settings.customer-groups.index', [
-            'customerGroups' => CustomerGroup::paginate(5),
-        ])->layout('adminhub::layouts.base');
+        return view('adminhub::livewire.components.settings.customer-groups.index')
+            ->layout('adminhub::layouts.base');
     }
 }

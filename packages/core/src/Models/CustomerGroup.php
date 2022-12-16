@@ -3,11 +3,9 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\CustomerGroupFactory;
 
@@ -17,13 +15,6 @@ class CustomerGroup extends BaseModel
     use HasDefaultRecord;
     use HasMacros;
     use HasTranslations;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $casts = [
-        'name' => AsCollection::class,
-    ];
 
     /**
      * {@inheritDoc}
