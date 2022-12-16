@@ -5,7 +5,6 @@ namespace Lunar\Jobs\Prices;
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -71,13 +70,13 @@ class DispatchPriceConversionOnPriceUpdate implements ShouldQueue
 
         // init empty batch
         $batchName = sprintf(
-            'Price Conversion - Price Update - %s (%s)',
+            'price.conversion on price.update: %s (%s)',
             $this->savedPrice->priceable->product?->translateAttribute('name'),
             $this->savedPrice->priceable->getOption()
         );
         $batch = Bus::batch([])
             ->name($batchName)
-            ->withOption('tag', 'Price Conversion')
+            ->withOption('tags', ['Price Conversion'])
             ->onConnection($autoConversion['connection'])
             ->onQueue($autoConversion['queue'])
             ->then(function (Batch $batch) {

@@ -69,13 +69,13 @@ class DispatchPriceConversionOnCurrencyUpdate implements ShouldQueue
 
         // init empty batch
         $batchName = sprintf(
-            'Price Conversion - Currency Update - %s (%s)',
+            'price.conversion on currency.update: %s (%s)',
             $this->savedCurrency->name,
             $this->savedCurrency->code
         );
         $batch = Bus::batch([])
             ->name($batchName)
-            ->withOption('tag', 'Price Conversion')
+            ->withOption('tags', ['Price Conversion'])
             ->onConnection($autoConversion['connection'])
             ->onQueue($autoConversion['queue'])
             ->then(function (Batch $batch) {
