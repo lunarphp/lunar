@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute as AttributeCast;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
@@ -18,10 +19,11 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
  * @property-read int $pending_jobs
  * @property-read int $failed_jobs
  * @property-read string $failed_job_ids
- * @property-read \Illuminate\Support\Collection $options
  * @property-read DateTimeInterface $cancelled_at
  * @property-read DateTimeInterface $created_at
  * @property-read DateTimeInterface $finished_at
+ * @property-read array $options
+ * @property-read string $status
  *
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $causer
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
@@ -166,14 +168,33 @@ class JobBatch extends BaseModel
         return !is_null($this->cancelled_at);
     }
 
-    public function getStatus(): string
+    /**
+     * Status accessor
+     *
+     * @return AttributeCast
+     */
+    protected function status(): AttributeCast
     {
-        return match (true) {
-            $this->hasPendingJobs() => 'pending',
-            $this->isFailed() => 'failed',
-            $this->hasFailures() => 'unhealthy',
-            $this->isCancelled() => 'cancelled',
-            default => 'successful'
-        };
+        return AttributeCast::make(
+            get: fn() => match (true) {
+                $this->hasPendingJobs() => 'pending',
+                $this->isFailed() => 'failed',
+                $this->hasFailures() => 'unhealthy',
+                $this->isCancelled() => 'cancelled',
+                default => 'successful'
+            },
+        );
+    }
+
+    /**
+     * Options accessor
+     *
+     * @return AttributeCast
+     */
+    protected function options(): AttributeCast
+    {
+        return AttributeCast::make(
+            get: fn($value) => unserialize(base64_decode($value)),
+        )->shouldCache();
     }
 }
