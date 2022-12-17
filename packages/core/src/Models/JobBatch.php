@@ -3,26 +3,29 @@
 namespace Lunar\Models;
 
 use DateTimeInterface;
+use Illuminate\Bus\BatchRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute as AttributeCast;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Lunar\Database\Factories\JobBatchFactory;
 
 /**
  *
- * @property-read string $name
+ * @property string $name
+ * @property int $total_jobs
+ * @property int $pending_jobs
+ * @property int $failed_jobs
+ * @property DateTimeInterface $cancelled_at
+ * @property DateTimeInterface $created_at
+ * @property DateTimeInterface $finished_at
  * @property-read string $subject_type
  * @property-read int $subject_id
  * @property-read string $causer_type
  * @property-read int $causer_id
- * @property-read int $total_jobs
- * @property-read int $pending_jobs
- * @property-read int $failed_jobs
  * @property-read string $failed_job_ids
- * @property-read DateTimeInterface $cancelled_at
- * @property-read DateTimeInterface $created_at
- * @property-read DateTimeInterface $finished_at
- * @property-read array $options
+ * @property-read array $tags
  * @property-read string $status
  *
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $causer
@@ -33,11 +36,26 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
  */
 class JobBatch extends BaseModel
 {
+    use HasFactory;
 
+    /**
+     * Indicates batch has pending jobs
+     */
     public const STATUS_PENDING = 'pending';
+
+    /**
+     * Indicates batch has finished and all jobs have failed
+     */
     public const STATUS_FAILED = 'failed';
+
+    /**
+     * Indicates batch has finished and some jobs have failed
+     */
     public const STATUS_UNHEALTHY = 'unhealthy';
-    public const STATUS_CANCELLED = 'cancelled';
+
+    /**
+     * Indicates batch has finished successfully
+     */
     public const STATUS_SUCCESSFUL = 'successful';
 
     /**
@@ -79,6 +97,16 @@ class JobBatch extends BaseModel
         'cancelled_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
+
+    /**
+     * Return a new factory instance for the model.
+     *
+     * @return JobBatchFactory
+     */
+    protected static function newFactory(): JobBatchFactory
+    {
+        return JobBatchFactory::new();
+    }
 
     public function causer(): MorphTo
     {
@@ -184,23 +212,32 @@ class JobBatch extends BaseModel
         return AttributeCast::make(
             get: fn() => match (true) {
                 $this->hasPendingJobs() => self::STATUS_PENDING,
-                $this->isFailed() => self::STATUS_FAILED,
-                $this->hasFailures() => self::STATUS_UNHEALTHY,
-                $this->isCancelled() => self::STATUS_CANCELLED,
+                $this->isFinished() && $this->isFailed() => self::STATUS_FAILED,
+                $this->isFinished() && $this->hasFailures() => self::STATUS_UNHEALTHY,
                 default => self::STATUS_SUCCESSFUL,
             },
         );
     }
 
     /**
-     * Options accessor
+     * Tags accessor
      *
      * @return AttributeCast
      */
-    protected function options(): AttributeCast
+    protected function tags(): AttributeCast
     {
         return AttributeCast::make(
-            get: fn($value) => unserialize(base64_decode($value)),
+            get: fn($value) => $this->toBatchDTO()->options['tags'] ?? [],
         )->shouldCache();
+    }
+
+    /**
+     * Converts instance of JobBatch model to laravel Illuminate\Bus\Batch instance
+     *
+     * @return \Illuminate\Bus\Batch
+     */
+    public function toBatchDTO(): \Illuminate\Bus\Batch
+    {
+        return app(BatchRepository::class)->toBatch($this);
     }
 }

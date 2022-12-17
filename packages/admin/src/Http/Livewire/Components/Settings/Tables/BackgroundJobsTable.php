@@ -46,7 +46,6 @@ class BackgroundJobsTable extends LunarTable
                         JobBatch::STATUS_FAILED => 'Failed',
                         JobBatch::STATUS_UNHEALTHY => 'Unhealthy',
                         JobBatch::STATUS_SUCCESSFUL => 'Completed',
-                        JobBatch::STATUS_CANCELLED => 'Cancelled',
                     };
                 })
                 ->color(function (JobBatch $batch) {
@@ -55,13 +54,12 @@ class BackgroundJobsTable extends LunarTable
                         JobBatch::STATUS_FAILED => 'danger',
                         JobBatch::STATUS_UNHEALTHY => 'warning',
                         JobBatch::STATUS_SUCCESSFUL => 'success',
-                        JobBatch::STATUS_CANCELLED => 'secondary',
                     };
                 }),
 
             TagsColumn::make('tags')
                 ->heading('Tags')
-                ->value(fn(JobBatch $batch) => $batch->options['tags'] ?? []),
+                ->value(fn(JobBatch $batch) => $batch->tags),
 
             TextColumn::make('name'),
             TextColumn::make('id')->heading('Batch ID'),

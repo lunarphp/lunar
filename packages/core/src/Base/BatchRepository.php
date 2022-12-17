@@ -31,4 +31,12 @@ class BatchRepository extends DatabaseBatchRepository
             return $batch;
         });
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toBatch($batch)
+    {
+        return parent::toBatch($batch);
+    }
 }
