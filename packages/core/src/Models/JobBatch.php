@@ -209,14 +209,14 @@ class JobBatch extends BaseModel
      */
     protected function status(): AttributeCast
     {
-        return AttributeCast::make(
+        return (new AttributeCast(
             get: fn() => match (true) {
                 $this->hasPendingJobs() => self::STATUS_PENDING,
                 $this->isFinished() && $this->isFailed() => self::STATUS_FAILED,
                 $this->isFinished() && $this->hasFailures() => self::STATUS_UNHEALTHY,
                 default => self::STATUS_SUCCESSFUL,
             },
-        );
+        ));
     }
 
     /**
@@ -226,9 +226,9 @@ class JobBatch extends BaseModel
      */
     protected function tags(): AttributeCast
     {
-        return AttributeCast::make(
+        return (new AttributeCast(
             get: fn($value) => $this->toBatchDTO()->options['tags'] ?? [],
-        )->shouldCache();
+        ))->shouldCache();
     }
 
     /**
