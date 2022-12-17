@@ -16,8 +16,8 @@ use Lunar\Models\ProductVariant;
 use Lunar\Tests\TestCase;
 
 /**
- * @group getcandy.discounts
- * @group getcandy.discounts.discounts
+ * @group lunar.discounts
+ * @group lunar.discounts.discounts
  */
 class DiscountTest extends TestCase
 {
