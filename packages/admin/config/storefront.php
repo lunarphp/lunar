@@ -14,6 +14,5 @@ return [
     */
     'model_routes' => [
         \Lunar\Models\Product::class => null,
-        \Lunar\Models\Collection::class => null,
     ],
 ];
