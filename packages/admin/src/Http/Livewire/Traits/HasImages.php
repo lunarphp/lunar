@@ -54,8 +54,8 @@ trait HasImages
     protected function hasImagesValidationRules()
     {
         return [
-            'imageUploadQueue.*' => 'image|max:' . max_upload_filesize(),
-            'images.*.caption'   => 'nullable|string',
+            'imageUploadQueue.*' => 'image|max:'.max_upload_filesize(),
+            'images.*.caption' => 'nullable|string',
             'showImageSelectModal' => 'boolean',
             'selectedImages' => 'nullable|array|min:0',
         ];
@@ -80,7 +80,7 @@ trait HasImages
                     'thumbnail' => $media->getFullUrl('medium'),
                     'original' => $media->getFullUrl(),
                     'preview' => false,
-                    'edit'      => false,
+                    'edit' => false,
                     'caption' => $media->getCustomProperty('caption'),
                     'primary' => $media->getCustomProperty('primary'),
                     'position' => $media->getCustomProperty('position', 1),
@@ -166,7 +166,7 @@ trait HasImages
                 'caption' => null,
                 'position' => count($this->images) + 1,
                 'preview' => false,
-                'edit'      => false,
+                'edit' => false,
                 'primary' => ! count($this->images),
             ];
 
@@ -235,7 +235,7 @@ trait HasImages
                 }
 
                 if (empty($image['id']) || $imageEdited) {
-                    if (!$imageEdited) {
+                    if (! $imageEdited) {
                         $file = TemporaryUploadedFile::createFromLivewire(
                             $image['filename']
                         );
@@ -323,7 +323,7 @@ trait HasImages
             '--ids' => $id,
             '--force' => true,
         ]);
-        
+
         $this->notify(
             __('adminhub::partials.image-manager.remake_transforms.notify.success')
         );
@@ -365,14 +365,14 @@ trait HasImages
             $this->images[$key] = [
                 'id' => $media->id,
                 'thumbnail' => $media->getUrl('small'),
-                'sort_key'  => $key,
-                'filename'  => $media->file_name,
-                'original'  => $media->getUrl(),
-                'caption'   => null,
-                'position'  => $maxPosition + 1,
-                'preview'   => false,
-                'edit'   => false,
-                'primary'   => !count($this->images),
+                'sort_key' => $key,
+                'filename' => $media->file_name,
+                'original' => $media->getUrl(),
+                'caption' => null,
+                'position' => $maxPosition + 1,
+                'preview' => false,
+                'edit' => false,
+                'primary' => ! count($this->images),
             ];
         }
 

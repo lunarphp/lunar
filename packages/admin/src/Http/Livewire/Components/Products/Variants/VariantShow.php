@@ -79,12 +79,12 @@ class VariantShow extends Component
                 'id' => $media->id,
                 'sort_key' => Str::random(),
                 'thumbnail' => $media->getFullUrl('medium'),
-                'original'  => $media->getFullUrl(),
-                'preview'   => false,
-                'edit'      => false,
-                'caption'   => $media->getCustomProperty('caption'),
-                'primary'   => $media->pivot->primary,
-                'position'  => $media->pivot->position,
+                'original' => $media->getFullUrl(),
+                'preview' => false,
+                'edit' => false,
+                'caption' => $media->getCustomProperty('caption'),
+                'primary' => $media->pivot->primary,
+                'position' => $media->pivot->position,
             ];
         })->sortBy('position')->values()->toArray();
     }
@@ -187,7 +187,7 @@ class VariantShow extends Component
     {
         $this->validate(null, $this->getValidationMessages());
 
-        if (!$this->manualVolume) {
+        if (! $this->manualVolume) {
             $this->variant->volume_unit = null;
             $this->variant->volume_value = null;
         }
@@ -236,10 +236,8 @@ class VariantShow extends Component
                     $imageEdited = true;
                 }
 
-
-
                 if (empty($image['id']) || $imageEdited) {
-                    if (!$imageEdited) {
+                    if (! $imageEdited) {
                         $file = TemporaryUploadedFile::createFromLivewire(
                             $image['filename']
                         );
@@ -435,8 +433,8 @@ class VariantShow extends Component
         $messages = [];
 
         foreach ($this->variantOptions() as $option) {
-            $rules['newValues.' . $option->id] = 'required';
-            $messages['newValues.' . $option->id . '.required'] = __('adminhub::validation.variant_option_required');
+            $rules['newValues.'.$option->id] = 'required';
+            $messages['newValues.'.$option->id.'.required'] = __('adminhub::validation.variant_option_required');
         }
 
         $this->validate($rules, $messages);
