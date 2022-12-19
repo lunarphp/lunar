@@ -24,13 +24,6 @@ interface CartSessionInterface
     public function forget();
 
     /**
-     * Return the cart manager instance.
-     *
-     * @return \Lunar\Managers\CartManager
-     */
-    public function manager();
-
-    /**
      * Associate a cart to a user.
      *
      * @param  \Lunar\Models\Cart  $cart

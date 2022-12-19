@@ -14,7 +14,7 @@ use Lunar\Tests\TestCase;
 /**
  * @group lunar.jobs
  */
-class NumberTest extends TestCase
+class UpdateProductPositionsTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -40,10 +40,10 @@ class NumberTest extends TestCase
             foreach (Currency::get() as $currency) {
                 Price::factory()->create([
                     'priceable_type' => ProductVariant::class,
-                    'priceable_id'   => $variant->id,
-                    'currency_id'    => $currency->id,
-                    'tier'           => 1,
-                    'price'          => $prices[$index],
+                    'priceable_id' => $variant->id,
+                    'currency_id' => $currency->id,
+                    'tier' => 1,
+                    'price' => $prices[$index],
                 ]);
             }
         }
@@ -85,7 +85,7 @@ class NumberTest extends TestCase
         foreach ($products as $index => $product) {
             ProductVariant::factory()->create([
                 'product_id' => $product->id,
-                'sku'        => $skus[$index],
+                'sku' => $skus[$index],
             ]);
         }
 

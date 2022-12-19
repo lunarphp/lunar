@@ -24,12 +24,12 @@ class ProductShowTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code'    => 'en',
+            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code'    => 'fr',
+            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
@@ -89,9 +89,9 @@ class ProductShowTest extends TestCase
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
                 'priceable_type' => ProductVariant::class,
-                'priceable_id'   => $variant->id,
-                'currency_id'    => $currency->id,
-                'tier'           => 1,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
             ]);
         }
 
@@ -125,9 +125,9 @@ class ProductShowTest extends TestCase
         ]);
 
         Price::factory()->create([
-            'currency_id'    => $currency->id,
+            'currency_id' => $currency->id,
             'priceable_type' => ProductVariant::class,
-            'priceable_id'   => $variant->id,
+            'priceable_id' => $variant->id,
         ]);
 
         $this->get(route('hub.products.show', $product->id))

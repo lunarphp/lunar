@@ -1,6 +1,6 @@
 # Welcome to Lunar!
 
-We're delighted you are considering Lunar for your project. We've spent a lot of time developing this package to bring headless e-commerce functionality to Laravel.
+We are delighted you are considering Lunar for your project. We've spent a lot of time developing this package to bring headless e-commerce functionality to Laravel.
 
 ## What is Lunar?
 
@@ -8,7 +8,7 @@ Lunar is a [Laravel e-commerce package](https://lunarphp.io/) which brings funct
 
 ## Tech Stack
 
-Lunar is comprised of two packages; `lunarphp/core` which provides the e-commerce functionality and `lunarphp/admin` (the one you install) which provides an admin hub built upon Laravel Livewire.
+Lunar is comprised of two packages; `lunarphp/core` which provides the e-commerce functionality and `lunarphp/admin` which provides an admin hub built upon Laravel Livewire.
 
 Although the admin hub uses Laravel Livewire, there is no requirement for your app to use Livewire itself.
 

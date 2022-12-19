@@ -22,7 +22,7 @@ trait Notifies
 
         $this->dispatchBrowserEvent('notify', [
             'message' => $message,
-            'level'   => $level,
+            'level' => $level,
         ]);
     }
 }

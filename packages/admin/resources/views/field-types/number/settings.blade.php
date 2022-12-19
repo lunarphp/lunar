@@ -9,7 +9,7 @@
         type="number"
         id="min"
         wire:model="attribute.configuration.min"
-        :error="$errors->first('attribute.configuration.type')"
+        :error="$errors->first('attribute.configuration.min')"
       />
     </x-hub::input.group>
 

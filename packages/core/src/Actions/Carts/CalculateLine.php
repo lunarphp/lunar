@@ -5,7 +5,6 @@ namespace Lunar\Actions\Carts;
 use Illuminate\Support\Collection;
 use Lunar\Base\Addressable;
 use Lunar\DataTypes\Price;
-use Lunar\Facades\Pricing;
 use Lunar\Facades\Taxes;
 use Lunar\Models\CartLine;
 
@@ -28,28 +27,13 @@ class CalculateLine
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();
 
-        // we check if any cart line modifiers have already specified a unit price in their calculating() method
-        if (! ($price = $cartLine->unitPrice) instanceof Price) {
-            $priceResponse = Pricing::currency($cart->currency)
-                ->qty($cartLine->quantity)
-                ->currency($cart->currency)
-                ->customerGroups($customerGroups)
-                ->for($purchasable)
-                ->get();
+        $cartLine = app(CalculateLineSubtotal::class)->execute($cartLine, $customerGroups);
 
-            $price = new Price(
-                $priceResponse->matched->price->value,
-                $cart->currency,
-                $purchasable->getUnitQuantity()
-            );
+        if (! $cartLine->discountTotal) {
+            $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
         }
 
-        $unitPrice = (int) round(
-            (($price->decimal / $purchasable->getUnitQuantity())
-                * $cart->currency->factor),
-            $cart->currency->decimal_places);
-
-        $subTotal = $unitPrice * $cartLine->quantity;
+        $subTotal = $cartLine->subTotal->value - $cartLine->discountTotal->value;
 
         $taxBreakDown = Taxes::setShippingAddress($shippingAddress)
             ->setBillingAddress($billingAddress)
@@ -61,11 +45,8 @@ class CalculateLine
         $taxTotal = $taxBreakDown->amounts->sum('price.value');
 
         $cartLine->taxBreakdown = $taxBreakDown;
-        $cartLine->subTotal = new Price($subTotal, $cart->currency, $unitQuantity);
         $cartLine->taxAmount = new Price($taxTotal, $cart->currency, $unitQuantity);
         $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
-        $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);
-        $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
 
         return $cartLine;
     }

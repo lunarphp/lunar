@@ -101,6 +101,12 @@ class MenuLink implements MenuItem
         return $this;
     }
 
+    /**
+     * Setter for the component property.
+     *
+     * @param  string  $component
+     * @return static
+     */
     public function component($component)
     {
         $this->component = $component;

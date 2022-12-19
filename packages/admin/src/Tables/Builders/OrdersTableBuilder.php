@@ -4,6 +4,7 @@ namespace Lunar\Hub\Tables\Builders;
 
 use Illuminate\Support\Collection;
 use Lunar\Hub\Tables\TableBuilder;
+use Lunar\LivewireTables\Components\Columns\TagsColumn;
 use Lunar\LivewireTables\Components\Columns\TextColumn;
 use Lunar\Models\Order;
 
@@ -21,7 +22,7 @@ class OrdersTableBuilder extends TableBuilder
      */
     public function getColumns(): Collection
     {
-        return collect([
+        $baseColumns = collect([
             TextColumn::make('status')->sortable(true)->viewComponent('hub::orders.status'),
             TextColumn::make('reference')->value(function ($record) {
                 return $record->reference;
@@ -47,9 +48,17 @@ class OrdersTableBuilder extends TableBuilder
                 return $record->total->formatted;
             }),
             TextColumn::make('date')->value(function ($record) {
-                return $record->placed_at?->format('Y/m/d @ H:ma');
+                return $record->placed_at?->format('Y/m/d @ H:ia');
             }),
-        ])->merge($this->columns);
+            TagsColumn::make('tags')->value(function ($record) {
+                return $record->tags->pluck('value');
+            }),
+        ]);
+
+        return $this->resolveColumnPositions(
+            $baseColumns,
+            $this->columns
+        );
     }
 
     /**
@@ -68,6 +77,7 @@ class OrdersTableBuilder extends TableBuilder
             'billingAddress',
             'currency',
             'customer',
+            'tags',
         ])->orderBy($this->sortField, $this->sortDir);
 
         if ($this->searchTerm) {

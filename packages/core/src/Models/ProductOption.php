@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -9,8 +10,9 @@ use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\ProductOptionFactory;
+use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
-class ProductOption extends BaseModel
+class ProductOption extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
     use HasMedia;
@@ -32,6 +34,15 @@ class ProductOption extends BaseModel
      */
     protected $sortable = [
         'name',
+    ];
+
+    /**
+     * Define which attributes should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'name' => AsCollection::class,
     ];
 
     /**
@@ -74,7 +85,7 @@ class ProductOption extends BaseModel
 
     public function values()
     {
-        return $this->hasMany(ProductOptionValue::class);
+        return $this->hasMany(ProductOptionValue::class)->orderBy('position');
     }
 
     /**

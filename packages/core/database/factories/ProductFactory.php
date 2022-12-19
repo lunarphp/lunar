@@ -16,10 +16,10 @@ class ProductFactory extends Factory
     {
         return [
             'product_type_id' => ProductType::factory(),
-            'status'          => 'published',
-            'brand_id'        => Brand::factory()->create()->id,
-            'attribute_data'  => collect([
-                'name'        => new Text($this->faker->name),
+            'status' => 'published',
+            'brand_id' => Brand::factory()->create()->id,
+            'attribute_data' => collect([
+                'name' => new Text($this->faker->name),
                 'description' => new Text($this->faker->sentence),
             ]),
         ];

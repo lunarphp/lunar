@@ -54,7 +54,7 @@ class Attribute extends BaseModel
      * @var array
      */
     protected $casts = [
-        'name'          => AsCollection::class,
+        'name' => AsCollection::class,
         'configuration' => AsCollection::class,
     ];
 

@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.1.4
+
+### Fixed
+
+- Prices are now stored as `bigInt` to avoid out of range errors for certain currencies.
+
+## 0.1.3
+
+### Fixed
+
+- Transaction activity log should now store the correct properties.
+
+### Added
+
+- Added user emails to customer index on search.
+
+## 0.1.2
+
+### Added
+
+- Added shorthand `attr` which can be used instead of `translateAttribute`
+
+## 0.1.1
+
+> No notable changes
+
+## 0.1.0
+
+> No notable changes
+
 ## 0.1.0-rc.5
 
 ### Changed

@@ -151,8 +151,9 @@ class TableBuilder implements TableBuilderInterface
 
     public function getColumns(): Collection
     {
-        return $this->baseColumns->merge(
-            $this->columns
+        return $this->resolveColumnPositions(
+            $this->baseColumns,
+            $this->columns,
         );
     }
 
@@ -195,5 +196,28 @@ class TableBuilder implements TableBuilderInterface
     public function getData(): iterable
     {
         return collect();
+    }
+
+    protected function resolveColumnPositions(Collection $existing, Collection $incoming)
+    {
+        foreach ($incoming as $column) {
+            if (! $column->after) {
+                $existing->push($column);
+
+                continue;
+            }
+
+            $position = $existing->search(function ($existing) use ($column) {
+                return $existing->field == $column->after;
+            });
+
+            if (! is_null($position)) {
+                $existing->splice($position + 1, 0, [$column]);
+            } else {
+                $existing->push($column);
+            }
+        }
+
+        return $existing;
     }
 }

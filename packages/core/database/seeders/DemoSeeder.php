@@ -31,10 +31,10 @@ class DemoSeeder extends Seeder
         //======== DATA
 
         Channel::factory()->create([
-            'name'    => 'Webstore',
-            'handle'  => 'webstore',
+            'name' => 'Webstore',
+            'handle' => 'webstore',
             'default' => true,
-            'url'     => 'http://mystore.test',
+            'url' => 'http://mystore.test',
         ]);
 
         ProductType::factory()

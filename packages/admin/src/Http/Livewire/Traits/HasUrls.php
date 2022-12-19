@@ -45,6 +45,18 @@ trait HasUrls
         return $rules;
     }
 
+    public function getUrlsValidationAttributes()
+    {
+        $attributes = [];
+
+        foreach ($this->urls as $key => $value) {
+            $sequence = (int) $key + 1;
+            $attributes["urls.{$key}.slug"] = lang(key:'global.slug', lower:true)." #{$sequence}";
+        }
+
+        return $attributes;
+    }
+
     /**
      * Computed property for existing tags.
      *
@@ -55,9 +67,9 @@ trait HasUrls
     public function addUrl()
     {
         $this->urls[] = [
-            'slug'        => null,
-            'key'         => Str::random(),
-            'default'     => ! collect($this->urls)->count(),
+            'slug' => null,
+            'key' => Str::random(),
+            'default' => ! collect($this->urls)->count(),
             'language_id' => $this->defaultLanguage->id,
         ];
     }

@@ -54,15 +54,15 @@ class AddressData extends Command
         DB::transaction(function () use ($newCountries) {
             $this->withProgressBar($newCountries, function ($country) {
                 $model = Country::create([
-                    'name'      => $country->name,
-                    'iso3'      => $country->iso3,
-                    'iso2'      => $country->iso2,
+                    'name' => $country->name,
+                    'iso3' => $country->iso3,
+                    'iso2' => $country->iso2,
                     'phonecode' => $country->phone_code,
-                    'capital'   => $country->capital,
-                    'currency'  => $country->currency,
-                    'native'    => $country->native,
-                    'emoji'     => $country->emoji,
-                    'emoji_u'   => $country->emojiU,
+                    'capital' => $country->capital,
+                    'currency' => $country->currency,
+                    'native' => $country->native,
+                    'emoji' => $country->emoji,
+                    'emoji_u' => $country->emojiU,
                 ]);
 
                 $states = collect($country->states)->map(function ($state) {

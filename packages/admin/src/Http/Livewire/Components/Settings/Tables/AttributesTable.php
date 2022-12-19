@@ -53,7 +53,7 @@ class AttributesTable extends Table
                 'id' => Str::random(),
                 'class' => class_basename($type),
                 'handle' => $index,
-                'group_count'     => $groups->count(),
+                'group_count' => $groups->count(),
                 'attribute_count' => Attribute::whereIn(
                     'attribute_group_id',
                     $groups->pluck('id')->toArray()

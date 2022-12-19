@@ -3,8 +3,6 @@
 namespace Lunar\LivewireTables\Components\Columns;
 
 use Closure;
-use Livewire\Component;
-use Lunar\LivewireTables\TableManifest;
 
 class BadgeColumn extends BaseColumn
 {
@@ -26,6 +24,7 @@ class BadgeColumn extends BaseColumn
             'success' => false,
             'warning' => false,
             'danger' => false,
+            'info' => false,
         ];
 
         if ($this->states) {

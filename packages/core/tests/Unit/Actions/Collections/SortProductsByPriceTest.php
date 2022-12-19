@@ -40,10 +40,10 @@ class SortProductsByPriceTest extends TestCase
             foreach (Currency::get() as $currency) {
                 Price::factory()->create([
                     'priceable_type' => ProductVariant::class,
-                    'priceable_id'   => $variant->id,
-                    'currency_id'    => $currency->id,
-                    'tier'           => 1,
-                    'price'          => $prices[$index],
+                    'priceable_id' => $variant->id,
+                    'currency_id' => $currency->id,
+                    'tier' => 1,
+                    'price' => $prices[$index],
                 ]);
             }
         }
