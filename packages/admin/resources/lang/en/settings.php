@@ -33,6 +33,7 @@ return [
     'staff.show.title' => 'Edit Staff',
     'staff.show.delete_btn' => 'Deactivate account',
     'staff.show.delete_title' => 'Delete Staff',
+    'staff.show.restore_title' => 'Restore Staff',
     /**
      * Staff create page.
      */
@@ -128,7 +129,12 @@ return [
      * Activity log page.
      */
     'activity_log.index.title' => 'Activity Log',
-
+    /*
+     * Product Options
+     */
+    'product.options.index.title' => 'Options',
+    'product.options.index.create_btn' => 'Create Option',
+    'product.options.index.table_row_action_text' => 'Edit Option',
     /**
      * Taxes.
      */

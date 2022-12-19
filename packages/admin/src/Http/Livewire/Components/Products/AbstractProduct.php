@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
@@ -43,6 +44,7 @@ abstract class AbstractProduct extends Component
     use HasUrls;
     use HasTags;
     use HasSlots;
+    use CanExtendValidation;
 
     /**
      * The current product we are editing.
@@ -179,15 +181,16 @@ abstract class AbstractProduct extends Component
 
     protected function getListeners()
     {
-        return array_merge([
-            'useProductOptions' => 'setOptions',
-            'productOptionCreated' => 'resetOptionView',
-            'option-manager.selectedValues' => 'setOptionValues',
-            'urlSaved' => 'refreshUrls',
-            'product-search.selected' => 'updateAssociations',
-            'collectionSearch.selected' => 'selectCollections',
-            'productOptionSelectorPanelToggled' => 'setVariantsEnabled',
-        ],
+        return array_merge(
+            [
+                'useProductOptions' => 'setOptions',
+                'productOptionCreated' => 'resetOptionView',
+                'option-manager.selectedValues' => 'setOptionValues',
+                'urlSaved' => 'refreshUrls',
+                'product-search.selected' => 'updateAssociations',
+                'collectionSearch.selected' => 'selectCollections',
+                'productOptionSelectorPanelToggled' => 'setVariantsEnabled',
+            ],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners()
         );
@@ -203,7 +206,8 @@ abstract class AbstractProduct extends Component
         return array_merge(
             [],
             $this->hasPriceValidationMessages(),
-            $this->withAttributesValidationMessages()
+            $this->withAttributesValidationMessages(),
+            $this->getExtendedValidationMessages(),
         );
     }
 
@@ -275,7 +279,10 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->hasUrlsValidationRules(! $this->product->id),
-            $this->withAttributesValidationRules()
+            $this->withAttributesValidationRules(),
+            $this->getExtendedValidationRules([
+                'product' => $this->product,
+            ]),
         );
     }
 
@@ -367,7 +374,6 @@ abstract class AbstractProduct extends Component
         })->validate(null, $this->getValidationMessages());
 
         $this->validateUrls();
-
         $isNew = ! $this->product->id;
 
         DB::transaction(function () use ($isNew) {
@@ -712,6 +718,7 @@ abstract class AbstractProduct extends Component
     {
         $selectedProducts = Product::findMany($selectedIds)->map(function ($product) {
             return [
+                'is_temp' => true,
                 'inverse' => (bool) $this->showInverseAssociations,
                 'target_id' => $product->id,
                 'thumbnail' => optional($product->thumbnail)->getUrl('small'),
@@ -747,9 +754,16 @@ abstract class AbstractProduct extends Component
      */
     public function removeAssociation($index)
     {
-        $this->associationsToRemove[] = $this->associations[$index]['id'];
+        $association = $this->associations[$index];
 
-        $this->associations->forget($index);
+        if (isset($association['is_temp'])) {
+            $this->associations->forget($index);
+        } else {
+            $this->associationsToRemove[] = $this->associations[$index]['id'];
+            $this->associations->forget($index);
+        }
+
+        $this->emit('updatedExistingProductAssociations', $this->associatedProductIds);
     }
 
     /**

@@ -13,18 +13,10 @@ class MenuSectionTest extends TestCase
     /** @test */
     public function can_initialise_a_new_section()
     {
-        $section = new MenuSection('Foo Bar');
+        $section = new MenuSection('products');
 
-        $this->assertEquals('Foo Bar', $section->name);
-        $this->assertEquals('foo-bar', $section->getHandle());
-    }
+        $section->name('Products');
 
-    /** @test */
-    public function can_set_name_on_section()
-    {
-        $section = new MenuSection('Foo Bar');
-        $this->assertEquals('Foo Bar', $section->name);
-        $section->name('Another Name');
-        $this->assertEquals('Another Name', $section->name);
+        $this->assertEquals('Products', $section->name);
     }
 }

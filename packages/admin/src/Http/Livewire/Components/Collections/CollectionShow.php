@@ -65,10 +65,24 @@ class CollectionShow extends Component
      */
     public function mount()
     {
+        $this->products = collect();
+        if ($this->productCount <= 30) {
+            $this->loadProducts();
+        }
+
+        $this->syncAvailability();
+    }
+
+    public function getProductCountProperty()
+    {
+        return $this->collection->products()->count();
+    }
+
+    public function loadProducts()
+    {
         $this->products = $this->mapProducts(
             $this->collection->load('products.variants.basePrices.currency')->products
         );
-        $this->syncAvailability();
     }
 
     /**
@@ -279,15 +293,17 @@ class CollectionShow extends Component
         });
 
         DB::transaction(function () {
-            $this->collection->products()->sync(
-                $this->products->mapWithKeys(function ($product, $index) {
-                    return [
-                        $product['id'] => [
-                            'position' => $index + 1,
-                        ],
-                    ];
-                })
-            );
+            if ($this->productCount <= 30) {
+                $this->collection->products()->sync(
+                    $this->products->mapWithKeys(function ($product, $index) {
+                        return [
+                            $product['id'] => [
+                                'position' => $index + 1,
+                            ],
+                        ];
+                    })
+                );
+            }
         });
 
         $this->updateImages();

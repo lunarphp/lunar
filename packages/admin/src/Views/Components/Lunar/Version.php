@@ -22,7 +22,7 @@ class Version extends Component
             'fix',
             'hotfix',
             'update',
-        ]) ? '2.0-beta' : $installedVersion;
+        ]) ? '' : $installedVersion;
 
         $this->installedVersion = $prettyVersion;
     }
