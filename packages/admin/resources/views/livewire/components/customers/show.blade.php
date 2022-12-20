@@ -9,15 +9,15 @@
         <div class="xl:w-1/3">
             <div class="bg-white rounded shadow">
                 <div class="p-4 space-y-4">
-                
+
                     @foreach ($this->getSlotsByPosition('top') as $slot)
                         <div id="{{ $slot->handle }}">
                             <div>
                                 @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
                             </div>
                         </div>
-                    @endforeach                
-                
+                    @endforeach
+
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <x-hub::input.group for="title"
@@ -67,7 +67,7 @@
                                        wire:key="group_{{ $group->id }}">
                                     <x-hub::input.checkbox wire:model.debounce.500ms="syncedGroups"
                                                            value="{{ $group->id }}" /> <span
-                                          class="ml-2">{{ $group->translate('name') }}</span>
+                                          class="ml-2">{{ $group->name }}</span>
                                 </label>
                             @endforeach
                         </div>
@@ -77,14 +77,14 @@
                         @include('adminhub::partials.attributes', ['inline' => true])
                     </div>
                 </div>
-                
+
                 @foreach ($this->getSlotsByPosition('bottom') as $slot)
                     <div id="{{ $slot->handle }}">
                         <div>
                             @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
                         </div>
                     </div>
-                @endforeach  
+                @endforeach
 
                 <div class="p-4 text-right rounded-b bg-gray-50">
                     <x-hub::button type="button"

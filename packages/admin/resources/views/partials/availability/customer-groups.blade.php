@@ -1,7 +1,7 @@
 @foreach($this->customerGroups as $group)
 <div class="grid items-center grid-cols-12 gap-4 py-2 text-sm" >
     <div class="col-span-2">
-        <div class="truncate">{{ $group->translate('name') }}</div>
+        <div class="truncate">{{ $group->name }}</div>
     </div>
     <div class="col-span-7">
         {{-- availability.customerGroups.{{ $group->id }}.enabled --}}

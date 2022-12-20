@@ -294,7 +294,7 @@ abstract class AbstractTaxZone extends Component
             });
 
             return [
-                'name' => $group->translate('name'),
+                'name' => $group->name,
                 'customer_group_id' => $group->id,
                 'link_id' => $relation?->id,
                 'linked' => (bool) $relation,

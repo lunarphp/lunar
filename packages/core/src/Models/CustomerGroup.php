@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\CustomerGroupFactory;
 
 class CustomerGroup extends BaseModel
@@ -14,7 +13,6 @@ class CustomerGroup extends BaseModel
     use HasFactory;
     use HasDefaultRecord;
     use HasMacros;
-    use HasTranslations;
 
     /**
      * {@inheritDoc}

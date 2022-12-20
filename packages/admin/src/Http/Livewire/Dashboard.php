@@ -316,7 +316,7 @@ class Dashboard extends Component
         $customerGroups = CustomerGroup::get();
 
         $labels = $customerGroups->map(
-            fn (CustomerGroup $group) => $group->translate('name')
+            fn (CustomerGroup $group) => $group->name
         )->toArray();
 
         $series = collect();
