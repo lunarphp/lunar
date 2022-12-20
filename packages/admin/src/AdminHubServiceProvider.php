@@ -79,6 +79,9 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Channels\ChannelsIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrenciesIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Currencies\CurrencyShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups\CustomerGroupCreate;
+use Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups\CustomerGroupShow;
+use Lunar\Hub\Http\Livewire\Components\Settings\CustomerGroups\CustomerGroupsIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguageShow;
 use Lunar\Hub\Http\Livewire\Components\Settings\Languages\LanguagesIndex;
@@ -93,6 +96,7 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AddonsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\AttributesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\ChannelsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\CurrenciesTable;
+use Lunar\Hub\Http\Livewire\Components\Settings\Tables\CustomerGroupsTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\LanguagesTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\StaffTable;
 use Lunar\Hub\Http\Livewire\Components\Settings\Tables\TagsTable;
@@ -409,11 +413,17 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.channels.show', ChannelShow::class);
         Livewire::component('hub.components.settings.channels.create', ChannelCreate::class);
 
-        // Users
+        // Staff
         Livewire::component('hub.components.settings.staff.index', StaffIndex::class);
         Livewire::component('hub.components.settings.staff.table', StaffTable::class);
         Livewire::component('hub.components.settings.staff.show', StaffShow::class);
         Livewire::component('hub.components.settings.staff.create', StaffCreate::class);
+
+        // Customer Groups
+        Livewire::component('hub.components.settings.customer-groups.index', CustomerGroupsIndex::class);
+        Livewire::component('hub.components.settings.customer-groups.show', CustomerGroupShow::class);
+        Livewire::component('hub.components.settings.customer-groups.create', CustomerGroupCreate::class);
+        Livewire::component('hub.components.settings.customer-groups.table', CustomerGroupsTable::class);
 
         // Languages
         Livewire::component('hub.components.settings.languages.index', LanguagesIndex::class);
