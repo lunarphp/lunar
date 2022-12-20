@@ -22,6 +22,16 @@
                                    id="handle"
                                    :error="$errors->first('customerGroup.handle')" />
             </x-hub::input.group>
+
+            <x-hub::input.group label="Default"
+                                for="handle"
+                                :instructions="__('adminhub::settings.customer-groups.form.default_instructions')">
+                <x-hub::input.toggle wire:model="customerGroup.default"
+                                     :on="$customerGroup->default"
+                                     name="handle"
+                                     id="handle"
+                                     :disabled="$customerGroup->id && $customerGroup->getOriginal('default')" />
+            </x-hub::input.group>
         </div>
 
         <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">

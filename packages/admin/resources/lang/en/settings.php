@@ -177,4 +177,5 @@ return [
      * Customer Groups create page.
      */
     'customer-groups.create.title' => 'Create Customer Group',
+    'customer-groups.form.default_instructions' => 'Set whether this customer group should be the default',
 ];

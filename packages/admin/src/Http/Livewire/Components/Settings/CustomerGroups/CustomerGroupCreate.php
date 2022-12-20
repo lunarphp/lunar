@@ -46,6 +46,7 @@ class CustomerGroupCreate extends Component
         return [
             'customerGroup.name' => 'required|string|unique:'.CustomerGroup::class.',name|max:255',
             'customerGroup.handle' => 'required|string|unique:'.CustomerGroup::class.',handle|max:255',
+            'customerGroup.default' => 'nullable|boolean',
         ];
     }
 

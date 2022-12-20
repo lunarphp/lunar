@@ -44,10 +44,12 @@ class CustomerGroupShow extends Component
         $rules = [
             'customerGroup.name' => 'required|string|unique:'.CustomerGroup::class.",name,{$this->customerGroup->id}",
             'customerGroup.handle' => 'required|string|unique:'.CustomerGroup::class.",handle,{$this->customerGroup->id}|max:255",
+            'customerGroup.default' => 'nullable|boolean',
         ];
 
         return $rules;
     }
+
 
     /**
      * Validates the LiveWire request, updates the model and dispatches and event.
