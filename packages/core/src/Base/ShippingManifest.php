@@ -44,6 +44,16 @@ class ShippingManifest implements ShippingManifestInterface
     /**
      * {@inheritDoc}
      */
+    public function clearOptions()
+    {
+        $this->options = collect();
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getOptions(Cart $cart): Collection
     {
         app(Pipeline::class)

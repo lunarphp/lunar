@@ -17,6 +17,13 @@ interface ShippingManifestInterface
     public function addOption(ShippingOption $shippingOption);
 
     /**
+     * Remove all shipping options
+     *
+     * @return self
+     */
+    public function clearOptions();
+
+    /**
      * Return available options for a given cart.
      *
      * @param  \Lunar\Models\Cart  $cart
