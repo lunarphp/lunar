@@ -163,10 +163,6 @@ return [
     'customers.purchase-history.order_count' => 'No. Orders',
     'customers.purchase-history.last_ordered' => 'Last Ordered',
     /**
-     * Customer groups.
-     */
-    'customer-group.delete' => '',
-    /**
      * Orders.
      */
     'orders.totals.sub_total' => 'Sub Total',
