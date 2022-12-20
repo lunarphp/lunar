@@ -127,7 +127,7 @@ use Lunar\Models\Product;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
-    protected $configFiles = ['products', 'customers', 'system'];
+    protected $configFiles = ['products', 'customers', 'storefront', 'system'];
 
     protected $root = __DIR__.'/..';
 
