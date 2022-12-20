@@ -30,7 +30,7 @@ class ModelUrl extends Component
 
     public function __construct(BaseModel $model = null, bool $preview = false)
     {
-        $generators = config('lunar.storefront.model_routes', []);
+        $generators = config('lunar-hub.storefront.model_routes', []);
 
         $this->generator = $generators[get_class($model)] ?? null;
         $this->preview = $preview;

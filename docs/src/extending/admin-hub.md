@@ -307,7 +307,7 @@ Rendered on the product creation screen
 ## Model View/Preview URLs
 
 It can be useful to provide a link to a product in order for a store admin to see how it will live prior to
-it going live, or just to have a direct link to it. To enable this feature you will need to add a supporting class to `config/lunar/storefront.php`.
+it going live, or just to have a direct link to it. To enable this feature you will need to add a supporting class to `config/lunar-hub/storefront.php`.
 
 ```php
 <?php
