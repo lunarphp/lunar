@@ -97,15 +97,71 @@
                                 </div>
                             @endif
 
-                            <div class="flex flex-shrink-0">
+                            <div class="flex flex-shrink-0" x-data="{ imageBlob: null }">
                                 <button type="button"
                                         wire:click="$set('images.{{ $key }}.preview', true)">
                                     <x-hub::thumbnail :src="$image['thumbnail']" />
                                 </button>
 
-                                <x-hub::modal wire:model="images.{{ $key }}.preview">
-                                    <img src="{{ $image['original'] }}">
-                                </x-hub::modal>
+                                @if($images[$key]['preview'] )
+                                    <x-hub::modal wire:model="images.{{ $key }}.preview">
+                                        <img src="{{ $image['original'] }}">
+                                    </x-hub::modal>
+                                @endif
+
+                                @if($images[$key]['edit'])
+                                    <x-hub::modal wire:model="images.{{ $key }}.edit" max-width="5xl">
+                                        <div
+                                            x-data="{
+                                                filerobotImageEditor: null,
+
+                                                init() {
+                                                    const { TABS, TOOLS } = FilerobotImageEditor;
+                                                    const config = {
+                                                        source: imageBlob ? imageBlob : '{{ $image['original'] }}',
+                                                        Rotate: { angle: 45, componentType: 'slider' },
+                                                        theme: {
+                                                            typography: {
+                                                              fontFamily: 'Nunito, Arial',
+                                                            },
+                                                        }
+                                                    }
+
+                                                    filerobotImageEditor = new FilerobotImageEditor($el, config);
+
+                                                    filerobotImageEditor.render({
+                                                        onClose: (closingReason) => {
+                                                            @this.set('images.{{ $key }}.edit', false)
+
+                                                            filerobotImageEditor.terminate();
+                                                        },
+                                                        onBeforeSave: (imageFileInfo) => false,
+                                                        onSave: (imageData, imageDesignState) => {
+
+                                                            imageBlob = imageData.imageBase64
+
+                                                            fetch(imageData.imageBase64)
+                                                                .then(res => res.blob())
+                                                                .then(blob => {
+                                                                    const file = new File([blob], imageData.fullName,{ type: imageData.mimeType })
+
+                                                                    @this.upload('images.{{ $key }}.file', file)
+
+                                                                    @this.set('images.{{ $key }}.edit', false)
+
+                                                                    @this.set('images.{{ $key }}.thumbnail', imageData.imageBase64)
+
+                                                                    @this.set('images.{{ $key }}.original', imageData.imageBase64)
+                                                                })
+                                                        }
+                                                    });
+                                                }
+                                            }"
+
+                                        >
+                                        </div>
+                                    </x-hub::modal>
+                                @endif
                             </div>
 
                             <div class="w-full">
@@ -126,17 +182,25 @@
                                                 type="button">
                                             <x-hub::icon ref="refresh"
                                                          style="solid"
-                                                         class="text-gray-400 hover:text-indigo-500 hover:underline" />
+                                                         class="text-gray-400 hover:text-indigo-500" />
                                         </button>
                                     </x-hub::tooltip>
                                 @endif
 
                                 <button type="button"
+                                    wire:click="$set('images.{{ $key }}.edit', true)">
+                                    <x-hub::icon ref="pencil"
+                                                 style="solid"
+                                                 class="text-gray-400 hover:text-indigo-500" />
+                                </button>
+
+                                <button type="button"
                                         wire:click.prevent="removeImage('{{ $key }}')"
-                                        class="text-gray-400 hover:text-red-500 "
+                                        class="text-gray-400 hover:text-red-500"
                                         @if ($image['primary']) disabled @endif>
                                     <x-hub::icon ref="trash"
-                                                 style="solid" />
+                                                 style="solid"
+                                                 class="text-gray-400 hover:text-red-500" />
                                 </button>
                             </div>
                         </div>
