@@ -118,7 +118,7 @@ class File implements FieldType, JsonSerializable
     public function getConfig(): array
     {
         return [
-            'view'    => 'adminhub::field-types.file',
+            'view' => 'adminhub::field-types.file',
             'options' => [
                 'max_files' => 'numeric',
             ],
