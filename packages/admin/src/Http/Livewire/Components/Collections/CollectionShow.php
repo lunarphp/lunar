@@ -51,6 +51,13 @@ class CollectionShow extends Component
      */
     public \Illuminate\Support\Collection $products;
 
+    /**
+     * Whether products have been loaded.
+     *
+     * @var bool
+     */
+    public bool $productsLoaded = false;
+
     protected function getListeners()
     {
         return array_merge([
@@ -83,6 +90,8 @@ class CollectionShow extends Component
         $this->products = $this->mapProducts(
             $this->collection->load('products.variants.basePrices.currency')->products
         );
+
+        $this->productsLoaded = true;
     }
 
     /**
@@ -293,7 +302,7 @@ class CollectionShow extends Component
         });
 
         DB::transaction(function () {
-            if ($this->productCount <= 30) {
+            if ($this->productsLoaded) {
                 $this->collection->products()->sync(
                     $this->products->mapWithKeys(function ($product, $index) {
                         return [
