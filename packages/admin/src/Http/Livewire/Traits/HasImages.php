@@ -213,7 +213,11 @@ trait HasImages
                 $media->forceDelete();
             });
 
-            $variants = $owner->variants->load('images');
+            $variants = collect();
+
+            if ($owner->variants) {
+                $variants = $owner->variants->load('images');
+            }
 
             foreach ($this->images as $key => $image) {
                 $file = null;
