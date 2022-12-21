@@ -57,21 +57,47 @@
     @livewireStyles
 </head>
 
-<body class="h-full overflow-hidden antialiased bg-gray-50 dark:bg-gray-900"
-      :class="{ 'dark': darkMode }"
+<body class="antialiased bg-gray-100 dark:bg-gray-900"
       x-data="{
           showExpandedMenu: $persist(false),
           showMobileMenu: false,
-          darkMode: $persist(false),
       }">
     {!! \Lunar\Hub\LunarHub::paymentIcons() !!}
 
-    <div class="flex h-full">
-        @include('adminhub::partials.navigation.side-menu-mobile')
+    <div class="overflow-hidden">
+        <div>
+            {{-- Sidebar --}}
+            <div class="bg-gray-800 w-64 fixed inset-0">
+                <x-hub::menus.app-side />
+            </div>
 
-        @include('adminhub::partials.navigation.side-menu')
+            <div class="pl-64">
+                <main class="flex flex-1 overflow-hidden">
+                    <section class="flex-1 h-full min-w-0 overflow-y-auto lg:order-last">
+                        @include('adminhub::partials.navigation.header')
 
-        <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+                        <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
+                            @yield('main', $slot)
+                        </div>
+                    </section>
+
+                    @yield('menu')
+
+                    @if ($menu ?? false)
+                        @include('adminhub::partials.navigation.side-menu-nested')
+                    @endif
+                </main>
+            </div>
+        </div>
+
+        <div class="flex">
+
+        </div>
+        {{-- @include('adminhub::partials.navigation.side-menu-mobile') --}}
+
+        {{-- @include('adminhub::partials.navigation.side-menu') --}}
+
+        {{-- <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
             @include('adminhub::partials.navigation.header-mobile')
 
             <main class="flex flex-1 overflow-hidden">
@@ -89,7 +115,7 @@
                     @include('adminhub::partials.navigation.side-menu-nested')
                 @endif
             </main>
-        </div>
+        </div> --}}
     </div>
 
     <x-hub::notification />
