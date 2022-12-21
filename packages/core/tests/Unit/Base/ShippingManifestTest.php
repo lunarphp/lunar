@@ -115,4 +115,26 @@ class ShippingManifestTest extends TestCase
 
         $this->assertCount(1, ShippingManifest::getOptions($this->cart));
     }
+
+    /** @test */
+    public function can_clear_options()
+    {
+        $taxClass = TaxClass::factory()->create();
+
+        ShippingManifest::addOption(
+            new ShippingOption(
+                name: 'Basic Delivery',
+                description: 'Basic Delivery',
+                identifier: 'BASDEL',
+                price: new Price(500, $this->cart->currency, 1),
+                taxClass: $taxClass
+            )
+        );
+
+        $this->assertCount(1, ShippingManifest::getOptions($this->cart));
+
+        ShippingManifest::clearOptions();
+
+        $this->assertCount(0, ShippingManifest::getOptions($this->cart));
+    }
 }
