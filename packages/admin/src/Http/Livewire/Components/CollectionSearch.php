@@ -114,7 +114,7 @@ class CollectionSearch extends Component
      */
     public function getResultsProperty()
     {
-        if (!$this->searchTerm) {
+        if (! $this->searchTerm) {
             return null;
         }
 
