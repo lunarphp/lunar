@@ -21,7 +21,7 @@
     class="{{ $on ? 'bg-green-500' : 'bg-gray-200' }} relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
     role="switch"
     aria-checked="false"
-    @if($disabled ?? true) disabled @endif
+    @disabled($disabled ?? true)
     x-on:click="toggle"
     :class="{
         'bg-green-500': checked == onValue,
