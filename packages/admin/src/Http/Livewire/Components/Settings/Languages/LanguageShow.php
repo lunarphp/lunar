@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Languages;
 
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Language;
@@ -33,7 +34,12 @@ class LanguageShow extends Component
     {
         return [
             'language.name' => 'required|string|max:255',
-            'language.code' => 'required|string|max:255',
+            'language.code' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique(Language::class, 'code')->ignore($this->language->id)
+            ],
             'language.default' => 'nullable|boolean',
         ];
     }
