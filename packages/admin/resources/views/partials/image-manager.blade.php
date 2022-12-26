@@ -131,13 +131,15 @@
                                     </x-hub::tooltip>
                                 @endif
 
-                                <button type="button"
-                                        wire:click.prevent="removeImage('{{ $key }}')"
-                                        class="text-gray-400 hover:text-red-500 "
-                                        @if ($image['primary']) disabled @endif>
-                                    <x-hub::icon ref="trash"
-                                                 style="solid" />
-                                </button>
+                                <x-hub::tooltip :text="$image['primary'] ? __('adminhub::partials.image-manager.delete_primary') : __('adminhub::partials.image-manager.delete_row_btn')">
+                                    <button type="button"
+                                            wire:click.prevent="removeImage('{{ $key }}')"
+                                            class="text-gray-400 hover:text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            @disabled($image['primary'])>
+                                        <x-hub::icon ref="trash"
+                                                     style="solid" />
+                                    </button>
+                                </x-hub::tooltip>
                             </div>
                         </div>
                     </div>
