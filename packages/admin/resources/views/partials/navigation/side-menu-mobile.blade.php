@@ -2,7 +2,7 @@
     <div class="flex items-center justify-between">
         <a href="{{ route('hub.index') }}"
            class="block">
-           <x-hub::branding.logo iconOnly />
+            <x-hub::branding.logo iconOnly />
         </a>
 
         <button type="button"
@@ -15,16 +15,22 @@
     <div class="mt-8">
         <x-hub::menu handle="sidebar"
                      current="{{ request()->route()->getName() }}">
-            <ul class="space-y-2">
+            <ul class="px-2 space-y-2">
                 @foreach ($component->items as $item)
-                    <li x-data="{ showAccordionMenu: false }">
+                    <li class="relative">
                         <a href="{{ route($item->route) }}"
                            @class([
-                               'menu-link',
-                               'menu-link--active' => request()->routeIs($item->route),
-                               'menu-link--inactive' => !request()->routeIs($item->route),
+                               'menu-link group',
+                               'menu-link--active' => $item->isActive(
+                                   $component->attributes->get('current')
+                               ),
+                               'menu-link--inactive !text-gray-700' => !$item->isActive(
+                                   $component->attributes->get('current')
+                               ),
                            ])>
-                            {!! $item->renderIcon('w-5 h-5 shrink-0') !!}
+                            <span>
+                                {!! $item->renderIcon('w-5 h-5') !!}
+                            </span>
 
                             <span class="text-sm font-medium">
                                 {{ $item->name }}
@@ -32,105 +38,131 @@
                         </a>
                     </li>
                 @endforeach
-            </ul>
-        </x-hub::menu>
 
-        <div class="pt-4 mt-4 border-t border-gray-100">
-            @if (Auth::user()->can('settings'))
-                <div x-data="{ showSettingsMenu: false }"
-                     x-init="showSettingsMenu = '{{ Str::contains(request()->url(), 'settings') }}'">
-                    <a href="{{ route('hub.settings') }}"
-                       class="justify-between menu-link menu-link--inactive">
-                        <div class="flex gap-2">
-                            {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5 shrink-0') !!}
+                @foreach ($component->groups as $group)
+                    <li class="relative">
+                        <header class="text-sm font-semibold text-gray-600">
+                            {{ $group->name }}
+                        </header>
 
-                            <span class="text-sm font-medium">
-                                {{ __('adminhub::global.settings') }}
-                            </span>
-                        </div>
+                        @if (count($group->getItems()))
+                            <ul class="mt-1 space-y-1">
+                                @foreach ($group->getItems() as $item)
+                                    <li @class(['relative', 'pb-4' => $loop->last])>
+                                        <a href="{{ route($item->route) }}"
+                                           @class([
+                                               'menu-link group',
+                                               'menu-link--active' => $item->isActive(
+                                                   $component->attributes->get('current')
+                                               ),
+                                               'menu-link--inactive !text-gray-700' => !$item->isActive(
+                                                   $component->attributes->get('current')
+                                               ),
+                                           ])>
+                                            <span>
+                                                {!! $item->renderIcon('w-5 h-5') !!}
+                                            </span>
 
-                        <button x-on:click.prevent="showSettingsMenu = !showSettingsMenu"
-                                class="p-0.5 text-gray-600 bg-white rounded hover:text-gray-700">
-                            <span class="block transition shrink-0"
-                                  :class="{ '-rotate-180': showSettingsMenu }">
-                                <x-hub::icon ref="chevron-down"
-                                             class="w-4 h-4"
-                                             style="solid" />
-                            </span>
-                        </button>
-                    </a>
+                                            <span class="text-sm font-medium">
+                                                {{ $item->name }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
 
-                    <div x-cloak
-                         x-show="showSettingsMenu"
-                         class="mt-4 ml-4">
-                        <x-hub::menu handle="settings"
-                                     current="{{ request()->route()->getName() }}">
-                            <div class="space-y-4">
-                                @if (count($component->items))
-                                    <div>
-                                        <ul class="space-y-2">
-                                            @foreach ($component->items as $item)
-                                                <li>
-                                                    <a href="{{ route($item->route) }}"
-                                                       @class([
-                                                           'menu-link',
-                                                           'menu-link--active' => $item->isActive(
-                                                               $component->attributes->get('current')
-                                                           ),
-                                                           'menu-link--inactive' => !$item->isActive(
-                                                               $component->attributes->get('current')
-                                                           ),
-                                                       ])>
-                                                        {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
+                        @if (count($group->getSections()))
+                            <ul x-cloak
+                                class="mt-1 space-y-1">
+                                @foreach ($group->getSections() as $section)
+                                    <li x-data="{ showSubMenu: false }"
+                                        class="relative">
+                                        <a href="{{ route($section->route) }}"
+                                           @class([
+                                               'menu-link group',
+                                               'menu-link--active' => $section->isActive(
+                                                   $component->attributes->get('current')
+                                               ),
+                                               'menu-link--inactive !text-gray-700' => !$section->isActive(
+                                                   $component->attributes->get('current')
+                                               ),
+                                           ])>
+                                            <span>
+                                                {!! $section->renderIcon('w-5 h-5') !!}
+                                            </span>
 
-                                                        <span class="text-sm font-medium">
-                                                            {{ $item->name }}
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-
-                                @forelse ($component->sections as $section)
-                                    @if (count($section->getItems()))
-                                        <div>
-                                            <header class="text-sm font-semibold text-gray-600">
+                                            <span class="text-sm font-medium">
                                                 {{ $section->name }}
-                                            </header>
+                                            </span>
 
-                                            <ul class="mt-2 space-y-2">
-                                                @foreach ($section->getItems() as $item)
-                                                    <li>
-                                                        <a href="{{ route($item->route) }}"
-                                                           @class([
-                                                               'flex items-center gap-2 p-2 rounded text-gray-500',
-                                                               'bg-blue-50 text-blue-700 hover:text-blue-600' => $item->isActive(
-                                                                   $component->attributes->get('current')
-                                                               ),
-                                                               'hover:bg-blue-50 hover:text-blue-700' => !$item->isActive(
-                                                                   $component->attributes->get('current')
-                                                               ),
-                                                           ])>
-                                                            {!! $item->renderIcon('shrink-0 w-5 h-5') !!}
+                                            @if (count($section->getItems()))
+                                                <button x-on:click.prevent="showSubMenu = !showSubMenu"
+                                                        class="p-1 ml-auto text-gray-600 bg-white border border-gray-200 rounded">
+                                                    <span :class="{ '-rotate-180': showSubMenu }"
+                                                          class="block transition">
+                                                        <x-hub::icon ref="chevron-down"
+                                                                     class="w-3 h-3" />
+                                                    </span>
+                                                </button>
+                                            @endif
+                                        </a>
 
-                                                            <span class="text-sm font-medium">
+                                        @if (count($section->getItems()))
+                                            <div x-show="showSubMenu"
+                                                 class="bg-white">
+                                                <ul class="space-y-1"
+                                                    :class="{
+                                                        'border-l border-gray-100 ml-[18px] pl-[18px] mt-1': showSubMenu,
+                                                    }">
+                                                    @foreach ($section->getItems() as $item)
+                                                        <li>
+                                                            <a href="{{ route($item->route) }}"
+                                                               @class([
+                                                                   'flex text-sm font-medium',
+                                                                   'text-blue-600 hover:text-blue-500' => $item->isActive(
+                                                                       $component->attributes->get('current')
+                                                                   ),
+                                                                   'text-gray-500 hover:text-blue-600' => !$item->isActive(
+                                                                       $component->attributes->get('current')
+                                                                   ),
+                                                               ])>
                                                                 {{ $item->name }}
-                                                            </span>
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                @empty
-                                @endforelse
-                            </div>
-                        </x-hub::menu>
-                    </div>
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
+
+            @if (Auth::user()->can('settings'))
+                <div class="pt-4 mt-4 border-t border-gray-100">
+                    <a href="{{ route('hub.settings') }}"
+                       @class([
+                           'menu-link group',
+                           'menu-link--active' => Str::contains(request()->url(), 'settings'),
+                           'menu-link--inactive !text-gray-700' => !Str::contains(
+                               request()->url(),
+                               'settings'
+                           ),
+                       ])>
+                        <span>
+                            {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
+                        </span>
+
+                        <span class="text-sm font-medium">
+                            {{ __('adminhub::global.settings') }}
+                        </span>
+                    </a>
                 </div>
             @endif
-        </div>
+        </x-hub::menu>
     </div>
 </x-hub::slideover-simple>
