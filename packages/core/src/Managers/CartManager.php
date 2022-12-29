@@ -304,14 +304,14 @@ class CartManager
     public function associate(User $user, $policy = 'merge')
     {
         if ($policy == 'merge') {
-            $userCart = Cart::whereUserId($user->getKey())->unMerged()->latest()->first();
+            $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();
             if ($userCart) {
                 $this->cart = app(MergeCart::class)->execute($userCart, $this->cart);
             }
         }
 
         if ($policy == 'override') {
-            $userCart = Cart::whereUserId($user->getKey())->unMerged()->latest()->first();
+            $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();
             if ($userCart && $userCart->id != $this->cart->id) {
                 $userCart->update([
                     'merged_id' => $userCart->id,
