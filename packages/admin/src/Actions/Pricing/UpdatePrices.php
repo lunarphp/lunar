@@ -60,7 +60,7 @@ class UpdatePrices
             'customer_group_id' => $groupId,
             'tier' => $tier,
             'priceable_id' => $owner->id,
-            'priceable_type' => get_class($owner),
+            'priceable_type' => $owner->getMorphClass(),
         ]);
 
         $priceModel->save();
