@@ -188,7 +188,7 @@ trait HasImages
             $this->images[$index]['position'] = $item['order'];
         }
 
-        $this->images = collect($this->images)->sortBy('position')->values()->toArray();
+        $this->images = collect($this->images)->sortBy('position')->toArray();
     }
 
     /**
