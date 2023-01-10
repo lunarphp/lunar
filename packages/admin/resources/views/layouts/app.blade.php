@@ -52,7 +52,6 @@
           menuCollapsed: $persist(false),
           showMobileMenu: false,
           toggleMenu () {
-          console.log(this.showMobileMenu)
             this.menuCollapsed = !this.menuCollapsed
             this.showMobileMenu = !this.showMobileMenu
           }
