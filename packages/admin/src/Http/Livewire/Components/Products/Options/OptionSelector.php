@@ -43,7 +43,15 @@ class OptionSelector extends Component
      *
      * @var array
      */
-    protected $listeners = ['productOptionCreated' => 'selectNewOption'];
+    protected $listeners = [
+        'productOptionCreated' => 'selectNewOption',
+        'toggleOptionSelector' => 'toggleOptionSelector',
+    ];
+
+    public function toggleOptionSelector($toggle = null)
+    {
+        $this->mainPanelVisible = $toggle === null ? !$this->mainPanelVisible : $toggle;
+    }
 
     public function updatedMainPanelVisible($val)
     {
