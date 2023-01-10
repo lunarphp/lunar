@@ -2988,7 +2988,7 @@ html {
   -moz-tab-size: 4; /* 3 */
   -o-tab-size: 4;
      tab-size: 4; /* 3 */
-  font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+  font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
   font-feature-settings: normal; /* 5 */
 }
 
@@ -3692,6 +3692,12 @@ video {
 .top-8 {
   top: 2rem;
 }
+.top-\[14px\] {
+  top: 14px;
+}
+.left-\[40px\] {
+  left: 40px;
+}
 .top-2 {
   top: 0.5rem;
 }
@@ -3742,6 +3748,15 @@ video {
 }
 .left-2 {
   left: 0.5rem;
+}
+.top-64 {
+  top: 16rem;
+}
+.top-32 {
+  top: 8rem;
+}
+.top-16 {
+  top: 4rem;
 }
 .z-50 {
   z-index: 50;
@@ -3877,6 +3892,9 @@ video {
 .mr-2 {
   margin-right: 0.5rem;
 }
+.-mr-\[16px\] {
+  margin-right: -16px;
+}
 .-ml-\[5px\] {
   margin-left: -5px;
 }
@@ -3919,6 +3937,9 @@ video {
 .-mt-24 {
   margin-top: -6rem;
 }
+.ml-\[14px\] {
+  margin-left: 14px;
+}
 .mb-24 {
   margin-bottom: 6rem;
 }
@@ -3927,21 +3948,6 @@ video {
 }
 .ml-7 {
   margin-left: 1.75rem;
-}
-.ml-\[22px\] {
-  margin-left: 22px;
-}
-.ml-\[10px\] {
-  margin-left: 10px;
-}
-.ml-\[12px\] {
-  margin-left: 12px;
-}
-.ml-\[13px\] {
-  margin-left: 13px;
-}
-.ml-\[14px\] {
-  margin-left: 14px;
 }
 .block {
   display: block;
@@ -4060,6 +4066,9 @@ video {
 .w-16 {
   width: 4rem;
 }
+.w-64 {
+  width: 16rem;
+}
 .w-12 {
   width: 3rem;
 }
@@ -4068,9 +4077,6 @@ video {
 }
 .w-3 {
   width: 0.75rem;
-}
-.w-64 {
-  width: 16rem;
 }
 .w-7 {
   width: 1.75rem;
@@ -4119,6 +4125,12 @@ video {
 }
 .w-44 {
   width: 11rem;
+}
+.w-\[200px\] {
+  width: 200px;
+}
+.w-\[120px\] {
+  width: 120px;
 }
 .min-w-full {
   min-width: 100%;
@@ -4201,6 +4213,9 @@ video {
 .origin-top-right {
   transform-origin: top right;
 }
+.origin-top {
+  transform-origin: top;
+}
 .origin-bottom-right {
   transform-origin: bottom right;
 }
@@ -4234,6 +4249,10 @@ video {
 }
 .-translate-y-px {
   --tw-translate-y: -1px;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.translate-x-\[22px\] {
+  --tw-translate-x: 22px;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .-rotate-180 {
@@ -4535,6 +4554,10 @@ video {
 .rounded-none {
   border-radius: 0px;
 }
+.rounded-r {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
 .rounded-b {
   border-bottom-right-radius: 0.25rem;
   border-bottom-left-radius: 0.25rem;
@@ -4626,6 +4649,14 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(248 113 113 / var(--tw-border-opacity));
 }
+.border-gray-900 {
+  --tw-border-opacity: 1;
+  border-color: rgb(17 24 39 / var(--tw-border-opacity));
+}
+.border-gray-700 {
+  --tw-border-opacity: 1;
+  border-color: rgb(55 65 81 / var(--tw-border-opacity));
+}
 .border-red-200 {
   --tw-border-opacity: 1;
   border-color: rgb(254 202 202 / var(--tw-border-opacity));
@@ -4654,6 +4685,18 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(134 239 172 / var(--tw-border-opacity));
 }
+.border-gray-800 {
+  --tw-border-opacity: 1;
+  border-color: rgb(31 41 55 / var(--tw-border-opacity));
+}
+.border-blue-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(37 99 235 / var(--tw-border-opacity));
+}
+.border-gray-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(75 85 99 / var(--tw-border-opacity));
+}
 .border-blue-500 {
   --tw-border-opacity: 1;
   border-color: rgb(59 130 246 / var(--tw-border-opacity));
@@ -4665,22 +4708,6 @@ video {
 .border-green-500 {
   --tw-border-opacity: 1;
   border-color: rgb(34 197 94 / var(--tw-border-opacity));
-}
-.border-gray-900 {
-  --tw-border-opacity: 1;
-  border-color: rgb(17 24 39 / var(--tw-border-opacity));
-}
-.border-gray-700 {
-  --tw-border-opacity: 1;
-  border-color: rgb(55 65 81 / var(--tw-border-opacity));
-}
-.border-blue-600 {
-  --tw-border-opacity: 1;
-  border-color: rgb(37 99 235 / var(--tw-border-opacity));
-}
-.border-gray-600 {
-  --tw-border-opacity: 1;
-  border-color: rgb(75 85 99 / var(--tw-border-opacity));
 }
 .bg-blue-50 {
   --tw-bg-opacity: 1;
@@ -4728,6 +4755,10 @@ video {
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+.bg-gray-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 }
 .bg-blue-200 {
   --tw-bg-opacity: 1;
@@ -4816,20 +4847,16 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(99 102 241 / var(--tw-bg-opacity));
 }
+.bg-gray-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
+}
 .bg-white\/75 {
   background-color: rgb(255 255 255 / 0.75);
 }
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
-}
-.bg-red-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
-}
-.bg-gray-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 }
 .bg-opacity-75 {
   --tw-bg-opacity: 0.75;
@@ -4920,10 +4947,6 @@ video {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
-.py-16 {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
 .px-6 {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -4960,6 +4983,18 @@ video {
   padding-top: 0.125rem;
   padding-bottom: 0.125rem;
 }
+.px-12 {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.px-24 {
+  padding-left: 6rem;
+  padding-right: 6rem;
+}
 .pl-3 {
   padding-left: 0.75rem;
 }
@@ -4974,6 +5009,12 @@ video {
 }
 .pb-20 {
   padding-bottom: 5rem;
+}
+.pl-64 {
+  padding-left: 16rem;
+}
+.pl-16 {
+  padding-left: 4rem;
 }
 .pr-0 {
   padding-right: 0px;
@@ -5047,6 +5088,9 @@ video {
 .pr-9 {
   padding-right: 2.25rem;
 }
+.pl-\[21px\] {
+  padding-left: 21px;
+}
 .pl-6 {
   padding-left: 1.5rem;
 }
@@ -5058,15 +5102,6 @@ video {
 }
 .pb-28 {
   padding-bottom: 7rem;
-}
-.pl-64 {
-  padding-left: 16rem;
-}
-.pl-\[22px\] {
-  padding-left: 22px;
-}
-.pl-\[21px\] {
-  padding-left: 21px;
 }
 .text-left {
   text-align: left;
@@ -5323,11 +5358,6 @@ video {
   --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
-.shadow-md {
-  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
 .shadow-blue-500\/25 {
   --tw-shadow-color: rgb(59 130 246 / 0.25);
   --tw-shadow: var(--tw-shadow-colored);
@@ -5484,7 +5514,7 @@ button.SfxButton-root {
   border-radius: 0.5rem;
   border-width: 1px;
   border-color: transparent;
-  font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+  font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -5533,7 +5563,7 @@ button.FIE_topbar-save-button .SfxButton-Label {
 }
 
 .SfxButton-Label {
-  font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+  font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
 }
 
 div.FIE_tabs {
@@ -5723,18 +5753,6 @@ div.FIE_resize-tool-options .SfxInput-root {
   --tw-bg-opacity: 1;
   background-color: rgb(240 253 244 / var(--tw-bg-opacity));
 }
-.hover\:bg-gray-400:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
-}
-.hover\:bg-gray-700:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
-}
-.hover\:bg-gray-800:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-}
 .hover\:text-gray-600:hover {
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity));
@@ -5775,21 +5793,21 @@ div.FIE_resize-tool-options .SfxInput-root {
   --tw-text-opacity: 1;
   color: rgb(88 28 135 / var(--tw-text-opacity));
 }
-.hover\:text-blue-700:hover {
-  --tw-text-opacity: 1;
-  color: rgb(29 78 216 / var(--tw-text-opacity));
-}
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
-.hover\:text-red-600:hover {
+.hover\:text-blue-700:hover {
   --tw-text-opacity: 1;
-  color: rgb(220 38 38 / var(--tw-text-opacity));
+  color: rgb(29 78 216 / var(--tw-text-opacity));
 }
 .hover\:text-gray-300:hover {
   --tw-text-opacity: 1;
   color: rgb(209 213 219 / var(--tw-text-opacity));
+}
+.hover\:text-red-600:hover {
+  --tw-text-opacity: 1;
+  color: rgb(220 38 38 / var(--tw-text-opacity));
 }
 .hover\:underline:hover {
   text-decoration-line: underline;
@@ -5871,6 +5889,9 @@ div.FIE_resize-tool-options .SfxInput-root {
 }
 .group:hover .group-hover\:\!block {
   display: block !important;
+}
+.group:hover .group-hover\:block {
+  display: block;
 }
 .group:hover .group-hover\:text-gray-500 {
   --tw-text-opacity: 1;
@@ -6289,11 +6310,6 @@ div.FIE_resize-tool-options .SfxInput-root {
 
   .md\:border-hidden {
     border-style: hidden;
-  }
-
-  .md\:px-8 {
-    padding-left: 2rem;
-    padding-right: 2rem;
   }
 
   .md\:text-xl {

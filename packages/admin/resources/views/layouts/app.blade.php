@@ -14,8 +14,8 @@
     <script defer
           src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js"></script>
 
-    <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;500;700;900&display=swap"
-          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet" />
 
     @livewireTableStyles
 
@@ -45,7 +45,7 @@
             src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
 
     <script>
-        JSON.parse(localStorage.getItem('_x_showExpandedMenu')) ?
+        JSON.parse(localStorage.getItem('_x_menuCollapsed')) ?
             document.documentElement.classList.add('app-sidemenu-expanded') :
             document.documentElement.classList.remove('app-sidemenu-expanded');
 
@@ -59,23 +59,26 @@
 
 <body class="antialiased bg-gray-100 dark:bg-gray-900"
       x-data="{
-          showExpandedMenu: $persist(false),
+          menuCollapsed: true,
           showMobileMenu: false,
       }">
     {!! \Lunar\Hub\LunarHub::paymentIcons() !!}
 
-    <div class="overflow-hidden">
+    <div>
         <div>
-            {{-- Sidebar --}}
-            <div class="bg-gray-800 w-64 fixed inset-0">
+            @include('adminhub::partials.navigation.header')
+
+            <div
+                class="bg-gray-800 fixed inset-0 top-16 w-64"
+                x-cloak
+            >
                 <x-hub::menus.app-side />
             </div>
 
             <div class="pl-64">
+
                 <main class="flex flex-1 overflow-hidden">
                     <section class="flex-1 h-full min-w-0 overflow-y-auto lg:order-last">
-                        @include('adminhub::partials.navigation.header')
-
                         <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
                             @yield('main', $slot)
                         </div>
@@ -90,9 +93,6 @@
             </div>
         </div>
 
-        <div class="flex">
-
-        </div>
         {{-- @include('adminhub::partials.navigation.side-menu-mobile') --}}
 
         {{-- @include('adminhub::partials.navigation.side-menu') --}}

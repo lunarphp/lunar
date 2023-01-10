@@ -12,10 +12,13 @@ class Link extends Component
 
     public $active = false;
 
-    public function __construct(MenuLink|MenuSection $item, $active = false)
+    public $hasSubItems = false;
+
+    public function __construct(MenuLink|MenuSection $item, $active = false, $hasSubItems = false)
     {
         $this->item = $item;
         $this->active = $active;
+        $this->hasSubItems = $hasSubItems;
     }
 
     /**

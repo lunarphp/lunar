@@ -114,7 +114,41 @@ class SidebarMenu
                 ->route('hub.discounts.index')
                 ->icon('ticket');
         });
-
+        $salesGroup->addItem(function ($menuItem) {
+            $menuItem
+                ->name(__('adminhub::menu.sidebar.discounts'))
+                ->handle('hub.discounts')
+                ->route('hub.discounts.index')
+                ->icon('ticket');
+        });
+        $salesGroup->addItem(function ($menuItem) {
+            $menuItem
+                ->name(__('adminhub::menu.sidebar.discounts'))
+                ->handle('hub.discounts')
+                ->route('hub.discounts.index')
+                ->icon('ticket');
+        });
+        $salesGroup->addItem(function ($menuItem) {
+            $menuItem
+                ->name(__('adminhub::menu.sidebar.discounts'))
+                ->handle('hub.discounts')
+                ->route('hub.discounts.index')
+                ->icon('ticket');
+        });
+        $salesGroup->addItem(function ($menuItem) {
+            $menuItem
+                ->name(__('adminhub::menu.sidebar.discounts'))
+                ->handle('hub.discounts')
+                ->route('hub.discounts.index')
+                ->icon('ticket');
+        });
+        $salesGroup->addItem(function ($menuItem) {
+            $menuItem
+                ->name(__('adminhub::menu.sidebar.discounts'))
+                ->handle('hub.discounts')
+                ->route('hub.discounts.index')
+                ->icon('ticket');
+        });
         $salesGroup->addItem(function ($menuItem) {
             $menuItem
                 ->name(__('adminhub::menu.sidebar.discounts'))
@@ -139,85 +173,7 @@ class SidebarMenu
                 ->icon('ticket');
         });
 
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
 
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
-
-        $salesGroup->addItem(function ($menuItem) {
-            $menuItem
-                ->name(__('adminhub::menu.sidebar.discounts'))
-                ->handle('hub.discounts')
-                ->route('hub.discounts.index')
-                ->icon('ticket');
-        });
 
         return $this;
     }

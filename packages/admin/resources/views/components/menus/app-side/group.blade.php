@@ -1,7 +1,7 @@
 <div class="mt-4 space-y-2">
     <header
         x-cloak
-        x-show="showExpandedMenu"
+        x-show="!menuCollapsed"
         class="text-sm font-semibold text-gray-400"
     >
         {{ $group->name }}
