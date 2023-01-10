@@ -1,6 +1,6 @@
 <div class="mt-4 space-y-2">
     <header
-        class="text-sm font-semibold text-gray-600"
+        class="text-sm font-semibold text-gray-600 px-2"
     >
         {{ $group->name }}
     </header>

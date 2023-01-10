@@ -12,20 +12,6 @@
   display: none;
 }
 
-@layer components {
-  .menu-link {
-    @apply relative flex items-center gap-2 p-2 rounded;
-  }
-
-  .menu-link--active {
-    @apply bg-blue-50 text-blue-700 dark:bg-gray-800 dark:text-white;
-  }
-
-  .menu-link--inactive {
-    @apply text-gray-500 hover:bg-blue-50 hover:text-blue-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white;
-  }
-}
-
 @layer utilities {
   .masonry {
     column-count: 4;
@@ -47,14 +33,6 @@
 
 .app-sidemenu-expanded .app-sidemenu {
   @apply w-64;
-}
-
-.app-expanded-menu [x-show='showExpandedMenu'] {
-  @apply block;
-}
-
-.app-expanded-menu [x-show='!showExpandedMenu'] {
-  @apply hidden;
 }
 
 p > code {
