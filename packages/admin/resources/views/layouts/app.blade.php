@@ -44,24 +44,20 @@
     <script defer
             src="https://unpkg.com/alpinejs@3.8.1/dist/cdn.min.js"></script>
 
-    <script>
-        JSON.parse(localStorage.getItem('_x_menuCollapsed')) ?
-            document.documentElement.classList.add('app-sidemenu-expanded') :
-            document.documentElement.classList.remove('app-sidemenu-expanded');
-
-        document.addEventListener('alpine:init', () => {
-            document.documentElement.classList.remove('app-sidemenu-expanded');
-        })
-    </script>
-
     @livewireStyles
 </head>
 
 <body class="antialiased bg-gray-100 dark:bg-gray-900"
       x-data="{
-          menuCollapsed: true,
+          menuCollapsed: $persist(false),
           showMobileMenu: false,
-      }">
+          toggleMenu () {
+          console.log(this.showMobileMenu)
+            this.menuCollapsed = !this.menuCollapsed
+            this.showMobileMenu = !this.showMobileMenu
+          }
+      }"
+    >
     {!! \Lunar\Hub\LunarHub::paymentIcons() !!}
 
     <div>
@@ -69,17 +65,23 @@
             @include('adminhub::partials.navigation.header')
 
             <div
-                class="bg-gray-800 fixed inset-0 top-16 w-64"
+                :class="{
+                    'bg-gray-800 fixed inset-0 z-50 top-[48px] w-64': true,
+                    '-ml-64 md:ml-0': !showMobileMenu,
+                    'md:-ml-64': menuCollapsed
+                }"
                 x-cloak
             >
                 <x-hub::menus.app-side />
             </div>
 
-            <div class="pl-64">
+            <div :class="{
+                'md:pl-64': !menuCollapsed
+            }" x-cloak>
 
-                <main class="flex flex-1 overflow-hidden">
-                    <section class="flex-1 h-full min-w-0 overflow-y-auto lg:order-last">
-                        <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
+                <main class="flex flex-1 overflow-hidden mt-12">
+                    <section class="flex-1 h-full min-w-0 lg:order-last">
+                        <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-6">
                             @yield('main', $slot)
                         </div>
                     </section>
@@ -92,30 +94,6 @@
                 </main>
             </div>
         </div>
-
-        {{-- @include('adminhub::partials.navigation.side-menu-mobile') --}}
-
-        {{-- @include('adminhub::partials.navigation.side-menu') --}}
-
-        {{-- <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
-            @include('adminhub::partials.navigation.header-mobile')
-
-            <main class="flex flex-1 overflow-hidden">
-                <section class="flex-1 h-full min-w-0 overflow-y-auto lg:order-last">
-                    @include('adminhub::partials.navigation.header')
-
-                    <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
-                        @yield('main', $slot)
-                    </div>
-                </section>
-
-                @yield('menu')
-
-                @if ($menu ?? false)
-                    @include('adminhub::partials.navigation.side-menu-nested')
-                @endif
-            </main>
-        </div> --}}
     </div>
 
     <x-hub::notification />

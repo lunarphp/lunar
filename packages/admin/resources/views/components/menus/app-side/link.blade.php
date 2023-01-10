@@ -1,21 +1,17 @@
 <div
     @class([
-        'group flex',
+        'group flex space-x-2',
         'justify-between items-center' => $hasSubItems
     ])
 >
     <a href="{{ route($item->route) }}"
        @class([
-           'items-center flex space-x-2 text-sm rounded',
-           'text-white font-semibold' => $active,
-           'text-gray-300 hover:text-white' => !$active,
+           'flex items-center gap-2 p-2 rounded w-full text-sm font-medium',
+           'bg-blue-50 text-blue-700' => $active,
+           'text-gray-500 hover:text-gray-900' => !$active,
        ])
     >
-        <span x-cloak
-              @class([
-                'rounded p-1',
-                'bg-blue-600' => $active,
-              ])>
+        <span x-cloak>
             {!! $item->renderIcon('w-5 h-5') !!}
         </span>
 
@@ -27,9 +23,8 @@
 
     @if ($hasSubItems)
         <button x-cloak
-                x-show="!menuCollapsed"
                 x-on:click.prevent="showSubMenu = !showSubMenu"
-                class="text-gray-300 hover:text-white bg-gray-700 rounded border border-gray-800 p-1">
+                class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 bg-white rounded border border-gray-200 p-1">
             <span :class="{ '-rotate-90': showSubMenu }"
                   class="block transition">
                 <x-hub::icon ref="chevron-left"

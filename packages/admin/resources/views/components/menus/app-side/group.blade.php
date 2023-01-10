@@ -1,8 +1,6 @@
 <div class="mt-4 space-y-2">
     <header
-        x-cloak
-        x-show="!menuCollapsed"
-        class="text-sm font-semibold text-gray-400"
+        class="text-sm font-semibold text-gray-600"
     >
         {{ $group->name }}
     </header>
