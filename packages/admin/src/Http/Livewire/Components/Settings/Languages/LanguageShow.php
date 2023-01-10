@@ -34,12 +34,7 @@ class LanguageShow extends Component
     {
         return [
             'language.name' => 'required|string|max:255',
-            'language.code' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique(Language::class, 'code')->ignore($this->language->id)
-            ],
+            'language.code' => 'required|string|max:255|unique:'.Language::class.',code,'.$this->language->id,
             'language.default' => 'nullable|boolean',
         ];
     }
