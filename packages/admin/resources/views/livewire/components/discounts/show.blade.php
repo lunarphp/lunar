@@ -12,6 +12,7 @@
             {{ $discount->name }}
         </h1>
     </div>
+    {{ json_encode($errors->all()) }}
     <form action="#"
       method="POST"
       wire:submit.prevent="save">
