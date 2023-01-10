@@ -50,7 +50,6 @@ class CustomerGroupShow extends Component
         return $rules;
     }
 
-
     /**
      * Validates the LiveWire request, updates the model and dispatches and event.
      *

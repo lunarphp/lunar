@@ -39,7 +39,7 @@ class ModelUrl extends Component
 
     public function getUrl()
     {
-        if (!$this->generator) {
+        if (! $this->generator) {
             return;
         }
 

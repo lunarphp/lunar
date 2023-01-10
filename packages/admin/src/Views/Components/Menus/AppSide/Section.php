@@ -3,7 +3,6 @@
 namespace Lunar\Hub\Views\Components\Menus\AppSide;
 
 use Illuminate\View\Component;
-use Lunar\Hub\Menu\MenuGroup;
 use Lunar\Hub\Menu\MenuSection;
 
 class Section extends Component

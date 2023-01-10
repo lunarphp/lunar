@@ -107,7 +107,6 @@ class SidebarMenu
                 ->icon('ticket');
         });
 
-
         return $this;
     }
 }
