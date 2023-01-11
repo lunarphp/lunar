@@ -111,7 +111,6 @@ use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use Lunar\Hub\Http\Livewire\Components\Tags;
 use Lunar\Hub\Http\Livewire\Dashboard;
 use Lunar\Hub\Http\Livewire\HubLicense;
-use Lunar\Hub\Http\Livewire\Sidebar;
 use Lunar\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use Lunar\Hub\Menu\MenuRegistry;
 use Lunar\Hub\Menu\OrderActionsMenu;
@@ -277,7 +276,6 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerGlobalComponents()
     {
-        Livewire::component('sidebar', Sidebar::class);
         Livewire::component('dashboard', Dashboard::class);
         Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
