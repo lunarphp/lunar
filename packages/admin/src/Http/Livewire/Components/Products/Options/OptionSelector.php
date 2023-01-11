@@ -48,6 +48,11 @@ class OptionSelector extends Component
         'toggleOptionSelector' => 'toggleOptionSelector',
     ];
 
+    public function mount($openPanel = true)
+    {
+        $this->mainPanelVisible = $openPanel;
+    }
+
     public function toggleOptionSelector($toggle = null)
     {
         $this->mainPanelVisible = $toggle === null ? !$this->mainPanelVisible : $toggle;
