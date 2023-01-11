@@ -5,11 +5,13 @@ namespace Lunar\Hub\Http\Livewire\Components\FieldTypes;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Lunar\Models\Asset;
 
 class FileFieldtype extends Component
 {
     use WithFileUploads;
+    use WithPagination;
 
     /**
      * Whether to show the uploader.
@@ -89,6 +91,11 @@ class FileFieldtype extends Component
         $this->showUploader = false;
     }
 
+    public function updatedshowUploader()
+    {
+        $this->resetPage('assetsPage');
+    }
+
     /**
      * Return the available assets.
      *
@@ -96,7 +103,7 @@ class FileFieldtype extends Component
      */
     public function getAssetsProperty()
     {
-        return Asset::get();
+        return Asset::paginate(8, ['*'], 'assetsPage');
     }
 
     /**

@@ -90,6 +90,14 @@
                 @empty
                     {{ __('adminhub::fieldtypes.file.uploads_empty') }}
                 @endforelse
+
+
+
+
+            </div>
+
+            <div class="mt-4">
+                {{ $this->assets->links() }}
             </div>
         </x-slot>
 
