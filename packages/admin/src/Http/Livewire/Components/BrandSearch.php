@@ -119,9 +119,7 @@ class BrandSearch extends Component
             return null;
         }
 
-        return Brand::query()->where('name', 'like', '%'.$this->searchTerm.'%')->paginate($this->maxResults);
-
-        //return Brand::search($this->searchTerm)->paginate($this->maxResults);
+        return Brand::search($this->searchTerm)->paginate($this->maxResults);
     }
 
     public function triggerSelect()
