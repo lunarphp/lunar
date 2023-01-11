@@ -38,7 +38,7 @@
           <span class="block">{{ $address->city }}</span>
           <span class="block">{{ $address->state }}</span>
           <span class="block">{{ $address->postcode }}</span>
-          <span class="block">{{ $address->country->name }}</span>
+          <span class="block">{{ $address->country?->name }}</span>
           <span class="block">{{ $address->contact_email }}</span>
           <span class="block">{{ $address->contact_phone }}</span>
         </div>

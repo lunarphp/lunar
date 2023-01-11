@@ -215,17 +215,15 @@ abstract class AbstractDiscount extends Component
                 ];
             }),
             'customerGroups' => $this->customerGroups->mapWithKeys(function ($group) {
-                // $productGroup = $this->product->customerGroups->where('id', $group->id)->first();
+                $discountGroup = $this->discount->customerGroups->where('id', $group->id)->first();
 
-                // $pivot = $productGroup->pivot ?? null;
-
-                $pivot = null;
+                $pivot = $discountGroup->pivot ?? null;
 
                 return [
                     $group->id => [
                         'customer_group_id' => $group->id,
                         'scheduling' => false,
-                        'enabled' => false,
+                        'enabled' => $pivot?->enabled ?? false,
                         'status' => 'hidden',
                         'starts_at' => $pivot?->starts_at ?? null,
                         'ends_at' => $pivot?->ends_at ?? null,

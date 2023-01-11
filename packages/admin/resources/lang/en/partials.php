@@ -194,6 +194,8 @@ return [
     'forms.channel.channel_name_delete' => 'Enter the name of the channel to delete it',
     'forms.brand_delete_brand' => 'Delete brand',
     'forms.brand_name_delete' => 'Enter the name of the brand to delete it',
+    'forms.customer-group.delete_customer_group' => 'Delete customer group',
+    'forms.customer-group.customer_group_name_delete' => 'Enter the name of the customer group to delete it',
     /**
      * Transactions.
      */

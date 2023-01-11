@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasMedia;
 use Lunar\Database\Factories\CustomerGroupFactory;
 
 class CustomerGroup extends BaseModel
 {
     use HasFactory;
-    use HasMedia;
     use HasDefaultRecord;
     use HasMacros;
 
@@ -29,5 +27,20 @@ class CustomerGroup extends BaseModel
     protected static function newFactory(): CustomerGroupFactory
     {
         return CustomerGroupFactory::new();
+    }
+
+    /**
+     * Return the customer's relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function customers()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Customer::class,
+            "{$prefix}customer_customer_group"
+        )->withTimestamps();
     }
 }

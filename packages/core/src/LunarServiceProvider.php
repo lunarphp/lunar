@@ -56,6 +56,7 @@ use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
@@ -66,6 +67,7 @@ use Lunar\Observers\CartLineObserver;
 use Lunar\Observers\ChannelObserver;
 use Lunar\Observers\CollectionObserver;
 use Lunar\Observers\CurrencyObserver;
+use Lunar\Observers\CustomerGroupObserver;
 use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
@@ -262,6 +264,7 @@ class LunarServiceProvider extends ServiceProvider
     protected function registerObservers(): void
     {
         Channel::observe(ChannelObserver::class);
+        CustomerGroup::observe(CustomerGroupObserver::class);
         Language::observe(LanguageObserver::class);
         Currency::observe(CurrencyObserver::class);
         Url::observe(UrlObserver::class);
