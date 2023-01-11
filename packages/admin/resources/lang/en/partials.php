@@ -102,6 +102,7 @@ return [
     'products.variants.table_row_action_text' => 'Edit',
     'products.variants.table_row_delete_text' => 'Delete',
     'products.variants.removal_message' => 'This will remove all variants from this product',
+    'products.variants.empty_message' => 'Select option values',
     /**
      * Product type.
      */
