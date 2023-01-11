@@ -65,7 +65,7 @@
 
             <div
                 :class="{
-                    'bg-gray-800 fixed inset-0 z-50 top-[48px] w-64': true,
+                    'bg-gray-800 fixed inset-0 z-50 top-[48px] w-64 transition-all ease-in-out': true,
                     '-ml-64 md:ml-0': !showMobileMenu,
                     'md:-ml-64': menuCollapsed
                 }"
@@ -74,7 +74,7 @@
                 <x-hub::menus.app-side />
             </div>
 
-            <div :class="{
+            <div class="transition-all ease-in-out" :class="{
                 'md:pl-64': !menuCollapsed
             }" x-cloak>
 
