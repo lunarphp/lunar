@@ -2,6 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
+use Lunar\Models\ProductOption;
+
 class ProductShow extends AbstractProduct
 {
     /**
@@ -11,7 +13,6 @@ class ProductShow extends AbstractProduct
      */
     public function mount()
     {
-        $this->options = collect();
         $this->variantsEnabled = $this->getVariantsCount() > 1;
         $this->variant = $this->product->variants->first();
 
@@ -20,6 +21,44 @@ class ProductShow extends AbstractProduct
             $this->variant->attribute_data,
             'variantAttributes',
         );
+
+        $variants = $this->product->variants->load('values');
+
+        $selectedOptions = [];
+
+        foreach ($variants as $variant) {
+            foreach ($variant->values as $value) {
+                $selectedOptions[$value->product_option_id][$value->id] = $value;
+            }
+        }
+
+        $this->options = ProductOption::findMany(array_keys($selectedOptions));
+
+        $this->optionValues = collect($selectedOptions)->collapse()->pluck('id')->unique()->values()->toArray();
+
+        foreach ($variants as $variant) {
+            $optionValues = $variant->values->pluck('id', 'product_option_id')->toArray();
+            $key = sha1(implode(',', $optionValues));
+
+            $currentVariants[] = $key;
+
+            $this->variants[$key] = array_merge(
+                [
+                    'labels' => collect($optionValues)->map(function ($valueId, $optionId) use ($selectedOptions) {
+                        return [
+                            'option' => $this->options->where('id', $optionId)->first()->translate('name'),
+                            'value' => $selectedOptions[$optionId][$valueId]->translate('name'),
+                        ];
+                    }),
+                    'basePrices' => $this->mapBasePrices($variant->prices),
+                    'stock' => $variant->stock,
+                    'backorder' => $variant->backorder,
+                    'options' => $optionValues,
+                    'id' => $variant->id,
+                ],
+                collect(['sku', 'gtin', 'mpn', 'ean'])->mapWithKeys(fn ($identifier) => [$identifier => @$variant->{$identifier}])->toArray(),
+            );
+        }
 
         $this->syncAvailability();
         $this->syncAssociations();

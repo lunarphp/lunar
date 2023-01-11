@@ -233,7 +233,7 @@ trait HasPrices
      * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
-    private function mapBasePrices(Collection $prices)
+    protected function mapBasePrices(Collection $prices)
     {
         $prices = $prices->filter(fn ($price) => ! $price->customer_group_id)
             ->mapWithKeys(function ($price) {

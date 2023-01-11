@@ -35,13 +35,9 @@
           'openPanel' => $this->getVariantsCount() <= 1
         ])
         
-        @include('adminhub::partials.products.variants.manager')
-        
-        @if($this->getVariantsCount() > 1)
-          @livewire('hub.components.products.variants.table', [
-            'product' => $this->product,
-          ])
-        @endif
+        <div class="pt-4 border-t">
+          @include('adminhub::partials.products.variants.manager')
+        </div>
       @endif
   </div>
 </div>
