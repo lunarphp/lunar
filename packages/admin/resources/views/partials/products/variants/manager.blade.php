@@ -13,10 +13,23 @@
         <div class="space-y-4">
             @foreach($variants as $key => $variant)
                 <div class="space-y-2 px-1.5 py-2 even:bg-gray-50 even:rounded-md even:border">
-                    <div class="flex gap-2">
-                        @foreach($variant['labels'] as $label)
-                            <span class="text-xs">{{ $label['option'] }}: {{ $label['value'] }}</span>
-                        @endforeach
+                    <div class="flex justify-between items-center">
+                        <div class="flex gap-2">
+                            @foreach($variant['labels'] as $label)
+                                <span class="text-sm text-gray-800">{{ $label['option'] }}: {{ $label['value'] }}</span>
+                            @endforeach
+                        </div>
+
+                        @if(!empty($variant['id']))
+                            <a href="{{  route('hub.products.variants.show', [
+                                'product' => $product->id,
+                                'variant' => $variant['id'],
+                            ]) }}">
+                                <x-hub::icon ref="pencil"
+                                        style="solid"
+                                        class="text-gray-400 hover:text-indigo-500" />
+                            </a>
+                        @endif
                     </div>
     
                     <div class="flex gap-2">

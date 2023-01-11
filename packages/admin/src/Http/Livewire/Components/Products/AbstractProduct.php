@@ -15,17 +15,16 @@ use Lunar\Models\AttributeGroup;
 use Lunar\Models\ProductVariant;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 use Lunar\Models\ProductAssociation;
 use Lunar\Models\ProductOptionValue;
+use Lunar\Hub\Actions\Pricing\UpdatePrices;
 use Lunar\Hub\Http\Livewire\Traits\HasTags;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
 use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasPrices;
-use Lunar\Hub\Jobs\Products\GenerateVariants;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -332,7 +331,6 @@ abstract class AbstractProduct extends Component
                     }),
                 ],
             );
-            // dd($baseRules);
         }
 
         return array_merge(
@@ -505,16 +503,14 @@ abstract class AbstractProduct extends Component
             }
 
             if ($generateVariants && $hasVariants) {
-                // TODO: dispatchSync
-                // GenerateVariants::dispatchSync($this->product, $this->optionValues);
                 $baseVariant = $this->variant;
 
-                // dd($baseVariant);
+                // dd($this->variants);
 
-                DB::transaction(function () use ($baseVariant) {
+                $variantsArr = DB::transaction(function () use ($baseVariant) {
+                    $variantsArr = [];
 
-                    foreach ($this->variants as $variantData) {
-                        ## filter labels and baseprices?
+                    foreach ($this->variants as $variantKey => $variantData) {
                         $variantFields = [
                             'sku',
                             'gtin',
@@ -524,40 +520,65 @@ abstract class AbstractProduct extends Component
                             'backorder',
                         ];
 
-                        $variant = new ProductVariant(collect($variantData)->only($variantFields)->toArray());
+                        if (!empty($variantData['id'])) {
+                            $variant = ProductVariant::find($variantData['id']);
 
-                        $uoms = ['length', 'width', 'height', 'weight', 'volume'];
+                            $variant->update(collect($variantData)->only($variantFields)->toArray());
 
-                        $attributesToCopy = [
-                            'shippable',
-                        ];
+                            app(UpdatePrices::class)->execute($variant, collect($variantData['basePrices']));
+                        } else {
+                            $variant = new ProductVariant(collect($variantData)->only($variantFields)->toArray());
 
-                        foreach ($uoms as $uom) {
-                            $attributesToCopy[] = "{$uom}_value";
-                            $attributesToCopy[] = "{$uom}_unit";
+                            $uoms = ['length', 'width', 'height', 'weight', 'volume'];
+
+                            $attributesToCopy = [
+                                'shippable',
+                            ];
+
+                            foreach ($uoms as $uom) {
+                                $attributesToCopy[] = "{$uom}_value";
+                                $attributesToCopy[] = "{$uom}_unit";
+                            }
+
+                            $attributes = $baseVariant->only($attributesToCopy);
+
+                            $pricing = collect($variantData['basePrices'])->map(function ($price) {
+                                return collect($price)->only([
+                                    'customer_group_id',
+                                    'currency_id',
+                                    'price',
+                                    'compare_price',
+                                    'tier',
+                                ]);
+                            });
+
+                            $variant->product_id = $baseVariant->product_id;
+                            $variant->tax_class_id = TaxClass::getDefault()?->id;
+                            $variant->attribute_data = $baseVariant->attribute_data;
+                            $variant->fill($attributes);
+                            $variant->save();
+                            $variant->values()->attach($variantData['options']);
+                            $variant->prices()->createMany($pricing->toArray());
+
+                            $this->variants[$variantKey]['id'] = $variant->id;
                         }
 
-                        $attributes = $baseVariant->only($attributesToCopy);
-
-                        $pricing = collect($variantData['basePrices'])->map(function ($price) {
-                            return collect($price)->only([
-                                'customer_group_id',
-                                'currency_id',
-                                'price',
-                                'compare_price',
-                                'tier',
-                            ]);
-                        });
-
-                        $variant->product_id = $baseVariant->product_id;
-                        $variant->tax_class_id = TaxClass::getDefault()?->id;
-                        $variant->attribute_data = $baseVariant->attribute_data;
-                        $variant->fill($attributes);
-                        $variant->save();
-                        $variant->values()->attach($variantData['options']);
-                        $variant->prices()->createMany($pricing->toArray());
+                        $variantsArr[] = $variant->id;
                     }
+
+                    return $variantsArr;
                 });
+
+                $variantsToRemove = $this->product->variants()->whereNotIn('id', $variantsArr)->get();
+
+                if ($variantsToRemove) {
+                    DB::transaction(function () use ($variantsToRemove) {
+                        foreach ($variantsToRemove as $variant) {
+                            $variant->values()->detach();
+                            $variant->forceDelete();
+                        }
+                    });
+                }
             }
 
             if (!$generateVariants && $this->product->variants->count() <= 1 && !$isNew) {
@@ -699,7 +720,7 @@ abstract class AbstractProduct extends Component
                         'value' => $selectedOptionValueNames[$optionId][$valueId],
                     ];
                 }),
-                'basePrices' => $this->basePrices,
+                'basePrices' => $this->basePrices, ## on Edit, this will get the first variant's price, is this a bug or 'feature' to get same price?
                 'stock' => 0,
                 'backorder' => 0,
                 'options' => $variant,
