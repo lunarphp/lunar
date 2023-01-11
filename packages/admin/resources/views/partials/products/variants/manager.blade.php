@@ -59,5 +59,7 @@
 
             @endforeach
         </div>
+    @else
+        <p class="text-md text-gray-500">{{ __('adminhub::partials.products.variants.empty_message') }}</p>
     @endif
 </div>

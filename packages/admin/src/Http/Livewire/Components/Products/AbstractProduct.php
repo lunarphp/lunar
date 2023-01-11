@@ -1074,7 +1074,7 @@ abstract class AbstractProduct extends Component
             [
                 'title' => __('adminhub::menu.product.pricing'),
                 'id' => 'pricing',
-                'hidden' => $this->getVariantsCount() > 1,
+                'hidden' => $this->getVariantsCount() > 1 || $this->variantsEnabled,
                 'has_errors' => $this->errorBag->hasAny([
                     'variant.min_quantity',
                     'basePrices.*',
@@ -1085,7 +1085,7 @@ abstract class AbstractProduct extends Component
             [
                 'title' => __('adminhub::menu.product.identifiers'),
                 'id' => 'identifiers',
-                'hidden' => $this->getVariantsCount() > 1,
+                'hidden' => $this->getVariantsCount() > 1 || $this->variantsEnabled,
                 'has_errors' => $this->errorBag->hasAny([
                     'variant.sku',
                     'variant.gtin',
@@ -1097,7 +1097,7 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.inventory'),
                 'id' => 'inventory',
                 'error_check' => [],
-                'hidden' => $this->getVariantsCount() > 1,
+                'hidden' => $this->getVariantsCount() > 1 || $this->variantsEnabled,
                 'has_errors' => $this->errorBag->hasAny([]),
             ],
             [

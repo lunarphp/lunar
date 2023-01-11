@@ -80,7 +80,7 @@
                     @include('adminhub::partials.products.editing.variants')
                 </div>
 
-                @if($this->variantsEnabled)
+                @if($this->getVariantsCount() <= 1)
                     <div id="shipping">
                         @include('adminhub::partials.shipping')
                     </div>
