@@ -23,6 +23,7 @@ use Lunar\Hub\Http\Livewire\Components\Avatar;
 use Lunar\Hub\Http\Livewire\Components\Brands\BrandShow;
 use Lunar\Hub\Http\Livewire\Components\Brands\BrandsIndex;
 use Lunar\Hub\Http\Livewire\Components\Brands\BrandsTable;
+use Lunar\Hub\Http\Livewire\Components\BrandSearch;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use Lunar\Hub\Http\Livewire\Components\Collections\CollectionShow;
@@ -283,6 +284,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
         Livewire::component('hub.components.collection-search', CollectionSearch::class);
+        Livewire::component('hub.components.brand-search', BrandSearch::class);
         Livewire::component('hub.components.account', Account::class);
         Livewire::component('hub.components.avatar', Avatar::class);
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
