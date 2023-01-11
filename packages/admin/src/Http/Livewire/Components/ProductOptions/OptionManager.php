@@ -85,7 +85,7 @@ class OptionManager extends Component
      */
     public function syncOptions($ids)
     {
-        $this->options = ProductOption::with('values')->findMany($ids);
+        $this->options = ProductOption::with('values')->orderBy('position')->findMany($ids);
     }
 
     /**
@@ -98,7 +98,7 @@ class OptionManager extends Component
     {
         $this->selectedValues[] = $event['value'];
         $this->emit('option-manager.selectedValues', $this->selectedValues);
-        $this->options = ProductOption::with('values')->findMany($this->options->pluck('id'));
+        $this->options = ProductOption::with('values')->orderBy('position')->findMany($this->options->pluck('id'));
     }
 
     /**

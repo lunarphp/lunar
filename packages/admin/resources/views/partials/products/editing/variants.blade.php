@@ -7,7 +7,12 @@
         </h3>
         <p class="text-sm text-gray-500">{{ __('adminhub::partials.products.variants.strapline') }}</p>
       </div>
-      <div>
+      <div class="flex items-center gap-2">
+        @if($variantsEnabled)
+            <x-hub::button x-on:click="Livewire.emit('toggleOptionSelector')" theme="gray" size="sm" type="button">
+                Select option
+            </x-hub::button>
+        @endif
         <x-hub::input.toggle wire:model="variantsEnabled" />
       </div>
     </header>
@@ -26,9 +31,13 @@
         </x-hub::alert>
       @endif
       @if($variantsEnabled)
-        @if($this->getVariantsCount() <= 1)
-          @include('adminhub::partials.products.editing.options')
-        @else
+        @include('adminhub::partials.products.editing.options', [
+          'openPanel' => $this->getVariantsCount() <= 1
+        ])
+        
+        @include('adminhub::partials.products.variants.manager')
+        
+        @if($this->getVariantsCount() > 1)
           @livewire('hub.components.products.variants.table', [
             'product' => $this->product,
           ])

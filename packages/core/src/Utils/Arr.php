@@ -18,7 +18,14 @@ class Arr
         $countTuples = count($setTuples);
 
         if (1 === $countTuples) {
-            return reset($setTuples);
+            $result = [];
+            $key = array_key_first($setTuples);
+
+            foreach ($setTuples[$key] as $value) {
+                $result[] = [$key => $value];
+            }
+
+            return $result;
         }
 
         if (0 === $countTuples) {

@@ -36,6 +36,7 @@ return [
     'type.instructions' => 'Choose what type of attribute this will be.',
     'required' => 'Required',
     'tags.label' => 'Tags',
+    'base_price.label' => 'Base price',
     'base_price_excl_tax.label' => 'Base price (excl. Tax)',
     'base_price_excl_tax.instructions' => 'The base price for the product, excluding tax',
     'compare_at_price_excl_tax.label' => 'Compare at price (excl. tax)',

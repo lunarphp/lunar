@@ -22,8 +22,10 @@ trait HasTags
         )->withTimestamps();
     }
 
-    public function syncTags(Collection $tags)
+    public function syncTags(Collection $tags, $immediate = false)
     {
-        SyncTags::dispatch($this, $tags);
+        $method = $immediate ? 'dispatchSync' : 'dispatch';
+
+        SyncTags::{$method}($this, $tags);
     }
 }

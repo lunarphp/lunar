@@ -2,33 +2,37 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
+use Livewire\Component;
+use Lunar\Models\Brand;
+use Lunar\Models\Product;
+use Lunar\Models\TaxClass;
 use Illuminate\Support\Arr;
+use Livewire\WithFileUploads;
+use Lunar\Models\ProductType;
+use Illuminate\Validation\Rule;
+use Lunar\Models\ProductOption;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\ProductVariant;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
-use Livewire\Component;
-use Livewire\WithFileUploads;
-use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
-use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
-use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
-use Lunar\Hub\Http\Livewire\Traits\HasImages;
-use Lunar\Hub\Http\Livewire\Traits\HasPrices;
-use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOptionValue;
 use Lunar\Hub\Http\Livewire\Traits\HasTags;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
-use Lunar\Hub\Http\Livewire\Traits\SearchesProducts;
-use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
-use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Lunar\Hub\Http\Livewire\Traits\HasPrices;
 use Lunar\Hub\Jobs\Products\GenerateVariants;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
-use Lunar\Models\Product;
-use Lunar\Models\ProductAssociation;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductType;
-use Lunar\Models\ProductVariant;
+use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
+use Lunar\Hub\Http\Livewire\Traits\SearchesProducts;
+use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 
 abstract class AbstractProduct extends Component
 {
@@ -59,6 +63,8 @@ abstract class AbstractProduct extends Component
      * @var ProductVariant
      */
     public ProductVariant $variant;
+
+    public array $variants = [];
 
     /**
      * The custom brand to add.
@@ -203,9 +209,25 @@ abstract class AbstractProduct extends Component
      */
     protected function getValidationMessages()
     {
+
+        if (!sizeof($this->variants)) {
+            $priceValidationMessages = $this->hasPriceValidationMessages();
+        } else {
+            $priceValidationMessages = [];
+
+            $priceMessages = collect($this->hasPriceValidationMessages())
+                ->filter(fn ($_, $key) => str($key)->startsWith('basePrices'));
+
+            foreach ($this->variants as $key => $_) {
+                foreach ($priceMessages as $ruleKey => $ruleMessage) {
+                    $priceValidationMessages["variants.{$key}.{$ruleKey}"] = $ruleMessage;
+                }
+            }
+        }
+
         return array_merge(
             [],
-            $this->hasPriceValidationMessages(),
+            $priceValidationMessages,
             $this->withAttributesValidationMessages(),
             $this->getExtendedValidationMessages(),
         );
@@ -226,59 +248,97 @@ abstract class AbstractProduct extends Component
             'collections' => 'nullable|array',
             'variant.tax_ref' => 'nullable|string|max:255',
             'associations.*.type' => 'required|string',
-            'variant.sku' => get_validation('products', 'sku', [
-                'alpha_dash',
-                'max:255',
-            ], $this->variant),
-            'variant.gtin' => get_validation('products', 'gtin', [
-                'string',
-                'max:255',
-            ], $this->variant),
-            'variant.mpn' => get_validation('products', 'mpn', [
-                'string',
-                'max:255',
-            ], $this->variant),
-            'variant.ean' => get_validation('products', 'ean', [
-                'string',
-                'max:255',
-            ], $this->variant),
+            'variant.length_value' => 'numeric|nullable',
+            'variant.length_unit' => 'string|nullable',
+            'variant.width_value' => 'numeric|nullable',
+            'variant.width_unit' => 'string|nullable',
+            'variant.height_value' => 'numeric|nullable',
+            'variant.height_unit' => 'string|nullable',
+            'variant.weight_value' => 'numeric|nullable',
+            'variant.weight_unit' => 'string|nullable',
+            'variant.volume_value' => 'numeric|nullable',
+            'variant.volume_unit' => 'string|nullable',
+            'variant.shippable' => 'boolean|nullable',
         ];
 
         if (config('lunar-hub.products.require_brand', true)) {
             $baseRules['product.brand_id'] = 'required_without:brand';
-            $baseRules['brand'] = 'required_without:product.brand_id|unique:'.Brand::class.',name';
+            $baseRules['brand'] = 'required_without:product.brand_id|unique:' . Brand::class . ',name';
         }
 
-        if ($this->getVariantsCount() <= 1) {
+        if (!sizeof($this->variants)) {
             $baseRules = array_merge(
                 $baseRules,
                 $this->hasPriceValidationRules(),
                 [
+                    'variant.sku' => get_validation('products', 'sku', [
+                        'alpha_dash',
+                        'max:255',
+                    ], $this->variant),
+                    'variant.gtin' => get_validation('products', 'gtin', [
+                        'string',
+                        'max:255',
+                    ], $this->variant),
+                    'variant.mpn' => get_validation('products', 'mpn', [
+                        'string',
+                        'max:255',
+                    ], $this->variant),
+                    'variant.ean' => get_validation('products', 'ean', [
+                        'string',
+                        'max:255',
+                    ], $this->variant),
                     'variant.stock' => 'numeric|max:10000000',
                     'variant.backorder' => 'numeric|max:10000000',
                     'variant.purchasable' => 'string|required',
-                    'variant.length_value' => 'numeric|nullable',
-                    'variant.length_unit' => 'string|nullable',
                     'variant.tax_class_id' => 'required',
-                    'variant.width_value' => 'numeric|nullable',
-                    'variant.width_unit' => 'string|nullable',
-                    'variant.height_value' => 'numeric|nullable',
-                    'variant.height_unit' => 'string|nullable',
-                    'variant.weight_value' => 'numeric|nullable',
-                    'variant.weight_unit' => 'string|nullable',
-                    'variant.volume_value' => 'numeric|nullable',
-                    'variant.volume_unit' => 'string|nullable',
-                    'variant.shippable' => 'boolean|nullable',
                     'variant.tax_ref' => 'nullable|string|max:255',
                     'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
                 ]
             );
+        } else {
+            $identifiers = ['sku', 'gtin', 'mpn', 'ean'];
+            $priceRules = collect($this->hasPriceValidationRules())
+                ->filter(fn ($_, $key) => str($key)->startsWith('basePrices'))
+                ->toArray();
+
+            $baseRules = array_merge(
+                $baseRules,
+                collect($identifiers)
+                    ->filter(fn ($identifier) => config("lunar-hub.products.{$identifier}.unique", false))
+                    ->mapWithKeys(fn ($identifier) => ["variants.*.{$identifier}" => 'distinct:ignore_case'])
+                    ->toArray(),
+                [
+                    'variants.*' => Rule::forEach(function ($value, $attribute, $data) use ($identifiers, $priceRules) {
+                        $variant = new ProductVariant($value);
+
+                        $rules = array_merge(
+                            $priceRules,
+                            [
+                                'stock' => 'numeric|max:10000000',
+                                'backorder' => 'numeric|max:10000000',
+                            ]
+                        );
+
+                        foreach ($identifiers as $identifier) {
+                            if (config("lunar-hub.products.{$identifier}.required", false)) {
+                                $rules[$identifier] = get_validation('products', $identifier, [
+                                    'alpha_dash',
+                                    'max:255',
+                                ], $variant);
+                            }
+                        }
+
+                        return $rules;
+                    }),
+                ],
+            );
+            // dd($baseRules);
         }
 
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            $this->hasUrlsValidationRules(! $this->product->id),
+            $this->hasUrlsValidationRules(!$this->product->id),
             $this->withAttributesValidationRules(),
             $this->getExtendedValidationRules([
                 'product' => $this->product,
@@ -296,6 +356,15 @@ abstract class AbstractProduct extends Component
         $attributes = [
             'tieredPrices.*.tier' => lang(key: 'global.lower_limit', lower: true),
         ];
+
+        $fields = ['sku', 'gtin', 'mpn', 'ean', 'stock', 'backorder'];
+
+        foreach ($this->variants as $key => $_) {
+            foreach ($fields as $field) {
+                $label = lang(key: "inputs.{$field}.label", lower: true);
+                $attributes["variants.{$key}.{$field}"] = $label;
+            }
+        }
 
         return array_merge(
             $attributes,
@@ -336,6 +405,7 @@ abstract class AbstractProduct extends Component
     public function setOptionValues($values)
     {
         $this->optionValues = $values;
+        $this->setVariants();
     }
 
     /**
@@ -374,9 +444,12 @@ abstract class AbstractProduct extends Component
         })->validate(null, $this->getValidationMessages());
 
         $this->validateUrls();
-        $isNew = ! $this->product->id;
 
-        DB::transaction(function () use ($isNew) {
+        $isNew = !$this->product->id;
+
+        $hasVariants = !!sizeof($this->variants);
+
+        DB::transaction(function () use ($isNew, $hasVariants) {
             $data = $this->prepareAttributeData();
             $variantData = $this->prepareAttributeData($this->variantAttributes);
 
@@ -393,28 +466,30 @@ abstract class AbstractProduct extends Component
             $this->product->save();
 
             if (($this->getVariantsCount() <= 1) || $isNew) {
-                if (! $this->variant->product_id) {
+                if (!$this->variant->product_id) {
                     $this->variant->product_id = $this->product->id;
                 }
 
-                if (! $this->manualVolume) {
+                if (!$this->manualVolume) {
                     $this->variant->volume_unit = null;
                     $this->variant->volume_value = null;
                 }
 
                 $this->variant->attribute_data = $variantData;
 
-                $this->variant->save();
+                if (!$hasVariants) {
+                    $this->variant->save();
 
-                if ($isNew) {
-                    $this->savePricing();
+                    if ($isNew) {
+                        $this->savePricing();
+                    }
                 }
             }
 
             // We generating variants?
-            $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
+            $generateVariants = (bool) count($this->optionValues) && !$this->variantsDisabled;
 
-            if (! $this->variantsEnabled && $this->getVariantsCount()) {
+            if (!$this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
 
                 $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
@@ -429,11 +504,63 @@ abstract class AbstractProduct extends Component
                 });
             }
 
-            if ($generateVariants) {
-                GenerateVariants::dispatch($this->product, $this->optionValues);
+            if ($generateVariants && $hasVariants) {
+                // TODO: dispatchSync
+                // GenerateVariants::dispatchSync($this->product, $this->optionValues);
+                $baseVariant = $this->variant;
+
+                // dd($baseVariant);
+
+                DB::transaction(function () use ($baseVariant) {
+
+                    foreach ($this->variants as $variantData) {
+                        ## filter labels and baseprices?
+                        $variantFields = [
+                            'sku',
+                            'gtin',
+                            'mpn',
+                            'ean',
+                            'stock',
+                            'backorder',
+                        ];
+
+                        $variant = new ProductVariant(collect($variantData)->only($variantFields)->toArray());
+
+                        $uoms = ['length', 'width', 'height', 'weight', 'volume'];
+
+                        $attributesToCopy = [
+                            'shippable',
+                        ];
+
+                        foreach ($uoms as $uom) {
+                            $attributesToCopy[] = "{$uom}_value";
+                            $attributesToCopy[] = "{$uom}_unit";
+                        }
+
+                        $attributes = $baseVariant->only($attributesToCopy);
+
+                        $pricing = collect($variantData['basePrices'])->map(function ($price) {
+                            return collect($price)->only([
+                                'customer_group_id',
+                                'currency_id',
+                                'price',
+                                'compare_price',
+                                'tier',
+                            ]);
+                        });
+
+                        $variant->product_id = $baseVariant->product_id;
+                        $variant->tax_class_id = TaxClass::getDefault()?->id;
+                        $variant->attribute_data = $baseVariant->attribute_data;
+                        $variant->fill($attributes);
+                        $variant->save();
+                        $variant->values()->attach($variantData['options']);
+                        $variant->prices()->createMany($pricing->toArray());
+                    }
+                });
             }
 
-            if (! $generateVariants && $this->product->variants->count() <= 1 && ! $isNew) {
+            if (!$generateVariants && $this->product->variants->count() <= 1 && !$isNew) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
@@ -449,8 +576,8 @@ abstract class AbstractProduct extends Component
             $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
                 return [
                     $channel['channel_id'] => [
-                        'starts_at' => ! $channel['enabled'] ? null : $channel['starts_at'],
-                        'ends_at' => ! $channel['enabled'] ? null : $channel['ends_at'],
+                        'starts_at' => !$channel['enabled'] ? null : $channel['starts_at'],
+                        'ends_at' => !$channel['enabled'] ? null : $channel['ends_at'],
                         'enabled' => $channel['enabled'],
                     ],
                 ];
@@ -477,7 +604,7 @@ abstract class AbstractProduct extends Component
             }
 
             $this->associations->each(function ($assoc) {
-                if (! empty($assoc['id'])) {
+                if (!empty($assoc['id'])) {
                     ProductAssociation::find($assoc['id'])->update([
                         'type' => $assoc['type'],
                     ]);
@@ -523,6 +650,66 @@ abstract class AbstractProduct extends Component
             return redirect()->route('hub.products.show', [
                 'product' => $this->product->id,
             ]);
+        }
+    }
+
+    public function getSelectedOptionValues()
+    {
+        return ProductOptionValue::findMany($this->optionValues)
+            ->groupBy('product_option_id')
+            ->mapWithKeys(function ($values) {
+                $optionId = $values->first()->product_option_id;
+
+                return [$optionId => $values->mapWithKeys(function ($value) {
+                    return [$value->id => $value->translate('name')];
+                })];
+            })
+            ->toArray();
+    }
+
+    public function setVariants()
+    {
+        $selectedOptionValueNames = $this->getSelectedOptionValues();
+        $selectedOptionValues = ProductOptionValue::findMany($this->optionValues)
+            ->groupBy('product_option_id');
+        ## how to sort with Options position here?
+
+        $matrix = Arr::permutate(
+            $selectedOptionValues
+                ->mapWithKeys(function ($values) {
+                    $optionId = $values->first()->product_option_id;
+
+                    return [$optionId => $values->map(function ($value) {
+                        return $value->id;
+                    })];
+                })->toArray()
+        );
+
+        $currentVariants = [];
+
+        foreach ($matrix as $variant) {
+            $key = sha1(implode(',', $variant));
+
+            $currentVariants[] = $key;
+
+            $this->variants[$key] = $this->variants[$key] ?? [
+                'labels' => collect($variant)->map(function ($valueId, $optionId) use ($selectedOptionValueNames) {
+                    return [
+                        'option' => $this->options->where('id', $optionId)->first()->translate('name'),
+                        'value' => $selectedOptionValueNames[$optionId][$valueId],
+                    ];
+                }),
+                'basePrices' => $this->basePrices,
+                'stock' => 0,
+                'backorder' => 0,
+                'options' => $variant,
+            ];
+        }
+
+        foreach ($this->variants as $key => $_) {
+            if (!in_array($key, $currentVariants)) {
+                unset($this->variants[$key]);
+            }
         }
     }
 
@@ -604,7 +791,7 @@ abstract class AbstractProduct extends Component
                 if ($pivot) {
                     if ($pivot->purchasable) {
                         $status = 'purchasable';
-                    } elseif (! $pivot->visible && ! $pivot->enabled) {
+                    } elseif (!$pivot->visible && !$pivot->enabled) {
                         $status = 'hidden';
                     } elseif ($pivot->visible) {
                         $status = 'visible';
@@ -880,7 +1067,9 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.variants'),
                 'id' => 'variants',
                 'hidden' => $this->variantsDisabled,
-                'has_errors' => $this->errorBag->hasAny([]),
+                'has_errors' => $this->errorBag->hasAny([
+                    'variants.*'
+                ]),
             ],
             [
                 'title' => __('adminhub::menu.product.pricing'),
