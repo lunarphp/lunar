@@ -86,7 +86,7 @@ trait HasImages
                     'position' => $media->getCustomProperty('position', 1),
                 ],
             ];
-        })->sortBy('position')->values()->toArray();
+        })->sortBy('position')->toArray();
     }
 
     /**
@@ -153,24 +153,25 @@ trait HasImages
 
             return;
         }
-        foreach ($filenames as $key => $filename) {
+
+        foreach ($filenames as $fileKey => $filename) {
             $file = TemporaryUploadedFile::createFromLivewire($filename);
 
-            $key = Str::random();
+            $sortKey = Str::random();
 
-            $this->images[$key] = [
+            $this->images[$sortKey] = [
                 'thumbnail' => $file->temporaryUrl(),
-                'sort_key' => $key,
+                'sort_key' => $sortKey,
                 'filename' => $filename,
                 'original' => $file->temporaryUrl(),
                 'caption' => null,
-                'position' => count($this->images) + 1,
+                'position' => collect($this->images)->max('position') + 1,
                 'preview' => false,
                 'edit' => false,
                 'primary' => ! count($this->images),
             ];
 
-            unset($this->imageUploadQueue[$key]);
+            unset($this->imageUploadQueue[$fileKey]);
         }
     }
 
@@ -187,7 +188,7 @@ trait HasImages
             $this->images[$index]['position'] = $item['order'];
         }
 
-        $this->images = collect($this->images)->sortBy('position')->values()->toArray();
+        $this->images = collect($this->images)->sortBy('position')->toArray();
     }
 
     /**
@@ -341,13 +342,13 @@ trait HasImages
      */
     public function removeImage($sortKey)
     {
-        $index = collect($this->images)->search(fn ($image) => $sortKey == $image['sort_key']);
+        if (!isset($this->images[$sortKey])) {
+            return;
+        }
 
-        $image = $this->images[$index];
+        $image = $this->images[$sortKey];
 
-        unset($this->images[$index]);
-
-        $this->images = array_values($this->images);
+        unset($this->images[$sortKey]);
 
         // If this was a primary image and we have images left over
         // set the first image to be primary.
