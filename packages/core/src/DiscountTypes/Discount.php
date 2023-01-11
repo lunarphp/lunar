@@ -98,6 +98,7 @@ class Discount extends AbstractDiscountType
     {
         $collectionIds = $this->discount->collections->pluck('id');
         $brandIds = $this->discount->brands->pluck('id');
+        $productIds = $this->discount->purchasableLimitations->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
 
         $lines = $cart->lines;
 
@@ -112,6 +113,12 @@ class Discount extends AbstractDiscountType
         if ($brandIds->count()) {
             $lines = $lines->reject(function ($line) use ($brandIds) {
                 return ! $brandIds->contains($line->purchasable->product->brand_id);
+            });
+        }
+
+        if ($productIds->count()) {
+            $lines = $lines->reject(function ($line) use ($productIds) {
+                return ! $productIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id);
             });
         }
 
