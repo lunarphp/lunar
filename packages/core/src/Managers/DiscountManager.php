@@ -147,7 +147,7 @@ class DiscountManager implements DiscountManagerInterface
                 ->where("{$joinTable}.enabled", true)
                 ->where(function ($query) use ($joinTable) {
                     $query->whereNull("{$joinTable}.starts_at")
-                        ->orWhere("{$joinTable}.starts_at", '>', now());
+                        ->orWhere("{$joinTable}.starts_at", '<=', now());
                 })
                 ->where(function ($query) use ($joinTable) {
                     $query->whereNull("{$joinTable}.ends_at")
@@ -160,7 +160,7 @@ class DiscountManager implements DiscountManagerInterface
             ->where("{$joinTable}.enabled", true)
             ->where(function ($query) use ($joinTable) {
                 $query->whereNull("{$joinTable}.starts_at")
-                    ->orWhere("{$joinTable}.starts_at", '>', now());
+                    ->orWhere("{$joinTable}.starts_at", '<=', now());
             })
             ->where(function ($query) use ($joinTable) {
                 $query->whereNull("{$joinTable}.ends_at")
