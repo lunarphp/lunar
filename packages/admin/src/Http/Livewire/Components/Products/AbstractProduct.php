@@ -505,8 +505,6 @@ abstract class AbstractProduct extends Component
             if ($generateVariants && $hasVariants) {
                 $baseVariant = $this->variant;
 
-                // dd($this->variants);
-
                 $variantsArr = DB::transaction(function () use ($baseVariant) {
                     $variantsArr = [];
 
