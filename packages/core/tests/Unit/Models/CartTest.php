@@ -15,6 +15,7 @@ use Lunar\Models\Channel;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
+use Lunar\Models\Discount;
 use Lunar\Models\Order;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
@@ -25,6 +26,7 @@ use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
+use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
 
 /**
  * @group lunar.carts
@@ -67,11 +69,24 @@ class CartTest extends TestCase
         $this->assertCount(1, $cart->lines()->get());
     }
 
-    /** @test */
+    /**
+    * @test
+    * @group cart.coupon
+    */
     public function can_save_coupon_code()
     {
         $currency = Currency::factory()->create();
         $channel = Channel::factory()->create();
+
+        Discount::factory()->create([
+            'type' => DiscountTypesDiscount::class,
+            'name' => 'Test Coupon',
+            'coupon' => 'valid-coupon',
+            'data' => [
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
 
         $cart = Cart::create([
             'currency_id' => $currency->id,
