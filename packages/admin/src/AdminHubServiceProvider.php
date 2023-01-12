@@ -40,6 +40,7 @@ use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsTable;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
+use Lunar\Hub\Http\Livewire\Components\FieldTypes\FileFieldtype;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -263,6 +264,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerSettingsComponents();
         $this->registerOrderComponents();
         $this->registerCustomerComponents();
+        $this->registerFieldtypeComponents();
         $this->registerDiscountComponents();
 
         // Blade Components
@@ -457,6 +459,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
+    }
+
+    protected function registerFieldtypeComponents()
+    {
+        Livewire::component('hub.components.fieldtypes.file', FileFieldtype::class);
     }
 
     public function registerDiscountComponents()
