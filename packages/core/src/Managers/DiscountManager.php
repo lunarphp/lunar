@@ -145,22 +145,26 @@ class DiscountManager implements DiscountManagerInterface
             $joinTable = (new Discount)->channels()->getTable();
             $query->whereIn("{$joinTable}.channel_id", $this->channels->pluck('id'))
                 ->where("{$joinTable}.enabled", true)
-                ->whereNotNull("{$joinTable}.starts_at")
-                ->where("{$joinTable}.starts_at", '<=', now())
+                ->where(function ($query) use ($joinTable) {
+                    $query->whereNull("{$joinTable}.starts_at")
+                        ->orWhere("{$joinTable}.starts_at", '<=', now());
+                })
                 ->where(function ($query) use ($joinTable) {
                     $query->whereNull("{$joinTable}.ends_at")
-                        ->orWhereDate("{$joinTable}.ends_at", '>', now());
+                        ->orWhere("{$joinTable}.ends_at", '>', now());
                 });
         })->whereHas('customerGroups', function ($query) {
             $joinTable = (new Discount)->customerGroups()->getTable();
 
             $query->whereIn("{$joinTable}.customer_group_id", $this->customerGroups->pluck('id'))
             ->where("{$joinTable}.enabled", true)
-            ->whereNotNull("{$joinTable}.starts_at")
-            ->where("{$joinTable}.starts_at", '<=', now())
+            ->where(function ($query) use ($joinTable) {
+                $query->whereNull("{$joinTable}.starts_at")
+                    ->orWhere("{$joinTable}.starts_at", '<=', now());
+            })
             ->where(function ($query) use ($joinTable) {
                 $query->whereNull("{$joinTable}.ends_at")
-                    ->orWhereDate("{$joinTable}.ends_at", '>', now());
+                    ->orWhere("{$joinTable}.ends_at", '>', now());
             });
         })->orderBy('priority')->get();
     }
