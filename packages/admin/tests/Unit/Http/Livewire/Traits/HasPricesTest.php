@@ -26,12 +26,10 @@ class HasPricesTest extends TestCase
 
         Language::factory()->create([
             'default' => true,
-            'code' => 'en',
         ]);
 
         Language::factory()->create([
             'default' => false,
-            'code' => 'fr',
         ]);
 
         Currency::factory()->create([
