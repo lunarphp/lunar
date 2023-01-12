@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<div class="fixed lg:w-[calc(100vw_-_16rem)] bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75">
+<div class="fixed w-full bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75">
     <form wire:submit.prevent="save">
         <div class="flex justify-end gap-6">
             @include('adminhub::partials.products.status-bar')
