@@ -68,6 +68,26 @@ class CartTest extends TestCase
     }
 
     /** @test */
+    public function can_save_coupon_code()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'meta' => ['foo' => 'bar'],
+        ]);
+
+        $this->assertNull($cart->coupon_code);
+
+        $cart->coupon_code = 'valid-coupon';
+        $cart->saveQuietly();
+
+        $this->assertEquals('valid-coupon', $cart->refresh()->coupon_code);
+    }
+
+    /** @test */
     public function can_associate_cart_with_user_with_no_customer_attached()
     {
         $this->setAuthUserConfig();
