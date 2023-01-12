@@ -78,7 +78,7 @@
                 'md:pl-64': !menuCollapsed
             }" x-cloak>
 
-                <main class="flex flex-1 overflow-hidden mt-12">
+                <main class="flex flex-1 mt-12">
                     <section class="flex-1 h-full min-w-0 lg:order-last">
                         <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-6">
                             @yield('main', $slot)
