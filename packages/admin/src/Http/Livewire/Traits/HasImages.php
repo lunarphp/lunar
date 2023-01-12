@@ -4,6 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\TemporaryUploadedFile;
 use Spatie\Activitylog\Facades\LogBatch;
@@ -216,8 +217,18 @@ trait HasImages
                     $file = TemporaryUploadedFile::createFromLivewire(
                         $image['filename']
                     );
-                    $media = $owner->addMedia($file->getRealPath())
-                        ->toMediaCollection('images');
+
+                    $mediaLibaryDisk = config('media-library.disk_name');
+                    $mediaLibaryDriverConfig = Storage::disk($mediaLibaryDisk)->getConfig();
+                    $mediaLibaryDriver = $mediaLibaryDriverConfig['driver'];
+
+                    if ($mediaLibaryDriver == 'local') {
+                        $media = $owner->addMedia($file->getRealPath())
+                            ->toMediaCollection('images');
+                    } else {
+                        $media = $owner->addMediaFromDisk($file->getRealPath())
+                            ->toMediaCollection('images');
+                    }
 
                     activity()
                     ->performedOn($owner)
