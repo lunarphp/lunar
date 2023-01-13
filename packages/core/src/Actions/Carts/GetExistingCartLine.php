@@ -26,7 +26,7 @@ class GetExistingCartLine extends AbstractAction
         // Get all possible cart lines
         $lines = $cart->lines()
             ->wherePurchasableType(
-                get_class($purchasable)
+                $purchasable->getMorphClass()
             )->wherePurchasableId($purchasable->id)
             ->get();
 
