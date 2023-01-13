@@ -16,11 +16,13 @@
         </h1>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-         :class="{
-             'lg:w-[calc(100vw_-_16rem)]': showExpandedMenu,
-             'lg:w-[calc(100vw_-_5rem)]': !showExpandedMenu
-         }">
+    <div
+        class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
+        :class="{
+            'lg:w-[calc(100vw_-_16rem)]': !menuCollapsed,
+            'w-full': menuCollapsed
+        }"
+    >
         <form wire:submit.prevent="save">
             <div class="flex justify-end">
                 <x-hub::button type="submit">
@@ -101,7 +103,14 @@
                             </x-hub::input.group>
                         </div>
                     @endif
-
+                    @if(!$products->count() && $this->productCount >= 30)
+                        <div wire:loading.remove wire:target="loadProducts">
+                            <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
+                        </div>
+                        <div wire:loading wire:target="loadProducts">
+                            <x-hub::loading-indicator class="w-4" />
+                        </div>
+                    @else
                     <div wire:sort
                          sort.options='{ group: "products", method: "sortProducts" }'
                          class="space-y-2">
@@ -135,7 +144,7 @@
                                         @if (strpos($collection->sort, 'base_price') !== false)
                                             {{ $product['base_price'] }}
                                         @elseif(strpos($collection->sort, 'sku') !== false)
-                                            <div class="truncate">{{ $product['sku'] }}</div>
+                                             <div class="truncate">{{ $product['sku'] }}</div>
                                         @endif
                                     </div>
                                 </div>
@@ -154,6 +163,7 @@
                             </x-hub::alert>
                         @endforelse
                     </div>
+                    @endif
                 </div>
             </div>
 

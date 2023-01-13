@@ -21,7 +21,8 @@ return [
     'collection-groups.deleted' => 'Collection group deleted',
     'option-values.created' => 'Created option value',
     'product-options.created' => 'Product option created',
-    'customer.updated' => 'Customer Updated',
+    'product-options.deleted' => 'Product option deleted',
+    'product-options.not.deleted' => 'Product option could not be deleted as there are values associated with it',
     'password-reset.invalid_token' => 'Reset token is invalid',
     'password-reset.password_updated' => 'Password updated',
     'password-reset.email_sent' => 'Password reset sent',
@@ -55,7 +56,11 @@ return [
     'tax_class.deleted' => 'Tax class deleted',
     'clipboard.copied' => 'Copied to clipboard',
     'clipboard.failed_copy' => 'Unable to copy to clipboard',
+    'discount.saved' => 'Discount saved',
+    'discount.deleted' => 'Discount deleted',
+    'tags.updated' => 'Tags updated',
     'staff.restored' => 'Staff member restored',
-
     'default_url_protected' => 'Unable to delete the default URL',
+    'product_option_value.deleted' => 'Product Option Value deleted',
+    'product_option_value.updated' => 'Product OptionValue updated',
 ];

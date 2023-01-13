@@ -129,7 +129,12 @@ return [
      * Activity log page.
      */
     'activity_log.index.title' => 'Activity Log',
-
+    /*
+     * Product Options
+     */
+    'product.options.index.title' => 'Options',
+    'product.options.index.create_btn' => 'Create Option',
+    'product.options.index.table_row_action_text' => 'Edit Option',
     /**
      * Taxes.
      */
@@ -158,4 +163,19 @@ return [
     'taxes.tax-classes.index.delete_message' => 'Are you sure? This could cause loss of data.',
     'taxes.tax-classes.index.delete_message_disabled' => 'You cannot delete a tax class that is associated to product variants',
     'taxes.tax-classes.index.delete_message_default' => 'You must select a new default before deleting',
+    /**
+     * Customer Groups.
+     */
+    'customer-groups.index.title' => 'Customer Groups',
+    'customer-groups.index.create_btn' => 'Create Customer Group',
+    'customer-groups.index.table_row_action_text' => 'Edit Group',
+    /**
+     * Customer Groups show page.
+     */
+    'customer-groups.show.title' => 'Edit Customer Group',
+    /**
+     * Customer Groups create page.
+     */
+    'customer-groups.create.title' => 'Create Customer Group',
+    'customer-groups.form.default_instructions' => 'Set whether this customer group should be the default',
 ];

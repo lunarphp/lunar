@@ -90,8 +90,8 @@ class CartSessionManagerTest extends TestCase
             'type' => 'billing',
         ]);
 
-        $cart->getManager()->setShippingAddress($shipping);
-        $cart->getManager()->setBillingAddress($billing);
+        $cart->setShippingAddress($shipping);
+        $cart->setBillingAddress($billing);
 
         $sessionCart = Session::get(config('lunar.cart.session_key'));
 
@@ -135,8 +135,8 @@ class CartSessionManagerTest extends TestCase
             'type' => 'billing',
         ]);
 
-        $cart->getManager()->setShippingAddress($shipping);
-        $cart->getManager()->setBillingAddress($billing);
+        $cart->setShippingAddress($shipping);
+        $cart->setBillingAddress($billing);
 
         $sessionCart = Session::get(config('lunar.cart.session_key'));
 

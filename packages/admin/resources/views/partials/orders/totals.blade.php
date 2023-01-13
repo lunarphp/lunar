@@ -50,6 +50,11 @@
         </div>
 
         <div class="flex justify-between">
+          <dt>{{ __('adminhub::partials.orders.totals.discount_total') }}</dt>
+          <dd class="text-red-500">-{{ $order->discount_total->formatted }}</dd>
+        </div>
+
+        <div class="flex justify-between">
           <dt>{{ __('adminhub::partials.orders.totals.shipping_total') }}</dt>
           <dd>{{ $order->shipping_total->formatted }}</dd>
         </div>

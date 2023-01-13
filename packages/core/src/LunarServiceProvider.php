@@ -21,6 +21,7 @@ use Lunar\Base\AttributeManifestInterface;
 use Lunar\Base\CartLineModifiers;
 use Lunar\Base\CartModifiers;
 use Lunar\Base\CartSessionInterface;
+use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Base\ModelManifest;
@@ -37,6 +38,7 @@ use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
+use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\ScoutIndexer;
 use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
@@ -45,6 +47,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
+use Lunar\Managers\DiscountManager;
 use Lunar\Managers\PaymentManager;
 use Lunar\Managers\PricingManager;
 use Lunar\Managers\TaxManager;
@@ -53,6 +56,7 @@ use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
@@ -63,6 +67,7 @@ use Lunar\Observers\CartLineObserver;
 use Lunar\Observers\ChannelObserver;
 use Lunar\Observers\CollectionObserver;
 use Lunar\Observers\CurrencyObserver;
+use Lunar\Observers\CustomerGroupObserver;
 use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
@@ -151,6 +156,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(PaymentManagerInterface::class, function ($app) {
             return $app->make(PaymentManager::class);
         });
+
+        $this->app->singleton(DiscountManagerInterface::class, function ($app) {
+            return $app->make(DiscountManager::class);
+        });
     }
 
     /**
@@ -188,6 +197,7 @@ class LunarServiceProvider extends ServiceProvider
                 AddressData::class,
                 ScoutIndexer::class,
                 MigrateGetCandy::class,
+                SyncNewCustomerOrders::class,
             ]);
         }
 
@@ -254,6 +264,7 @@ class LunarServiceProvider extends ServiceProvider
     protected function registerObservers(): void
     {
         Channel::observe(ChannelObserver::class);
+        CustomerGroup::observe(CustomerGroupObserver::class);
         Language::observe(LanguageObserver::class);
         Currency::observe(CurrencyObserver::class);
         Url::observe(UrlObserver::class);

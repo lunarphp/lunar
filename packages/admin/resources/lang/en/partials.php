@@ -169,6 +169,7 @@ return [
     'orders.totals.shipping_total' => 'Shipping Total',
     'orders.totals.total' => 'Total',
     'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.totals.discount_total' => 'Discount Total',
     'orders.lines.unit_price' => 'Unit Price',
     'orders.lines.quantity' => 'Quantity',
     'orders.lines.sub_total' => 'Sub Total',
@@ -182,6 +183,9 @@ return [
     'orders.details.channel' => 'Channel',
     'orders.details.date_created' => 'Date Created',
     'orders.details.date_placed' => 'Date Placed',
+    'orders.details.new_returning' => 'New / Returning',
+    'orders.details.new_customer' => 'New Customer',
+    'orders.details.returning_customer' => 'Returning Customer',
     'orders.address.not_set' => 'No address set',
     /**
      * Forms.
@@ -190,6 +194,8 @@ return [
     'forms.channel.channel_name_delete' => 'Enter the name of the channel to delete it',
     'forms.brand_delete_brand' => 'Delete brand',
     'forms.brand_name_delete' => 'Enter the name of the brand to delete it',
+    'forms.customer-group.delete_customer_group' => 'Delete customer group',
+    'forms.customer-group.customer_group_name_delete' => 'Enter the name of the customer group to delete it',
     /**
      * Transactions.
      */

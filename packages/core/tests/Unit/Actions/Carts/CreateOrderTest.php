@@ -5,13 +5,13 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
-use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
@@ -35,6 +35,10 @@ class CreateOrderTest extends TestCase
     /** @test  */
     public function can_create_order()
     {
+        CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
         $billing = CartAddress::factory()->make([
             'type' => 'billing',
             'country_id' => Country::factory(),
@@ -114,7 +118,7 @@ class CreateOrderTest extends TestCase
 
         $cart->shippingAddress->shippingOption = $shippingOption;
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $breakdown = $cart->taxBreakdown->map(function ($tax) {
             return [
@@ -157,11 +161,11 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function cannot_create_order_without_billing_address()
     {
-        $this->expectException(BillingAddressMissingException::class);
+        $this->expectException(CartException::class);
 
         $cart = Cart::factory()->create();
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -177,9 +181,9 @@ class CreateOrderTest extends TestCase
             'postcode' => 'H0H 0H0',
         ]);
 
-        $this->expectException(BillingAddressIncompleteException::class);
+        $this->expectException(CartException::class);
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -188,6 +192,10 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function can_set_tax_breakdown_correctly()
     {
+        CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
         $billing = CartAddress::factory()->make([
             'type' => 'billing',
             'country_id' => Country::factory(),
@@ -264,11 +272,11 @@ class CreateOrderTest extends TestCase
             'shipping_option' => $shippingOption->getIdentifier(),
         ]);
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $this->assertEquals(
             $taxRateAmount->percentage,
-            $order->tax_breakdown->first()['percentage']
+            $order->tax_breakdown->first()->percentage
         );
     }
 }

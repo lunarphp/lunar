@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
@@ -43,6 +44,7 @@ abstract class AbstractProduct extends Component
     use HasUrls;
     use HasTags;
     use HasSlots;
+    use CanExtendValidation;
 
     /**
      * The current product we are editing.
@@ -181,6 +183,7 @@ abstract class AbstractProduct extends Component
     {
         return array_merge(
             [
+                'updatedAttributes',
                 'useProductOptions' => 'setOptions',
                 'productOptionCreated' => 'resetOptionView',
                 'option-manager.selectedValues' => 'setOptionValues',
@@ -204,7 +207,8 @@ abstract class AbstractProduct extends Component
         return array_merge(
             [],
             $this->hasPriceValidationMessages(),
-            $this->withAttributesValidationMessages()
+            $this->withAttributesValidationMessages(),
+            $this->getExtendedValidationMessages(),
         );
     }
 
@@ -276,7 +280,10 @@ abstract class AbstractProduct extends Component
             $baseRules,
             $this->hasImagesValidationRules(),
             $this->hasUrlsValidationRules(! $this->product->id),
-            $this->withAttributesValidationRules()
+            $this->withAttributesValidationRules(),
+            $this->getExtendedValidationRules([
+                'product' => $this->product,
+            ]),
         );
     }
 
@@ -368,7 +375,6 @@ abstract class AbstractProduct extends Component
         })->validate(null, $this->getValidationMessages());
 
         $this->validateUrls();
-
         $isNew = ! $this->product->id;
 
         DB::transaction(function () use ($isNew) {
@@ -903,6 +909,7 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.inventory'),
                 'id' => 'inventory',
                 'error_check' => [],
+                'hidden' => $this->getVariantsCount() > 1,
                 'has_errors' => $this->errorBag->hasAny([]),
             ],
             [

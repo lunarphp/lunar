@@ -104,8 +104,8 @@
                 :error="$errors->first('customerGroupPrices.'.$group->id.'.'.$currency->code.'.price')"
                 :error-icon="false"
               >
-                <x-hub::input.price 
-                  wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price" 
+                <x-hub::input.price
+                  wire:model="customerGroupPrices.{{ $group->id }}.{{ $currency->code }}.price"
                   :currencyCode="$currency->code"
                   :error="$errors->first('customerGroupPrices.'.$group->id.'.'.$currency->code.'.price')"
                   :error-icon="false"
@@ -142,8 +142,8 @@
             <div class="relative flex divide-y divide-gray-100" wire:key="tier_{{ $index }}">
                 <div class="grid w-full grid-cols-6 gap-4 pr-8">
                     <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                        <x-hub::input.group 
-                            :label="__('adminhub::global.customer_group')" 
+                        <x-hub::input.group
+                            :label="__('adminhub::global.customer_group')"
                             for="customer_group_id_field_{{ $index }}"
                             :error="$errors->first('tieredPrices.' . $index . '.customer_group_id')"
                             required
@@ -160,19 +160,19 @@
                         </x-hub::input.group>
                     </div>
                     <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                        <x-hub::input.group 
+                        <x-hub::input.group
                             :label="__('adminhub::global.lower_limit')"
                             for="tier_field_{{ $index }}"
                             :error="$errors->first('tieredPrices.' . $index . '.tier')"
                             :error-icon="false"
                             required
                         >
-                            <x-hub::input.text 
+                            <x-hub::input.text
                                 id="tier_field_{{ $index }}"
-                                wire:model='tieredPrices.{{ $index }}.tier' 
+                                wire:model='tieredPrices.{{ $index }}.tier'
                                 type="number"
-                                min="2" 
-                                steps="1" 
+                                min="2"
+                                steps="1"
                                 required
                                 @keydown="$event.keyCode === 190 ? $event.preventDefault() : null"
                                 :disabled="!$this->currency->default"
@@ -180,7 +180,7 @@
                         </x-hub::input.group>
                     </div>
                     <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                        <x-hub::input.group 
+                        <x-hub::input.group
                             :label="__('adminhub::global.unit_price_excl_tax')"
                             for="price_field_{{ $index }}_lang_{{ $currency->code }}"
                             :error="$errors->first('tieredPrices.' . $index . '.prices.' . $currency->code . '.price')"
@@ -190,7 +190,7 @@
                             <x-hub::input.price
                                 id="price_field_{{ $index }}_lang_{{ $currency->code }}"
                                 wire:model="tieredPrices.{{ $index }}.prices.{{ $currency->code }}.price"
-                                :currencyCode="$this->currency->code" 
+                                :currencyCode="$this->currency->code"
                                 :error="$errors->first('tieredPrices.' . $index . '.prices.' . $currency->code . '.price')" />
                         </x-hub::input.group>
                     </div>

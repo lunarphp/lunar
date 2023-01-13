@@ -4,7 +4,9 @@
         <div class="truncate">{{ $group->name }}</div>
     </div>
     <div class="col-span-7">
-      @if($availability['customerGroups'][$group->id]['status'] != 'hidden')
+        {{-- availability.customerGroups.{{ $group->id }}.enabled --}}
+
+      @if($availability['customerGroups'][$group->id]['status'] != 'hidden' || ($availability['customerGroups'][$group->id]['enabled'] ?? false))
       <button type="button" class="text-indigo-500 hover:underline" wire:click="$set('availability.customerGroups.{{ $group->id }}.scheduling', true)">
         @if($startDate = $availability['customerGroups'][$group->id]['starts_at'])
           @if($endDate = $availability['customerGroups'][$group->id]['ends_at'])
@@ -83,19 +85,24 @@
       </x-hub::modal.dialog>
     </div>
     <div class="col-span-3">
-      <x-hub::input.select wire:model="availability.customerGroups.{{ $group->id }}.status">
-        <option value="visible" selected>
-          {{ __('adminhub::partials.availability.customer_groups.visible') }}
-        </option>
-        <option value="hidden">
-          {{ __('adminhub::partials.availability.customer_groups.hidden') }}
-        </option>
-        @if($customerGroups['purchasable'] ?? true)
-        <option value="purchasable">
-          {{ __('adminhub::partials.availability.customer_groups.purchasable') }}
-        </option>
+        @if($customerGroupType == 'toggle')
+            <x-hub::input.toggle wire:model="availability.customerGroups.{{ $group->id }}.enabled" :value="true" />
+        @else
+            <x-hub::input.select wire:model="availability.customerGroups.{{ $group->id }}.status">
+                <option value="visible" selected>
+                  {{ __('adminhub::partials.availability.customer_groups.visible') }}
+                </option>
+                <option value="hidden">
+                  {{ __('adminhub::partials.availability.customer_groups.hidden') }}
+                </option>
+                @if($customerGroups['purchasable'] ?? true)
+                <option value="purchasable">
+                  {{ __('adminhub::partials.availability.customer_groups.purchasable') }}
+                </option>
+                @endif
+              </x-hub::input.select>
         @endif
-      </x-hub::input.select>
+
     </div>
 </div>
 @endforeach
