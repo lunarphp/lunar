@@ -2,38 +2,37 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
-use Livewire\Component;
-use Lunar\Models\Brand;
-use Lunar\Models\Product;
-use Lunar\Models\TaxClass;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Livewire\WithFileUploads;
-use Lunar\Models\ProductType;
-use Illuminate\Validation\Rule;
-use Lunar\Models\ProductOption;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\ProductVariant;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
-use Lunar\Models\ProductAssociation;
-use Lunar\Models\ProductOptionValue;
-use Illuminate\Database\Eloquent\Builder;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 use Lunar\Hub\Actions\Pricing\UpdatePrices;
-use Lunar\Hub\Http\Livewire\Traits\HasTags;
-use Lunar\Hub\Http\Livewire\Traits\HasUrls;
-use Lunar\Hub\Http\Livewire\Traits\HasSlots;
-use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
+use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
+use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasPrices;
-use Lunar\Models\Collection as ModelsCollection;
-use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
-use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
-use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
-use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
+use Lunar\Hub\Http\Livewire\Traits\HasSlots;
+use Lunar\Hub\Http\Livewire\Traits\HasTags;
+use Lunar\Hub\Http\Livewire\Traits\HasUrls;
+use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\SearchesProducts;
-use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
+use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Brand;
+use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
 
 abstract class AbstractProduct extends Component
 {
@@ -211,8 +210,7 @@ abstract class AbstractProduct extends Component
      */
     protected function getValidationMessages()
     {
-
-        if (!sizeof($this->variants)) {
+        if (! count($this->variants)) {
             $priceValidationMessages = $this->hasPriceValidationMessages();
         } else {
             $priceValidationMessages = [];
@@ -265,10 +263,10 @@ abstract class AbstractProduct extends Component
 
         if (config('lunar-hub.products.require_brand', true)) {
             $baseRules['product.brand_id'] = 'required_without:brand';
-            $baseRules['brand'] = 'required_without:product.brand_id|unique:' . Brand::class . ',name';
+            $baseRules['brand'] = 'required_without:product.brand_id|unique:'.Brand::class.',name';
         }
 
-        if ($this->getVariantsCount() <= 1 && !$this->variantsEnabled) {
+        if ($this->getVariantsCount() <= 1 && ! $this->variantsEnabled) {
             $baseRules = array_merge(
                 $baseRules,
                 $this->hasPriceValidationRules(),
@@ -315,7 +313,7 @@ abstract class AbstractProduct extends Component
         return array_merge(
             $baseRules,
             $this->hasImagesValidationRules(),
-            $this->hasUrlsValidationRules(!$this->product->id),
+            $this->hasUrlsValidationRules(! $this->product->id),
             $this->withAttributesValidationRules(),
             $this->getExtendedValidationRules([
                 'product' => $this->product,
@@ -423,7 +421,7 @@ abstract class AbstractProduct extends Component
             }
         }
 
-        if (!empty($rules)) {
+        if (! empty($rules)) {
             $this->validate($rules);
         }
     }
@@ -449,9 +447,9 @@ abstract class AbstractProduct extends Component
         $this->validateVariants();
         $this->validateUrls();
 
-        $isNew = !$this->product->id;
+        $isNew = ! $this->product->id;
 
-        $hasVariants = !!sizeof($this->variants);
+        $hasVariants = (bool) count($this->variants);
 
         DB::transaction(function () use ($isNew, $hasVariants) {
             $data = $this->prepareAttributeData();
@@ -470,18 +468,18 @@ abstract class AbstractProduct extends Component
             $this->product->save();
 
             if (($this->getVariantsCount() <= 1) || $isNew) {
-                if (!$this->variant->product_id) {
+                if (! $this->variant->product_id) {
                     $this->variant->product_id = $this->product->id;
                 }
 
-                if (!$this->manualVolume) {
+                if (! $this->manualVolume) {
                     $this->variant->volume_unit = null;
                     $this->variant->volume_value = null;
                 }
 
                 $this->variant->attribute_data = $variantData;
 
-                if (!$hasVariants) {
+                if (! $hasVariants) {
                     $this->variant->save();
 
                     if ($isNew) {
@@ -491,9 +489,9 @@ abstract class AbstractProduct extends Component
             }
 
             // We generating variants?
-            $generateVariants = (bool) count($this->optionValues) && !$this->variantsDisabled;
+            $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
 
-            if (!$this->variantsEnabled && $this->getVariantsCount()) {
+            if (! $this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
 
                 $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
@@ -524,7 +522,7 @@ abstract class AbstractProduct extends Component
                             'backorder',
                         ];
 
-                        if (!empty($variantData['id'])) {
+                        if (! empty($variantData['id'])) {
                             $variant = ProductVariant::find($variantData['id']);
 
                             $variant->update(collect($variantData)->only($variantFields)->toArray());
@@ -577,7 +575,7 @@ abstract class AbstractProduct extends Component
                 }
             }
 
-            if (!$generateVariants && $this->product->variants->count() <= 1 && !$isNew) {
+            if (! $generateVariants && $this->product->variants->count() <= 1 && ! $isNew) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
@@ -593,8 +591,8 @@ abstract class AbstractProduct extends Component
             $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
                 return [
                     $channel['channel_id'] => [
-                        'starts_at' => !$channel['enabled'] ? null : $channel['starts_at'],
-                        'ends_at' => !$channel['enabled'] ? null : $channel['ends_at'],
+                        'starts_at' => ! $channel['enabled'] ? null : $channel['starts_at'],
+                        'ends_at' => ! $channel['enabled'] ? null : $channel['ends_at'],
                         'enabled' => $channel['enabled'],
                     ],
                 ];
@@ -621,7 +619,7 @@ abstract class AbstractProduct extends Component
             }
 
             $this->associations->each(function ($assoc) {
-                if (!empty($assoc['id'])) {
+                if (! empty($assoc['id'])) {
                     ProductAssociation::find($assoc['id'])->update([
                         'type' => $assoc['type'],
                     ]);
@@ -726,7 +724,7 @@ abstract class AbstractProduct extends Component
                             'value' => $selectedOptionValueNames[$optionId][$valueId],
                         ];
                     })->values(),
-                'basePrices' => $this->basePrices, ## on Edit, this will get the first variant's price, is this a bug or 'feature' to get same price?
+                'basePrices' => $this->basePrices, // on Edit, this will get the first variant's price, is this a bug or 'feature' to get same price?
                 'stock' => 0,
                 'backorder' => 0,
                 'options' => $variant,
@@ -734,7 +732,7 @@ abstract class AbstractProduct extends Component
         }
 
         foreach ($this->variants as $key => $_) {
-            if (!in_array($key, $currentVariants)) {
+            if (! in_array($key, $currentVariants)) {
                 unset($this->variants[$key]);
             }
         }
@@ -818,7 +816,7 @@ abstract class AbstractProduct extends Component
                 if ($pivot) {
                     if ($pivot->purchasable) {
                         $status = 'purchasable';
-                    } elseif (!$pivot->visible && !$pivot->enabled) {
+                    } elseif (! $pivot->visible && ! $pivot->enabled) {
                         $status = 'hidden';
                     } elseif ($pivot->visible) {
                         $status = 'visible';
@@ -1095,7 +1093,7 @@ abstract class AbstractProduct extends Component
                 'id' => 'variants',
                 'hidden' => $this->variantsDisabled,
                 'has_errors' => $this->errorBag->hasAny([
-                    'variants.*'
+                    'variants.*',
                 ]),
             ],
             [

@@ -55,7 +55,7 @@ class OptionSelector extends Component
 
     public function toggleOptionSelector($toggle = null)
     {
-        $this->mainPanelVisible = $toggle === null ? !$this->mainPanelVisible : $toggle;
+        $this->mainPanelVisible = $toggle === null ? ! $this->mainPanelVisible : $toggle;
     }
 
     public function updatedMainPanelVisible($val)

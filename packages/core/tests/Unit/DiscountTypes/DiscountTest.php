@@ -129,6 +129,7 @@ class DiscountTest extends TestCase
 
     /**
      * @test
+     *
      * @group thisdiscount
      */
     public function can_apply_fixed_amount_discount()

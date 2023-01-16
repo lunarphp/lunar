@@ -2,25 +2,25 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Livewire\Livewire;
-use Lunar\Models\Brand;
-use Lunar\Models\Price;
-use Lunar\Models\Product;
 use Lunar\FieldTypes\Text;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
+use Lunar\Hub\Models\Staff;
+use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Attribute;
+use Lunar\Models\Brand;
+use Lunar\Models\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
-use Lunar\Models\TaxClass;
-use Lunar\Hub\Models\Staff;
-use Lunar\Models\Attribute;
-use Lunar\Models\Collection;
-use Lunar\Hub\Tests\TestCase;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductVariant;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
 
 /**
  * @group hub.products
