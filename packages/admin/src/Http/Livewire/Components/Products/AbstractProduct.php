@@ -210,24 +210,9 @@ abstract class AbstractProduct extends Component
      */
     protected function getValidationMessages()
     {
-        if (! count($this->variants)) {
-            $priceValidationMessages = $this->hasPriceValidationMessages();
-        } else {
-            $priceValidationMessages = [];
-
-            $priceMessages = collect($this->hasPriceValidationMessages())
-                ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'));
-
-            foreach ($this->variants as $key => $_) {
-                foreach ($priceMessages as $ruleKey => $ruleMessage) {
-                    $priceValidationMessages["variants.{$key}.{$ruleKey}"] = $ruleMessage;
-                }
-            }
-        }
-
         return array_merge(
             [],
-            $priceValidationMessages,
+            ! count($this->variants) ? $this->hasPriceValidationMessages() : [],
             $this->withAttributesValidationMessages(),
             $this->getExtendedValidationMessages(),
         );
@@ -297,9 +282,6 @@ abstract class AbstractProduct extends Component
             );
         } else {
             $identifiers = ['sku', 'gtin', 'mpn', 'ean'];
-            $priceRules = collect($this->hasPriceValidationRules())
-                ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'))
-                ->toArray();
 
             $baseRules = array_merge(
                 $baseRules,
@@ -405,6 +387,14 @@ abstract class AbstractProduct extends Component
         $identifiers = collect(['sku', 'gtin', 'mpn', 'ean'])
             ->filter(fn ($identifier) => config("lunar-hub.products.{$identifier}.required", false));
 
+        $priceRules = collect($this->hasPriceValidationRules())
+            ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'))
+            ->toArray();
+
+        $priceMessages = collect($this->hasPriceValidationMessages())
+            ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'));
+
+        $priceValidationMessages = [];
         $rules = [];
 
         foreach ($this->variants as $index => $value) {
@@ -413,16 +403,24 @@ abstract class AbstractProduct extends Component
             $rules["variants.{$index}.stock"] = 'numeric|max:10000000';
             $rules["variants.{$index}.backorder"] = 'numeric|max:10000000';
 
+            foreach ($priceRules as $ruleKey => $rule) {
+                $rules["variants.{$index}.{$ruleKey}"] = $rule;
+            }
+
             foreach ($identifiers as $identifier) {
                 $rules["variants.{$index}.{$identifier}"] = get_validation('products', $identifier, [
                     'alpha_dash',
                     'max:255',
                 ], $variant);
             }
+
+            foreach ($priceMessages as $ruleKey => $ruleMessage) {
+                $priceValidationMessages["variants.{$index}.{$ruleKey}"] = $ruleMessage;
+            }
         }
 
         if (! empty($rules)) {
-            $this->validate($rules);
+            $this->validate($rules, $priceValidationMessages);
         }
     }
 
