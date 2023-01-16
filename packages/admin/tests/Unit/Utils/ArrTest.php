@@ -28,8 +28,8 @@ class ArrTest extends TestCase
                     ],
                 ],
                 'expected' => [
-                    'Blue',
-                    'Red',
+                    ['colour' => 'Blue'],
+                    ['colour' => 'Red'],
                 ],
             ],
             [

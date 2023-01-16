@@ -2,24 +2,25 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Livewire\Livewire;
-use Lunar\FieldTypes\Text;
-use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
-use Lunar\Hub\Models\Staff;
-use Lunar\Hub\Tests\TestCase;
-use Lunar\Models\Attribute;
 use Lunar\Models\Brand;
-use Lunar\Models\Collection;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
-use Lunar\Models\ProductAssociation;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\TaxClass;
+use Lunar\Hub\Models\Staff;
+use Lunar\Models\Attribute;
+use Lunar\Models\Collection;
+use Lunar\Hub\Tests\TestCase;
 use Lunar\Models\ProductOption;
-use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOptionValue;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Hub\Http\Livewire\Components\Products\ProductShow;
 
 /**
  * @group hub.products
@@ -155,6 +156,10 @@ class ProductShowTest extends TestCase
 
         $variant = ProductVariant::factory()->create([
             'product_id' => $product->id,
+        ]);
+
+        TaxClass::factory()->create([
+            'default' => true,
         ]);
 
         foreach (Currency::get() as $currency) {
@@ -406,6 +411,10 @@ class ProductShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
+        TaxClass::factory()->create([
+            'default' => true,
+        ]);
+
         $brand = Brand::factory()->create();
 
         foreach (Currency::get() as $currency) {
@@ -417,7 +426,7 @@ class ProductShowTest extends TestCase
             ]);
         }
 
-        ProductOption::factory(2)->create()->each(function ($option) {
+        $options = ProductOption::factory(2)->create()->each(function ($option) {
             $option->values()->createMany(
                 ProductOptionValue::factory(2)->make()->toArray()
             );
@@ -428,14 +437,17 @@ class ProductShowTest extends TestCase
         Config::set('lunar-hub.products.sku.unique', true);
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->set('optionValues', $values->pluck('id')->toArray())
-                ->call('addUrl')
-                ->set('product.brand_id', $brand->id)
-                ->set('urls.0.slug', 'foo-bar')
-                ->call('save')
-                ->assertHasNoErrors();
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])
+            ->set('options', $options)
+            ->set('optionValues', $values->pluck('id')->toArray())
+            ->call('setVariants')
+            ->call('addUrl')
+            ->set('product.brand_id', $brand->id)
+            ->set('urls.0.slug', 'foo-bar')
+            ->call('save')
+            ->assertHasNoErrors();
 
         $this->assertEquals(4, $product->variants()->count());
     }

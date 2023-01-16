@@ -21,6 +21,13 @@ class GenerateVariantsTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->markTestSkipped('variant generation test should be in livewire\AbstractProduct component');
+    }
+
     /** @test */
     public function can_handle_empty_array_of_values()
     {
