@@ -541,23 +541,15 @@ abstract class AbstractProduct extends Component
 
                             $attributes = $baseVariant->only($attributesToCopy);
 
-                            $pricing = collect($variantData['basePrices'])->map(function ($price) {
-                                return collect($price)->only([
-                                    'customer_group_id',
-                                    'currency_id',
-                                    'price',
-                                    'compare_price',
-                                    'tier',
-                                ]);
-                            });
-
                             $variant->product_id = $baseVariant->product_id;
                             $variant->tax_class_id = TaxClass::getDefault()?->id;
                             $variant->attribute_data = $baseVariant->attribute_data;
                             $variant->fill($attributes);
                             $variant->save();
+
                             $variant->values()->attach($variantData['options']);
-                            $variant->prices()->createMany($pricing->toArray());
+
+                            app(UpdatePrices::class)->execute($variant, collect($variantData['basePrices']));
 
                             $this->variants[$variantKey]['id'] = $variant->id;
                         }
