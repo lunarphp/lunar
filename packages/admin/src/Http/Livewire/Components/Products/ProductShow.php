@@ -32,9 +32,11 @@ class ProductShow extends AbstractProduct
             }
         }
 
-        $this->options = ProductOption::findMany(array_keys($selectedOptions));
+        $this->options = ProductOption::orderBy('position')->findMany(array_keys($selectedOptions));
 
         $this->optionValues = collect($selectedOptions)->collapse()->pluck('id')->unique()->values()->toArray();
+
+        $options = $this->options->pluck('id')->toArray();
 
         foreach ($variants as $variant) {
             $optionValues = $variant->values->pluck('id', 'product_option_id')->toArray();
@@ -44,12 +46,15 @@ class ProductShow extends AbstractProduct
 
             $this->variants[$key] = array_merge(
                 [
-                    'labels' => collect($optionValues)->map(function ($valueId, $optionId) use ($selectedOptions) {
-                        return [
-                            'option' => $this->options->where('id', $optionId)->first()->translate('name'),
-                            'value' => $selectedOptions[$optionId][$valueId]->translate('name'),
-                        ];
-                    }),
+                    'labels' => collect($optionValues)
+                        ->sortBy(function ($model, $key) use ($options) {
+                            return array_search($key, $options);
+                        })->map(function ($valueId, $optionId) use ($selectedOptions) {
+                            return [
+                                'option' => $this->options->where('id', $optionId)->first()->translate('name'),
+                                'value' => $selectedOptions[$optionId][$valueId]->translate('name'),
+                            ];
+                        })->values(),
                     'basePrices' => $this->mapBasePrices($variant->prices),
                     'stock' => $variant->stock,
                     'backorder' => $variant->backorder,

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Lunar\Models\ProductAssociation;
 use Lunar\Models\ProductOptionValue;
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Hub\Actions\Pricing\UpdatePrices;
 use Lunar\Hub\Http\Livewire\Traits\HasTags;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
@@ -681,10 +682,17 @@ abstract class AbstractProduct extends Component
 
     public function setVariants()
     {
+        $options = ProductOption::whereHas('values', function (Builder $query) {
+            $query->whereIn('id', $this->optionValues);
+        })
+            ->orderBy('position')
+            ->get()
+            ->pluck('id')
+            ->toArray();
+
         $selectedOptionValueNames = $this->getSelectedOptionValues();
         $selectedOptionValues = ProductOptionValue::findMany($this->optionValues)
             ->groupBy('product_option_id');
-        ## how to sort with Options position here?
 
         $matrix = Arr::permutate(
             $selectedOptionValues
@@ -705,12 +713,15 @@ abstract class AbstractProduct extends Component
             $currentVariants[] = $key;
 
             $this->variants[$key] = $this->variants[$key] ?? [
-                'labels' => collect($variant)->map(function ($valueId, $optionId) use ($selectedOptionValueNames) {
-                    return [
-                        'option' => $this->options->where('id', $optionId)->first()->translate('name'),
-                        'value' => $selectedOptionValueNames[$optionId][$valueId],
-                    ];
-                }),
+                'labels' => collect($variant)
+                    ->sortBy(function ($model, $key) use ($options) {
+                        return array_search($key, $options);
+                    })->map(function ($valueId, $optionId) use ($selectedOptionValueNames) {
+                        return [
+                            'option' => $this->options->where('id', $optionId)->first()->translate('name'),
+                            'value' => $selectedOptionValueNames[$optionId][$valueId],
+                        ];
+                    })->values(),
                 'basePrices' => $this->basePrices, ## on Edit, this will get the first variant's price, is this a bug or 'feature' to get same price?
                 'stock' => 0,
                 'backorder' => 0,
