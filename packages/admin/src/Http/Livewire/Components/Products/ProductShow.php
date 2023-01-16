@@ -47,7 +47,7 @@ class ProductShow extends AbstractProduct
             $this->variants[$key] = array_merge(
                 [
                     'labels' => collect($optionValues)
-                        ->sortBy(function ($model, $key) use ($options) {
+                        ->sortBy(function ($_, $key) use ($options) {
                             return array_search($key, $options);
                         })->map(function ($valueId, $optionId) use ($selectedOptions) {
                             return [

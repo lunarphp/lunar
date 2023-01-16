@@ -7,6 +7,7 @@ use Lunar\Models\Brand;
 use Lunar\Models\Product;
 use Lunar\Models\TaxClass;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use Lunar\Models\ProductType;
 use Illuminate\Validation\Rule;
@@ -217,7 +218,7 @@ abstract class AbstractProduct extends Component
             $priceValidationMessages = [];
 
             $priceMessages = collect($this->hasPriceValidationMessages())
-                ->filter(fn ($_, $key) => str($key)->startsWith('basePrices'));
+                ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'));
 
             foreach ($this->variants as $key => $_) {
                 foreach ($priceMessages as $ruleKey => $ruleMessage) {
@@ -299,7 +300,7 @@ abstract class AbstractProduct extends Component
         } else {
             $identifiers = ['sku', 'gtin', 'mpn', 'ean'];
             $priceRules = collect($this->hasPriceValidationRules())
-                ->filter(fn ($_, $key) => str($key)->startsWith('basePrices'))
+                ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'))
                 ->toArray();
 
             $baseRules = array_merge(
@@ -714,7 +715,7 @@ abstract class AbstractProduct extends Component
 
             $this->variants[$key] = $this->variants[$key] ?? [
                 'labels' => collect($variant)
-                    ->sortBy(function ($model, $key) use ($options) {
+                    ->sortBy(function ($_, $key) use ($options) {
                         return array_search($key, $options);
                     })->map(function ($valueId, $optionId) use ($selectedOptionValueNames) {
                         return [
