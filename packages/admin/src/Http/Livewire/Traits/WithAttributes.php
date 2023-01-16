@@ -236,6 +236,27 @@ trait WithAttributes
     }
 
     /**
+     * Handle attributes updated event.
+     *
+     * @param  array  $event
+     * @return void
+     */
+    public function updatedAttributes($event)
+    {
+        $key = str_replace(
+            'attributeMapping.',
+            '',
+            str_replace('.data', '', $event['path'])
+        );
+
+        $field = $this->attributeMapping[$key];
+
+        $field['data'] = $event['data'];
+
+        $this->attributeMapping->put($key, $field);
+    }
+
+    /**
      * Computed property to get attribute data.
      *
      * @return array

@@ -15,6 +15,7 @@ use Lunar\Models\Channel;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
+use Lunar\Models\Discount;
 use Lunar\Models\Order;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
@@ -25,6 +26,9 @@ use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
+use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
+use Lunar\Facades\Discounts;
+use Lunar\Models\CustomerGroup;
 
 /**
  * @group lunar.carts
@@ -65,6 +69,58 @@ class CartTest extends TestCase
         ]);
 
         $this->assertCount(1, $cart->lines()->get());
+    }
+
+    /** @test */
+    public function can_save_coupon_code()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => DiscountTypesDiscount::class,
+            'name' => 'Test Coupon',
+            'coupon' => 'valid-coupon',
+            'data' => [
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'visible' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'meta' => ['foo' => 'bar'],
+        ]);
+
+        $this->assertNull($cart->coupon_code);
+
+        $cart->coupon_code = 'valid-coupon';
+
+        Discounts::apply($cart);
+
+        $cart->saveQuietly();
+
+        $this->assertEquals('valid-coupon', $cart->refresh()->coupon_code);
     }
 
     /** @test */
