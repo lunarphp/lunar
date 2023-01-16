@@ -308,31 +308,7 @@ abstract class AbstractProduct extends Component
                 collect($identifiers)
                     ->filter(fn ($identifier) => config("lunar-hub.products.{$identifier}.unique", false))
                     ->mapWithKeys(fn ($identifier) => ["variants.*.{$identifier}" => 'distinct:ignore_case'])
-                    ->toArray(),
-                [
-                    'variants.*' => Rule::forEach(function ($value, $attribute, $data) use ($identifiers, $priceRules) {
-                        $variant = new ProductVariant($value);
-
-                        $rules = array_merge(
-                            $priceRules,
-                            [
-                                'stock' => 'numeric|max:10000000',
-                                'backorder' => 'numeric|max:10000000',
-                            ]
-                        );
-
-                        foreach ($identifiers as $identifier) {
-                            if (config("lunar-hub.products.{$identifier}.required", false)) {
-                                $rules[$identifier] = get_validation('products', $identifier, [
-                                    'alpha_dash',
-                                    'max:255',
-                                ], $variant);
-                            }
-                        }
-
-                        return $rules;
-                    }),
-                ],
+                    ->toArray()
             );
         }
 
@@ -426,6 +402,32 @@ abstract class AbstractProduct extends Component
         unset($this->options[$key]);
     }
 
+    protected function validateVariants()
+    {
+        $identifiers = collect(['sku', 'gtin', 'mpn', 'ean'])
+            ->filter(fn ($identifier) => config("lunar-hub.products.{$identifier}.required", false));
+
+        $rules = [];
+
+        foreach ($this->variants as $index => $value) {
+            $variant = new ProductVariant($value);
+
+            $rules["variants.{$index}.stock"] = 'numeric|max:10000000';
+            $rules["variants.{$index}.backorder"] = 'numeric|max:10000000';
+
+            foreach ($identifiers as $identifier) {
+                $rules["variants.{$index}.{$identifier}"] = get_validation('products', $identifier, [
+                    'alpha_dash',
+                    'max:255',
+                ], $variant);
+            }
+        }
+
+        if (!empty($rules)) {
+            $this->validate($rules);
+        }
+    }
+
     /**
      * Universal method to handle saving the product.
      *
@@ -444,6 +446,7 @@ abstract class AbstractProduct extends Component
             });
         })->validate(null, $this->getValidationMessages());
 
+        $this->validateVariants();
         $this->validateUrls();
 
         $isNew = !$this->product->id;
