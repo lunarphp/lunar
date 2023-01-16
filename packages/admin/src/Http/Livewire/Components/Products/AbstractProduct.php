@@ -266,7 +266,7 @@ abstract class AbstractProduct extends Component
             $baseRules['brand'] = 'required_without:product.brand_id|unique:' . Brand::class . ',name';
         }
 
-        if (!sizeof($this->variants)) {
+        if ($this->getVariantsCount() <= 1 && !$this->variantsEnabled) {
             $baseRules = array_merge(
                 $baseRules,
                 $this->hasPriceValidationRules(),
