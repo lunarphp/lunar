@@ -10,6 +10,8 @@
             ])
         </header>
 
+        <x-hub::errors :error="$errors->first('collections')"/>
+
         <div class="space-y-2">
             @foreach ($collections as $index => $collection)
                 <div wire:key="collection_{{ $index }}">
