@@ -52,9 +52,13 @@
                                 'opacity-25' => $this->existingIds->contains($collection->id),
                             ])>
                                 <div class="truncate max-w-64">
+                                    <strong class="rounded px-1.5 py-0.5 mr-1 bg-blue-50 text-xs text-blue-600">
+                                        {{ $collection->group->name }}
+                                    </strong>
+
                                     {{ $collection->translateAttribute('name') }} {{ $collection->deleted_at }}
 
-                                    <p class="pr-32 text-xs text-gray-400 truncate">
+                                    <p class="pr-32 mt-0.5 text-xs text-gray-400 truncate">
                                         {{ collect($collection['breadcrumb'])->implode(' > ') }}
                                     </p>
                                 </div>
@@ -94,9 +98,13 @@
                     <div class="flex items-center justify-between w-full px-2 py-2 text-sm text-left border rounded shadow-sm "
                          wire:key="selected_{{ $collection->id }}">
                         <div class="truncate max-w-64">
+                            <strong class="rounded px-1.5 py-0.5 mr-1 bg-blue-50 text-xs text-blue-600">
+                                {{ $collection->group->name }}
+                            </strong>
+
                             {{ $collection->translateAttribute('name') }}
 
-                            <p class="pr-32 text-xs text-gray-400 truncate">
+                            <p class="pr-32 mt-0.5 text-xs text-gray-400 truncate">
                                 {{ collect($collection['breadcrumb'])->implode(' > ') }}
                             </p>
                         </div>
