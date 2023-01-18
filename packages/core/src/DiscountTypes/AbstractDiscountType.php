@@ -26,4 +26,16 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
 
         return $this;
     }
+    
+    /**
+     * Mark a discount as used
+     *
+     * @return self
+     */
+    public function markAsUsed(): self
+    {
+        $this->discount->uses = $this->discount->uses + 1; 
+
+        return $this;
+    }
 }
