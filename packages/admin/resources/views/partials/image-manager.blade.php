@@ -198,7 +198,7 @@
                                     <button type="button"
                                             wire:click.prevent="removeImage('{{ $key }}')"
                                             class="text-gray-400 hover:text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            @disabled($image['primary'])>
+                                            @if($image['primary']) disabled @endif>
                                         <x-hub::icon ref="trash"
                                                      style="solid"
                                                      class="text-gray-400 hover:text-red-500" />
