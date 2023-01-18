@@ -126,7 +126,7 @@ class CreateOrder extends AbstractAction
 
             $cart->order()->associate($order);
             
-            $cart->discounts->each(function ($discount) {
+            $cart->discounts?->each(function ($discount) {
                 $discount->markAsUsed()->save();
             });
 
