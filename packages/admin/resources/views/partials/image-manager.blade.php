@@ -194,14 +194,16 @@
                                                  class="text-gray-400 hover:text-indigo-500" />
                                 </button>
 
-                                <button type="button"
-                                        wire:click.prevent="removeImage('{{ $key }}')"
-                                        class="text-gray-400 hover:text-red-500"
-                                        @if ($image['primary']) disabled @endif>
-                                    <x-hub::icon ref="trash"
-                                                 style="solid"
-                                                 class="text-gray-400 hover:text-red-500" />
-                                </button>
+                                <x-hub::tooltip :text="$image['primary'] ? __('adminhub::partials.image-manager.delete_primary') : __('adminhub::partials.image-manager.delete_row_btn')">
+                                    <button type="button"
+                                            wire:click.prevent="removeImage('{{ $key }}')"
+                                            class="text-gray-400 hover:text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            @if($image['primary']) disabled @endif>
+                                        <x-hub::icon ref="trash"
+                                                     style="solid"
+                                                     class="text-gray-400 hover:text-red-500" />
+                                    </button>
+                                </x-hub::tooltip>
                             </div>
                         </div>
                     </div>
