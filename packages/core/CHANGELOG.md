@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.1.5
+
+### Fixed
+
+- Cart manager will now check for active order before associating and merging carts.
+- Price update will now correctly save the compare price.
+
 ## 0.1.4
 
 ### Fixed

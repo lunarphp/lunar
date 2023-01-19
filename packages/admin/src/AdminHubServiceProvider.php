@@ -41,6 +41,7 @@ use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsTable;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
+use Lunar\Hub\Http\Livewire\Components\FieldTypes\FileFieldtype;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderRefund;
@@ -112,7 +113,6 @@ use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use Lunar\Hub\Http\Livewire\Components\Tags;
 use Lunar\Hub\Http\Livewire\Dashboard;
 use Lunar\Hub\Http\Livewire\HubLicense;
-use Lunar\Hub\Http\Livewire\Sidebar;
 use Lunar\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use Lunar\Hub\Menu\MenuRegistry;
 use Lunar\Hub\Menu\OrderActionsMenu;
@@ -265,6 +265,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerSettingsComponents();
         $this->registerOrderComponents();
         $this->registerCustomerComponents();
+        $this->registerFieldtypeComponents();
         $this->registerDiscountComponents();
 
         // Blade Components
@@ -278,7 +279,6 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerGlobalComponents()
     {
-        Livewire::component('sidebar', Sidebar::class);
         Livewire::component('dashboard', Dashboard::class);
         Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
@@ -461,6 +461,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.settings.taxes.tax-zones.table', TaxZonesTable::class);
 
         Livewire::component('hub.components.settings.taxes.tax-classes.index', TaxClassesIndex::class);
+    }
+
+    protected function registerFieldtypeComponents()
+    {
+        Livewire::component('hub.components.fieldtypes.file', FileFieldtype::class);
     }
 
     public function registerDiscountComponents()
