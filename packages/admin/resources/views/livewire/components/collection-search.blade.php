@@ -102,7 +102,7 @@
                         </div>
 
                         <button class="px-2 py-1 text-xs text-red-700 border border-red-200 rounded shadow-sm hover:bg-red-50"
-                                wire:click.prevent="removeProduct('{{ $collection->id }}')">
+                                wire:click.prevent="removeCollection('{{ $collection->id }}')">
                             {{ __('adminhub::global.deselect') }}
                         </button>
                     </div>
