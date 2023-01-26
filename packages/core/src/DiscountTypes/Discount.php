@@ -37,7 +37,7 @@ class Discount extends AbstractDiscountType
 
         $lines = $this->getEligibleLines($cart);
 
-        if (! $passes || ($minSpend && $minSpend < $lines->sum('subTotal.value'))) {
+        if (! $passes || ($minSpend && $minSpend >= $lines->sum('subTotal.value'))) {
             return $cart;
         }
 

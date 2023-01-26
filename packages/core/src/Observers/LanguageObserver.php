@@ -2,6 +2,7 @@
 
 namespace Lunar\Observers;
 
+use Illuminate\Support\Facades\DB;
 use Lunar\Models\Language;
 
 class LanguageObserver
@@ -34,9 +35,11 @@ class LanguageObserver
      * @param  \Lunar\Models\Language  $language
      * @return void
      */
-    public function deleted(Language $language)
+    public function deleting(Language $language)
     {
-        //
+        DB::transaction(function () use ($language) {
+            $language->urls()->delete();
+        });
     }
 
     /**

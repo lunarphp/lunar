@@ -64,6 +64,19 @@ class Brand extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Return our base (core) attributes we want searchable.
+     *
+     * @return array
+     */
+    public function getSearchableAttributes()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+    }
+
+    /**
      * Return the product relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

@@ -125,6 +125,9 @@ abstract class AbstractDiscount extends Component
                 return $this->mapProductToArray($limitation->purchasable);
             });
 
+        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand)) ?? collect();
+        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection)) ?? collect();
+        
         $this->selectedConditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
             ->pluck('purchasable_id')->values()->toArray();
@@ -309,7 +312,7 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
-     * Remove the collection by it's index.
+     * Remove the product by it's index.
      *
      * @param  int|string  $index
      * @return void
@@ -373,7 +376,8 @@ abstract class AbstractDiscount extends Component
             $this->discount->channels()->sync($channels);
 
             $this->discount->collections()->sync(
-                $this->selectedCollections->pluck('id')
+                $this->selectedCollections->pluck('id')->toArray()
+
             );
             
             $this->discount->purchasableLimitations()
