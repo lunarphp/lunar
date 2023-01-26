@@ -21,7 +21,7 @@
         "laravel/scout": "^9.4",
         "livewire/livewire": "^2.0",
         "lukascivil/treewalker": "0.9.1",
-        "lunarphp/licensing": "dev-main",
+        "lunarphp/licensing": "^0.1",
         "lunarphp/livewire-tables": "self.version",
         "php": "^8.0",
         "spatie/laravel-activitylog": "^4.4",
