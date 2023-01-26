@@ -32,16 +32,19 @@ abstract class AbstractDiscount extends Component
      */
     public Discount $discount;
 
-    public Collection $collections;
-
     /**
      * The brands to restrict the coupon for.
      *
      * @var array
      */
-    public array $selectedBrands = [];
+    public Collection $selectedBrands;
 
-    public array $selectedCollections = [];
+    /**
+     * The collections to restrict the coupon for.
+     *
+     * @var array
+     */
+    public Collection $selectedCollections;
 
     /**
      * The selected conditions
@@ -97,15 +100,17 @@ abstract class AbstractDiscount extends Component
         'discount.conditions' => 'syncConditions',
         'discount.rewards' => 'syncRewards',
         'discount.purchasables' => 'syncPurchasables',
-        'collectionTreeSelect.updated' => 'selectCollections',
+        'brandSearch.selected' => 'selectBrands',
+        'collectionSearch.selected' => 'selectCollections',
     ];
 
     public function mount()
     {
         $this->currency = Currency::getDefault();
-        $this->selectedBrands = $this->discount->brands->pluck('id')->toArray();
-        $this->selectedCollections = $this->discount->collections->pluck('id')->toArray();
 
+        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand)) ?? collect();
+        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection)) ?? collect();
+        
         $this->selectedConditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
             ->pluck('purchasable_id')->values()->toArray();
@@ -183,6 +188,21 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
+     * Select brands given an array of IDs
+     *
+     * @param  array  $ids
+     * @return void
+     */
+    public function selectBrands(array $ids)
+    {
+        $selectedBrands = Brand::findMany($ids)->map(fn ($brand) => $this->mapBrandToArray($brand));
+
+        $this->selectedBrands = $this->selectedBrands->count()
+            ? $this->selectedBrands->merge($selectedBrands)
+            : $selectedBrands;
+    }
+
+    /**
      * Select collections given an array of IDs
      *
      * @param  array  $ids
@@ -190,7 +210,11 @@ abstract class AbstractDiscount extends Component
      */
     public function selectCollections(array $ids)
     {
-        $this->selectedCollections = $ids;
+        $selectedCollections = ModelsCollection::findMany($ids)->map(fn ($collection) => $this->mapCollectionToArray($collection));
+
+        $this->selectedCollections = $this->selectedCollections->count()
+            ? $this->selectedCollections->merge($selectedCollections)
+            : $selectedCollections;
     }
 
     public function syncRewards(array $ids)
@@ -234,6 +258,17 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
+     * Remove the brand by it's index.
+     *
+     * @param  int|string  $index
+     * @return void
+     */
+    public function removeBrand($index)
+    {
+        $this->selectedBrands->forget($index);
+    }
+
+    /**
      * Remove the collection by it's index.
      *
      * @param  int|string  $index
@@ -241,27 +276,7 @@ abstract class AbstractDiscount extends Component
      */
     public function removeCollection($index)
     {
-        $this->collections->forget($index);
-    }
-
-    /**
-     * Return a list of available countries.
-     *
-     * @return Collection
-     */
-    public function getBrandsProperty()
-    {
-        return Brand::orderBy('name')->get();
-    }
-
-    /**
-     * Return the category tree.
-     *
-     * @return Collection
-     */
-    public function getCollectionTreeProperty()
-    {
-        return ModelsCollection::get()->toTree();
+        $this->selectedCollections->forget($index);
     }
 
     /**
@@ -289,7 +304,7 @@ abstract class AbstractDiscount extends Component
             $this->discount->save();
 
             $this->discount->brands()->sync(
-                $this->selectedBrands
+                $this->selectedBrands->pluck('id')
             );
 
             $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
@@ -318,7 +333,7 @@ abstract class AbstractDiscount extends Component
             $this->discount->channels()->sync($channels);
 
             $this->discount->collections()->sync(
-                $this->selectedCollections
+                $this->selectedCollections->pluck('id')->toArray()
             );
         });
 
@@ -384,5 +399,36 @@ abstract class AbstractDiscount extends Component
     {
         return view('adminhub::livewire.components.discounts.show')
             ->layout('adminhub::layouts.app');
+    }
+
+    /**
+     * Return the data we need from a brand
+     *
+     * @return array
+     */
+    private function mapBrandToArray($brand)
+    {
+        return [
+            'id' => $brand->id,
+            'name' => $brand->name,
+        ];
+    }
+
+    /**
+     * Return the data we need from a collection
+     *
+     * @return array
+     */
+    private function mapCollectionToArray($collection)
+    {
+        return [
+            'id' => $collection->id,
+            'group_id' => $collection->collection_group_id,
+            'group_name' => $collection->group->name,
+            'name' => $collection->translateAttribute('name'),
+            'thumbnail' => optional($collection->thumbnail)->getUrl(),
+            'position' => optional($collection->pivot)->position,
+            'breadcrumb' => $collection->breadcrumb,
+        ];
     }
 }

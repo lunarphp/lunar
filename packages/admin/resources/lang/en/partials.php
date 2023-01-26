@@ -84,6 +84,14 @@ return [
     'image-manager.select_images' => 'Select images',
     'image-manager.select_images_btn' => 'Select images',
     /**
+     * Discounts
+     */
+    'discounts.limitations.heading' => 'Limitations',
+    'discounts.limitations.by_collection' => 'Limit by collection',
+    'discounts.limitations.by_brand' => 'Limit by brand',
+    'discounts.limitations.view_brand' => 'View Brand',
+
+    /**
      * Product Collections.
      */
     'products.collections.heading' => 'Collections',
