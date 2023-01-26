@@ -188,7 +188,7 @@ abstract class AbstractProduct extends Component
                 'productOptionCreated' => 'resetOptionView',
                 'option-manager.selectedValues' => 'setOptionValues',
                 'urlSaved' => 'refreshUrls',
-                'product-search.selected' => 'updateAssociations',
+                'productSearch.selected' => 'updateAssociations',
                 'collectionSearch.selected' => 'selectCollections',
                 'productOptionSelectorPanelToggled' => 'setVariantsEnabled',
             ],

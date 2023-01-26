@@ -45,6 +45,13 @@ abstract class AbstractDiscount extends Component
      * @var array
      */
     public Collection $selectedCollections;
+    
+    /**
+     * The products to restrict the coupon for.
+     *
+     * @var array
+     */
+    public Collection $selectedProducts;
 
     /**
      * The selected conditions
@@ -102,11 +109,21 @@ abstract class AbstractDiscount extends Component
         'discount.purchasables' => 'syncPurchasables',
         'brandSearch.selected' => 'selectBrands',
         'collectionSearch.selected' => 'selectCollections',
+        'productSearch.selected' => 'selectProducts',
     ];
 
     public function mount()
     {
         $this->currency = Currency::getDefault();
+
+        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand));
+        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection));
+        $this->selectedProducts = $this->discount->purchasableLimitations()
+            ->wherePurchasableType(Product::class)
+            ->get()
+            ->map(function ($limitation) {
+                return $this->mapProductToArray($limitation->purchasable);
+            });
 
         $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand)) ?? collect();
         $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection)) ?? collect();
@@ -216,6 +233,21 @@ abstract class AbstractDiscount extends Component
             ? $this->selectedCollections->merge($selectedCollections)
             : $selectedCollections;
     }
+    
+    /**
+     * Select products given an array of IDs
+     *
+     * @param  array  $ids
+     * @return void
+     */
+    public function selectProducts(array $ids)
+    {
+        $selectedProducts = Product::findMany($ids)->map(fn ($brand) => $this->mapProductToArray($brand));
+
+        $this->selectedProducts = $this->selectedProducts->count()
+            ? $this->selectedProducts->merge($selectedProducts)
+            : $selectedProducts;
+    }
 
     public function syncRewards(array $ids)
     {
@@ -280,6 +312,17 @@ abstract class AbstractDiscount extends Component
     }
 
     /**
+     * Remove the product by it's index.
+     *
+     * @param  int|string  $index
+     * @return void
+     */
+    public function removeProduct($index)
+    {
+        $this->selectedProducts->forget($index);
+    }
+
+    /**
      * Save the discount.
      *
      * @return RedirectResponse
@@ -334,7 +377,21 @@ abstract class AbstractDiscount extends Component
 
             $this->discount->collections()->sync(
                 $this->selectedCollections->pluck('id')->toArray()
+
             );
+            
+            $this->discount->purchasableLimitations()
+                ->whereNotIn('purchasable_id', $this->selectedProducts->pluck('id'))
+                ->delete();
+
+            foreach ($this->selectedProducts as $product) {
+                $this->discount->purchasableLimitations()->firstOrCreate([
+                    'discount_id' => $this->discount->id,
+                    'type' => 'limitation',
+                    'purchasable_type' => Product::class,
+                    'purchasable_id' => $product['id'],
+                ]);
+            }
         });
 
         $this->emit('discount.saved', $this->discount->id);
@@ -429,6 +486,20 @@ abstract class AbstractDiscount extends Component
             'thumbnail' => optional($collection->thumbnail)->getUrl(),
             'position' => optional($collection->pivot)->position,
             'breadcrumb' => $collection->breadcrumb,
+        ];
+    }
+    
+    /**
+     * Return the data we need from a product
+     *
+     * @return array
+     */
+    private function mapProductToArray($product)
+    {
+        return [
+            'id' => $product->id,
+            'name' => $product->translateAttribute('name'),
+            'thumbnail' => optional($product->thumbnail)->getUrl('small'),
         ];
     }
 }
