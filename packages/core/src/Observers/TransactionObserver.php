@@ -7,9 +7,9 @@ use Lunar\Models\Transaction;
 class TransactionObserver
 {
     /**
-     * Handle the OrderLine "updated" event.
+     * Handle the Transaction "created" event.
      *
-     * @param  \Lunar\Models\OrderLine  $orderLine
+     * @param  \Lunar\Models\Transaction  $orderLine
      * @return void
      */
     public function created(Transaction $transaction)

@@ -4,7 +4,7 @@
             @foreach ($items as $item)
                 <li>
                     <x-hub::menus.app-side.link
-                        :item="$$item"
+                        :item="$item"
                         :active="$item->isActive($active)"
                     />
                 </li>
