@@ -98,7 +98,8 @@ class Tags extends Component
             return collect();
         }
 
-        return DB::table(
+        return DB::connection(config('lunar.database.connection'))
+        ->table(
             config('lunar.database.table_prefix') . 'taggables'
         )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
             ->whereTaggableType(
