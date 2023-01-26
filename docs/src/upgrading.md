@@ -23,9 +23,9 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
-## [Unreleased]
+## 0.2
 
-### Changed
+### High Impact
 
 #### Removal of the Cart Manager and Cart Modifiers
 
@@ -41,6 +41,16 @@ $cart->getManager()->setShippingOption();
 
 // New
 $cart->setShippingOption();
+```
+
+For calculating the cart totals you should change the following:
+
+```php
+// Old
+$cart->getManager()->getCart();
+
+// New
+$cart->calculate();
 ```
 
 ## 0.1.0-rc.5
