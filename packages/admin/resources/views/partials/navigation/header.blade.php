@@ -1,7 +1,16 @@
-<header class="hidden bg-white dark:bg-gray-900 lg:block">
-    <div class="h-16 px-4 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
-        <div class="lg:justify-end lg:flex lg:items-center">
-            @include('adminhub::partials.navigation.header-user-dropdown')
+<header class="bg-white flex justify-between items-center border-b px-6 fixed w-full z-50 top-0 py-2">
+    <div class="flex items-center space-x-4">
+        <button type="button" @click="toggleMenu()">
+            <x-hub::icon ref="menu" />
+        </button>
+        <div class="flex items-center">
+            <x-hub::branding.logo iconOnly class="w-8 sm:hidden" />
+            <x-hub::branding.logo class="w-24 hidden sm:block" />
         </div>
+    </div>
+
+
+    <div>
+        @include('adminhub::partials.navigation.header-user-dropdown')
     </div>
 </header>

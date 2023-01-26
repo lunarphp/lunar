@@ -17,7 +17,7 @@ class Discount extends AbstractDiscountType
             'discount.data' => 'array',
             'discount.data.percentage' => 'required_if:discount.data.fixed_value,false|nullable|numeric|min:1',
             'discount.data.fixed_values' => 'array|min:0',
-            'discount.data.fixed_value' => 'boolean',
+            'discount.data.fixed_value' => 'nullable|boolean',
         ];
 
         foreach ($this->currencies as $currency) {

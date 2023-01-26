@@ -144,8 +144,9 @@ class OptionsIndex extends Component
                 $group = ProductOption::where(
                     'id', '=', $group['id']
                 )->update([
-                    'position' => $updatedOrder['order']
+                    'position' => $updatedOrder['order'],
                 ]);
+
                 return $group;
             })->sortBy('position');
 

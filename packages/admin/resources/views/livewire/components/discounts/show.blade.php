@@ -12,6 +12,7 @@
             {{ $discount->name }}
         </h1>
     </div>
+
     <form action="#"
       method="POST"
       wire:submit.prevent="save">

@@ -76,6 +76,20 @@ return [
     'attribute-edit.save_attribute_btn' => 'Save Attribute',
 
     /**
+     * Brand search.
+     */
+    'brand-search.btn' => 'Add Brands',
+    'brand-search.first_tab' => 'Search brands',
+    'brand-search.second_tab' => 'Selected brands',
+    'brand-search.max_results_exceeded' => 'Showing the first :max of :total brands. Try being more specific in your search.',
+    'brand-search.exists_in_collection' => 'Already associated',
+    'brand-search.no_results' => 'No results found.',
+    'brand-search.pre_search_message' => 'Search for brands by attribute.',
+    'brand-search.select_empty' => 'When you select brands, they will appear here.',
+    'brand-search.title' => 'Search for brands',
+    'brand-search.commit_btn' => 'Select Brands',
+
+    /**
      * Collection search.
      */
     'collection-search.btn' => 'Add Collections',
@@ -266,4 +280,9 @@ return [
     'discounts.show.stop.label' => 'Stop other discounts applying after this one',
     'discounts.show.danger_zone.label' => 'Delete discount',
     'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
+    /**
+     * Model URLs component
+     */
+    'model-url.preview' => 'Preview',
+    'model-url.view' => 'View',
 ];

@@ -93,7 +93,7 @@ class ProductSearch extends Component
 
     public function triggerSelect()
     {
-        $this->emit('product-search.selected', $this->selected, $this->ref);
+        $this->emit('productSearch.selected', $this->selected, $this->ref);
         $this->showBrowser = false;
     }
 

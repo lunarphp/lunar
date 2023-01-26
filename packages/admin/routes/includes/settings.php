@@ -13,6 +13,9 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrenciesIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupCreate;
+use Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
@@ -72,6 +75,17 @@ Route::group([
     Route::get('staff', StaffIndex::class)->name('hub.staff.index');
     Route::get('staff/create', StaffCreate::class)->name('hub.staff.create');
     Route::get('staff/{staff}', StaffShow::class)->withTrashed()->name('hub.staff.show');
+});
+
+/**
+ * Customer Groups.
+ */
+Route::group([
+    'middleware' => 'can:settings:manage-staff',
+], function () {
+    Route::get('customer-groups', CustomerGroupsIndex::class)->name('hub.customer-groups.index');
+    Route::get('customer-groups/create', CustomerGroupCreate::class)->name('hub.customer-groups.create');
+    Route::get('customer-groups/{customerGroup}', CustomerGroupShow::class)->withTrashed()->name('hub.customer-groups.show');
 });
 
 /*

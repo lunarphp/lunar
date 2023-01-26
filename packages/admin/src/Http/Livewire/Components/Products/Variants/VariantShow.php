@@ -12,6 +12,7 @@ use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasPrices;
 use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Hub\Jobs\Products\GenerateVariants;
@@ -33,6 +34,7 @@ class VariantShow extends Component
     use HasDimensions;
     use HasSlots;
     use HasImages;
+    use CanExtendValidation;
 
     /**
      * Instance of the parent product.
@@ -81,6 +83,7 @@ class VariantShow extends Component
                 'thumbnail' => $media->getFullUrl('medium'),
                 'original' => $media->getFullUrl(),
                 'preview' => false,
+                'edit' => false,
                 'caption' => $media->getCustomProperty('caption'),
                 'primary' => $media->pivot->primary,
                 'position' => $media->pivot->position,
@@ -95,9 +98,10 @@ class VariantShow extends Component
      */
     protected function getListeners()
     {
-        return array_merge([
-            'option-value-create-modal.value-created' => 'refreshAndSelectOption',
-        ],
+        return array_merge(
+            [
+                'option-value-create-modal.value-created' => 'refreshAndSelectOption',
+            ],
             $this->getHasSlotsListeners(),
             $this->getHasImagesListeners()
         );
@@ -138,42 +142,49 @@ class VariantShow extends Component
      */
     protected function rules()
     {
-        return array_merge([
-            'newValues' => 'array',
-            'variant.stock' => 'numeric|max:10000000',
-            'variant.tax_class_id' => 'required',
-            'variant.length_value' => 'numeric|nullable',
-            'variant.length_unit' => 'string|nullable',
-            'variant.width_value' => 'numeric|nullable',
-            'variant.width_unit' => 'string|nullable',
-            'variant.height_value' => 'numeric|nullable',
-            'variant.height_unit' => 'string|nullable',
-            'variant.weight_value' => 'numeric|nullable',
-            'variant.weight_unit' => 'string|nullable',
-            'variant.volume_value' => 'numeric|nullable',
-            'variant.volume_unit' => 'string|nullable',
-            'variant.shippable' => 'boolean|nullable',
-            'variant.backorder' => 'numeric|max:10000000',
-            'variant.tax_ref' => 'nullable|string|max:255',
-            'variant.purchasable' => 'string|required',
-            'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
-            'variant.sku' => get_validation('products', 'sku', [
-                'alpha_dash',
-                'max:255',
-            ], $this->variant),
-            'variant.gtin' => get_validation('products', 'gtin', [
-                'string',
-                'max:255',
-            ], $this->variant),
-            'variant.mpn' => get_validation('products', 'mpn', [
-                'string',
-                'max:255',
-            ], $this->variant),
-            'variant.ean' => get_validation('products', 'ean', [
-                'string',
-                'max:255',
-            ], $this->variant),
-        ], $this->hasPriceValidationRules(), $this->hasImagesValidationRules());
+        return array_merge(
+            [
+                'newValues' => 'array',
+                'variant.stock' => 'numeric|max:10000000',
+                'variant.tax_class_id' => 'required',
+                'variant.length_value' => 'numeric|nullable',
+                'variant.length_unit' => 'string|nullable',
+                'variant.width_value' => 'numeric|nullable',
+                'variant.width_unit' => 'string|nullable',
+                'variant.height_value' => 'numeric|nullable',
+                'variant.height_unit' => 'string|nullable',
+                'variant.weight_value' => 'numeric|nullable',
+                'variant.weight_unit' => 'string|nullable',
+                'variant.volume_value' => 'numeric|nullable',
+                'variant.volume_unit' => 'string|nullable',
+                'variant.shippable' => 'boolean|nullable',
+                'variant.backorder' => 'numeric|max:10000000',
+                'variant.tax_ref' => 'nullable|string|max:255',
+                'variant.purchasable' => 'string|required',
+                'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
+                'variant.sku' => get_validation('products', 'sku', [
+                    'alpha_dash',
+                    'max:255',
+                ], $this->variant),
+                'variant.gtin' => get_validation('products', 'gtin', [
+                    'string',
+                    'max:255',
+                ], $this->variant),
+                'variant.mpn' => get_validation('products', 'mpn', [
+                    'string',
+                    'max:255',
+                ], $this->variant),
+                'variant.ean' => get_validation('products', 'ean', [
+                    'string',
+                    'max:255',
+                ], $this->variant),
+            ],
+            $this->hasPriceValidationRules(),
+            $this->hasImagesValidationRules(),
+            $this->getExtendedValidationRules([
+                'variant' => $this->variant,
+            ]),
+        );
     }
 
     /**
@@ -211,36 +222,98 @@ class VariantShow extends Component
 
             $imagesToSync = [];
 
+            $variants = $owner->variants->load('images');
+
             foreach ($this->images as $key => $image) {
                 $newImage = false;
+                $file = null;
+                $imageEdited = false;
+                $previousMediaId = false;
+                $previousMedia = null;
 
-                if (empty($image['id'])) {
-                    $file = TemporaryUploadedFile::createFromLivewire(
-                        $image['filename']
-                    );
+                // edited image
+                if ($image['file'] ?? false && $image['file'] instanceof TemporaryUploadedFile) {
+                    /** @var TemporaryUploadedFile $file */
+                    $file = $image['file'];
+
+                    if (isset($image['id'])) {
+                        $previousMediaId = $image['id'];
+                    }
+
+                    unset($this->images[$key]['file']);
+
+                    $imageEdited = true;
+                }
+
+                if (empty($image['id']) || $imageEdited) {
+                    if (! $imageEdited) {
+                        $file = TemporaryUploadedFile::createFromLivewire(
+                            $image['filename']
+                        );
+                    }
+
+                    // after editing few times the name will get longer and eventually failed to upload
+                    $filename = Str::of($file->getFilename())
+                        ->beforeLast('.')
+                        ->substr(0, 128)
+                        ->append('.', $file->getClientOriginalExtension());
+
                     $media = $owner->addMedia($file->getRealPath())
+                        ->usingFileName($filename)
                         ->toMediaCollection('images');
 
                     activity()
-                    ->performedOn($this->variant)
-                    ->withProperties(['media' => $media->toArray()])
-                    ->event('added_image')
-                    ->useLog('lunar')
-                    ->log('added_image');
+                        ->performedOn($this->variant)
+                        ->withProperties(['media' => $media->toArray()])
+                        ->event('added_image')
+                        ->useLog('lunar')
+                        ->log('added_image');
 
                     // Add ID for future and processing now.
                     $this->images[$key]['id'] = $media->id;
+
+                    // reset image thumbnail
+                    if ($imageEdited) {
+                        $this->images[$key]['thumbnail'] = $media->getFullUrl('medium');
+                        $this->images[$key]['original'] = $media->getFullUrl();
+
+                        // link other variants image to the new media
+                        if ($previousMediaId) {
+                            $variants->each(function ($variant) use ($previousMediaId, $media) {
+                                if ($this->variant->id == $variant->id) {
+                                    return;
+                                }
+
+                                $variantMedia = $variant->images->where('id', $previousMediaId)->first();
+                                if ($variantMedia) {
+                                    $variant->images()->attach($media, [
+                                        'primary' => $variantMedia->pivot->primary,
+                                    ]);
+                                }
+                            });
+
+                            $previousMedia = $owner->media()->find($previousMediaId);
+                            $previousMedia->delete();
+                        }
+                    }
+
                     $image['id'] = $media->id;
 
                     $newImage = true;
+                } else {
+                    $media = app(config('media-library.media_model'))::find($image['id']);
                 }
 
-                $media = app(config('media-library.media_model'))::find($image['id']);
-
                 if ($newImage) {
-                    $media->setCustomProperty('caption', $image['caption']);
-                    $media->setCustomProperty('primary', false);
-                    $media->setCustomProperty('position', $owner->media()->count() + 1);
+                    if ($imageEdited) {
+                        $media->setCustomProperty('caption', $previousMedia->getCustomProperty('caption', $image['caption']));
+                        $media->setCustomProperty('primary', $previousMedia->getCustomProperty('primary', false));
+                        $media->setCustomProperty('position', $previousMedia->getCustomProperty('position', $owner->media()->count() + 1));
+                    } else {
+                        $media->setCustomProperty('caption', $image['caption']);
+                        $media->setCustomProperty('primary', false);
+                        $media->setCustomProperty('position', $owner->media()->count() + 1);
+                    }
                     $media->save();
                 }
 

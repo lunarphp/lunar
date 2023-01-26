@@ -201,17 +201,17 @@ class DiscountManagerTest extends TestCase
         ]);
 
         $this->assertEmpty($manager->getDiscounts());
-
+        
         $discount->customerGroups()->sync([
             $customerGroup->id => [
                 'enabled' => true,
                 'visible' => true,
-                'starts_at' => now(),
+                'starts_at' => now()->addMinutes(1),
             ],
             $customerGroupTwo->id => [
                 'enabled' => true,
                 'visible' => false,
-                'starts_at' => null,
+                'starts_at' => now()->addMinutes(1),
             ],
         ]);
 

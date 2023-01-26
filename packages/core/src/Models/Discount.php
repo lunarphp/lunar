@@ -56,6 +56,11 @@ class Discount extends BaseModel
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('condition');
     }
+    
+    public function purchasableLimitations()
+    {
+        return $this->hasMany(DiscountPurchasable::class)->whereType('limitation');
+    }
 
     public function purchasableRewards()
     {

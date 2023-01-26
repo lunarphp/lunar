@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Lunar\Models\Collection as ModelsCollection;
@@ -105,7 +106,6 @@ class CollectionSearch extends Component
     {
         $index = collect($this->selected)->search($id);
         unset($this->selected[$index]);
-        $this->selected = collect($this->selected)->values();
     }
 
     /**
@@ -119,7 +119,12 @@ class CollectionSearch extends Component
             return null;
         }
 
-        return ModelsCollection::search($this->searchTerm)->paginate($this->maxResults);
+        return ModelsCollection::search($this->searchTerm)
+            ->query(function (Builder $query) {
+                $query->with([
+                    'group',
+                ]);
+            })->paginate($this->maxResults);
     }
 
     public function triggerSelect()

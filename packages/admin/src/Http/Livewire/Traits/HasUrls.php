@@ -183,7 +183,7 @@ trait HasUrls
                 $urlModel->default = $url['default'];
                 $urlModel->language_id = $url['language_id'];
                 $urlModel->slug = $url['slug'];
-                $urlModel->element_type = get_class($model);
+                $urlModel->element_type = $model->getMorphClass();
                 $urlModel->element_id = $model->id;
                 $urlModel->save();
                 $this->urls[$index]['id'] = $urlModel->id;

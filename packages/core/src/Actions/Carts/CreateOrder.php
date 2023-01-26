@@ -125,6 +125,10 @@ class CreateOrder extends AbstractAction
             $order->addresses()->createMany($addresses->toArray());
 
             $cart->order()->associate($order);
+            
+            $cart->discounts?->each(function ($discount) {
+                $discount->markAsUsed()->discount->save();
+            });
 
             $cart->save();
 

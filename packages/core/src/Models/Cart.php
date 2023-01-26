@@ -119,6 +119,13 @@ class Cart extends BaseModel
     public ?Collection $promotions = null;
 
     /**
+     * The cart-level discounts.
+     *
+     * @var null|Collection<Discount>
+     */
+    public ?Collection $discounts = null;
+
+    /**
      * Qualifying promotional free items.
      *
      * @var null|Collection<FreeItem>

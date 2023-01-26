@@ -75,6 +75,7 @@ return [
     'image-manager.save_btn' => 'Save image',
     'image-manager.edit_row_btn' => 'Edit',
     'image-manager.delete_row_btn' => 'Delete',
+    'image-manager.delete_primary' => 'You cannot delete the primary image.',
     'image-manager.delete_message' => 'This image will be deleted on save,',
     'image-manager.undo_btn' => 'undo',
     'image-manager.no_results' => 'No images exist for this product, add your first image above.',
@@ -82,6 +83,16 @@ return [
     'image-manager.file_format' => 'PNG, JPG, GIF up to 10MB',
     'image-manager.select_images' => 'Select images',
     'image-manager.select_images_btn' => 'Select images',
+    /**
+     * Discounts
+     */
+    'discounts.limitations.heading' => 'Limitations',
+    'discounts.limitations.by_collection' => 'Limit by collection',
+    'discounts.limitations.by_brand' => 'Limit by brand',
+    'discounts.limitations.by_product' => 'Limit by product',
+    'discounts.limitations.view_brand' => 'View Brand',
+    'discounts.limitations.view_product' => 'View Product',
+
     /**
      * Product Collections.
      */
@@ -194,6 +205,8 @@ return [
     'forms.channel.channel_name_delete' => 'Enter the name of the channel to delete it',
     'forms.brand_delete_brand' => 'Delete brand',
     'forms.brand_name_delete' => 'Enter the name of the brand to delete it',
+    'forms.customer-group.delete_customer_group' => 'Delete customer group',
+    'forms.customer-group.customer_group_name_delete' => 'Enter the name of the customer group to delete it',
     /**
      * Transactions.
      */
