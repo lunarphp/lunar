@@ -136,6 +136,20 @@ class DatabaseEngine extends Engine
     }
 
     /**
+     * Pluck and the given results with the given primary key name.
+     *
+     * @param  mixed  $results
+     * @param  string  $key
+     * @return \Illuminate\Support\Collection
+     */
+    public function mapIdsFrom($results, $key)
+    {
+        return count($results) === 0
+                ? collect()
+                : collect($results)->pluck($key)->values();
+    }
+
+    /**
      * Map the given results to instances of the given model.
      *
      * @param  \Laravel\Scout\Builder  $builder
