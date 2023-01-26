@@ -12,7 +12,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      *
      * @var Discount
      */
-    protected Discount $discount;
+    public Discount $discount;
 
     /**
      * Set the data for the discount to user.
@@ -23,6 +23,18 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     public function with(Discount $discount): self
     {
         $this->discount = $discount;
+
+        return $this;
+    }
+    
+    /**
+     * Mark a discount as used
+     *
+     * @return self
+     */
+    public function markAsUsed(): self
+    {
+        $this->discount->uses = $this->discount->uses + 1; 
 
         return $this;
     }
