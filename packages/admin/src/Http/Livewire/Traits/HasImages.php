@@ -267,10 +267,6 @@ trait HasImages
                             ->toMediaCollection('images');
                     }
 
-                    $media = $owner->addMedia($file->getRealPath())
-                        ->usingFileName($filename)
-                        ->toMediaCollection('images');
-
                     activity()
                         ->performedOn($owner)
                         ->withProperties(['media' => $media->toArray()])
@@ -357,7 +353,7 @@ trait HasImages
      */
     public function removeImage($sortKey)
     {
-        if (!isset($this->images[$sortKey])) {
+        if (! isset($this->images[$sortKey])) {
             return;
         }
 

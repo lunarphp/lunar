@@ -105,7 +105,6 @@ class CollectionSearch extends Component
     {
         $index = collect($this->selected)->search($id);
         unset($this->selected[$index]);
-        $this->selected = collect($this->selected)->values();
     }
 
     /**
