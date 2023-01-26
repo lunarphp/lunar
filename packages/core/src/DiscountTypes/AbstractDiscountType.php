@@ -12,7 +12,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      *
      * @var Discount
      */
-    protected Discount $discount;
+    public Discount $discount;
 
     /**
      * Set the data for the discount to user.
