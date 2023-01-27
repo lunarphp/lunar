@@ -2,12 +2,11 @@
 
 namespace Lunar\Hub\Http\Livewire\Components;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Livewire\Component;
-use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\Brand;
 
-class CollectionSearch extends Component
+class BrandSearch extends Component
 {
     /**
      * Should the browser be visible?
@@ -31,14 +30,14 @@ class CollectionSearch extends Component
     public $maxResults = 50;
 
     /**
-     * Any existing collections to exclude from selecting.
+     * Any existing brands to exclude from selecting.
      *
      * @var \Illuminate\Support\Collection
      */
     public Collection $existing;
 
     /**
-     * The currently selected collections.
+     * The currently selected brands.
      *
      * @var array
      */
@@ -61,7 +60,7 @@ class CollectionSearch extends Component
      */
     public function getSelectedModelsProperty()
     {
-        return ModelsCollection::whereIn('id', $this->selected)->get();
+        return Brand::whereIn('id', $this->selected)->get();
     }
 
     /**
@@ -86,26 +85,27 @@ class CollectionSearch extends Component
     }
 
     /**
-     * Add the collection to the selected array.
+     * Add the brand to the selected array.
      *
      * @param  string|int  $id
      * @return void
      */
-    public function selectCollection($id)
+    public function selectBrand($id)
     {
         $this->selected[] = $id;
     }
 
     /**
-     * Remove a collection from the selected collections.
+     * Remove a brand from the selected brands.
      *
      * @param  string|int  $id
      * @return void
      */
-    public function removeCollection($id)
+    public function removeBrand($id)
     {
         $index = collect($this->selected)->search($id);
         unset($this->selected[$index]);
+        $this->selected = collect($this->selected)->values();
     }
 
     /**
@@ -119,17 +119,12 @@ class CollectionSearch extends Component
             return null;
         }
 
-        return ModelsCollection::search($this->searchTerm)
-            ->query(function (Builder $query) {
-                $query->with([
-                    'group',
-                ]);
-            })->paginate($this->maxResults);
+        return Brand::search($this->searchTerm)->paginate($this->maxResults);
     }
 
     public function triggerSelect()
     {
-        $this->emit('collectionSearch.selected', $this->selected);
+        $this->emit('brandSearch.selected', $this->selected);
 
         $this->showBrowser = false;
     }
@@ -141,7 +136,7 @@ class CollectionSearch extends Component
      */
     public function render()
     {
-        return view('adminhub::livewire.components.collection-search')
+        return view('adminhub::livewire.components.brand-search')
             ->layout('adminhub::layouts.base');
     }
 }

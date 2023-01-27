@@ -61,7 +61,7 @@ class CollectionShow extends Component
     protected function getListeners()
     {
         return array_merge([
-            'product-search.selected' => 'addSelectedProducts',
+            'productSearch.selected' => 'addSelectedProducts',
         ], $this->getHasImagesListeners());
     }
 

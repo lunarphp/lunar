@@ -121,7 +121,7 @@ class DatabaseEngine extends Engine
         $index = $this->getIndexFromBuilder($builder);
 
         return SearchIndex::where('index', '=', $index)
-            ->whereFullText('content', $builder->query);
+            ->whereFullText('content', $builder->query . '*', ['mode' => 'boolean']);
     }
 
     /**
@@ -133,6 +133,20 @@ class DatabaseEngine extends Engine
     public function mapIds($results)
     {
         return $results->pluck('key')->all();
+    }
+
+    /**
+     * Pluck and the given results with the given primary key name.
+     *
+     * @param  mixed  $results
+     * @param  string  $key
+     * @return \Illuminate\Support\Collection
+     */
+    public function mapIdsFrom($results, $key)
+    {
+        return count($results) === 0
+                ? collect()
+                : collect($results)->pluck($key)->values();
     }
 
     /**

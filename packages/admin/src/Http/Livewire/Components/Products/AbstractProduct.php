@@ -194,7 +194,7 @@ abstract class AbstractProduct extends Component
                 'productOptionCreated' => 'resetOptionView',
                 'option-manager.selectedValues' => 'setOptionValues',
                 'urlSaved' => 'refreshUrls',
-                'product-search.selected' => 'updateAssociations',
+                'productSearch.selected' => 'updateAssociations',
                 'collectionSearch.selected' => 'selectCollections',
                 'productOptionSelectorPanelToggled' => 'setVariantsEnabled',
             ],
@@ -1084,7 +1084,9 @@ abstract class AbstractProduct extends Component
             [
                 'title' => __('adminhub::menu.product.availability'),
                 'id' => 'availability',
-                'has_errors' => $this->errorBag->hasAny([]),
+                'has_errors' => $this->errorBag->hasAny([
+                    'availability',
+                ]),
             ],
             [
                 'title' => __('adminhub::menu.product.variants'),
@@ -1121,13 +1123,29 @@ abstract class AbstractProduct extends Component
                 'id' => 'inventory',
                 'error_check' => [],
                 'hidden' => $this->getVariantsCount() > 1 || $this->variantsEnabled,
-                'has_errors' => $this->errorBag->hasAny([]),
+                'has_errors' => $this->errorBag->hasAny([
+                    'variant.stock',
+                    'variant.backorder',
+                    'variant.purchasable',
+                ]),
             ],
             [
                 'title' => __('adminhub::menu.product.shipping'),
                 'id' => 'shipping',
                 'hidden' => $this->getVariantsCount() > 1,
-                'has_errors' => $this->errorBag->hasAny([]),
+                'has_errors' => $this->errorBag->hasAny([
+                    'variant.shippable',
+                    'variant.length_value',
+                    'variant.length_unit',
+                    'variant.width_value',
+                    'variant.width_unit',
+                    'variant.height_value',
+                    'variant.height_unit',
+                    'variant.weight_value',
+                    'variant.weight_unit',
+                    'variant.volume_value',
+                    'variant.volume_unit',
+                ]),
             ],
             [
                 'title' => __('adminhub::menu.product.urls'),
@@ -1141,13 +1159,17 @@ abstract class AbstractProduct extends Component
                 'title' => __('adminhub::menu.product.associations'),
                 'id' => 'associations',
                 'hidden' => false,
-                'has_errors' => $this->errorBag->hasAny([]),
+                'has_errors' => $this->errorBag->hasAny([
+                    'associations',
+                ]),
             ],
             [
                 'title' => __('adminhub::menu.product.collections'),
                 'id' => 'collections',
                 'hidden' => false,
-                'has_errors' => $this->errorBag->hasAny([]),
+                'has_errors' => $this->errorBag->hasAny([
+                    'collections',
+                ]),
             ],
         ])->reject(fn ($item) => ($item['hidden'] ?? false));
     }

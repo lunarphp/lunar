@@ -41,6 +41,8 @@
       </div>
     </header>
 
+    <x-hub::errors :error="$errors->first('associations')"/>
+
     <div>
       <div class="lt-overflow-hidden lt-border lt-border-gray-200 lt-rounded-lg">
         <table class="lt-min-w-full lt-divide-y lt-divide-gray-200">
