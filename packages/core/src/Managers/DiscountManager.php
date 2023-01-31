@@ -73,10 +73,10 @@ class DiscountManager implements DiscountManagerInterface
     public function channel(Channel|iterable $channel): self
     {
         $channels = collect(
-            !is_iterable($channel) ? [$channel] : $channel
+            ! is_iterable($channel) ? [$channel] : $channel
         );
 
-        if ($nonChannel = $channels->filter(fn ($channel) => !$channel instanceof Channel)->first()) {
+        if ($nonChannel = $channels->filter(fn ($channel) => ! $channel instanceof Channel)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
                     'expected' => Channel::class,
@@ -99,10 +99,10 @@ class DiscountManager implements DiscountManagerInterface
     public function customerGroup(CustomerGroup|iterable $customerGroups): self
     {
         $customerGroups = collect(
-            !is_iterable($customerGroups) ? [$customerGroups] : $customerGroups
+            ! is_iterable($customerGroups) ? [$customerGroups] : $customerGroups
         );
 
-        if ($nonGroup = $customerGroups->filter(fn ($channel) => !$channel instanceof CustomerGroup)->first()) {
+        if ($nonGroup = $customerGroups->filter(fn ($channel) => ! $channel instanceof CustomerGroup)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
                     'expected' => CustomerGroup::class,
@@ -206,7 +206,7 @@ class DiscountManager implements DiscountManagerInterface
 
     public function apply(Cart $cart): Cart
     {
-        if (!$this->discounts) {
+        if (! $this->discounts) {
             $this->discounts = $this->getDiscounts();
         }
 

@@ -201,7 +201,7 @@ class DiscountManagerTest extends TestCase
         ]);
 
         $this->assertEmpty($manager->getDiscounts());
-        
+
         $discount->customerGroups()->sync([
             $customerGroup->id => [
                 'enabled' => true,

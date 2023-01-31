@@ -3,7 +3,6 @@
 namespace Lunar\Hub\Views\Components;
 
 use Illuminate\View\Component;
-use Lunar\Models\Language;
 
 class Errors extends Component
 {
