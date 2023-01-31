@@ -126,7 +126,7 @@ class DiscountTest extends TestCase
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2100, $cart->total->value);
     }
-    
+
     /** @test */
     public function will_only_apply_to_lines_with_correct_product()
     {
@@ -147,11 +147,11 @@ class DiscountTest extends TestCase
             'currency_id' => $currency->id,
             'coupon_code' => '10OFF',
         ]);
-        
+
         $brandA = Brand::factory()->create([
             'name' => 'Brand A',
         ]);
-        
+
         $productA = Product::factory()->create([
             'brand_id' => $brandA->id,
         ]);
@@ -225,13 +225,12 @@ class DiscountTest extends TestCase
             'purchasable_type' => Product::class,
             'purchasable_id' => $productA->id,
         ]);
-        
+
         $cart = $cart->calculate();
 
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2100, $cart->total->value);
     }
-
 
     /**
      * @test
