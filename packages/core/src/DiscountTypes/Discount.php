@@ -118,7 +118,7 @@ class Discount extends AbstractDiscountType
 
         if ($productIds->count()) {
             $lines = $lines->reject(function ($line) use ($productIds) {
-                return ! $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->id);
+                return !$productIds->contains(get_class($line->purchasable->product) . '::' . $line->purchasable->product->id);
             });
         }
 
