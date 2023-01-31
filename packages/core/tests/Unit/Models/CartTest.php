@@ -6,7 +6,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
+use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
 use Lunar\Exceptions\Carts\CartException;
+use Lunar\Facades\Discounts;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
@@ -15,6 +17,7 @@ use Lunar\Models\Channel;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Order;
 use Lunar\Models\Price;
@@ -26,9 +29,6 @@ use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
-use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
-use Lunar\Facades\Discounts;
-use Lunar\Models\CustomerGroup;
 
 /**
  * @group lunar.carts

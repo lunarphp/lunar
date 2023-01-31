@@ -282,14 +282,14 @@ class CreateOrderTest extends TestCase
             $order->tax_breakdown->first()->percentage
         );
     }
-    
+
     /** @test  */
     public function increments_discount_uses()
     {
         $customerGroup = CustomerGroup::factory()->create([
             'default' => true,
         ]);
-        
+
         $channel = Channel::factory()->create([
             'default' => true,
         ]);
@@ -374,7 +374,7 @@ class CreateOrderTest extends TestCase
         ]);
 
         $cart->shippingAddress->shippingOption = $shippingOption;
-        
+
         $discount = Discount::factory()->create([
             'type' => DiscountTypesDiscount::class,
             'name' => 'Test Coupon',
@@ -404,7 +404,7 @@ class CreateOrderTest extends TestCase
         $order = $cart->createOrder();
 
         $cart = $cart->refresh();
-        
+
         $discount = $discount->refresh();
 
         $this->assertInstanceOf(Order::class, $cart->order);
