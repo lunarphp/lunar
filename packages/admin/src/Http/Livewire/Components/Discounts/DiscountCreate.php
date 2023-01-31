@@ -30,9 +30,10 @@ class DiscountCreate extends AbstractDiscount
 
         $this->currency = Currency::getDefault();
         $this->syncAvailability();
-        
+
         $this->selectedBrands = collect();
         $this->selectedCollections = collect();
+        $this->selectedProducts = collect();
     }
 
     /**
