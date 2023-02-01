@@ -34,6 +34,7 @@ class Discount extends AbstractDiscountType
         $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
 
         $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
+        $minSpend = (int) bcmul($minSpend, $cart->currency->factor);
 
         $lines = $this->getEligibleLines($cart);
 
@@ -65,7 +66,7 @@ class Discount extends AbstractDiscountType
     {
         $currency = $cart->currency;
 
-        $value = ($values[$currency->code] ?? 0) * 100;
+        $value = (int) bcmul($values[$currency->code] ?? 0, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
 
