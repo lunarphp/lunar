@@ -55,7 +55,7 @@ trait WithAttributes
     /**
      * Parse the attributes into the correct collection format.
      *
-     * @param  \Illuminate\Support\Collection  $attributes
+     * @param \Illuminate\Support\Collection $attributes
      * @return \Illuminate\Support\Collection
      */
     protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
@@ -64,7 +64,7 @@ trait WithAttributes
             return ! class_exists($attribute->type);
         })->mapWithKeys(function ($attribute) use ($key, $existingData) {
             $data = $existingData ?
-                $existingData->first(fn ($value, $handle) => $handle == $attribute->handle)
+                $existingData->first(fn($value, $handle) => $handle == $attribute->handle)
                 : null;
 
             $value = $data ? $data->getValue() : null;
@@ -73,24 +73,26 @@ trait WithAttributes
                 $value = $this->prepareTranslatedText($value);
             }
 
-            $reference = 'a_'.$attribute->id;
+            $reference = 'a_' . $attribute->id;
 
-            return [$reference => [
-                'name' => $attribute->translate('name'),
-                'group' => $attribute->attributeGroup->translate('name'),
-                'group_id' => $attribute->attributeGroup->id,
-                'group_handle' => $attribute->attributeGroup->handle,
-                'group_position' => $attribute->attributeGroup->position,
-                'id' => $attribute->handle,
-                'signature' => "{$key}.{$reference}.data",
-                'type' => $attribute->type,
-                'handle' => $attribute->handle,
-                'configuration' => $attribute->configuration,
-                'required' => $attribute->required,
-                'view' => app()->make($attribute->type)->getView(),
-                'validation' => $attribute->validation_rules,
-                'data' => $value,
-            ]];
+            return [
+                $reference => [
+                    'name' => $attribute->translate('name'),
+                    'group' => $attribute->attributeGroup->translate('name'),
+                    'group_id' => $attribute->attributeGroup->id,
+                    'group_handle' => $attribute->attributeGroup->handle,
+                    'group_position' => $attribute->attributeGroup->position,
+                    'id' => $attribute->handle,
+                    'signature' => "{$key}.{$reference}.data",
+                    'type' => $attribute->type,
+                    'handle' => $attribute->handle,
+                    'configuration' => $attribute->configuration,
+                    'required' => $attribute->required,
+                    'view' => app()->make($attribute->type)->getView(),
+                    'validation' => $attribute->validation_rules,
+                    'data' => $value,
+                ]
+            ];
         });
     }
 
@@ -103,7 +105,7 @@ trait WithAttributes
             ->get()->map(function ($group) {
                 return [
                     'model' => $group,
-                    'fields' => $this->attributeMapping->filter(fn ($att) => $att['group_id'] == $group->id),
+                    'fields' => $this->attributeMapping->filter(fn($att) => $att['group_id'] == $group->id),
                 ];
             });
     }
@@ -136,7 +138,7 @@ trait WithAttributes
     /**
      * Map translated values into field types.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Lunar\FieldTypes\TranslatedText
      */
     protected function mapTranslatedText($data)
@@ -152,7 +154,7 @@ trait WithAttributes
     /**
      * Prepare translated text field for Livewire modeling.
      *
-     * @param  string|array  $value
+     * @param string|array $value
      * @return array
      */
     protected function prepareTranslatedText($value)
@@ -192,13 +194,15 @@ trait WithAttributes
             $isRequired = ($attribute['required'] ?? false) || ($attribute['system'] ?? false);
 
             // TranslatedText values are in an array, apply rules to each item of the array
-            // and make the default language's value required if necessary
             if ($attribute['type'] == TranslatedText::class) {
                 foreach ($this->languages as $language) {
+                    // all rules set when attribute was created (resets on each iteration)
+                    $validationRules = $validation;
                     if ($language->default && $isRequired) {
-                        $validation = array_merge($validation, ['required']);
+                        // append required for the default language
+                        $validationRules = array_merge($validationRules, ['required']);
                     }
-                    $rules["{$attribute['signature']}.{$language->code}"] = $validation;
+                    $rules["{$attribute['signature']}.{$language->code}"] = $validationRules;
                 }
                 continue;
             }
@@ -217,7 +221,6 @@ trait WithAttributes
 
             $rules[$field] = implode('|', $validation);
         }
-
         return $rules;
     }
 
@@ -247,7 +250,7 @@ trait WithAttributes
     /**
      * Handle attributes updated event.
      *
-     * @param  array  $event
+     * @param array $event
      * @return void
      */
     public function updatedAttributes($event)
