@@ -187,22 +187,31 @@ trait WithAttributes
             }
 
             $validation = $attribute['validation'] ? explode(',', $attribute['validation']) : [];
-
             $field = $attribute['signature'];
 
-            if (($attribute['required'] ?? false) || ($attribute['system'] ?? false)) {
-                if ($attribute['type'] == TranslatedText::class) {
-                    // Get the default language and make that the only one required.
-                    $field = "{$attribute['signature']}.{$this->defaultLanguage->code}";
-                }
+            $isRequired = ($attribute['required'] ?? false) || ($attribute['system'] ?? false);
 
+            // TranslatedText values are in an array, apply rules to each item of the array
+            // and make the default language's value required if necessary
+            if ($attribute['type'] == TranslatedText::class) {
+                foreach ($this->languages as $language) {
+                    if ($language->default && $isRequired) {
+                        $validation = array_merge($validation, ['required']);
+                    }
+                    $rules["{$attribute['signature']}.{$language->code}"] = $validation;
+                }
+                continue;
+            }
+
+
+            if ($isRequired) {
                 $validation = array_merge($validation, ['required']);
             }
 
             if ($attribute['type'] == Number::class) {
                 $validation = array_merge($validation, [
-                    'numeric'.($attribute['configuration']['min'] ? '|min:'.$attribute['configuration']['min'] : ''),
-                    'numeric'.($attribute['configuration']['max'] ? '|max:'.$attribute['configuration']['max'] : ''),
+                    'numeric' . ($attribute['configuration']['min'] ? '|min:' . $attribute['configuration']['min'] : ''),
+                    'numeric' . ($attribute['configuration']['max'] ? '|max:' . $attribute['configuration']['max'] : ''),
                 ]);
             }
 
