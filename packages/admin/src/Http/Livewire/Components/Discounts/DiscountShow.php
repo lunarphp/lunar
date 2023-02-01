@@ -56,7 +56,7 @@ class DiscountShow extends AbstractDiscount
      */
     public function getCanDeleteProperty()
     {
-        return $this->deleteConfirm === $this->discount->name;
+        return $this->deleteConfirm === trim($this->discount->name);
     }
 
     /**
@@ -71,14 +71,15 @@ class DiscountShow extends AbstractDiscount
             $this->discount->purchasableConditions()->delete();
             $this->discount->purchasableRewards()->delete();
             $this->discount->collections()->delete();
+            $this->discount->customerGroups()->detach();
+            $this->discount->channels()->detach();
             $this->discount->delete();
         });
 
-        $this->emit(
-            __('adminhub::notifications.discount.deleted')
+        $this->notify(
+            __('adminhub::notifications.discount.deleted'),
+            'hub.discounts.index'
         );
-
-        return redirect()->route('hub.discounts.index');
     }
 
     /**

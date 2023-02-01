@@ -19,16 +19,7 @@
         @include('adminhub::partials.forms.discount')
     </form>
 
-    {{-- <div class="space-y-4">
-
-        <form action="#"
-              method="POST"
-              wire:submit.prevent="save">
-            @include('adminhub::partials.forms.discount')
-        </form>
-
-
-
+    <div class="space-y-4">
         <div class="bg-white border border-red-300 rounded shadow">
           <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
             {{ __('adminhub::inputs.danger_zone.title') }}
@@ -48,6 +39,6 @@
             </div>
           </div>
         </div>
-    </div> --}}
+    </div>
 
 </div>
