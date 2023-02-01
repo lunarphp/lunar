@@ -116,8 +116,8 @@ abstract class AbstractDiscount extends Component
     {
         $this->currency = Currency::getDefault();
 
-        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand)) ?? collect();
-        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection)) ?? collect();
+        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand));
+        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection));
         $this->selectedProducts = $this->discount->purchasableLimitations()
             ->wherePurchasableType(Product::class)
             ->get()
