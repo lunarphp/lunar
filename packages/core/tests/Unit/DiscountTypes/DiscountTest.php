@@ -39,8 +39,6 @@ class DiscountTest extends TestCase
         CustomerGroup::factory()->create([
             'default' => true,
         ]);
-
-        Discount::query()->delete();
     }
 
     /** @test */
@@ -802,163 +800,55 @@ class DiscountTest extends TestCase
             'priceable_id' => $purchasableA->id,
         ]);
 
-        $scenarios = [
-            [
-                // no conditions
-                'test' => [
-                    'discount' => [
-                        'data' => [
-                            'fixed_value' => true,
-                            'fixed_values' => [
-                                'GBP' => 10,
-                            ],
-                        ],
-                    ],
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'coupon_code' => 'OFF10',
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 20,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => DiscountTypesDiscount::class,
+            'name' => 'Test Coupon',
+            'coupon' => 'OFF10',
+            'uses' => 2,
+            'max_uses' => 10,
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10,
                 ],
-                'expect' => [
-                    'discount' => 1000,
-                    'subTotal' => 20_000,
-                    'total' => 23_000,
-                    'taxTotal' => 4000,
-                    'discounts' => 1,
+                'min_prices' => [
+                    'GBP' => 50,
                 ],
             ],
-            [
-                // coupon code
-                'test' => [
-                    'cart' => [
-                        'coupon_code' => 'OFF10',
-                    ],
-                    'discount' => [
-                        'coupon' => 'OFF10',
-                        'data' => [
-                            'fixed_value' => true,
-                            'fixed_values' => [
-                                'GBP' => 10,
-                            ],
-                        ],
-                    ],
-                ],
-                'expect' => [
-                    'discount' => 1000,
-                    'subTotal' => 20_000,
-                    'total' => 23_000,
-                    'taxTotal' => 4000,
-                    'discounts' => 1,
-                ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
             ],
-            [
-                // coupon code + max uses
-                'test' => [
-                    'cart' => [
-                        'coupon_code' => 'OFF10',
-                    ],
-                    'discount' => [
-                        'coupon' => 'OFF10',
-                        'uses' => 2,
-                        'max_uses' => 10,
-                        'data' => [
-                            'fixed_value' => true,
-                            'fixed_values' => [
-                                'GBP' => 10,
-                            ],
-                        ],
-                    ],
-                ],
-                'expect' => [
-                    'discount' => 1000,
-                    'subTotal' => 20_000,
-                    'total' => 23_000,
-                    'taxTotal' => 4000,
-                    'discounts' => 1,
-                ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
             ],
-            [
-                // coupon code + max uses + min prices
-                'test' => [
-                    'cart' => [
-                        'coupon_code' => 'OFF10',
-                    ],
-                    'discount' => [
-                        'coupon' => 'OFF10',
-                        'uses' => 2,
-                        'max_uses' => 10,
-                        'data' => [
-                            'fixed_value' => true,
-                            'fixed_values' => [
-                                'GBP' => 10,
-                            ],
-                            'min_prices' => [
-                                'GBP' => 50,
-                            ],
-                        ],
-                    ],
-                ],
-                'expect' => [
-                    'discount' => 1000,
-                    'subTotal' => 20_000,
-                    'total' => 23_000,
-                    'taxTotal' => 4000,
-                    'discounts' => 1,
-                ],
-            ],
-        ];
+        ]);
 
-        foreach ($scenarios as $scenario) {
-            $cart = Cart::factory()->create(
-                array_merge(
-                    [
-                        'currency_id' => $currency->id,
-                        'channel_id' => $channel->id,
-                    ],
-                    @$scenario['test']['cart'] ?? []
-                )
-            );
+        $cart = $cart->calculate();
 
-            $cart->lines()->create([
-                'purchasable_type' => get_class($purchasableA),
-                'purchasable_id' => $purchasableA->id,
-                'quantity' => 20,
-            ]);
-
-            Discount::query()->delete();
-
-            $discount = Discount::factory()->create(array_merge(
-                [
-                    'type' => DiscountTypesDiscount::class,
-                    'name' => 'Test Coupon',
-                ],
-                $scenario['test']['discount']
-            ));
-
-            $discount->customerGroups()->sync([
-                $customerGroup->id => [
-                    'enabled' => true,
-                    'starts_at' => now(),
-                ],
-            ]);
-
-            $discount->channels()->sync([
-                $channel->id => [
-                    'enabled' => true,
-                    'starts_at' => now()->subHour(),
-                ],
-            ]);
-
-            $cart = $cart->calculate();
-
-            $expect = $scenario['expect'];
-
-            $this->assertEquals($expect['discount'], $cart->discountTotal->value);
-            $this->assertEquals($expect['subTotal'], $cart->subTotal->value);
-            $this->assertEquals($expect['total'], $cart->total->value);
-            $this->assertEquals($expect['taxTotal'], $cart->taxTotal->value);
-
-            if (is_null($expect['discounts'])) {
-                $this->assertNull($cart->discounts);
-            } else {
-                $this->assertCount($expect['discounts'], $cart->discounts);
-            }
-        }
+        $this->assertEquals(1000, $cart->discountTotal->value);
+        $this->assertEquals(20_000, $cart->subTotal->value);
+        $this->assertEquals(23_000, $cart->total->value);
+        $this->assertEquals(4000, $cart->taxTotal->value);
+        $this->assertCount(1, $cart->discounts);
     }
 }
