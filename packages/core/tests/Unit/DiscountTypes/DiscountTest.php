@@ -39,8 +39,9 @@ class DiscountTest extends TestCase
         CustomerGroup::factory()->create([
             'default' => true,
         ]);
-    }
 
+        Discount::query()->delete();
+    }
 
     /** @test */
     public function will_only_apply_to_lines_with_correct_brand()
@@ -241,6 +242,7 @@ class DiscountTest extends TestCase
 
     /**
      * @test
+     *
      * @group thisdiscount
      */
     public function can_apply_fixed_amount_discount()
@@ -373,7 +375,6 @@ class DiscountTest extends TestCase
         $this->assertEquals(1100, $cart->total->value);
     }
 
-
     /**
      * @test
      */
@@ -442,6 +443,72 @@ class DiscountTest extends TestCase
     /**
      * @test
      */
+    public function cannot_apply_discount_coupon_without_coupon_code()
+    {
+        $currency = Currency::getDefault();
+
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 2,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => DiscountTypesDiscount::class,
+            'name' => 'Test Coupon',
+            'coupon' => 'OFF10',
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10,
+                ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $cart = $cart->calculate();
+
+        $this->assertEquals(0, $cart->discountTotal->value);
+        $this->assertEquals(2400, $cart->total->value);
+        $this->assertEquals(400, $cart->taxTotal->value);
+        $this->assertNull($cart->discounts);
+    }
+
+    /**
+     * @test
+     */
     public function can_apply_discount_with_max_uses()
     {
         $currency = Currency::getDefault();
@@ -505,6 +572,7 @@ class DiscountTest extends TestCase
         $this->assertEquals(400, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
     }
+
     /**
      * @test
      */
@@ -613,9 +681,9 @@ class DiscountTest extends TestCase
                 'fixed_values' => [
                     'GBP' => 10,
                 ],
-                "min_prices" => [
+                'min_prices' => [
                     'GBP' => 50,
-                ]
+                ],
             ],
         ]);
 
@@ -684,9 +752,9 @@ class DiscountTest extends TestCase
                 'fixed_values' => [
                     'GBP' => 10,
                 ],
-                "min_prices" => [
+                'min_prices' => [
                     'GBP' => 50,
-                ]
+                ],
             ],
         ]);
 
@@ -745,7 +813,7 @@ class DiscountTest extends TestCase
                                 'GBP' => 10,
                             ],
                         ],
-                    ]
+                    ],
                 ],
                 'expect' => [
                     'discount' => 1000,
@@ -759,7 +827,7 @@ class DiscountTest extends TestCase
                 // coupon code
                 'test' => [
                     'cart' => [
-                        'coupon_code' => 'OFF10'
+                        'coupon_code' => 'OFF10',
                     ],
                     'discount' => [
                         'coupon' => 'OFF10',
@@ -769,7 +837,7 @@ class DiscountTest extends TestCase
                                 'GBP' => 10,
                             ],
                         ],
-                    ]
+                    ],
                 ],
                 'expect' => [
                     'discount' => 1000,
@@ -783,7 +851,7 @@ class DiscountTest extends TestCase
                 // coupon code + max uses
                 'test' => [
                     'cart' => [
-                        'coupon_code' => 'OFF10'
+                        'coupon_code' => 'OFF10',
                     ],
                     'discount' => [
                         'coupon' => 'OFF10',
@@ -795,7 +863,7 @@ class DiscountTest extends TestCase
                                 'GBP' => 10,
                             ],
                         ],
-                    ]
+                    ],
                 ],
                 'expect' => [
                     'discount' => 1000,
@@ -809,7 +877,7 @@ class DiscountTest extends TestCase
                 // coupon code + max uses + min prices
                 'test' => [
                     'cart' => [
-                        'coupon_code' => 'OFF10'
+                        'coupon_code' => 'OFF10',
                     ],
                     'discount' => [
                         'coupon' => 'OFF10',
@@ -820,11 +888,11 @@ class DiscountTest extends TestCase
                             'fixed_values' => [
                                 'GBP' => 10,
                             ],
-                            "min_prices" => [
+                            'min_prices' => [
                                 'GBP' => 50,
-                            ]
+                            ],
                         ],
-                    ]
+                    ],
                 ],
                 'expect' => [
                     'discount' => 1000,
