@@ -17,7 +17,7 @@ This repository serves as a monorepo for the main packages that make up Lunar.
 ## Community
 
 - [Join our discord server](https://discord.gg/v6qVWaf) and chat to the developers and people using Lunar.
-- [We have a roadmap](https://github.com/orgs/lunarphp/projects/5) where we will be detailing which features are next.
+- [We have a roadmap](https://github.com/orgs/lunarphp/projects/1) where we will be detailing which features are next.
 
 ## Packages in this monorepo
 
