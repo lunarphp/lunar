@@ -67,7 +67,7 @@ class Tags extends Component
             $databaseTags = Tag::whereIn('value', $this->tags)->get();
 
             $newTags = collect($this->tags)->filter(function ($value) use ($databaseTags) {
-                return !$databaseTags->pluck('value')->contains($value);
+                return ! $databaseTags->pluck('value')->contains($value);
             });
 
             $this->taggable->tags()->sync($databaseTags);
@@ -94,7 +94,7 @@ class Tags extends Component
     {
         $tagTable = (new Tag)->getTable();
 
-        if (!$this->searchTerm) {
+        if (! $this->searchTerm) {
             return collect();
         }
 
@@ -109,7 +109,7 @@ class Tags extends Component
             ->where('value', 'LIKE', "%{$this->searchTerm}%")
             ->pluck('value')
             ->filter(function ($value) {
-                return !in_array($value, $this->tags);
+                return ! in_array($value, $this->tags);
             });
     }
 
