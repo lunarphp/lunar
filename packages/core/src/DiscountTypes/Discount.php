@@ -33,7 +33,7 @@ class Discount extends AbstractDiscountType
         $cartCoupon = strtoupper($cart->coupon_code ?? null);
         $conditionCoupon = strtoupper($this->discount->coupon ?? null);
 
-        $passes = !$cartCoupon || ($cartCoupon === $conditionCoupon);
+        $passes = !$conditionCoupon || ($cartCoupon === $conditionCoupon);
 
         $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
 
