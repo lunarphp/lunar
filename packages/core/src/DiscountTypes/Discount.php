@@ -9,6 +9,8 @@ use Lunar\Models\Collection;
 
 class Discount extends AbstractDiscountType
 {
+    private $eligibleLines;
+    
     /**
      * Return the name of the discount.
      *
@@ -31,13 +33,13 @@ class Discount extends AbstractDiscountType
         $cartCoupon = strtoupper($cart->coupon_code ?? null);
         $conditionCoupon = strtoupper($this->discount->coupon ?? null);
 
-        $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
+        $passes = !$cartCoupon || ($cartCoupon === $conditionCoupon);
 
         $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
 
         $lines = $this->getEligibleLines($cart);
 
-        if (! $passes || ($minSpend && $minSpend >= $lines->sum('subTotal.value'))) {
+        if (! $passes || ($minSpend && $minSpend <= $lines->sum('subTotal.value'))) {
             return $cart;
         }
 
@@ -96,6 +98,10 @@ class Discount extends AbstractDiscountType
      */
     private function getEligibleLines(Cart $cart)
     {
+        if ($this->eligibleLines) {
+            return $this->eligibleLines;
+        }
+
         $collectionIds = $this->discount->collections->pluck('id');
         $brandIds = $this->discount->brands->pluck('id');
         $productIds = $this->discount->purchasableLimitations->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
@@ -121,6 +127,8 @@ class Discount extends AbstractDiscountType
                 return ! $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
             });
         }
+        
+        $this->eligibleLines = $lines;
 
         return $lines;
     }
