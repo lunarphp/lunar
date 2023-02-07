@@ -67,7 +67,7 @@ class Discount extends AbstractDiscountType
     {
         $currency = $cart->currency;
 
-        $value = ($values[$currency->code] ?? 0) * 100;
+        $value = ($values[$currency->code] ?? 0) * $cart->currency->factor;
 
         $lines = $this->getEligibleLines($cart);
 
@@ -146,7 +146,7 @@ class Discount extends AbstractDiscountType
 
         foreach ($lines as $line) {
             $subTotal = $line->subTotal->value;
-            $amount = (int) round($subTotal * ($value / 100));
+            $amount = (int) round($subTotal * ($value / $cart->currency->factor));
 
             $line->discountTotal = new Price(
                 $amount,
