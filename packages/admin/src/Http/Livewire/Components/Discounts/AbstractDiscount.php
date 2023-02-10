@@ -125,9 +125,6 @@ abstract class AbstractDiscount extends Component
                 return $this->mapProductToArray($limitation->purchasable);
             });
 
-        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand)) ?? collect();
-        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection)) ?? collect();
-
         $this->selectedConditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
             ->pluck('purchasable_id')->values()->toArray();
