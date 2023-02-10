@@ -83,9 +83,9 @@ class OrdersTable extends Table
             SelectFilter::make('tags')->options(function () {
                 $tagTable = (new Tag)->getTable();
 
-                $tags = DB::table(
-                    config('lunar.database.table_prefix').'taggables'
-                )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
+                $tags = DB::connection(config('lunar.database.connection'))
+                ->table(config('lunar.database.table_prefix').'taggables')
+                ->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
                 ->whereTaggableType(Order::class)
                 ->distinct()
                 ->pluck('value')
