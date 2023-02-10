@@ -67,6 +67,7 @@ class ProductTest extends TestCase
 
     /**
      * @test
+     *
      * @group products
      * */
     public function product_can_be_scheduled()
@@ -202,6 +203,7 @@ class ProductTest extends TestCase
 
     /**
      * @test
+     *
      * @group mosh
      * */
     public function customer_groups_can_be_unscheduled()
