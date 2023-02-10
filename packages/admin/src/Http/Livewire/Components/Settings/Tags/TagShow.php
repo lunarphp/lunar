@@ -29,7 +29,8 @@ class TagShow extends Component
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return DB::table(
+        return DB::connection(config('lunar.database.connection'))
+        ->table(
             "{$prefix}taggables"
         )->select([
             'taggable_type',
