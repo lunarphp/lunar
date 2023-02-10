@@ -125,9 +125,6 @@ abstract class AbstractDiscount extends Component
                 return $this->mapProductToArray($limitation->purchasable);
             });
 
-        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand)) ?? collect();
-        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection)) ?? collect();
-
         $this->selectedConditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
             ->pluck('purchasable_id')->values()->toArray();
@@ -329,7 +326,7 @@ abstract class AbstractDiscount extends Component
      */
     public function save()
     {
-        $redirect = ! $this->discount->id;
+        $redirect = !$this->discount->id;
 
         $this->withValidator(function (Validator $validator) {
             $validator->after(function ($validator) {
@@ -353,8 +350,8 @@ abstract class AbstractDiscount extends Component
             $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
                 return [
                     $channel['channel_id'] => [
-                        'starts_at' => ! $channel['enabled'] ? null : $channel['starts_at'],
-                        'ends_at' => ! $channel['enabled'] ? null : $channel['ends_at'],
+                        'starts_at' => !$channel['enabled'] ? null : $channel['starts_at'],
+                        'ends_at' => !$channel['enabled'] ? null : $channel['ends_at'],
                         'enabled' => $channel['enabled'],
                     ],
                 ];
