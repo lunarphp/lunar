@@ -164,9 +164,9 @@ class PricingManager implements PricingManagerInterface
         }
 
         if (! $this->customerGroups || ! $this->customerGroups->count()) {
-            $this->customerGroups = collect(
-                CustomerGroup::getDefault()
-            );
+            $this->customerGroups = collect([
+                CustomerGroup::getDefault(),
+            ]);
         }
 
         // Do we have a user?
