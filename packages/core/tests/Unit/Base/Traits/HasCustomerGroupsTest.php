@@ -82,6 +82,7 @@ class HasCustomerGroupsTest extends TestCase
 
     /**
      * @test
+     *
      * @group testerr
      * */
     public function throws_exception_if_non_customer_group_provided()

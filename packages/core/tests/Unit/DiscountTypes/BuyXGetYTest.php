@@ -184,6 +184,7 @@ class BuyXGetYTest extends TestCase
 
     /**
      * @test
+     *
      * @group thisthis
      */
     public function can_discount_eligible_products()

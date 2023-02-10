@@ -100,7 +100,7 @@ class Tags extends Component
 
         return DB::connection(config('lunar.database.connection'))
         ->table(
-            config('lunar.database.table_prefix') . 'taggables'
+            config('lunar.database.table_prefix').'taggables'
         )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
             ->whereTaggableType(
                 $this->taggable->getMorphClass()
