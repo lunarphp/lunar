@@ -28,16 +28,7 @@ class Discount extends AbstractDiscountType
     {
         $data = $this->discount->data;
 
-        $cartCoupon = strtoupper($cart->coupon_code ?? null);
-        $conditionCoupon = strtoupper($this->discount->coupon ?? null);
-
-        $passes = $cartCoupon && ($cartCoupon === $conditionCoupon);
-
-        $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
-
-        $lines = $this->getEligibleLines($cart);
-
-        if (! $passes || ($minSpend && $minSpend >= $lines->sum('subTotal.value'))) {
+        if (! $this->checkDiscountConditions($cart)) {
             return $cart;
         }
 
@@ -65,7 +56,7 @@ class Discount extends AbstractDiscountType
     {
         $currency = $cart->currency;
 
-        $value = ($values[$currency->code] ?? 0) * 100;
+        $value = (int) bcmul($values[$currency->code] ?? 0, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
 
@@ -92,9 +83,9 @@ class Discount extends AbstractDiscountType
      * Return the eligible lines for the discount.
      *
      * @param  Cart  $cart
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      */
-    private function getEligibleLines(Cart $cart)
+    protected function getEligibleLines(Cart $cart): \Illuminate\Support\Collection
     {
         $collectionIds = $this->discount->collections->pluck('id');
         $brandIds = $this->discount->brands->pluck('id');

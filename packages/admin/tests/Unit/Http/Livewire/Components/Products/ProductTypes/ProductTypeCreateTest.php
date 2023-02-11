@@ -75,6 +75,7 @@ class ProductTypeCreateTest extends TestCase
 
     /**
      * @test
+     *
      * @group foo
      * */
     public function can_populate_product_type_data_and_attributes()
