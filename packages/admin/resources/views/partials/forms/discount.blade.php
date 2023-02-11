@@ -1,11 +1,4 @@
-
-<div
-    class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-    :class="{
-        'lg:w-[calc(100vw_-_16rem)]': !menuCollapsed,
-        'w-full': menuCollapsed
-    }"
->
+<x-hub::layout.bottom-panel>
     <div class="flex justify-end">
         <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           {{ __(
@@ -13,7 +6,7 @@
           ) }}
         </button>
     </div>
-</div>
+</x-hub::layout.bottom-panel>
 
 <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
     <div class="space-y-6 lg:flex-1">
