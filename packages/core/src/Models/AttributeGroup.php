@@ -9,6 +9,15 @@ use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\AttributeGroupFactory;
 
+/**
+ * @property int $id
+ * @property string $attributable_type
+ * @property string $name
+ * @property string $handle
+ * @property int $position
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class AttributeGroup extends BaseModel
 {
     use HasFactory;

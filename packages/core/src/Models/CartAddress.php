@@ -13,6 +13,29 @@ use Lunar\Database\Factories\CartAddressFactory;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 
+/**
+ * @property int $id
+ * @property int $cart_id
+ * @property ?int $country_id
+ * @property ?string $title
+ * @property ?string $first_name
+ * @property ?string $last_name
+ * @property ?string $company_name
+ * @property ?string $line_one
+ * @property ?string $line_two
+ * @property ?string $line_three
+ * @property ?string $city
+ * @property ?string $state
+ * @property ?string $postcode
+ * @property ?string $delivery_instructions
+ * @property ?string $contact_email
+ * @property ?string $contact_phone
+ * @property string $type
+ * @property ?string $shipping_option
+ * @property array $meta
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class CartAddress extends BaseModel implements Addressable
 {
     use HasFactory;

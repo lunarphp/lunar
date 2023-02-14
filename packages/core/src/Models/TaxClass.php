@@ -8,6 +8,13 @@ use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxClassFactory;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property bool $default
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class TaxClass extends BaseModel
 {
     use HasFactory;
