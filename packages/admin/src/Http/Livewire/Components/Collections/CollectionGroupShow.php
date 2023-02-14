@@ -9,6 +9,7 @@ use Livewire\Component;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Models\Attribute;
 use Lunar\Models\Collection;
 use Lunar\Models\CollectionGroup;
 use Lunar\Models\Language;
@@ -407,12 +408,22 @@ class CollectionGroupShow extends Component
             'collection.name.required' => __('adminhub::validation.generic_required'),
         ]);
 
+        $attribute = Attribute::whereHandle('name')->whereAttributeType(Collection::class)->first();
+
+        $attributeType = $attribute?->type ?: TranslatedText::class;
+
+        $name = $this->collection['name'];
+
+        if ($attributeType == TranslatedText::class) {
+            $name = [
+                $this->defaultLanguage => $this->collection['name'],
+            ];
+        }
+
         $collection = Collection::create([
             'collection_group_id' => $this->group->id,
             'attribute_data' => collect([
-                'name' => new TranslatedText([
-                    $this->defaultLanguage => $this->collection['name'],
-                ]),
+                'name' => new $attributeType($name),
             ]),
         ], $this->collectionParent);
 
