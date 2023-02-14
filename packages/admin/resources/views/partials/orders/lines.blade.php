@@ -9,7 +9,7 @@
                 @endif
 
                 <div class="flex-shrink-0">
-                    @if ($thumbnail = $line->purchasable->getThumbnail())
+                    @if ($thumbnail = $line->purchasable?->getThumbnail())
                         <x-hub::thumbnail :src="$thumbnail->getUrl('small')" />
                     @else
                         <x-hub::icon ref="photograph"
@@ -94,7 +94,7 @@
                             <div class="flex text-xs font-medium text-gray-600">
                                 <p>{{ $line->identifier }}</p>
 
-                                @if ($line->purchasable->getOptions()->count())
+                                @if ($line->purchasable?->getOptions()?->count())
                                     <dl class="flex before:content-['|'] before:mx-3 before:text-gray-200 space-x-3">
                                         @foreach ($line->purchasable->getOptions() as $option)
                                             <div class="flex gap-0.5">

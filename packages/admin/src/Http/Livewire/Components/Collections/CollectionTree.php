@@ -79,10 +79,10 @@ class CollectionTree extends Component
             $objectIdPositions = array_flip($ids);
 
             $models = Collection::withCount('children')
-            ->findMany($ids)
-            ->sortBy(function ($model) use ($objectIdPositions) {
-                return $objectIdPositions[$model->getKey()];
-            })->values();
+                ->findMany($ids)
+                ->sortBy(function ($model) use ($objectIdPositions) {
+                    return $objectIdPositions[$model->getKey()];
+                })->values();
 
             Collection::rebuildSubtree(
                 $models->first()->parent,
@@ -151,7 +151,7 @@ class CollectionTree extends Component
     {
         $parentId = collect($this->nodes)->first()['parent_id'];
         $this->nodes = $this->mapCollections(
-            Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
+            Collection::whereParentId($parentId)->inGroup($this->owner->id)->withCount('children')->defaultOrder()->get()
         );
     }
 
@@ -168,7 +168,7 @@ class CollectionTree extends Component
 
         if ($parentMatched) {
             $this->nodes = $this->mapCollections(
-                Collection::whereParentId($parentId)->withCount('children')->defaultOrder()->get()
+                Collection::whereParentId($parentId)->inGroup($this->owner->id)->withCount('children')->defaultOrder()->get()
             );
         }
 
@@ -177,7 +177,7 @@ class CollectionTree extends Component
 
         if ($nodeMatched) {
             $this->nodes = $this->mapCollections(
-                Collection::whereParentId($nodeMatched['parent_id'])->withCount('children')->defaultOrder()->get()
+                Collection::whereParentId($nodeMatched['parent_id'])->inGroup($this->owner->id)->withCount('children')->defaultOrder()->get()
             );
         }
     }

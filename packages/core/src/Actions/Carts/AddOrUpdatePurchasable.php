@@ -22,7 +22,7 @@ class AddOrUpdatePurchasable extends AbstractAction
         int $quantity = 1,
         array $meta = []
     ): self {
-        throw_if(!$quantity, InvalidCartLineQuantityException::class);
+        throw_if(! $quantity, InvalidCartLineQuantityException::class);
 
         $existing = app(GetExistingCartLine::class)->execute(
             cart: $cart,
