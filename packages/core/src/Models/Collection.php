@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Kalnoy\Nestedset\NodeTrait;
 use Lunar\Base\BaseModel;
@@ -27,6 +28,7 @@ class Collection extends BaseModel implements SpatieHasMedia
         NodeTrait,
         HasTranslations,
         HasChannels,
+        SoftDeletes,
         HasUrls,
         HasCustomerGroups,
         HasMacros,

@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -22,6 +23,7 @@ class ProductVariant extends BaseModel implements Purchasable
     use LogsActivity;
     use HasDimensions;
     use HasTranslations;
+    use SoftDeletes;
     use HasMacros;
 
     /**
