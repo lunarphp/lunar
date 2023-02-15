@@ -99,7 +99,7 @@
                             </div>
                         @endif
 
-                        @if ($this->hasSearchApplied)
+                        @if ($this->canSaveSearches && $this->hasSearchApplied)
                             <x-l-tables::button x-on:click="savingSearch = true">
                                 Save Search
                             </x-l-tables::button>
