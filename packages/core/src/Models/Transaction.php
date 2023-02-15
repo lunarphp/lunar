@@ -10,6 +10,24 @@ use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TransactionFactory;
 use Lunar\Facades\Payments;
 
+/**
+ * @property int $id
+ * @property ?int $parent_transaction_id
+ * @property int $order_id
+ * @property bool $success
+ * @property string $type
+ * @property string $driver
+ * @property int $amount
+ * @property string $reference
+ * @property string $status
+ * @property ?string $notes
+ * @property string $card_type
+ * @property ?string $last_four
+ * @property ?array $meta
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ */
 class Transaction extends BaseModel
 {
     use HasFactory;

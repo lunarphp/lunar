@@ -8,6 +8,30 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\AddressFactory;
 
+/**
+ * @property int $id
+ * @property int $customer_id
+ * @property ?string $title
+ * @property string $first_name
+ * @property string $last_name
+ * @property ?string $company_name
+ * @property string $line_one
+ * @property ?string $line_two
+ * @property ?string $line_three
+ * @property string $city
+ * @property ?string $state
+ * @property ?string $postcode
+ * @property int $country_id
+ * @property ?string $delivery_instructions
+ * @property ?string $contact_mail
+ * @property ?string $contact_phone
+ * @property ?\Illuminate\Support\Carbon $last_used_at
+ * @property array $meta
+ * @property bool $shipping_default
+ * @property bool $billing_default
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Address extends BaseModel implements Addressable
 {
     use HasFactory, HasMacros;

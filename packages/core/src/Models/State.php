@@ -7,6 +7,14 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\StateFactory;
 
+/**
+ * @property int $id
+ * @property ?int $country_id
+ * @property string $name
+ * @property string $code
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class State extends BaseModel
 {
     use HasFactory;

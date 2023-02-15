@@ -10,6 +10,17 @@ use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CurrencyFactory;
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property float $exchange_rate
+ * @property int $decimal_places
+ * @property bool $enabled
+ * @property bool $default
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Currency extends BaseModel
 {
     use HasFactory;

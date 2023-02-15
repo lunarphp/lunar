@@ -7,6 +7,20 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\CountryFactory;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $iso3
+ * @property ?string $iso2
+ * @property string $phonecode
+ * @property ?string $capital
+ * @property string $currency
+ * @property ?string $native
+ * @property string $emoji
+ * @property string $emoji_u
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Country extends BaseModel
 {
     use HasFactory;

@@ -7,6 +7,12 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TagFactory;
 
+/**
+ * @property int $id
+ * @property string $value
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Tag extends BaseModel
 {
     use HasFactory;
