@@ -38,6 +38,8 @@ class UrlGenerator
      */
     public function handle(Model $model)
     {
+        $this->model = $model;
+
         if (! $model->urls->count()) {
             if ($model->attribute_data) {
                 return $this->createUrl(
