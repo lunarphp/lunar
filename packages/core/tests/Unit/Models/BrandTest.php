@@ -13,7 +13,6 @@ use Lunar\Tests\TestCase;
 /**
  * @group lunar.brands
  */
-
 class BrandTest extends TestCase
 {
     use RefreshDatabase;
