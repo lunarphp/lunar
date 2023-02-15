@@ -9,7 +9,6 @@ use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupEdit;
 use Lunar\Hub\Tests\Stubs\User;
 use Lunar\Hub\Tests\TestCase;
-use Lunar\Models\AttributeGroup;
 use Lunar\Models\Language;
 
 class AttributeGroupEditTest extends TestCase
@@ -94,7 +93,8 @@ class AttributeGroupEditTest extends TestCase
         Livewire::test(AttributeGroupEdit::class)
             ->set('attributeGroup.name.' . $secondaryLanguage->code, 'Some attribute group name, but in French')
             ->set('attributableType', 'product_type')
-            ->call('create');
+            ->call('create')
+            ->assertHasErrors('attributeGroup.name.' . Language::getDefault()->code);
 
         $this->assertDatabaseMissing('lunar_attribute_groups', [
             'attributable_type' => 'product_type',
