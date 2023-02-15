@@ -36,19 +36,15 @@ class UrlGenerator
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
-    public function handle(Model $model)
+    public function handle(Model $model, $attribute = 'name')
     {
         $this->model = $model;
 
         if (! $model->urls->count()) {
             if ($model->attribute_data) {
-                return $this->createUrl(
-                    $model->attr('name')
-                );
-            }
-
-            if ($name = $model->name) {
-                return $this->createUrl($name);
+                return $this->createFromAttribute($attribute);
+            } elseif ($model->{$attribute}) {
+                return $this->generateSlug($model->{$attribute});
             }
         }
     }
@@ -59,7 +55,12 @@ class UrlGenerator
      * @param  string  $attribute
      * @return void
      */
-    protected function createUrl($value)
+    protected function createFromAttribute($attribute)
+    {
+        $this->generateSlug($this->model->translateAttribute($attribute));
+    }
+
+    protected function generateSlug($value)
     {
         $slug = Str::slug($value);
 
