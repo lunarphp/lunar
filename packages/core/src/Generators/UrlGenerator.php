@@ -38,11 +38,15 @@ class UrlGenerator
      */
     public function handle(Model $model)
     {
-        $this->model = $model;
-
         if (! $model->urls->count()) {
             if ($model->attribute_data) {
-                return $this->createFromAttribute('name');
+                return $this->createUrl(
+                    $model->attr('name')
+                );
+            }
+
+            if ($name = $model->name) {
+                return $this->createUrl($name);
             }
         }
     }
@@ -53,11 +57,9 @@ class UrlGenerator
      * @param  string  $attribute
      * @return void
      */
-    protected function createFromAttribute($attribute)
+    protected function createUrl($value)
     {
-        $slug = Str::slug(
-            $this->model->translateAttribute($attribute)
-        );
+        $slug = Str::slug($value);
 
         $this->model->urls()->create([
             'default' => true,
