@@ -3,7 +3,6 @@
 namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Brand;
@@ -84,14 +83,7 @@ class BrandsIndex extends Component
             'name' => $this->brand['name'],
         ]);
 
-        $brand->urls()->create([
-            'slug' => Str::slug($this->brand['name']),
-            'default' => true,
-            'language_id' => Language::getDefault()->id,
-        ]);
-
         $this->brand = null;
-        $this->slug = null;
 
         $this->showCreateForm = false;
 
