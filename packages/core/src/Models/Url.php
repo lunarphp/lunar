@@ -7,6 +7,16 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\UrlFactory;
 
+/**
+ * @property int $id
+ * @property int $language_id
+ * @property string $element_type
+ * @property int $element_id
+ * @property string $slug
+ * @property bool $default
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Url extends BaseModel
 {
     use HasFactory;

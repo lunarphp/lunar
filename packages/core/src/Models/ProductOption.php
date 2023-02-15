@@ -12,6 +12,14 @@ use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\ProductOptionFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property int $position
+ * @property ?string $handle
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class ProductOption extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
