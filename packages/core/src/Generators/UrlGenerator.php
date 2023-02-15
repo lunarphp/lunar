@@ -36,11 +36,11 @@ class UrlGenerator
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
-    public function handle(Model $model)
+    public function handle(Model $model, $attribute = 'name')
     {
         $this->model = $model;
 
-        if (! $model->urls->count()) {
+        if (!$model->urls->count()) {
             if ($model->attribute_data) {
                 return $this->createUrl(
                     $model->attr('name')
