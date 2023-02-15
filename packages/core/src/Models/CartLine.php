@@ -11,6 +11,16 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartLineFactory;
 use Lunar\DataTypes\Price;
 
+/**
+ * @property int $id
+ * @property int $cart_id
+ * @property string $purchasable_type
+ * @property int $purchasable_id
+ * @property int $quantity
+ * @property ?array $meta
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class CartLine extends BaseModel
 {
     use HasFactory;

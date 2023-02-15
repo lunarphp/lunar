@@ -14,6 +14,25 @@ use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\AttributeFactory;
 
+/**
+ * @property int $id
+ * @property string $attribute_type
+ * @property int $attribute_group_id
+ * @property int $position
+ * @property string $name
+ * @property string $handle
+ * @property string $section
+ * @property string $type
+ * @property bool $required
+ * @property ?string $default_value
+ * @property string $configuration
+ * @property bool $system
+ * @property string $validation_rules
+ * @property bool $filterable
+ * @property bool $searchable
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Attribute extends BaseModel
 {
     use HasFactory;

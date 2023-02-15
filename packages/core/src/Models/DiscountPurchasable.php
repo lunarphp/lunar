@@ -8,6 +8,15 @@ use Lunar\Base\BaseModel;
 use Lunar\Database\Factories\DiscountPurchasableFactory;
 use Lunar\Discounts\Database\Factories\DiscountFactory;
 
+/**
+ * @property int $id
+ * @property int $discount_id
+ * @property string $purchasable_type
+ * @property int $purchasable_id
+ * @property string $type
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class DiscountPurchasable extends BaseModel
 {
     use HasFactory;
