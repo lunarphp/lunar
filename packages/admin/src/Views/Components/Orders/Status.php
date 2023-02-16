@@ -42,7 +42,7 @@ class Status extends Component
 
         $match = $statuses[$status] ?? null;
 
-        $this->label = $match['label'] ?? $status;
+        $this->label = $match['label'] ?? 'N/A';
         $this->color = $match['color'] ?? '#7C7C7C';
         $this->status = $record?->status ?: $status;
     }
