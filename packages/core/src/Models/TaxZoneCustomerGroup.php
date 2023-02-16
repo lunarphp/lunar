@@ -7,6 +7,13 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxZoneCustomerGroupFactory;
 
+/**
+ * @property int $id
+ * @property ?int $tax_zone_id
+ * @property ?int $customer_group_id
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class TaxZoneCustomerGroup extends BaseModel
 {
     use HasFactory;

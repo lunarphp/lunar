@@ -9,6 +9,14 @@ use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
 use Lunar\Database\Factories\ProductAssociationFactory;
 
+/**
+ * @property int $id
+ * @property int $product_parent_id
+ * @property int $product_target_id
+ * @property string $type
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class ProductAssociation extends BaseModel
 {
     use HasFactory;

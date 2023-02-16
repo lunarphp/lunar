@@ -12,6 +12,19 @@ use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CustomerFactory;
 
+/**
+ * @property int $id
+ * @property ?string $title
+ * @property string $first_name
+ * @property string $last_name
+ * @property ?string $company_name
+ * @property ?string $vat_no
+ * @property ?string $account_ref
+ * @property ?array $attribute_data
+ * @property ?array $meta
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Customer extends BaseModel
 {
     use HasAttributes;

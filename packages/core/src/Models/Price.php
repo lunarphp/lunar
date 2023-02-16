@@ -8,6 +8,18 @@ use Lunar\Base\Casts\Price as CastsPrice;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\PriceFactory;
 
+/**
+ * @property int $id
+ * @property ?int $customer_group_id
+ * @property ?int $currency_id
+ * @property string $priceable_type
+ * @property int $priceable_id
+ * @property int $price
+ * @property ?int $compare_price
+ * @property int $tier
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Price extends BaseModel
 {
     use HasFactory;
