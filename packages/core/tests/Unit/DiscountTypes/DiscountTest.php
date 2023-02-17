@@ -3,7 +3,7 @@
 namespace Lunar\Tests\Unit\DiscountTypes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Brand;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
@@ -108,7 +108,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => '10OFF',
             'data' => [
@@ -202,7 +202,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => '10OFF',
             'data' => [
@@ -274,7 +274,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => '10OFF',
             'data' => [
@@ -339,7 +339,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => '10PERCENTOFF',
             'data' => [
@@ -406,7 +406,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'data' => [
                 'fixed_value' => true,
@@ -471,7 +471,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => 'OFF10',
             'data' => [
@@ -537,7 +537,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'uses' => 2,
             'max_uses' => 10,
@@ -604,7 +604,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'uses' => 10,
             'max_uses' => 10,
@@ -670,7 +670,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'uses' => 2,
             'max_uses' => 10,
@@ -741,7 +741,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'uses' => 2,
             'max_uses' => 10,
@@ -813,7 +813,7 @@ class DiscountTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => 'OFF10',
             'uses' => 2,

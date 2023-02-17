@@ -40,7 +40,7 @@ use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsTable;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY;
-use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\AmountOff;
 use Lunar\Hub\Http\Livewire\Components\FieldTypes\FileFieldtype;
 use Lunar\Hub\Http\Livewire\Components\Orders\EmailNotification;
 use Lunar\Hub\Http\Livewire\Components\Orders\OrderCapture;
@@ -475,7 +475,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.discounts.create', DiscountCreate::class);
         Livewire::component('hub.components.discounts.table', DiscountsTable::class);
 
-        Livewire::component('lunar.hub.http.livewire.components.discounts.types.discount', TypesDiscount::class);
+        Livewire::component('lunar.hub.http.livewire.components.discounts.types.amount-off', AmountOff::class);
         Livewire::component('lunar.hub.http.livewire.components.discounts.types.buy-x-get-y', BuyXGetY::class);
     }
 

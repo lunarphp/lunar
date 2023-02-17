@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\Discounts;
 use Lunar\Facades\ShippingManifest;
@@ -82,7 +82,7 @@ class CartTest extends TestCase
         ]);
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => 'valid-coupon',
             'data' => [
