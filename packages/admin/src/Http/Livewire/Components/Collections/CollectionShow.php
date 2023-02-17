@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
+use Kalnoy\Nestedset\Collection as NestedsetCollection;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Lunar\FieldTypes\TranslatedText;
@@ -38,6 +39,8 @@ class CollectionShow extends Component
      * @var \Lunar\Models\Collection
      */
     public Collection $collection;
+
+    public NestedsetCollection $children;
 
     /**
      * Define availability properties.
@@ -89,6 +92,8 @@ class CollectionShow extends Component
         if ($this->productCount <= 30) {
             $this->loadProducts();
         }
+
+        $this->syncChildren();
 
         $this->syncAvailability();
     }
@@ -385,10 +390,41 @@ class CollectionShow extends Component
 
         $this->showCreateChildForm = false;
 
-        $this->collection->refresh();
+        $this->syncChildren();
 
         $this->notify(
             __('adminhub::notifications.collections.added')
+        );
+    }
+
+    /**
+     * Sort the collections.
+     *
+     * @param  array  $payload
+     * @return void
+     */
+    public function sort($payload)
+    {
+        DB::transaction(function () use ($payload) {
+            $ids = collect($payload['items'])->pluck('id')->toArray();
+
+            $objectIdPositions = array_flip($ids);
+
+            $models = Collection::findMany($ids)
+                ->sortBy(function ($model) use ($objectIdPositions) {
+                    return $objectIdPositions[$model->getKey()];
+                })->values();
+
+            Collection::rebuildSubtree(
+                $this->collection,
+                $models->map(fn ($model) => ['id' => $model->id])->toArray()
+            );
+
+            $this->syncChildren();
+        });
+
+        $this->notify(
+            __('adminhub::notifications.collections.reordered')
         );
     }
 
@@ -526,6 +562,11 @@ class CollectionShow extends Component
             })->join(','),
             'base_price' => $basePrice->load('currency')->formatted,
         ];
+    }
+
+    protected function syncChildren()
+    {
+        $this->children = $this->collection->children()->defaultOrder()->get();
     }
 
     /**

@@ -218,19 +218,43 @@
                         </x-hub::button>
                     </header>
 
-                    <div class="space-y-2">
-                        @forelse($collection->children as $child)
+                    <div class="space-y-2"
+                        wire:sort
+                        sort.options='{group: "collection_child", method: "sort"}'>
+                        @forelse($children as $child)
                             <div
-                                 class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded">
-                                {{ $child->translateAttribute('name') }}
+                                wire:key="child_{{ $child['id'] }}"
+                                sort.item="collection_child"
+                                sort.id="{{ $child['id'] }}"
+                                class="flex items-center">
+                                <div wire:loading
+                                    wire:target="sort">
+                                    <x-hub::icon ref="refresh"
+                                                style="solid"
+                                                class="w-5 mr-2 text-gray-300 rotate-180 animate-spin" />
+                                </div>
 
-                                <a href="{{ route('hub.collections.show', [
-                                    'group' => $collection->group,
-                                    'collection' => $child,
-                                ]) }}"
-                                   class="text-sm text-blue-500 hover:underline">
-                                    {{ __('adminhub::global.edit') }}
-                                </a>
+                                <div wire:loading.remove
+                                    wire:target="sort">
+                                    <div sort.handle
+                                        class="cursor-grab">
+                                        <x-hub::icon ref="selector"
+                                                    style="solid"
+                                                    class="mr-2 text-gray-400 hover:text-gray-700" />
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded sort-item-element">
+                                    {{ $child->translateAttribute('name') }}
+
+                                    <a href="{{ route('hub.collections.show', [
+                                        'group' => $collection->group,
+                                        'collection' => $child,
+                                    ]) }}"
+                                    class="text-sm text-blue-500 hover:underline">
+                                        {{ __('adminhub::global.edit') }}
+                                    </a>
+                                </div>
                             </div>
                         @empty
                             <x-hub::alert>
