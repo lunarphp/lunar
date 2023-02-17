@@ -76,4 +76,21 @@ class MenuLinkTest extends TestCase
         $this->assertTrue($menuLink->isActive('foo'));
         $this->assertTrue($menuLink->isActive('foo/bar'));
     }
+
+    /** @test */
+    public function active_state_is_correct_based_on_given_array_path()
+    {
+        $menuLink = new MenuLink();
+
+        $menuLink->handle([
+            'foo',
+            'second-foo',
+        ]);
+
+        $this->assertFalse($menuLink->isActive('hub/bar'));
+        $this->assertTrue($menuLink->isActive('foo'));
+        $this->assertTrue($menuLink->isActive('foo/bar'));
+        $this->assertTrue($menuLink->isActive('second-foo'));
+        $this->assertTrue($menuLink->isActive('second-foo/bar'));
+    }
 }
