@@ -64,17 +64,39 @@ class AmountOff extends AbstractDiscountType
             return $cart;
         }
 
-        $cart->cartDiscountAmount = new Price(
-            $value,
-            $currency,
-            1
-        );
+        $divisionalAmount = $value / $lines->count();
+        $roundedChunk = (int) (round($divisionalAmount, 2));
 
-        if (! $cart->discounts) {
-            $cart->discounts = collect();
+        $remaining = $value;
+
+        foreach ($lines as $line) {
+            if ($line->subTotal->value < $roundedChunk) {
+                $amount = $roundedChunk - ($roundedChunk % $line->subTotal->value);
+            } else {
+                $amount = $roundedChunk;
+            }
+            $remaining -= $amount;
+
+            $line->discountTotal = new Price(
+                $amount,
+                $cart->currency,
+                1
+            );
         }
 
-        $cart->discounts->push($this);
+        // dd($remaining);
+
+//         $cart->cartDiscountAmount = new Price(
+//             $value,
+//             $currency,
+//             1
+//         );
+//
+//         if (! $cart->discounts) {
+//             $cart->discounts = collect();
+//         }
+//
+//         $cart->discounts->push($this);
 
         return $cart;
     }
