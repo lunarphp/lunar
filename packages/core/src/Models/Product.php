@@ -101,6 +101,7 @@ class Product extends BaseModel implements SpatieHasMedia
         'attribute_data',
         'product_type_id',
         'status',
+        'brand_id',
     ];
 
     /**
