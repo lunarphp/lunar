@@ -264,6 +264,70 @@
                     </div>
                 </div>
             </div>
+
+            @if ($collection->id)
+                <div class="bg-white border rounded shadow border-red-300">
+                    <header class="px-6 py-4 bg-white border-b rounded-t border-red-300 text-red-700">
+                        {{ __('adminhub::inputs.danger_zone.title') }}
+                    </header>
+
+                    <div class="p-6 text-sm">
+                        <div class="grid grid-cols-12 gap-4">
+                            <div class="col-span-12 lg:col-span-8">
+                                <strong>
+                                    {{ __('adminhub::catalogue.collections.delete.title') }}
+                                </strong>
+
+                                <p class="text-xs text-gray-600">
+                                    {{ __('adminhub::catalogue.collections.delete.warning') }}
+                                </p>
+                            </div>
+
+                            <div class="col-span-6 text-right lg:col-span-4">
+                                <x-hub::button :disabled="false"
+                                            wire:click="$set('showDeleteConfirm', true)"
+                                            type="button"
+                                            theme="danger">
+                                    {{ __('adminhub::global.delete') }}
+                                </x-hub::button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <x-hub::modal.dialog wire:model="showDeleteConfirm">
+                    <x-slot name="title">
+                        {{ __('adminhub::catalogue.collections.delete.title') }}
+                    </x-slot>
+
+                    <x-slot name="content">
+                        @if ($childCount = $children->count())
+                            <x-hub::alert level="danger">
+                                {{ __('adminhub::catalogue.collections.delete.child.warning', [
+                                    'count' => $childCount,
+                                ]) }}
+                            </x-hub::alert>
+                        @else
+                            <p>{{ __('adminhub::catalogue.collections.delete.root.warning') }}</p>
+                        @endif
+                    </x-slot>
+
+                    <x-slot name="footer">
+                        <div class="flex items-center justify-end space-x-4">
+                            <x-hub::button theme="gray"
+                                           type="button"
+                                           wire:click.prevent="$set('showDeleteConfirm', false)">
+                                {{ __('adminhub::global.cancel') }}
+                            </x-hub::button>
+
+                            <x-hub::button wire:click="deleteCollection"
+                                           theme="danger">
+                                {{ __('adminhub::catalogue.collections.delete.btn') }}
+                            </x-hub::button>
+                        </div>
+                    </x-slot>
+                </x-hub::modal.dialog>
+            @endif
         </div>
 
         <x-hub::layout.page-menu>

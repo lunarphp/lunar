@@ -6,7 +6,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
-use Kalnoy\Nestedset\Collection as NestedsetCollection;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Lunar\FieldTypes\TranslatedText;
@@ -40,7 +39,7 @@ class CollectionShow extends Component
      */
     public Collection $collection;
 
-    public NestedsetCollection $children;
+    public \Illuminate\Support\Collection $children;
 
     /**
      * Define availability properties.
@@ -64,6 +63,8 @@ class CollectionShow extends Component
     public bool $productsLoaded = false;
 
     public bool $showCreateChildForm = false;
+
+    public bool $showDeleteConfirm = false;
 
     /**
      * The new child collection we're making.
@@ -426,6 +427,40 @@ class CollectionShow extends Component
         $this->notify(
             __('adminhub::notifications.collections.reordered')
         );
+    }
+
+    /**
+     * Delete the collection.
+     *
+     * @return void
+     */
+    public function deleteCollection()
+    {
+        DB::transaction(function () {
+            $group = $this->collection->collection_group_id;
+
+            foreach ($this->collection->descendants()->get() as $descendant) {
+                $descendant->products()->detach();
+                $descendant->customerGroups()->detach();
+                $descendant->channels()->detach();
+                $descendant->urls()->delete();
+                $descendant->forceDelete();
+            }
+
+            $this->collection->products()->detach();
+            $this->collection->customerGroups()->detach();
+            $this->collection->channels()->detach();
+            $this->collection->urls()->delete();
+            $this->collection->forceDelete();
+
+            $this->notify(
+                __('adminhub::notifications.collections.deleted'),
+                'hub.collection-groups.show',
+                [
+                    'group' => $group,
+                ]
+            );
+        });
     }
 
     /**
