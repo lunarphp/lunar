@@ -107,7 +107,11 @@ class BuyXGetY
 
             $remainder = $rewardLine->quantity % $remainingRewardQty;
 
-            $qtyToAllocate = ($remainingRewardQty - $remainder) / $rewardLine->quantity;
+            $qtyToAllocate = floor(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+
+            if (! $qtyToAllocate) {
+                continue;
+            }
 
             $remainingRewardQty -= $qtyToAllocate;
 
