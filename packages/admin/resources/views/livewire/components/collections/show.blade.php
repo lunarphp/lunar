@@ -161,6 +161,50 @@
                 </div>
             </div>
 
+
+            <x-hub::modal.dialog wire:model="showCreateChildForm"
+                                 form="createChildCollection">
+                <x-slot name="title">
+                        {{ __('adminhub::catalogue.collections.create.child.title', [
+                            'parent' => $collection->translateAttribute('name'),
+                        ]) }}
+                </x-slot>
+
+                <x-slot name="content">
+                    <div class="space-y-4">
+                        <x-hub::input.group :label="__('adminhub::inputs.name')"
+                                            for="name"
+                                            :error="$errors->first('childCollection.name')"
+                                            required>
+                            <x-hub::input.text wire:model="childCollection.name"
+                                               :error="$errors->first('childCollection.name')" />
+                        </x-hub::input.group>
+
+                        @if ($this->slugIsRequired)
+                            <x-hub::input.group :label="__('adminhub::inputs.slug.label')"
+                                                for="slug"
+                                                :error="$errors->first('slug')"
+                                                required>
+                                <x-hub::input.text wire:model.lazy="slug"
+                                                   :error="$errors->first('slug')" />
+                            </x-hub::input.group>
+                        @endif
+                    </div>
+                </x-slot>
+
+                <x-slot name="footer">
+                    <x-hub::button type="button"
+                                   wire:click.prevent="$set('showCreateChildForm', false)"
+                                   theme="gray">
+                        {{ __('adminhub::global.cancel') }}
+                    </x-hub::button>
+
+                    <x-hub::button type="submit">
+                        {{ __('adminhub::catalogue.collections.create.btn') }}
+                    </x-hub::button>
+                </x-slot>
+            </x-hub::modal.dialog>
+
             <div class="shadow sm:rounded-md"
                  id="collections">
                 <div class="flex-col px-4 py-5 space-y-4 bg-white rounded sm:p-6">
@@ -168,6 +212,10 @@
                         <h3 class="text-lg font-medium leading-6 text-gray-900">
                             {{ __('adminhub::menu.collections') }}
                         </h3>
+                        
+                        <x-hub::button wire:click.prevent="$set('showCreateChildForm', true)">
+                            {{ __('adminhub::catalogue.collections.groups.node.add_child') }}
+                        </x-hub::button>
                     </header>
 
                     <div class="space-y-2">
