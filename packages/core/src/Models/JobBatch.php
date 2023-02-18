@@ -228,7 +228,7 @@ class JobBatch extends BaseModel
     {
         return (new AttributeCast(
             get: fn($value) => $this->toBatchDTO()->options['tags'] ?? [],
-        ))->shouldCache();
+        ));
     }
 
     /**
