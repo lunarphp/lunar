@@ -57,9 +57,7 @@ class DispatchPriceConversionOnPriceUpdate implements ShouldQueue
             ->where([
                 'priceable_id' => $this->savedPrice->priceable_id,
                 'priceable_type' => $this->savedPrice->priceable_type,
-            ])
-            ->whereNot([
-                'currency_id' => $baseCurrency->id,
+                ['currency_id', '<>', $baseCurrency->id],
             ])
             ->select([
                 'id          as quote_price_id',
@@ -107,7 +105,7 @@ class DispatchPriceConversionOnPriceUpdate implements ShouldQueue
 
         // associate the job with subject model
         JobBatch::find($batch->id)
-            ->subject()
+            ?->subject()
             ->associate($this->savedPrice)
             ->save();
     }

@@ -40,17 +40,17 @@ class ConvertPrices implements ShouldQueue
 
         // prepare price data to update
         // NOTE: we include priceable_id/priceable_type in data, but don't update them.
-        // if we don't include them, rdbms complains about not-null fields
+        // if we don't include them, rdbms complains about not-null fields during upsert
         foreach ($this->records->unique('quote_price_id') as $record) {
             /** @var Currency $quoteCurrency */
             $quoteCurrency = $record['quote_currency'];
 
-            $value = (int)bcmul($record['base_price'], $quoteCurrency->exchange_rate);
-            $newQuotePrice = new \Lunar\DataTypes\Price($value, $quoteCurrency);
+            $decimalPrice = bcmul($record['base_price'], $quoteCurrency->exchange_rate, $quoteCurrency->decimal_places);
+            $intPrice = bcmul($decimalPrice, 10 ** $quoteCurrency->decimal_places);
 
             $data[] = [
                 'id' => $record['quote_price_id'],
-                'price' => $newQuotePrice->value,
+                'price' => (int)$intPrice,
                 'priceable_id' => $record['priceable_id'],
                 'priceable_type' => $record['priceable_type'],
             ];
