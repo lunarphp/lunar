@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Lunar\Models\Currency;
 use Lunar\Models\JobBatch;
 use Lunar\Tests\Stubs\User as StubUser;
@@ -141,4 +142,17 @@ class JobBatchTest extends TestCase
         $this->assertEquals(JobBatch::STATUS_SUCCESSFUL, $jobBatch->status);
     }
 
+    /** @test */
+    public function job_batch_tags_accessor_is_correct()
+    {
+        Bus::batch([])
+            ->withOption('tags', ['tag 1', 'tag 2'])
+            ->dispatch();
+
+        $tags = JobBatch::first()->tags;
+
+        $this->assertIsArray($tags);
+        $this->assertContains('tag 1', $tags);
+        $this->assertContains('tag 2', $tags);
+    }
 }
