@@ -33,13 +33,7 @@ class PriceObserver
         }
 
         // we only interested in change of price in default currency
-        /*
-         * NOTE: we need some way to detect if "price" field has changed. so we can:
-         * if (!$savedPrice->wasChanged('price') || !$savedPrice->currency->default)
-         * but neither of these methods work as expected:
-         * $savedPrice->wasChanged('price') or $savedPrice->isDirty('price')
-         */
-        if (!$savedPrice->currency->default) {
+        if (!$savedPrice->currency->default || !$savedPrice->wasChanged('price')) {
             return;
         }
 
