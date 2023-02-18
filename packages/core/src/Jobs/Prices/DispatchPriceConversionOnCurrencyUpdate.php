@@ -95,7 +95,7 @@ class DispatchPriceConversionOnCurrencyUpdate implements ShouldQueue
             function ($records) use ($batch, $baseCurrency) {
                 $batch->add(new ConvertPrices(
                     collect($records)->map(function ($record) use ($baseCurrency) {
-                        $basePrice = new \Lunar\DataTypes\Price($record->base_price, $baseCurrency);
+                        $basePrice = new \Lunar\DataTypes\Price((int)$record->base_price, $baseCurrency);
                         return [
                             'base_price' => $basePrice->decimal,
                             'quote_currency' => $this->savedCurrency,
