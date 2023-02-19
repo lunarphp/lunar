@@ -45,7 +45,7 @@ abstract class AbstractDiscount extends Component
      * @var array
      */
     public Collection $selectedCollections;
-    
+
     /**
      * The products to restrict the coupon for.
      *
@@ -125,9 +125,6 @@ abstract class AbstractDiscount extends Component
                 return $this->mapProductToArray($limitation->purchasable);
             });
 
-        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand)) ?? collect();
-        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection)) ?? collect();
-        
         $this->selectedConditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
             ->pluck('purchasable_id')->values()->toArray();
@@ -233,7 +230,7 @@ abstract class AbstractDiscount extends Component
             ? $this->selectedCollections->merge($selectedCollections)
             : $selectedCollections;
     }
-    
+
     /**
      * Select products given an array of IDs
      *
@@ -379,7 +376,7 @@ abstract class AbstractDiscount extends Component
                 $this->selectedCollections->pluck('id')->toArray()
 
             );
-            
+
             $this->discount->purchasableLimitations()
                 ->whereNotIn('purchasable_id', $this->selectedProducts->pluck('id'))
                 ->delete();
@@ -488,7 +485,7 @@ abstract class AbstractDiscount extends Component
             'breadcrumb' => $collection->breadcrumb,
         ];
     }
-    
+
     /**
      * Return the data we need from a product
      *
