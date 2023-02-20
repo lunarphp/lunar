@@ -42,10 +42,10 @@ class SettingsMenu
      */
     protected function makeStoreSection(): void
     {
-        $storeSection = $this->slot->section('store')->name('Store');
+        $storeSection = $this->slot->section('store')->name(__('adminhub::menu.settings.store'));
 
         $storeSection->addItem(function (MenuLink $item) {
-            $item->name('Attributes')
+            $item->name(__('adminhub::menu.settings.attributes'))
                  ->handle('hub.attributes')
                  ->route('hub.attributes.index')
                  ->gate('settings:manage-attributes')
@@ -53,7 +53,7 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function (MenuLink $item) {
-            $item->name('Channels')
+            $item->name(__('adminhub::menu.settings.channels'))
                  ->handle('hub.channels')
                  ->route('hub.channels.index')
                  ->gate('settings:core')
@@ -61,7 +61,7 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function (MenuLink $item) {
-            $item->name('Currencies')
+            $item->name(__('adminhub::menu.settings.currencies'))
                  ->handle('hub.currencies')
                  ->route('hub.currencies.index')
                  ->gate('settings:core')
@@ -69,7 +69,7 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function (MenuLink $item) {
-            $item->name('Customer Groups')
+            $item->name(__('adminhub::menu.settings.customer-groups'))
                  ->handle('hub.customer-groups')
                  ->route('hub.customer-groups.index')
                  ->gate('settings:manage-staff')
@@ -77,7 +77,7 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function ($item) {
-            $item->name('Languages')
+            $item->name(__('adminhub::menu.settings.languages'))
                  ->handle('hub.languages')
                  ->route('hub.languages.index')
                  ->gate('settings:core')
@@ -85,7 +85,7 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function (MenuLink $item) {
-            $item->name('Tags')
+            $item->name(__('adminhub::menu.settings.tags'))
                  ->handle('hub.tags')
                  ->route('hub.tags.index')
                  ->gate('settings:core')
@@ -93,7 +93,7 @@ class SettingsMenu
         });
 
         $storeSection->addItem(function (MenuLink $item) {
-            $item->name('Taxes')
+            $item->name(__('adminhub::menu.settings.taxes'))
                 ->handle('hub.taxes')
                 ->route('hub.taxes.index')
                 ->gate('settings:core')
@@ -108,10 +108,10 @@ class SettingsMenu
      */
     protected function makeProductSection(): void
     {
-        $productSection = $this->slot->section('product')->name('Product');
+        $productSection = $this->slot->section('product')->name(__('adminhub::menu.settings.product'));
 
         $productSection->addItem(function (MenuLink $item) {
-            $item->name('Options')
+            $item->name(__('adminhub::menu.settings.options'))
                  ->handle('hub.product.options')
                  ->route('hub.product.options.index')
                  ->gate('settings:core')
@@ -129,7 +129,7 @@ class SettingsMenu
         $adminSection = $this->slot->section('admin')->name('Admin');
 
         $adminSection->addItem(function (MenuLink $item) {
-            $item->name('Activity Log')
+            $item->name(__('adminhub::menu.settings.activity-log'))
                  ->handle('hub.activity-log')
                  ->route('hub.activity-log.index')
                  ->gate('settings')
@@ -137,7 +137,7 @@ class SettingsMenu
         });
 
         $adminSection->addItem(function (MenuLink $item) {
-            $item->name('Addons')
+            $item->name(__('adminhub::menu.settings.addons'))
                  ->handle('hub.addons')
                  ->route('hub.addons.index')
                  ->gate('settings:core')
@@ -145,7 +145,7 @@ class SettingsMenu
         });
 
         $adminSection->addItem(function (MenuLink $item) {
-            $item->name('Staff')
+            $item->name(__('adminhub::menu.settings.staff'))
                  ->handle('hub.staff')
                  ->route('hub.staff.index')
                  ->gate('settings:manage-staff')

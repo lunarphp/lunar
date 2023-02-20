@@ -47,4 +47,20 @@ return [
     'dropdown-options' => 'Открытые опции',
     'open-sidebar' => 'Открыть боковую панель',
     'close-sidebar' => 'Закрыть боковую панель',
+    /**
+     * Settings menu items.
+     */
+    'settings.store' => 'Магазин',
+    'settings.attributes' => 'Атрибуты',
+    'settings.channels' => 'Каналы',
+    'settings.currencies' => 'Валюты',
+    'settings.customer-groups' => 'Группы клиентов',
+    'settings.languages' => 'Языки',
+    'settings.tags' => 'Тэги',
+    'settings.taxes' => 'Налоги',
+    'settings.product' => 'Продукт',
+    'settings.options' => 'Опции',
+    'settings.activity-log' => 'Журнал активности',
+    'settings.addons' => 'Аддоны',
+    'settings.staff' => 'Cотрудники',
 ];
