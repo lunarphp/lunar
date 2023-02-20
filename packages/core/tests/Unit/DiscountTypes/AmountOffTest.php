@@ -19,7 +19,7 @@ use Lunar\Tests\TestCase;
  * @group lunar.discounts
  * @group lunar.discounts.discounts
  */
-class DiscountTest extends TestCase
+class AmountOffTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -135,8 +135,15 @@ class DiscountTest extends TestCase
 
         $cart = $cart->calculate();
 
+        /**
+         * Cart has two lines.
+         * 1 x $10 / 10% off $9 / 20% tax = $1.8 / Total = 10.80
+         * 1 x $10 / 0% off $10 / 20% tax = $2 / Total = 12
+         * Cart total = $22.80
+         */
+
         $this->assertEquals(100, $cart->discountTotal->value);
-        $this->assertEquals(2100, $cart->total->value);
+        $this->assertEquals(2280, $cart->total->value);
     }
 
     /** @test */
@@ -235,13 +242,11 @@ class DiscountTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(100, $cart->discountTotal->value);
-        $this->assertEquals(2100, $cart->total->value);
+        $this->assertEquals(2280, $cart->total->value);
     }
 
     /**
      * @test
-     *
-     * @group thisdiscount
      */
     public function can_apply_fixed_amount_discount()
     {
@@ -302,12 +307,12 @@ class DiscountTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(1050, $cart->discountTotal->value);
-        $this->assertEquals(1350, $cart->total->value);
-        $this->assertEquals(400, $cart->taxTotal->value);
+        $this->assertEquals(1140, $cart->total->value);
+        $this->assertEquals(190, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
     }
 
-    /** @test */
+    /** <@test */
     public function can_apply_percentage_discount()
     {
         $customerGroup = CustomerGroup::getDefault();
@@ -369,8 +374,22 @@ class DiscountTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(100, $cart->discountTotal->value);
-        $this->assertEquals(200, $cart->taxTotal->value);
-        $this->assertEquals(1100, $cart->total->value);
+        $this->assertEquals(180, $cart->taxTotal->value);
+        $this->assertEquals(1080, $cart->total->value);
+
+        $cart->lines()->delete();
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 2,
+        ]);
+
+        $cart = $cart->refresh()->calculate();
+
+        $this->assertEquals(200, $cart->discountTotal->value);
+        $this->assertEquals(360, $cart->taxTotal->value);
+        $this->assertEquals(2160, $cart->total->value);
     }
 
     /**
@@ -433,8 +452,8 @@ class DiscountTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
-        $this->assertEquals(1400, $cart->total->value);
-        $this->assertEquals(400, $cart->taxTotal->value);
+        $this->assertEquals(1200, $cart->total->value);
+        $this->assertEquals(200, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
     }
 
@@ -566,8 +585,8 @@ class DiscountTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
-        $this->assertEquals(1400, $cart->total->value);
-        $this->assertEquals(400, $cart->taxTotal->value);
+        $this->assertEquals(1200, $cart->total->value);
+        $this->assertEquals(200, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
     }
 
@@ -639,6 +658,7 @@ class DiscountTest extends TestCase
 
     /**
      * @test
+     * @group thisone
      */
     public function can_apply_discount_with_min_spend()
     {
@@ -666,7 +686,7 @@ class DiscountTest extends TestCase
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasableA),
             'purchasable_id' => $purchasableA->id,
-            'quantity' => 20,
+            'quantity' => 10,
         ]);
 
         $discount = Discount::factory()->create([
@@ -702,9 +722,9 @@ class DiscountTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
-        $this->assertEquals(20_000, $cart->subTotal->value);
-        $this->assertEquals(23_000, $cart->total->value);
-        $this->assertEquals(4000, $cart->taxTotal->value);
+        $this->assertEquals(9000, $cart->subTotal->value);
+        $this->assertEquals(10800, $cart->total->value);
+        $this->assertEquals(1800, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
     }
 
@@ -809,7 +829,7 @@ class DiscountTest extends TestCase
         $cart->lines()->create([
             'purchasable_type' => get_class($purchasableA),
             'purchasable_id' => $purchasableA->id,
-            'quantity' => 20,
+            'quantity' => 10,
         ]);
 
         $discount = Discount::factory()->create([
@@ -846,9 +866,9 @@ class DiscountTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
-        $this->assertEquals(20_000, $cart->subTotal->value);
-        $this->assertEquals(23_000, $cart->total->value);
-        $this->assertEquals(4000, $cart->taxTotal->value);
+        $this->assertEquals(9000, $cart->subTotal->value);
+        $this->assertEquals(10800, $cart->total->value);
+        $this->assertEquals(1800, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
     }
 }
