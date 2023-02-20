@@ -2,7 +2,7 @@
     <header class="sm:flex sm:justify-between sm:items-center">
         <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
             {{ __('adminhub::settings.attributes.show.title', [
-                'type' => $this->type,
+                'type' => __("adminhub::types.{$this->type}"),
             ]) }}
         </h1>
 

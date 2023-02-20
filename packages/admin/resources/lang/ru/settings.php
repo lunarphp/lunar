@@ -110,7 +110,7 @@ return [
      * Attributes.
      */
     'attributes.index.title' => 'Атрибуты',
-    'attributes.show.title' => 'Редактирование атрибутов :type',
+    'attributes.show.title' => ':Type - редактирование атрибутов',
     'attributes.show.locked' => 'Этот атрибут требуется системой и поэтому заблокирован для редактирования.',
     'attributes.create.title' => 'Создать атрибут',
     'attributes.form.update_btn' => 'Обновить атрибут',
