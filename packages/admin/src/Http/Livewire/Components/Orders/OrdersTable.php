@@ -130,7 +130,7 @@ class OrdersTable extends Table
 
         $this->tableBuilder->addFilter(
             DateFilter::make('placed_at')
-                ->heading(__('adminhub::statuses.global.placed_at'))
+                ->heading(__('adminhub::global.placed_at'))
                 ->query(function ($filters, $query) {
                     $value = $filters->get('placed_at');
 
