@@ -2,6 +2,16 @@
     "name": "sly-soft-community/shop",
     "description": "Shop Monorepo",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "LunarPHP",
+            "homepage": "https://lunarphp.io/"
+        },
+        {
+            "name": "Lunar",
+            "homepage": "https://lunarphp.io/"
+        }
+    ],
     "require": {
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^6.1|^7.0",
