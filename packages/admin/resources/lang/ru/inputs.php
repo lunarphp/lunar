@@ -42,7 +42,7 @@ return [
     'compare_at_price_excl_tax.instructions' => 'Для отображения цены сравнения, например, РРЦ.',
     'unit_quantity.label' => 'Количество единиц',
     'unit_quantity.instructions' => 'Введите количество единиц, составляющих эту цену.',
-    'sku.label' => 'Артикул',
+    'sku.label' => 'SKU',
     'gtin.label' => 'GTIN',
     'mpn.label' => 'MPN',
     'ean.label' => 'UPC/EAN',
