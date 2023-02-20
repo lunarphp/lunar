@@ -312,6 +312,106 @@ class AmountOffTest extends TestCase
         $this->assertCount(1, $cart->discounts);
     }
 
+    /**
+     * @test
+     */
+    public function fixed_amount_discount_distributes_across_cart_lines()
+    {
+        $currency = Currency::getDefault();
+
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+        $purchasableB = ProductVariant::factory()->create();
+        $purchasableC = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id' => $purchasableB->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableC),
+            'priceable_id' => $purchasableC->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 1,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableC->id,
+            'quantity' => 1,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10,
+                ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $cart = $cart->calculate();
+
+        $firstLine = $cart->lines->first();
+        $secondLine = $cart->lines->skip(1)->first();
+        $lastLine = $cart->lines->last();
+
+        $this->assertEquals(334, $firstLine->discountTotal->value);
+        $this->assertEquals(333, $secondLine->discountTotal->value);
+        $this->assertEquals(333, $lastLine->discountTotal->value);
+    }
+
     /** <@test */
     public function can_apply_percentage_discount()
     {
