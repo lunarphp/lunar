@@ -49,7 +49,7 @@ class AttributesTable extends Table
         return AttributeManifest::getTypes()->map(function ($type, $index) {
             $groups = AttributeGroup::whereAttributableType($type)->get();
 
-            $typeBaseName = class_basename($type);
+            $typeBaseName = Str::lower(class_basename($type));
 
             return (object) [
                 'id' => Str::random(),

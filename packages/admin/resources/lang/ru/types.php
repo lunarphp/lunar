@@ -1,8 +1,8 @@
 <?php
 
 return [
-  'Customer' => 'Клиент',
-  'Collection' => 'Коллекция',
-  'ProductVariant' => 'Вариант Продукта',
-  'Product' => 'Продукт',
+  'customer' => 'Клиент',
+  'collection' => 'Коллекция',
+  'productvariant' => 'Вариант Продукта',
+  'product' => 'Продукт',
 ];
