@@ -127,5 +127,5 @@ return [
     'not_provided' => 'Не предоставлено',
     'billing_email' => 'Email для оплаты',
     'add_new' => 'Добавить новый',
-    'locales' => 'Локали',
+    'locales' => 'Локализация',
 ];
