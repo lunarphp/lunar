@@ -40,7 +40,7 @@
             <x-hub::icon ref="translate"
                          class="w-4 h-4" />
 
-            <span class="text-xs font-medium">Locales</span>
+            <span class="text-xs font-medium">{{ __('adminhub::global.locales') }}</span>
         </button>
     @endif
 </div>

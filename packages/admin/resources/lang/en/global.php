@@ -128,4 +128,5 @@ return [
     'billing_email' => 'Billing Email',
     'add_new' => 'Add new',
     'all_statuses' => 'All Statuses',
+    'locales' => 'Locales',
 ];
