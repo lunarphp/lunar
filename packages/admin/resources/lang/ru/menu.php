@@ -60,6 +60,7 @@ return [
     'settings.taxes' => 'Налоги',
     'settings.product' => 'Продукт',
     'settings.options' => 'Опции',
+    'settings.admin' => 'Администратор',
     'settings.activity-log' => 'Журнал активности',
     'settings.addons' => 'Аддоны',
     'settings.staff' => 'Cотрудники',

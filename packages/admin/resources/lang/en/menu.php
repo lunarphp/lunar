@@ -60,6 +60,7 @@ return [
     'settings.taxes' => 'Taxes',
     'settings.product' => 'Product',
     'settings.options' => 'Options',
+    'settings.admin' => 'Admin',
     'settings.activity-log' => 'Activity Log',
     'settings.addons' => 'Addons',
     'settings.staff' => 'Staff',

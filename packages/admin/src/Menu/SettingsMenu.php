@@ -126,7 +126,7 @@ class SettingsMenu
      */
     protected function makeAdminSection(): void
     {
-        $adminSection = $this->slot->section('admin')->name('Admin');
+        $adminSection = $this->slot->section('admin')->name(__('adminhub::menu.settings.admin'));
 
         $adminSection->addItem(function (MenuLink $item) {
             $item->name(__('adminhub::menu.settings.activity-log'))
