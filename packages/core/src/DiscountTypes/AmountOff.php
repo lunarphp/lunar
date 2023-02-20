@@ -94,7 +94,7 @@ class AmountOff extends AbstractDiscountType
         // enough left to apply the remaining too.
         if ($remaining) {
             $line = $cart->lines->first(function ($line) use ($remaining) {
-                return !!(($line->subTotal->value - $line->discountTotal->value) - $remaining);
+                return (bool) (($line->subTotal->value - $line->discountTotal->value) - $remaining);
             });
 
             $newDiscountTotal = $line->discountTotal->value + $remaining;

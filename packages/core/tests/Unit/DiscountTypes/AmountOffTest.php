@@ -141,7 +141,6 @@ class AmountOffTest extends TestCase
          * 1 x $10 / 0% off $10 / 20% tax = $2 / Total = 12
          * Cart total = $22.80
          */
-
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2280, $cart->total->value);
     }

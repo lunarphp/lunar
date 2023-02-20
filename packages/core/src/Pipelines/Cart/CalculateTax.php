@@ -24,7 +24,7 @@ class CalculateTax
 
             $unitQuantity = $cartLine->purchasable->getUnitQuantity();
 
-            if (!is_null($cartLine->subTotalDiscounted?->value)) {
+            if (! is_null($cartLine->subTotalDiscounted?->value)) {
                 $subTotal = $cartLine->subTotalDiscounted?->value;
             }
 

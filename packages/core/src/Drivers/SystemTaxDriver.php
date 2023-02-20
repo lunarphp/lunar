@@ -107,7 +107,6 @@ class SystemTaxDriver implements TaxDriver
      */
     public function getBreakdown($subTotal): TaxBreakdown
     {
-
         $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
         $taxAmounts = $taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();

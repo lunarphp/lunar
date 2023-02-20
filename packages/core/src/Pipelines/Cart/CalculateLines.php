@@ -5,7 +5,6 @@ namespace Lunar\Pipelines\Cart;
 use Closure;
 use Illuminate\Pipeline\Pipeline;
 use Lunar\DataTypes\Price;
-use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
 
 class CalculateLines
