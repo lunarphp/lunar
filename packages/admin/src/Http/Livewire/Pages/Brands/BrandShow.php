@@ -23,7 +23,7 @@ class BrandShow extends Component
     {
         return view('adminhub::livewire.pages.brands.show')
             ->layout('adminhub::layouts.app', [
-                'title' => 'Customers',
+                'title' => $this->brand->name,
             ]);
     }
 }
