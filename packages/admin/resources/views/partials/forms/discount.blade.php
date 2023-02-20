@@ -1,3 +1,13 @@
+<x-hub::layout.bottom-panel>
+    <div class="flex justify-end">
+        <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          {{ __(
+            $discount->id ? 'adminhub::components.discounts.save_btn' : 'adminhub::components.discounts.create_btn'
+          ) }}
+        </button>
+    </div>
+</x-hub::layout.bottom-panel>
+
 <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
     <div class="space-y-6 lg:flex-1">
         <div class="space-y-6">
@@ -52,13 +62,29 @@
                 @include('adminhub::partials.forms.discount.discount-type')
             </div>
 
-            <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
-              <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __(
-                  $discount->id ? 'adminhub::components.discounts.save_btn' : 'adminhub::components.discounts.create_btn'
-                ) }}
-              </button>
-            </div>
+            @if($discount->id)
+                <div class="space-y-4">
+                    <div class="bg-white border border-red-300 rounded shadow">
+                        <header class="px-6 py-4 text-red-700 bg-white border-b border-red-300 rounded-t">
+                            {{ __('adminhub::inputs.danger_zone.title') }}
+                        </header>
+                        <div class="p-6 space-y-4 text-sm">
+                            <div class="grid grid-cols-12 gap-4">
+                                <div class="col-span-12 md:col-span-6">
+                                    <strong>{{ __('adminhub::components.discounts.show.danger_zone.label') }}</strong>
+                                    <p class="text-xs text-gray-600">{{ __('adminhub::components.discounts.show.danger_zone.instructions') }}</p>
+                                </div>
+                                <div class="col-span-9 lg:col-span-4">
+                                    <x-hub::input.text type="email" wire:model="deleteConfirm" />
+                                </div>
+                                <div class="col-span-3 text-right lg:col-span-2">
+                                    <x-hub::button theme="danger" :disabled="!$this->canDelete" wire:click="delete" type="button">{{ __('adminhub::global.delete') }}</x-hub::button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

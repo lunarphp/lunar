@@ -23,6 +23,16 @@ use Lunar\Jobs\Products\Associations\Associate;
 use Lunar\Jobs\Products\Associations\Dissociate;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
+/**
+ * @property int $id
+ * @property ?int $brand_id
+ * @property int $product_type_id
+ * @property string $status
+ * @property array $attribute_data
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ */
 class Product extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
@@ -91,6 +101,7 @@ class Product extends BaseModel implements SpatieHasMedia
         'attribute_data',
         'product_type_id',
         'status',
+        'brand_id',
     ];
 
     /**

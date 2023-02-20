@@ -7,6 +7,14 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxRateFactory;
 
+/**
+ * @property int $id
+ * @property ?int $tax_zone_id
+ * @property bool $priority
+ * @property string $name
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class TaxRate extends BaseModel
 {
     use HasFactory;
