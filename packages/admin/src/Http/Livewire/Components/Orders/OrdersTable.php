@@ -68,7 +68,7 @@ class OrdersTable extends Table
                 )->mapWithKeys(fn ($status, $key) => [$key => $status['label']]);
 
                 return collect([
-                    null => 'All Statuses',
+                    null => __('adminhub::statuses.all_statuses'),
                 ])->merge($statuses);
             })->query(function ($filters, $query) {
                 $value = $filters->get('status');
@@ -130,7 +130,7 @@ class OrdersTable extends Table
 
         $this->tableBuilder->addFilter(
             DateFilter::make('placed_at')
-                ->heading('Placed at')
+                ->heading(__('adminhub::statuses.global.placed_at'))
                 ->query(function ($filters, $query) {
                     $value = $filters->get('placed_at');
 
