@@ -28,7 +28,7 @@ return [
     'delete' => 'Удалить',
     'restore' => 'Восстановить',
     'options' => 'Опции',
-    'sku' => 'Артикул',
+    'sku' => 'SKU',
     'unit_price_tax' => 'Цена за единицу с налогом',
     'unit_price_excl_tax' => 'Цена за единицу (без налога)',
     'stock_incoming' => 'Наличие (входящие)',
