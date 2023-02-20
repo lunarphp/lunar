@@ -47,12 +47,12 @@ class ProductsTable extends Table
         $this->tableBuilder->addFilter(
             SelectFilter::make('status')->options(function () {
                 $statuses = collect([
-                    'published' => 'Published',
-                    'draft' => 'Draft',
+                    'published' => __('adminhub::statuses.product.published'),
+                    'draft' => __('adminhub::statuses.product.draft'),
                 ]);
 
                 return collect([
-                    null => 'All Statuses',
+                    null => __('adminhub::statuses.all_statuses'),
                 ])->merge($statuses);
             })->query(function ($filters, $query) {
                 $value = $filters->get('status');
@@ -163,7 +163,7 @@ class ProductsTable extends Table
             'filters' => $this->filters,
         ]);
 
-        $this->notify('Search saved');
+        $this->notify(__('adminhub::notifications.saved_searches.saved'));
 
         $this->savedSearchName = null;
 

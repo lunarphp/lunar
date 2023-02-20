@@ -97,7 +97,7 @@ class OrdersTable extends Table
                 });
 
                 return collect([
-                    null => 'None',
+                    null => __('adminhub::statuses.none'),
                 ])->merge($tags);
             })->query(function ($filters, $query) {
                 $value = $filters->get('tags');
@@ -113,9 +113,9 @@ class OrdersTable extends Table
         $this->tableBuilder->addFilter(
             SelectFilter::make('new_returning')->options(function () {
                 return collect([
-                    null => 'Both',
-                    'new' => 'New',
-                    'returning' => 'Returning',
+                    null => __('adminhub::statuses.order.both'),
+                    'new' => __('adminhub::statuses.order.new'),
+                    'returning' => __('adminhub::statuses.order.returning'),
                 ]);
             })->query(function ($filters, $query) {
                 $value = $filters->get('new_returning');
@@ -199,7 +199,7 @@ class OrdersTable extends Table
             'filters' => $this->filters,
         ]);
 
-        $this->notify('Search saved');
+        $this->notify(__('adminhub::notifications.saved_searches.saved'));
 
         $this->savedSearchName = null;
 

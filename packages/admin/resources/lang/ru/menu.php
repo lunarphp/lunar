@@ -42,7 +42,7 @@ return [
     'images' => 'Изображения',
     'availability' => 'Доступность',
     'urls' => 'URL-адреса',
-    'products' => 'Продукция',
+    'products' => 'Продукты',
     'collections' => 'Дочерние коллекции',
     'dropdown-options' => 'Открытые опции',
     'open-sidebar' => 'Открыть боковую панель',
