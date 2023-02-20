@@ -113,8 +113,16 @@ class BuyXGetY
 
             $subTotal = $rewardLine->subTotal->value;
 
+            $discountTotal = $subTotal * $qtyToAllocate;
+
             $rewardLine->discountTotal = new Price(
-                $subTotal * $qtyToAllocate,
+                $discountTotal,
+                $cart->currency,
+                1
+            );
+
+            $rewardLine->subTotalDiscounted = new Price(
+                $subTotal - $discountTotal,
                 $cart->currency,
                 1
             );

@@ -82,21 +82,41 @@ class AmountOff extends AbstractDiscountType
                 $cart->currency,
                 1
             );
+
+            $line->subTotalDiscounted = new Price(
+                $line->subTotal->value - $amount,
+                $cart->currency,
+                1
+            );
         }
 
-        // dd($remaining);
+        // Do we have an amount left over? if so, grab the first line that has
+        // enough left to apply the remaining too.
+        if ($remaining) {
+            $line = $cart->lines->first(function ($line) use ($remaining) {
+                return !!(($line->subTotal->value - $line->discountTotal->value) - $remaining);
+            });
 
-//         $cart->cartDiscountAmount = new Price(
-//             $value,
-//             $currency,
-//             1
-//         );
-//
-//         if (! $cart->discounts) {
-//             $cart->discounts = collect();
-//         }
-//
-//         $cart->discounts->push($this);
+            $newDiscountTotal = $line->discountTotal->value + $remaining;
+
+            $line->discountTotal = new Price(
+                $newDiscountTotal,
+                $cart->currency,
+                1
+            );
+
+            $line->subTotalDiscounted = new Price(
+                $line->subTotal->value - $newDiscountTotal,
+                $cart->currency,
+                1
+            );
+        }
+
+        if (! $cart->discounts) {
+            $cart->discounts = collect();
+        }
+
+        $cart->discounts->push($this);
 
         return $cart;
     }
@@ -155,6 +175,12 @@ class AmountOff extends AbstractDiscountType
 
             $line->discountTotal = new Price(
                 $amount,
+                $cart->currency,
+                1
+            );
+
+            $line->subTotalDiscounted = new Price(
+                $subTotal - $amount,
                 $cart->currency,
                 1
             );
