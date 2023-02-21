@@ -208,7 +208,6 @@ class BuyXGetYTest extends TestCase
 
         $productA = Product::factory()->create();
         $productB = Product::factory()->create();
-        $productC = Product::factory()->create();
 
         $purchasableA = ProductVariant::factory()->create([
             'product_id' => $productA->id,

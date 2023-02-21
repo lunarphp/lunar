@@ -33,6 +33,18 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
+/**
+ * @property int $id
+ * @property ?int $user_id
+ * @property ?int $merged_id
+ * @property int $currency_id
+ * @property int $channel_id
+ * @property ?int $order_id
+ * @property ?string $coupon_code
+ * @property ?\Illuminate\Support\Carbon $completed_at
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Cart extends BaseModel
 {
     use HasFactory;
@@ -49,7 +61,6 @@ class Cart extends BaseModel
         'subTotal',
         'shippingTotal',
         'taxTotal',
-        'cartDiscountAmount',
         'discountTotal',
         'total',
         'taxBreakdown',
@@ -79,14 +90,6 @@ class Cart extends BaseModel
      * @var null|Price
      */
     public ?Price $taxTotal = null;
-
-    /**
-     * The cart discount amount.
-     * Cart-level discount (ie. not cart-line discounts).
-     *
-     * @var null|Price
-     */
-    public ?Price $cartDiscountAmount = null;
 
     /**
      * The discount total.

@@ -5,7 +5,7 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
@@ -376,7 +376,7 @@ class CreateOrderTest extends TestCase
         $cart->shippingAddress->shippingOption = $shippingOption;
 
         $discount = Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => '10OFF',
             'data' => [

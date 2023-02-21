@@ -15,6 +15,35 @@ use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ProductVariantFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property int $id
+ * @property int $product_id
+ * @property int $tax_class_id
+ * @property array $attribute_data
+ * @property ?string $tax_ref
+ * @property int $unit_quantity
+ * @property ?string $sku
+ * @property ?string $gtin
+ * @property ?string $mpn
+ * @property ?string $ean
+ * @property ?float $length_value
+ * @property ?string $length_unit
+ * @property ?float $width_value
+ * @property ?string $width_unit
+ * @property ?float $height_value
+ * @property ?string $height_unit
+ * @property ?float $weight_value
+ * @property ?string $weight_unit
+ * @property ?float $volume_value
+ * @property ?string $volume_unit
+ * @property bool $shippable
+ * @property int $stock
+ * @property int $backorder
+ * @property string $purchasable
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ */
 class ProductVariant extends BaseModel implements Purchasable
 {
     use HasFactory;

@@ -31,6 +31,12 @@ return [
             'mailers' => [],
             'notifications' => [],
         ],
+        'payment-offline' => [
+            'label' => 'Payment Offline',
+            'color' => '#0A81D7',
+            'mailers' => [],
+            'notifications' => [],
+        ],
         'payment-received' => [
             'label' => 'Payment Received',
             'color' => '#6a67ce',
