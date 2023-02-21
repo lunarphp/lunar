@@ -2,7 +2,6 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Settings\Attributes;
 
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
@@ -39,13 +38,13 @@ class AttributeGroupEditTest extends TestCase
         ]);
 
         Livewire::test(AttributeGroupEdit::class)
-            ->set('attributeGroup.name.' . Language::getDefault()->code, 'Some attribute group name')
+            ->set('attributeGroup.name.'.Language::getDefault()->code, 'Some attribute group name')
             ->set('attributableType', 'product_type')
             ->call('create');
 
         $this->assertDatabaseHas('lunar_attribute_groups', [
             'attributable_type' => 'product_type',
-            'name' => json_encode([Language::getDefault()->code => 'Some attribute group name'])
+            'name' => json_encode([Language::getDefault()->code => 'Some attribute group name']),
         ]);
     }
 
@@ -63,8 +62,8 @@ class AttributeGroupEditTest extends TestCase
         ]);
 
         Livewire::test(AttributeGroupEdit::class)
-            ->set('attributeGroup.name.' . Language::getDefault()->code, 'Some attribute group name')
-            ->set('attributeGroup.name.' . $secondaryLanguage->code, 'Some attribute group name, but in French')
+            ->set('attributeGroup.name.'.Language::getDefault()->code, 'Some attribute group name')
+            ->set('attributeGroup.name.'.$secondaryLanguage->code, 'Some attribute group name, but in French')
             ->set('attributableType', 'product_type')
             ->call('create');
 
@@ -73,7 +72,7 @@ class AttributeGroupEditTest extends TestCase
             'name' => json_encode([
                 Language::getDefault()->code => 'Some attribute group name',
                 $secondaryLanguage->code => 'Some attribute group name, but in French',
-            ])
+            ]),
         ]);
     }
 
@@ -91,16 +90,16 @@ class AttributeGroupEditTest extends TestCase
         ]);
 
         Livewire::test(AttributeGroupEdit::class)
-            ->set('attributeGroup.name.' . $secondaryLanguage->code, 'Some attribute group name, but in French')
+            ->set('attributeGroup.name.'.$secondaryLanguage->code, 'Some attribute group name, but in French')
             ->set('attributableType', 'product_type')
             ->call('create')
-            ->assertHasErrors('attributeGroup.name.' . Language::getDefault()->code);
+            ->assertHasErrors('attributeGroup.name.'.Language::getDefault()->code);
 
         $this->assertDatabaseMissing('lunar_attribute_groups', [
             'attributable_type' => 'product_type',
             'name' => json_encode([
                 $secondaryLanguage->code => 'Some attribute group name, but in French',
-            ])
+            ]),
         ]);
     }
 }

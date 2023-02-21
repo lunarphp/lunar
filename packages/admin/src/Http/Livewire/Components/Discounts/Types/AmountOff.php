@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Lunar\Models\Currency;
 
-class Discount extends AbstractDiscountType
+class AmountOff extends AbstractDiscountType
 {
     /**
      * {@ineheritDoc}.
@@ -94,7 +94,7 @@ class Discount extends AbstractDiscountType
      */
     public function render()
     {
-        return view('adminhub::livewire.components.discounts.types.discount')
+        return view('adminhub::livewire.components.discounts.types.amount-off')
             ->layout('adminhub::layouts.base');
     }
 }

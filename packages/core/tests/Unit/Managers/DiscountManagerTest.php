@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
-use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\Managers\DiscountManager;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
@@ -295,7 +295,7 @@ class DiscountManagerTest extends TestCase
         $manager = app(DiscountManagerInterface::class);
 
         Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => '10OFF',
             'data' => [

@@ -57,6 +57,7 @@ return [
             \Lunar\Pipelines\Cart\CalculateLines::class,
             \Lunar\Pipelines\Cart\ApplyShipping::class,
             \Lunar\Pipelines\Cart\ApplyDiscounts::class,
+            \Lunar\Pipelines\Cart\CalculateTax::class,
             \Lunar\Pipelines\Cart\Calculate::class,
         ],
         /*
