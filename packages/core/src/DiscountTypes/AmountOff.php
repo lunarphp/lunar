@@ -7,7 +7,7 @@ use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Collection;
 
-class Discount extends AbstractDiscountType
+class AmountOff extends AbstractDiscountType
 {
     /**
      * Return the name of the discount.
@@ -16,7 +16,7 @@ class Discount extends AbstractDiscountType
      */
     public function getName(): string
     {
-        return 'Discount';
+        return 'Amount off';
     }
 
     /**
@@ -64,11 +64,53 @@ class Discount extends AbstractDiscountType
             return $cart;
         }
 
-        $cart->cartDiscountAmount = new Price(
-            $value,
-            $currency,
-            1
-        );
+        $divisionalAmount = $value / $lines->count();
+        $roundedChunk = (int) (round($divisionalAmount, 2));
+
+        $remaining = $value;
+
+        foreach ($lines as $line) {
+            if ($line->subTotal->value < $roundedChunk) {
+                $amount = $roundedChunk - ($roundedChunk % $line->subTotal->value);
+            } else {
+                $amount = $roundedChunk;
+            }
+            $remaining -= $amount;
+
+            $line->discountTotal = new Price(
+                $amount,
+                $cart->currency,
+                1
+            );
+
+            $line->subTotalDiscounted = new Price(
+                $line->subTotal->value - $amount,
+                $cart->currency,
+                1
+            );
+        }
+
+        // Do we have an amount left over? if so, grab the first line that has
+        // enough left to apply the remaining too.
+        if ($remaining) {
+            $line = $cart->lines->first(function ($line) use ($remaining) {
+                return (bool) (($line->subTotal->value - $line->discountTotal->value) - $remaining);
+            });
+
+            $newDiscountTotal = $line->discountTotal->value + $remaining;
+
+            $line->discountTotal = new Price(
+                $newDiscountTotal,
+                $cart->currency,
+                1
+            );
+
+            $line->subTotalDiscounted = new Price(
+                $line->subTotal->value - $newDiscountTotal,
+                $cart->currency,
+                1
+            );
+        }
 
         if (! $cart->discounts) {
             $cart->discounts = collect();
@@ -133,6 +175,12 @@ class Discount extends AbstractDiscountType
 
             $line->discountTotal = new Price(
                 $amount,
+                $cart->currency,
+                1
+            );
+
+            $line->subTotalDiscounted = new Price(
+                $subTotal - $amount,
                 $cart->currency,
                 1
             );
