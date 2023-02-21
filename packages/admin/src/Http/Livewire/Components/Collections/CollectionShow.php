@@ -18,7 +18,6 @@ use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Attribute;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
-use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\Tag;
 
@@ -461,16 +460,6 @@ class CollectionShow extends Component
                 ]
             );
         });
-    }
-
-    /**
-     * Get the default language code.
-     *
-     * @return void
-     */
-    public function getDefaultLanguageProperty()
-    {
-        return Language::getDefault();
     }
 
     /**
