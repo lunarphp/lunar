@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Renamed `Discount` discount type to `AmountOff`
 - Fixed price discounts will now spread the amount across all eligible cart lines.
+- `cartDiscountAmount` property has been removed.
 
 ### Added
 
