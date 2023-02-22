@@ -158,6 +158,7 @@ return [
     'taxes.tax-zones.price_display.label' => 'Price Display',
     'taxes.tax-zones.price_display.excl_tax' => 'Exclude Tax',
     'taxes.tax-zones.price_display.incl_tax' => 'Include Tax',
+    'taxes.tax-zones.zone_type.countries.label' => 'Countries',
     'taxes.tax-zones.zone_type.countries' => 'Limit to countries',
     'taxes.tax-zones.zone_type.states' => 'Limit to states / provinces',
     'taxes.tax-zones.zone_type.postcodes' => 'Limit to postcodes',

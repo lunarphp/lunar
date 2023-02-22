@@ -1,4 +1,4 @@
-<x-hub::input.group label="Countries" for="type"  :error="$errors->first('selectedCountries')">
+<x-hub::input.group label="{{__('settings.taxes.tax-zones.zone_type.countries.label')}}" for="type"  :error="$errors->first('selectedCountries')">
   <div class="grid grid-cols-2 gap-4">
     <div class="border rounded">
       <div class="p-2 border-b shadow-sm">

@@ -158,6 +158,7 @@ return [
     'taxes.tax-zones.price_display.label' => 'Отображение цены',
     'taxes.tax-zones.price_display.excl_tax' => 'Без налогов',
     'taxes.tax-zones.price_display.incl_tax' => 'С налогами',
+    'taxes.tax-zones.zone_type.countries.label' => 'Страны',
     'taxes.tax-zones.zone_type.countries' => 'Ограничить по странам',
     'taxes.tax-zones.zone_type.states' => 'Ограничить по штатам/провинциям',
     'taxes.tax-zones.zone_type.postcodes' => 'Ограничить по почтовым индексам',

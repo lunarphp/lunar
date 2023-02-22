@@ -70,7 +70,7 @@
                     </x-hub::input.group>
                 </div>
 
-                <x-hub::input.group label="Type"
+                <x-hub::input.group label="{{__('adminhub::global.type')}}"
                                     for="type"
                                     :error="$errors->first('taxZone.zone_type')"
                                     required>
