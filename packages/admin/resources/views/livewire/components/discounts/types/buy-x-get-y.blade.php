@@ -110,7 +110,7 @@
             <x-hub::input.text type="number" wire:model="discount.data.reward_qty" />
         </x-hub::input.group>
 
-        <x-hub::input.group for="max_reward_qty" label="{{__(adminhub::components.discounts.buy_x_get_y.product_rewards.max_reward_qty.label)}}" :error="$errors->first('discount.data.max_reward_qty')" instructions="{{__('adminhub::components.discounts.buy_x_get_y.product_rewards.max_reward_qty.instructions')}}">
+        <x-hub::input.group for="max_reward_qty" label="{{__('adminhub::components.discounts.buy_x_get_y.product_rewards.max_reward_qty.label')}}" :error="$errors->first('discount.data.max_reward_qty')" instructions="{{__('adminhub::components.discounts.buy_x_get_y.product_rewards.max_reward_qty.instructions')}}">
             <x-hub::input.text type="number" wire:model="discount.data.max_reward_qty" />
         </x-hub::input.group>
     </div>
