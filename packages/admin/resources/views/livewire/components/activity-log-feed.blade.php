@@ -17,7 +17,7 @@
                     type="submit">
                 <div wire:loading.remove
                      wire:target="addComment">
-                    Add Comment
+                    {{ __('adminhub::partials.activity-log.btn.add_comment') }}
                 </div>
 
                 <div wire:loading

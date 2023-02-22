@@ -5,6 +5,7 @@ return [
      * Activity Log.
      */
     'activity-log.added_images.description' => 'Добавлено :count изображений',
+    'activity-log.btn.add_comment' => 'Добавить',
     'activity-log.system.system' => 'Система',
     'activity-log.update.updated' => 'Обновлено',
     'activity-log.create.created' => 'Создано',
