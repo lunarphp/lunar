@@ -280,6 +280,8 @@ return [
     'discounts.show.stop.label' => 'Stop other discounts applying after this one',
     'discounts.show.danger_zone.label' => 'Delete discount',
     'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
+    'discounts.percentage.title' => 'Percentage',
+    'discounts.fixed_amount.title' => 'Fixed Amount',
     /**
      * Model URLs component
      */

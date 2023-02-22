@@ -24,7 +24,7 @@
 
             <div class="bg-white p-4 shadow rounded">
                 <div class="grid grid-cols-2 gap-4 items-center">
-                    <x-hub::input.group label="{{__('adminhub::input.priority.label')}}" for="priority" instructions="{{__('adminhub::input.priority.instructions')}}">
+                    <x-hub::input.group label="{{__('adminhub::inputs.priority.label')}}" for="priority" instructions="{{__('adminhub::inputs.priority.instructions')}}">
                         <x-hub::input.select wire:model="discount.priority" id="priority">
                             <option value="1">{{__('adminhub::global.low')}}</option>
                             <option value="5">{{__('adminhub::global.medium')}}</option>

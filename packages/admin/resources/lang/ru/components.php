@@ -20,7 +20,7 @@ return [
     'products.option-creator.add_value_btn' => 'Добавить значение',
     'products.option-creator.create_option_btn' => 'Создать опцию',
     'products.option-creator.values_strapline' => 'Добавьте все различные возможные значения, которые доступны для данной опции продукта.',
-    'product-search.btn' => 'Добавить продукты',
+    'product-search.btn' => 'Добавить',
     'product-search.first_tab' => 'Поиск продуктов',
     'product-search.second_tab' => 'Выбранные продукты',
     'product-search.max_results_exceeded' => 'Показаны первые :max из :total товаров. Постарайтесь быть более конкретными в своем поиске.',
@@ -78,7 +78,7 @@ return [
     /**
      * Brand search.
      */
-    'brand-search.btn' => 'Добавить бренды',
+    'brand-search.btn' => 'Добавить',
     'brand-search.first_tab' => 'Поиск брендов',
     'brand-search.second_tab' => 'Выбранные бренды',
     'brand-search.max_results_exceeded' => 'Показано первые :max из :total брендов. Попробуйте уточнить поиск.',
@@ -280,6 +280,8 @@ return [
     'discounts.show.stop.label' => 'Остановить применение других скидок после этой',
     'discounts.show.danger_zone.label' => 'Удалить скидку',
     'discounts.show.danger_zone.instructions' => 'Введите название скидки для подтверждения удаления.',
+    'discounts.percentage.title' => 'Процент',
+    'discounts.fixed_amount.title' => 'Фиксированная сумма',
     /**
      * Model URLs component
      */

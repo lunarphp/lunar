@@ -9,7 +9,7 @@
                 'bg-blue-500 text-white font-medium' => empty($this->discount->data['fixed_value'])
             ])
         >
-            Percentage
+            {{__('adminhub::components.discounts.percentage.title')}}
         </button>
         <button
             wire:click="$set('discount.data.fixed_value', true)"
@@ -20,7 +20,7 @@
                 'bg-blue-500 text-white font-medium' => $this->discount->data['fixed_value'] ?? false
             ])
         >
-            Fixed amount
+            {{__('adminhub::components.discounts.fixed_amount.title')}}
         </button>
     </div>
 

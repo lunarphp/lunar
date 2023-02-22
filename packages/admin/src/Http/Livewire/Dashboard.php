@@ -205,7 +205,7 @@ class Dashboard extends Component
                     'data' => $thisPeriodMonths->toArray(),
                 ],
                 [
-                    'name' => __('adminhub::catalogue.dashboard.previous_period'),
+                    'name' => __('adminhub::catalogue.customer.dashboard.previous_period'),
                     'data' => $previousPeriodMonths->toArray(),
                 ],
             ],
