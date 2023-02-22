@@ -201,11 +201,11 @@ class Dashboard extends Component
             ],
             'series' => [
                 [
-                    'name' => 'This Period',
+                    'name' => __('adminhub::catalogue.customer.dashboard.this_period'),
                     'data' => $thisPeriodMonths->toArray(),
                 ],
                 [
-                    'name' => 'Previous Period',
+                    'name' => __('adminhub::catalogue.dashboard.previous_period'),
                     'data' => $previousPeriodMonths->toArray(),
                 ],
             ],
@@ -215,7 +215,7 @@ class Dashboard extends Component
             ],
             'yaxis' => [
                 'title' => [
-                    'text' => "Turnover {$this->defaultCurrency->code}",
+                    'text' => __('adminhub::catalogue.customer.dashboard.turnover') . $this->defaultCurrency->code,
                 ],
             ],
             'tooltip' => [

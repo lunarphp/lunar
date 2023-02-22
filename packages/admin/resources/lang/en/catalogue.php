@@ -109,6 +109,8 @@ return [
     'customer.dashboard.sales_performance' => 'Sales Performance',
     'customer.dashboard.customer_group_orders' => 'Customer Group Orders',
     'customer.dashboard.top_selling_products' => 'Top Selling Products',
+    'customer.dashboard.this_period' => 'This Period',
+    'customer.dashboard.previous_period' => 'Previous Period',
     /**
      * Customer Groups Editing.
      */

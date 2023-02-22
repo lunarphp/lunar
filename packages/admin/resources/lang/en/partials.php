@@ -86,6 +86,11 @@ return [
     /**
      * Discounts
      */
+    'discounts.discount_type.heading' => 'Discount Type',
+    'discounts.conditions.heading' => 'Conditions',
+    'discounts.coupon.heading' => 'Coupon',
+    'discounts.coupon.instructions' => 'Enter the coupon required for the discount to apply, if left blank it will apply automatically.',
+    'discounts.coupon.max_uses.instructions' => 'Leave blank for unlimited uses.',
     'discounts.limitations.heading' => 'Limitations',
     'discounts.limitations.by_collection' => 'Limit by collection',
     'discounts.limitations.by_brand' => 'Limit by brand',

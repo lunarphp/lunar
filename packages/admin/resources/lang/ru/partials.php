@@ -86,6 +86,11 @@ return [
     /**
      * Discounts
      */
+    'discounts.discount_type.heading' => 'Тип скидки',
+    'discounts.conditions.heading' => 'Условия',
+    'discounts.coupon.heading' => 'Купон',
+    'discounts.coupon.instructions' => 'Введите купон, необходимый для применения скидки, если оставить его пустым, он будет применен автоматически.',
+    'discounts.coupon.max_uses.instructions' => 'Оставьте пустым для неограниченного использования.',
     'discounts.limitations.heading' => 'Ограничения',
     'discounts.limitations.by_collection' => 'Ограничить по коллекции',
     'discounts.limitations.by_brand' => 'Ограничить по бренду',

@@ -109,6 +109,8 @@ return [
     'customer.dashboard.sales_performance' => 'Эффективность продаж',
     'customer.dashboard.customer_group_orders' => 'Заказы групп клиентов',
     'customer.dashboard.top_selling_products' => 'Самые продаваемые продукты',
+    'customer.dashboard.this_period' => 'Этот период',
+    'customer.dashboard.previous_period' => 'Предыдущий период',
     /**
      * Customer Groups Editing.
      */
