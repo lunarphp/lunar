@@ -14,7 +14,7 @@
             @if (!$this->hasChannelAvailability)
                 <div>
                     <x-hub::alert level="danger">
-                        {{__('adminhub::partials.discounts.no_channel_availability)}}
+                        {{__('adminhub::partials.discounts.no_channel_availability')}}
                     </x-hub::alert>
                 </div>
             @endif
