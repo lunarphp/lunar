@@ -61,7 +61,6 @@ class Cart extends BaseModel
         'subTotal',
         'shippingTotal',
         'taxTotal',
-        'cartDiscountAmount',
         'discountTotal',
         'total',
         'taxBreakdown',
@@ -91,14 +90,6 @@ class Cart extends BaseModel
      * @var null|Price
      */
     public ?Price $taxTotal = null;
-
-    /**
-     * The cart discount amount.
-     * Cart-level discount (ie. not cart-line discounts).
-     *
-     * @var null|Price
-     */
-    public ?Price $cartDiscountAmount = null;
 
     /**
      * The discount total.
