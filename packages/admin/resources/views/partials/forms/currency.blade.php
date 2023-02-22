@@ -56,7 +56,7 @@
       <div class="p-6 space-y-4 text-sm">
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-12 md:col-span-6">
-            <strong>{{ __('adminhub::settings.currencies.show.delete_title' }}</strong>
+            <strong>{{ __('adminhub::settings.currencies.show.delete_title') }}</strong>
             <p class="text-xs text-gray-600">{{ __('adminhub::settings.currencies.form.danger_zone.delete_strapline') }}</p>
           </div>
           <div class="col-span-9 lg:col-span-4">
