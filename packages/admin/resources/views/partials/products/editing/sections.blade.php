@@ -157,9 +157,9 @@
                             <div class="col-span-12 lg:col-span-8">
                                 <strong>
                                     @if($product->deleted_at)
-                                        {{ __('adminhub::catalogue.products.show.delete_title') }}
-                                    @else
                                         {{ __('adminhub::catalogue.products.show.restore_title') }}
+                                    @else
+                                        {{ __('adminhub::catalogue.products.show.delete_title') }}
                                     @endif
                                 </strong>
 

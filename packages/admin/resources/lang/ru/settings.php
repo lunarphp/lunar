@@ -74,6 +74,8 @@ return [
      * Languages show page.
      */
     'languages.show.title' => 'Редактирование языка',
+    'languages.show.delete_title' => 'Удалить язык',
+    'languages.form.danger_zone.delete_strapline' => 'Введите имя языка для удаления.',
     /**
      * Language form.
      */
@@ -90,6 +92,8 @@ return [
      * Currency show page.
      */
     'currencies.show.title' => 'Редактирование валюты',
+    'currencies.show.delete_title' => 'Удалить валюту',
+    'currencies.form.danger_zone.delete_strapline' => 'Введите код валюты для удаления.',
     /**
      * Currency create page.
      */

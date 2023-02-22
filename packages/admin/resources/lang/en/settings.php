@@ -66,6 +66,8 @@ return [
     'languages.index.title' => 'Languages',
     'languages.index.create_btn' => 'Create Language',
     'languages.index.table_row_action_text' => 'Edit language',
+    'languages.show.delete_title' => 'Delete language',
+    'languages.form.danger_zone.delete_strapline' => 'Enter the name of the language to delete.',
     /**
      * Languages create page.
      */
@@ -86,6 +88,8 @@ return [
     'currencies.index.title' => 'Currencies',
     'currencies.index.table_row_action_text' => 'Edit',
     'currencies.index.no_results' => 'You currently have no currencies in the system.',
+    'currencies.show.delete_title' => 'Delete currency',
+    'currencies.form.danger_zone.delete_strapline' => 'Enter the currency code to delete.',
     /**
      * Currency show page.
      */
