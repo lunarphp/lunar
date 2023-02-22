@@ -39,7 +39,7 @@
                 @foreach ($this->activityLog as $log)
                     <li class="relative py-8 ml-5">
                         <p class="ml-8 font-bold text-gray-900">
-                            {{ $log['date']->format('F jS, Y') }}
+                            {{ $log['date']->translatedFormat('jS F, Y') }}
                         </p>
 
                         <ul class="mt-4 space-y-6">
@@ -89,7 +89,7 @@
                                         </div>
 
                                         <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
-                                            {{ $item['log']->created_at->format('h:ia') }}
+                                            {{ $item['log']->created_at->translatedFormat('H:i') }}
                                         </time>
                                     </div>
                                 </li>
