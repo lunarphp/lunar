@@ -1,8 +1,9 @@
 <?php
 
 return [
-  'Customer' => 'Customer',
-  'Collection' => 'Collection',
-  'ProductVariant' => 'Product Variant',
-  'Product' => 'Product',
+  'discount' => 'Discount',
+  'customer' => 'Customer',
+  'collection' => 'Collection',
+  'productvariant' => 'Product Variant',
+  'product' => 'Product',
 ];
