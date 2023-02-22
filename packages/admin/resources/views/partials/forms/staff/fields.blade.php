@@ -65,7 +65,7 @@
                         @if($staff->deleted_at)
                             {{ __('adminhub::settings.staff.show.restore_title') }}
                         @else
-                            {{ __('adminhub::settings.staff.show.delete_title) }}
+                            {{ __('adminhub::settings.staff.show.delete_title') }}
                         @endif
                     </strong>
 
