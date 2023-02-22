@@ -5,7 +5,8 @@ return [
      * Activity Log.
      */
     'activity-log.added_images.description' => 'Added :count images',
-    'activity-log.btn.add_comment' => 'Add Comment',
+    'activity-log.btn.add_comment.label' => 'Add Comment',
+    'activity-log.btn.add_comment.placeholder' => 'Add Comment',
     'activity-log.system.system' => 'System',
     'activity-log.update.updated' => 'Updated',
     'activity-log.create.created' => 'Created',
