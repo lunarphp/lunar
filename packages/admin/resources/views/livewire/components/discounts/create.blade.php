@@ -4,7 +4,7 @@
             @if($discount->id)
                 {{ $discount->name }}
             @else
-                {{__('adminhub::components.discounts.create.title'}}
+                {{__('adminhub::components.discounts.create.title')}}
             @endif
         </h1>
     </header>
