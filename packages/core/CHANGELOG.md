@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2-RC2
+
+### Fixed
+
+- `brand_id` is now fillable on the `Product` model.
+- Brand URL should now generate automatically when created.
+- The Discount (AmountOff) type should reference the `purchasable` relation correctly.
+
+### Changed
+
+- Renamed `Discount` discount type to `AmountOff`
+- Fixed price discounts will now spread the amount across all eligible cart lines.
+- `cartDiscountAmount` property has been removed.
+
+### Added
+
+- Added `subTotalDiscounted` property to CartLine which shows the sub total with the discount.
+
 ## 0.2-RC1
 
 ### Fixed

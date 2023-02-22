@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Support\Str;
-use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 
@@ -23,7 +23,7 @@ class DiscountCreate extends AbstractDiscount
     {
         $this->discount = new Discount([
             'priority' => 1,
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'starts_at' => now()->startOfHour(),
             'data' => [],
         ]);

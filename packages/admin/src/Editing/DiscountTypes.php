@@ -2,15 +2,15 @@
 
 namespace Lunar\Hub\Editing;
 
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\DiscountTypes\Discount;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\AmountOff as TypesAmountOff;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY as TypesBuyXGetY;
-use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
 
 class DiscountTypes
 {
     protected $mapping = [
-        Discount::class => TypesDiscount::class,
+        AmountOff::class => TypesAmountOff::class,
         BuyXGetY::class => TypesBuyXGetY::class,
     ];
 

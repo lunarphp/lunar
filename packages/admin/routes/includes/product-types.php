@@ -9,6 +9,6 @@ Route::group([
     'middleware' => 'can:catalogue:manage-products',
 ], function () {
     Route::get('/', ProductTypeIndex::class)->name('hub.product-types.index');
-    Route::get('create', ProductTypeCreate::class)->name('hub.product-type.create');
-    Route::get('{productType}', ProductTypeShow::class)->name('hub.product-type.show');
+    Route::get('create', ProductTypeCreate::class)->name('hub.product-types.create');
+    Route::get('{productType}', ProductTypeShow::class)->name('hub.product-types.show');
 });

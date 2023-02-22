@@ -9,7 +9,7 @@ use Lunar\Hub\Tests\TestCase;
 /**
  * @group hub.menu
  */
-class MenuRegistryTest extends TestCase
+class MenuRegistrarTest extends TestCase
 {
     /** @test */
     public function can_fetch_class_from_container()
