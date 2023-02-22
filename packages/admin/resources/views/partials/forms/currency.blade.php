@@ -60,7 +60,7 @@
               'model' => __('adminhub::types.currency')
             ]) }}</strong>
             <p class="text-xs text-gray-600">{{ __('adminhub::inputs.danger_zone.instructions', [
-              'model' => 'currency',
+              'model' => __('adminhub::types.currency'),
               'attribute' => 'code',
             ]) }}</p>
           </div>

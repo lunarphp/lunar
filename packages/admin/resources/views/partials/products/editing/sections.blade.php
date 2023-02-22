@@ -157,9 +157,9 @@
                             <div class="col-span-12 lg:col-span-8">
                                 <strong>
                                     @if($product->deleted_at)
-                                        {{ __('adminhub::inputs.restore_zone.label', ['model' => __('adminhub::types.product')]) }}
+                                        {{ __('adminhub::catalogue.products.show.delete_title') }}
                                     @else
-                                        {{ __('adminhub::inputs.danger_zone.label', ['model' => __('adminhub::types.product')]) }}
+                                        {{ __('adminhub::catalogue.products.show.restore_title') }}
                                     @endif
                                 </strong>
 
