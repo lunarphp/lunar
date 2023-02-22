@@ -22,7 +22,7 @@ return [
     /**
      * Availability.
      */
-    'availability.heading' => 'Наличие',
+    'availability.heading' => 'Доступность',
     'availability.schedule_notice' => 'Когда вы устанавливаете доступность, этот :type не будет доступен для канала / группы клиентов, пока дата не пройдет и :type не будет активен.',
     'availability.channel_heading' => 'Каналы',
     'availability.channel_strapline' => 'Выберите каналы, на которых этот :type доступен.',

@@ -63,9 +63,9 @@
                 <div class="col-span-12 lg:col-span-8">
                     <strong>
                         @if($staff->deleted_at)
-                            {{ __('adminhub::inputs.restore_zone.label', ['model' => 'staff']) }}
+                            {{ __('adminhub::inputs.restore_zone.label', ['model' => __('adminhub::types.staff')]) }}
                         @else
-                            {{ __('adminhub::inputs.danger_zone.label', ['model' => 'staff']) }}
+                            {{ __('adminhub::inputs.danger_zone.label', ['model' => __('adminhub::types.staff'])}}
                         @endif
                     </strong>
 

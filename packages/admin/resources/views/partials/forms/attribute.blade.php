@@ -102,7 +102,7 @@
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-12 md:col-span-6">
             <strong>{{ __('adminhub::inputs.danger_zone.label', [
-              'model' => 'Attribute'
+              'model' => __('adminhub::types.attribute')
             ]) }}</strong>
             <p class="text-xs text-gray-600">{{ __('adminhub::inputs.danger_zone.instructions', [
               'model' => 'attribute',
