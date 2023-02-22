@@ -128,7 +128,7 @@
                     <div class="grid items-center grid-cols-2 gap-4">
                         <div>
                             <strong>
-                                {{ __('adminhub::inputs.danger_zone.label', ['model' => __('adminhub::types.productvariant') }}
+                                {{ __('adminhub::inputs.danger_zone.label', ['model' => __('adminhub::types.productvariant')]) }}
                             </strong>
                         </div>
 
