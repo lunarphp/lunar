@@ -7,7 +7,7 @@
         </header>
 
         <div class="grid grid-cols-2">
-            <x-hub::input.group for="type" label="{{__('adminhub::global.type')">
+            <x-hub::input.group for="type" label="{{__('adminhub::global.type')}}">
                 <x-hub::input.select wire:model="discount.type">
                 @foreach($this->discountTypes as $discountType)
                     <option value="{{ get_class($discountType) }}">
