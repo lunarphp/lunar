@@ -215,7 +215,7 @@ class Dashboard extends Component
             ],
             'yaxis' => [
                 'title' => [
-                    'text' => __('adminhub::catalogue.customer.dashboard.turnover') . $this->defaultCurrency->code,
+                    'text' => __('adminhub::catalogue.customer.dashboard.turnover') . " " . $this->defaultCurrency->code,
                 ],
             ],
             'tooltip' => [

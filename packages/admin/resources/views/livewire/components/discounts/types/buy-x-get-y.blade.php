@@ -3,8 +3,8 @@
 
     <header class="flex items-center justify-between">
         <div>
-            <strong>Qualify Products</strong>
-            <p class="text-sm text-gray-600">Select the products required for the discount to apply</p>
+            <strong>{{ __('adminhub::components.discounts.buy_x_get_y.qualify_products.title') }}</strong>
+            <p class="text-sm text-gray-600">{{ __('adminhub::components.discounts.buy_x_get_y.qualify_products.description') }}</p>
         </div>
         <div>
             @livewire('hub.components.product-search', [
@@ -18,12 +18,12 @@
     <div class="space-y-1">
         @if($errors->first('selectedConditions'))
             <x-hub::alert level="danger">
-                You must select at least 1 qualifying product.
+                {{ __('adminhub::components.discounts.buy_x_get_y.error.at_least_one') }}
             </x-hub::alert>
         @endif
         @if(!$this->purchasableConditions->count())
             <div class="text-sm text-gray-700 border p-4 rounded bg-gray-50">
-                No products currently selected.
+                {{ __('adminhub::components.discounts.buy_x_get_y.no_selected_products') }}
             </div>
         @endif
 
@@ -50,15 +50,15 @@
     </div>
 
     <div class="grid grid-cols-2">
-        <x-hub::input.group for="min_qty" :error="$errors->first('discount.data.min_qty')" label="Product Quantity" instructions="Set how many of the above products are required to qualify for a reward">
+        <x-hub::input.group for="min_qty" :error="$errors->first('discount.data.min_qty')" label="{{__('adminhub::components.discounts.buy_x_get_y.qualify_products.product_quantity.label')}}" instructions="{{__('adminhub::components.discounts.buy_x_get_y.qualify_products.product_quantity.instructions')}}">
             <x-hub::input.text type="number" id="min_qty" wire:model="discount.data.min_qty" />
         </x-hub::input.group>
     </div>
 
     <header class="flex items-center justify-between">
         <div>
-            <strong>Product Rewards</strong>
-            <p class="text-sm text-gray-600">Select which products will be discounted if they exist in the cart and the above conditions are met.</p>
+            <strong>{{ __('adminhub::components.discounts.buy_x_get_y.product_rewards.title') }}</strong>
+            <p class="text-sm text-gray-600">{{ __('adminhub::components.discounts.buy_x_get_y.product_rewards.description') }}</p>
         </div>
         <div>
             @livewire('hub.components.product-search', [
@@ -71,13 +71,13 @@
 
     @if($errors->first('selectedRewards'))
         <x-hub::alert level="danger">
-            You must select at least 1 qualifying product.
+            {{ __('adminhub::components.discounts.buy_x_get_y.error.at_least_one') }}
         </x-hub::alert>
     @endif
 
     @if(!$this->purchasableRewards->count())
         <div class="text-sm text-gray-600 border p-4 rounded bg-gray-50">
-            No products currently selected
+            {{ __('adminhub::components.discounts.buy_x_get_y.no_selected_products') }}
         </div>
     @endif
 
@@ -102,15 +102,15 @@
     </div>
 
     <x-hub::alert>
-        If one or more items are in the cart, the cheapest item will be discounted.
+        {{ __('adminhub::components.discounts.buy_x_get_y.product_rewards.notice') }}
     </x-hub::alert>
 
     <div class="grid grid-cols-2 gap-4">
-        <x-hub::input.group for="reward_qty" :error="$errors->first('discount.data.reward_qty')" label="No. of free items" instructions="How many of each item are discounted">
+        <x-hub::input.group for="reward_qty" :error="$errors->first('discount.data.reward_qty')" label="{{__('adminhub::components.discounts.buy_x_get_y.product_rewards.reward_qty.label')}}" instructions="{{__('adminhub::components.discounts.buy_x_get_y.product_rewards.reward_qty.instructions')}}">
             <x-hub::input.text type="number" wire:model="discount.data.reward_qty" />
         </x-hub::input.group>
 
-        <x-hub::input.group for="max_reward_qty" label="Maximum reward quantity" :error="$errors->first('discount.data.max_reward_qty')" instructions="The maximum amount of products which can be discounted, regardless of criteria.">
+        <x-hub::input.group for="max_reward_qty" label="{{__(adminhub::components.discounts.buy_x_get_y.product_rewards.max_reward_qty.label)}}" :error="$errors->first('discount.data.max_reward_qty')" instructions="{{__('adminhub::components.discounts.buy_x_get_y.product_rewards.max_reward_qty.instructions')}}">
             <x-hub::input.text type="number" wire:model="discount.data.max_reward_qty" />
         </x-hub::input.group>
     </div>

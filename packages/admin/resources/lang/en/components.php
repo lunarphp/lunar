@@ -282,6 +282,19 @@ return [
     'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
     'discounts.percentage.title' => 'Percentage',
     'discounts.fixed_amount.title' => 'Fixed Amount',
+    'discounts.buy_x_get_y.qualify_products.title' => 'Qualify Products',
+    'discounts.buy_x_get_y.qualify_products.description' => 'Select the products required for the discount to apply',
+    'discounts.buy_x_get_y.qualify_products.product_quantity.label' => 'Product Quantity',
+    'discounts.buy_x_get_y.qualify_products.product_quantity.instructions' => 'Set how many of the above products are required to qualify for a reward.',
+    'discounts.buy_x_get_y.product_rewards.title' => 'Product Rewards',
+    'discounts.buy_x_get_y.product_rewards.description' => 'Select which products will be discounted if they exist in the cart and the above conditions are met.',
+    'discounts.buy_x_get_y.product_rewards.notice' => 'If one or more items are in the cart, the cheapest item will be discounted.',
+    'discounts.buy_x_get_y.product_rewards.reward_qty.label' => 'No. of free items',
+    'discounts.buy_x_get_y.product_rewards.reward_qty.instructions' => 'How many of each item are discounted.',
+    'discounts.buy_x_get_y.product_rewards.max_reward_qty.label' => 'Maximum reward quantity',
+    'discounts.buy_x_get_y.product_rewards.max_reward_qty.instructions' => 'The maximum amount of products which can be discounted, regardless of criteria.',
+    'discounts.buy_x_get_y.error.at_least_one' => 'You must select at least 1 qualifying product.',
+    'discounts.buy_x_get_y.no_selected_products' => 'No products currently selected.',
     /**
      * Model URLs component
      */

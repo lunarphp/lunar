@@ -282,6 +282,19 @@ return [
     'discounts.show.danger_zone.instructions' => 'Введите название скидки для подтверждения удаления.',
     'discounts.percentage.title' => 'Процент',
     'discounts.fixed_amount.title' => 'Фиксированная сумма',
+    'discounts.buy_x_get_y.qualify_products.title' => 'Квалифицировать продукты',
+    'discounts.buy_x_get_y.qualify_products.description' => 'Выберите продукты, необходимые для применения скидки',
+    'discounts.buy_x_get_y.qualify_products.product_quantity.label' => 'Количество продуктов',
+    'discounts.buy_x_get_y.qualify_products.product_quantity.instructions' => 'Установите, какое количество вышеуказанных продуктов необходимо для получения вознаграждения.',
+    'discounts.buy_x_get_y.product_rewards.title' => 'Награды за продукты',
+    'discounts.buy_x_get_y.product_rewards.description' => 'Выберите, на какие товары будет предоставлена скидка, если они есть в корзине и выполняются вышеуказанные условия.',
+    'discounts.buy_x_get_y.product_rewards.notice' => 'Если в корзине находится один или несколько товаров, скидка будет предоставлена на самый дешевый товар.',
+    'discounts.buy_x_get_y.product_rewards.reward_qty.label' => 'Кол-во бесплатных товаров',
+    'discounts.buy_x_get_y.product_rewards.reward_qty.instructions' => 'Какое количество каждого товара подлежит скидке.',
+    'discounts.buy_x_get_y.product_rewards.max_reward_qty.label' => 'Максимальное количество вознаграждений',
+    'discounts.buy_x_get_y.product_rewards.max_reward_qty.instructions' => 'Максимальное количество товаров, на которые может быть сделана скидка, независимо от критериев.',
+    'discounts.buy_x_get_y.error.at_least_one' => 'Вы должны выбрать не менее 1 продукта, соответствующего требованиям.',
+    'discounts.buy_x_get_y.no_selected_products' => 'Нет выбранных продуктов.',
     /**
      * Model URLs component
      */
