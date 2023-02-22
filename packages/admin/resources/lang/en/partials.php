@@ -86,11 +86,14 @@ return [
     /**
      * Discounts
      */
+    'discounts.no_channel_availability' => 'This discount has no availability across channels',
     'discounts.discount_type.heading' => 'Discount Type',
     'discounts.conditions.heading' => 'Conditions',
     'discounts.coupon.heading' => 'Coupon',
     'discounts.coupon.instructions' => 'Enter the coupon required for the discount to apply, if left blank it will apply automatically.',
     'discounts.coupon.max_uses.instructions' => 'Leave blank for unlimited uses.',
+    'discounts.min_cart_amount.label' => 'Minimum cart amount',
+    'discounts.min_cart_amount.instructions' => 'The minimum cart sub total required for this discount to apply.',
     'discounts.limitations.heading' => 'Limitations',
     'discounts.limitations.by_collection' => 'Limit by collection',
     'discounts.limitations.by_brand' => 'Limit by brand',

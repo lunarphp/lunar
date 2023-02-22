@@ -86,11 +86,14 @@ return [
     /**
      * Discounts
      */
+    'discounts.no_channel_availability' => 'Эта скидка недоступна для всех каналов',
     'discounts.discount_type.heading' => 'Тип скидки',
     'discounts.conditions.heading' => 'Условия',
     'discounts.coupon.heading' => 'Купон',
     'discounts.coupon.instructions' => 'Введите купон, необходимый для применения скидки, если оставить его пустым, он будет применен автоматически.',
     'discounts.coupon.max_uses.instructions' => 'Оставьте пустым для неограниченного использования.',
+    'discounts.min_cart_amount.label' => 'Минимальная сумма корзины',
+    'discounts.min_cart_amount.instructions' => 'Минимальная сумма корзины, необходимая для применения этой скидки.',
     'discounts.limitations.heading' => 'Ограничения',
     'discounts.limitations.by_collection' => 'Ограничить по коллекции',
     'discounts.limitations.by_brand' => 'Ограничить по бренду',

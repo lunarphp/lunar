@@ -49,7 +49,7 @@ return [
      */
     'products.show.back_link_title' => 'Вернуться к списку продуктов',
     'products.show.save_btn' => 'Сохранить продукт',
-    'products.show.no_channel_availability' => 'Этот продукт не доступен по всем каналам.',
+    'products.show.no_channel_availability' => 'Этот продукт не доступен для всех каналов.',
     'products.show.delete_title' => 'Удалить продукт',
     'products.show.delete_strapline' => 'Это отправит продукт в корзину, вы сможете восстановить его позже',
     'products.show.restore_strapline' => 'Восстановите этот продукт, чтобы он стал доступен в вашем магазине.',

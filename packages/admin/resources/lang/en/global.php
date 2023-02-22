@@ -129,4 +129,7 @@ return [
     'add_new' => 'Add new',
     'all_statuses' => 'All Statuses',
     'locales' => 'Locales',
+    'low' => 'Low',
+    'medium' => 'Medium',
+    'high' => 'High',
 ];

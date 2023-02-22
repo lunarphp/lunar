@@ -10,15 +10,15 @@
             <div class="grid grid-cols-2 gap-4">
                 <x-hub::input.group
                     for="coupon"
-                    label={{ __('adminhub::partials.discounts.coupon.heading') }}
+                    label="{{__('adminhub::partials.discounts.coupon.heading')}}"
                     :error="$errors->first('discount.coupon')"
-                    instructions={{ __('adminhub::partials.discounts.coupon.instructions') }}
+                    instructions="{{__('adminhub::partials.discounts.coupon.instructions')}}"
                 >
                     <x-hub::input.text wire:model.defer="discount.coupon" id="discount" />
                 </x-hub::input.group>
 
                 <div>
-                    <x-hub::input.group for="max_uses" :error="$errors->first('discount.max_uses')" :label="__('adminhub::inputs.max_uses.label')" instructions={{ __('adminhub::partials.discounts.coupon.max_uses.instructions') }}>
+                    <x-hub::input.group for="max_uses" :error="$errors->first('discount.max_uses')" :label="__('adminhub::inputs.max_uses.label')" instructions="{{__('adminhub::partials.discounts.coupon.max_uses.instructions')}}">
                         <x-hub::input.text type="number" wire:model="discount.max_uses" />
                     </x-hub::input.group>
                 </div>
@@ -35,8 +35,8 @@
                           </select>
                     </header>
                     <x-hub::input.group
-                      label="Minimum cart amount"
-                      instructions="The minimum cart sub total required for this discount to apply"
+                      label="{{__('adminhub::partials.discounts.min_cart_amount.label')}}"
+                      instructions="{{__('adminhub::partials.discounts.min_cart_amount.instructions')}}"
                       for="basePrice"
                       :errors="$errors->get('minPrices.*.price')"
                     >

@@ -4,13 +4,13 @@
     <header>
       <h3 class="text-lg font-medium leading-6 text-gray-900">
         {{ __('adminhub::partials.availability.heading', [
-          'type' => __('adminhub::types.' . $type ?? 'product')
+          'type' => str()->lower(__('adminhub::types.' . ($type ?? 'product')))
         ]) }}
       </h3>
     </header>
     <x-hub::alert>
       {{ __('adminhub::partials.availability.schedule_notice', [
-        'type' => __('adminhub::types.' . $type ?? 'product')
+        'type' => str()->lower(__('adminhub::types.' . ($type ?? 'product')))
       ]) }}
     </x-hub::alert>
     <div class="space-y-4">
@@ -19,12 +19,12 @@
             <div>
               <h3 class="font-medium leading-6 text-gray-900 text-md">
                 {{ __('adminhub::partials.availability.channel_heading', [
-                  'type' => __('adminhub::types.' . $type ?? 'product')
+                  'type' => str()->lower(__('adminhub::types.' . ($type ?? 'product')))
                 ]) }}
               </h3>
               <p class="text-sm text-gray-500">
                 {{ __('adminhub::partials.availability.channel_strapline', [
-                  'type' => __('adminhub::types.' . $type ?? 'product')
+                  'type' => str()->lower(__('adminhub::types.' . ($type ?? 'product')))
                 ]) }}
               </p>
             </div>
@@ -42,7 +42,7 @@
               </h3>
               <p class="text-sm text-gray-500">
                 {{ __('adminhub::partials.availability.customer_groups.strapline', [
-                  'type' => __('adminhub::types.' . $type ?? 'product')
+                  'type' => str()->lower(__('adminhub::types.' . ($type ?? 'product')))
                 ]) }}
               </p>
             </div>
