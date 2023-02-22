@@ -83,6 +83,7 @@ return [
     'image-manager.file_format' => 'PNG, JPG, GIF до 10МБ',
     'image-manager.select_images' => 'Выберите изображения',
     'image-manager.select_images_btn' => 'Выберите изображения',
+    'image-manager.text.placeholder' => 'Введите текст',
     /**
      * Discounts
      */

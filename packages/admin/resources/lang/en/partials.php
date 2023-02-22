@@ -83,6 +83,7 @@ return [
     'image-manager.file_format' => 'PNG, JPG, GIF up to 10MB',
     'image-manager.select_images' => 'Select images',
     'image-manager.select_images_btn' => 'Select images',
+    'image-manager.text.placeholder' => 'Enter Alt. text',
     /**
      * Discounts
      */

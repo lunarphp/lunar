@@ -166,7 +166,7 @@
 
                             <div class="w-full">
                                 <x-hub::input.text wire:model="images.{{ $key }}.caption"
-                                                   placeholder="Enter Alt. text" />
+                                                   placeholder="{{__('adminhub::partials.image-manager.text.placeholder')}}" />
                             </div>
 
                             <div class="flex items-center ml-4 space-x-4">
