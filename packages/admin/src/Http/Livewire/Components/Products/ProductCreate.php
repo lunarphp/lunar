@@ -16,7 +16,7 @@ class ProductCreate extends AbstractProduct
      */
     public function mount()
     {
-        $this->product = new Product([
+        $this->product = Product::make([
             'status' => 'draft',
             'product_type_id' => ProductType::first()->id,
         ]);
