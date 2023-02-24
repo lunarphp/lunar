@@ -44,7 +44,7 @@ class ProductTypesTable extends Table
             TextColumn::make('name')->heading(
                 __('adminhub::tables.headings.name')
             )->url(function ($record) {
-                return route('hub.product-type.show', $record->id);
+                return route('hub.product-types.show', $record->id);
             }),
             TextColumn::make('product_count', function ($record) {
                 return $record->products_count;

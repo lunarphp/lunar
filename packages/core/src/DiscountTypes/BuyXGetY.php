@@ -107,14 +107,26 @@ class BuyXGetY
 
             $remainder = $rewardLine->quantity % $remainingRewardQty;
 
-            $qtyToAllocate = ($remainingRewardQty - $remainder) / $rewardLine->quantity;
+            $qtyToAllocate = (int) floor(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+
+            if (! $qtyToAllocate) {
+                continue;
+            }
 
             $remainingRewardQty -= $qtyToAllocate;
 
             $subTotal = $rewardLine->subTotal->value;
 
+            $discountTotal = $subTotal * $qtyToAllocate;
+
             $rewardLine->discountTotal = new Price(
-                $subTotal * $qtyToAllocate,
+                $discountTotal,
+                $cart->currency,
+                1
+            );
+
+            $rewardLine->subTotalDiscounted = new Price(
+                $subTotal - $discountTotal,
                 $cart->currency,
                 1
             );

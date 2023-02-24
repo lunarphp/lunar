@@ -55,7 +55,7 @@ trait WithAttributes
     /**
      * Parse the attributes into the correct collection format.
      *
-     * @param \Illuminate\Support\Collection $attributes
+     * @param  \Illuminate\Support\Collection  $attributes
      * @return \Illuminate\Support\Collection
      */
     protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
@@ -64,7 +64,7 @@ trait WithAttributes
             return ! class_exists($attribute->type);
         })->mapWithKeys(function ($attribute) use ($key, $existingData) {
             $data = $existingData ?
-                $existingData->first(fn($value, $handle) => $handle == $attribute->handle)
+                $existingData->first(fn ($value, $handle) => $handle == $attribute->handle)
                 : null;
 
             $value = $data ? $data->getValue() : null;
@@ -73,7 +73,7 @@ trait WithAttributes
                 $value = $this->prepareTranslatedText($value);
             }
 
-            $reference = 'a_' . $attribute->id;
+            $reference = 'a_'.$attribute->id;
 
             return [
                 $reference => [
@@ -91,7 +91,7 @@ trait WithAttributes
                     'view' => app()->make($attribute->type)->getView(),
                     'validation' => $attribute->validation_rules,
                     'data' => $value,
-                ]
+                ],
             ];
         });
     }
@@ -105,7 +105,7 @@ trait WithAttributes
             ->get()->map(function ($group) {
                 return [
                     'model' => $group,
-                    'fields' => $this->attributeMapping->filter(fn($att) => $att['group_id'] == $group->id),
+                    'fields' => $this->attributeMapping->filter(fn ($att) => $att['group_id'] == $group->id),
                 ];
             });
     }
@@ -138,7 +138,7 @@ trait WithAttributes
     /**
      * Map translated values into field types.
      *
-     * @param array $data
+     * @param  array  $data
      * @return \Lunar\FieldTypes\TranslatedText
      */
     protected function mapTranslatedText($data)
@@ -154,7 +154,7 @@ trait WithAttributes
     /**
      * Prepare translated text field for Livewire modeling.
      *
-     * @param string|array $value
+     * @param  string|array  $value
      * @return array
      */
     protected function prepareTranslatedText($value)
@@ -204,9 +204,9 @@ trait WithAttributes
                     }
                     $rules["{$attribute['signature']}.{$language->code}"] = $validationRules;
                 }
+
                 continue;
             }
-
 
             if ($isRequired) {
                 $validation = array_merge($validation, ['required']);
@@ -214,13 +214,14 @@ trait WithAttributes
 
             if ($attribute['type'] == Number::class) {
                 $validation = array_merge($validation, [
-                    'numeric' . ($attribute['configuration']['min'] ? '|min:' . $attribute['configuration']['min'] : ''),
-                    'numeric' . ($attribute['configuration']['max'] ? '|max:' . $attribute['configuration']['max'] : ''),
+                    'numeric'.($attribute['configuration']['min'] ? '|min:'.$attribute['configuration']['min'] : ''),
+                    'numeric'.($attribute['configuration']['max'] ? '|max:'.$attribute['configuration']['max'] : ''),
                 ]);
             }
 
             $rules[$field] = implode('|', $validation);
         }
+
         return $rules;
     }
 
@@ -250,7 +251,7 @@ trait WithAttributes
     /**
      * Handle attributes updated event.
      *
-     * @param array $event
+     * @param  array  $event
      * @return void
      */
     public function updatedAttributes($event)
