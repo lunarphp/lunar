@@ -228,5 +228,5 @@ return [
      * Taxes.
      */
     'taxes.zones.tab' => 'Зоны',
-    'taxesl.classes.tab' => 'Классы',
+    'taxes.classes.tab' => 'Классы',
 ];
