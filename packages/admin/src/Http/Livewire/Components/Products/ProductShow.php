@@ -32,7 +32,7 @@ class ProductShow extends AbstractProduct
             }
         }
 
-        $this->options = ProductOption::orderBy('position')->findMany(array_keys($selectedOptions))->collect();
+        $this->options = ProductOption::orderBy('position')->findMany(array_keys($selectedOptions));
 
         $this->optionValues = collect($selectedOptions)->collapse()->pluck('id')->unique()->values()->toArray();
 
