@@ -56,6 +56,8 @@ class ProductShow extends AbstractProduct
                             ];
                         })->values(),
                     'basePrices' => $this->mapBasePrices($variant->prices),
+                    'customerGroupPrices' => $this->mapCustomerGroupPrices($variant->prices),
+                    'showCustomerGroupPrices' => false,
                     'stock' => $variant->stock,
                     'backorder' => $variant->backorder,
                     'options' => $optionValues,
@@ -63,6 +65,22 @@ class ProductShow extends AbstractProduct
                 ],
                 collect(['sku', 'gtin', 'mpn', 'ean'])->mapWithKeys(fn ($identifier) => [$identifier => @$variant->{$identifier}])->toArray(),
             );
+
+            if (blank($this->variants[$key]['customerGroupPrices'])) {
+                $this->variants[$key]['customerGroupPrices'] = collect($this->customerGroups)->mapWithKeys(function ($group) use ($key) {
+                    return [
+                        $group->id => $this->variants[$key]['basePrices']->mapWithKeys(function ($price, $currency) use ($group) {
+                            return [
+                                $currency => [
+                                    'price' => $price['price'],
+                                    'currency_id' => $price['currency_id'],
+                                    'customer_group_id' => $group->id,
+                                ],
+                            ];
+                        })->toArray(),
+                    ];
+                })->toArray();
+            }
         }
 
         $this->syncAvailability();

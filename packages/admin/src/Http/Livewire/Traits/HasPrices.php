@@ -268,7 +268,7 @@ trait HasPrices
      * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
-    private function mapCustomerGroupPrices(Collection $prices)
+    protected function mapCustomerGroupPrices(Collection $prices)
     {
         return $prices->filter(fn ($price) => (bool) $price->customer_group_id)
             ->groupBy('customer_group_id')

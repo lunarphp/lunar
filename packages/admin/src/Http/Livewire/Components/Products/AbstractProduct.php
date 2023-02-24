@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
 use Lunar\Hub\Actions\Pricing\UpdatePrices;
 use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
@@ -388,11 +389,11 @@ abstract class AbstractProduct extends Component
             ->filter(fn ($identifier) => config("lunar-hub.products.{$identifier}.required", false));
 
         $priceRules = collect($this->hasPriceValidationRules())
-            ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'))
+            ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices') || Str::of($key)->startsWith('customerGroupPrices'))
             ->toArray();
 
         $priceMessages = collect($this->hasPriceValidationMessages())
-            ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices'));
+            ->filter(fn ($_, $key) => Str::of($key)->startsWith('basePrices') || Str::of($key)->startsWith('customerGroupPrices'));
 
         $priceValidationMessages = [];
         $rules = [];
@@ -554,6 +555,13 @@ abstract class AbstractProduct extends Component
                         }
 
                         app(UpdatePrices::class)->execute($variant, collect($variantData['basePrices']));
+
+                        DB::transaction(function () use ($variant, $variantData) {
+                            app(UpdateCustomerGroupPricing::class)->execute(
+                                $variant,
+                                collect($variantData['customerGroupPrices'])
+                            );
+                        });
 
                         $variantsArr[] = $variant->id;
                     }
@@ -729,6 +737,20 @@ abstract class AbstractProduct extends Component
 
                         return [$currency => $price];
                     })->toArray(),
+                'customerGroupPrices' => collect($this->customerGroups)->mapWithKeys(function ($group) {
+                    return [
+                        $group->id => collect($this->customerGroupPrices[$group->id] ?? $this->basePrices)->mapWithKeys(function ($price, $currency) use ($group) {
+                            return [
+                                $currency => [
+                                    'price' => $price['price'],
+                                    'currency_id' => $price['currency_id'],
+                                    'customer_group_id' => $group->id,
+                                ],
+                            ];
+                        })->toArray(),
+                    ];
+                })->toArray(),
+                'showCustomerGroupPrices' => false,
                 'stock' => 0,
                 'backorder' => 0,
                 'options' => $variant,

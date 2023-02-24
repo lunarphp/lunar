@@ -44,21 +44,65 @@
                             @endforeach
                         </div>
     
-                        <x-hub::input.group
-                            :label="__('adminhub::inputs.base_price_excl_tax.label')"
-                            :instructions="__('adminhub::inputs.base_price_excl_tax.instructions')"
-                            :for="'basePrices'.$key"
-                            :errors="$errors->get('variants.'.$key.'.basePrices.*.price')"
-                            required
-                        >
-                            <x-hub::input.price
-                            wire:model="variants.{{ $key }}.basePrices.{{ $this->currency->code }}.price"
-                            :error="$errors->first('variants.'.$key.'.basePrices.'.$this->currency->code.'.price')"
-                            :currencyCode="$this->currency->code"
-                            :id="'basePrices'.$key"
-                            required
-                            />
-                        </x-hub::input.group>
+                        <div class="grid gap-2">
+                            <x-hub::input.group
+                                :label="__('adminhub::inputs.base_price_excl_tax.label')"
+                                :instructions="__('adminhub::inputs.base_price_excl_tax.instructions')"
+                                :for="'basePrices'.$key"
+                                :errors="$errors->get('variants.'.$key.'.basePrices.*.price')"
+                                required
+                            >
+                                <x-hub::input.price
+                                wire:model="variants.{{ $key }}.basePrices.{{ $this->currency->code }}.price"
+                                :error="$errors->first('variants.'.$key.'.basePrices.'.$this->currency->code.'.price')"
+                                :currencyCode="$this->currency->code"
+                                :id="'basePrices'.$key"
+                                required
+                                />
+                            </x-hub::input.group>
+
+                            <div x-data="{ expand: false }">
+                                <x-hub::input.group
+                                    :label="__('adminhub::partials.pricing.customer_groups.title')"
+                                    for=""
+                                >
+                                    <x-slot name="labelPrefix">
+                                        <button x-cloak
+                                                x-on:click.prevent="expand = !expand"
+                                                class="mr-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 bg-white rounded border border-gray-200 p-1">
+                                            <span :class="{ 'rotate-90': expand }"
+                                                class="block transition">
+                                                <x-hub::icon ref="chevron-right"
+                                                            class="w-3 h-3" />
+                                            </span>
+                                        </button>
+                                    </x-slot>
+                                
+                                    <div class="mt-2 bg-gray-100/60 border border-gray-200 p-2 rounded-lg" x-show="expand" x-transition>
+                                        @foreach($this->customerGroups as $group)
+                                            <div wire:key="variant_{{ $key }}_group_price_{{ $group->id }}">
+                                                <div class="grid items-center grid-cols-2 gap-4">
+                                                    <span class="text-sm text-gray-700">{{ $group->name }}</span>
+                                                    <x-hub::input.group
+                                                        :label="null"
+                                                        for="customerGroupPrices"
+                                                        :errors="$errors->get('variants.'.$key.'.customerGroupPrices.'.$group->id.'.*.price')"
+                                                        :error-icon="false"
+                                                    >
+                                                        <x-hub::input.price
+                                                            wire:model="variants.{{ $key }}.customerGroupPrices.{{ $group->id }}.{{ $this->currency->code }}.price"
+                                                            :currencyCode="$this->currency->code"
+                                                            :error="$errors->first('variants.'.$key.'.customerGroupPrices.'.$group->id.'.'.$this->currency->code.'.price')"
+                                                            :error-icon="false"
+                                                        />
+                                                    </x-hub::input.group>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </x-hub::input.group>
+                            </div>
+                        </div>
                         
                         <x-hub::input.group :label="__('adminhub::inputs.stock.label')" :for="'stock'.$key" :error="$errors->first('variants.'.$key.'.stock')">
                             <x-hub::input.text type="number" wire:model="variants.{{ $key }}.stock" :id="'stock'.$key" :error="$errors->first('variants.'.$key.'.stock')" />
