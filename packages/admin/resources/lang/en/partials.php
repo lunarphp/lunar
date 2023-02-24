@@ -224,4 +224,9 @@ return [
     'orders.transactions.capture' => 'Captured',
     'orders.transactions.intent' => 'Intent',
     'orders.transactions.refund' => 'Refunded',
+    /**
+     * Taxes.
+     */
+    'taxes.zones.tab' => 'Tax Zones',
+    'taxesl.classes.tab' => 'Tax Classes',
 ];

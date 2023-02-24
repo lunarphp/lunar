@@ -224,4 +224,9 @@ return [
     'orders.transactions.capture' => 'Захвачено',
     'orders.transactions.intent' => 'Намерение',
     'orders.transactions.refund' => 'Возвращено',
+    /**
+     * Taxes.
+     */
+    'taxes.zones.tab' => 'Зоны',
+    'taxesl.classes.tab' => 'Классы',
 ];
