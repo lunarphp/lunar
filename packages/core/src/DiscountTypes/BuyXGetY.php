@@ -32,7 +32,7 @@ class BuyXGetY
      */
     public function getName(): string
     {
-        return 'Buy X Get Y';
+        return __('lunar::discounts.buy_x_get_y.name');
     }
 
     /**

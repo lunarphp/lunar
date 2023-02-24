@@ -16,7 +16,7 @@ class AmountOff extends AbstractDiscountType
      */
     public function getName(): string
     {
-        return 'Amount off';
+        return __('lunar::discounts.amount_off.name');
     }
 
     /**
