@@ -244,6 +244,12 @@ abstract class AbstractProduct extends Component
             'variant.volume_value' => 'numeric|nullable',
             'variant.volume_unit' => 'string|nullable',
             'variant.shippable' => 'boolean|nullable',
+            'variant.stock' => 'numeric|max:10000000',
+            'variant.backorder' => 'numeric|max:10000000',
+            'variant.purchasable' => 'string|required',
+            'variant.tax_class_id' => 'required',
+            'variant.tax_ref' => 'nullable|string|max:255',
+            'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
         ];
 
         if (config('lunar-hub.products.require_brand', true)) {
@@ -272,12 +278,6 @@ abstract class AbstractProduct extends Component
                         'string',
                         'max:255',
                     ], $this->variant),
-                    'variant.stock' => 'numeric|max:10000000',
-                    'variant.backorder' => 'numeric|max:10000000',
-                    'variant.purchasable' => 'string|required',
-                    'variant.tax_class_id' => 'required',
-                    'variant.tax_ref' => 'nullable|string|max:255',
-                    'variant.unit_quantity' => 'required|numeric|min:1|max:10000000',
                 ]
             );
         } else {
@@ -447,9 +447,9 @@ abstract class AbstractProduct extends Component
 
         $isNew = ! $this->product->id;
 
-        $hasVariants = (bool) count($this->variants);
+        DB::transaction(function () use ($isNew) {
+            $hasVariants = $this->getVariantsCount() > 1;
 
-        DB::transaction(function () use ($isNew, $hasVariants) {
             $data = $this->prepareAttributeData();
             $variantData = $this->prepareAttributeData($this->variantAttributes);
 
@@ -465,7 +465,7 @@ abstract class AbstractProduct extends Component
 
             $this->product->save();
 
-            if (($this->getVariantsCount() <= 1) || $isNew) {
+            if (! $hasVariants || $isNew) {
                 if (! $this->variant->product_id) {
                     $this->variant->product_id = $this->product->id;
                 }
@@ -487,7 +487,7 @@ abstract class AbstractProduct extends Component
             }
 
             // We generating variants?
-            $generateVariants = (bool) count($this->optionValues) && ! $this->variantsDisabled;
+            $generateVariants = count($this->optionValues) && ! $this->variantsDisabled;
 
             if (! $this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
@@ -502,9 +502,11 @@ abstract class AbstractProduct extends Component
                         $variant->forceDelete();
                     }
                 });
+
+                $variantToKeep->values()->detach();
             }
 
-            if ($generateVariants && $hasVariants) {
+            if ($generateVariants) {
                 $baseVariant = $this->variant;
 
                 $variantsArr = DB::transaction(function () use ($baseVariant) {
@@ -524,8 +526,6 @@ abstract class AbstractProduct extends Component
                             $variant = ProductVariant::find($variantData['id']);
 
                             $variant->update(collect($variantData)->only($variantFields)->toArray());
-
-                            app(UpdatePrices::class)->execute($variant, collect($variantData['basePrices']));
                         } else {
                             $variant = new ProductVariant(collect($variantData)->only($variantFields)->toArray());
 
@@ -550,10 +550,10 @@ abstract class AbstractProduct extends Component
 
                             $variant->values()->attach($variantData['options']);
 
-                            app(UpdatePrices::class)->execute($variant, collect($variantData['basePrices']));
-
                             $this->variants[$variantKey]['id'] = $variant->id;
                         }
+
+                        app(UpdatePrices::class)->execute($variant, collect($variantData['basePrices']));
 
                         $variantsArr[] = $variant->id;
                     }
@@ -573,7 +573,7 @@ abstract class AbstractProduct extends Component
                 }
             }
 
-            if (! $generateVariants && $this->product->variants->count() <= 1 && ! $isNew) {
+            if (! $generateVariants && $this->getVariantsCount() <= 1 && ! $isNew) {
                 // Only save pricing if we're not generating new variants.
                 $this->savePricing();
             }
@@ -722,7 +722,13 @@ abstract class AbstractProduct extends Component
                             'value' => $selectedOptionValueNames[$optionId][$valueId],
                         ];
                     })->values(),
-                'basePrices' => $this->basePrices, // on Edit, this will get the first variant's price, is this a bug or 'feature' to get same price?
+                // on Edit, this will get the first variant's price, is this a bug or 'feature' to get same price?
+                'basePrices' => collect($this->basePrices)
+                    ->mapWithKeys(function ($price, $currency) {
+                        $price['id'] = null;
+
+                        return [$currency => $price];
+                    })->toArray(),
                 'stock' => 0,
                 'backorder' => 0,
                 'options' => $variant,

@@ -35,9 +35,11 @@
           'openPanel' => $this->getVariantsCount() <= 1
         ])
         
-        <div class="pt-4 border-t">
-          @include('adminhub::partials.products.variants.manager')
-        </div>
+        @if(count($this->optionValues))
+          <div class="pt-4 border-t">
+            @include('adminhub::partials.products.variants.manager')
+          </div>
+        @endif
       @endif
   </div>
 </div>
