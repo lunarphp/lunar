@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -86,7 +87,7 @@ abstract class AbstractProduct extends Component
      *
      * @var \Illuminate\Support\Collection
      */
-    public Collection $options;
+    public EloquentCollection $options;
 
     /**
      * The selected values based on product options.
@@ -232,6 +233,7 @@ abstract class AbstractProduct extends Component
             'product.brand_id' => 'nullable',
             'brand' => 'nullable',
             'collections' => 'nullable|array',
+            'options.*' => 'array',
             'variant.tax_ref' => 'nullable|string|max:255',
             'associations.*.type' => 'required|string',
             'variant.length_value' => 'numeric|nullable',

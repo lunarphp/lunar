@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
@@ -21,7 +22,7 @@ class ProductCreate extends AbstractProduct
             'product_type_id' => ProductType::first()->id,
         ]);
 
-        $this->options = collect();
+        $this->options = new EloquentCollection();
         $this->variantsEnabled = $this->getVariantsCount() > 1;
         $this->variant = new ProductVariant([
             'purchasable' => 'always',

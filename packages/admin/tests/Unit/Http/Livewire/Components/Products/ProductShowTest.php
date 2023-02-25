@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Tests\Unit\Http\Livewire\Components\Products;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -79,7 +80,7 @@ class ProductShowTest extends TestCase
             ->test(ProductShow::class, [
                 'product' => $product,
             ])->assertSet('images', [])
-            ->assertSet('options', collect())
+            ->assertSet('options', new EloquentCollection)
             ->assertSet('variantsEnabled', false);
     }
 
@@ -476,6 +477,7 @@ class ProductShowTest extends TestCase
                         ];
                     })->values(),
                 'basePrices' => $prices,
+                'customerGroupPrices' => [],
                 'stock' => 0,
                 'backorder' => 0,
                 'options' => $variant,
@@ -531,7 +533,7 @@ class ProductShowTest extends TestCase
             ->test(ProductShow::class, [
                 'product' => $product,
             ])->assertCount('options', 0)
-            ->set('options', $options->pluck('id'))
+            ->set('options', $options)
             ->assertCount('options', $options->count());
     }
 
