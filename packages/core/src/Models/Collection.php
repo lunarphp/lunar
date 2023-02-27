@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
@@ -19,6 +20,19 @@ use Lunar\Database\Factories\CollectionFactory;
 use Lunar\FieldTypes\TranslatedText;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
+/**
+ * @property int $id
+ * @property int $collection_group_id
+ * @property-read  int $_lft
+ * @property-read  int $_rgt
+ * @property ?int $parent_id
+ * @property string $type
+ * @property ?array $attribute_data
+ * @property string $sort
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ */
 class Collection extends BaseModel implements SpatieHasMedia
 {
     use HasFactory,
@@ -78,6 +92,11 @@ class Collection extends BaseModel implements SpatieHasMedia
     public function group()
     {
         return $this->belongsTo(CollectionGroup::class, 'collection_group_id');
+    }
+
+    public function scopeInGroup(Builder $builder, $id)
+    {
+        return $builder->where('collection_group_id', $id);
     }
 
     /**

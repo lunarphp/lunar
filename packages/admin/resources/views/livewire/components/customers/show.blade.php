@@ -9,15 +9,15 @@
         <div class="xl:w-1/3">
             <div class="bg-white rounded shadow">
                 <div class="p-4 space-y-4">
-                
+
                     @foreach ($this->getSlotsByPosition('top') as $slot)
                         <div id="{{ $slot->handle }}">
                             <div>
                                 @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
                             </div>
                         </div>
-                    @endforeach                
-                
+                    @endforeach
+
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <x-hub::input.group for="title"
@@ -28,15 +28,15 @@
 
                         <div>
                             <x-hub::input.group for="first_name"
-                                                :label="__('adminhub::inputs.firstname')">
-                                <x-hub::input.text wire:model.defer="customer.first_name" />
+                                                :label="__('adminhub::inputs.firstname')" :error="$errors->first('customer.first_name')" required>
+                                <x-hub::input.text wire:model.defer="customer.first_name" :error="$errors->first('customer.first_name')" />
                             </x-hub::input.group>
                         </div>
 
                         <div>
                             <x-hub::input.group for="last_name"
-                                                :label="__('adminhub::inputs.lastname')">
-                                <x-hub::input.text wire:model.defer="customer.last_name" />
+                                                :label="__('adminhub::inputs.lastname')" :error="$errors->first('customer.last_name')" required>
+                                <x-hub::input.text wire:model.defer="customer.last_name" :error="$errors->first('customer.last_name')" />
                             </x-hub::input.group>
                         </div>
                     </div>
@@ -77,14 +77,14 @@
                         @include('adminhub::partials.attributes', ['inline' => true])
                     </div>
                 </div>
-                
+
                 @foreach ($this->getSlotsByPosition('bottom') as $slot)
                     <div id="{{ $slot->handle }}">
                         <div>
                             @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
                         </div>
                     </div>
-                @endforeach  
+                @endforeach
 
                 <div class="p-4 text-right rounded-b bg-gray-50">
                     <x-hub::button type="button"
@@ -162,7 +162,7 @@
     </div>
 
     <div>
-        <div x-data="{ tab: 'order_history' }">
+        <div x-data="{ tab: @entangle('tab') }">
             <div>
                 <div class="hidden sm:block">
                     <nav class="flex space-x-4"

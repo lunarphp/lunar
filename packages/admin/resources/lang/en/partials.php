@@ -75,6 +75,7 @@ return [
     'image-manager.save_btn' => 'Save image',
     'image-manager.edit_row_btn' => 'Edit',
     'image-manager.delete_row_btn' => 'Delete',
+    'image-manager.delete_primary' => 'You cannot delete the primary image.',
     'image-manager.delete_message' => 'This image will be deleted on save,',
     'image-manager.undo_btn' => 'undo',
     'image-manager.no_results' => 'No images exist for this product, add your first image above.',
@@ -82,6 +83,16 @@ return [
     'image-manager.file_format' => 'PNG, JPG, GIF up to 10MB',
     'image-manager.select_images' => 'Select images',
     'image-manager.select_images_btn' => 'Select images',
+    /**
+     * Discounts
+     */
+    'discounts.limitations.heading' => 'Limitations',
+    'discounts.limitations.by_collection' => 'Limit by collection',
+    'discounts.limitations.by_brand' => 'Limit by brand',
+    'discounts.limitations.by_product' => 'Limit by product',
+    'discounts.limitations.view_brand' => 'View Brand',
+    'discounts.limitations.view_product' => 'View Product',
+
     /**
      * Product Collections.
      */
@@ -101,6 +112,7 @@ return [
     'products.variants.strapline' => 'This product has multiple options, like different sizes or colors.',
     'products.variants.table_row_action_text' => 'Edit',
     'products.variants.table_row_delete_text' => 'Delete',
+    'products.variants.removal_message' => 'This will remove all variants from this product',
     /**
      * Product type.
      */
@@ -168,6 +180,7 @@ return [
     'orders.totals.shipping_total' => 'Shipping Total',
     'orders.totals.total' => 'Total',
     'orders.totals.notes_empty' => 'No notes on this order',
+    'orders.totals.discount_total' => 'Discount Total',
     'orders.lines.unit_price' => 'Unit Price',
     'orders.lines.quantity' => 'Quantity',
     'orders.lines.sub_total' => 'Sub Total',
@@ -181,6 +194,9 @@ return [
     'orders.details.channel' => 'Channel',
     'orders.details.date_created' => 'Date Created',
     'orders.details.date_placed' => 'Date Placed',
+    'orders.details.new_returning' => 'New / Returning',
+    'orders.details.new_customer' => 'New Customer',
+    'orders.details.returning_customer' => 'Returning Customer',
     'orders.address.not_set' => 'No address set',
     /**
      * Forms.
@@ -189,6 +205,8 @@ return [
     'forms.channel.channel_name_delete' => 'Enter the name of the channel to delete it',
     'forms.brand_delete_brand' => 'Delete brand',
     'forms.brand_name_delete' => 'Enter the name of the brand to delete it',
+    'forms.customer-group.delete_customer_group' => 'Delete customer group',
+    'forms.customer-group.customer_group_name_delete' => 'Enter the name of the customer group to delete it',
     /**
      * Transactions.
      */

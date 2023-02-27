@@ -3,10 +3,10 @@
 namespace Lunar\Tests\Stubs;
 
 use Lunar\Base\Addressable;
-use Lunar\Base\DataTransferObjects\TaxBreakdown;
-use Lunar\Base\DataTransferObjects\TaxBreakdownAmount;
 use Lunar\Base\Purchasable;
 use Lunar\Base\TaxDriver;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
@@ -103,6 +103,8 @@ class TestTaxDriver implements TaxDriver
     {
         $breakdown = new TaxBreakdown;
 
+        $currency = Currency::first() ?: Currency::factory()->create();
+
         $taxAmount = TaxRateAmount::factory()->create();
 
         $result = round($subTotal * ($taxAmount->percentage / 100));
@@ -110,7 +112,7 @@ class TestTaxDriver implements TaxDriver
         $variant = ProductVariant::factory()->create();
 
         $amount = new TaxBreakdownAmount(
-            price: new Price((int) $result, Currency::factory()->create(), $variant->getUnitQuantity()),
+            price: new Price((int) $result, $currency, $variant->getUnitQuantity()),
             description: $taxAmount->taxRate->name,
             identifier: "tax_rate_{$taxAmount->taxRate->id}",
             percentage: $taxAmount->percentage

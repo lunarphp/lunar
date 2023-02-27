@@ -23,6 +23,36 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
+## 0.2
+
+### High Impact
+
+#### Removal of the Cart Manager and Cart Modifiers
+
+This release moves away from Cart Modifiers and the Cart Manager.
+
+You can still extend the Cart in the form of pipelines. See [Cart Extending](extending/carts).
+
+You need to replace any instances of `$cart->getManager()` and just reference the cart itself i.e.
+
+```php
+// Old
+$cart->getManager()->setShippingOption();
+
+// New
+$cart->setShippingOption();
+```
+
+For calculating the cart totals you should change the following:
+
+```php
+// Old
+$cart->getManager()->getCart();
+
+// New
+$cart->calculate();
+```
+
 ## 0.1.0-rc.5
 
 ### Changed

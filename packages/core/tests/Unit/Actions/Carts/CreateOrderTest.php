@@ -5,13 +5,16 @@ namespace Lunar\Tests\Unit\Actions\Carts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
-use Lunar\Exceptions\Carts\BillingAddressMissingException;
+use Lunar\DiscountTypes\AmountOff;
+use Lunar\Exceptions\Carts\CartException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
+use Lunar\Models\Channel;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Discount;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
@@ -35,6 +38,10 @@ class CreateOrderTest extends TestCase
     /** @test  */
     public function can_create_order()
     {
+        CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
         $billing = CartAddress::factory()->make([
             'type' => 'billing',
             'country_id' => Country::factory(),
@@ -114,7 +121,7 @@ class CreateOrderTest extends TestCase
 
         $cart->shippingAddress->shippingOption = $shippingOption;
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $breakdown = $cart->taxBreakdown->map(function ($tax) {
             return [
@@ -157,11 +164,11 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function cannot_create_order_without_billing_address()
     {
-        $this->expectException(BillingAddressMissingException::class);
+        $this->expectException(CartException::class);
 
         $cart = Cart::factory()->create();
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -177,9 +184,9 @@ class CreateOrderTest extends TestCase
             'postcode' => 'H0H 0H0',
         ]);
 
-        $this->expectException(BillingAddressIncompleteException::class);
+        $this->expectException(CartException::class);
 
-        $cart->getManager()->createOrder();
+        $cart->createOrder();
 
         $this->assertNull($cart->refresh()->order_id);
         $this->assertInstanceOf(Order::class, $cart->refresh()->order);
@@ -188,6 +195,10 @@ class CreateOrderTest extends TestCase
     /** @test */
     public function can_set_tax_breakdown_correctly()
     {
+        CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
         $billing = CartAddress::factory()->make([
             'type' => 'billing',
             'country_id' => Country::factory(),
@@ -264,11 +275,139 @@ class CreateOrderTest extends TestCase
             'shipping_option' => $shippingOption->getIdentifier(),
         ]);
 
-        $order = $cart->getManager()->createOrder();
+        $order = $cart->createOrder();
 
         $this->assertEquals(
             $taxRateAmount->percentage,
-            $order->tax_breakdown->first()['percentage']
+            $order->tax_breakdown->first()->percentage
         );
+    }
+
+    /** @test  */
+    public function increments_discount_uses()
+    {
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $billing = CartAddress::factory()->make([
+            'type' => 'billing',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'BILL',
+        ]);
+
+        $shipping = CartAddress::factory()->make([
+            'type' => 'shipping',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'SHIPP',
+        ]);
+
+        $taxClass = TaxClass::factory()->create();
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $taxClass = TaxClass::factory()->create([
+            'name' => 'Foobar',
+        ]);
+
+        $taxClass->taxRateAmounts()->create(
+            TaxRateAmount::factory()->make([
+                'percentage' => 20,
+                'tax_class_id' => $taxClass->id,
+            ])->toArray()
+        );
+
+        $purchasable = ProductVariant::factory()->create([
+            'tax_class_id' => $taxClass->id,
+            'unit_quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+        ]);
+
+        $cart->addresses()->createMany([
+            $billing->toArray(),
+            $shipping->toArray(),
+        ]);
+
+        $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new PriceDataType(500, $cart->currency, 1),
+            taxClass: $taxClass
+        );
+
+        ShippingManifest::addOption($shippingOption);
+
+        $cart->shippingAddress->update([
+            'shipping_option' => $shippingOption->getIdentifier(),
+        ]);
+
+        $cart->shippingAddress->shippingOption = $shippingOption;
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    $currency->code => 1,
+                ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $order = $cart->createOrder();
+
+        $cart = $cart->refresh();
+
+        $discount = $discount->refresh();
+
+        $this->assertInstanceOf(Order::class, $cart->order);
+        $this->assertEquals(1, $discount->uses);
     }
 }

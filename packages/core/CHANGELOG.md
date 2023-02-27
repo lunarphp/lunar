@@ -4,6 +4,83 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2-RC2
+
+### Fixed
+
+- `brand_id` is now fillable on the `Product` model.
+- Brand URL should now generate automatically when created.
+- The Discount (AmountOff) type should reference the `purchasable` relation correctly.
+
+### Changed
+
+- Renamed `Discount` discount type to `AmountOff`
+- Fixed price discounts will now spread the amount across all eligible cart lines.
+- `cartDiscountAmount` property has been removed.
+
+### Added
+
+- Added `subTotalDiscounted` property to CartLine which shows the sub total with the discount.
+
+## 0.2-RC1
+
+### Fixed
+
+* Fix/get_class of extended polymoprhic model by @wychoong in https://github.com/lunarphp/lunar/pull/807
+* Use boolean mode for scout driver  by @afbora in https://github.com/lunarphp/lunar/pull/808
+* Hotfix [0.2] - Fix language deletion by @alecritson in https://github.com/lunarphp/lunar/pull/811
+* fixed the minSpend condition on Discount Feature by @0xenm21 in https://github.com/lunarphp/lunar/pull/823
+* Add correct params to TransactionObserver by @ryanmitchell in https://github.com/lunarphp/lunar/pull/815
+* Fix issue when discount relation dates are null by @ryanmitchell in https://github.com/lunarphp/lunar/pull/797
+* Hotfix [0.2] - Fix duplicate language code on tests by @alecritson in https://github.com/lunarphp/lunar/pull/802
+* Hotfix [0.2] - Add test to save cart coupon by @alecritson in https://github.com/lunarphp/lunar/pull/804
+* [0.2] Hotfix - Delete CartLineManager.php by @alecritson in https://github.com/lunarphp/lunar/pull/777
+* [0.2] Hotfix - Add active scope to user/cart association by @alecritson in https://github.com/lunarphp/lunar/pull/754
+
+### Changed
+
+* [0.2] Cart refactor by @alecritson in https://github.com/lunarphp/lunar/pull/676
+
+### Added
+
+* Increment discount uses as part of order creation by @ryanmitchell in https://github.com/lunarphp/lunar/pull/814
+* Add products to discount limitations by @ryanmitchell in https://github.com/lunarphp/lunar/pull/813
+* [0.2] Add clearOptions() method to ShippingManifest by @webcraft in https://github.com/lunarphp/lunar/pull/775
+* [0.2] Allow extending of validation rules by @wychoong in https://github.com/lunarphp/lunar/pull/443
+* [0.2] Discounts by @alecritson in https://github.com/lunarphp/lunar/pull/324
+* [0.2] Feat - Ability to mark orders as new customer by @alecritson in https://github.com/lunarphp/lunar/pull/769
+
+**Full Changelog**: https://github.com/lunarphp/lunar/compare/0.1.4...0.2-rc1
+
+## 0.1.5
+
+### Fixed
+
+- Cart manager will now check for active order before associating and merging carts.
+- Price update will now correctly save the compare price.
+
+## 0.1.4
+
+### Fixed
+
+- Prices are now stored as `bigInt` to avoid out of range errors for certain currencies.
+
+## 0.1.3
+
+### Fixed
+
+- Transaction activity log should now store the correct properties.
+
+### Added
+
+- Added user emails to customer index on search.
+
+## 0.1.2
+
+### Added
+
+- Added shorthand `attr` which can be used instead of `translateAttribute`
+
 ## 0.1.1
 
 > No notable changes

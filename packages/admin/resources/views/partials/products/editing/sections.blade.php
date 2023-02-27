@@ -1,26 +1,27 @@
-<div class="flex items-center gap-4">
-    <a href="{{ route('hub.products.index') }}"
-       class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
-       title="{{ __('adminhub::catalogue.products.show.back_link_title') }}">
-        <x-hub::icon ref="chevron-left"
-                     style="solid"
-                     class="w-8 h-8" />
-    </a>
+<div class="flex justify-between items-center">
+    <div class="flex items-center gap-4">
+        <a href="{{ route('hub.products.index') }}"
+           class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+           title="{{ __('adminhub::catalogue.products.show.back_link_title') }}">
+            <x-hub::icon ref="chevron-left"
+                         style="solid"
+                         class="w-8 h-8" />
+        </a>
 
-    <h1 class="text-xl font-bold md:text-xl">
-        @if ($product->id)
-            {{ $product->translateAttribute('name') }}
-        @else
-            {{ __('adminhub::global.new_product') }}
-        @endif
-    </h1>
+        <h1 class="text-xl font-bold md:text-xl">
+            @if ($product->id)
+                {{ $product->translateAttribute('name') }}
+            @else
+                {{ __('adminhub::global.new_product') }}
+            @endif
+        </h1>
+    </div>
+    <div>
+        <x-hub::model-url :model="$product" :preview="$product->status == 'draft'" />
+    </div>
 </div>
 
-<div class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-     :class="{
-         'lg:w-[calc(100vw_-_16rem)]': showExpandedMenu,
-         'lg:w-[calc(100vw_-_5rem)]': !showExpandedMenu
-     }">
+<x-hub::layout.bottom-panel>
     <form wire:submit.prevent="save">
         <div class="flex justify-end gap-6">
             @include('adminhub::partials.products.status-bar')
@@ -30,18 +31,18 @@
             </x-hub::button>
         </div>
     </form>
-</div>
+</x-hub::layout.bottom-panel>
 
 <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
     <div class="space-y-6 lg:flex-1">
         <div class="space-y-6">
-            <div>
-                @if (!$this->hasChannelAvailability)
+            @if (!$this->hasChannelAvailability)
+                <div>
                     <x-hub::alert level="danger">
                         {{ __('adminhub::catalogue.products.show.no_channel_availability') }}
                     </x-hub::alert>
-                @endif
-            </div>
+                </div>
+            @endif
 
             @foreach ($this->getSlotsByPosition('top') as $slot)
                 <div id="{{ $slot->handle }}">

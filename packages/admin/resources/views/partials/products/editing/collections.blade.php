@@ -10,6 +10,8 @@
             ])
         </header>
 
+        <x-hub::errors :error="$errors->first('collections')"/>
+
         <div class="space-y-2">
             @foreach ($collections as $index => $collection)
                 <div wire:key="collection_{{ $index }}">
@@ -40,11 +42,10 @@
                                 @endif
 
                                 @if (count($collection['breadcrumb']) > 1)
-                                    <span class="text-gray-500 flex gap-1.5 items-center"
-                                          title="{{ collect($collection['breadcrumb'])->implode(' > ') }}">
-                                        <span class="font-medium cursor-help">
-                                            ...
-                                        </span>
+                                    <span class="text-gray-500 flex gap-1.5 items-center">
+                                        <x-hub::tooltip text="{{ collect($collection['breadcrumb'])->implode(' > ') }}">
+                                            <span class="font-medium cursor-help">...</span>
+                                        </x-hub::tooltip>
 
                                         <x-hub::icon ref="chevron-right"
                                                      class="w-4 h-4"

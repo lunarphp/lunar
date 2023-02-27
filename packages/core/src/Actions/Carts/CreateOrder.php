@@ -2,16 +2,16 @@
 
 namespace Lunar\Actions\Carts;
 
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
+use Lunar\Actions\AbstractAction;
 use Lunar\Actions\Orders\GenerateOrderReference;
-use Lunar\Base\OrderModifiers;
 use Lunar\DataTypes\ShippingOption;
+use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 
-class CreateOrder
+class CreateOrder extends AbstractAction
 {
     /**
      * Execute the action.
@@ -22,20 +22,7 @@ class CreateOrder
     public function execute(
         Cart $cart
     ) {
-        app(ValidateCartForOrder::class)->execute($cart);
-
-        // If the cart total is null, we haven't calculated it, so do that.
-        $cart->getManager()->calculate();
-
         return DB::transaction(function () use ($cart) {
-            $pipeline = app(Pipeline::class)
-                ->send($cart)
-                ->through(
-                    $this->getModifiers()->toArray()
-                );
-
-            $cart = $pipeline->via('creating')->thenReturn();
-
             $order = Order::create([
                 'user_id' => $cart->user_id,
                 'channel_id' => $cart->channel_id,
@@ -58,6 +45,7 @@ class CreateOrder
                 'currency_code' => $cart->currency->code,
                 'exchange_rate' => $cart->currency->exchange_rate,
                 'compare_currency_code' => Currency::getDefault()?->code,
+                'meta' => $cart->meta,
             ]);
 
             $order->update([
@@ -103,7 +91,7 @@ class CreateOrder
 
             // If we have a shipping address with a shipping option.
             if (($shippingAddress = $cart->shippingAddress) &&
-                ($shippingOption = $cart->getManager()->getShippingOption())
+                ($shippingOption = $cart->getShippingOption())
             ) {
                 $orderLines->push([
                     'purchasable_type' => ShippingOption::class,
@@ -138,19 +126,15 @@ class CreateOrder
 
             $cart->order()->associate($order);
 
+            $cart->discounts?->each(function ($discount) {
+                $discount->markAsUsed()->discount->save();
+            });
+
             $cart->save();
 
-            return $pipeline->send($order)->via('created')->thenReturn();
-        });
-    }
+            MarkAsNewCustomer::dispatch($order->id);
 
-    /**
-     * Return the cart modifiers.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    private function getModifiers()
-    {
-        return app(OrderModifiers::class)->getModifiers();
+            return $this;
+        });
     }
 }

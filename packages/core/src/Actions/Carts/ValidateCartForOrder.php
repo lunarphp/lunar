@@ -46,7 +46,7 @@ class ValidateCartForOrder
         }
 
         // Is this cart shippable and if so, does it have a shipping address.
-        if ($cart->getManager()->isShippable()) {
+        if ($cart->isShippable()) {
             if (! $cart->shippingAddress) {
                 throw new ShippingAddressMissingException(
                     __('lunar::exceptions.carts.shipping_missing')
@@ -63,7 +63,7 @@ class ValidateCartForOrder
             }
 
             // Do we have a shipping option applied?
-            if (! $cart->getManager()->getShippingOption()) {
+            if (! $cart->getShippingOption()) {
                 throw new ShippingOptionMissingException();
             }
         }

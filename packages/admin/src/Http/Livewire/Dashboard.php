@@ -10,7 +10,6 @@ use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
 use Lunar\Models\Product;
 
@@ -65,33 +64,30 @@ class Dashboard extends Component
      */
     public function getReturningCustomersPercentProperty()
     {
-        $table = (new OrderAddress())->getTable();
+        $orders = Order::select(
+            DB::RAW('COUNT(*) as count'),
+            'new_customer'
+        )->whereBetween('created_at', [
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
+        ])->groupBy('new_customer')->get();
 
-        $query = DB::connection((new OrderAddress())->getConnectionName())->table($table)->where("{$table}.type", '=', 'billing')
-            ->select(
-                DB::RAW('COUNT(*) as count'),
-                "{$table}.contact_email"
-            )
-            ->whereBetween("{$table}.created_at", [
-                now()->parse($this->range['from']),
-                now()->parse($this->range['to']),
-            ])->whereNotNull("{$table}.contact_email")
-            ->leftJoin(
-                DB::raw($table.' address_join'),
-                'address_join.contact_email',
-                '=',
-                "{$table}.contact_email"
-            )->groupBy("{$table}.id", "{$table}.contact_email");
-
-        $total = $query->clone()->get()->count();
-
-        $returning = $query->clone()->having(DB::RAW('COUNT(*)'), '<=', 1)->count();
-
-        if (! $returning) {
+        if ($orders->isEmpty()) {
             return 0;
         }
 
-        return round(($returning / $total) * 100, 2);
+        $returning = $orders->first(fn ($order) => ! $order->new_customer);
+        $new = $orders->first(fn ($order) => $order->new_customer);
+
+        if (! $returning || ! $returning->count) {
+            return 0;
+        }
+
+        if (! $new || ! $new->count) {
+            return 100;
+        }
+
+        return round(($returning->count / ($new->count + $returning->count)) * 100, 2);
     }
 
     /**
@@ -319,7 +315,9 @@ class Dashboard extends Component
 
         $customerGroups = CustomerGroup::get();
 
-        $labels = $customerGroups->pluck('name')->toArray();
+        $labels = $customerGroups->map(
+            fn (CustomerGroup $group) => $group->name
+        )->toArray();
 
         $series = collect();
 

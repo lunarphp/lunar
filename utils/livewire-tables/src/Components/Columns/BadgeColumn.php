@@ -24,6 +24,7 @@ class BadgeColumn extends BaseColumn
             'success' => false,
             'warning' => false,
             'danger' => false,
+            'info' => false,
         ];
 
         if ($this->states) {

@@ -12,9 +12,14 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Channels\ChannelsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrenciesIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Currencies\CurrencyShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupCreate;
+use Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupShow;
+use Lunar\Hub\Http\Livewire\Pages\Settings\CustomerGroups\CustomerGroupsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguageShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Languages\LanguagesIndex;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionEdit;
+use Lunar\Hub\Http\Livewire\Pages\Settings\Product\Options\OptionsIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffCreate;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffIndex;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Staff\StaffShow;
@@ -66,6 +71,17 @@ Route::group([
     Route::get('staff/{staff}', StaffShow::class)->withTrashed()->name('hub.staff.show');
 });
 
+/**
+ * Customer Groups.
+ */
+Route::group([
+    'middleware' => 'can:settings:manage-staff',
+], function () {
+    Route::get('customer-groups', CustomerGroupsIndex::class)->name('hub.customer-groups.index');
+    Route::get('customer-groups/create', CustomerGroupCreate::class)->name('hub.customer-groups.create');
+    Route::get('customer-groups/{customerGroup}', CustomerGroupShow::class)->withTrashed()->name('hub.customer-groups.show');
+});
+
 /*
 /**
  * Languages.
@@ -109,6 +125,17 @@ Route::group([
     Route::get('/', TagsIndex::class)->name('hub.tags.index');
     // Route::get('channels/create', ChannelCreate::class)->name('hub.channels.create');
     Route::get('tags/{tag}', TagShow::class)->name('hub.tags.show');
+});
+
+/**
+ * Product options routes.
+ */
+Route::group([
+    'middleware' => 'can:settings:core',
+    'prefix' => 'product',
+], function () {
+    Route::get('options', OptionsIndex::class)->name('hub.product.options.index');
+    Route::get('options/{productOption}', OptionEdit::class)->name('hub.product.options.edit');
 });
 
 /**

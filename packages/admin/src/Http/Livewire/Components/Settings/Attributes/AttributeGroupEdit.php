@@ -39,12 +39,25 @@ class AttributeGroupEdit extends Component
      */
     public function rules()
     {
+        $rules = [];
+
+        $this->languages->each(function ($language) use (&$rules) {
+            $rules["attributeGroup.name.{$language->code}"] = array_merge(
+                ['string', 'max:255'],
+                $language->default ? ['required'] : []
+            );
+        });
+
+        return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function validationAttributes()
+    {
         return [
-            "attributeGroup.name.{$this->defaultLanguage->code}" => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            "attributeGroup.name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
         ];
     }
 

@@ -7,9 +7,9 @@ use Lunar\Models\Transaction;
 class TransactionObserver
 {
     /**
-     * Handle the OrderLine "updated" event.
+     * Handle the Transaction "created" event.
      *
-     * @param  \Lunar\Models\OrderLine  $orderLine
+     * @param  \Lunar\Models\Transaction  $orderLine
      * @return void
      */
     public function created(Transaction $transaction)
@@ -20,12 +20,12 @@ class TransactionObserver
             ->event($transaction->type)
             ->withProperties([
                 'amount' => $transaction->amount->value,
-                'refund' => $transaction->refund,
+                'type' => $transaction->type,
                 'status' => $transaction->status,
                 'card_type' => $transaction->card_type,
                 'last_four' => $transaction->last_four,
                 'reference' => $transaction->reference,
-                'notes' => $transaction->notes,
+                'notes' => $transaction->notes ?: '',
             ])->log('created');
     }
 }

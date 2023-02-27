@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
@@ -12,6 +13,7 @@ use Lunar\LivewireTables\Components\Filters\DateFilter;
 use Lunar\LivewireTables\Components\Filters\SelectFilter;
 use Lunar\LivewireTables\Components\Table;
 use Lunar\Models\Order;
+use Lunar\Models\Tag;
 
 class OrdersTable extends Table
 {
@@ -73,6 +75,55 @@ class OrdersTable extends Table
 
                 if ($value) {
                     $query->whereStatus($value);
+                }
+            })
+        );
+
+        $this->tableBuilder->addFilter(
+            SelectFilter::make('tags')->options(function () {
+                $tagTable = (new Tag)->getTable();
+
+                $tags = DB::connection(config('lunar.database.connection'))
+                ->table(config('lunar.database.table_prefix').'taggables')
+                ->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
+                ->whereTaggableType(Order::class)
+                ->distinct()
+                ->pluck('value')
+                ->map(function ($value) {
+                    return [
+                        'value' => $value,
+                        'label' => $value,
+                    ];
+                });
+
+                return collect([
+                    null => 'None',
+                ])->merge($tags);
+            })->query(function ($filters, $query) {
+                $value = $filters->get('tags');
+
+                if ($value) {
+                    $query->whereHas('tags', function ($query) use ($value) {
+                        $query->whereValue($value);
+                    });
+                }
+            })
+        );
+
+        $this->tableBuilder->addFilter(
+            SelectFilter::make('new_returning')->options(function () {
+                return collect([
+                    null => 'Both',
+                    'new' => 'New',
+                    'returning' => 'Returning',
+                ]);
+            })->query(function ($filters, $query) {
+                $value = $filters->get('new_returning');
+
+                if ($value) {
+                    $query->whereNewCustomer(
+                        $value == 'new'
+                    );
                 }
             })
         );

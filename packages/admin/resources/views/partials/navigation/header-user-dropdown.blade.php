@@ -34,7 +34,7 @@
         </ul>
     </div>
 
-    <div class="flex items-center h-16 gap-2">
+    <div class="flex items-center gap-2">
         <div class="shrink-0">
             @livewire('hub.components.avatar')
         </div>

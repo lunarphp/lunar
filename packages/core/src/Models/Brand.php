@@ -13,6 +13,12 @@ use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\BrandFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Brand extends BaseModel implements SpatieHasMedia
 {
     use HasFactory,
@@ -61,6 +67,19 @@ class Brand extends BaseModel implements SpatieHasMedia
     public function searchableAs(): string
     {
         return config('scout.prefix').'brands';
+    }
+
+    /**
+     * Return our base (core) attributes we want searchable.
+     *
+     * @return array
+     */
+    public function getSearchableAttributes()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
     }
 
     /**

@@ -14,11 +14,7 @@
         </div>
     </header>
 
-    <div class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-         :class="{
-             'lg:w-[calc(100vw_-_16rem)]': showExpandedMenu,
-             'lg:w-[calc(100vw_-_5rem)]': !showExpandedMenu
-         }">
+    <x-hub::layout.bottom-panel>
         <form wire:submit.prevent="update">
             <div class="flex justify-end">
                 <x-hub::button type="submit">
@@ -26,7 +22,7 @@
                 </x-hub::button>
             </div>
         </form>
-    </div>
+    </x-hub::layout.bottom-panel>
 
     <div class="mt-8 lg:gap-8 lg:flex lg:items-start">
         <div class="space-y-6 lg:flex-1">

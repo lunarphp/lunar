@@ -4,7 +4,6 @@ namespace Lunar\Hub\Menu;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class MenuSlot
 {
@@ -14,6 +13,13 @@ class MenuSlot
      * @var \Illuminate\Support\Collection
      */
     protected $sections;
+
+    /**
+     * The groups which are in the slot.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $groups;
 
     /**
      * The items which are in the slot.
@@ -39,6 +45,7 @@ class MenuSlot
         $this->handle = $handle;
         $this->items = collect();
         $this->sections = collect();
+        $this->groups = collect();
     }
 
     /**
@@ -109,6 +116,16 @@ class MenuSlot
     }
 
     /**
+     * Get the sections available.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
      * Get the handle of the slot.
      *
      * @return string
@@ -127,7 +144,7 @@ class MenuSlot
     public function section($handle)
     {
         $section = $this->sections->first(function ($section) use ($handle) {
-            return $section->getHandle() == Str::slug($handle);
+            return $section->getHandle() == $handle;
         });
 
         if ($section) {
@@ -135,8 +152,32 @@ class MenuSlot
         }
 
         $section = new MenuSection($handle);
+
         $this->sections->push($section);
 
         return $section;
+    }
+
+    /**
+     * Get an existing or create a new section on the slot.
+     *
+     * @param  string  $handle
+     * @return \Lunar\Hub\Menu\MenuGroup
+     */
+    public function group($handle)
+    {
+        $group = $this->groups->first(function ($group) use ($handle) {
+            return $group->getHandle() == $handle;
+        });
+
+        if ($group) {
+            return $group;
+        }
+
+        $group = new MenuGroup($handle);
+
+        $this->groups->push($group);
+
+        return $group;
     }
 }

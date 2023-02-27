@@ -16,11 +16,7 @@
         </h1>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-         :class="{
-             'lg:w-[calc(100vw_-_16rem)]': showExpandedMenu,
-             'lg:w-[calc(100vw_-_5rem)]': !showExpandedMenu
-         }">
+    <x-hub::layout.bottom-panel>
         <form wire:submit.prevent="save">
             <div class="flex justify-end">
                 <x-hub::button type="submit">
@@ -28,7 +24,7 @@
                 </x-hub::button>
             </div>
         </form>
-    </div>
+    </x-hub::layout.bottom-panel>
 
     <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
         <div class="space-y-6 lg:flex-1">
@@ -101,7 +97,14 @@
                             </x-hub::input.group>
                         </div>
                     @endif
-
+                    @if(!$products->count() && $this->productCount >= 30)
+                        <div wire:loading.remove wire:target="loadProducts">
+                            <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
+                        </div>
+                        <div wire:loading wire:target="loadProducts">
+                            <x-hub::loading-indicator class="w-4" />
+                        </div>
+                    @else
                     <div wire:sort
                          sort.options='{ group: "products", method: "sortProducts" }'
                          class="space-y-2">
@@ -121,10 +124,9 @@
 
                                 <div
                                      class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded sort-item-element">
-                                    <div class="flex items-center">
+                                    <div class="flex items-center gap-4">
                                         @if ($product['thumbnail'])
-                                            <img src="{{ $product['thumbnail'] }}"
-                                                 class="w-6 mr-2 rounded" />
+                                            <x-hub::thumbnail :src="$product['thumbnail']" />
                                         @endif
 
                                         <div>
@@ -136,7 +138,7 @@
                                         @if (strpos($collection->sort, 'base_price') !== false)
                                             {{ $product['base_price'] }}
                                         @elseif(strpos($collection->sort, 'sku') !== false)
-                                            <div class="truncate">{{ $product['sku'] }}</div>
+                                             <div class="truncate">{{ $product['sku'] }}</div>
                                         @endif
                                     </div>
                                 </div>
@@ -155,6 +157,7 @@
                             </x-hub::alert>
                         @endforelse
                     </div>
+                    @endif
                 </div>
             </div>
 

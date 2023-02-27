@@ -48,10 +48,12 @@ class WithLanguagesTest extends TestCase
 
         $defaultLanguage = Language::factory()->create([
             'default' => true,
+            'code' => 'aa',
         ]);
 
         Language::factory()->create([
             'default' => false,
+            'code' => 'bb',
         ]);
 
         $product = Product::factory()->create([

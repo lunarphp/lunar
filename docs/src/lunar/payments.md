@@ -18,7 +18,7 @@ All configuration for payments is located in `config/lunar/payments.php`. Here y
 <?php
 
 return [
-    'default' => env('PAYMENTS_TYPE', 'offline'),
+    'default' => env('PAYMENTS_TYPE', 'cash-in-hand'),
 
     'types' => [
         'cash-in-hand' => [
@@ -99,7 +99,7 @@ You can either create an order directly, or the recommended way is via a `Cart` 
 $order = \Lunar\Models\Order::create([/** .. */]);
 
 // Recommended way
-$order = Cart::first()->getManager()->createOrder();
+$order = Cart::first()->createOrder();
 ```
 
 If you are using the `CartSession` you can create a order via the facade, this will then handle removing the cart from the session if you want it to.
@@ -150,7 +150,7 @@ They each extend `CartException` so it depends on how much control you need.
 If you also want to check before you attempt this if the cart is ready to create an order, you can call the helper method:
 
 ```php
-$cart->getManager()->canCreateOrder();
+$cart->canCreateOrder();
 ```
 
 This essentially does the same as above, except we already catch the exceptions for you and just return false if any are caught.
@@ -275,7 +275,7 @@ This will return a collection of `Lunar\DataTypes\ShippingOption` objects.
 Once the user has selected the shipping option they want, you will need to add this to the cart so it can calculate the new totals.
 
 ```php
-$cart->getManager()->setShippingOption(\Lunar\DataTypes\ShippingOption $option);
+$cart->setShippingOption(\Lunar\DataTypes\ShippingOption $option);
 ```
 
 ## Transactions

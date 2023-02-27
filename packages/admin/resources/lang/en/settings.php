@@ -32,6 +32,8 @@ return [
      */
     'staff.show.title' => 'Edit Staff',
     'staff.show.delete_btn' => 'Deactivate account',
+    'staff.show.delete_title' => 'Delete Staff',
+    'staff.show.restore_title' => 'Restore Staff',
     /**
      * Staff create page.
      */
@@ -45,8 +47,10 @@ return [
     'staff.form.permissions_description' => 'Manage a staff members individual permissions.',
     'staff.form.admin_message' => 'An admin user has access to all permissions.',
     'staff.form.danger_zone.label' => 'Remove staff member',
-    'staff.form.danger_zone.instructions' => 'Enter the staff members email address to confirm removal.',
+    'staff.form.danger_zone.delete_strapline' => 'Removing a staff member will stop all access to the hub, you can restore it later.',
+    'staff.form.danger_zone.restore_strapline' => 'Restore this staff members account so they can access the hub.',
     'staff.form.danger_zone.own_account' => 'Removing your own account will instantly log you out.',
+
     /**
      * Addons listing page.
      */
@@ -102,10 +106,6 @@ return [
         'When displaying, Lunar will swap out <code>{value}</code> for the formatted price. E.g. <code>£{value}</code>.',
         'You must always include <code>{value}</code> for this to work properly.',
     ],
-    /*
-     * Addons.
-     */
-    'addons.index.table_row_action_text' => 'View',
     /**
      * Attributes.
      */
@@ -129,7 +129,12 @@ return [
      * Activity log page.
      */
     'activity_log.index.title' => 'Activity Log',
-
+    /*
+     * Product Options
+     */
+    'product.options.index.title' => 'Options',
+    'product.options.index.create_btn' => 'Create Option',
+    'product.options.index.table_row_action_text' => 'Edit Option',
     /**
      * Taxes.
      */
@@ -143,6 +148,7 @@ return [
     'taxes.tax-zones.delete_btn' => 'Delete tax zone',
     'taxes.tax-zones.index.table_row_action_text' => 'Manage',
     'taxes.tax-classes.index.title' => 'Tax Classes',
+    'taxes.tax-classes.index.create.title' => 'Create tax class',
     'taxes.tax-classes.index.update.title' => 'Update tax class',
     'taxes.tax-classes.create_btn' => 'Create tax class',
     'taxes.tax-zones.price_display.label' => 'Price Display',
@@ -157,4 +163,19 @@ return [
     'taxes.tax-classes.index.delete_message' => 'Are you sure? This could cause loss of data.',
     'taxes.tax-classes.index.delete_message_disabled' => 'You cannot delete a tax class that is associated to product variants',
     'taxes.tax-classes.index.delete_message_default' => 'You must select a new default before deleting',
+    /**
+     * Customer Groups.
+     */
+    'customer-groups.index.title' => 'Customer Groups',
+    'customer-groups.index.create_btn' => 'Create Customer Group',
+    'customer-groups.index.table_row_action_text' => 'Edit Group',
+    /**
+     * Customer Groups show page.
+     */
+    'customer-groups.show.title' => 'Edit Customer Group',
+    /**
+     * Customer Groups create page.
+     */
+    'customer-groups.create.title' => 'Create Customer Group',
+    'customer-groups.form.default_instructions' => 'Set whether this customer group should be the default',
 ];

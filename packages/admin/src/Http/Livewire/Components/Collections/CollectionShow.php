@@ -51,10 +51,17 @@ class CollectionShow extends Component
      */
     public \Illuminate\Support\Collection $products;
 
+    /**
+     * Whether products have been loaded.
+     *
+     * @var bool
+     */
+    public bool $productsLoaded = false;
+
     protected function getListeners()
     {
         return array_merge([
-            'product-search.selected' => 'addSelectedProducts',
+            'productSearch.selected' => 'addSelectedProducts',
         ], $this->getHasImagesListeners());
     }
 
@@ -65,10 +72,26 @@ class CollectionShow extends Component
      */
     public function mount()
     {
+        $this->products = collect();
+        if ($this->productCount <= 30) {
+            $this->loadProducts();
+        }
+
+        $this->syncAvailability();
+    }
+
+    public function getProductCountProperty()
+    {
+        return $this->collection->products()->count();
+    }
+
+    public function loadProducts()
+    {
         $this->products = $this->mapProducts(
             $this->collection->load('products.variants.basePrices.currency')->products
         );
-        $this->syncAvailability();
+
+        $this->productsLoaded = true;
     }
 
     /**
@@ -135,6 +158,16 @@ class CollectionShow extends Component
             $this->withAttributesValidationRules(),
             $this->hasImagesValidationRules(),
             $this->hasUrlsValidationRules()
+        );
+    }
+
+    protected function validationAttributes()
+    {
+        $attributes = [];
+
+        return array_merge(
+            $attributes,
+            $this->getUrlsValidationAttributes()
         );
     }
 
@@ -269,15 +302,17 @@ class CollectionShow extends Component
         });
 
         DB::transaction(function () {
-            $this->collection->products()->sync(
-                $this->products->mapWithKeys(function ($product, $index) {
-                    return [
-                        $product['id'] => [
-                            'position' => $index + 1,
-                        ],
-                    ];
-                })
-            );
+            if ($this->productsLoaded) {
+                $this->collection->products()->sync(
+                    $this->products->mapWithKeys(function ($product, $index) {
+                        return [
+                            $product['id'] => [
+                                'position' => $index + 1,
+                            ],
+                        ];
+                    })
+                );
+            }
         });
 
         $this->updateImages();

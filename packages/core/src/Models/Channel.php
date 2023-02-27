@@ -11,6 +11,16 @@ use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ChannelFactory;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $handle
+ * @property bool $default
+ * @property ?string $url
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ */
 class Channel extends BaseModel
 {
     use HasFactory;

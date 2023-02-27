@@ -14,7 +14,7 @@ use Lunar\Tests\TestCase;
 /**
  * @group lunar.jobs
  */
-class NumberTest extends TestCase
+class UpdateProductPositionsTest extends TestCase
 {
     use RefreshDatabase;
 
