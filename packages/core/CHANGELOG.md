@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2-RC3
+
+### Fixed
+
+
+### Changed
+
+
+### Added
+
+- Added the ability to specify the maximum length of textarea fields in the admin hub
+
+
 ## 0.2-RC2
 
 ### Fixed
