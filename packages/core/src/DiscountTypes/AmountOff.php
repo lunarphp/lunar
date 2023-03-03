@@ -132,7 +132,7 @@ class AmountOff extends AbstractDiscountType
 
         $cart->discounts->push($this);
 
-        $cart->discountBreakdown->push(new DiscountBreakdown(
+        $this->addDiscountBreakdown($cart, new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
             price: new Price($value, $cart->currency, 1)
@@ -220,9 +220,13 @@ class AmountOff extends AbstractDiscountType
             $cart->discounts = collect();
         }
 
+        if ($totalDiscount <= 0) {
+            return $cart;
+        }
+
         $cart->discounts->push($this);
 
-        $cart->discountBreakdown->push(new DiscountBreakdown(
+        $this->addDiscountBreakdown($cart, new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
             price: new Price($totalDiscount, $cart->currency, 1)

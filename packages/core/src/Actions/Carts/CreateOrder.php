@@ -131,7 +131,7 @@ class CreateOrder extends AbstractAction
                 }
             }
 
-            $discountBreakdown = $cart->discountBreakdown->map(function ($discount) use ($cartLinesMappedToOrderLines) {
+            $discountBreakdown = ($cart->discountBreakdown ?? collect())->map(function ($discount) use ($cartLinesMappedToOrderLines) {
                 return (object) [
                     'discount_id' => $discount->discount->id,
                     'lines' => $discount->lines->map(function ($discountLine) use ($cartLinesMappedToOrderLines) {

@@ -10,23 +10,8 @@ use Lunar\Models\CartLine;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
 
-class BuyXGetY
+class BuyXGetY extends AbstractDiscountType
 {
-    protected Discount $discount;
-
-    /**
-     * Set the data for the discount to user.
-     *
-     * @param  array  $data
-     * @return self
-     */
-    public function with(Discount $discount): self
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-
     /**
      * Return the name of the discount.
      *
@@ -170,7 +155,7 @@ class BuyXGetY
             $cart->freeItems->push($rewardLine->purchasable);
         }
 
-        $cart->discountBreakdown->push(new DiscountBreakdown(
+        $this->addDiscountBreakdown($cart, new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
             price: new Price($discountTotal, $cart->currency, 1)
