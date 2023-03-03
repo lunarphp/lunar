@@ -62,7 +62,7 @@ class AmountOff extends AbstractDiscountType
 
         $lines = $this->getEligibleLines($cart);
         $linesSubtotal = $lines->sum('subTotal.value');
-        
+
         if (! $value || $linesSubtotal < $value) {
             return $cart;
         }
@@ -71,7 +71,7 @@ class AmountOff extends AbstractDiscountType
         $roundedChunk = (int) (round($divisionalAmount, 2));
 
         $remaining = $value;
-        
+
         $affectedLines = collect();
 
         foreach ($lines as $line) {
@@ -93,11 +93,11 @@ class AmountOff extends AbstractDiscountType
                 $cart->currency,
                 1
             );
-            
+
             // work out what share of the discount each line takes
             $percentageShareOfDiscount = $line->subTotal->value / $linesSubtotal;
             $lineDiscountAmount = (int) floor($value * $percentageShareOfDiscount);
-            
+
             $affectedLines->push(new DiscountBreakdownLine(
                 line: $line,
                 quantity: $line->quantity
@@ -131,7 +131,7 @@ class AmountOff extends AbstractDiscountType
         }
 
         $cart->discounts->push($this);
-        
+
         $cart->discountBreakdown->push(new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
@@ -191,11 +191,11 @@ class AmountOff extends AbstractDiscountType
 
         $affectedLines = collect();
         $totalDiscount = 0;
-        
+
         foreach ($lines as $line) {
             $subTotal = $line->subTotal->value;
             $amount = (int) round($subTotal * ($value / 100));
-            
+
             $totalDiscount += $amount;
 
             $line->discountTotal = new Price(
@@ -213,7 +213,7 @@ class AmountOff extends AbstractDiscountType
             $affectedLines->push(new DiscountBreakdownLine(
                 line: $line,
                 quantity: $line->quantity
-            ));            
+            ));
         }
 
         if (! $cart->discounts) {
@@ -221,7 +221,7 @@ class AmountOff extends AbstractDiscountType
         }
 
         $cart->discounts->push($this);
-        
+
         $cart->discountBreakdown->push(new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,

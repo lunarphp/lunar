@@ -32,6 +32,7 @@ class DiscountBreakdown implements CastsAttributes
                     'line' => OrderLine::find($line->id),
                 ];
             });
+
             return $breakdown;
         });
     }
@@ -58,7 +59,7 @@ class DiscountBreakdown implements CastsAttributes
                         ];
                     })->values(),
                     'total' => $discountLine->total->amount,
-                ];  
+                ];
             })),
         ];
     }

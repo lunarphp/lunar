@@ -100,7 +100,7 @@ class Cart extends BaseModel
      * @var null|Price
      */
     public ?Price $discountTotal = null;
-    
+
     /**
      * All the discount breakdowns for the cart.
      *

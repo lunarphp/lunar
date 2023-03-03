@@ -32,7 +32,7 @@ class CreateOrder extends AbstractAction
                 'sub_total' => $cart->subTotal->value,
                 'total' => $cart->total->value,
                 'discount_total' => $cart->discountTotal?->value,
-                'discount_breakdown' => [],                
+                'discount_breakdown' => [],
                 'shipping_total' => $cart->shippingTotal?->value ?: 0,
                 'tax_breakdown' => $cart->taxBreakdown->map(function ($tax) {
                     return [
@@ -121,13 +121,13 @@ class CreateOrder extends AbstractAction
                     'meta' => [],
                 ]);
             }
-            
+
             $cartLinesMappedToOrderLines = [];
             foreach ($orderLines as $orderLine) {
                 $orderLineModel = $order->lines()->create(collect($orderLine)->except(['cart_line_id'])->all());
                 $cartLinesMappedToOrderLines[$orderLine['cart_line_id']] = $orderLineModel->id;
             }
-            
+
             $discountBreakdown = $cart->discountBreakdown->map(function ($discount) use ($cartLinesMappedToOrderLines) {
                 return [
                     'discount_id' => $discount->discount->id,
@@ -135,12 +135,12 @@ class CreateOrder extends AbstractAction
                         return [
                             'qty' => $discountLine->quantity,
                             'id' => $cartLinesMappedToOrderLines[$discountLine->line->id],
-                        ];                       
+                        ];
                     }),
                     'total' => $discount->price->value,
                 ];
             })->values();
-                
+
             $order->update([
                 'discount_breakdown' => $discountBreakdown,
             ]);

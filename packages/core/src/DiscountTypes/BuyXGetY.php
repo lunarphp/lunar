@@ -91,16 +91,16 @@ class BuyXGetY
             $rewardQty,
             $maxRewardQty
         );
-        
+
         if (! $totalRewardQty) {
             return $cart;
         }
 
         $remainingRewardQty = $totalRewardQty;
-        
+
         $affectedLines = collect();
         $discountTotal = 0;
-        
+
         // Get the reward lines and sort by cheapest first.
         $rewardLines = $cart->lines->filter(function ($line) {
             return $this->discount->purchasableRewards->first(function ($item) use ($line) {
@@ -121,22 +121,22 @@ class BuyXGetY
             if (! $qtyToAllocate) {
                 continue;
             }
-            
+
             $affectedLines->push(new DiscountBreakdownLine(
                 line: $rewardLine,
                 quantity: $qtyToAllocate
-            ));            
-            
+            ));
+
             $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
             $conditions->each(function ($conditionLine) use ($affectedLines, &$conditionQtyToAllocate) {
                 if (! $conditionQtyToAllocate) {
                     return;
                 }
-                
+
                 $qtyCanBeApplied = min($conditionQtyToAllocate, $conditionLine->quantity - ($affectedLines->firstWhere('line', $conditionLine)?->quantity ?? 0));
                 if ($qtyCanBeApplied > 0) {
                     $conditionQtyToAllocate -= $qtyCanBeApplied;
-                    
+
                     $affectedLines->push(new DiscountBreakdownLine(
                         line: $conditionLine,
                         quantity: $conditionQtyToAllocate
