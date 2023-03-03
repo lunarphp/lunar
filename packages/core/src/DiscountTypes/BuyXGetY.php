@@ -2,8 +2,8 @@
 
 namespace Lunar\DiscountTypes;
 
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
-use Lunar\Base\ValueObjects\Cart\DiscountBreakdownValue;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
@@ -170,7 +170,7 @@ class BuyXGetY
             $cart->freeItems->push($rewardLine->purchasable);
         }
 
-        $cart->discountBreakdown->addDiscount(new DiscountBreakdownValue(
+        $cart->discountBreakdown->push(new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
             price: new Price($discountTotal, $cart->currency, 1)

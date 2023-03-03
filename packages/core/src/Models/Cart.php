@@ -265,6 +265,8 @@ class Cart extends BaseModel
      */
     public function calculate(): Cart
     {
+        $this->discountBreakdown = collect();
+
         $cart = app(Pipeline::class)
         ->send($this)
         ->through(

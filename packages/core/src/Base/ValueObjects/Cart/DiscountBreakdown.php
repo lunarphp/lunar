@@ -3,23 +3,16 @@
 namespace Lunar\Base\ValueObjects\Cart;
 
 use Illuminate\Support\Collection;
+use Lunar\DataTypes\Price;
+use Lunar\Models\Discount;
 
 class DiscountBreakdown
 {
     public function __construct(
-        public ?Collection $discounts = null
+        public Price $price,
+        public Collection $lines,
+        public Discount $discount,
     ) {
-        $this->discounts = $discounts ?: collect();
-    }
-
-    /**
-     * Add a discount breakdown.
-     *
-     * @param  DiscountBreakdownValue  $discountBreakdownValue
-     * @return void
-     */
-    public function addDiscount(DiscountBreakdownValue $discountBreakdownValue)
-    {
-        $this->discounts->push($discountBreakdownValue);
+        //
     }
 }
