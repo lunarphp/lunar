@@ -3,6 +3,7 @@
 namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Support\Collection;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
 use Lunar\Models\OrderLine;
@@ -48,8 +49,14 @@ class DiscountBreakdown implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
+        if (! $value instanceof Collection) {
+            return [
+                $key => json_encode($value),
+            ];
+        }
+
         return [
-            $key => json_encode($value->map(function ($discountLine) {
+            $key => json_encode(collect($value)->map(function ($discountLine) {
                 return [
                     'discount_id' => $discountLine->discount_id,
                     'lines' => $discountLine->lines->map(function ($orderLine) {
