@@ -2,6 +2,7 @@
 
 namespace Lunar\DiscountTypes;
 
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdownValue;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
@@ -89,9 +90,16 @@ class BuyXGetY
             $rewardQty,
             $maxRewardQty
         );
+        
+        if (! $totalRewardQty) {
+            return $cart;
+        }
 
         $remainingRewardQty = $totalRewardQty;
-
+        
+        $affectedLines = collect();
+        $discountTotal = 0;
+        
         // Get the reward lines and sort by cheapest first.
         $rewardLines = $cart->lines->filter(function ($line) {
             return $this->discount->purchasableRewards->first(function ($item) use ($line) {
@@ -112,21 +120,44 @@ class BuyXGetY
             if (! $qtyToAllocate) {
                 continue;
             }
+            
+            $affectedLines->push((object) [
+                'line' => $cartLine,
+                'quantity' => $qtyToAllocate,
+            ]);
+            
+            $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
+            $conditions->each(function ($conditionLine) use ($affectedLines, &$conditionQtyToAllocate) {
+                if (! $conditionQtyToAllocate) {
+                    return;
+                }
+                
+                $qtyCanBeApplied = min($conditionQtyToAllocate, $conditionLine->quantity - $affectedLines->firstWhere('line', $conditionLine)?->quantity ?? 0);
+                if ($qtyCanBeApplied > 0) {
+                    $conditionQtyToAllocate -= $qtyCanBeApplied;
+                    
+                    $affectedLines->push((object) [
+                        'line' => $cartLine,
+                        'quantity' => $qtyToAllocate,
+                    ]);
+                }
+            });
 
             $remainingRewardQty -= $qtyToAllocate;
 
             $subTotal = $rewardLine->subTotal->value;
 
-            $discountTotal = $subTotal * $qtyToAllocate;
+            $lineDiscountTotal = $subTotal * $qtyToAllocate;
+            $discountTotal += $lineDiscountTotal;
 
             $rewardLine->discountTotal = new Price(
-                $discountTotal,
+                $lineDiscountTotal,
                 $cart->currency,
                 1
             );
 
             $rewardLine->subTotalDiscounted = new Price(
-                $subTotal - $discountTotal,
+                $subTotal - $lineDiscountTotal,
                 $cart->currency,
                 1
             );
@@ -137,6 +168,12 @@ class BuyXGetY
 
             $cart->freeItems->push($rewardLine->purchasable);
         }
+
+        $cart->discountBreakdown->addDiscount() = new DiscountBreakdownValue(
+            discount: $this->discount,
+            lines: $affectedLines,
+            price: new Price($discountTotal, $cart->currency, 1)
+        );
 
         return $cart;
     }
