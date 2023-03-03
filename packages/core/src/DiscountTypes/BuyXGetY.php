@@ -121,6 +121,7 @@ class BuyXGetY
                 continue;
             }
             
+            // this should be a DTO
             $affectedLines->push((object) [
                 'line' => $rewardLine,
                 'quantity' => $qtyToAllocate,
@@ -136,6 +137,7 @@ class BuyXGetY
                 if ($qtyCanBeApplied > 0) {
                     $conditionQtyToAllocate -= $qtyCanBeApplied;
                     
+                    // this should be a DTO
                     $affectedLines->push((object) [
                         'line' => $cartLine,
                         'quantity' => $qtyToAllocate,
@@ -169,11 +171,11 @@ class BuyXGetY
             $cart->freeItems->push($rewardLine->purchasable);
         }
 
-        $cart->discountBreakdown->addDiscount() = new DiscountBreakdownValue(
+        $cart->discountBreakdown->addDiscount(new DiscountBreakdownValue(
             discount: $this->discount,
             lines: $affectedLines,
             price: new Price($discountTotal, $cart->currency, 1)
-        );
+        ));
 
         return $cart;
     }
