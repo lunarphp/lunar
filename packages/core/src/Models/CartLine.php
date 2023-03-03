@@ -37,6 +37,7 @@ class CartLine extends BaseModel
         'unitPrice',
         'subTotal',
         'discountTotal',
+        'apportionedDiscount',
         'taxAmount',
         'total',
         'promotionDescription',
@@ -70,6 +71,13 @@ class CartLine extends BaseModel
      * @var null|Price
      */
     public ?Price $discountTotal = null;
+    
+    /**
+     * The apportioned discount.
+     *
+     * @var null|Price
+     */
+    public ?Price $apportionedDiscount = null;
 
     /**
      * The cart line tax amount.

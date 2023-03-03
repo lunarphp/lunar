@@ -68,6 +68,9 @@ class BuyXGetY
         $rewardQty = $data['reward_qty'] ?? 1;
         $maxRewardQty = $data['max_reward_qty'] ?? null;
         $automaticallyAddRewards = $data['automatically_add_rewards'] ?? false;
+        
+        // remove any existing apportionment data made by this discount
+        $this->removeApportionmentMeta($cart->lines);
 
         // Get the first condition line where the qty check passes.
         $conditions = $cart->lines->reject(function ($line) use ($minQty) {
@@ -76,6 +79,7 @@ class BuyXGetY
                     $item->purchasable_id == $line->purchasable->product->id;
             });
 
+            // qty needs updated to consider that some qty may be 'used up' already by other discounts
             return ! $match || ($minQty && $line->quantity < $minQty);
         });
 
@@ -111,6 +115,7 @@ class BuyXGetY
                 continue;
             }
 
+            // qty needs updated to consider that some qty may be 'used up' already by other discounts
             $remainder = $rewardLine->quantity % $remainingRewardQty;
 
             $qtyToAllocate = (int) floor(($remainingRewardQty - $remainder) / $rewardLine->quantity);
@@ -126,7 +131,7 @@ class BuyXGetY
             $discountTotal = $subTotal * $qtyToAllocate;
 
             $rewardLine->discountTotal = new Price(
-                $discountTotal,
+                (isset($rewardLine->discountTotal) ? $rewardLine->discountTotal->value : 0) + $discountTotal,
                 $cart->currency,
                 1
             );
@@ -136,6 +141,8 @@ class BuyXGetY
                 $cart->currency,
                 1
             );
+            
+            $this->markLinesForApportionment($rewardLine, $qtyToAllocate, $rewardQty, $conditions);
 
             if (! $cart->freeItems) {
                 $cart->freeItems = collect();
@@ -148,8 +155,91 @@ class BuyXGetY
             $cart = $this->processAutomaticRewards($cart, $remainingRewardQty);
         }
         
+        $this->applyApportionment($cart);
+                
         return $cart;
+    }
+    
+    private function applyApportionment($cart)
+    {
+        $lines = $cart->lines
+            ->filter(function ($line) {
+                return isset($line->meta->discount_applied) && isset($line->meta->discount_applied->{$this->discount->id});
+            });
+                        
+        $discountAllocated = 0;
+        $discountTotal = $lines->sum('discountTotal.value');
+        $packSubtotal = $lines->sum(function ($line) {
+            return $line->unitPrice->value * ($line->meta->discount_applied->{$this->discount->id} ?? 0);
+        });
+                
+        $lines->each(function ($line) use ($cart, $packSubtotal, $discountTotal, &$discountAllocated) {
+            
+            $lineSubtotal = $line->unitPrice->value * ($line->meta->discount_applied->{$this->discount->id} ?? 0);
+            $percentageShareOfDiscount = $lineSubtotal / $packSubtotal;
+            $lineDiscountAmount = (int) floor($lineSubtotal * $percentageShareOfDiscount);
+                                                
+            $discountAllocated += $lineDiscountAmount;
+            
+            $line->apportionedDiscount = new Price(
+                (isset($line->apportionedDiscount) ? $line->apportionedDiscount->value : 0) + $lineDiscountAmount,
+                $cart->currency,
+                1
+            );
+                
+        });
+                
+        if ($discountTotal > $discountAllocated) {
+            $discountRemaining = $discountTotal - $discountAllocated;
+            
+            $firstLine = $lines->first();
+            $firstLine->apportionedDiscount = new Price(
+                $firstLine->apportionedDiscount->value + $discountRemaining,
+                $cart->currency,
+                1
+            );
+        }
+    }
+    
+    private function markLinesForApportionment($rewardLine, $qtyToAllocate, $rewardQty, $conditions)
+    {            
+        // mark this line as part of a discount 'pack' so we can apportion tax correctly
+        $meta = (object) $rewardLine->meta ?? json_decode('{}');
+        if (! isset($meta->discount_applied)) {
+            $meta->discount_applied = (object)[];
+        }
+        $meta->discount_applied->{$this->discount->id} = $qtyToAllocate;
+        $rewardLine->meta = $meta;
         
+        // loop over condition lines and mark as part of discount 'pack'
+        $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
+        $conditions->each(function ($conditionLine) use ($conditionQtyToAllocate) {
+            $meta = (object) $conditionLine->meta ?? json_decode('{}');
+            if (! isset($meta->discount_applied)) {
+                $meta->discount_applied = (object)[];
+            }
+            if (! isset($meta->discount_applied->{$this->discount->id})) {
+                $meta->discount_applied->{$this->discount->id} = 0;
+            }
+
+            $qtyAlreadyAllocated = $meta->discount_applied->{$this->discount->id} ?? 0;
+            if ($qtyAlreadyAllocated >= $conditionLine->quantity) {
+                return;
+            }
+            
+            $qtyToAllocate = min($conditionLine->quantity - $qtyAlreadyAllocated, $conditionQtyToAllocate);
+            $meta->discount_applied->{$this->discount->id} += $qtyToAllocate;
+            $conditionLine->meta = $meta;
+        });
+    }
+    
+    private function removeApportionmentMeta($lines)
+    {
+        return $lines->each(function ($line) {
+            $meta = $line->meta;
+            unset($meta->discount_applied->{$this->discount->id});
+            $line->meta = $meta;
+        }); 
     }
       
     private function processAutomaticRewards(Cart $cart, int $remainingRewardQty) 
@@ -161,6 +251,8 @@ class BuyXGetY
         $remainingRewardQty -= $automaticLines->sum(function ($line) {
             return $line->meta->added_by_discount[$this->discount->id] ?? 0;
         });
+        
+        $automaticLines = $automaticLines->all();
         
         // we have lines to add
         if ($remainingRewardQty > 0) {
@@ -191,7 +283,9 @@ class BuyXGetY
                     }
                 }
                 
-                $meta = $line->meta ?? json_decode('{}');
+                // do we need discountTotal and subtotalDiscounted ?
+                
+                $meta = (object) $line->meta ?? json_decode('{}');
                 if (! isset($meta->added_by_discount)) {
                     $meta->added_by_discount = [];
                 }
@@ -220,7 +314,7 @@ class BuyXGetY
                         continue;
                     }
                     
-                    $meta = $line->meta;
+                    $meta = (object) $line->meta ?? json_decode('{}');
                     $addedByDiscountQty = $meta->added_by_discount[$this->discount->id] ?? 0;
                       
                     if ($addedByDiscountQty > 0) {  

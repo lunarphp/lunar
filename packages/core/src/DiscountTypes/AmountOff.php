@@ -59,8 +59,9 @@ class AmountOff extends AbstractDiscountType
         $value = (int) bcmul($values[$currency->code] ?? 0, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
+        $linesSubtotal = $lines->sum('subTotal.value');
 
-        if (! $value || $lines->sum('subTotal.value') < $value) {
+        if (! $value || $linesSubtotal < $value) {
             return $cart;
         }
 
@@ -85,6 +86,16 @@ class AmountOff extends AbstractDiscountType
 
             $line->subTotalDiscounted = new Price(
                 $line->subTotal->value - $amount,
+                $cart->currency,
+                1
+            );
+            
+            // work out what share of the discount each line takes
+            $percentageShareOfDiscount = $line->subTotal->value / $linesSubtotal;
+            $lineDiscountAmount = (int) floor($value * $percentageShareOfDiscount);
+            
+            $line->apportionedDiscount = new Price(
+                (isset($line->apportionedDiscount) ? $line->apportionedDiscount->value : 0) + $lineDiscountAmount,
                 $cart->currency,
                 1
             );
@@ -181,6 +192,12 @@ class AmountOff extends AbstractDiscountType
 
             $line->subTotalDiscounted = new Price(
                 $subTotal - $amount,
+                $cart->currency,
+                1
+            );
+            
+            $line->apportionedDiscount = new Price(
+                (isset($line->apportionedDiscount) ? $line->apportionedDiscount->value : 0) + $amount,
                 $cart->currency,
                 1
             );
