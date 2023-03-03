@@ -133,13 +133,13 @@ class BuyXGetY
                     return;
                 }
                 
-                $qtyCanBeApplied = min($conditionQtyToAllocate, $conditionLine->quantity - $affectedLines->firstWhere('line', $conditionLine)?->quantity ?? 0);
+                $qtyCanBeApplied = min($conditionQtyToAllocate, $conditionLine->quantity - ($affectedLines->firstWhere('line', $conditionLine)?->quantity ?? 0));
                 if ($qtyCanBeApplied > 0) {
                     $conditionQtyToAllocate -= $qtyCanBeApplied;
                     
                     $affectedLines->push(new DiscountBreakdownLine(
                         line: $conditionLine,
-                        quantity: $qtyToAllocate
+                        quantity: $conditionQtyToAllocate
                     ));
                 }
             });
