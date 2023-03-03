@@ -2,6 +2,7 @@
 
 namespace Lunar\DiscountTypes;
 
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdownValue;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
@@ -121,11 +122,10 @@ class BuyXGetY
                 continue;
             }
             
-            // this should be a DTO
-            $affectedLines->push((object) [
-                'line' => $rewardLine,
-                'quantity' => $qtyToAllocate,
-            ]);
+            $affectedLines->push(new DiscountBreakdownLine(
+                line: $rewardLine,
+                quantity: $qtyToAllocate
+            ));            
             
             $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
             $conditions->each(function ($conditionLine) use ($affectedLines, &$conditionQtyToAllocate) {
@@ -137,11 +137,10 @@ class BuyXGetY
                 if ($qtyCanBeApplied > 0) {
                     $conditionQtyToAllocate -= $qtyCanBeApplied;
                     
-                    // this should be a DTO
-                    $affectedLines->push((object) [
-                        'line' => $cartLine,
-                        'quantity' => $qtyToAllocate,
-                    ]);
+                    $affectedLines->push(new DiscountBreakdownLine(
+                        line: $conditionLine,
+                        quantity: $qtyToAllocate
+                    ));
                 }
             });
 
