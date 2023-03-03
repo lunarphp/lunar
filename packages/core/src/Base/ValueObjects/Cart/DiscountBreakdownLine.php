@@ -7,7 +7,7 @@ use Lunar\Models\CartLine;
 class DiscountBreakdownLine
 {
     public function __construct(
-        public CartLine $lines,
+        public CartLine $line,
         public int $quantity,
     ) {
         //
