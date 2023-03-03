@@ -122,7 +122,7 @@ class BuyXGetY
             }
             
             $affectedLines->push((object) [
-                'line' => $cartLine,
+                'line' => $rewardLine,
                 'quantity' => $qtyToAllocate,
             ]);
             
