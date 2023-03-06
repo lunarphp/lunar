@@ -42,7 +42,12 @@ class TaxBreakdown implements CastsAttributes
     public function set($model, $key, $value, $attributes)
     {
         return [
-            $key => json_encode($value),
+            $key => json_encode(collect($value)->map(function ($rate) {
+                if ($rate->total instanceof Price) {
+                    $rate->total = $rate->total->value;
+                }
+                return $rate;
+            })->values()),
         ];
     }
 }
