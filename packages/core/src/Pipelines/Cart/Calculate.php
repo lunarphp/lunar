@@ -23,7 +23,6 @@ class Calculate
         // Get the shipping address
         if ($shippingAddress = $cart->shippingAddress) {
             if ($shippingAddress->shippingSubTotal) {
-                $subTotal += $shippingAddress->shippingSubTotal?->value;
                 $total += $shippingAddress->shippingTotal?->value;
             }
         }

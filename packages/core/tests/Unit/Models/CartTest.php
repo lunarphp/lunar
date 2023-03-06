@@ -459,7 +459,7 @@ class CartTest extends TestCase
 
         $cart->calculate();
 
-        $this->assertEquals(600, $cart->subTotal->value);
+        $this->assertEquals(100, $cart->subTotal->value);
         $this->assertEquals(720, $cart->total->value);
     }
 }
