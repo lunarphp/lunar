@@ -94,10 +94,6 @@ class AmountOff extends AbstractDiscountType
                 1
             );
 
-            // work out what share of the discount each line takes
-            $percentageShareOfDiscount = $line->subTotal->value / $linesSubtotal;
-            $lineDiscountAmount = (int) floor($value * $percentageShareOfDiscount);
-
             $affectedLines->push(new DiscountBreakdownLine(
                 line: $line,
                 quantity: $line->quantity
