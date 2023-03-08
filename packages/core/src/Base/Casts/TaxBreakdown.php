@@ -54,10 +54,13 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
     }
     
     /**
-    * Get the serialized representation of the value.
-    *
-    * @param  array<string, mixed>  $attributes
-    */
+     * Get the serialized representation of the value.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  string  $key
+     * @param  \Illuminate\Support\Collection  $value
+     * @param  array<string, mixed>  $attributes
+     */
     public function serialize($model, $key, $value, $attributes)
     {
         return json_encode($value->map(function ($rate) {
