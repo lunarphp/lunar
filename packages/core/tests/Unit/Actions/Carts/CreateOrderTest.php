@@ -159,6 +159,10 @@ class CreateOrderTest extends TestCase
         $this->assertDatabaseHas((new OrderLine())->getTable(), [
             'identifier' => $shippingOption->getIdentifier(),
         ]);
+
+        $order->save();
+        $containsCurrency = str_contains($order->fresh()->getRawOriginal('tax_breakdown'), '"currency"');
+        $this->assertFalse($containsCurrency);
     }
 
     /** @test */
