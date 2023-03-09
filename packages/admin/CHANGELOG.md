@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2-RC2
+
+### Fixed
+
+- The delete form for a discount should now show.
+- Validation across multiple languages has been fixed when editing attribute groups.
+- Validation when creating a collection should now take languages into account
+- The `HasImages` trait now uses Livewire to determine whether S3 is used.
+- Order lines now has more checks for whether a purchasable exists first.
+- When creating a collection, the reloaded tree should now only show collections in that group
+- Ensure correct `connection` is passed when using the `DB` facade.
+
+### Changed
+
+- `isActive` check on `MenuLink` now handles an array of slug handles.
+
+### Added
+
 ## 0.2-RC1
 
 ### Fixed
