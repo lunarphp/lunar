@@ -127,7 +127,7 @@ class CreateOrder extends AbstractAction
                 $orderLineModel = $order->lines()->create(collect($orderLine)->except(['cart_line_id'])->all());
 
                 if (isset($orderLine['cart_line_id'])) {
-                    $cartLinesMappedToOrderLines[$orderLine['cart_line_id']] = $orderLineModel->id;
+                    $cartLinesMappedToOrderLines[$orderLine['cart_line_id']] = $orderLineModel;
                 }
             }
 
@@ -135,12 +135,12 @@ class CreateOrder extends AbstractAction
                 return (object) [
                     'discount_id' => $discount->discount->id,
                     'lines' => $discount->lines->map(function ($discountLine) use ($cartLinesMappedToOrderLines) {
-                        return [
-                            'qty' => $discountLine->quantity,
-                            'id' => $cartLinesMappedToOrderLines[$discountLine->line->id],
+                        return (object)[
+                            'quantity' => $discountLine->quantity,
+                            'line' => $cartLinesMappedToOrderLines[$discountLine->line->id],
                         ];
-                    })->values()->all(),
-                    'total' => $discount->price->value,
+                    }),
+                    'total' => $discount->price,
                 ];
             })->values()->all();
 
