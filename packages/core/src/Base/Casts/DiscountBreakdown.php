@@ -56,7 +56,7 @@ class DiscountBreakdown implements CastsAttributes
         }
 
         return [
-            $key => json_encode(collect($value)->map(function ($discountLine) {
+            $key => collect($value)->map(function ($discountLine) {
                 return [
                     'discount_id' => $discountLine->discount_id,
                     'lines' => $discountLine->lines->map(function ($orderLine) {
@@ -67,7 +67,7 @@ class DiscountBreakdown implements CastsAttributes
                     })->values(),
                     'total' => $discountLine->total->amount,
                 ];
-            })),
+            })->toJson(),
         ];
     }
 }
