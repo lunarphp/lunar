@@ -27,7 +27,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property-read  int $_rgt
  * @property ?int $parent_id
  * @property string $type
- * @property ?array $attribute_data
+ * @property ?\Illuminate\Support\Collection $attribute_data
  * @property string $sort
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at

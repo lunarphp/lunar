@@ -28,7 +28,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?int $brand_id
  * @property int $product_type_id
  * @property string $status
- * @property array $attribute_data
+ * @property ?\Illuminate\Support\Collection $attribute_data
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
