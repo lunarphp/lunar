@@ -414,4 +414,129 @@ class CreateOrderTest extends TestCase
         $this->assertInstanceOf(Order::class, $cart->order);
         $this->assertEquals(1, $discount->uses);
     }
+
+    /** @test  */
+    public function creates_a_discount_breakdown()
+    {
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $billing = CartAddress::factory()->make([
+            'type' => 'billing',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'BILL',
+        ]);
+
+        $shipping = CartAddress::factory()->make([
+            'type' => 'shipping',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'SHIPP',
+        ]);
+
+        $taxClass = TaxClass::factory()->create();
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $taxClass = TaxClass::factory()->create([
+            'name' => 'Foobar',
+        ]);
+
+        $taxClass->taxRateAmounts()->create(
+            TaxRateAmount::factory()->make([
+                'percentage' => 20,
+                'tax_class_id' => $taxClass->id,
+            ])->toArray()
+        );
+
+        $purchasable = ProductVariant::factory()->create([
+            'tax_class_id' => $taxClass->id,
+            'unit_quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+        ]);
+
+        $cart->addresses()->createMany([
+            $billing->toArray(),
+            $shipping->toArray(),
+        ]);
+
+        $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new PriceDataType(500, $cart->currency, 1),
+            taxClass: $taxClass
+        );
+
+        ShippingManifest::addOption($shippingOption);
+
+        $cart->shippingAddress->update([
+            'shipping_option' => $shippingOption->getIdentifier(),
+        ]);
+
+        $cart->shippingAddress->shippingOption = $shippingOption;
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    $currency->code => 1,
+                ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $order = $cart->createOrder();
+
+        $this->assertCount(1, $order->discount_breakdown);
+        $this->assertEquals($purchasable->id, $order->discount_breakdown->first()->lines->first()->line->purchasable->id);
+        $this->assertEquals(100, $order->discount_breakdown->first()->total->value);
+    }
 }
