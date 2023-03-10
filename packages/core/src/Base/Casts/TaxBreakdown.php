@@ -63,7 +63,7 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function serialize($model, $key, $value, $attributes)
     {
-        return json_encode($value->map(function ($rate) {
+        return $value->map(function ($rate) {
             if ($rate->total instanceof Price) {
                 $rate->total = (object) [
                     'value' => $rate->total->value,
@@ -72,7 +72,6 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
                 ];
             }
             return $rate;
-        })
-        ->values());
+        })->toJson();
     }
 }
