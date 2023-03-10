@@ -757,6 +757,7 @@ class AmountOffTest extends TestCase
 
     /**
      * @test
+     *
      * @group thisone
      */
     public function can_apply_discount_with_min_spend()
