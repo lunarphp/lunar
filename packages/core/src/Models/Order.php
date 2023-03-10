@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\DiscountBreakdown;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Casts\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
@@ -23,6 +24,7 @@ use Lunar\Database\Factories\OrderFactory;
  * @property ?string $customer_reference
  * @property int $sub_total
  * @property int $discount_total
+ * @property array $discount_breakdown
  * @property array $tax_breakdown
  * @property int $tax_total
  * @property int $total
@@ -76,6 +78,7 @@ class Order extends BaseModel
         'placed_at' => 'datetime',
         'sub_total' => Price::class,
         'discount_total' => Price::class,
+        'discount_breakdown' => DiscountBreakdown::class,
         'tax_total' => Price::class,
         'total' => Price::class,
         'shipping_total' => Price::class,

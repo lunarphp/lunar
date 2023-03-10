@@ -2,6 +2,8 @@
 
 namespace Lunar\DiscountTypes;
 
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
@@ -59,8 +61,9 @@ class AmountOff extends AbstractDiscountType
         $value = (int) bcmul($values[$currency->code] ?? 0, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
+        $linesSubtotal = $lines->sum('subTotal.value');
 
-        if (! $value || $lines->sum('subTotal.value') < $value) {
+        if (! $value || $linesSubtotal < $value) {
             return $cart;
         }
 
@@ -68,6 +71,8 @@ class AmountOff extends AbstractDiscountType
         $roundedChunk = (int) (round($divisionalAmount, 2));
 
         $remaining = $value;
+
+        $affectedLines = collect();
 
         foreach ($lines as $line) {
             if ($line->subTotal->value < $roundedChunk) {
@@ -88,6 +93,11 @@ class AmountOff extends AbstractDiscountType
                 $cart->currency,
                 1
             );
+
+            $affectedLines->push(new DiscountBreakdownLine(
+                line: $line,
+                quantity: $line->quantity
+            ));
         }
 
         // Do we have an amount left over? if so, grab the first line that has
@@ -117,6 +127,12 @@ class AmountOff extends AbstractDiscountType
         }
 
         $cart->discounts->push($this);
+
+        $this->addDiscountBreakdown($cart, new DiscountBreakdown(
+            discount: $this->discount,
+            lines: $affectedLines,
+            price: new Price($value, $cart->currency, 1)
+        ));
 
         return $cart;
     }
@@ -169,9 +185,14 @@ class AmountOff extends AbstractDiscountType
     {
         $lines = $this->getEligibleLines($cart);
 
+        $affectedLines = collect();
+        $totalDiscount = 0;
+
         foreach ($lines as $line) {
             $subTotal = $line->subTotal->value;
             $amount = (int) round($subTotal * ($value / 100));
+
+            $totalDiscount += $amount;
 
             $line->discountTotal = new Price(
                 $amount,
@@ -184,13 +205,28 @@ class AmountOff extends AbstractDiscountType
                 $cart->currency,
                 1
             );
+
+            $affectedLines->push(new DiscountBreakdownLine(
+                line: $line,
+                quantity: $line->quantity
+            ));
         }
 
         if (! $cart->discounts) {
             $cart->discounts = collect();
         }
 
+        if ($totalDiscount <= 0) {
+            return $cart;
+        }
+
         $cart->discounts->push($this);
+
+        $this->addDiscountBreakdown($cart, new DiscountBreakdown(
+            discount: $this->discount,
+            lines: $affectedLines,
+            price: new Price($totalDiscount, $cart->currency, 1)
+        ));
 
         return $cart;
     }

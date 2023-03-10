@@ -20,6 +20,7 @@ Lunar\Models\Order
 |reference|Your stores own reference
 |customer_reference|If you want customers to add their own reference, it goes here.
 |sub_total|The sub total minus any discounts, excl. tax
+|discount_breakdown| A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]`
 |discount_total| Any discount amount excl. tax
 |shipping_total| The shipping total excl. tax
 |tax_breakdown| A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`
