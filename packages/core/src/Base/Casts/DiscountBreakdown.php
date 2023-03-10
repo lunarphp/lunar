@@ -3,7 +3,6 @@
 namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Illuminate\Support\Collection;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
 use Lunar\Models\OrderLine;
