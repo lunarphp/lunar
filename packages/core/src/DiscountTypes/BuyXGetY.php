@@ -14,6 +14,8 @@ class BuyXGetY extends AbstractDiscountType
 {
     /**
      * Return the name of the discount.
+     *
+     * @return string
      */
     public function getName(): string
     {
@@ -31,7 +33,7 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function getRewardQuantity($linesQuantity, $minQty, $rewardQty, $maxRewardQty = null)
     {
-        $result = ($linesQuantity / ($minQty ?: 1)) * $rewardQty;
+        $result = ($linesQuantity / $minQty) * $rewardQty;
 
         if ($maxRewardQty && $result > $maxRewardQty) {
             return $maxRewardQty;
@@ -53,23 +55,23 @@ class BuyXGetY extends AbstractDiscountType
         $rewardQty = $data['reward_qty'] ?? 1;
         $maxRewardQty = $data['max_reward_qty'] ?? null;
 
-        // Get all purchasables that are eligible.
-        $conditions = $cart->lines->reject(function ($line) {
-            return ! $this->discount->purchasableConditions->first(function ($item) use ($line) {
+        // Get the first condition line where the qty check passes.
+        $conditions = $cart->lines->reject(function ($line) use ($minQty) {
+            $match = $this->discount->purchasableConditions->first(function ($item) use ($line) {
                 return $item->purchasable_type == Product::class &&
                     $item->purchasable_id == $line->purchasable->product->id;
             });
+
+            return ! $match || ($minQty && $line->quantity < $minQty);
         });
 
-        $totalQuantity = $conditions->sum('quantity');
-
-        if (! $conditions->count() || ($minQty && $totalQuantity < $minQty)) {
+        if (! $conditions->count()) {
             return $cart;
         }
 
         // How many products are rewarded?
         $totalRewardQty = $this->getRewardQuantity(
-            $totalQuantity,
+            $conditions->sum('quantity'),
             $minQty,
             $rewardQty,
             $maxRewardQty
@@ -97,18 +99,9 @@ class BuyXGetY extends AbstractDiscountType
                 continue;
             }
 
-            $remainder = (int) floor($remainingRewardQty);
-            $qtyToAllocate = $remainder;
+            $remainder = $rewardLine->quantity % $remainingRewardQty;
 
-            if ($rewardLine->quantity < $remainder) {
-                $remainder = $rewardLine->quantity % $remainingRewardQty;
-                $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
-            }
-
-            if ($rewardLine->quantity == 1 && $remainder) {
-                $qtyToAllocate = 1;
-                $remainder = $remainder - 1;
-            }
+            $qtyToAllocate = (int) floor(($remainingRewardQty - $remainder) / $rewardLine->quantity);
 
             if (! $qtyToAllocate) {
                 continue;
@@ -119,8 +112,7 @@ class BuyXGetY extends AbstractDiscountType
                 quantity: $qtyToAllocate
             ));
 
-            $conditionQtyToAllocate = $qtyToAllocate * ($minQty - $rewardQty);
-
+            $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
             $conditions->each(function ($conditionLine) use ($affectedLines, &$conditionQtyToAllocate) {
                 if (! $conditionQtyToAllocate) {
                     return;
@@ -132,7 +124,7 @@ class BuyXGetY extends AbstractDiscountType
 
                     $affectedLines->push(new DiscountBreakdownLine(
                         line: $conditionLine,
-                        quantity: $qtyCanBeApplied
+                        quantity: $conditionQtyToAllocate
                     ));
                 }
             });
@@ -140,9 +132,8 @@ class BuyXGetY extends AbstractDiscountType
             $remainingRewardQty -= $qtyToAllocate;
 
             $subTotal = $rewardLine->subTotal->value;
-            $unitPrice = $rewardLine->unitPrice->value;
 
-            $lineDiscountTotal = $unitPrice * $qtyToAllocate;
+            $lineDiscountTotal = $subTotal * $qtyToAllocate;
             $discountTotal += $lineDiscountTotal;
 
             $rewardLine->discountTotal = new Price(
