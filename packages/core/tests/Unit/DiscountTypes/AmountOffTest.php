@@ -13,6 +13,7 @@ use Lunar\Models\Discount;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
 
 /**
@@ -970,5 +971,155 @@ class AmountOffTest extends TestCase
         $this->assertEquals(10800, $cart->total->value);
         $this->assertEquals(1800, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
+    }
+    
+    /**
+     * @test
+     */
+    public function can_apply_discount_with_max_user_uses()
+    {
+        $currency = Currency::getDefault();
+
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+            
+        $user = User::factory()->create();
+            
+        $this->actingAs($user);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 2,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'uses' => 0,
+            'max_uses' => 10,
+            'max_uses_per_user' => 2,
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10,
+                ],
+            ],
+        ]);
+        
+        $discount->users()->sync([
+            $user->id
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $cart = $cart->calculate();
+
+        $this->assertEquals(1000, $cart->discountTotal->value);
+        $this->assertEquals(1200, $cart->total->value);
+        $this->assertEquals(1000, $cart->subTotal->value);
+    }
+
+    /**
+     * @test
+     */
+    public function cannot_apply_discount_with_max_user_uses()
+    {
+        $currency = Currency::getDefault();
+
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+            
+        $user = User::factory()->create();
+            
+        $this->actingAs($user);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 2,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'uses' => 0,
+            'max_uses' => 10,
+            'max_uses_per_user' => 1,
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10,
+                ],
+            ],
+        ]);
+        
+        $discount->users()->sync([
+            $user->id
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $cart = $cart->calculate();
+
+        $this->assertEquals(0, $cart->discountTotal->value);
+        $this->assertEquals(2400, $cart->total->value);
+        $this->assertEquals(2000, $cart->subTotal->value);
     }
 }

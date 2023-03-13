@@ -47,6 +47,12 @@
                       />
                     </x-hub::input.group>
                 </div>
+                
+                <div>
+                    <x-hub::input.group for="max_uses_per_user" :error="$errors->first('discount.max_uses_per_user')" :label="__('adminhub::inputs.max_uses_per_user.label')" instructions="Leave blank for unlimited uses.">
+                        <x-hub::input.text type="number" wire:model="discount.max_uses_per_user" />
+                    </x-hub::input.group>
+                </div>
             </div>
 
 
