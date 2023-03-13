@@ -972,7 +972,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(1800, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
     }
-    
+
     /**
      * @test
      */
@@ -983,9 +983,9 @@ class AmountOffTest extends TestCase
         $customerGroup = CustomerGroup::getDefault();
 
         $channel = Channel::getDefault();
-            
+
         $user = User::factory()->create();
-            
+
         $this->actingAs($user);
 
         $cart = Cart::factory()->create([
@@ -1022,9 +1022,9 @@ class AmountOffTest extends TestCase
                 ],
             ],
         ]);
-        
+
         $discount->users()->sync([
-            $user->id
+            $user->id,
         ]);
 
         $discount->customerGroups()->sync([
@@ -1058,9 +1058,9 @@ class AmountOffTest extends TestCase
         $customerGroup = CustomerGroup::getDefault();
 
         $channel = Channel::getDefault();
-            
+
         $user = User::factory()->create();
-            
+
         $this->actingAs($user);
 
         $cart = Cart::factory()->create([
@@ -1097,9 +1097,9 @@ class AmountOffTest extends TestCase
                 ],
             ],
         ]);
-        
+
         $discount->users()->sync([
-            $user->id
+            $user->id,
         ]);
 
         $discount->customerGroups()->sync([

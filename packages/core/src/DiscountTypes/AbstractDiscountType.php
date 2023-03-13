@@ -40,9 +40,9 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     public function markAsUsed(): self
     {
         $this->discount->uses = $this->discount->uses + 1;
-        
+
         if ($user = Auth::user()) {
-            $this->discount->customers()->attach($user);    
+            $this->discount->customers()->attach($user);
         }
 
         return $this;
@@ -81,7 +81,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         $validMinSpend = $minSpend ? $minSpend < $lines->sum('subTotal.value') : true;
 
         $validMaxUses = $this->discount->max_uses ? $this->discount->uses < $this->discount->max_uses : true;
-            
+
         if ($validMaxUses && $this->discount->max_uses_per_user) {
             $user = Auth::user();
             $validMaxUses = $user && ($this->usesByUser($user) < $this->discount->max_uses_per_user);
@@ -107,7 +107,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
 
         return $this;
     }
-    
+
     /**
      * Check how many times this discount has been used by the logged in user's customers
      *
@@ -118,6 +118,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     {
         return $this->discount->users()
             ->whereUserId($user->getKey())
-            ->count();   
+            ->count();
     }
 }
