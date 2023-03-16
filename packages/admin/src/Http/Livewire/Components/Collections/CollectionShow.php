@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Facades\ModelManifest;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
@@ -111,7 +112,9 @@ class CollectionShow extends Component
      */
     public function getAvailableAttributesProperty()
     {
-        return Attribute::whereAttributeType(Collection::class)->orderBy('position')->get();
+        return Attribute::whereAttributeType(
+            ModelManifest::getRegisteredModelClass(Collection::class)
+        )->orderBy('position')->get();
     }
 
     /**
