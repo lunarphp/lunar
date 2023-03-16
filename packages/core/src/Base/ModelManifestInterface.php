@@ -24,6 +24,14 @@ interface ModelManifestInterface
     public function getRegisteredModel(string $baseModelClass): Model;
 
     /**
+     * Get the registered model class for a base model class.
+     *
+     * @param  string  $baseModelClass
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getRegisteredModelClass(string $baseModelClass): string;
+
+    /**
      * Get the morph class base model.
      *
      * @param  string  $morphClass

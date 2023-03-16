@@ -4,6 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Facades\ModelManifest;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
@@ -67,9 +68,9 @@ abstract class AbstractAttribute extends Component
     public function getAttributeTypesProperty()
     {
         return [
-            ProductType::class => class_basename(ProductType::class),
+            ModelManifest::getRegisteredModelClass(ProductType::class) => class_basename(ProductType::class),
             'Lunar\Models\Order' => 'Order',
-            Collection::class => class_basename(Collection::class),
+            ModelManifest::getRegisteredModelClass(Collection::class) => class_basename(Collection::class),
         ];
     }
 

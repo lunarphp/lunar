@@ -5,6 +5,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Facades\ModelManifest;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Attribute;
@@ -136,11 +137,11 @@ abstract class AbstractProductType extends Component
     public function getGroups($type)
     {
         if ($type == 'products') {
-            $type = Product::class;
+            $type = ModelManifest::getRegisteredModelClass(Product::class);
         }
 
         if ($type == 'variants') {
-            $type = ProductVariant::class;
+            $type = ModelManifest::getRegisteredModelClass(ProductVariant::class);
         }
 
         return AttributeGroup::whereAttributableType($type)->with([
@@ -198,12 +199,12 @@ abstract class AbstractProductType extends Component
     public function getAvailableAttributes($type)
     {
         if ($type == 'products') {
-            $type = Product::class;
+            $type = ModelManifest::getRegisteredModelClass(Product::class);
             $existing = $this->selectedProductAttributes;
         }
 
         if ($type == 'variants') {
-            $type = ProductVariant::class;
+            $type = ModelManifest::getRegisteredModelClass(ProductVariant::class);
             $existing = $this->selectedVariantAttributes;
         }
 

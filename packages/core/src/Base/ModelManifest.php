@@ -51,6 +51,17 @@ class ModelManifest implements ModelManifestInterface
     }
 
     /**
+     * Get the registered model class for a base model class.
+     *
+     * @param  string  $baseModelClass
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getRegisteredModelClass(string $baseModelClass): string
+    {
+        return $this->models->get($baseModelClass) ?? $baseModelClass;
+    }
+
+    /**
      * Removes model from manifest.
      *
      * @param  string  $baseModelClass

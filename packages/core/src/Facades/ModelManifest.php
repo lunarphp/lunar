@@ -12,6 +12,7 @@ use Lunar\Base\ModelManifestInterface;
  * @method static \Illuminate\Support\Collection register(Collection $models)
  * @method static \Illuminate\Support\Collection getRegisteredModels()
  * @method static \Illuminate\Database\Eloquent\Model getRegisteredModel(string $baseModelClass)
+ * @method static \Illuminate\Database\Eloquent\Model getRegisteredModelClass(string $baseModelClass)
  * @method static void removeModel(string $baseModelClass)
  * @method static void swapModel(string $currentModelClass, string $newModelClass)
  * @method static string getMorphClassBaseModel(string $morphClass)

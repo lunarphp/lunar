@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Attribute;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
@@ -16,10 +17,15 @@ class ProductTypeCreate extends AbstractProductType
      */
     public function mount()
     {
-        $this->productType = new ProductType();
+        $this->productType = ProductType::make();
 
-        $this->selectedProductAttributes = Attribute::system(Product::class)->get();
-        $this->selectedVariantAttributes = Attribute::system(ProductVariant::class)->get();
+        $this->selectedProductAttributes = Attribute::system(
+            ModelManifest::getRegisteredModelClass(Product::class)
+        )->get();
+
+        $this->selectedVariantAttributes = Attribute::system(
+            ModelManifest::getRegisteredModelClass(ProductVariant::class)
+        )->get();
     }
 
     /**

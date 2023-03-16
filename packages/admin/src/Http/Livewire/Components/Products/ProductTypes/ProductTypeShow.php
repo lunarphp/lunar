@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
 use Illuminate\Support\Facades\DB;
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Attribute;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
@@ -14,14 +15,20 @@ class ProductTypeShow extends AbstractProductType
 
     public function mount()
     {
-        $systemProductAttributes = Attribute::system(Product::class)->get();
-        $systemVariantAttribues = Attribute::system(ProductVariant::class)->get();
+        $systemProductAttributes = Attribute::system(
+            ModelManifest::getRegisteredModelClass(Product::class)
+        )->get();
+
+        $systemVariantAttribues = Attribute::system(
+            ModelManifest::getRegisteredModelClass(ProductVariant::class)
+        )->get();
+
         $this->selectedProductAttributes = $this->productType->mappedAttributes
-            ->filter(fn ($att) => $att->attribute_type == Product::class)
+            ->filter(fn ($att) => $att->attribute_type == ModelManifest::getRegisteredModelClass(Product::class))
             ->merge($systemProductAttributes);
 
         $this->selectedVariantAttributes = $this->productType->mappedAttributes
-            ->filter(fn ($att) => $att->attribute_type == ProductVariant::class)
+            ->filter(fn ($att) => $att->attribute_type == ModelManifest::getRegisteredModelClass(ProductVariant::class))
             ->merge($systemVariantAttribues);
     }
 

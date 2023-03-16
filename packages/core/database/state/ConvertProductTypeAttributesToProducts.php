@@ -4,6 +4,7 @@ namespace Lunar\Database\State;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 
@@ -23,15 +24,15 @@ class ConvertProductTypeAttributesToProducts
         }
 
         DB::table("{$prefix}attributes")
-            ->whereAttributeType(ProductType::class)
+            ->whereAttributeType(ModelManifest::getRegisteredModelClass(ProductType::class))
             ->update([
-                'attribute_type' => Product::class,
+                'attribute_type' => ModelManifest::getRegisteredModelClass(Product::class),
             ]);
 
         DB::table("{$prefix}attribute_groups")
-            ->whereAttributableType(ProductType::class)
+            ->whereAttributableType(ModelManifest::getRegisteredModelClass(ProductType::class))
             ->update([
-                'attributable_type' => Product::class,
+                'attributable_type' => ModelManifest::getRegisteredModelClass(Product::class),
             ]);
     }
 
