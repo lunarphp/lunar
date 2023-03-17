@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use ReflectionClass;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 trait CachesProperties
@@ -11,6 +12,21 @@ trait CachesProperties
         static::retrieved(function ($model) {
             $model->restoreProperties();
         });
+    }
+    
+    public function refresh()
+    {
+        parent::refresh();
+
+        $ro = new ReflectionClass($this);
+
+        foreach ($this->cachableProperties as $property) {
+            $defaultValue = $ro->getProperty($property)->getDefaultValue();
+
+            $this->{$property} = $defaultValue;
+        }
+
+        return $this;
     }
 
     /**
