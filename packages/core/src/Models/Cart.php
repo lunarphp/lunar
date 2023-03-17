@@ -532,7 +532,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute($this->refresh()->calculate())
-            ->then(fn () => $this->refresh()->order);
+            ->then(fn () => $this->order->refresh());
     }
 
     /**
