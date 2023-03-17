@@ -62,6 +62,7 @@ class Cart extends BaseModel
         'subTotal',
         'shippingTotal',
         'taxTotal',
+        'discounts',
         'discountTotal',
         'discountBreakdown',
         'total',
