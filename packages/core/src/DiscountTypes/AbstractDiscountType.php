@@ -4,6 +4,7 @@ namespace Lunar\DiscountTypes;
 
 use Illuminate\Support\Collection;
 use Lunar\Base\DiscountTypeInterface;
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Models\Cart;
 use Lunar\Models\Discount;
 
@@ -76,5 +77,23 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         $validMaxUses = $this->discount->max_uses ? $this->discount->uses < $this->discount->max_uses : true;
 
         return $validCoupon && $validMinSpend && $validMaxUses;
+    }
+
+    /**
+     * Check if discount's conditions met.
+     *
+     * @param  Cart  $cart
+     * @param  Lunar\Base\ValueObjects\Cart\DiscountBreakdown  $breakdown
+     * @return self
+     */
+    protected function addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)
+    {
+        if (! $cart->discountBreakdown) {
+            $cart->discountBreakdown = collect();
+        }
+
+        $cart->discountBreakdown->push($breakdown);
+
+        return $this;
     }
 }
