@@ -509,7 +509,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ShippingOption|null
     {
-        if (! $this->shippingAddress) {
+        if (! $this->shippingAddress?->shipping_option) {
             return null;
         }
 

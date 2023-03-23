@@ -44,7 +44,7 @@ final class ApplyShipping
 
     private function getShippingOption(Cart $cart)
     {
-        if (! $cart->shippingAddress) {
+        if (! $cart->shippingAddress?->shipping_option) {
             return null;
         }
 
