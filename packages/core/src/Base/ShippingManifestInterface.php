@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Cart;
@@ -29,6 +30,23 @@ interface ShippingManifestInterface
      * @return self
      */
     public function clearOptions();
+
+    /**
+     * Define closure to retrieve shipping option
+     *
+     * @param  Closure  $closure
+     * @return self
+     */
+    public function getOptionUsing(Closure $closure): self;
+
+    /**
+     * Retrieve shipping option for a given cart by identifier
+     *
+     * @param  \Lunar\Models\Cart  $cart
+     * @param  string  $identifier
+     * @return self
+     */
+    public function getOption(Cart $cart, $identifier): ?ShippingOption;
 
     /**
      * Return available options for a given cart.
