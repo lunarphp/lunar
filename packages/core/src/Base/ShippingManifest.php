@@ -42,6 +42,16 @@ class ShippingManifest implements ShippingManifestInterface
     /**
      * {@inheritDoc}
      */
+    public function addOptions(Collection $options)
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function clearOptions()
     {
         $this->options = collect();
