@@ -48,8 +48,6 @@ final class ApplyShipping
             return null;
         }
 
-        return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
-            return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
-        });
+        return ShippingManifest::getOption($cart, $cart->shippingAddress->shipping_option);
     }
 }

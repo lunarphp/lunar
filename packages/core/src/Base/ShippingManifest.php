@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Closure;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\DataTypes\ShippingOption;
@@ -13,6 +14,8 @@ class ShippingManifest implements ShippingManifestInterface
      * The collection of available shipping options.
      */
     public Collection $options;
+
+    public ?Closure $getOptionUsing = null;
 
     /**
      * Initiate the class.
@@ -57,6 +60,30 @@ class ShippingManifest implements ShippingManifestInterface
         $this->options = collect();
 
         return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOptionUsing(Closure $closure): self
+    {
+        $this->getOptionUsing = $closure;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOption(Cart $cart, $identifier): ?ShippingOption
+    {
+        if (blank($this->getOptionUsing)) {
+            return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
+                return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
+            });
+        }
+
+        return call_user_func($this->getOptionUsing, ...func_get_args());
     }
 
     /**
