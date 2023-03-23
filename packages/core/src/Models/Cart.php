@@ -462,9 +462,7 @@ class Cart extends BaseModel
             return null;
         }
 
-        return ShippingManifest::getOptions($this)->first(function ($option) {
-            return $option->getIdentifier() == $this->shippingAddress->shipping_option;
-        });
+        return ShippingManifest::getOption($this, $this->shippingAddress->shipping_option);
     }
 
     /**
