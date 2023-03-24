@@ -8,6 +8,7 @@ use Lunar\Models\Brand;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Price;
@@ -985,14 +986,19 @@ class AmountOffTest extends TestCase
         $channel = Channel::getDefault();
 
         $user = User::factory()->create();
+        $customer = Customer::factory()->create();
+        $customer->customerGroups()->attach($customerGroup);
+
+        $user->customers()->attach($customer);
 
         $this->actingAs($user);
 
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
-            'user_id' => $user->getKey(),
         ]);
+
+        $cart->user()->associate($user);
 
         $purchasableA = ProductVariant::factory()->create();
 
@@ -1061,6 +1067,10 @@ class AmountOffTest extends TestCase
         $channel = Channel::getDefault();
 
         $user = User::factory()->create();
+        $customer = Customer::factory()->create();
+        $customer->customerGroups()->attach($customerGroup);
+
+        $user->customers()->attach($customer);
 
         $this->actingAs($user);
 
@@ -1068,6 +1078,8 @@ class AmountOffTest extends TestCase
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
         ]);
+
+        $cart->user()->associate($user);
 
         $purchasableA = ProductVariant::factory()->create();
 
