@@ -316,7 +316,7 @@ class Cart extends BaseModel
                 $this->add(
                     purchasable: $line['purchasable'],
                     quantity: $line['quantity'],
-                    meta: $line['meta'] ?? null,
+                    meta: (array) $line['meta'] ?? null,
                     refresh: false
                 );
             });
