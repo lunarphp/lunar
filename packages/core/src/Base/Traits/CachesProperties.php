@@ -13,7 +13,7 @@ trait CachesProperties
             $model->restoreProperties();
         });
     }
-    
+
     public function refresh()
     {
         parent::refresh();

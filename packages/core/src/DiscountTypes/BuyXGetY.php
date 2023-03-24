@@ -77,7 +77,6 @@ class BuyXGetY extends AbstractDiscountType
             $maxRewardQty
         );
 
-
         if (! $totalRewardQty) {
             return $cart;
         }
@@ -95,7 +94,6 @@ class BuyXGetY extends AbstractDiscountType
             });
         })->sortBy('subTotal.value');
 
-
         foreach ($rewardLines as $rewardLine) {
             if (! $remainingRewardQty) {
                 continue;
@@ -103,11 +101,10 @@ class BuyXGetY extends AbstractDiscountType
 
             $remainder = $rewardLine->quantity % $remainingRewardQty;
 
-
             $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
 
-            if (!$remainder && $remainingRewardQty < $rewardLine->quantity) {
-               $qtyToAllocate = $remainingRewardQty;
+            if (! $remainder && $remainingRewardQty < $rewardLine->quantity) {
+                $qtyToAllocate = $remainingRewardQty;
             }
 
             if (! $qtyToAllocate) {
@@ -118,7 +115,6 @@ class BuyXGetY extends AbstractDiscountType
                 line: $rewardLine,
                 quantity: $qtyToAllocate
             ));
-
 
             $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
             $conditions->each(function ($conditionLine) use ($affectedLines, &$conditionQtyToAllocate) {
