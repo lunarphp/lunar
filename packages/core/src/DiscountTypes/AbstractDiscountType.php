@@ -83,8 +83,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         $validMaxUses = $this->discount->max_uses ? $this->discount->uses < $this->discount->max_uses : true;
 
         if ($validMaxUses && $this->discount->max_uses_per_user) {
-            $user = Auth::user();
-            $validMaxUses = $user && ($this->usesByUser($user) < $this->discount->max_uses_per_user);
+            $validMaxUses = $cart->user && ($this->usesByUser($cart->user) < $this->discount->max_uses_per_user);
         }
 
         return $validCoupon && $validMinSpend && $validMaxUses;
