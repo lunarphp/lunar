@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Added the ability to specify the maximum length of textarea fields in the admin hub
-
+- Added discount breakdowns to cart and order models in https://github.com/lunarphp/lunar/pull/884
 
 ## 0.2-RC2
 
