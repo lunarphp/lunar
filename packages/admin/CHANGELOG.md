@@ -10,8 +10,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Fixed an issue that prevented bulk actions from remembering the selected rows.
 
-### Changed
-
 ### Added
 
 - Added the ability to specify the maximum length of textarea fields in the admin hub
