@@ -37,11 +37,11 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      *
      * @return self
      */
-    public function markAsUsed(): self
+    public function markAsUsed(Cart $cart): self
     {
         $this->discount->uses = $this->discount->uses + 1;
 
-        if ($user = Auth::user()) {
+        if ($user = $cart->user) {
             $this->discount->users()->attach($user);
         }
 

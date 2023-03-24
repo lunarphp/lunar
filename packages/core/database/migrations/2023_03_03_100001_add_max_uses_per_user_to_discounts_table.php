@@ -9,7 +9,7 @@ class AddMaxUsesPerUserToDiscountsTable extends Migration
     public function up()
     {
         Schema::table($this->prefix.'discounts', function (Blueprint $table) {
-            $table->mediumInteger('max_uses')->unsigned()->nullable()->after('max_uses');
+            $table->mediumInteger('max_uses_per_user')->unsigned()->nullable()->after('max_uses');
         });
     }
 
