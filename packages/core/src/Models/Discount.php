@@ -57,6 +57,16 @@ class Discount extends BaseModel
         return DiscountFactory::new();
     }
 
+    public function users()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            config('auth.providers.users.model'),
+            "{$prefix}discount_user"
+        )->withTimestamps();
+    }
+
     /**
      * Return the purchasables relationship.
      *

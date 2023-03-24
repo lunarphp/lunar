@@ -587,7 +587,6 @@ class BuyXGetYTest extends TestCase
         /**
          * Discount set up.
          */
-
         $discountA = Discount::factory()->create([
             'type' => BuyXGetY::class,
             'priority' => 1,
