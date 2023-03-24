@@ -2,7 +2,9 @@
 
 namespace Lunar\DiscountTypes;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Lunar\Base\DiscountTypeInterface;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Models\Cart;
@@ -35,9 +37,13 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      *
      * @return self
      */
-    public function markAsUsed(): self
+    public function markAsUsed(Cart $cart): self
     {
         $this->discount->uses = $this->discount->uses + 1;
+
+        if ($user = $cart->user) {
+            $this->discount->users()->attach($user);
+        }
 
         return $this;
     }
@@ -76,6 +82,10 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
 
         $validMaxUses = $this->discount->max_uses ? $this->discount->uses < $this->discount->max_uses : true;
 
+        if ($validMaxUses && $this->discount->max_uses_per_user) {
+            $validMaxUses = $cart->user && ($this->usesByUser($cart->user) < $this->discount->max_uses_per_user);
+        }
+
         return $validCoupon && $validMinSpend && $validMaxUses;
     }
 
@@ -95,5 +105,18 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         $cart->discountBreakdown->push($breakdown);
 
         return $this;
+    }
+
+    /**
+     * Check how many times this discount has been used by the logged in user's customers
+     *
+     * @param  Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return int
+     */
+    protected function usesByUser(Authenticatable $user)
+    {
+        return $this->discount->users()
+            ->whereUserId($user->getKey())
+            ->count();
     }
 }
