@@ -22,6 +22,7 @@ use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\FreeItem;
 use Lunar\Base\ValueObjects\Cart\Promotion;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
@@ -61,7 +62,9 @@ class Cart extends BaseModel
         'subTotal',
         'shippingTotal',
         'taxTotal',
+        'discounts',
         'discountTotal',
+        'discountBreakdown',
         'total',
         'taxBreakdown',
         'promotions',
@@ -98,6 +101,13 @@ class Cart extends BaseModel
      * @var null|Price
      */
     public ?Price $discountTotal = null;
+
+    /**
+     * All the discount breakdowns for the cart.
+     *
+     * @var null|Collection<DiscountBreakdown>
+     */
+    public ?Collection $discountBreakdown = null;
 
     /**
      * The cart total.
@@ -522,7 +532,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute($this->refresh()->calculate())
-            ->then(fn () => $this->refresh()->order);
+            ->then(fn () => $this->order->refresh());
     }
 
     /**

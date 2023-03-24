@@ -32,6 +32,7 @@ class CreateOrder extends AbstractAction
                 'sub_total' => $cart->subTotal->value,
                 'total' => $cart->total->value,
                 'discount_total' => $cart->discountTotal?->value,
+                'discount_breakdown' => [],
                 'shipping_total' => $cart->shippingTotal?->value ?: 0,
                 'tax_breakdown' => $cart->taxBreakdown->map(function ($tax) {
                     return [
@@ -54,6 +55,7 @@ class CreateOrder extends AbstractAction
 
             $orderLines = $cart->lines->map(function ($line) {
                 return [
+                    'cart_line_id' => $line->id,
                     'purchasable_type' => $line->purchasable_type,
                     'purchasable_id' => $line->purchasable_id,
                     'type' => $line->purchasable->getType(),
@@ -120,7 +122,31 @@ class CreateOrder extends AbstractAction
                 ]);
             }
 
-            $order->lines()->createMany($orderLines->toArray());
+            $cartLinesMappedToOrderLines = [];
+            foreach ($orderLines as $orderLine) {
+                $orderLineModel = $order->lines()->create(collect($orderLine)->except(['cart_line_id'])->all());
+
+                if (isset($orderLine['cart_line_id'])) {
+                    $cartLinesMappedToOrderLines[$orderLine['cart_line_id']] = $orderLineModel;
+                }
+            }
+
+            $discountBreakdown = ($cart->discountBreakdown ?? collect())->map(function ($discount) use ($cartLinesMappedToOrderLines) {
+                return (object) [
+                    'discount_id' => $discount->discount->id,
+                    'lines' => $discount->lines->map(function ($discountLine) use ($cartLinesMappedToOrderLines) {
+                        return (object) [
+                            'quantity' => $discountLine->quantity,
+                            'line' => $cartLinesMappedToOrderLines[$discountLine->line->id],
+                        ];
+                    }),
+                    'total' => $discount->price,
+                ];
+            })->values()->all();
+
+            $order->update([
+                'discount_breakdown' => $discountBreakdown,
+            ]);
 
             $order->addresses()->createMany($addresses->toArray());
 

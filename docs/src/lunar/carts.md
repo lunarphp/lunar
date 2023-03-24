@@ -94,12 +94,22 @@ access to the following: `value`, `formatted`, `decimal`
 $cart->total; // The total price value for the cart
 $cart->subTotal; // The cart sub total, excluding tax
 $cart->taxAmount; // The monetary value for the amount of tax applied.
-$cart->discountTotal; // The monetary value for the discount total.
 $cart->taxBreakdown; // This is a collection of all taxes applied across all lines.
+$cart->discountTotal; // The monetary value for the discount total.
+$cart->discountBreakdown; // This is a collection of how discounts were calculated
 
 foreach ($cart->taxBreakdown as $taxRate) {
     $taxRate->name
     $taxRate->total->value
+}
+
+foreach ($cart->discountBreakdown as $discountBreakdown) {
+    $discountBreakdown->discount_id
+    foreach ($discountBreakdown->lines as $discountLine) {
+        $discountLine->quantity
+        $discountLine->line
+    }
+    $discountBreakdown->total->value
 }
 ```
 
