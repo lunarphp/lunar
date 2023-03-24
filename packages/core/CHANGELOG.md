@@ -8,14 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- Fixed serialisation issue on `tax_breakdown` when creating an order.
+- Cart cached properties should now refresh correctly when calculating.
 
 ### Changed
 
+- The GetUnitPrice action will now use the cart user if present rather than the authenticated user.
+- Discounts will now take other discounts into account before they apply their own logic.
+- Cart meta is now cast to an `array` when adding a purchasable.
 
 ### Added
 
-- Added the ability to specify the maximum length of textarea fields in the admin hub
 - Added discount breakdowns to cart and order models in https://github.com/lunarphp/lunar/pull/884
+- Added max uses by user on discounts.
 
 ## 0.2-RC2
 
@@ -39,29 +44,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-* Fix/get_class of extended polymoprhic model by @wychoong in https://github.com/lunarphp/lunar/pull/807
-* Use boolean mode for scout driver  by @afbora in https://github.com/lunarphp/lunar/pull/808
-* Hotfix [0.2] - Fix language deletion by @alecritson in https://github.com/lunarphp/lunar/pull/811
-* fixed the minSpend condition on Discount Feature by @0xenm21 in https://github.com/lunarphp/lunar/pull/823
-* Add correct params to TransactionObserver by @ryanmitchell in https://github.com/lunarphp/lunar/pull/815
-* Fix issue when discount relation dates are null by @ryanmitchell in https://github.com/lunarphp/lunar/pull/797
-* Hotfix [0.2] - Fix duplicate language code on tests by @alecritson in https://github.com/lunarphp/lunar/pull/802
-* Hotfix [0.2] - Add test to save cart coupon by @alecritson in https://github.com/lunarphp/lunar/pull/804
-* [0.2] Hotfix - Delete CartLineManager.php by @alecritson in https://github.com/lunarphp/lunar/pull/777
-* [0.2] Hotfix - Add active scope to user/cart association by @alecritson in https://github.com/lunarphp/lunar/pull/754
+- Fix/get_class of extended polymoprhic model by @wychoong in https://github.com/lunarphp/lunar/pull/807
+- Use boolean mode for scout driver by @afbora in https://github.com/lunarphp/lunar/pull/808
+- Hotfix [0.2] - Fix language deletion by @alecritson in https://github.com/lunarphp/lunar/pull/811
+- fixed the minSpend condition on Discount Feature by @0xenm21 in https://github.com/lunarphp/lunar/pull/823
+- Add correct params to TransactionObserver by @ryanmitchell in https://github.com/lunarphp/lunar/pull/815
+- Fix issue when discount relation dates are null by @ryanmitchell in https://github.com/lunarphp/lunar/pull/797
+- Hotfix [0.2] - Fix duplicate language code on tests by @alecritson in https://github.com/lunarphp/lunar/pull/802
+- Hotfix [0.2] - Add test to save cart coupon by @alecritson in https://github.com/lunarphp/lunar/pull/804
+- [0.2] Hotfix - Delete CartLineManager.php by @alecritson in https://github.com/lunarphp/lunar/pull/777
+- [0.2] Hotfix - Add active scope to user/cart association by @alecritson in https://github.com/lunarphp/lunar/pull/754
 
 ### Changed
 
-* [0.2] Cart refactor by @alecritson in https://github.com/lunarphp/lunar/pull/676
+- [0.2] Cart refactor by @alecritson in https://github.com/lunarphp/lunar/pull/676
 
 ### Added
 
-* Increment discount uses as part of order creation by @ryanmitchell in https://github.com/lunarphp/lunar/pull/814
-* Add products to discount limitations by @ryanmitchell in https://github.com/lunarphp/lunar/pull/813
-* [0.2] Add clearOptions() method to ShippingManifest by @webcraft in https://github.com/lunarphp/lunar/pull/775
-* [0.2] Allow extending of validation rules by @wychoong in https://github.com/lunarphp/lunar/pull/443
-* [0.2] Discounts by @alecritson in https://github.com/lunarphp/lunar/pull/324
-* [0.2] Feat - Ability to mark orders as new customer by @alecritson in https://github.com/lunarphp/lunar/pull/769
+- Increment discount uses as part of order creation by @ryanmitchell in https://github.com/lunarphp/lunar/pull/814
+- Add products to discount limitations by @ryanmitchell in https://github.com/lunarphp/lunar/pull/813
+- [0.2] Add clearOptions() method to ShippingManifest by @webcraft in https://github.com/lunarphp/lunar/pull/775
+- [0.2] Allow extending of validation rules by @wychoong in https://github.com/lunarphp/lunar/pull/443
+- [0.2] Discounts by @alecritson in https://github.com/lunarphp/lunar/pull/324
+- [0.2] Feat - Ability to mark orders as new customer by @alecritson in https://github.com/lunarphp/lunar/pull/769
 
 **Full Changelog**: https://github.com/lunarphp/lunar/compare/0.1.4...0.2-rc1
 
