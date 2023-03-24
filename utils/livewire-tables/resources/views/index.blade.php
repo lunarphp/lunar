@@ -180,7 +180,7 @@
                                     Bulk Actions
                                 </p>
 
-                                <div class="lt-flex lt-flex-wrap lt-gap-4 lt-mt-2">
+                                <div class="lt-flex lt-flex-wrap lt-gap-4 lt-mt-2" wire:ignore>
                                     @foreach ($this->bulkActions as $action)
                                         @livewire($action->getName(), [
                                             'label' => $action->label,
