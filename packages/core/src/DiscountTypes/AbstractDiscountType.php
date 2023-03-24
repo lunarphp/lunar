@@ -4,7 +4,6 @@ namespace Lunar\DiscountTypes;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Lunar\Base\DiscountTypeInterface;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Models\Cart;
