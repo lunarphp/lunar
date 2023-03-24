@@ -42,7 +42,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         $this->discount->uses = $this->discount->uses + 1;
 
         if ($user = Auth::user()) {
-            $this->discount->customers()->attach($user);
+            $this->discount->users()->attach($user);
         }
 
         return $this;
