@@ -258,12 +258,12 @@ class Cart extends BaseModel
     public function calculate(): Cart
     {
         $cart = app(Pipeline::class)
-        ->send($this)
-        ->through(
-            config('lunar.cart.pipelines.cart', [
-                Calculate::class,
-            ])
-        )->thenReturn();
+            ->send($this)
+            ->through(
+                config('lunar.cart.pipelines.cart', [
+                    Calculate::class,
+                ])
+            )->thenReturn();
 
         return $cart->cacheProperties();
     }
@@ -458,7 +458,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ShippingOption|null
     {
-        if (! $this->shippingAddress?->shipping_option) {
+        if (!$this->shippingAddress?->shipping_option) {
             return null;
         }
 
