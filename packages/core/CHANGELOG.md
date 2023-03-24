@@ -4,16 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## 0.2-RC3
-
-### Fixed
-
-### Changed
+## [Unreleased]
 
 ### Added
 
 - Added the ability to specify the maximum length of textarea fields in the admin hub
+
+## 0.2-RC3
+
+### Fixed
+
+- Fixed serialisation issue on `tax_breakdown` when creating an order.
+- Cart cached properties should now refresh correctly when calculating.
+
+### Changed
+
+- The GetUnitPrice action will now use the cart user if present rather than the authenticated user.
+- Discounts will now take other discounts into account before they apply their own logic.
+- Cart meta is now cast to an `array` when adding a purchasable.
+
+### Added
+
 - Added discount breakdowns to cart and order models in https://github.com/lunarphp/lunar/pull/884
+- Added max uses by user on discounts.
 
 ## 0.2-RC2
 

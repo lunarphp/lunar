@@ -29,6 +29,21 @@ trait CachesProperties
         return $this;
     }
 
+    public function refresh()
+    {
+        parent::refresh();
+
+        $ro = new ReflectionClass($this);
+
+        foreach ($this->cachableProperties as $property) {
+            $defaultValue = $ro->getProperty($property)->getDefaultValue();
+
+            $this->{$property} = $defaultValue;
+        }
+
+        return $this;
+    }
+
     /**
      * Returns a unique key for the cache.
      *
