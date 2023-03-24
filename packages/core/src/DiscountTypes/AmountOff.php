@@ -80,6 +80,13 @@ class AmountOff extends AbstractDiscountType
             } else {
                 $amount = $roundedChunk;
             }
+
+            // If this discount already has a greater discount value
+            // don't add this one as they already have a better deal.
+            if ($line->discountTotal->value > $amount) {
+                continue;
+            }
+
             $remaining -= $amount;
 
             $line->discountTotal = new Price(
@@ -190,12 +197,18 @@ class AmountOff extends AbstractDiscountType
 
         foreach ($lines as $line) {
             $subTotal = $line->subTotal->value;
+            $subTotalDiscounted = $line->subTotalDiscounted?->value ?: 0;
+
+            if ($subTotalDiscounted) {
+                $subTotal = $subTotalDiscounted;
+            }
+
             $amount = (int) round($subTotal * ($value / 100));
 
             $totalDiscount += $amount;
 
             $line->discountTotal = new Price(
-                $amount,
+                $subTotalDiscounted + $amount,
                 $cart->currency,
                 1
             );
