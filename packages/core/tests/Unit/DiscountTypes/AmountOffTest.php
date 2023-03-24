@@ -991,6 +991,7 @@ class AmountOffTest extends TestCase
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
+            'user_id' => $user->getKey(),
         ]);
 
         $purchasableA = ProductVariant::factory()->create();
