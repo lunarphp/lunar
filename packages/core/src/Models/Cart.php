@@ -62,6 +62,7 @@ class Cart extends BaseModel
         'subTotal',
         'shippingTotal',
         'taxTotal',
+        'discounts',
         'discountTotal',
         'discountBreakdown',
         'total',
@@ -315,7 +316,7 @@ class Cart extends BaseModel
                 $this->add(
                     purchasable: $line['purchasable'],
                     quantity: $line['quantity'],
-                    meta: $line['meta'] ?? null,
+                    meta: (array) $line['meta'] ?? null,
                     refresh: false
                 );
             });
@@ -531,7 +532,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute($this->refresh()->calculate())
-            ->then(fn () => $this->refresh()->order);
+            ->then(fn () => $this->order->refresh());
     }
 
     /**

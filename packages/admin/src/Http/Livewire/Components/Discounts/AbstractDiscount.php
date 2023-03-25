@@ -341,6 +341,7 @@ abstract class AbstractDiscount extends Component
 
         DB::transaction(function () {
             $this->discount->max_uses = $this->discount->max_uses ?: null;
+            $this->discount->max_uses_per_user = $this->discount->max_uses_per_user ?: null;
             $this->discount->save();
 
             $this->discount->brands()->sync(
@@ -431,6 +432,7 @@ abstract class AbstractDiscount extends Component
                 'has_errors' => $this->errorBag->hasAny([
                     'minPrices.*.price',
                     'discount.max_uses',
+                    'discount.max_uses_per_user',
                 ]),
             ],
             [

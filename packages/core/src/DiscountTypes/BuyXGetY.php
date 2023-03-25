@@ -33,7 +33,7 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function getRewardQuantity($linesQuantity, $minQty, $rewardQty, $maxRewardQty = null)
     {
-        $result = ($linesQuantity / $minQty) * $rewardQty;
+        $result = ($linesQuantity / ($minQty ?: 1)) * $rewardQty;
 
         if ($maxRewardQty && $result > $maxRewardQty) {
             return $maxRewardQty;
@@ -101,7 +101,11 @@ class BuyXGetY extends AbstractDiscountType
 
             $remainder = $rewardLine->quantity % $remainingRewardQty;
 
-            $qtyToAllocate = (int) floor(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+            $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+
+            if (! $remainder && $remainingRewardQty < $rewardLine->quantity) {
+                $qtyToAllocate = $remainingRewardQty;
+            }
 
             if (! $qtyToAllocate) {
                 continue;
@@ -132,8 +136,9 @@ class BuyXGetY extends AbstractDiscountType
             $remainingRewardQty -= $qtyToAllocate;
 
             $subTotal = $rewardLine->subTotal->value;
+            $unitPrice = $rewardLine->unitPrice->value;
 
-            $lineDiscountTotal = $subTotal * $qtyToAllocate;
+            $lineDiscountTotal = $unitPrice * $qtyToAllocate;
             $discountTotal += $lineDiscountTotal;
 
             $rewardLine->discountTotal = new Price(
