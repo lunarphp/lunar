@@ -6,8 +6,8 @@ This repository serves as a monorepo for the main packages that make up Lunar.
 
 ## Requirements
 
-- PHP ^8.0
-- Laravel 8+
+- PHP ^8.1
+- Laravel 9+
 - MySQL 5.7+ / PostgreSQL 9.2+
 
 ## Documentation

@@ -7,8 +7,8 @@ The admin hub is an open source app that allows you to manage all aspects of you
 ---
 
 ## Requirements
-- PHP ^8.0
-- Laravel 8+
+- PHP ^8.1
+- Laravel 9+
 - MySQL 5.7+ / PostgreSQL 9.2+
 - Lunar Core
 
