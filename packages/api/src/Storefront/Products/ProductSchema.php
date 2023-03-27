@@ -6,15 +6,18 @@ use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Fields\SoftDelete;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use LaravelJsonApi\Eloquent\SoftDeletes;
 use LaravelJsonApi\HashIds\HashId;
 use Lunar\Models\Product;
 
 class ProductSchema extends Schema
 {
+    use SoftDeletes;
 
     /**
      * The model the schema corresponds to.
@@ -38,6 +41,7 @@ class ProductSchema extends Schema
             ArrayHash::make('attribute_data'),
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
+            SoftDelete::make('deletedAt'),
         ];
     }
 
