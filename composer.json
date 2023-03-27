@@ -6,10 +6,6 @@
         {
             "name": "LunarPHP",
             "homepage": "https://lunarphp.io/"
-        },
-        {
-            "name": "Lunar",
-            "homepage": "https://lunarphp.io/"
         }
     ],
     "require": {
@@ -28,14 +24,16 @@
         "php": "^8.1",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
-        "spatie/laravel-medialibrary": "^9.0.0|^10.0.0"
+        "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
+        "laravel-json-api/laravel": "3.x-dev"
     },
     "require-dev": {
         "laravel/pint": "^1.1",
         "mockery/mockery": "^1.4.4",
         "orchestra/testbench": "^7.0|^8.0",
         "phpunit/phpunit": "^9.5",
-        "symplify/monorepo-builder": "^10.0"
+        "symplify/monorepo-builder": "^10.0",
+        "laravel-json-api/testing": "^2.1"
     },
     "autoload": {
         "files": [
@@ -51,11 +49,13 @@
             "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
             "Lunar\\Licensing\\": "packages/licensing/src",
             "Lunar\\LivewireTables\\": "utils/livewire-tables/src/",
-            "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"
+            "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src",
+            "Lunar\\Api\\": "packages/api/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
+            "Lunar\\Api\\Tests\\": "packages/api/tests",
             "Lunar\\Hub\\Tests\\": "packages/admin/tests",
             "Lunar\\Licensing\\Tests\\": "packages/licensing/tests",
             "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
@@ -66,6 +66,7 @@
     "extra": {
         "laravel": {
             "providers": [
+                "Lunar\\Api\\ApiHubServiceProvider",
                 "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
                 "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\Licensing\\LicensingServiceProvider",
@@ -75,6 +76,7 @@
         }
     },
     "replace": {
+        "lunarphp/api": "self.version",
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
         "lunarphp/licensing": "self.version",
