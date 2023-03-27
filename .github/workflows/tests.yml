@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         php: [8.0, 8.1]
-        laravel: [8.*, 9.*]
+        laravel: [9.*, 10.*]
         phpunit-versions: ['latest']
     name: PHP:${{ matrix.php }} / Laravel:${{ matrix.laravel }}
     steps:
