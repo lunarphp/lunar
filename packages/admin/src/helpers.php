@@ -57,7 +57,7 @@ if (! function_exists('db_date')) {
             $select .= " as {$alias}";
         }
 
-        return DB::RAW($select);
+        return $select;
     }
 }
 

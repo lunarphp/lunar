@@ -452,7 +452,7 @@ class CustomerShow extends Component
 
         $thisPeriod = $this->customer->orders()->select(
             DB::RAW('SUM(sub_total) as sub_total'),
-            db_date('placed_at', '%Y-%m', 'format_date')
+            DB::RAW(db_date('placed_at', '%Y-%m', 'format_date'))
         )->whereNotNull('placed_at')
             ->whereBetween('placed_at', [
                 $start,
@@ -461,7 +461,7 @@ class CustomerShow extends Component
 
         $previousPeriod = $this->customer->orders()->select(
             DB::RAW('SUM(sub_total) as sub_total'),
-            db_date('placed_at', '%Y-%m', 'format_date')
+            DB::RAW(db_date('placed_at', '%Y-%m', 'format_date'))
         )->whereNotNull('placed_at')
             ->whereBetween('placed_at', [
                 $start->clone()->subYear(),
