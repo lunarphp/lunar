@@ -3,6 +3,7 @@
 namespace Lunar\Api;
 
 use Illuminate\Support\ServiceProvider;
+use LaravelJsonApi\HashIds\HashId;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -19,5 +20,13 @@ class ApiServiceProvider extends ServiceProvider
             'checkout' => \Lunar\Api\Checkout\Server::class,
             'admin' => \Lunar\Api\Admin\Server::class,
         ]);
+
+        // Set Hash IDs connection
+        $this->app['config']->set('hashids.connections.lunar', [
+            'salt' => '',
+            'length' => 16,
+        ]);
+
+        HashId::withDefaultConnection('lunar');
     }
 }

@@ -4,11 +4,11 @@ namespace Lunar\Api\Storefront\ProductTypes;
 
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
-use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use LaravelJsonApi\HashIds\HashId;
 use Lunar\Models\ProductType;
 
 class ProductTypeSchema extends Schema
@@ -29,7 +29,7 @@ class ProductTypeSchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
+            HashId::make(),
             Str::make('name'),
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),

@@ -5,13 +5,13 @@ namespace Lunar\Api\Storefront\Collections;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
-use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Number;
-use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use LaravelJsonApi\HashIds\HashId;
 use Lunar\Models\Collection;
 
 class CollectionSchema extends Schema
@@ -32,7 +32,7 @@ class CollectionSchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
+            HashId::make(),
             BelongsTo::make('group')->type('collection-groups'),
             BelongsTo::make('parent')->type('collections'),
             Number::make('_lft'),
