@@ -37,7 +37,7 @@
         "lunarphp/livewire-tables": "self.version",
         "lunarphp/core": "self.version",
         "livewire/livewire": "^2.0",
-        "lunarphp/licensing": "^0.1",
+        "lunarphp/licensing": "dev-feature/laravel_10",
         "barryvdh/laravel-dompdf": "^2.0"
     },
     "require-dev": {
