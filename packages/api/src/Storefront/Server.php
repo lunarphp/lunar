@@ -33,6 +33,8 @@ class Server extends BaseServer
     {
         return [
             Brands\BrandSchema::class,
+            CollectionGroups\CollectionGroupSchema::class,
+            Collections\CollectionSchema::class,
             Products\ProductSchema::class,
             ProductTypes\ProductTypeSchema::class,
         ];

@@ -92,6 +92,7 @@ class LunarServiceProvider extends ServiceProvider
     ];
 
     protected $policies = [
+        \Lunar\Models\Collection::class => \Lunar\Policies\DefaultPolicy::class,
         \Lunar\Models\Product::class => \Lunar\Policies\DefaultPolicy::class,
     ];
 
