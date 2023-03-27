@@ -23,7 +23,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lunar\\LunarServiceProvider"
+                "Lunar\\ApiServiceProvider"
             ]
         }
     },
