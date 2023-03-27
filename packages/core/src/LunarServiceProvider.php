@@ -13,6 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
@@ -88,6 +89,10 @@ class LunarServiceProvider extends ServiceProvider
         'urls',
         'search',
         'payments',
+    ];
+
+    protected $policies = [
+        \Lunar\Models\Product::class => \Lunar\Policies\DefaultPolicy::class,
     ];
 
     protected $root = __DIR__.'/..';
@@ -227,6 +232,8 @@ class LunarServiceProvider extends ServiceProvider
             Logout::class,
             [CartSessionAuthListener::class, 'logout']
         );
+
+        $this->registerPolicies();
     }
 
     protected function registerAddonManifest()
@@ -321,5 +328,12 @@ class LunarServiceProvider extends ServiceProvider
                      );
             }
         });
+    }
+
+    public function registerPolicies()
+    {
+        foreach ($this->policies as $key => $value) {
+            Gate::policy($key, $value);
+        }
     }
 }

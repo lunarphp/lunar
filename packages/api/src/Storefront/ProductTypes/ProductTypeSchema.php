@@ -1,19 +1,17 @@
 <?php
 
-namespace Lunar\Api\Storefront\Products;
+namespace Lunar\Api\Storefront\ProductTypes;
 
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
-use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
-use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
-use Lunar\Models\Product;
+use Lunar\Models\ProductType;
 
-class ProductSchema extends Schema
+class ProductTypeSchema extends Schema
 {
 
     /**
@@ -21,7 +19,7 @@ class ProductSchema extends Schema
      *
      * @var string
      */
-    public static string $model = Product::class;
+    public static string $model = ProductType::class;
 
     /**
      * Get the resource fields.
@@ -32,10 +30,7 @@ class ProductSchema extends Schema
     {
         return [
             ID::make(),
-            BelongsTo::make('brand'),
-            BelongsTo::make('productType'),
-            Str::make('status'),
-            ArrayHash::make('attribute_data'),
+            Str::make('name'),
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
         ];

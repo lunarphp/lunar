@@ -32,7 +32,9 @@ class Server extends BaseServer
     protected function allSchemas(): array
     {
         return [
+            Brands\BrandSchema::class,
             Products\ProductSchema::class,
+            ProductTypes\ProductTypeSchema::class,
         ];
     }
 }
