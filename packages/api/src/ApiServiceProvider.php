@@ -16,6 +16,8 @@ class ApiServiceProvider extends ServiceProvider
         // Register JSON:API Servers
         $this->app['config']->set('jsonapi.servers', [
             'storefront' => \Lunar\Api\Storefront\Server::class,
+            'checkout' => \Lunar\Api\Checkout\Server::class,
+            'admin' => \Lunar\Api\Admin\Server::class,
         ]);
     }
 }

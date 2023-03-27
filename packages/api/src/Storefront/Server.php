@@ -12,7 +12,7 @@ class Server extends BaseServer
      *
      * @var string
      */
-    protected string $baseUri = '/lunar/api/storefront';
+    protected string $baseUri = '/api/storefront';
 
     /**
      * Bootstrap the server when it is handling an HTTP request.
@@ -32,7 +32,7 @@ class Server extends BaseServer
     protected function allSchemas(): array
     {
         return [
-            // @TODO
+            Products\ProductSchema::class,
         ];
     }
 }
