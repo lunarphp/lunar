@@ -17,7 +17,7 @@ class CalculateTax
      */
     public function handle(Cart $cart, Closure $next)
     {
-        $taxBreakDown = new TaxBreakdown;
+        $taxBreakDownAmounts = collect();
 
         foreach ($cart->lines as $cartLine) {
             $subTotal = $cartLine->subTotal?->value;
@@ -28,26 +28,33 @@ class CalculateTax
                 $subTotal = $cartLine->subTotalDiscounted?->value;
             }
 
-            $taxBreakDown = Taxes::setShippingAddress($cart->shippingAddress)
+            $taxBreakDownResult = Taxes::setShippingAddress($cart->shippingAddress)
                 ->setBillingAddress($cart->billingAddress)
                 ->setCurrency($cart->currency)
                 ->setPurchasable($cartLine->purchasable)
                 ->setCartLine($cartLine)
                 ->getBreakdown($subTotal);
 
-            $taxTotal = $taxBreakDown->amounts->sum('price.value');
+            $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
+                $taxBreakDownResult->amounts
+            );
 
-            $cartLine->taxBreakdown = $taxBreakDown;
+            $taxTotal = $taxBreakDownResult->amounts->sum('price.value');
+
+            $cartLine->taxBreakdown = $taxBreakDownResult;
 
             $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
             $cartLine->taxAmount = new Price($taxTotal, $cart->currency, $unitQuantity);
             $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
         }
 
+        $taxBreakDown = new TaxBreakdown($taxBreakDownAmounts);
+
         $taxTotal = $cart->lines->sum('taxAmount.value');
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
         if ($shippingAddress = $cart->shippingAddress) {
+
             $taxTotal += $shippingAddress->shippingTaxTotal?->value;
             $shippingTaxBreakdown = $shippingAddress->taxBreakdown;
 
