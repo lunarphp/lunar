@@ -54,6 +54,7 @@ class CalculateTax
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
         if ($shippingAddress = $cart->shippingAddress) {
+
             $taxTotal += $shippingAddress->shippingTaxTotal?->value;
             $shippingTaxBreakdown = $shippingAddress->taxBreakdown;
 
