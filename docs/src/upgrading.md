@@ -23,6 +23,14 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
+## 0.3
+
+### High Impact
+
+#### Support for Laravel 8 removed
+
+To install Lunar 0.3 you will need to be on at least Laravel 9. 0.3 introduces support for Laravel 10.
+
 ## 0.2
 
 ### High Impact
