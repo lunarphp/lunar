@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Lunar\Hub\Auth\HubGuard;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
 use Lunar\Hub\Console\Commands\InstallHub;
