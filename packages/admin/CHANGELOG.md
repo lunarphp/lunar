@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Laravel 8 support removed.
 - Laravel 10 support added.
+- Changed Auth guard to use Laravel's default driver.
+- Updated `db_date` function to return just the formmatted string.
 
 ## 0.2-RC3
 
