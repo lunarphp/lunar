@@ -13,7 +13,7 @@ If you would prefer to install Lunar into your own Laravel application, please f
 
 ## Requirements
 
-- PHP ^8.0
+- PHP ^8.1
 - MySQL 5.7+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - GD PHP extension (used for image manipulation)

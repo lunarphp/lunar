@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Lunar\Hub\Auth\HubGuard;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
 use Lunar\Hub\Console\Commands\InstallHub;
@@ -125,6 +126,7 @@ use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
 use Lunar\Models\Product;
+use Lunar\Hub\Models\Staff;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
@@ -191,12 +193,6 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
 
         Config::set('livewire-tables.translate_namespace', 'adminhub');
-
-        Auth::resolved(function ($auth) {
-            $auth->extend('lunarhub', function ($app, $name, array $config) {
-                return $app->make(\Lunar\Hub\Auth\HubGuard::class);
-            });
-        });
 
         $this->registerLivewireComponents();
         $this->registerAuthGuard();
@@ -498,8 +494,14 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerAuthGuard()
     {
+        $this->app['config']->set('auth.providers.staff', [
+            'driver' => 'eloquent',
+            'model' => Staff::class,
+        ]);
+
         $this->app['config']->set('auth.guards.staff', [
-            'driver' => 'lunarhub',
+            'driver' => 'session',
+            'provider' => 'staff'
         ]);
     }
 
