@@ -15,7 +15,9 @@
     "require": {
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^6.1|^7.0",
-        "doctrine/dbal": "^3.5",
+        "doctrine/dbal": "3.3.7",
+        "guzzlehttp/guzzle": "^7.3",
+        "illuminate/http": "^8.0|^9.0",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.0|^9.0",
         "laravel/scout": "^9.4",
@@ -48,6 +50,7 @@
             "Lunar\\Database\\State\\": "packages/core/database/state",
             "Lunar\\Hub\\": "packages/admin/src",
             "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
+            "Lunar\\Licensing\\": "packages/licensing/src",
             "Lunar\\LivewireTables\\": "utils/livewire-tables/src/",
             "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"
         }
@@ -55,6 +58,7 @@
     "autoload-dev": {
         "psr-4": {
             "Lunar\\Hub\\Tests\\": "packages/admin/tests",
+            "Lunar\\Licensing\\Tests\\": "packages/licensing/tests",
             "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
             "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
             "Lunar\\Tests\\": "packages/core/tests"
@@ -65,6 +69,7 @@
             "providers": [
                 "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
                 "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
+                "Lunar\\Licensing\\LicensingServiceProvider",
                 "Lunar\\Hub\\AdminHubServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
@@ -73,6 +78,7 @@
     "replace": {
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
+        "lunarphp/licensing": "self.version",
         "lunarphp/livewire-tables": "self.version",
         "lunarphp/scout-database-engine": "self.version"
     },
