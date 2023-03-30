@@ -15,7 +15,7 @@
     "require": {
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^7.0|^8.0",
-        "doctrine/dbal": "3.3.7",
+        "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/http": "^9.0|^10.0",
         "kalnoy/nestedset": "^6.0",
