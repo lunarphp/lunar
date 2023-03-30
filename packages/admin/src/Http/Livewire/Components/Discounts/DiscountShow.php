@@ -10,15 +10,11 @@ class DiscountShow extends AbstractDiscount
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 
     /**
      * The confirmation text to delete the discount.
-     *
-     * @var string|null
      */
     public ?string $deleteConfirm = null;
 

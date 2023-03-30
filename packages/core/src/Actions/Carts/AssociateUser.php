@@ -11,10 +11,7 @@ class AssociateUser extends AbstractAction
     /**
      * Execute the action
      *
-     * @param  Cart  $cart
-     * @param  User  $user
      * @param  string  $policy
-     * @return self
      */
     public function execute(Cart $cart, User $user, $policy = 'merge'): self
     {

@@ -9,8 +9,6 @@ class ChannelShow extends Component
 {
     /**
      * The instance of the channel we want to edit.
-     *
-     * @var Channel
      */
     public Channel $channel;
 

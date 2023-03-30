@@ -9,8 +9,6 @@ class BrandShow extends Component
 {
     /**
      * The instance of the brand we want to edit.
-     *
-     * @var Brand
      */
     public Brand $brand;
 

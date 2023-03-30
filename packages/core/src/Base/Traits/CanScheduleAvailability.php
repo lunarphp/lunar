@@ -12,7 +12,6 @@ trait CanScheduleAvailability
     /**
      * Return whether or not the models provided are suitable for scheduling.
      *
-     * @param  \Illuminate\Support\Collection  $models
      * @return void
      */
     abstract protected function validateScheduling(Collection $models);
@@ -20,11 +19,7 @@ trait CanScheduleAvailability
     /**
      * Schedule models for a given relation.
      *
-     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $relation
      * @param  mixed  $models
-     * @param  DateTime|null  $starts
-     * @param  DateTime|null  $ends
-     * @param  array  $pivotData
      * @return void
      */
     protected function schedule(
@@ -61,9 +56,7 @@ trait CanScheduleAvailability
     /**
      * Unschedule models for a relation.
      *
-     * @param  Relation  $relation
      * @param  mixed  $models
-     * @param  array  $pivotData
      * @return void
      */
     protected function unschedule(Relation $relation, $models, array $pivotData = [])
@@ -94,7 +87,6 @@ trait CanScheduleAvailability
      * Returns the data for the sync update.
      *
      * @param  \Illuminate\Support\Collection  $models
-     * @param  array|null  $pivotData
      * @return \Illuminate\Support\Collection
      */
     private function getScheduleMapping($models, array $pivotData = null)

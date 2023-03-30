@@ -11,8 +11,6 @@ abstract class BaseModel extends Model
 
     /**
      * Create a new instance of the Model.
-     *
-     * @param  array  $attributes
      */
     public function __construct(array $attributes = [])
     {

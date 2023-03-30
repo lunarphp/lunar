@@ -14,7 +14,6 @@ class SetShippingOption extends AbstractAction
      *
      * @param  CartLine  $cartLine
      * @param  ShippingOption  $customerGroups
-     * @return self
      */
     public function execute(
         Cart $cart,

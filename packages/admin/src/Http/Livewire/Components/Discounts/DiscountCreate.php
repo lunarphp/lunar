@@ -11,8 +11,6 @@ class DiscountCreate extends AbstractDiscount
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 

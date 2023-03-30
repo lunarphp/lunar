@@ -92,8 +92,6 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -164,8 +162,6 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -258,8 +254,6 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register the observers used in Lunar.
-     *
-     * @return void
      */
     protected function registerObservers(): void
     {
@@ -278,8 +272,6 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register the blueprint macros.
-     *
-     * @return void
      */
     protected function registerBlueprintMacros(): void
     {

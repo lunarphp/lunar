@@ -92,8 +92,6 @@ class Order extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\OrderFactory
      */
     protected static function newFactory(): OrderFactory
     {

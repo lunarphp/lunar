@@ -64,9 +64,6 @@ abstract class BaseColumn extends Component
 
     /**
      * Set the property value for sortable.
-     *
-     * @param  bool  $sortable
-     * @return self
      */
     public function sortable(bool $sortable = true): self
     {
@@ -133,7 +130,6 @@ abstract class BaseColumn extends Component
      * Set the record property.
      *
      * @param  mixed  $record
-     * @return self
      */
     public function record($record): self
     {

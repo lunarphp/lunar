@@ -49,8 +49,6 @@ class Discount extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return DiscountFactory
      */
     protected static function newFactory(): DiscountFactory
     {
@@ -114,8 +112,6 @@ class Discount extends BaseModel
 
     /**
      * Return the customer groups relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {
@@ -145,7 +141,6 @@ class Discount extends BaseModel
     /**
      * Return the active scope.
      *
-     * @param  Builder  $query
      * @return void
      */
     public function scopeActive(Builder $query)

@@ -22,15 +22,11 @@ class Tags extends Component
 
     /**
      * The model to associate tags to.
-     *
-     * @var Model
      */
     public Model $taggable;
 
     /**
      * The search term for showing relevant available tags.
-     *
-     * @var string|null
      */
     public ?string $searchTerm = null;
 

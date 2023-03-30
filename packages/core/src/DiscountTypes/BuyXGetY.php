@@ -14,8 +14,6 @@ class BuyXGetY extends AbstractDiscountType
 {
     /**
      * Return the name of the discount.
-     *
-     * @return string
      */
     public function getName(): string
     {

@@ -32,8 +32,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * The available discounts
-     *
-     * @var null|Collection
      */
     protected ?Collection $discounts = null;
 
@@ -49,8 +47,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * The applied discounts.
-     *
-     * @var Collection
      */
     protected Collection $applied;
 
@@ -66,9 +62,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Set a single channel or a collection.
-     *
-     * @param  Channel|iterable  $channel
-     * @return self
      */
     public function channel(Channel|iterable $channel): self
     {
@@ -92,9 +85,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Set a single customer group or a collection.
-     *
-     * @param  CustomerGroup|iterable  $customerGroups
-     * @return self
      */
     public function customerGroup(CustomerGroup|iterable $customerGroups): self
     {
@@ -117,8 +107,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Return the applied channels.
-     *
-     * @return Collection
      */
     public function getChannels(): Collection
     {
@@ -127,8 +115,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Returns the available discounts.
-     *
-     * @return Collection
      */
     public function getDiscounts(): Collection
     {
@@ -170,8 +156,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Return the applied customer groups.
-     *
-     * @return Collection
      */
     public function getCustomerGroups(): Collection
     {

@@ -35,15 +35,11 @@ class CustomerShow extends Component
 
     /**
      * The current customer in view.
-     *
-     * @var \Lunar\Models\Customer
      */
     public Customer $customer;
 
     /**
      * An array of synced customer groups.
-     *
-     * @var array
      */
     public array $syncedGroups = [];
 
@@ -103,8 +99,6 @@ class CustomerShow extends Component
 
     /**
      * The current address we want to edit.
-     *
-     * @var Address|null
      */
     public ?Address $address = null;
 

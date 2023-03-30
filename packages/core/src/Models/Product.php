@@ -83,8 +83,6 @@ class Product extends BaseModel implements SpatieHasMedia
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductFactory
      */
     protected static function newFactory(): ProductFactory
     {
@@ -240,8 +238,6 @@ class Product extends BaseModel implements SpatieHasMedia
 
     /**
      * Return the customer groups relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {

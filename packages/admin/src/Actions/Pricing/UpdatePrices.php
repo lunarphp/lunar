@@ -12,8 +12,6 @@ class UpdatePrices
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
     public function execute(Model $owner, Collection $prices)
@@ -39,7 +37,6 @@ class UpdatePrices
     /**
      * Create or update a price.
      *
-     * @param  Model  $owner
      * @param  int  $tier
      * @param  int|null  $groupId
      * @param  float  $price

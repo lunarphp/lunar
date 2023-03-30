@@ -12,22 +12,16 @@ class BuyXGetY extends AbstractDiscountType
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 
     /**
      * The product discount conditions
-     *
-     * @var Collection
      */
     public Collection $conditions;
 
     /**
      * The product discount rewards
-     *
-     * @var Collection
      */
     public Collection $rewards;
 
@@ -147,7 +141,6 @@ class BuyXGetY extends AbstractDiscountType
     /**
      * Select products
      *
-     * @param  array  $ids
      * @param  string|null  $ref
      * @return void
      */

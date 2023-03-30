@@ -13,8 +13,6 @@ class AmountOff extends AbstractDiscountType
 {
     /**
      * Return the name of the discount.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -49,10 +47,6 @@ class AmountOff extends AbstractDiscountType
 
     /**
      * Apply fixed value discount
-     *
-     * @param  array  $values
-     * @param  Cart  $cart
-     * @return Cart
      */
     private function applyFixedValue(array $values, Cart $cart): Cart
     {
@@ -146,9 +140,6 @@ class AmountOff extends AbstractDiscountType
 
     /**
      * Return the eligible lines for the discount.
-     *
-     * @param  Cart  $cart
-     * @return \Illuminate\Support\Collection
      */
     protected function getEligibleLines(Cart $cart): \Illuminate\Support\Collection
     {

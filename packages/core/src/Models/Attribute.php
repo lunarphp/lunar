@@ -51,8 +51,6 @@ class Attribute extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\AttributeFactory
      */
     protected static function newFactory(): AttributeFactory
     {
@@ -79,8 +77,6 @@ class Attribute extends BaseModel
 
     /**
      * Return the attribuable relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function attributable(): MorphTo
     {
@@ -89,8 +85,6 @@ class Attribute extends BaseModel
 
     /**
      * Returns the attribute group relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function attributeGroup(): BelongsTo
     {
@@ -100,7 +94,6 @@ class Attribute extends BaseModel
     /**
      * Apply the system scope to the query builder.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $type
      * @return void
      */

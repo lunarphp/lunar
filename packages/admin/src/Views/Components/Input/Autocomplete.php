@@ -8,8 +8,6 @@ class Autocomplete extends Component
 {
     /**
      * Whether or not the input has an error to show.
-     *
-     * @var bool
      */
     public bool $error = false;
 

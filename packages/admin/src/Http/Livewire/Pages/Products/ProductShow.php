@@ -9,8 +9,6 @@ class ProductShow extends Component
 {
     /**
      * The Product we are currently editing.
-     *
-     * @var \Lunar\Models\Product
      */
     public Product $product;
 

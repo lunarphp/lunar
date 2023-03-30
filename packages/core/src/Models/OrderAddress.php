@@ -42,8 +42,6 @@ class OrderAddress extends BaseModel implements Addressable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\OrderAddressFactory
      */
     protected static function newFactory(): OrderAddressFactory
     {

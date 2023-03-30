@@ -405,6 +405,7 @@ class BuyXGetYTest extends TestCase
 
     /**
      * @test
+     *
      * @group flub
      *
      * Scenario

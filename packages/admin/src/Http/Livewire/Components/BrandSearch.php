@@ -10,8 +10,6 @@ class BrandSearch extends Component
 {
     /**
      * Should the browser be visible?
-     *
-     * @var bool
      */
     public bool $showBrowser = false;
 
@@ -31,15 +29,11 @@ class BrandSearch extends Component
 
     /**
      * Any existing brands to exclude from selecting.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $existing;
 
     /**
      * The currently selected brands.
-     *
-     * @var array
      */
     public array $selected = [];
 

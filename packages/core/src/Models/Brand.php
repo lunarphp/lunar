@@ -51,8 +51,6 @@ class Brand extends BaseModel implements SpatieHasMedia
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\BrandFactory
      */
     protected static function newFactory(): BrandFactory
     {
@@ -61,8 +59,6 @@ class Brand extends BaseModel implements SpatieHasMedia
 
     /**
      * Get the name of the index associated with the model.
-     *
-     * @return string
      */
     public function searchableAs(): string
     {
@@ -84,8 +80,6 @@ class Brand extends BaseModel implements SpatieHasMedia
 
     /**
      * Return the product relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function products(): HasMany
     {

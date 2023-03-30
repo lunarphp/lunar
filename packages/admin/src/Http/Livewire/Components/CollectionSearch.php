@@ -11,8 +11,6 @@ class CollectionSearch extends Component
 {
     /**
      * Should the browser be visible?
-     *
-     * @var bool
      */
     public bool $showBrowser = false;
 
@@ -32,15 +30,11 @@ class CollectionSearch extends Component
 
     /**
      * Any existing collections to exclude from selecting.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $existing;
 
     /**
      * The currently selected collections.
-     *
-     * @var array
      */
     public array $selected = [];
 

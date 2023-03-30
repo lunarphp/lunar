@@ -11,7 +11,6 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "creating" event.
      *
-     * @param  \Lunar\Models\OrderLine  $orderLine
      * @return void
      */
     public function creating(OrderLine $orderLine)
@@ -24,7 +23,6 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "updated" event.
      *
-     * @param  \Lunar\Models\OrderLine  $orderLine
      * @return void
      */
     public function updating(OrderLine $orderLine)

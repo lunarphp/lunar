@@ -17,8 +17,6 @@ class Dashboard extends Component
 {
     /**
      * The date range for the dashboard reports.
-     *
-     * @var array
      */
     public array $range = [
         'from' => null,
@@ -46,8 +44,6 @@ class Dashboard extends Component
 
     /**
      * Get the computed property for new products count.
-     *
-     * @return int
      */
     public function getNewProductsCountProperty(): int
     {

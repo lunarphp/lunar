@@ -18,8 +18,6 @@ class OrderShow extends Component
 
     /**
      * The current order in view.
-     *
-     * @var \Lunar\Models\Order
      */
     public Order $order;
 
@@ -39,64 +37,46 @@ class OrderShow extends Component
 
     /**
      * Whether all lines should be visible.
-     *
-     * @var bool
      */
     public bool $allLinesVisible = false;
 
     /**
      * The maximum lines to show on load.
-     *
-     * @var int
      */
     public int $maxLines = 5;
 
     /**
      * The new comment property.
-     *
-     * @var string
      */
     public string $comment = '';
 
     /**
      * Whether to show the update status modal.
-     *
-     * @var bool
      */
     public bool $showUpdateStatus = false;
 
     /**
      * Whether to show the address edit screen.
-     *
-     * @var bool
      */
     public bool $showShippingAddressEdit = false;
 
     /**
      * Whether to show the billing address edit.
-     *
-     * @var bool
      */
     public bool $showBillingAddressEdit = false;
 
     /**
      * The currently selected lines.
-     *
-     * @var array
      */
     public array $selectedLines = [];
 
     /**
      * Whether to show the refund panel.
-     *
-     * @var bool
      */
     public bool $showRefund = false;
 
     /**
      * Whether to show the capture panel.
-     *
-     * @var bool
      */
     public bool $showCapture = false;
 

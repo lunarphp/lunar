@@ -42,8 +42,6 @@ class TaxClass extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TaxClassFactory
      */
     protected static function newFactory(): TaxClassFactory
     {

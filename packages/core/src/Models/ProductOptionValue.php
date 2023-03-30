@@ -37,8 +37,6 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductOptionValueFactory
      */
     protected static function newFactory(): ProductOptionValueFactory
     {

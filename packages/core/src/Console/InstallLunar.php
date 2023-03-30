@@ -38,8 +38,6 @@ class InstallLunar extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle(): void
     {
@@ -258,7 +256,6 @@ class InstallLunar extends Command
      * Checks if config exists given a filename.
      *
      * @param  string  $fileName
-     * @return bool
      */
     private function configExists($fileName): bool
     {
@@ -271,8 +268,6 @@ class InstallLunar extends Command
 
     /**
      * Returns a prompt if config exists and ask to override it.
-     *
-     * @return bool
      */
     private function shouldOverwriteConfig(): bool
     {
@@ -286,7 +281,6 @@ class InstallLunar extends Command
      * Publishes configuration for the Service Provider.
      *
      * @param  bool  $forcePublish
-     * @return void
      */
     private function publishConfiguration($forcePublish = false): void
     {

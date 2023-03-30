@@ -15,15 +15,11 @@ class Status extends Component
 
     /**
      * The status label.
-     *
-     * @var string
      */
     public string $label;
 
     /**
      * The status color.
-     *
-     * @var string
      */
     public string $color;
 

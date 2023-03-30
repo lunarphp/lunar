@@ -36,8 +36,6 @@ class FileFieldtype extends Component
 
     /**
      * Array of selected assets.
-     *
-     * @var array
      */
     public array $selected = [];
 

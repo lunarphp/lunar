@@ -20,8 +20,6 @@ class Tag extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TagFactory
      */
     protected static function newFactory(): TagFactory
     {

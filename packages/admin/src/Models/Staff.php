@@ -17,8 +17,6 @@ class Staff extends Authenticatable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Hub\Database\Factories\StaffFactory
      */
     protected static function newFactory(): StaffFactory
     {
@@ -59,8 +57,6 @@ class Staff extends Authenticatable
 
     /**
      * Create a new instance of the Model.
-     *
-     * @param  array  $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -90,8 +86,6 @@ class Staff extends Authenticatable
 
     /**
      * Return the user permissions relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function permissions(): HasMany
     {
@@ -102,7 +96,6 @@ class Staff extends Authenticatable
      * Authorize an action via permissions.
      *
      * @param  string  $permission
-     * @return bool
      */
     public function authorize($permission): bool
     {

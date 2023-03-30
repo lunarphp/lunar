@@ -13,8 +13,6 @@ class UpdateTieredPricing
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $tieredPrices
      * @return \Illuminate\Support\Collection
      */
     public function execute(Model $owner, Collection $tieredPrices)
@@ -51,7 +49,6 @@ class UpdateTieredPricing
     /**
      * Create or update a price.
      *
-     * @param  Model  $owner
      * @param  int  $tier
      * @param  int|null  $groupId
      * @param  float  $price

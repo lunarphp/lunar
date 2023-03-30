@@ -89,8 +89,6 @@ class Manifest extends PackageManifest
 
     /**
      * Get a collection of our addons.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function addons(): Collection
     {

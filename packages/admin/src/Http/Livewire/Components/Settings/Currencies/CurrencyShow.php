@@ -15,8 +15,6 @@ class CurrencyShow extends Component
 
     /**
      * The instance of the currency we're viewing.
-     *
-     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 

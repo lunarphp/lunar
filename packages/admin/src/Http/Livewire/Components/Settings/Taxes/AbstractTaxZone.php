@@ -20,22 +20,16 @@ abstract class AbstractTaxZone extends Component
 
     /**
      * The instance of the Tax Zone.
-     *
-     * @var TaxZone
      */
     public TaxZone $taxZone;
 
     /**
      * The selected countries for the zone.
-     *
-     * @var array
      */
     public array $selectedCountries = [];
 
     /**
      * The selected states for the zone.
-     *
-     * @var array
      */
     public array $selectedStates = [];
 
@@ -69,22 +63,16 @@ abstract class AbstractTaxZone extends Component
 
     /**
      * The tax rates for the tax zone.
-     *
-     * @var array
      */
     public array $taxRates = [];
 
     /**
      * The tax rate amounts for the tax zone.
-     *
-     * @var array
      */
     public array $taxRateAmounts = [];
 
     /**
      * The linked customer groups.
-     *
-     * @var array
      */
     public array $customerGroups = [];
 
@@ -305,7 +293,6 @@ abstract class AbstractTaxZone extends Component
     /**
      * Sync states for the TaxZone.
      *
-     * @param  array  $selectedStates
      * @return void
      */
     protected function syncStates(array $selectedStates)

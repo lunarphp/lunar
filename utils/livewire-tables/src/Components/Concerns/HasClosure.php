@@ -15,9 +15,6 @@ trait HasClosure
 
     /**
      * Set the closure when returning the value of the column.
-     *
-     * @param  Closure  $closure
-     * @return self
      */
     public function value(Closure $closure): self
     {

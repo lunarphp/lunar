@@ -3,9 +3,7 @@
 namespace Lunar\Licensing\Tests\Unit;
 
 use Lunar\Licensing\License;
-use Lunar\Licensing\LicenseManager;
 use Lunar\Licensing\Tests\TestCase;
-use Illuminate\Support\Facades\Http;
 
 /**
  * @group hub.menu

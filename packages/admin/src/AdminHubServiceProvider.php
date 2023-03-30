@@ -119,13 +119,13 @@ use Lunar\Hub\Menu\OrderActionsMenu;
 use Lunar\Hub\Menu\SettingsMenu;
 use Lunar\Hub\Menu\SidebarMenu;
 use Lunar\Hub\Menu\SlotRegistry;
+use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tables\Builders\CustomersTableBuilder;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
 use Lunar\Models\Product;
-use Lunar\Hub\Models\Staff;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
@@ -500,7 +500,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
         $this->app['config']->set('auth.guards.staff', [
             'driver' => 'session',
-            'provider' => 'staff'
+            'provider' => 'staff',
         ]);
     }
 
