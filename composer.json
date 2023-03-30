@@ -14,10 +14,10 @@
     ],
     "require": {
         "barryvdh/laravel-dompdf": "^2.0",
-        "cartalyst/converter": "^6.1|^7.0",
+        "cartalyst/converter": "^7.0|^8.0",
         "doctrine/dbal": "3.3.7",
         "guzzlehttp/guzzle": "^7.3",
-        "illuminate/http": "^8.0|^9.0",
+        "illuminate/http": "^9.0|^10.0",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^9.0|^10.0",
         "laravel/scout": "^9.4|^10.0",
@@ -67,11 +67,11 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
                 "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
+                "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
                 "Lunar\\Licensing\\LicensingServiceProvider",
-                "Lunar\\Hub\\AdminHubServiceProvider",
-                "Lunar\\LunarServiceProvider"
+                "Lunar\\LunarServiceProvider",
+                "Lunar\\Hub\\AdminHubServiceProvider"
             ]
         }
     },
@@ -82,6 +82,6 @@
         "lunarphp/livewire-tables": "self.version",
         "lunarphp/scout-database-engine": "self.version"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
