@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added the ability to specify the maximum length of textarea fields in the admin hub
 
+## 0.2.1
+
+### Fixed
+
+- The `CalculateTax` pipeline should now correctly set the tax breakdown across the cart and lines.
+
 ## 0.2-RC3
 
 ### Fixed
