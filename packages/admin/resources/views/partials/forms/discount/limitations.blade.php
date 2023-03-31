@@ -142,7 +142,7 @@
                 </h4>
     
                 @livewire('hub.components.product-search', [
-                    'existing' => $selectedProducts->pluck('id'),
+                    'existing' => $selectedProducts->map(fn ($product) => ['id' => $product['id']]),
                     'ref' => 'discount-limitations',
                 ])
             </header>   
