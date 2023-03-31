@@ -28,8 +28,7 @@
         "php": "^8.1",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
-        "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
-        "yab/laravel-scout-mysql-driver": "^5.0"
+        "spatie/laravel-medialibrary": "^9.0.0|^10.0.0"
     },
     "require-dev": {
         "laravel/pint": "^1.1",
@@ -67,11 +66,11 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
+                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\Licensing\\LicensingServiceProvider",
-                "Lunar\\LunarServiceProvider",
-                "Lunar\\Hub\\AdminHubServiceProvider"
+                "Lunar\\Hub\\AdminHubServiceProvider",
+                "Lunar\\LunarServiceProvider"
             ]
         }
     },
