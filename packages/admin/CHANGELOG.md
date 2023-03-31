@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2.2
+
+### Fixed
+
+- Fixed wrong `$customer` variable on brand slot.
+
 ## 0.2-RC3
 
 ### Fixed
