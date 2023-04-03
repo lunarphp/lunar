@@ -563,7 +563,6 @@ class BuyXGetYTest extends TestCase
 
     /**
      * @test
-     * @group bubba
      */
     public function can_supplement_correct_quantities()
     {
@@ -643,50 +642,30 @@ class BuyXGetYTest extends TestCase
         ]);
 
         $lines = [
-            // [
-            //     'condition_quantity' => 30,
-            //     'reward_quantity' => 1,
-            //     'expected_discount' => 0,
-            //     'expected_subtotal' => 0,
-            // ],
-            // [
-            //     'condition_quantity' => 60,
-            //     'reward_quantity' => 1,
-            //     'expected_discount' => 2280,
-            //     'expected_subtotal' => 0,
-            // ],
             [
                 'condition_quantity' => 60,
                 'reward_quantity' => 3,
                 'expected_discount' => (2280 * 2),
                 'expected_subtotal' => 2280,
             ],
-            // [
-            //     'condition_quantity' => 10,
-            //     'reward_quantity' => 2,
-            //     'expected_discount' => 1000,
-            //     'expected_subtotal' => 2280,
-            // ],
-            // [
-            //     'condition_quantity' => 10,
-            //     'reward_quantity' => 3,
-            //     'expected_discount' => 1000,
-            // ],
-            // [
-            //     'condition_quantity' => 15,
-            //     'reward_quantity' => 3,
-            //     'expected_discount' => 1500,
-            // ],
-            // [
-            //     'condition_quantity' => 13,
-            //     'reward_quantity' => 3,
-            //     'expected_discount' => 1000,
-            // ],
-            // [
-            //     'condition_quantity' => 13,
-            //     'reward_quantity' => 2,
-            //     'expected_discount' => 1000,
-            // ]
+            [
+                'condition_quantity' => 60,
+                'reward_quantity' => 4,
+                'expected_discount' => (2280 * 2),
+                'expected_subtotal' => (2280 * 2),
+            ],
+            [
+                'condition_quantity' => 120,
+                'reward_quantity' => 4,
+                'expected_discount' => (2280 * 4),
+                'expected_subtotal' => 0,
+            ],
+            [
+                'condition_quantity' => 120,
+                'reward_quantity' => 1,
+                'expected_discount' => 2280,
+                'expected_subtotal' => 0,
+            ],
         ];
 
         foreach ($lines as $line) {

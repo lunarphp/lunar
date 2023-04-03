@@ -107,6 +107,11 @@ class BuyXGetY extends AbstractDiscountType
                 $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
             }
 
+            if ($rewardLine->quantity == 1 && $remainder) {
+                $qtyToAllocate = 1;
+                $remainder = $remainder - 1;
+            }
+
             if (! $qtyToAllocate) {
                 continue;
             }
