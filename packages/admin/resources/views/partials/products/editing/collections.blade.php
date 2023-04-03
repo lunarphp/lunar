@@ -25,7 +25,7 @@
 
                         <div class="flex grow">
                             <div class="grow flex gap-1.5 flex-wrap items-center">
-                                <strong class="rounded px-1.5 py-0.5 bg-blue-50 text-xs text-blue-600">
+                                <strong class="rounded px-1.5 py-0.5 bg-sky-50 text-xs text-sky-500">
                                     {{ $collection['group_name'] }}
                                 </strong>
 

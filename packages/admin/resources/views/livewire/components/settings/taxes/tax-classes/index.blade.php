@@ -95,7 +95,7 @@
 
                     <x-hub::table.cell>
                         <a href="#" wire:click.prevent="$set('taxClassId', {{ $taxClass->id }})"
-                            class="text-indigo-500 hover:underline">
+                            class="text-sky-500 hover:underline">
                             {{ __('adminhub::settings.taxes.tax-zones.index.table_row_action_text') }}
                         </a>
                     </x-hub::table.cell>

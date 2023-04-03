@@ -5,7 +5,7 @@
     </div>
     <div class="col-span-7">
       @if($availability['channels'][$channel->id]['enabled'])
-        <button type="button" class="text-indigo-500 hover:underline" wire:click="$set('availability.channels.{{ $channel->id }}.scheduling', true)">
+        <button type="button" class="text-sky-500 hover:underline" wire:click="$set('availability.channels.{{ $channel->id }}.scheduling', true)">
           @if($startDate = $availability['channels'][$channel->id]['starts_at'])
             @if($endDate = $availability['channels'][$channel->id]['ends_at'])
               {{ __('adminhub::partials.availability.channels.scheduled_range', [

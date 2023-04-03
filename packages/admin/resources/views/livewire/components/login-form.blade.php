@@ -10,7 +10,7 @@
 
         <div class="relative">
             <span @class([
-                'absolute inset-y-0 grid text-blue-600 left-3 place-content-center',
+                'absolute inset-y-0 grid text-sky-500 left-3 place-content-center',
                 '!text-red-600' => $errors->has('email'),
             ])>
                 <x-hub::icon ref="mail"
@@ -24,7 +24,7 @@
                    wire:model.defer="email"
                    placeholder="{{ __('adminhub::inputs.email') }}"
                    @class([
-                       'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
+                       'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
                        'border-red-600' => $errors->has('password'),
                        'border-gray-200 dark:border-gray-700' => !$errors->has('password'),
                    ]) />
@@ -45,7 +45,7 @@
 
         <div class="relative">
             <span @class([
-                'absolute inset-y-0 grid text-blue-600 left-3 place-content-center',
+                'absolute inset-y-0 grid text-sky-500 left-3 place-content-center',
                 '!text-red-600' => $errors->has('password'),
             ])>
                 <x-hub::icon ref="lock-closed"
@@ -59,7 +59,7 @@
                    wire:model.defer="password"
                    placeholder="{{ __('adminhub::inputs.password') }}"
                    @class([
-                       'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input',
+                       'w-full py-3 pl-10 pr-3 text-gray-900 dark:text-white rounded-md shadow-sm dark:bg-gray-800 sm:text-sm form-input focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500',
                        'border-red-600' => $errors->has('password'),
                        'border-gray-200 dark:border-gray-700' => !$errors->has('password'),
                    ]) />
@@ -103,7 +103,7 @@
     @endif
 
     <button type="submit"
-            class="w-full p-3 text-sm text-white transition bg-blue-600 rounded-md hover:bg-blue-500">
+            class="w-full p-3 text-sm text-white transition bg-sky-500 rounded-md hover:bg-sky-400">
         <div wire:loading.delay
              wire:target="login">
             <x-hub::loading-indicator class="w-5 h-5 mx-auto" />

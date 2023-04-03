@@ -2,7 +2,7 @@
     <header>
         <div class="flex items-center gap-4">
             <a href="{{ route('hub.brands.index') }}"
-               class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+               class="text-gray-600 rounded bg-gray-50 hover:bg-sky-500 hover:text-white"
                title="{{ __('adminhub::catalogue.brands.show.back_link_title') }}">
                 <x-hub::icon ref="chevron-left"
                              style="solid"

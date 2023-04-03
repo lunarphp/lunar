@@ -14,7 +14,7 @@
                     <button x-on:click.prevent="tab = 'search'"
                             class="px-3 py-2 text-sm font-medium rounded-md"
                             :class="{
-                                'bg-indigo-100 text-indigo-700': tab == 'search',
+                                'bg-sky-100 text-sky-700': tab == 'search',
                                 'text-gray-500 hover:text-gray-700': tab != 'search'
                             }">
                         {{ __('adminhub::components.collection-search.first_tab') }}
@@ -23,7 +23,7 @@
                     <button class="px-3 py-2 text-sm font-medium rounded-md"
                             @click.prevent="tab = 'selected'"
                             :class="{
-                                'bg-indigo-100 text-indigo-700': tab == 'selected',
+                                'bg-sky-100 text-sky-700': tab == 'selected',
                                 'text-gray-500 hover:text-gray-700': tab != 'selected'
                             }">
                         {{ __('adminhub::components.collection-search.second_tab') }}
@@ -38,7 +38,7 @@
 
                 @if ($this->searchTerm)
                     @if ($this->results->total() > $maxResults)
-                        <span class="block p-3 my-2 text-xs text-blue-600 rounded bg-blue-50">
+                        <span class="block p-3 my-2 text-xs text-sky-600 rounded bg-sky-50">
                             {{ __('adminhub::components.collection-search.max_results_exceeded', [
                                 'max' => $maxResults,
                                 'total' => $this->results->total(),
@@ -52,7 +52,7 @@
                                 'opacity-25' => $this->existingIds->contains($collection->id),
                             ])>
                                 <div class="truncate max-w-64">
-                                    <strong class="rounded px-1.5 py-0.5 mr-1 bg-blue-50 text-xs text-blue-600">
+                                    <strong class="rounded px-1.5 py-0.5 mr-1 bg-sky-50 text-xs text-sky-600">
                                         {{ $collection->group->name }}
                                     </strong>
 
@@ -70,7 +70,7 @@
                                             {{ __('adminhub::global.deselect') }}
                                         </button>
                                     @else
-                                        <button class="px-2 py-1 text-xs text-blue-700 border border-blue-200 rounded shadow-sm hover:bg-blue-50"
+                                        <button class="px-2 py-1 text-xs text-sky-700 border border-sky-200 rounded shadow-sm hover:bg-sky-50"
                                                 wire:click.prevent="selectCollection('{{ $collection->id }}')">
                                             {{ __('adminhub::global.select') }}
                                         </button>
@@ -98,7 +98,7 @@
                     <div class="flex items-center justify-between w-full px-2 py-2 text-sm text-left border rounded shadow-sm "
                          wire:key="selected_{{ $collection->id }}">
                         <div class="truncate max-w-64">
-                            <strong class="rounded px-1.5 py-0.5 mr-1 bg-blue-50 text-xs text-blue-600">
+                            <strong class="rounded px-1.5 py-0.5 mr-1 bg-sky-50 text-xs text-sky-600">
                                 {{ $collection->group->name }}
                             </strong>
 
