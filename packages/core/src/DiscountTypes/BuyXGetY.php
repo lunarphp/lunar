@@ -55,23 +55,23 @@ class BuyXGetY extends AbstractDiscountType
         $rewardQty = $data['reward_qty'] ?? 1;
         $maxRewardQty = $data['max_reward_qty'] ?? null;
 
-        // Get the first condition line where the qty check passes.
+        // Get all purchasables that are eligible.
         $conditions = $cart->lines->reject(function ($line) use ($minQty) {
-            $match = $this->discount->purchasableConditions->first(function ($item) use ($line) {
+            return !$this->discount->purchasableConditions->first(function ($item) use ($line) {
                 return $item->purchasable_type == Product::class &&
                     $item->purchasable_id == $line->purchasable->product->id;
             });
-
-            return ! $match || ($minQty && $line->quantity < $minQty);
         });
 
-        if (! $conditions->count()) {
+        $totalQuantity = $conditions->sum('quantity');
+
+        if (! $conditions->count() || ($minQty && $totalQuantity < $minQty)) {
             return $cart;
         }
 
         // How many products are rewarded?
         $totalRewardQty = $this->getRewardQuantity(
-            $conditions->sum('quantity'),
+            $totalQuantity,
             $minQty,
             $rewardQty,
             $maxRewardQty
