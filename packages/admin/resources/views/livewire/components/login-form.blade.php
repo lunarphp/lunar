@@ -79,7 +79,7 @@
                    name="remember-me"
                    type="checkbox"
                    wire:model.defer="remember"
-                   class="w-6 h-6 border-gray-200 rounded-md shadow-sm form-checkbox dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-offset-gray-800" />
+                   class="w-6 h-6 border-gray-200 rounded-md shadow-sm form-checkbox dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-offset-gray-800 text-sky-500 accent-sky-500 focus:ring-sky-500" />
 
             <span class="text-sm text-gray-500 dark:text-gray-400">
                 {{ __('adminhub::inputs.remember_me') }}
