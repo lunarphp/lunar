@@ -612,7 +612,7 @@ class BuyXGetYTest extends TestCase
             'data' => [
                 'min_qty' => 30,
                 'reward_qty' => 1,
-                'max_reward_qty' => 999
+                'max_reward_qty' => 999,
             ],
         ]);
 
@@ -688,7 +688,7 @@ class BuyXGetYTest extends TestCase
 
             $cart = $cart->calculate();
 
-            $discountedLine = $cart->lines->first(function ($line) use ($purchasableB){
+            $discountedLine = $cart->lines->first(function ($line) use ($purchasableB) {
                 return $line->purchasable_id == $purchasableB->id;
             });
             $this->assertEquals($line['expected_discount'], $discountedLine->discountTotal->value);
