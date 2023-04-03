@@ -17,8 +17,8 @@ class Calculate
     {
         $discountTotal = $cart->lines->sum('discountTotal.value');
 
-        $subTotal = $cart->lines->sum('subTotal.value') - $discountTotal;
-        $total = $cart->lines->sum('total.value');
+        $subTotal = $cart->lines->sum('subTotal.value');
+        $total = $subTotal - $discountTotal + ($cart->taxTotal->value ?? 0);
 
         // Get the shipping address
         if ($shippingAddress = $cart->shippingAddress) {
