@@ -67,7 +67,7 @@ class UpdateTieredPricing
         $currency = Currency::find($currencyId);
 
         $priceModel->fill([
-            'price' => (int) ($price * $currency->factor),
+            'price' => (int) bcmul($price, $currency->factor),
             'currency_id' => $currencyId,
             'customer_group_id' => $groupId,
             'tier' => $tier,
