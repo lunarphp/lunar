@@ -20,6 +20,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed Auth guard to use Laravel's default driver.
 - Updated `db_date` function to return just the formmatted string.
 
+## 0.2.3
+
+### Fixed
+
+- Non tiered pricing will now use the `bcmul` when saving.
+
+## 0.2.2
+
+### Fixed
+
+- Fixed wrong `$customer` variable on brand slot.
+
 ## 0.2-RC3
 
 ### Fixed
