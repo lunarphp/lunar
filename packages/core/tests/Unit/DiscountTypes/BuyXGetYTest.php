@@ -560,4 +560,160 @@ class BuyXGetYTest extends TestCase
         $this->assertEquals(750, $cart->discountTotal->value);
         $this->assertCount(2, $cart->discountBreakdown);
     }
+
+    /**
+     * @test
+     * @group bubba
+     */
+    public function can_supplement_correct_quantities()
+    {
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'code' => 'GBP',
+        ]);
+
+        $productA = Product::factory()->create();
+
+        $productB = Product::factory()->create();
+
+        $purchasableA = ProductVariant::factory()->create([
+            'product_id' => $productA->id,
+        ]);
+        $purchasableB = ProductVariant::factory()->create([
+            'product_id' => $productB->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1064, // $10.64
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 2280, // $22.80
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id' => $purchasableB->id,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => BuyXGetY::class,
+            'priority' => 1,
+            'name' => 'Test Product Discount',
+            'data' => [
+                'min_qty' => 30,
+                'reward_qty' => 1,
+                'max_reward_qty' => 999
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $discount->purchasableConditions()->create([
+            'purchasable_type' => Product::class,
+            'purchasable_id' => $productA->id,
+        ]);
+
+        $discount->purchasableRewards()->create([
+            'purchasable_type' => Product::class,
+            'purchasable_id' => $productB->id,
+            'type' => 'reward',
+        ]);
+
+        $lines = [
+            // [
+            //     'condition_quantity' => 30,
+            //     'reward_quantity' => 1,
+            //     'expected_discount' => 0,
+            //     'expected_subtotal' => 0,
+            // ],
+            // [
+            //     'condition_quantity' => 60,
+            //     'reward_quantity' => 1,
+            //     'expected_discount' => 2280,
+            //     'expected_subtotal' => 0,
+            // ],
+            [
+                'condition_quantity' => 60,
+                'reward_quantity' => 3,
+                'expected_discount' => (2280 * 2),
+                'expected_subtotal' => 2280,
+            ],
+            // [
+            //     'condition_quantity' => 10,
+            //     'reward_quantity' => 2,
+            //     'expected_discount' => 1000,
+            //     'expected_subtotal' => 2280,
+            // ],
+            // [
+            //     'condition_quantity' => 10,
+            //     'reward_quantity' => 3,
+            //     'expected_discount' => 1000,
+            // ],
+            // [
+            //     'condition_quantity' => 15,
+            //     'reward_quantity' => 3,
+            //     'expected_discount' => 1500,
+            // ],
+            // [
+            //     'condition_quantity' => 13,
+            //     'reward_quantity' => 3,
+            //     'expected_discount' => 1000,
+            // ],
+            // [
+            //     'condition_quantity' => 13,
+            //     'reward_quantity' => 2,
+            //     'expected_discount' => 1000,
+            // ]
+        ];
+
+        foreach ($lines as $line) {
+            $cart = Cart::factory()->create([
+                'channel_id' => $channel->id,
+                'currency_id' => $currency->id,
+            ]);
+
+            $cart->lines()->create([
+                'purchasable_type' => get_class($purchasableA),
+                'purchasable_id' => $purchasableA->id,
+                'quantity' => $line['condition_quantity'],
+            ]);
+
+            $cart->lines()->create([
+                'purchasable_type' => get_class($purchasableB),
+                'purchasable_id' => $purchasableB->id,
+                'quantity' => $line['reward_quantity'],
+            ]);
+
+            $cart = $cart->calculate();
+
+            $discountedLine = $cart->lines->first(function ($line) use ($purchasableB){
+                return $line->purchasable_id == $purchasableB->id;
+            });
+            $this->assertEquals($line['expected_discount'], $discountedLine->discountTotal->value);
+            $this->assertEquals($line['expected_subtotal'], $discountedLine->subTotalDiscounted->value);
+        }
+    }
 }
