@@ -26,7 +26,7 @@ use Lunar\Facades\Payments;
  * @property ?array $meta
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property ?\Illuminate\Support\Carbon $captured_at
  */
 class Transaction extends BaseModel
 {
@@ -46,6 +46,7 @@ class Transaction extends BaseModel
         'refund' => 'bool',
         'amount' => Price::class,
         'meta' => 'object',
+        'captured_at' => 'datetime',
     ];
 
     /**
