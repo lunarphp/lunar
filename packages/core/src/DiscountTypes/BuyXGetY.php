@@ -99,12 +99,17 @@ class BuyXGetY extends AbstractDiscountType
                 continue;
             }
 
-            $remainder = $rewardLine->quantity % $remainingRewardQty;
+            $remainder = (int) floor($remainingRewardQty);
+            $qtyToAllocate = $remainder;
 
-            $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+            if ($rewardLine->quantity < $remainder) {
+                $remainder = $rewardLine->quantity % $remainingRewardQty;
+                $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+            }
 
-            if (! $remainder && $remainingRewardQty < $rewardLine->quantity) {
-                $qtyToAllocate = $remainingRewardQty;
+            if ($rewardLine->quantity == 1 && $remainder) {
+                $qtyToAllocate = 1;
+                $remainder = $remainder - 1;
             }
 
             if (! $qtyToAllocate) {
