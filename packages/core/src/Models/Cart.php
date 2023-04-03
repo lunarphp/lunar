@@ -43,6 +43,7 @@ use Lunar\Validation\Cart\ValidateCartForOrderCreation;
  * @property ?int $order_id
  * @property ?string $coupon_code
  * @property ?\Illuminate\Support\Carbon $completed_at
+ * @property array $meta
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
