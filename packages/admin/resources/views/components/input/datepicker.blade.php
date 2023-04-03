@@ -25,7 +25,7 @@
     x-bind:value="value"
     {{ $attributes->whereDoesntStartWith('wire:model') }}
   />
-  <div x-show="value" class="absolute right-0 mr-3">
+  <div x-show="value" class="absolute end-0 me-3">
     <button x-on:click="value = null" type="button" class="inline-flex items-center text-sm text-gray-400 hover:text-gray-800">
       <x-hub::icon ref="x-circle" class="w-4 mt-2" />
     </button>

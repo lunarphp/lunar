@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      class="h-full">
+      dir="ltr" class="h-full">
 
 <head>
     <meta charset="utf-8" />
@@ -19,8 +19,7 @@
 
     @livewireTableStyles
 
-    <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}"
-          rel="stylesheet">
+    <link href="{{ asset('vendor/lunar/admin-hub/app.css?v=1') }}" rel="stylesheet">
 
     @if ($styles = \Lunar\Hub\LunarHub::styles())
         @foreach ($styles as $asset)
@@ -66,8 +65,8 @@
             <div
                 :class="{
                     'bg-gray-800 fixed inset-0 z-50 top-[48px] w-64 transition-all ease-in-out': true,
-                    '-ml-64 md:ml-0': !showMobileMenu,
-                    'md:-ml-64': menuCollapsed
+                    '-ms-64 md:ms-0': !showMobileMenu,
+                    'md:-ms-64': menuCollapsed
                 }"
                 x-cloak
             >
@@ -75,7 +74,7 @@
             </div>
 
             <div class="transition-all ease-in-out" :class="{
-                'md:pl-64': !menuCollapsed
+                'md:pl-64 rtl:md:pl-0 rtl:md:pr-64': !menuCollapsed
             }" x-cloak>
 
                 <main class="flex flex-1 mt-12">

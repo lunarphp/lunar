@@ -25,7 +25,7 @@
         @endswitch
       </div>
     </div>
-    <div class="flex-1 ml-3 md:flex md:justify-between w-full">
+    <div class="flex-1 ms-3 md:flex md:justify-between w-full">
       <div
         @class([
           'text-sm',

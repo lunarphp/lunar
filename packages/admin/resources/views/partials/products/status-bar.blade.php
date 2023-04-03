@@ -24,13 +24,13 @@
     @if($product->status == 'draft')
       <div class="inline-flex divide-x divide-yellow-200 rounded-md shadow-sm">
         <div class="relative z-0 inline-flex divide-x divide-yellow-600 rounded-md shadow-sm">
-          <div class="relative inline-flex items-center py-2 pl-3 pr-4 text-yellow-900 bg-yellow-500 border border-transparent shadow-sm rounded-l-md">
+          <div class="relative inline-flex items-center py-2 ps-3 pr-4 text-yellow-900 bg-yellow-500 border border-transparent shadow-sm rounded-s-md">
             <x-hub::icon ref="eye-off" class="w-5 h-5"  />
             <p class="ml-2.5 text-sm font-medium">
               {{ __('adminhub::partials.products.status-bar.draft.label')}}
             </p>
           </div>
-          <button @click="showStatusPicker = true" type="button" class="relative inline-flex items-center p-2 text-sm font-medium text-yellow-900 bg-yellow-500 rounded-l-none rounded-r-md hover:bg-yellow-600 focus:outline-none focus:z-10 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-yellow-500" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+          <button @click="showStatusPicker = true" type="button" class="relative inline-flex items-center p-2 text-sm font-medium text-yellow-900 bg-yellow-500 rounded-s-none rounded-e-md hover:bg-yellow-600 focus:outline-none focus:z-10 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-yellow-500" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
             <!-- Heroicon name: solid/chevron-down -->
             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />

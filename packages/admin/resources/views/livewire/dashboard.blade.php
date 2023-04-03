@@ -12,7 +12,7 @@
         <div class="flex flex-row gap-x-8">
             <div class="basis-1/4">
                 <div class="flex items-center h-24 p-4 bg-white rounded-lg shadow">
-                    <div class="flex items-center justify-center w-12 h-12 ml-2 bg-blue-200 rounded-full">
+                    <div class="flex items-center justify-center w-12 h-12 ms-2 bg-blue-200 rounded-full">
                         <svg width="24"
                              height="24"
                              viewBox="0 0 24 24"
@@ -25,7 +25,7 @@
                         </svg>
                     </div>
 
-                    <div class="flex items-center ml-4">
+                    <div class="flex items-center ms-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->newProductsCount }}</strong>
                             <span class="block text-xs">{{ __('adminhub::global.new_products') }}</span>
@@ -36,7 +36,7 @@
 
             <div class="basis-1/4">
                 <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
-                    <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-amber-100">
+                    <div class="flex items-center justify-center w-12 h-12 ms-2 rounded-full bg-amber-100">
                         <svg width="24"
                              height="24"
                              viewBox="0 0 24 24"
@@ -47,7 +47,7 @@
                         </svg>
                     </div>
 
-                    <div class="flex items-center ml-4">
+                    <div class="flex items-center ms-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->returningCustomersPercent }}%</strong>
 
@@ -61,7 +61,7 @@
 
             <div class="basis-1/4">
                 <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
-                    <div class="flex items-center justify-center w-12 h-12 ml-2 bg-red-100 rounded-full">
+                    <div class="flex items-center justify-center w-12 h-12 ms-2 bg-red-100 rounded-full">
                         <svg width="24"
                              height="24"
                              viewBox="0 0 24 24"
@@ -72,7 +72,7 @@
                         </svg>
                     </div>
 
-                    <div class="flex items-center ml-4">
+                    <div class="flex items-center ms-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->orderTotal->formatted }}</strong>
 
@@ -86,7 +86,7 @@
 
             <div class="basis-1/4">
                 <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
-                    <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-indigo-50">
+                    <div class="flex items-center justify-center w-12 h-12 ms-2 rounded-full bg-indigo-50">
                         <svg width="24"
                              height="24"
                              viewBox="0 0 24 24"
@@ -97,7 +97,7 @@
                         </svg>
                     </div>
 
-                    <div class="flex items-center ml-4">
+                    <div class="flex items-center ms-4">
                         <div>
                             <strong class="text-lg font-bold">{{ $this->orderCount }}</strong>
                             <span class="block text-xs">
@@ -114,7 +114,7 @@
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
                 <div class="p-4 bg-white rounded-lg shadow h-96">
-                    <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
+                    <h3 class="mt-4 ms-4 text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}
                     </h3>
 
@@ -126,7 +126,7 @@
 
             <div class="basis-1/3">
                 <div class="p-4 bg-white rounded-lg shadow h-96">
-                    <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
+                    <h3 class="mt-4 ms-4 text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.customer.dashboard.customer_group_orders') }}
                     </h3>
 
@@ -147,7 +147,7 @@
                     <table class="w-full mt-8 table-auto font-sm">
                         <thead>
                             <tr class="border-b">
-                                <th class="pb-2 text-sm font-normal text-left">
+                                <th class="pb-2 text-sm font-normal text-start">
                                     {{ __('adminhub::global.order_ref') }}
                                 </th>
                                 <th class="pb-2 text-sm font-normal text-center">
@@ -159,7 +159,7 @@
                                 <th class="pb-2 text-sm font-normal text-center">
                                     {{ __('adminhub::global.placed_at') }}
                                 </th>
-                                <th class="pb-2 text-sm font-normal text-right">
+                                <th class="pb-2 text-sm font-normal text-end">
                                     {{ __('adminhub::global.total') }}
                                 </th>
                             </tr>

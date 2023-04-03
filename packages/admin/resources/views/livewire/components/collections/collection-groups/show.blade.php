@@ -21,7 +21,7 @@
             </div>
 
             <div class="ml-4 w-80">
-                <div class="flex justify-end w-full space-x-4">
+                <div class="flex justify-end w-full gap-x-4">
                     <x-hub::button wire:click.prevent="addCollection">
                         {{ __('adminhub::catalogue.collections.groups.add_collection_btn') }}
                     </x-hub::button>

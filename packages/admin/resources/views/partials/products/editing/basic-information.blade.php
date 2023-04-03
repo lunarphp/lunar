@@ -12,7 +12,7 @@
         for="brand"
         :errors="$errors->get('product.brand_id') ?: $errors->get('brand')"
     >
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center gap-x-4">
             <div class="grow">
                 @if($useNewBrand)
                     <x-hub::input.text wire:model="brand" />
