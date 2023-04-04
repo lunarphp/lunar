@@ -42,11 +42,12 @@ export default defineConfig({
           { text: 'Livewire Starter Kit', link: 'https://github.com/lunarphp/livewire-starter-kit' },
           { text: 'Add-ons', link: 'https://github.com/lunarphp/awesome' },
           { text: 'Discord', link: 'https://discord.gg/v6qVWaf' },
-          { text: 'Discussions', link: 'https://github.com/lunarphp/lunar/discussions' }
+          { text: 'Discussions', link: 'https://github.com/lunarphp/lunar/discussions' },
+          { text: 'Roadmap', link: 'https://github.com/orgs/lunarphp/projects/1' }
         ]
       },
       {
-        text: '0.3',
+        text: '0.2',
         items: [
           { text: 'Changelog', link: '/core/upgrading' },
           { text: 'Contributing', link: '/core/contributing' },
@@ -67,9 +68,7 @@ export default defineConfig({
             { text: 'Installation', link: '/core/installation' },
             { text: 'Starter Kits', link: '/core/starter-kits' },
             { text: 'Configuration', link: '/core/configuration' },
-            { text: 'Initial Set-Up', link: '/core/set-up' },
             { text: 'Upgrade Guide', link: '/core/upgrading' },
-            { text: 'Release Schedule', link: '/core/release-schedule' },
             { text: 'Security', link: '/core/securing-your-site' },
             { text: 'Contributing', link: '/core/contributing' }
           ]
@@ -100,20 +99,12 @@ export default defineConfig({
           ]
         },
         {
-          text: 'Storefront',
-          collapsed: false,
-          items: [
-            { text: 'Storefront Session', link: '/core/storefront-utils/storefront-session' },
-          ]
-        },
-        {
           text: 'Extending',
           collapsed: true,
           items: [
             { text: 'Activity Log', link: '/core/extending/activity-log' },
             { text: 'Assets', link: '/core/extending/assets' },
             { text: 'Carts', link: '/core/extending/carts' },
-            { text: 'Discounts', link: '/core/extending/discounts' },
             { text: 'Field Types', link: '/core/extending/field-types' },
             { text: 'Models', link: '/core/extending/models' },
             { text: 'Orders', link: '/core/extending/orders' },

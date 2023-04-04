@@ -2,8 +2,8 @@
 
 ## Server Requirements
 
-- PHP ^8.1
-- Laravel 9|10
+- PHP ^8.0
+- Laravel 8|9
 - MySQL 5.7+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
@@ -18,6 +18,11 @@
 composer require lunarphp/lunar
 ```
 
+::: tip Laravel 10
+Laravel 10 support is still in beta release. You can install it by targeting `0.3.0-beta`, but it is not considered production ready at this point.
+```sh
+composer require lunarphp/lunar "^0.3.0-beta"
+```
 :::
 
 ### Add the LunarUser Trait

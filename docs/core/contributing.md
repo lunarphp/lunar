@@ -8,13 +8,13 @@ You can contribute to the project in many different ways. Reporting bugs, fixing
 
 ## Monorepo
 
-Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) approach to maintaining its codebase. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
+Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
 
 ## Repository Branching
 
-**Bug Fixes** should target the latest compatible branch version i.e `0.3`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
+**Bug Fixes** should target the latest compatible branch version i.e `0.2`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
 
-**Features** that bring new (or enhance current) functionality to Lunar should always target the `main` branch.
+**Features** should target the `main` branch if they introduce breaking changes, otherwise they can target the latest compatible branch version i.e `0.2`.
 
 ## Contributing Code
 
@@ -54,7 +54,7 @@ Open source code belongs to all of us, and it's all of our responsibility to pus
 
 ## Proposing a Feature
 
-Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/lunarphp/lunar/discussions) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into Lunar.
+Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/lunarphp/lunar/issues/new/choose) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into Lunar.
 
 However, you're more than welcome to code away on your idea if you think it will help the discussion.
 
@@ -65,10 +65,8 @@ If the pull request is missing information or unclear as to what it offers or so
 
 A PR should be able to include the following:
 
-- The title should be relevant and quickly explain what to expect inside
+- Clearly show in the title the version the PR is targeting i.e. `[0.1]` or `[0.2]`.
 - A clear description of the feature or fix
-- References to any issues the PR resolves
-- Label as either a `bug`, `enhancement`, `feature` or `documentation`
 - Any relevant documentation updates
 - Unit tests with adequate code coverage
 - Changelog entry
