@@ -1,8 +1,8 @@
 {
   "redirects": [
     {
-      "source": "/lunar/:path(.*).html",
-      "destination": "/:path",
+      "source": "/lunar/:path(.*)",
+      "destination": "/core/reference/:path",
       "statusCode": 301
     }
   ]
