@@ -1,5 +1,4 @@
-<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://lunarphp.io/lunar_logo.svg" width="400" alt="Lunar"></a></p>
-
+<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo.svg" width="200" alt="Lunar"></a></p>
 ## About the admin hub
 
 The admin hub is an open source app that allows you to manage all aspects of your Lunar store.
