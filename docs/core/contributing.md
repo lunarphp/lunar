@@ -65,7 +65,7 @@ If the pull request is missing information or unclear as to what it offers or so
 
 A PR should be able to include the following:
 
-- Clearly show in the title the version the PR is targeting i.e. `[0.1]` or `[0.2]`.
+- Clearly show in the title the version the PR is targeting i.e. `[0.2]` or `[0.3]`.
 - A clear description of the feature or fix
 - Any relevant documentation updates
 - Unit tests with adequate code coverage
