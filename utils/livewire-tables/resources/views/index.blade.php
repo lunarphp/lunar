@@ -19,7 +19,7 @@
                                id="SaveSearchName"
                                placeholder="Name"
                                wire:model="savedSearchName"
-                               class="lt-w-full lt-mt-1 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 lt-form-input">
+                               class="lt-w-full lt-mt-1 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 lt-form-input">
                     </div>
 
                     <x-l-tables::button theme="primary"
@@ -48,7 +48,7 @@
              })"
              class="lt-w-full lt-divide-y lt-divide-gray-200">
             @if ($this->searchable || $this->filterable)
-                <div class="lt-p-4">
+                <div class="lt-p-4 lt-bg-gray-100">
                     <div class="lt-flex lt-items-center lt-gap-2 sm:lt-gap-4">
                         @if ($this->searchable)
                             <div class="lt-flex-1">
@@ -76,7 +76,7 @@
                                            id="Search"
                                            placeholder="{{ $this->searchPlaceholder }}"
                                            wire:model.debounce.500ms="query"
-                                           class="lt-w-full lt-pl-10 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md lt-form-input focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 lt-peer">
+                                           class="lt-w-full lt-pl-10 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md lt-form-input focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 lt-peer">
 
                                     <button wire:click="$set('query', '')"
                                             class="lt-absolute lt-top-1/2 -lt-translate-y-1/2 lt-right-2 lt-rounded-full lt-p-1 hover:lt-bg-gray-100 lt-transition peer-placeholder-shown:lt-hidden">
@@ -122,7 +122,7 @@
                         <div class="lt-flex lt-items-center lt-gap-4 lt-mt-2">
                             @foreach ($this->savedSearches as $savedSearch)
                                 <div
-                                     class="lt-flex lt-items-stretch lt-overflow-hidden lt-text-gray-600 lt-transition lt-bg-white lt-border lt-border-gray-200 lt-rounded-md hover:lt-shadow-sm focus-within:lt-ring focus-within:lt-ring-blue-100">
+                                     class="lt-flex lt-items-stretch lt-overflow-hidden lt-text-gray-600 lt-transition lt-bg-white lt-border lt-border-gray-200 lt-rounded-md hover:lt-shadow-sm focus-within:lt-ring focus-within:lt-ring-sky-100">
                                     <x-l-tables::button size="xs"
                                                         aria-label="Delete Saved Search"
                                                         wire:click="deleteSavedSearch({{ $savedSearch['key'] }})"
@@ -145,7 +145,7 @@
                                                         class="!lt-border-y-0 !lt-border-r-0 !lt-rounded-l-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
                                         <span @class([
                                             'lt-inline-flex lt-items-center lt-gap-2',
-                                            'lt-text-blue-600' => $this->savedSearch == $savedSearch['key'],
+                                            'lt-text-sky-600' => $this->savedSearch == $savedSearch['key'],
                                         ])>
                                             {{ $savedSearch['label'] }}
 
@@ -220,7 +220,7 @@
                                     <td class="lt-w-10 lt-py-3 lt-pl-4 lt-leading-none">
                                         <input type="checkbox"
                                                x-model="selectedAll"
-                                               class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
+                                               class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 focus:lt-ring-offset-0">
                                     </td>
                                 @endif
 
@@ -248,7 +248,7 @@
                                 <td colspan="50"
                                     class="lt-p-0">
                                     <div
-                                         class="lt-relative lt-px-3 lt-py-2 lt--my-px lt-text-sm lt-text-blue-700 lt-border-blue-200 lt-border-y lt-bg-blue-50">
+                                         class="lt-relative lt-px-3 lt-py-2 lt--my-px lt-text-sm lt-text-sky-700 lt-border-sky-200 lt-border-y lt-bg-sky-50">
                                         Selected <span x-text="selected.length"></span> of {{ $this->rows->count() }}
                                         results.
                                     </div>
@@ -296,7 +296,7 @@
                                             <input type="checkbox"
                                                    x-model="selected"
                                                    value="{{ $row->id }}"
-                                                   class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
+                                                   class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 focus:lt-ring-offset-0">
                                         </x-l-tables::cell>
                                     @endif
 

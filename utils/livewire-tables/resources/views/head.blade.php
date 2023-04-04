@@ -4,7 +4,7 @@
             {{ $heading }}
         </span>
     @else
-        <button class="lt-flex lt-items-center lt-gap-0.5 lt-group focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 lt-p-2 lt--m-2"
+        <button class="lt-flex lt-items-center lt-gap-0.5 lt-group focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 lt-p-2 lt--m-2"
                 wire:click="sort">
             <span class="lt-capitalize">
                 {{ $heading }}

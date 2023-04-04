@@ -11,7 +11,7 @@
   <div class="space-y-4 mt-4">
     <p class="text-sm">
       {!! __('adminhub::fieldtypes.richtext.config', [
-        'url' => '<a href="https://quilljs.com/docs/configuration/" target="_blank" rel="nofollow" class="text-blue-500">Quilljs</a>'
+        'url' => '<a href="https://quilljs.com/docs/configuration/" target="_blank" rel="nofollow" class="text-sky-500">Quilljs</a>'
       ]) !!}
     </p>
     @if($errors->count())

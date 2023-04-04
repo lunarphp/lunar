@@ -25,7 +25,7 @@
 
             <div class="mt-4">
                 @if ($this->paymentStatus == 'partial-refund')
-                    <div class="border border-blue-500 rounded">
+                    <div class="border border-sky-500 rounded">
                         <x-hub::alert>
                             {{ __('adminhub::components.orders.show.partially_refunded') }}
                         </x-hub::alert>
@@ -64,7 +64,7 @@
                             </div>
                         @endif
 
-                        <button class="px-3 py-1 mt-1 text-xs text-blue-800 border rounded shadow-sm"
+                        <button class="px-3 py-1 mt-1 text-xs text-sky-800 border rounded shadow-sm"
                                 wire:click="$set('allLinesVisible', {{ !$allLinesVisible }})"
                                 type="button">
                             @if (!$allLinesVisible)

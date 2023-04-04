@@ -12,7 +12,7 @@
         <div class="flex flex-row gap-x-8">
             <div class="basis-1/4">
                 <div class="flex items-center h-24 p-4 bg-white rounded-lg shadow">
-                    <div class="flex items-center justify-center w-12 h-12 ml-2 bg-blue-200 rounded-full">
+                    <div class="flex items-center justify-center w-12 h-12 ml-2 bg-sky-200 rounded-full">
                         <svg width="24"
                              height="24"
                              viewBox="0 0 24 24"
@@ -86,7 +86,7 @@
 
             <div class="basis-1/4">
                 <div class="flex items-center h-24 p-4 pr-0 bg-white rounded-lg shadow">
-                    <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-indigo-50">
+                    <div class="flex items-center justify-center w-12 h-12 ml-2 rounded-full bg-sky-50">
                         <svg width="24"
                              height="24"
                              viewBox="0 0 24 24"
@@ -170,7 +170,7 @@
                                 <tr>
                                     <td class="pt-4 text-sm">
                                         <a href="{{ route('hub.orders.show', $order->id) }}"
-                                           class="text-blue-600 hover:underline">
+                                           class="text-sky-500 hover:underline">
                                             {{ $order->reference }}
                                         </a>
                                     </td>

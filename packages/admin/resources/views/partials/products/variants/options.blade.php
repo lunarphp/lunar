@@ -27,7 +27,7 @@
             </svg>
 
             <div class="flex text-sm text-gray-600">
-              <label for="file-upload" class="relative font-medium text-indigo-600 bg-white rounded-md cursor-pointer hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+              <label for="file-upload" class="relative font-medium text-sky-600 bg-white rounded-md cursor-pointer hover:text-sky-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-sky-500">
                 <span>{{ __('adminhub::partials.image-manager.upload_file') }}</span>
                 <input id="file-upload" name="file-upload" type="file" class="sr-only">
               </label>

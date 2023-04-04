@@ -47,7 +47,7 @@
     @livewireStyles
 </head>
 
-<body class="antialiased bg-gray-100 dark:bg-gray-900"
+<body class="antialiased bg-gray-50 dark:bg-gray-900"
       x-data="{
           menuCollapsed: $persist(false),
           showMobileMenu: false,

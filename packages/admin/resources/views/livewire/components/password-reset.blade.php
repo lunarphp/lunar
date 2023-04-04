@@ -16,7 +16,7 @@
 
             <p>
                 <a href="{{ route('hub.login') }}"
-                   class="text-blue-600 transition hover:text-blue-500">
+                   class="text-sky-600 transition hover:text-sky-500">
                     {{ __('adminhub::auth.reset-password.back_link') }}
                 </a>
             </p>
@@ -36,7 +36,7 @@
 
                     <div class="relative">
                         <span @class([
-                            'absolute inset-y-0 grid text-blue-600 left-3 place-content-center',
+                            'absolute inset-y-0 grid text-sky-600 left-3 place-content-center',
                             '!text-red-600' => $errors->has('password'),
                         ])>
                             <x-hub::icon ref="lock-closed"
@@ -71,7 +71,7 @@
 
                     <div class="relative">
                         <span @class([
-                            'absolute inset-y-0 grid text-blue-600 left-3 place-content-center',
+                            'absolute inset-y-0 grid text-sky-600 left-3 place-content-center',
                             '!text-red-600' => $errors->has('password_confirmation'),
                         ])>
                             <x-hub::icon ref="lock-closed"
@@ -110,7 +110,7 @@
 
                     <div class="relative">
                         <span @class([
-                            'absolute inset-y-0 grid text-blue-600 left-3 place-content-center',
+                            'absolute inset-y-0 grid text-sky-600 left-3 place-content-center',
                             '!text-red-600' => $errors->has('email'),
                         ])>
                             <x-hub::icon ref="mail"
@@ -140,7 +140,7 @@
 
             <div>
                 <button type="submit"
-                        class="w-full p-3 text-sm text-white transition bg-blue-600 rounded-md hover:bg-blue-500">
+                        class="w-full p-3 text-sm text-white transition bg-sky-600 rounded-md hover:bg-sky-500">
                     <div wire:loading.delay
                          wire:target="process">
                         <x-hub::loading-indicator class="w-5 h-5 mx-auto" />
