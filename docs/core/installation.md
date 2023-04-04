@@ -18,6 +18,13 @@
 composer require lunarphp/lunar
 ```
 
+::: tip Laravel 10
+Laravel 10 support is still in beta release. You can install it by targeting `0.3.0-beta`, but it is not considered production ready at this point.
+```sh
+composer require lunarphp/lunar "^0.3.0-beta"
+```
+:::
+
 ### Add the LunarUser Trait
 
 Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
