@@ -68,7 +68,7 @@
                 </x-l-tables::cell>
 
                 <x-l-tables::cell>
-                  <a href="{{ route('hub.products.show', $product['target_id']) }}" class="lt-text-blue-600 hover:underline">
+                  <a href="{{ route('hub.products.show', $product['target_id']) }}" class="lt-text-sky-500 hover:underline">
                     {{ $product['name'] }}
                   </a>
                 </x-l-tables::cell>

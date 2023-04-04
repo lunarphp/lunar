@@ -48,7 +48,7 @@
 
         <x-slot name="content">
             <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
-                <label class="p-6 border border-dashed rounded-md cursor-pointer hover:border-blue-500">
+                <label class="p-6 border border-dashed rounded-md cursor-pointer hover:border-sky-500">
                     <div>
                         <x-hub::icon ref="upload"
                                      class="w-12 h-12 mx-auto text-gray-400" />
@@ -65,8 +65,8 @@
 
                 @forelse($this->assets as $asset)
                     <label @class([
-                        'border rounded-md cursor-pointer p-6 hover:border-blue-500',
-                        'border-blue-500' => in_array($asset->id, $selected),
+                        'border rounded-md cursor-pointer p-6 hover:border-sky-500',
+                        'border-sky-500' => in_array($asset->id, $selected),
                     ])>
                         <div>
                             @if ($asset->file->hasGeneratedConversion('small'))

@@ -6,7 +6,7 @@
   .lt-button {
     @apply lt-inline-flex lt-items-center lt-justify-center lt-gap-2 lt-border lt-rounded-md lt-font-medium lt-transition;
     @apply hover:lt-shadow-sm;
-    @apply focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100;
+    @apply focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100;
     @apply disabled:lt-cursor-not-allowed disabled:lt-opacity-50;
   }
 
@@ -19,7 +19,7 @@
   }
 
   .lt-button-primary {
-    @apply lt-bg-blue-600 lt-text-white lt-border-blue-600 hover:lt-bg-blue-700;
+    @apply lt-bg-sky-600 lt-text-white lt-border-sky-600 hover:lt-bg-sky-700;
   }
 
   .lt-button-danger {
@@ -28,5 +28,5 @@
 }
 
 .lt-pagination span[aria-current='page'] span {
-  @apply lt-text-blue-600 lt-bg-blue-50/75;
+  @apply lt-text-sky-600 lt-bg-sky-50/75;
 }

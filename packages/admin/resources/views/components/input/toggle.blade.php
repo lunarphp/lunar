@@ -1,5 +1,5 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
-<!-- Enabled: "bg-indigo-600", Not Enabled: "bg-gray-200" -->
+<!-- Enabled: "bg-sky-600", Not Enabled: "bg-gray-200" -->
 <div
   x-data="{
     checked: @if($attributes->wire('model')->value()) @entangle($attributes->wire('model')) @else {{ $on ? 'true' : 'false' }} @endif,

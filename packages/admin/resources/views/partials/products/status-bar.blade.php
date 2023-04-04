@@ -53,7 +53,7 @@
       <!--
         Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
 
-        Highlighted: "text-white bg-indigo-500", Not Highlighted: "text-gray-900"
+        Highlighted: "text-white bg-sky-500", Not Highlighted: "text-gray-900"
       -->
       <li class="relative p-4 text-sm text-gray-900 cursor-default select-none @if($product->status != 'published') hover:bg-gray-100 @endif" id="listbox-option-0" role="option">
         <button type="button" class="flex flex-col" wire:click.prevent="$set('product.status', 'published')">
@@ -65,7 +65,7 @@
             <!--
               Checkmark, only display for selected option.
 
-              Highlighted: "text-white", Not Highlighted: "text-indigo-500"
+              Highlighted: "text-white", Not Highlighted: "text-sky-500"
             -->
             @if($product->status == 'published')
             <span class="text-green-500">
@@ -76,7 +76,7 @@
             </span>
             @endif
           </div>
-          <!-- Highlighted: "text-indigo-200", Not Highlighted: "text-gray-500" -->
+          <!-- Highlighted: "text-sky-200", Not Highlighted: "text-gray-500" -->
           <p class="mt-2 text-left text-gray-500">
             {{ __('adminhub::partials.products.status-bar.published.description')}}
           </p>
@@ -93,7 +93,7 @@
             <!--
               Checkmark, only display for selected option.
 
-              Highlighted: "text-white", Not Highlighted: "text-indigo-500"
+              Highlighted: "text-white", Not Highlighted: "text-sky-500"
             -->
             @if($product->status == 'draft')
             <span class="text-green-500">
@@ -104,7 +104,7 @@
             </span>
             @endif
           </div>
-          <!-- Highlighted: "text-indigo-200", Not Highlighted: "text-gray-500" -->
+          <!-- Highlighted: "text-sky-200", Not Highlighted: "text-gray-500" -->
           <p class="mt-2 text-left text-gray-500">
             {{ __('adminhub::partials.products.status-bar.draft.description')}}
           </p>

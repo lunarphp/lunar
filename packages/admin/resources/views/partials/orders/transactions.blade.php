@@ -4,7 +4,7 @@
       @class([
         'text-sm rounded-lg shadow-sm border shadow' => true,
         'border-orange-300' => $transaction->type == 'refund',
-        'border-indigo-300' => $transaction->type == 'intent',
+        'border-sky-300' => $transaction->type == 'intent',
         'border-green-300' => $transaction->type == 'capture',
       ])
     >
@@ -56,7 +56,7 @@
               <div
                 @class([
                   'rounded flex items-center py-1 px-2 rounded-md text-xs' => true,
-                  'text-blue-600 bg-blue-50' => $threeD->address ?? false,
+                  'text-sky-500 bg-sky-50' => $threeD->address ?? false,
                   'text-gray-500 bg-gray-50' => !($threeD->address ?? false)
                 ])
               >
@@ -67,7 +67,7 @@
               <div
                 @class([
                   'rounded flex items-center py-1 px-2 rounded-md text-xs' => true,
-                  'text-blue-600 bg-blue-50' => $threeD->postalCode ?? false,
+                  'text-sky-500 bg-sky-50' => $threeD->postalCode ?? false,
                   'text-gray-500 bg-gray-50' => !($threeD->postalCode ?? false)
                 ])
               >
@@ -79,7 +79,7 @@
               <div
                 @class([
                   'rounded flex items-center py-1 px-2 rounded-md text-xs' => true,
-                  'text-blue-600 bg-blue-50' => $threeD->securityCode ?? false,
+                  'text-sky-500 bg-sky-50' => $threeD->securityCode ?? false,
                   'text-gray-500 bg-gray-50' => !($threeD->securityCode ?? false)
                 ])
               >
@@ -102,7 +102,7 @@
       <div class="
         bottom-0 left-0 block w-full text-center rounded-b-lg border-t text-xs py-1
         @if($transaction->type == 'refund') bg-orange-50 border-orange-300 text-orange-500 @endif
-        @if($transaction->type == 'intent') bg-indigo-50 border-indigo-300 text-indigo-500 @endif
+        @if($transaction->type == 'intent') bg-sky-50 border-sky-300 text-sky-500 @endif
         @if($transaction->type == 'capture') bg-green-50 border-green-300 text-green-600 @endif
       ">
         {{ __('adminhub::partials.orders.transactions.'.$transaction->type) }}
