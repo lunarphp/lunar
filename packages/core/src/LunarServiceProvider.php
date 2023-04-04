@@ -184,7 +184,7 @@ class LunarServiceProvider extends ServiceProvider
             });
 
             $this->publishes([
-                __DIR__ . '/../resources/lang' => resource_path('lang/vendor/lunar')
+                __DIR__ . '/../resources/lang' => lang_path('vendor/lunar')
             ], 'lunar.translation');
 
             $this->publishes([

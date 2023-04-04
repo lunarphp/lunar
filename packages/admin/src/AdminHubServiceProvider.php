@@ -220,7 +220,7 @@ class AdminHubServiceProvider extends ServiceProvider
             ], 'lunar.hub.views');
 
             $this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/adminhub'),
+                __DIR__ . '/../resources/lang' => lang_path('vendor/adminhub'),
             ], 'lunar.hub.translations');
 
             $this->commands([
