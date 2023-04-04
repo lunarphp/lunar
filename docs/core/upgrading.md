@@ -20,6 +20,10 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
+## Support Policy
+
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`. 
+
 ## 0.3
 
 ### High Impact
