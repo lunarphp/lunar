@@ -80,6 +80,12 @@ class Cart extends BaseModel
     public ?Price $subTotal = null;
 
     /**
+     * The cart sub total.
+     * Sum of cart line amounts, before tax, shipping minus discount totals.
+     */
+    public ?Price $subTotalDiscounted = null;
+
+    /**
      * The shipping total for the cart.
      *
      * @var null|Price
