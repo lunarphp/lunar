@@ -22,25 +22,7 @@ php artisan lunar:hub:install
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`. 
-
-## 0.3
-
-### High Impact
-
-#### Support for Laravel 8 removed
-
-To install Lunar 0.3 you will need to be on at least Laravel 9. 0.3 introduces support for Laravel 10.
-
-### Low Impact
-
-#### Changed Auth guard to use Laravel's default driver.
-
-This should not impact your project unless you have customised the admin hub authentication.
-
-#### Updated `db_date` function to return just the formmatted string.
-
-If you were using `db_date` helper function, you will now need to wrap it with `DB:RAW()`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.2`. 
 
 ## 0.2
 
