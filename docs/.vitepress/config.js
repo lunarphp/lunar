@@ -24,17 +24,13 @@ export default defineConfig({
     // would render: <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   ],
 
+  appearance: 'dark',
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: {
       light: '/icon.svg',
       dark: '/icon-dark.svg',
-    },
-
-    algolia: {
-      appId: 'ZHX0K72823',
-      apiKey: '42f3d86ed75f289e5cb75e9d7c6f43f9',
-      indexName: 'lunarphp'
     },
 
     nav: [
@@ -144,9 +140,9 @@ export default defineConfig({
     ],
 
     algolia: {
-      appId: '...',
-      apiKey: '...',
-      indexName: '...'
-    }
+      appId: 'ZHX0K72823',
+      apiKey: '42f3d86ed75f289e5cb75e9d7c6f43f9',
+      indexName: 'lunarphp'
+    },
   }
 })
