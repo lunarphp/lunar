@@ -4,9 +4,9 @@
 
 If you want to get up and running quickly to review Lunar, this section is for you.
 
-## Demo Store
+## Livewire Starter Kit
 
-Lunar provides a demo store as a reference to help you build your own custom e-commerce app. The demo store is built using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and checkout.
+Lunar provides a starter kit as a reference to help you build your own custom e-commerce app. The starter kit is built using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and checkout.
 
 If you would prefer to install Lunar into your own Laravel application, please follow the [installation instructions](/core/installation).
 
@@ -18,7 +18,7 @@ If you would prefer to install Lunar into your own Laravel application, please f
 - GD PHP extension (used for image manipulation)
 
 ::: tip
-This demo store uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.lunarphp.io/installation.html#search-configuration)
+This starter kit uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.lunarphp.io/installation.html#search-configuration)
 :::
 
 ## Installation
