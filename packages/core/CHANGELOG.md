@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2.4
+
+### Changed
+
+- `subTotal` on a `Cart` model will no longer include any discount amounts.
+
+### Added
+
+- The `subTotalDiscount` discount property has been added to the `Cart` model.
+
 ## 0.2.3
 
 ### Fixed
