@@ -101,6 +101,8 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
             $cart->discountBreakdown = collect();
         }
 
+        $cart->discountBreakdown = $cart->discountBreakdown->reject(fn ($b) => $b->discount == $breakdown->discount);
+
         $cart->discountBreakdown->push($breakdown);
 
         return $this;
