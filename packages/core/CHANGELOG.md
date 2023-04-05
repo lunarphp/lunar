@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- The `subTotalDiscount` discount property has been added to the `Cart` model.
+- The `subTotalDiscounted` discount property has been added to the `Cart` model.
 
 ## 0.2.3
 
