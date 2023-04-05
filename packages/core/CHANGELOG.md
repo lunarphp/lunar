@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 0.2.4
 
-### Changed
+### Fixed
+
+- `BuyXGetY` now uses `$qtyCanBeApplied` instead of `$conditionQtyToAllocate` in the discount breakdown.
+
+### Changed
 
 - `subTotal` on a `Cart` model will no longer include any discount amounts.
 
