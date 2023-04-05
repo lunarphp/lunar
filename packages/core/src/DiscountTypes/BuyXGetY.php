@@ -133,7 +133,7 @@ class BuyXGetY extends AbstractDiscountType
 
                     $affectedLines->push(new DiscountBreakdownLine(
                         line: $conditionLine,
-                        quantity: $conditionQtyToAllocate
+                        quantity: $qtyCanBeApplied
                     ));
                 }
             });
