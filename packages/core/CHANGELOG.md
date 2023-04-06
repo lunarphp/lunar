@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2.4
+
+### Fixed
+
+- `BuyXGetY` now uses `$qtyCanBeApplied` instead of `$conditionQtyToAllocate` in the discount breakdown.
+
+### Changed
+
+- `subTotal` on a `Cart` model will no longer include any discount amounts.
+
+### Added
+
+- The `subTotalDiscounted` discount property has been added to the `Cart` model.
+
 ## 0.2.3
 
 ### Fixed
