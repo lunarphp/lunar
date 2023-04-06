@@ -121,7 +121,7 @@ class BuyXGetY extends AbstractDiscountType
                 quantity: $qtyToAllocate
             ));
 
-            $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
+            $conditionQtyToAllocate = $qtyToAllocate * ($minQty - $rewardQty);
             $conditions->each(function ($conditionLine) use ($affectedLines, &$conditionQtyToAllocate) {
                 if (! $conditionQtyToAllocate) {
                     return;
