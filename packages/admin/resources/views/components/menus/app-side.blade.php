@@ -1,4 +1,4 @@
-<div class="overflow-y-auto h-full bg-white">
+<div class="overflow-y-auto h-full bg-white border-r border-gray-200">
     <div class="border-t border-b border-gray-100 pt-4 p-4">
         <x-hub::menu handle="sidebar" current="{{ request()->route()->getName() }}">
             @foreach ($component->items as $item)
@@ -25,7 +25,7 @@
                @class([
                    'flex items-center gap-2 p-2 rounded w-full text-sm',
                    'bg-sky-50 text-sky-700' => Str::contains(request()->url(), 'settings'),
-                   'text-gray-500 hover:text-gray-900' => !Str::contains(
+                   'text-sky-800 hover:text-sky-950' => !Str::contains(
                        request()->url(),
                        'settings'
                    ),

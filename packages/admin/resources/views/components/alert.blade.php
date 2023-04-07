@@ -1,10 +1,10 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div
   @class([
-    'rounded-md p-4',
-    'bg-sky-50' => !$level,
-    'bg-yellow-50' => $level == 'warning',
-    'bg-red-50' => $level == 'danger',
+    'rounded-md p-4 border',
+    'bg-sky-50 border-sky-200' => !$level,
+    'bg-yellow-50 border-yellow-200' => $level == 'warning',
+    'bg-red-50 border-red-200' => $level == 'danger',
   ])
 >
   <div class="flex items-center">

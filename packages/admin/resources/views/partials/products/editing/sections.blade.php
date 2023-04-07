@@ -1,14 +1,14 @@
 <div class="flex justify-between items-center">
     <div class="flex items-center gap-4">
         <a href="{{ route('hub.products.index') }}"
-           class="text-gray-600 rounded bg-gray-50 hover:bg-sky-500 hover:text-white"
+           class="text-gray-600 rounded hover:bg-gray-200 leading-3"
            title="{{ __('adminhub::catalogue.products.show.back_link_title') }}">
             <x-hub::icon ref="chevron-left"
                          style="solid"
                          class="w-8 h-8" />
         </a>
 
-        <h1 class="text-xl font-bold md:text-xl">
+        <h1 class="text-xl font-semibold md:text-xl">
             @if ($product->id)
                 {{ $product->translateAttribute('name') }}
             @else
@@ -254,8 +254,7 @@
     </div>
 
     <x-hub::layout.page-menu>
-        <nav class="space-y-2"
-             aria-label="Sidebar"
+        <nav aria-label="Sidebar"
              x-data="{ activeAnchorLink: '' }"
              x-init="activeAnchorLink = window.location.hash">
             @foreach ($this->getSlotsByPosition('top') as $slot)
@@ -289,14 +288,14 @@
             @foreach ($this->sideMenu as $item)
                 <a href="#{{ $item['id'] }}"
                    @class([
-                       'flex items-center gap-2 p-2 rounded text-gray-500',
-                       'hover:bg-sky-50 hover:text-sky-700' => empty($item['has_errors']),
+                       'flex items-center gap-2 py-2 px-4 border-l text-gray-500',
+                       'hover:text-gray-700' => empty($item['has_errors']),
                        'text-red-600 bg-red-50' => !empty($item['has_errors']),
                    ])
                    aria-current="page"
                    x-data="{ linkId: '#{{ $item['id'] }}' }"
                    :class="{
-                       'bg-sky-50 text-sky-700 hover:text-sky-500': linkId === activeAnchorLink
+                       'text-sky-500 border-sky-500 hover:text-sky-500': linkId === activeAnchorLink
                    }"
                    x-on:click="activeAnchorLink = linkId">
                     @if (!empty($item['has_errors']))

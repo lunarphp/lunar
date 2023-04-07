@@ -38,17 +38,5 @@
         <div class="shrink-0">
             @livewire('hub.components.avatar')
         </div>
-
-        <div class="hidden leading-none sm:block">
-            <strong>
-                @livewire('hub.components.current-staff-name', [
-                    'class' => 'text-sm font-medium leading-none text-gray-900 dark:text-white',
-                ])
-            </strong>
-
-            <small class="block text-xs text-gray-500 leading-none mt-0.5">
-                {{ __('adminhub::account.view-profile') }}
-            </small>
-        </div>
     </div>
 </div>

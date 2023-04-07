@@ -7,8 +7,8 @@
     <a href="{{ route($item->route) }}"
        @class([
            'flex items-center gap-2 p-2 rounded w-full text-sm font-medium',
-           'bg-sky-50 text-sky-700' => $active,
-           'text-gray-500 hover:text-gray-900' => !$active,
+           'bg-sky-100 text-sky-800' => $active,
+           'text-sky-800 hover:text-gray-950' => !$active,
        ])
     >
         <span x-cloak>
@@ -24,7 +24,7 @@
     @if ($hasSubItems)
         <button x-cloak
                 x-on:click.prevent="showSubMenu = !showSubMenu"
-                class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 bg-white rounded border border-gray-200 p-1">
+                class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 bg-white rounded p-1">
             <span :class="{ '-rotate-90': showSubMenu }"
                   class="block transition">
                 <x-hub::icon ref="chevron-left"

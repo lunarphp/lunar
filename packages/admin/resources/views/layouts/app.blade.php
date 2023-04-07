@@ -47,7 +47,7 @@
     @livewireStyles
 </head>
 
-<body class="antialiased bg-gray-50 dark:bg-gray-900"
+<body class="antialiased bg-gray-100 dark:bg-gray-900"
       x-data="{
           menuCollapsed: $persist(false),
           showMobileMenu: false,
@@ -65,7 +65,7 @@
 
             <div
                 :class="{
-                    'bg-gray-800 fixed inset-0 z-50 top-[48px] w-64 transition-all ease-in-out': true,
+                    'bg-gray-800 fixed inset-0 z-50 top-[56px] w-64 transition-all ease-in-out': true,
                     '-ml-64 md:ml-0': !showMobileMenu,
                     'md:-ml-64': menuCollapsed
                 }"
@@ -80,7 +80,7 @@
 
                 <main class="flex flex-1 mt-12">
                     <section class="flex-1 h-full min-w-0 lg:order-last">
-                        <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-6">
+                        <div class="px-4 py-8 mx-auto max-w-screen-7xl sm:px-6 lg:px-6">
                             @yield('main', $slot)
                         </div>
                     </section>
