@@ -11,7 +11,7 @@ use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
 
 Route::group([
     'prefix' => config('lunar-hub.system.path', 'hub'),
-    'middleware' => ['web'],
+    'middleware' => config('lunar-hub.system.middleware', [])
 ], function () {
     Route::post('logout', function () {
         Auth::guard('staff')->logout();
