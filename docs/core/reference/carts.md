@@ -91,6 +91,8 @@ access to the following: `value`, `formatted`, `decimal`
 ```php
 $cart->total; // The total price value for the cart
 $cart->subTotal; // The cart sub total, excluding tax
+$cart->subTotalDiscounted; // The cart sub total, minus the discount amount.
+$cart->shippingTotal; // The monetary value for the shipping total. (if applicable)
 $cart->taxAmount; // The monetary value for the amount of tax applied.
 $cart->taxBreakdown; // This is a collection of all taxes applied across all lines.
 $cart->discountTotal; // The monetary value for the discount total.
@@ -109,9 +111,17 @@ foreach ($cart->discountBreakdown as $discountBreakdown) {
     }
     $discountBreakdown->total->value
 }
-```
 
-Each `CartLine` has access to the same properties as a Cart does.
+foreach ($cart->lines as $cartLine) {
+    $cartLine->unitPrice; // The monetary value for a single item.
+    $cartLine->total; // The total price value for the cart
+    $cartLine->subTotal; // The sub total, excluding tax
+    $cartLine->subTotalDiscounted; // The sub total, minus the discount amount.
+    $cartLine->taxAmount; // The monetary value for the amount of tax applied.
+    $cartLine->taxBreakdown; // This is a collection of all taxes applied across all lines.
+    $cartLine->discountTotal; // The monetary value for the discount total.
+}
+```
 
 ## Modifying Carts
 
