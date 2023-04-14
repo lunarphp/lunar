@@ -168,8 +168,10 @@ class SeoSlot extends Component implements AbstractSlot
 }
 ```
 
-:::warning When creating a slot the namespace should contain either `Lunar` or
-`Hub` in order for the middleware to apply correctly. :::
+::: warning
+When creating a slot the namespace should contain either `Lunar` or
+`Hub` in order for the middleware to apply correctly.
+:::
 
 ### Available Methods
 
