@@ -7,8 +7,8 @@ use Lunar\DataTypes\Price;
 class ShippingBreakdownItem
 {
     public function __construct(
-        public string $description,
-        public string $code,
+        public string $name,
+        public string $identifier,
         public Price $price
     ) {
         //

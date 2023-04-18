@@ -3,6 +3,8 @@
 namespace Lunar\Pipelines\Cart;
 
 use Closure;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
@@ -18,12 +20,23 @@ final class ApplyShipping
     public function handle(Cart $cart, Closure $next)
     {
         $shippingSubTotal = 0;
+        $shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
 
         if ($shippingOption = $this->getShippingOption($cart)) {
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
                 ->setCurrency($cart->currency)
                 ->setPurchasable($shippingOption)
                 ->getBreakdown($shippingOption->price->value);
+
+            $shippingBreakdown->items->push(
+                new ShippingBreakdownItem(
+                    name: $shippingOption->getName(),
+                    identifier: $shippingOption->getIdentifier(),
+                    price: $shippingOption->price,
+                )
+            );
+
+            $cart->shippingBreakdown = $shippingBreakdown;
 
             $shippingSubTotal = $shippingOption->price->value;
             $shippingTaxTotal = $shippingTax->amounts->sum('price.value');
@@ -37,7 +50,11 @@ final class ApplyShipping
             $shippingSubTotal = $shippingOption->price->value;
         }
 
-        $cart->shippingTotal = new Price($shippingSubTotal, $cart->currency, 1);
+        // $cart->shippingTotal = new Price(
+        //     $cart->shippingBreakdown->items->sum('price.value'),
+        //     $cart->currency,
+        //     1
+        // );
 
         return $next($cart);
     }

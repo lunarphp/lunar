@@ -8,8 +8,8 @@ use Lunar\DataTypes\Price;
 class ShippingBreakdown
 {
     public function __construct(
-        public Collection $items
+        public ?Collection $items = null
     ) {
-        //
+        $this->items = $items ?: collect();
     }
 }
