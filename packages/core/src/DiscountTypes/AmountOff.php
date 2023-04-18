@@ -121,6 +121,11 @@ class AmountOff extends AbstractDiscountType
                 $cart->currency,
                 1
             );
+            
+            $affectedLines->push(new DiscountBreakdownLine(
+                line: $line,
+                quantity: $line->quantity
+            ));
         }
 
         if (! $cart->discounts) {
