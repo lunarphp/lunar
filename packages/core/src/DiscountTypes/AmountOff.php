@@ -112,31 +112,27 @@ class AmountOff extends AbstractDiscountType
                 return $line->subTotalDiscounted->value - $remaining > 0;
             });
             
-            if (! $line) {
-                $line = $cart->lines->first(function ($line) use ($remaining) {
-                    return ($line->subTotalDiscounted ?? $line->subTotal)->value - $remaining > 0;
-                });
-            }
-
-            $newDiscountTotal = $line->discountTotal->value + $remaining;
-
-            $line->discountTotal = new Price(
-                $newDiscountTotal,
-                $cart->currency,
-                1
-            );
-
-            $line->subTotalDiscounted = new Price(
-                $line->subTotal->value - $newDiscountTotal,
-                $cart->currency,
-                1
-            );
-            
-            if (! $affectedLines->first(function ($breakdownLine) use ($line) { return $breakdownLine->line == $line; })) {
-                $affectedLines->push(new DiscountBreakdownLine(
-                    line: $line,
-                    quantity: $line->quantity
-                ));
+            if ($line) {
+                $newDiscountTotal = $line->discountTotal->value + $remaining;
+    
+                $line->discountTotal = new Price(
+                    $newDiscountTotal,
+                    $cart->currency,
+                    1
+                );
+    
+                $line->subTotalDiscounted = new Price(
+                    $line->subTotal->value - $newDiscountTotal,
+                    $cart->currency,
+                    1
+                );
+                
+                if (! $affectedLines->first(function ($breakdownLine) use ($line) { return $breakdownLine->line == $line; })) {
+                    $affectedLines->push(new DiscountBreakdownLine(
+                        line: $line,
+                        quantity: $line->quantity
+                    ));
+                }
             }
         }
 
