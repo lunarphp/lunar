@@ -165,7 +165,7 @@ class DiscountManager implements DiscountManagerInterface
                     $query->whereNull("{$joinTable}.ends_at")
                         ->orWhere("{$joinTable}.ends_at", '>', now());
                 });
-        })->orderBy('priority')->get();
+        })->orderBy('priority', 'desc')->get();
     }
 
     /**
