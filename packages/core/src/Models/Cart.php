@@ -25,6 +25,7 @@ use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\FreeItem;
 use Lunar\Base\ValueObjects\Cart\Promotion;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
@@ -86,6 +87,11 @@ class Cart extends BaseModel
     public ?Price $subTotalDiscounted = null;
 
     /**
+     * The shipping sub total for the cart.
+     */
+    public ?Price $shippingSubTotal = null;
+
+    /**
      * The shipping total for the cart.
      */
     public ?Price $shippingTotal = null;
@@ -108,6 +114,11 @@ class Cart extends BaseModel
      * @var null|Collection<DiscountBreakdown>
      */
     public ?Collection $discountBreakdown = null;
+
+    /**
+     * All the shipping breakdowns for the cart.
+     */
+    public ?ShippingBreakdown $shippingBreakdown = null;
 
     /**
      * The cart total.
