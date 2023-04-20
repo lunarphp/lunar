@@ -22,7 +22,7 @@ final class ApplyShipping
         $shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
 
         if ($shippingOption = $this->getShippingOption($cart)) {
-            $shippingBreakdown->items->push(
+            $shippingBreakdown->items->put($shippingOption->getIdentifier(),
                 new ShippingBreakdownItem(
                     name: $shippingOption->getName(),
                     identifier: $shippingOption->getIdentifier(),
