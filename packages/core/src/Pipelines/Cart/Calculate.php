@@ -25,15 +25,7 @@ class Calculate
                 $line->subTotal->value;
         });
 
-        $total = $cart->lines->sum('total.value');
-
-        // Get the shipping address
-        if ($shippingAddress = $cart->shippingAddress) {
-            if ($shippingAddress->shippingSubTotal) {
-                $subTotal += $shippingAddress->shippingSubTotal?->value;
-                $total += $shippingAddress->shippingTotal?->value;
-            }
-        }
+        $total = $cart->lines->sum('total.value') + $cart->shippingTotal?->value;
 
         $cart->subTotal = new Price($subTotal, $cart->currency, 1);
         $cart->subTotalDiscounted = new Price($subTotalDiscounted, $cart->currency, 1);

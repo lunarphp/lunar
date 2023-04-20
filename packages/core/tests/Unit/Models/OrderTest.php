@@ -4,6 +4,9 @@ namespace Lunar\Tests\Unit\Models;
 
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
@@ -219,5 +222,33 @@ class OrderTest extends TestCase
 
         $this->assertEquals($customer->id, $order->customer->id);
         $this->assertEquals($user->getKey(), $order->user->getKey());
+    }
+
+    /**
+     * @test
+     *
+     * @group orders
+     */
+    public function can_cast_and_store_shipping_breakdown()
+    {
+        $order = Order::factory()->create();
+
+        $breakdown = new ShippingBreakdown(
+            items: collect([
+                new ShippingBreakdownItem(
+                    name: 'Breakdown A',
+                    identifier: 'BA',
+                    price: new Price(123, Currency::getDefault(), 1)
+                ),
+            ])
+        );
+
+        $order->shipping_breakdown = $breakdown;
+
+        $order->save();
+
+        $this->assertDatabaseHas((new Order)->getTable(), [
+            'shipping_breakdown' => (string) $breakdown,
+        ]);
     }
 }
