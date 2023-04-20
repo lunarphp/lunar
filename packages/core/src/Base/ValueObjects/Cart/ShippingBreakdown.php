@@ -12,4 +12,9 @@ class ShippingBreakdown
     ) {
         $this->items = $items ?: collect();
     }
+
+    public function __toString()
+    {
+        return $this->items->toJson();
+    }
 }
