@@ -570,10 +570,7 @@ class CartTest extends TestCase
         ]);
     }
 
-    /**
-    * @test
-    * @group thisone
-    */
+    /** @test */
     public function can_calculate_shipping()
     {
         $country = Country::factory()->create();
