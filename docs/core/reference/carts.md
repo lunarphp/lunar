@@ -111,16 +111,6 @@ foreach ($cart->discountBreakdown as $discountBreakdown) {
     }
     $discountBreakdown->total->value
 }
-```
-
-foreach ($cart->discountBreakdown as $discountBreakdown) {
-    $discountBreakdown->discount_id
-    foreach ($discountBreakdown->lines as $discountLine) {
-        $discountLine->quantity
-        $discountLine->line
-    }
-    $discountBreakdown->total->value
-}
 
 foreach ($cart->lines as $cartLine) {
     $cartLine->unitPrice; // The monetary value for a single item.
