@@ -28,7 +28,7 @@ abstract class AbstractDiscountType extends Component
         return [];
     }
 
-    public function save()
+    public function save($discountId)
     {
         // ..
     }
