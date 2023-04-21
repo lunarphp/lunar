@@ -97,10 +97,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      */
     protected function addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)
     {
-        if (! $cart->discountBreakdown) {
-            $cart->discountBreakdown = collect();
-        }
-
         $cart->discountBreakdown->push($breakdown);
 
         return $this;
