@@ -4,6 +4,7 @@ namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
+use Illuminate\Support\Collection;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
 
@@ -29,8 +30,6 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
 
             return $shipping;
         });
-
-        return json_decode($value, false);
     }
 
     /**
@@ -44,7 +43,11 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        return $value->items->map(function ($rate) {
+        if (!$value instanceof Collection) {
+            $value = $value->items;
+        }
+
+        return $value->map(function ($rate) {
             $data = [
                 'name' => $rate->name,
                 'identifier' => $rate->identifier,
