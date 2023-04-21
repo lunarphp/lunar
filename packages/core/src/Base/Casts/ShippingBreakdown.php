@@ -71,7 +71,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function serialize($model, $key, $value, $attributes)
     {
-        return $value->items->map(function ($rate) {
+        return $value->map(function ($rate) {
             if ($rate->price instanceof Price) {
                 $rate->total = (object) [
                     'name' => $rate->name,
