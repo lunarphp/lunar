@@ -224,11 +224,7 @@ class OrderTest extends TestCase
         $this->assertEquals($user->getKey(), $order->user->getKey());
     }
 
-    /**
-     * @test
-     *
-     * @group orders
-     */
+    /** @test */
     public function can_cast_and_store_shipping_breakdown()
     {
         $order = Order::factory()->create();
@@ -248,7 +244,22 @@ class OrderTest extends TestCase
         $order->save();
 
         $this->assertDatabaseHas((new Order)->getTable(), [
-            'shipping_breakdown' => (string) $breakdown,
+            'shipping_breakdown' => json_encode([[
+                'name' => 'Breakdown A',
+                'identifier' => 'BA',
+                'price' => 123,
+            ]]),
         ]);
+
+        $breakdown = $order->refresh()->shipping_breakdown;
+
+        $this->assertCount(1, $breakdown);
+
+        $breakdownItem = $breakdown->first();
+
+        $this->assertEquals('Breakdown A', $breakdownItem->name);
+        $this->assertEquals('BA', $breakdownItem->identifier);
+        $this->assertInstanceOf(Price::class, $breakdownItem->price);
+        $this->assertEquals(123, $breakdownItem->price->value);
     }
 }
