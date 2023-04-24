@@ -354,7 +354,7 @@ DiscountTypes::register(DiscountType::class, DiscountTypeComponent::class);
 ```
 
 This should then appear when editing a discount and the user has chosen your custom discount type.
-
+Create a Livewire component to handle your custom discount type
 
 ```php
 <?php
