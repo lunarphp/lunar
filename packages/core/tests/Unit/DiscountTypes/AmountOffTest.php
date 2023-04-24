@@ -824,7 +824,8 @@ class AmountOffTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
-        $this->assertEquals(9000, $cart->subTotal->value);
+        $this->assertEquals(10000, $cart->subTotal->value);
+        $this->assertEquals(9000, $cart->subTotalDiscounted->value);
         $this->assertEquals(10800, $cart->total->value);
         $this->assertEquals(1800, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
@@ -968,7 +969,8 @@ class AmountOffTest extends TestCase
         $cart = $cart->calculate();
 
         $this->assertEquals(1000, $cart->discountTotal->value);
-        $this->assertEquals(9000, $cart->subTotal->value);
+        $this->assertEquals(10000, $cart->subTotal->value);
+        $this->assertEquals(9000, $cart->subTotalDiscounted->value);
         $this->assertEquals(10800, $cart->total->value);
         $this->assertEquals(1800, $cart->taxTotal->value);
         $this->assertCount(1, $cart->discounts);
@@ -1052,7 +1054,8 @@ class AmountOffTest extends TestCase
 
         $this->assertEquals(1000, $cart->discountTotal->value);
         $this->assertEquals(1200, $cart->total->value);
-        $this->assertEquals(1000, $cart->subTotal->value);
+        $this->assertEquals(2000, $cart->subTotal->value);
+        $this->assertEquals(1000, $cart->subTotalDiscounted->value);
     }
 
     /**

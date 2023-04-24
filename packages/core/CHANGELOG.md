@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.0-beta.2
+
+> Maintenance update to bring changes from 0.2.4 in.
+
 ## 0.3.0-alpha.4
 
 ### Changed
@@ -28,6 +32,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Laravel 8 support removed.
 - Laravel 10 support added.
+
+## 0.2.4
+
+### Changed
+
+- `subTotal` on a `Cart` model will no longer include any discount amounts.
+
+### Added
+
+- The `subTotalDiscounted` discount property has been added to the `Cart` model.
 
 ## 0.2.3
 

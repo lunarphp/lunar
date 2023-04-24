@@ -19,7 +19,7 @@ Currencies allow you to charge different amounts relative to the currency you're
 
 |Field|Description|
 |:-|:-|
-|`code`|The should be the `ISO 4217` currency code. |
+|`code`|This should be the `ISO 4217` currency code. |
 |`name`|A given name for the currency.|
 |`exchange_rate`|This should be the exchange rate relative to the default currency (see below)|
 |`decimal_places`|Specify the decimal places, e.g. 2|

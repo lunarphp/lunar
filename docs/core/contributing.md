@@ -12,9 +12,9 @@ Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) to hou
 
 ## Repository Branching
 
-**Bug Fixes** should target the latest compatible branch version i.e `0.1`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
+**Bug Fixes** should target the latest compatible branch version i.e `0.3`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
 
-**Features** should target the `main` branch if they introduce breaking changes, otherwise they can target the latest compatible branch version i.e `0.1`.
+**Features** should target the `main` branch if they introduce breaking changes, otherwise they can target the latest compatible branch version i.e `0.3`.
 
 ## Contributing Code
 
@@ -65,7 +65,7 @@ If the pull request is missing information or unclear as to what it offers or so
 
 A PR should be able to include the following:
 
-- Clearly show in the title the version the PR is targeting i.e. `[0.1]` or `[0.2]`.
+- Clearly show in the title the version the PR is targeting i.e. `[0.3]` or `[0.4]`.
 - A clear description of the feature or fix
 - Any relevant documentation updates
 - Unit tests with adequate code coverage
