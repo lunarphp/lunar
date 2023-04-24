@@ -338,3 +338,97 @@ class ProductUrls
     \Lunar\Models\Product::class => \App\Storefront\ProductUrls::class,
 ],
 ```
+
+## Discounts
+
+If you have registered your own discount types in the core, you will likely want to provide an interface so authenticated staff members can add the data required.
+
+:::warning
+You need to make sure you have registered your discount with the Lunar core beforehand.
+:::
+
+```php
+use Lunar\Hub\Facades\DiscountTypes;
+
+DiscountTypes::register(DiscountType::class, DiscountTypeComponent::class);
+```
+
+This should then appear when editing a discount and the user has chosen your custom discount type.
+
+
+```php
+<?php
+
+namespace App\Http\Livewire\Components;
+
+use Illuminate\Support\Facades\DB;
+use Lunar\Models\Discount;
+
+class CustomDiscount extends AbstractDiscountType
+{
+    /**
+     * The instance of the discount.
+     *
+     * @var Discount
+     */
+    public Discount $discount;
+
+    /**
+     * {@ineheritDoc}.
+     */
+    public function rules()
+    {
+        return [
+            'discount.data' => 'array',
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mount()
+    {
+        parent::mount();
+    }
+
+    public function getValidationMessages()
+    {
+        return [];
+    }
+    
+    /**
+     * Handle when the discount data is updated.
+     *
+     * @return void
+     */
+    public function updatedDiscountData()
+    {
+        $this->emitUp('discountData.updated', $this->discount->data);
+    }
+
+    /**
+     * Save the product discount.
+     *
+     * @return void
+     */
+    public function save($discountId)
+    {
+        $this->discount = Discount::find($discountId);
+            
+        DB::transaction(function () {
+            // ...
+        });
+    }
+
+    /**
+     * Render the livewire component.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function render()
+    {
+        return view('my-custom-discount-ui')
+            ->layout('adminhub::layouts.base');
+    }
+}
+```
