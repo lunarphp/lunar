@@ -341,20 +341,23 @@ class ProductUrls
 
 ## Discounts
 
-If you have registered your own discount types in the core, you will likely want to provide an interface so authenticated staff members can add the data required.
+If you have [registered your own discount types](/core/extending/discounts) in the core, you will likely want to provide an interface so authenticated staff members can add the data required.
 
 :::warning
-You need to make sure you have [registered your discount with the Lunar](/core/extending/discounts) core beforehand.
+You need to make sure you have [registered your discount](/core/extending/discounts) with the Lunar core beforehand.
 :::
 
 ```php
 use Lunar\Hub\Facades\DiscountTypes;
+use App\Http\Livewire\Components\CustomDiscountComponent;
+use App\DiscountTypes\MyCustomDiscountType;
 
-DiscountTypes::register(DiscountType::class, DiscountTypeComponent::class);
+DiscountTypes::register(MyCustomDiscountType::class, CustomDiscountComponent::class);
 ```
 
-This should then appear when editing a discount and the user has chosen your custom discount type.
-Create a Livewire component to handle your custom discount type
+The component UI should then appear when the user has chosen the custom discount type.
+
+Create a Livewire component to handle your custom discount type.
 
 ```php
 <?php
