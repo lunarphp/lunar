@@ -363,8 +363,9 @@ namespace App\Http\Livewire\Components;
 
 use Illuminate\Support\Facades\DB;
 use Lunar\Models\Discount;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\AbstractDiscountType;
 
-class CustomDiscount extends AbstractDiscountType
+class CustomDiscountComponent extends AbstractDiscountType
 {
     /**
      * The instance of the discount.
