@@ -3,7 +3,9 @@
 namespace Lunar\Base\Traits;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
 use Lunar\Models\Channel;
 
@@ -63,6 +65,54 @@ trait HasChannels
                     ];
                 })
             );
+        });
+    }
+
+    /**
+     * Return the active channels relationship.
+     *
+     * @return MorphToMany
+     */
+    public function activeChannels()
+    {
+        return $this->channels()->where(function ($query) {
+            $query->whereNull('starts_at')
+                ->orWhere('starts_at', '<=', now());
+        })->where(function ($query) {
+            $query->whereNull('ends_at')
+            ->orWhere('ends_at', '>=', now());
+        })->whereEnabled(true);
+    }
+
+    /**
+     * Apply the channel scope to the query
+     *
+     * @param Builder $query
+     * @param Channel|int $channel
+     *
+     * @return Builder
+     */
+    public function scopeChannel($query, $channel = null)
+    {
+        if (!$channel) {
+            return $query;
+        }
+
+        if (is_a($channel, Channel::class)) {
+            $channel = collect([$channel]);
+        }
+
+        return $query->whereHas('channels', function ($relation) use ($channel) {
+            $relation->whereIn(
+                $this->channels()->getTable() . '.channel_id',
+                $channel->pluck('id')
+            )->where(function ($query) {
+                $query->whereNull('starts_at')
+                    ->orWhere('starts_at', '<=', now());
+            })->where(function ($query) {
+                $query->whereNull('ends_at')
+                ->orWhere('ends_at', '>=', now());
+            })->whereEnabled(true);
         });
     }
 }
