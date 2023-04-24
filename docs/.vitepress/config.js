@@ -124,6 +124,7 @@ export default defineConfig({
           text: 'Developer Reference',
           items: [
             { text: 'Overview', link: '/admin-hub/overview' },
+            { text: 'Configuration', link: '/admin-hub/configuration' },
             { text: 'Staff', link: '/admin-hub/staff' },
             { text: 'Tables', link: '/admin-hub/tables' },
             { text: 'Extending', link: '/admin-hub/extending' }
