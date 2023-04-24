@@ -100,6 +100,13 @@ export default defineConfig({
           ]
         },
         {
+          text: 'Storefront',
+          collapsed: false,
+          items: [
+            { text: 'Storefront Session', link: '/core/storefront-utils/storefront-session' },
+          ]
+        },
+        {
           text: 'Extending',
           collapsed: true,
           items: [
