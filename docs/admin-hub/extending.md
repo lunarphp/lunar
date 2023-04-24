@@ -344,7 +344,7 @@ class ProductUrls
 If you have registered your own discount types in the core, you will likely want to provide an interface so authenticated staff members can add the data required.
 
 :::warning
-You need to make sure you have registered your discount with the Lunar core beforehand.
+You need to make sure you have [registered your discount with the Lunar](/core/extending/discounts) core beforehand.
 :::
 
 ```php
