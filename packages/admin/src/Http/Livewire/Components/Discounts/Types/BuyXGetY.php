@@ -171,8 +171,10 @@ class BuyXGetY extends AbstractDiscountType
      *
      * @return void
      */
-    public function save()
+    public function save($discountId)
     {
+        $this->discount = Discount::find($discountId);
+
         DB::transaction(function () {
             $conditions = $this->conditions;
 
