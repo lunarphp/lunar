@@ -19,7 +19,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <x-hub::input.group for="starts_at" :label="__('adminhub::inputs.starts_at.label')">
+                    <x-hub::input.group for="starts_at" :label="__('adminhub::inputs.starts_at.label')" :error="$errors->first('discount.starts_at')" required>
                         <x-hub::input.datepicker id="starts_at" wire:model="discount.starts_at" :options="['enableTime' => true ]" />
                     </x-hub::input.group>
                 </div>

@@ -195,7 +195,9 @@ class CustomerShow extends Component
     protected function getListeners()
     {
         return array_merge(
-            [],
+            [
+                'updatedAttributes',
+            ],
             $this->getHasSlotsListeners()
         );
     }
