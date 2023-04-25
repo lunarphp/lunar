@@ -50,7 +50,7 @@ class ValidateCartForOrderCreation extends BaseValidator
 
             // Do we have a shipping option applied?
             if (! $cart->getShippingOption()) {
-                return $this->fail('cart', 'Missing Shipping Option');
+                return $this->fail('cart', __('lunar::exceptions.carts.shipping_option_missing'));
             }
         }
 
