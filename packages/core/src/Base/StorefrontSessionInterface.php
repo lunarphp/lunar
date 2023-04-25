@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Support\Collection;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
@@ -34,11 +35,11 @@ interface StorefrontSessionInterface
     /**
      * Set the store front session customer group
      *
-     * @param CustomerGroup $customerGroup
+     * @param Collection<CustomerGroup> $customerGroups
      *
      * @return void
      */
-    public function setCustomerGroup(CustomerGroup $customerGroup);
+    public function setCustomerGroups(Collection $customerGroups);
 
     /**
      * Return the current currency.
@@ -55,9 +56,9 @@ interface StorefrontSessionInterface
     public function getChannel(): Channel;
 
     /**
-     * Return the current customer group
+     * Return the current customer groups
      *
-     * @return CustomerGroup
+     * @return Collection
      */
-    public function getCustomerGroup(): CustomerGroup;
+    public function getCustomerGroups(): ?Collection;
 }

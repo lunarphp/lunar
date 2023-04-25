@@ -3,6 +3,7 @@
 namespace Lunar\Managers;
 
 use Illuminate\Session\SessionManager;
+use Illuminate\Support\Collection;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
@@ -18,11 +19,11 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     protected ?Channel $channel = null;
 
     /**
-     * The current customer group.
+     * The collection of customer groups to use.
      *
-     * @var CustomerGroup
+     * @var Collection
      */
-    protected ?CustomerGroup $customerGroup = null;
+    protected ?Collection $customerGroups = null;
 
     /**
      * Initialise the manager
@@ -32,8 +33,12 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     public function __construct(
         protected SessionManager $sessionManager
     ) {
+        if (!$this->customerGroups) {
+            $this->customerGroups = collect();
+        }
+
         $this->initChannel();
-        $this->initCustomerGroup();
+        $this->initCustomerGroups();
     }
 
     /**
@@ -49,31 +54,43 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function initCustomerGroup()
+    public function initCustomerGroups()
     {
-        $handle = $this->sessionManager->get(
-            $this->getSessionKey().'_customer_group'
+        $groupHandles = collect(
+            $this->sessionManager->get(
+                $this->getSessionKey().'_customer_groups'
+            )
         );
 
-        if ($this->customerGroup && $this->customerGroup->handle == $handle) {
-            return $this->customerGroup;
+        if ($this->customerGroups?->count()) {
+            if (!$groupHandles) {
+                return $this->setCustomerGroups(
+                    $this->customerGroups
+                );
+            }
+            return $this->customerGroups;
         }
 
-        if (!$handle) {
-            return $this->setCustomerGroup(
-                CustomerGroup::getDefault()
-            );
-        }
 
-        $model = CustomerGroup::whereHandle($handle)->first();
+//         if ($this->customerGroup && $this->customerGroup->handle == $handle) {
+//             return $this->customerGroup;
+//         }
+//
+//         if (!$handle) {
+//             return $this->setCustomerGroup(
+//                 CustomerGroup::getDefault()
+//             );
+//         }
+//
+//         $model = CustomerGroup::whereHandle($handle)->first();
+//
+//         if (!$model) {
+//             throw new \Exception(
+//                 "Unable to find customer group with handle {$handle}"
+//             );
+//         }
 
-        if (!$model) {
-            throw new \Exception(
-                "Unable to find customer group with handle {$handle}"
-            );
-        }
-
-        return $this->setCustomerGroup($model);
+        // return $this->setCustomerGroup($model);
     }
 
     /**
@@ -130,28 +147,28 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setCustomerGroup(CustomerGroup $customerGroup)
+    public function setCustomerGroups(Collection $customerGroups)
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_customer_group',
-            $customerGroup->handle
+            $customerGroups->pluck('handle')
         );
 
-        $this->customerGroup = $customerGroup;
+        $this->customerGroups = $customerGroups;
         return $this;
     }
 
     /**
-     * Reset the customer group
+     * Reset the customer groups
      *
      * @return self
      */
-    public function resetCustomerGroup()
+    public function resetCustomerGroups()
     {
         $this->sessionManager->forget(
             $this->getSessionKey().'_customer_group'
         );
-        $this->customerGroup = null;
+        $this->customerGroups = collect();
 
         return $this;
     }
@@ -167,9 +184,9 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getCustomerGroup(): CustomerGroup
+    public function getCustomerGroups(): ?Collection
     {
-        return $this->customerGroup ?: CustomerGroup::getDefault();
+        return $this->customerGroups ?: $this->initCustomerGroups();
     }
 
     /**
