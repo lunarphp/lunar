@@ -364,7 +364,7 @@ Create a Livewire component to handle your custom discount type.
 
 namespace App\Http\Livewire\Components;
 
-use Lunar\Facades\DB;
+use Illuminate\Support\Facades\DB;
 use Lunar\Models\Discount;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\AbstractDiscountType;
 

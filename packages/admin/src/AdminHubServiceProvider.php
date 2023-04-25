@@ -158,6 +158,10 @@ class AdminHubServiceProvider extends ServiceProvider
             return new DiscountTypes();
         });
 
+        $this->app->singleton(DiscountTypesInterface::class, function () {
+            return new DiscountTypes();
+        });
+
         $this->app->singleton(\Lunar\Hub\Editing\ProductSection::class, function ($app) {
             return new \Lunar\Hub\Editing\ProductSection();
         });
