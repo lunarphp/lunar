@@ -7,7 +7,7 @@
           <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
         </svg>
       </span>
-    {{-- <button type="button" class="relative w-full py-2 pl-3 pr-10 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+    {{-- <button type="button" class="relative w-full py-2 pl-3 pr-10 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-default focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
       <span class="inline-flex w-full truncate">
         <span class="truncate">
           Tom Cook
@@ -39,7 +39,7 @@
         <!--
           Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
 
-          Highlighted: "text-white bg-indigo-600", Not Highlighted: "text-gray-900"
+          Highlighted: "text-white bg-sky-600", Not Highlighted: "text-gray-900"
         -->
         {{ $slot }}
         <!-- More items... -->
