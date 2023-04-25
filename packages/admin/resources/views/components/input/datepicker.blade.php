@@ -1,6 +1,7 @@
 <div
   x-data="{
-    value: @entangle($attributes->wire('model')),
+    value: @entangle($attributes->wire('model')).defer,
+    flatpickr: {},
     init() {
       this.$nextTick(() => {
 
@@ -11,8 +12,12 @@
             altInput: true,
         }
 
-        flatpickr($refs.input, {...options, ...passedOptions})
+        this.flatpickr = flatpickr($refs.input, {...options, ...passedOptions})
       })
+    },
+    clear() {
+        this.flatpickr.setDate(null)
+        this.value = null
     }
   }"
   @change="value = $event.target.value"
@@ -25,8 +30,9 @@
     x-bind:value="value"
     {{ $attributes->whereDoesntStartWith('wire:model') }}
   />
+
   <div x-show="value" class="absolute right-0 mr-3">
-    <button x-on:click="value = null" type="button" class="inline-flex items-center text-sm text-gray-400 hover:text-gray-800">
+    <button x-on:click="clear" type="button" class="inline-flex items-center text-sm text-gray-400 hover:text-gray-800">
       <x-hub::icon ref="x-circle" class="w-4 mt-2" />
     </button>
   </div>
