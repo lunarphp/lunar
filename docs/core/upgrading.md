@@ -24,6 +24,20 @@ php artisan lunar:hub:install
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.2`. 
 
+## [Unreleased]
+
+### Low Impact
+
+If you have a custom DiscountType, you should update the `save` method to expect the recently saved discount id to be passed.
+
+```php
+// Before
+public function save();
+
+// After
+public function save($discountId);
+```
+
 ## 0.2
 
 ### High Impact

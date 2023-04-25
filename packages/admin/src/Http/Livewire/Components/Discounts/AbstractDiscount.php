@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Lunar\Facades\Discounts;
+use Lunar\Hub\Base\DiscountTypesInterface;
 use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -184,7 +185,7 @@ abstract class AbstractDiscount extends Component
      */
     public function getDiscountComponent()
     {
-        return (new DiscountTypes)->getComponent($this->discount->type);
+        return app(DiscountTypesInterface::class)->getComponent($this->discount->type);
     }
 
     /**

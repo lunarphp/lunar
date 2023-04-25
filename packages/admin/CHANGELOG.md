@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2.5
+
+### Fixed
+
+- When saving a discount for the first time using BuyXGetY, the save method will now ensure the id is set.
+- Datetime picker will now clear date properly and reset the flatpickr instance.
+- Discounts end date will now validate against that start date properly when saving.
+- Added missing listeners to components which handle attributes.
+- Non existent (deleted) products will be filtered from associations when editing a product.
+
+### Changed
+
+- Datetime picker now uses `.defer`
+
+### Added
+
+- Added `DiscountTypes` facade to enable discount extending in the hub.
+
 ## 0.2.4
 
 ### Changed
