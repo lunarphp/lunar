@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- When saving a discount for the first time using BuyXGetY, the save method will now ensure the id is set.
 - Datetime picker will now clear date properly and reset the flatpickr instance.
 - Discounts end date will now validate against that start date properly when saving.
 
