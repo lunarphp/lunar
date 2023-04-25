@@ -9,6 +9,7 @@ use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Currency;
 use Lunar\Tests\TestCase;
+use function Livewire\invade;
 
 /**
  * @group lunar.actions
@@ -18,6 +19,27 @@ class AddAddressTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected AddAddress $action;
+
+    protected array $fillableAttributes;
+
+    protected string $cartAddressTable;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->action = new AddAddress;
+
+        $this->fillableAttributes = invade($this->action)->__get('fillableAttributes');
+
+        $this->cartAddressTable = (new CartAddress)->getTable();
+    }
+
+    protected function getCartAddressAttributesFromAddress(Address $address): array
+    {
+        return collect($address->getAttributes())->only($this->fillableAttributes)->toArray();
+    }
     /**
      * @test
      */
@@ -31,19 +53,15 @@ class AddAddressTest extends TestCase
             'currency_id' => $currency->id,
         ]);
 
-        $action = new AddAddress;
-
-        $this->assertDatabaseMissing((new CartAddress)->getTable(), [
+        $this->assertDatabaseMissing($this->cartAddressTable, [
             'cart_id' => $cart->id,
         ]);
 
-        $action->execute($cart, $address, 'billing');
+        $this->action->execute($cart, $address, 'billing');
 
-        $attributes = $address->getAttributes();
-        unset($attributes['shipping_default']);
-        unset($attributes['billing_default']);
+        $attributes = $this->getCartAddressAttributesFromAddress($address);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
+        $this->assertDatabaseHas($this->cartAddressTable, array_merge([
             'cart_id' => $cart->id,
             'type' => 'billing',
         ], $attributes));
@@ -62,19 +80,15 @@ class AddAddressTest extends TestCase
             'currency_id' => $currency->id,
         ]);
 
-        $action = new AddAddress;
-
-        $this->assertDatabaseMissing((new CartAddress)->getTable(), [
+        $this->assertDatabaseMissing($this->cartAddressTable, [
             'cart_id' => $cart->id,
         ]);
 
-        $action->execute($cart, $address->toArray(), 'billing');
+        $this->action->execute($cart, $address->toArray(), 'billing');
 
-        $attributes = $address->getAttributes();
-        unset($attributes['shipping_default']);
-        unset($attributes['billing_default']);
+        $attributes = $this->getCartAddressAttributesFromAddress($address);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
+        $this->assertDatabaseHas($this->cartAddressTable, array_merge([
             'cart_id' => $cart->id,
             'type' => 'billing',
         ], $attributes));
@@ -99,41 +113,32 @@ class AddAddressTest extends TestCase
             'currency_id' => $currency->id,
         ]);
 
-        $action = new AddAddress;
 
-        $this->assertDatabaseMissing((new CartAddress)->getTable(), [
+        $this->assertDatabaseMissing($this->cartAddressTable, [
             'cart_id' => $cart->id,
         ]);
 
-        $action->execute($cart, $addressA, 'billing');
+        $this->action->execute($cart, $addressA, 'billing');
 
-        $attributes = $addressA->getAttributes();
-        unset($attributes['shipping_default']);
-        unset($attributes['billing_default']);
+        $attributesAddressA = $this->getCartAddressAttributesFromAddress($addressA);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
+        $this->assertDatabaseHas($this->cartAddressTable, array_merge([
             'cart_id' => $cart->id,
             'type' => 'billing',
-        ], $attributes));
+        ], $attributesAddressA));
 
-        $action->execute($cart, $addressB, 'billing');
+        $this->action->execute($cart, $addressB, 'billing');
 
-        $attributes = $addressA->getAttributes();
-        unset($attributes['shipping_default']);
-        unset($attributes['billing_default']);
-
-        $this->assertDatabaseMissing((new CartAddress)->getTable(), array_merge([
+        $this->assertDatabaseMissing($this->cartAddressTable, array_merge([
             'cart_id' => $cart->id,
             'type' => 'billing',
-        ], $attributes));
+        ], $attributesAddressA));
 
-        $attributes = $addressB->getAttributes();
-        unset($attributes['shipping_default']);
-        unset($attributes['billing_default']);
+        $attributesAddressB = $this->getCartAddressAttributesFromAddress($addressB);
 
-        $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
+        $this->assertDatabaseHas($this->cartAddressTable, array_merge([
             'cart_id' => $cart->id,
             'type' => 'billing',
-        ], $attributes));
+        ], $attributesAddressB));
     }
 }
