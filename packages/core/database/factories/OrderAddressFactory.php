@@ -17,7 +17,7 @@ class OrderAddressFactory extends Factory
             'last_name' => $this->faker->lastName,
             'company_name' => $this->faker->boolean ? $this->faker->company : null,
             'line_one' => $this->faker->streetName,
-            'line_two' => $this->faker->boolean ? $this->faker->secondaryAddress : null,
+            'line_two' => $this->faker->boolean ? "Suite " . $this->faker->numerify() : null,
             'line_three' => $this->faker->boolean ? $this->faker->buildingNumber : null,
             'city' => $this->faker->city,
             'state' => $this->faker->boolean ? $this->faker->state : null,
