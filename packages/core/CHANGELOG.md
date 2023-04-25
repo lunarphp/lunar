@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2.5
+
+### Fixed
+
+- `BuyXGetY` will now factor in minimum qty when calculating the amount to allocate.
+- The `ApplyDiscounts` pipeline will now reset the discount breakdown when run to avoid duplicates.
+- The `OrderFactory` class will now longer to `secondaryAddress` as this is not always available.
+- Discounts are now correctly ordered by their priority.
+
 ## 0.2.4
 
 ### Fixed
