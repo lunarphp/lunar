@@ -50,7 +50,7 @@ class DiscountCreate extends AbstractDiscount
             'discount.priority' => 'required|min:1',
             'discount.starts_at' => 'required|date',
             'discount.coupon' => 'nullable',
-            'discount.ends_at' => 'nullable|date|after:starts_at',
+            'discount.ends_at' => 'nullable|date|after:discount.starts_at',
             'discount.type' => 'string|required',
             'discount.data' => 'array',
             'selectedCollections' => 'array',
