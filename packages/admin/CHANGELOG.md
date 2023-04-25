@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- Datetime picker will now clear date properly and reset the flatpickr instance.
+- Discounts end date will now validate against that start date properly when saving.
+
+### Changed
+
+- Datetime picker now uses `.defer`
+
 ## 0.2.4
 
 ### Changed
