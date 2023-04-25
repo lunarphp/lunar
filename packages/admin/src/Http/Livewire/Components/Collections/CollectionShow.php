@@ -61,6 +61,7 @@ class CollectionShow extends Component
     protected function getListeners()
     {
         return array_merge([
+            'updatedAttributes',
             'productSearch.selected' => 'addSelectedProducts',
         ], $this->getHasImagesListeners());
     }
@@ -269,6 +270,7 @@ class CollectionShow extends Component
                 }
             });
         })->validate(null, $this->getValidationMessages());
+
 
         $this->collection->attribute_data = $this->prepareAttributeData();
 
