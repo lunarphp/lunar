@@ -48,7 +48,7 @@ class DiscountCreate extends AbstractDiscount
             'discount.max_uses' => 'nullable|numeric|min:0',
             'discount.max_uses_per_user' => 'nullable|numeric|min:0',
             'discount.priority' => 'required|min:1',
-            'discount.starts_at' => 'date',
+            'discount.starts_at' => 'required|date',
             'discount.coupon' => 'nullable',
             'discount.ends_at' => 'nullable|date|after:starts_at',
             'discount.type' => 'string|required',
