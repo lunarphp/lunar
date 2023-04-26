@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Lunar\Models\Channel;
 
@@ -88,11 +89,11 @@ trait HasChannels
      * Apply the channel scope to the query
      *
      * @param Builder $query
-     * @param Channel|int $channel
+     * @param Channel|iterable $channel
      *
      * @return Builder
      */
-    public function scopeChannel($query, $channel = null, DateTime $startsAt = null, DateTime $endsAt = null)
+    public function scopeChannel($query, Channel|iterable $channel = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
         if (!$channel) {
             return $query;
@@ -106,14 +107,24 @@ trait HasChannels
             $endsAt = now()->addSecond();
         }
 
+        $channelIds = collect();
+
         if (is_a($channel, Channel::class)) {
-            $channel = collect([$channel]);
+            $channelIds = collect([$channel->id]);
         }
 
-        return $query->whereHas('channels', function ($relation) use ($channel, $startsAt, $endsAt) {
+        if (is_a($channel, Collection::class)) {
+            $channelIds = $channel->pluck('id');
+        }
+
+        if (is_array($channel)) {
+            $channelIds = collect($channel)->pluck('id');
+        }
+
+        return $query->whereHas('channels', function ($relation) use ($channelIds, $startsAt, $endsAt) {
             $relation->whereIn(
                 $this->channels()->getTable() . '.channel_id',
-                $channel->pluck('id')
+                $channelIds
             )->where(function ($query) use ($startsAt) {
                 $query->whereNull('starts_at')
                     ->orWhere('starts_at', '<=', $startsAt);

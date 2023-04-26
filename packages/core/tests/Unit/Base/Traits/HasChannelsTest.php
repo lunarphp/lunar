@@ -50,9 +50,11 @@ class HasChannelsTest extends TestCase
 
         $resultA = Product::channel($channelA)->get();
         $resultB = Product::channel($channelB)->get();
+        $resultC = Product::channel([$channelA, $channelB])->get();
 
         $this->assertCount(1, $resultA);
         $this->assertCount(1, $resultB);
+        $this->assertCount(2, $resultC);
 
         $this->assertEquals($productA->id, $resultA->first()->id);
         $this->assertEquals($productB->id, $resultB->first()->id);

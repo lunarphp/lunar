@@ -78,18 +78,18 @@ trait HasCustomerGroups
      *
      * @return void
      */
-    public function applyCustomerGroupScope(Builder $query, $customerGroups)
+    public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTime $startsAt, DateTime $endsAt)
     {
-        $query->whereHas('customerGroups', function ($relation) use ($customerGroups) {
+        return $query->whereHas('customerGroups', function ($relation) use ($groupIds, $startsAt, $endsAt) {
             $relation->whereIn(
                 $this->customerGroups()->getTable() . '.customer_group_id',
-                $customerGroups->pluck('id')
-            )->where(function ($query) {
+                $groupIds
+            )->where(function ($query) use ($startsAt) {
                 $query->whereNull('starts_at')
-                    ->orWhere('starts_at', '<=', now());
-            })->where(function ($query) {
+                    ->orWhere('starts_at', '<=', $startsAt);
+            })->where(function ($query) use ($endsAt) {
                 $query->whereNull('ends_at')
-                ->orWhere('ends_at', '>=', now());
+                ->orWhere('ends_at', '>=', $endsAt);
             })->whereEnabled(true)->whereVisible(true);
         });
     }
@@ -102,16 +102,34 @@ trait HasCustomerGroups
      *
      * @return Builder
      */
-    public function scopeCustomerGroup($query, $customerGroup = null)
+    public function scopeCustomerGroup($query, CustomerGroup|iterable $customerGroup = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
         if (!$customerGroup) {
             return $query;
         }
 
+        $groupIds = collect();
+
         if (is_a($customerGroup, CustomerGroup::class)) {
-            $customerGroup = collect([$customerGroup]);
+            $groupIds = collect([$customerGroup->id]);
         }
 
-        return $this->applyCustomerGroupScope($query, $customerGroup);
+        if (is_a($customerGroup, Collection::class)) {
+            $groupIds = $customerGroup->pluck('id');
+        }
+
+        if (is_array($customerGroup)) {
+            $groupIds = collect($customerGroup)->pluck('id');
+        }
+
+        if (!$startsAt) {
+            $startsAt = now();
+        }
+
+        if (!$endsAt) {
+            $endsAt = now()->addSecond();
+        }
+
+        return $this->applyCustomerGroupScope($query, $groupIds, $startsAt, $endsAt);
     }
 }
