@@ -3,9 +3,7 @@
 namespace Lunar\Tests\Unit\Console;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Exceptions\SchedulingException;
 use Lunar\Models\Channel;
-use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
 use Lunar\Tests\TestCase;
 
@@ -82,5 +80,19 @@ class HasChannelsTest extends TestCase
         ]);
 
         $this->assertCount(0, Product::channel($channelA)->get());
+
+
+        $startsAt = now()->addDay();
+        $endsAt = now()->addDays(2);
+
+        $productA->channels()->syncWithPivotValues([$channelA->id], [
+            'starts_at' => $startsAt,
+            'enabled' => true,
+            'ends_at' => $endsAt,
+        ]);
+
+        $this->assertCount(0, Product::channel($channelA)->get());
+
+        $this->assertCount(1, Product::channel($channelA, $startsAt, $endsAt)->get());
     }
 }

@@ -92,26 +92,34 @@ trait HasChannels
      *
      * @return Builder
      */
-    public function scopeChannel($query, $channel = null)
+    public function scopeChannel($query, $channel = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
         if (!$channel) {
             return $query;
+        }
+
+        if (!$startsAt) {
+            $startsAt = now();
+        }
+
+        if (!$endsAt) {
+            $endsAt = now()->addSecond();
         }
 
         if (is_a($channel, Channel::class)) {
             $channel = collect([$channel]);
         }
 
-        return $query->whereHas('channels', function ($relation) use ($channel) {
+        return $query->whereHas('channels', function ($relation) use ($channel, $startsAt, $endsAt) {
             $relation->whereIn(
                 $this->channels()->getTable() . '.channel_id',
                 $channel->pluck('id')
-            )->where(function ($query) {
+            )->where(function ($query) use ($startsAt) {
                 $query->whereNull('starts_at')
-                    ->orWhere('starts_at', '<=', now());
-            })->where(function ($query) {
+                    ->orWhere('starts_at', '<=', $startsAt);
+            })->where(function ($query) use ($endsAt) {
                 $query->whereNull('ends_at')
-                ->orWhere('ends_at', '>=', now());
+                ->orWhere('ends_at', '>=', $endsAt);
             })->whereEnabled(true);
         });
     }
