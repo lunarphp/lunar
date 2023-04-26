@@ -113,6 +113,7 @@ export default defineConfig({
             { text: 'Activity Log', link: '/core/extending/activity-log' },
             { text: 'Assets', link: '/core/extending/assets' },
             { text: 'Carts', link: '/core/extending/carts' },
+            { text: 'Discounts', link: '/core/extending/discounts' },
             { text: 'Field Types', link: '/core/extending/field-types' },
             { text: 'Models', link: '/core/extending/models' },
             { text: 'Orders', link: '/core/extending/orders' },

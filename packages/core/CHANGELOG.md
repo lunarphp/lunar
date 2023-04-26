@@ -33,9 +33,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Laravel 8 support removed.
 - Laravel 10 support added.
 
+## 0.2.5
+
+### Fixed
+
+- `BuyXGetY` will now factor in minimum qty when calculating the amount to allocate.
+- The `ApplyDiscounts` pipeline will now reset the discount breakdown when run to avoid duplicates.
+- The `OrderFactory` class will now longer to `secondaryAddress` as this is not always available.
+- Discounts are now correctly ordered by their priority.
+
 ## 0.2.4
 
-### Changed
+### Fixed
+
+- `BuyXGetY` now uses `$qtyCanBeApplied` instead of `$conditionQtyToAllocate` in the discount breakdown.
+
+### Changed
 
 - `subTotal` on a `Cart` model will no longer include any discount amounts.
 

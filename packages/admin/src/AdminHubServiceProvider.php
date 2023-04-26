@@ -13,7 +13,9 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
+use Lunar\Hub\Base\DiscountTypesInterface;
 use Lunar\Hub\Console\Commands\InstallHub;
+use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Facades\ActivityLog;
 use Lunar\Hub\Http\Livewire\Components\Account;
 use Lunar\Hub\Http\Livewire\Components\ActivityLogFeed;
@@ -154,6 +156,10 @@ class AdminHubServiceProvider extends ServiceProvider
 
         $this->app->singleton(SlotRegistry::class, function () {
             return new SlotRegistry();
+        });
+
+        $this->app->singleton(DiscountTypesInterface::class, function () {
+            return new DiscountTypes();
         });
 
         $this->app->singleton(\Lunar\Hub\Editing\ProductSection::class, function ($app) {

@@ -15,6 +15,8 @@ final class ApplyDiscounts
      */
     public function handle(Cart $cart, Closure $next)
     {
+        $cart->discountBreakdown = collect([]);
+
         Discounts::apply($cart);
 
         return $next($cart);
