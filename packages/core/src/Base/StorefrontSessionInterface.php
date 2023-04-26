@@ -14,7 +14,7 @@ interface StorefrontSessionInterface
      *
      * @return string
      */
-    public function getSessionKey();
+    public function getSessionKey(): string;
 
     /**
      * Set the cart session channel.
@@ -22,7 +22,7 @@ interface StorefrontSessionInterface
      * @param  \Lunar\Models\Channel  $channel
      * @return self
      */
-    public function setChannel(Channel $channel);
+    public function setChannel(Channel $channel): self;
 
     /**
      * Set the cart session currency.
@@ -30,7 +30,7 @@ interface StorefrontSessionInterface
      * @param  \Lunar\Models\Currency  $currency
      * @return self
      */
-    public function setCurrency(Currency $currency);
+    public function setCurrency(Currency $currency): self;
 
     /**
      * Set the store front session customer group
@@ -39,7 +39,16 @@ interface StorefrontSessionInterface
      *
      * @return void
      */
-    public function setCustomerGroups(Collection $customerGroups);
+    public function setCustomerGroups(Collection $customerGroups): self;
+
+    /**
+     * Set the Customer Group
+     *
+     * @param CustomerGroup $customerGroup
+     *
+     * @return self
+     */
+    public function setCustomerGroup(CustomerGroup $customerGroup): self;
 
     /**
      * Return the current currency.
@@ -61,4 +70,6 @@ interface StorefrontSessionInterface
      * @return Collection
      */
     public function getCustomerGroups(): ?Collection;
+
+
 }

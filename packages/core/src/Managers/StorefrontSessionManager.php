@@ -26,6 +26,13 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     protected ?Collection $customerGroups = null;
 
     /**
+     * The current currency
+     *
+     * @var Currency
+     */
+    protected ?Currency $currency = null;
+
+    /**
      * Initialise the manager
      *
      * @param protected SessionManager
@@ -72,25 +79,17 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         }
 
 
-//         if ($this->customerGroup && $this->customerGroup->handle == $handle) {
-//             return $this->customerGroup;
-//         }
-//
-//         if (!$handle) {
-//             return $this->setCustomerGroup(
-//                 CustomerGroup::getDefault()
-//             );
-//         }
-//
-//         $model = CustomerGroup::whereHandle($handle)->first();
-//
-//         if (!$model) {
-//             throw new \Exception(
-//                 "Unable to find customer group with handle {$handle}"
-//             );
-//         }
+        if (!$this->customerGroups?->count()) {
+            return $this->setCustomerGroups(
+                collect([
+                    CustomerGroup::getDefault()
+                ])
+            );
+        }
 
-        // return $this->setCustomerGroup($model);
+        return $this->setCustomerGroups(
+            CustomerGroup::whereIn('handle', $groupHandles)->get()
+        );
     }
 
     /**
@@ -126,7 +125,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getSessionKey()
+    public function getSessionKey(): string
     {
         return 'lunar_storefront';
     }
@@ -134,7 +133,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setChannel(Channel|string $channel)
+    public function setChannel(Channel|string $channel): self
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_channel',
@@ -147,15 +146,25 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setCustomerGroups(Collection $customerGroups)
+    public function setCustomerGroups(Collection $customerGroups): self
     {
         $this->sessionManager->put(
-            $this->getSessionKey().'_customer_group',
-            $customerGroups->pluck('handle')
+            $this->getSessionKey().'_customer_groups',
+            $customerGroups->pluck('handle')->toArray()
         );
 
         $this->customerGroups = $customerGroups;
         return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCustomerGroup(CustomerGroup $customerGroup): self
+    {
+        return $this->setCustomerGroups(
+            collect([$customerGroup])
+        );
     }
 
     /**
@@ -166,7 +175,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     public function resetCustomerGroups()
     {
         $this->sessionManager->forget(
-            $this->getSessionKey().'_customer_group'
+            $this->getSessionKey().'_customer_groups'
         );
         $this->customerGroups = collect();
 
@@ -192,7 +201,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setCurrency(Currency $currency)
+    public function setCurrency(Currency $currency): self
     {
         $this->currency = $currency;
 
