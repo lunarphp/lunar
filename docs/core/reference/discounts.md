@@ -70,40 +70,6 @@ Lunar\Models\DiscountPurchasable
 - Purchasables `discount_purchasables`
 - Users - `customer_user`
 
-
-## Usage
-
-Fetching applied discounts
-
-```php
-use Lunar\Facades\Discounts;
-
-$appliedDiscounts = Discounts::getApplied();
-```
-
-This will return a collection of discounts which are applied to the current cart.
-
-```php
-foreach ($appliedDiscounts as $item) {
-    // Lunar\Base\DataTransferObjects\CartDiscount
-    $item->cartLine; // Lunar\Models\CartLine
-    $item->discount; // Lunar\Models\Discount
-}
-```
-
-Each cart line will also have a `discount` property populated with the model of the applied discount.
-
-```php
-foreach ($cart->lines as $line) {
-    $line->discount; // Lunar\Models\Discount;
-}
-```
-
-:::tip
-These aren't database relationships and will only persist for the lifecycle of the each request.
-:::
-
-
 ### Adding your own Discount type
 
 
@@ -158,18 +124,20 @@ class CustomDiscount
         }
 
         $cartLine->discount = $this->discount;
+        
+        $discountTotal = $cartLine->unitPrice->value * $discountQuantity;
 
         $cartLine->discountTotal = new Price(
-            $cartLine->unitPrice->value * $discountQuantity,
+            $discountTotal,
             $cartLine->cart->currency,
             1
         );
 
-        Discounts::addApplied(
-            new CartDiscount($cartLine, $this->discount)
+        $cartLine->subTotalDiscounted = new Price(
+            $line->subTotal->value - $discountTotal,
+            $cart->currency,
+            1
         );
-
-        return $cartLine;
     }
 }
 

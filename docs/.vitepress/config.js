@@ -105,6 +105,7 @@ export default defineConfig({
             { text: 'Activity Log', link: '/core/extending/activity-log' },
             { text: 'Assets', link: '/core/extending/assets' },
             { text: 'Carts', link: '/core/extending/carts' },
+            { text: 'Discounts', link: '/core/extending/discounts' },
             { text: 'Field Types', link: '/core/extending/field-types' },
             { text: 'Models', link: '/core/extending/models' },
             { text: 'Orders', link: '/core/extending/orders' },
@@ -124,6 +125,7 @@ export default defineConfig({
           text: 'Developer Reference',
           items: [
             { text: 'Overview', link: '/admin-hub/overview' },
+            { text: 'Configuration', link: '/admin-hub/configuration' },
             { text: 'Staff', link: '/admin-hub/staff' },
             { text: 'Tables', link: '/admin-hub/tables' },
             { text: 'Extending', link: '/admin-hub/extending' }
