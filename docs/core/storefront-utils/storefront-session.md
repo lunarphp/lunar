@@ -41,18 +41,18 @@ StorefrontSession::getChannel();
 
 ## Customer Groups
 
-### Initialise the Customer Group
+### Initialise the Customer Groups
 
-This will set the Customer Group based on what's been previously set, otherwise it will use the default.
+This will set the Customer Groups based on what's been previously set (from the session), otherwise it will use the default record.
 
 ```php
-StorefrontSession::initCustomerGroup();
+StorefrontSession::initCustomerGroups();
 ```
 
 :::tip This is automatically called when using the facade.
 :::
 
-### Set the Customer Group
+### Set the Customer Groups
 
 ```php
 $customerGroup = new CustomerGroup([
@@ -60,14 +60,17 @@ $customerGroup = new CustomerGroup([
     'handle' => 'retail',
 ]);
 
+// Set multiple customer groups
+StorefrontSession::setCustomerGroups(collect($customerGroup));
+
+// Set a single customer group, under the hood this will just call `setCustomerGroups`.
 StorefrontSession::setCustomerGroup($customerGroup);
-StorefrontSession::setCustomerGroup('retail');
 ```
 
-### Get the Customer Group
+### Get the Customer Groups
 
 ```php
-StorefrontSession::getCustomerGroup();
+StorefrontSession::getCustomerGroups();
 ```
 
 ## Currencies
