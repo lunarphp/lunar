@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added missing translations and updated publishing of lang files to L10.
 - Added customer group scope to `HasCustomerGroups` trait.
 - Added channel scope to `HasChannels` trait.
+- Added new `StorefrontSession` manager.
 
 ## 0.3.0-beta.2
 
