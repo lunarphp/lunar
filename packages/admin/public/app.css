@@ -4762,6 +4762,15 @@ video {
 .bg-opacity-75 {
   --tw-bg-opacity: 0.75;
 }
+.fill-sky-600 {
+  fill: #0284c7;
+}
+.fill-inherit {
+  fill: inherit;
+}
+.fill-blue-600 {
+  fill: #2563eb;
+}
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -5655,6 +5664,9 @@ div.FIE_resize-tool-options .SfxInput-root {
 .hover\:bg-gray-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+}
+.hover\:fill-white:hover {
+  fill: #fff;
 }
 .hover\:text-gray-400:hover {
   --tw-text-opacity: 1;

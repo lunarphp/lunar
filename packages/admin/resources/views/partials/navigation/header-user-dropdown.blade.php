@@ -1,7 +1,7 @@
 <div x-data="{ showUserMenu: false }"
      x-on:mouseover="showUserMenu = true"
      x-on:mouseleave="showUserMenu = false"
-     class="relative">
+     class="relative pl-4">
     <div x-cloak
          x-transition
          x-show="showUserMenu"
