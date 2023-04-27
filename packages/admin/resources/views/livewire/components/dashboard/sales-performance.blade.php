@@ -6,7 +6,7 @@
       </h3>
     </div>
     <form wire:submit.prevent="update" class="flex items-center space-x-2">
-        <x-hub::input.datepicker wire:model="range" :options="['mode' => 'range', 'maxRange' => 30 ]" class="w-[300px]" />
+        <x-hub::input.datepicker wire:model="range" :options="['mode' => 'range', 'maxRange' => 30 ]" class="!w-[300px]" />
         <button class="mt-2">
           <x-hub::icon ref="refresh" class="w-4 text-gray-400 hover:text-gray-900"/>
         </button>
