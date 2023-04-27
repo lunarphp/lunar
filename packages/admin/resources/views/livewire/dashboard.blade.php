@@ -1,11 +1,6 @@
 <div class="space-y-8">
     <div class="flex justify-between">
         <h1 class="text-2xl font-semibold text-gray-900">{{ __('adminhub::global.dashboard') }}</h1>
-        <div class="flex items-center space-x-4">
-            <x-hub::input.datepicker wire:model="range.from" />
-            <span class="text-xs font-medium text-gray-500 uppercase">{{ __('adminhub::global.to') }}</span>
-            <x-hub::input.datepicker wire:model="range.to" />
-        </div>
     </div>
 
     <div>
@@ -113,15 +108,10 @@
     <div>
         <div class="flex flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-4 bg-white rounded-lg shadow h-96">
-                    <h3 class="mt-4 ml-4 text-lg font-semibold text-gray-900">
-                        {{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}
-                    </h3>
-
-                    <div class="h-80">
-                        @livewire('hub.components.reporting.apex-chart', ['options' => $this->salesPerformance])
-                    </div>
-                </div>
+              @livewire('hub.components.dashboard.sales-performance', [
+                'from' => $this->from,
+                'to' => $this->to,
+              ])
             </div>
 
             <div class="basis-1/3">
@@ -131,7 +121,7 @@
                     </h3>
 
                     <div class="h-80">
-                        @livewire('hub.components.reporting.apex-chart', ['options' => $this->customerGroupOrders])
+                      @livewire('hub.components.reporting.apex-chart', ['options' => $this->customerGroupOrders])
                     </div>
                 </div>
             </div>
