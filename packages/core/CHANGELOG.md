@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.0-beta.3
+
+### Added
+
+- Added missing translations and updated publishing of lang files to L10.
+- Added customer group scope to `HasCustomerGroups` trait.
+- Added channel scope to `HasChannels` trait.
+
 ## 0.3.0-beta.2
 
 > Maintenance update to bring changes from 0.2.4 in.
