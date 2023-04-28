@@ -125,11 +125,16 @@ return [
     */
     'eager_load' => [
         'currency',
-        'shippingAddress',
-        'billingAddress',
+        // 'shippingAddress',
+        // 'billingAddress',
+        'lines.purchasable.taxClass',
+        'lines.purchasable.values',
+        'lines.purchasable.product.thumbnail',
         'lines.purchasable.prices.currency',
         'lines.purchasable.prices.priceable',
         'lines.purchasable.product',
-        'lines.cart',
+        'lines.cart.currency',
+        'lines.purchasable.primaryImages',
+        // 'lines.purchasable.defaultUrl'
     ],
 ];
