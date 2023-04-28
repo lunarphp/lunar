@@ -144,7 +144,7 @@
     <div>
         <div class="xl:flex space-y-4 xl:space-y-0 flex-row gap-x-8">
             <div class="basis-2/3">
-                <div class="p-8 bg-white rounded-lg shadow min-h-96">
+                <div class="p-8 bg-white rounded-lg shadow min-h-96 overflow-y-scroll">
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ __('adminhub::catalogue.orders.dashboard.recent_orders') }}</h3>
                     <table class="w-full mt-8 table-auto font-sm">
