@@ -1,5 +1,5 @@
-<div class="p-4 bg-white rounded-lg shadow h-96">
-  <div class="flex items-center justify-between">
+<div class="p-4 bg-white rounded-lg shadow min-h-96">
+  <div class="md:flex items-center justify-between">
     <div>
       <h3 class="text-lg font-semibold text-gray-900">
         {{ __('adminhub::catalogue.customer.dashboard.sales_performance') }}
