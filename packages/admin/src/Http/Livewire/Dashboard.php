@@ -32,8 +32,8 @@ class Dashboard extends Component
 
     public function mount()
     {
-        $this->from = now()->subDays(14)->startOfWeek()->format('Y-m-d');
-        $this->to = now()->endOfWeek()->format('Y-m-d');
+        $this->from = now()->subDays(14)->format('Y-m-d');
+        $this->to = now()->format('Y-m-d');
     }
 
     /**
