@@ -94,6 +94,7 @@ class VariantShow extends Component
     {
         return array_merge(
             [
+                'updatedAttributes',
                 'option-value-create-modal.value-created' => 'refreshAndSelectOption',
             ],
             $this->getHasSlotsListeners(),

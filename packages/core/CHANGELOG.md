@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.0-beta.2
+
+> Maintenance update to bring changes from 0.2.4 in.
+
+## 0.3.0-alpha.4
+
+### Changed
+
+- Updated Lunar branding
+
 ## 0.3.0-alpha.3
 
 > No notable changes
@@ -22,6 +32,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Laravel 8 support removed.
 - Laravel 10 support added.
+
+## 0.2.5
+
+### Fixed
+
+- `BuyXGetY` will now factor in minimum qty when calculating the amount to allocate.
+- The `ApplyDiscounts` pipeline will now reset the discount breakdown when run to avoid duplicates.
+- The `OrderFactory` class will now longer to `secondaryAddress` as this is not always available.
+- Discounts are now correctly ordered by their priority.
+
+## 0.2.4
+
+### Fixed
+
+- `BuyXGetY` now uses `$qtyCanBeApplied` instead of `$conditionQtyToAllocate` in the discount breakdown.
+
+### Changed
+
+- `subTotal` on a `Cart` model will no longer include any discount amounts.
+
+### Added
+
+- The `subTotalDiscounted` discount property has been added to the `Cart` model.
 
 ## 0.2.3
 

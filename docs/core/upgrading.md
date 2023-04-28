@@ -20,6 +20,10 @@ Re-publish the admin hub assets
 php artisan lunar:hub:install
 ```
 
+## Support Policy
+
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`. 
+
 ## 0.3
 
 ### High Impact
@@ -37,6 +41,20 @@ This should not impact your project unless you have customised the admin hub aut
 #### Updated `db_date` function to return just the formmatted string.
 
 If you were using `db_date` helper function, you will now need to wrap it with `DB:RAW()`.
+
+## 0.2.5
+
+### Low Impact
+
+If you have a custom DiscountType, you should update the `save` method to expect the recently saved discount id to be passed.
+
+```php
+// Before
+public function save();
+
+// After
+public function save($discountId);
+```
 
 ## 0.2
 
