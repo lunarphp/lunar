@@ -9,7 +9,7 @@
             'period' => 14
           ]) }}
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6 mt-2">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6 mt-2">
             <div>
                 <div class="flex items-center h-24 p-4 bg-white rounded-lg shadow">
                     <div class="hidden md:block">
@@ -119,7 +119,7 @@
     </div>
 
     <div>
-        <div class="md:flex space-y-4 md:space-y-0 flex-row gap-x-8">
+        <div class="lg:flex space-y-4 lg:space-y-0 flex-row gap-x-8">
             <div class="basis-2/3">
               @livewire('hub.components.dashboard.sales-performance', [
                 'from' => $this->from,
@@ -142,7 +142,7 @@
     </div>
 
     <div>
-        <div class="md:flex space-y-4 md:space-y-0 flex-row gap-x-8">
+        <div class="lg:flex space-y-4 lg:space-y-0 flex-row gap-x-8">
             <div class="basis-2/3">
                 <div class="p-8 bg-white rounded-lg shadow min-h-96">
                     <h3 class="text-lg font-semibold text-gray-900">
