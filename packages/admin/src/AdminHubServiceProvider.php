@@ -37,6 +37,7 @@ use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
+use Lunar\Hub\Http\Livewire\Components\Dashboard\SalesPerformance;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountCreate;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
@@ -268,6 +269,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerCustomerComponents();
         $this->registerFieldtypeComponents();
         $this->registerDiscountComponents();
+        $this->registerDashboardComponents();
 
         // Blade Components
         Blade::componentNamespace('Lunar\\Hub\\Views\\Components', 'hub');
@@ -291,6 +293,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
 
         Livewire::component('hub.components.tags', Tags::class);
+    }
+
+    protected function registerDashboardComponents()
+    {
+        Livewire::component('hub.components.dashboard.sales-performance', SalesPerformance::class);
     }
 
     /**

@@ -117,6 +117,11 @@ class Table extends Component
         $this->resetSavedSearch();
     }
 
+    public function updatedPage($page)
+    {
+        $this->emit('updatedPage', $page);
+    }
+
     public function updatedSelected($value)
     {
         $this->emit('table.selectedRows', $value);
