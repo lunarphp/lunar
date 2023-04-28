@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'dashboard.top_timeframe' => 'Last :period days',
     'products.option-manager.add_btn' => 'Add new option',
     'products.option-manager.toggle_btn' => 'Toggle All',
     'products.product-selector.select_btn' => 'Select Options',

@@ -1,7 +1,9 @@
 <div x-data="{
     savingSearch: false,
     init() {
-        Livewire.on('savedSearch', () => this.savingSearch = false)
+      Livewire.on('savedSearch', () => this.savingSearch = false)
+
+      Livewire.on('updatedPage', () => window.scrollTo(0, 0))
     }
 }">
     <div x-cloak
