@@ -13,6 +13,7 @@ use Lunar\Base\Traits\HasPrices;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ProductVariantFactory;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
@@ -133,7 +134,9 @@ class ProductVariant extends BaseModel implements Purchasable
      */
     public function getTaxClass(): TaxClass
     {
-        return $this->taxClass;
+        return Blink::once("tax_class_{$this->tax_class_id}", function () {
+            return $this->taxClass;
+        });
     }
 
     public function getTaxReference()
