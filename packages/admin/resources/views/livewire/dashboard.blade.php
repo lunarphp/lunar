@@ -4,7 +4,12 @@
     </div>
 
     <div>
-        <div class="flex flex-row gap-x-8">
+        <div class="text-xs uppercase font-semibold text-gray-400">
+          {{ __('adminhub::components.dashboard.top_timeframe', [
+            'period' => 14
+          ]) }}
+        </div>
+        <div class="flex flex-row gap-x-8 mt-2">
             <div class="basis-1/4">
                 <div class="flex items-center h-24 p-4 bg-white rounded-lg shadow">
                     <div class="flex items-center justify-center w-12 h-12 ml-2 bg-sky-200 rounded-full">
