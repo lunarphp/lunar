@@ -82,6 +82,12 @@ class AmountOff extends AbstractDiscountType
             if ($amount > $subTotal) {
                 $amount = $subTotal;
             }
+           
+            // If this line already has a greater discount value
+            // don't add this one as they already have a better deal. 
+            if ($line->discountTotal->value > $amount) {
+                continue;    
+            }
 
             $remaining -= $amount;
 
@@ -211,11 +217,17 @@ class AmountOff extends AbstractDiscountType
             }
 
             $amount = (int) round($subTotal * ($value / 100));
+            
+            // If this line already has a greater discount value
+            // don't add this one as they already have a better deal. 
+            if ($line->discountTotal->value > $amount) {
+                continue;    
+            }
 
             $totalDiscount += $amount;
 
             $line->discountTotal = new Price(
-                $subTotalDiscounted + $amount,
+                $amount,
                 $cart->currency,
                 1
             );
