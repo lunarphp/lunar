@@ -568,6 +568,14 @@ $pricing->tiers;
 $pricing->customerGroupPrices;
 ```
 
+Sometimes you might want to simply get all prices a product has from the variants, instead of loading up all a products variants fetching the prices that way, you can use the `prices` relationship on the product.
+
+```php
+$product->prices
+```
+
+This will return a collection of `Price` models.
+
 ## Full Example
 
 For this example, we're going to be creating some Dr. Martens boots. Below is a screenshot of what we're aiming for:
