@@ -265,4 +265,17 @@ class Product extends BaseModel implements SpatieHasMedia
     {
         return $this->belongsTo(Brand::class);
     }
+
+    /**
+     * Apply the status scope.
+     *
+     * @param Builder $query
+     * @param string $status
+     *
+     * @return Builder
+     */
+    public function scopeStatus(Builder $query, $status)
+    {
+        return $query->whereStatus($status);
+    }
 }
