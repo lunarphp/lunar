@@ -320,6 +320,12 @@ $taxClass = TaxClass::where(...)->first();
 $currency = Currency::where(...)->first();
 ```
 
+You can also specify a status to limit results to using the provided scope.
+
+```php
+Product::status('published')->get();
+```
+
 Then we need to create our base option and it's values.
 
 ```php
