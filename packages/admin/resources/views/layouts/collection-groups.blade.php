@@ -12,7 +12,7 @@
     <div class="space-y-6">
         <div x-data="{ showGroupSlideover: false }">
             <div class="flex items-center justify-between">
-                <h1 class="text-xl font-bold md:text-xl">
+                <h1 class="text-xl font-semibold md:text-xl">
                     {{ __('adminhub::catalogue.collections.index.title') }}
                 </h1>
 

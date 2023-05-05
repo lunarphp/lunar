@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <header>
-        <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
+        <h1 class="text-xl font-semibold text-gray-900 md:text-2xl dark:text-white">
             {{ $productOption->translate('name') }}
         </h1>
     </header>

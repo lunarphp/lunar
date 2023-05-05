@@ -1,6 +1,6 @@
 <div class="space-y-4">
     <header class="sm:flex sm:justify-between sm:items-center">
-        <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
+        <h1 class="text-xl font-semibold text-gray-900 md:text-2xl dark:text-white">
             {{ __('adminhub::settings.attributes.show.title', [
                 'type' => $this->type,
             ]) }}
@@ -81,7 +81,7 @@
                 <div class="py-4 pl-2 pr-4 mt-2 space-y-2 bg-black border-l rounded bg-opacity-5 ml-7"
                      @if ($group->attributes->count())
                         x-cloak
-                        x-show="expanded" 
+                        x-show="expanded"
                      @endif>
                     <div class="space-y-2"
                          wire:sort

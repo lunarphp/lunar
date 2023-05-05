@@ -1,6 +1,6 @@
 <div class="flex-col space-y-4">
     <div class="flex items-center justify-between">
-        <strong class="text-xl font-bold md:text-2xl">
+        <strong class="text-xl font-semibold md:text-2xl">
             {{ __('adminhub::catalogue.brands.index.title') }}
         </strong>
 

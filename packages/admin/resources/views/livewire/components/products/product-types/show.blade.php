@@ -1,6 +1,6 @@
 <div class="space-y-4">
     <div class="flex items-center justify-between">
-        <h1 class="text-xl font-bold md:text-xl">
+        <h1 class="text-xl font-semibold md:text-xl">
             {{ __('adminhub::catalogue.product-types.show.title') }}
         </h1>
 

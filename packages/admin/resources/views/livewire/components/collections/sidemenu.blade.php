@@ -31,7 +31,7 @@
 
     <div>
         <header class="flex items-center justify-between">
-            <header class="text-sm font-semibold text-gray-600">
+            <header class="text-md font-semibold text-gray-800">
                 {{ __('adminhub::catalogue.collections.sidemenu.menu_title') }}
             </header>
 

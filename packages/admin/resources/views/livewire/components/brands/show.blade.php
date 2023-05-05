@@ -8,7 +8,7 @@
                              style="solid"
                              class="w-8 h-8" />
             </a>
-            <h1 class="text-xl font-bold md:text-xl">
+            <h1 class="text-xl font-semibold md:text-xl">
                 {{ $brand->name }}
             </h1>
         </div>
