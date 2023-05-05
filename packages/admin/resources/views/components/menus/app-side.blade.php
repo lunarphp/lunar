@@ -1,4 +1,4 @@
-<div class="overflow-y-auto h-full bg-white border-r border-gray-200">
+<div class="overflow-y-auto h-full bg-gray-100 border-r border-gray-300">
     <div class="border-t border-b border-gray-100 pt-4 p-4">
         <x-hub::menu handle="sidebar" current="{{ request()->route()->getName() }}">
             @foreach ($component->items as $item)

@@ -65,7 +65,7 @@
 
             <div
                 :class="{
-                    'bg-gray-800 fixed inset-0 z-50 top-[56px] w-64 transition-all ease-in-out': true,
+                    'bg-gray-800 fixed inset-0 z-50 md:z-auto top-[56px] w-64 transition-all ease-in-out': true,
                     '-ml-64 md:ml-0': !showMobileMenu,
                     'md:-ml-64': menuCollapsed
                 }"
