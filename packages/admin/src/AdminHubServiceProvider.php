@@ -130,7 +130,6 @@ use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductTypesTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductVariantsTableBuilder;
 use Lunar\Models\Product;
-use Lunar\Hub\Models\Staff;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
