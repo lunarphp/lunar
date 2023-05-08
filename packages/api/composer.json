@@ -29,7 +29,7 @@
     },
     "require": {
         "php": "^8.1",
-        "lunarphp/lunar": "dev-feature/laravel_10",
+        "lunarphp/core": "self.version",
         "laravel-json-api/laravel": "^2.6|^3.0",
         "laravel-json-api/hashids": "2.x-dev"
     },
