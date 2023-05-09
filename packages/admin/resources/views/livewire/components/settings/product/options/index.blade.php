@@ -85,7 +85,7 @@
                       @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
                         <x-slot :name="$language['code']">
                           <x-hub::input.text
-                            wire:model="name.{{ $language->code }}"
+                            wire:model="newProductOption.name.{{ $language->code }}"
                             :error="$errors->first('newProductOption.name.'.$language->code)"
                           />
                         </x-slot>
