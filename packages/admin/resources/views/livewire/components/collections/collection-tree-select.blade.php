@@ -19,7 +19,7 @@
         @if(count($selectedCollections))
             <div class="bg-gray-100 py-1 px-2 text-sm border-b text-gray-700">
                 {{ count($selectedCollections) }} selected,
-                <a href="#" class="text-blue-600 hover:underline" wire:click.prevent="toggleSelected">
+                <a href="#" class="text-sky-600 hover:underline" wire:click.prevent="toggleSelected">
                     @if($showOnlySelected) show all @endif
                     @if(!$showOnlySelected) show selected @endif
                 </a>

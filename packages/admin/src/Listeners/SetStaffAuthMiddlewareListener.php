@@ -8,15 +8,11 @@ use Lunar\Hub\Http\Middleware\Authenticate;
 
 class SetStaffAuthMiddlewareListener
 {
-    /**
-     * @var \Illuminate\Routing\Events\RouteMatched
-     */
     protected RouteMatched $event;
 
     /**
      * Handle the event.
      *
-     * @param  RouteMatched  $event
      * @return void
      */
     public function handle(RouteMatched $event)
@@ -32,8 +28,6 @@ class SetStaffAuthMiddlewareListener
 
     /**
      * Check if the route already has the staff middleware.
-     *
-     * @return bool
      */
     protected function routeAlreadyHasStaffMiddleware(): bool
     {
@@ -42,8 +36,6 @@ class SetStaffAuthMiddlewareListener
 
     /**
      * Matches livewire routes which are allowed to use auth:staff middleware.
-     *
-     * @return bool
      */
     protected function shouldApplyStaffMiddleware(): bool
     {
@@ -52,8 +44,6 @@ class SetStaffAuthMiddlewareListener
 
     /**
      * Matches hub routes.
-     *
-     * @return bool
      */
     protected function onlyHubRoutes(): bool
     {
@@ -66,8 +56,6 @@ class SetStaffAuthMiddlewareListener
 
     /**
      * List of livewire routes which are not allowed to use auth:staff middleware.
-     *
-     * @return bool
      */
     protected function disallowRoutes(): bool
     {
@@ -79,8 +67,6 @@ class SetStaffAuthMiddlewareListener
 
     /**
      * Matches livewire route which use dot separator.
-     *
-     * @return bool
      */
     protected function isLivewireRoute(): bool
     {

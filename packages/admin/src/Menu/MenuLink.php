@@ -31,7 +31,7 @@ class MenuLink implements MenuItem
     /**
      * The handle for the menu link.
      *
-     * @var string
+     * @var string | array
      */
     public $handle;
 
@@ -65,7 +65,7 @@ class MenuLink implements MenuItem
     /**
      * Setter for the handle property.
      *
-     * @param  string  $handle
+     * @param  string | array  $handle
      * @return static
      */
     public function handle($handle)
@@ -146,6 +146,8 @@ class MenuLink implements MenuItem
      */
     public function isActive($path)
     {
-        return Str::startsWith($path, $this->handle);
+        return (bool) collect($this->handle)->first(function ($handle) use ($path) {
+            return Str::startsWith($path, $handle);
+        });
     }
 }

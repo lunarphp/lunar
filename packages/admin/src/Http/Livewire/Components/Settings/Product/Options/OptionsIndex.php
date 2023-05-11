@@ -28,8 +28,6 @@ class OptionsIndex extends Component
 
     /**
      * The sorted product options.
-     *
-     * @var Collection
      */
     public Collection $productOptions;
 
@@ -170,8 +168,6 @@ class OptionsIndex extends Component
 
     /**
      * Return the option marked for deletion.
-     *
-     * @return \Lunar\Models\ProductOption|null
      */
     public function getOptionToDeleteProperty(): ?ProductOption
     {

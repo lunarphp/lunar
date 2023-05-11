@@ -9,8 +9,6 @@ abstract class BaseValidator
 {
     /**
      * The parameters used in the validation
-     *
-     * @var array
      */
     protected array $parameters;
 
@@ -18,7 +16,6 @@ abstract class BaseValidator
      * Set the parameters to use for validation
      *
      * @param  array  $args
-     * @return self
      */
     public function using(...$args): self
     {
@@ -32,7 +29,6 @@ abstract class BaseValidator
      *
      * @param  string  $where
      * @param  string  $reason
-     * @return bool
      */
     public function fail($where, $reason): bool
     {
@@ -53,8 +49,6 @@ abstract class BaseValidator
 
     /**
      * Pass the validation
-     *
-     * @return bool
      */
     public function pass(): bool
     {
@@ -63,8 +57,6 @@ abstract class BaseValidator
 
     /**
      * Validate against the passed parameters.
-     *
-     * @return bool
      */
     abstract public function validate(): bool;
 }

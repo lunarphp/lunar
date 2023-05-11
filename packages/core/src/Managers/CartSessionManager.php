@@ -147,8 +147,6 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Return the current currency.
-     *
-     * @return \Lunar\Models\Currency
      */
     public function getCurrency(): Currency
     {
@@ -157,8 +155,6 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Return the current channel.
-     *
-     * @return \Lunar\Models\Channel
      */
     public function getChannel(): Channel
     {

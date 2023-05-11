@@ -15,15 +15,11 @@ class ActivityLogFeed extends Component
 
     /**
      * The log subject to get activity for.
-     *
-     * @var \Illuminate\Database\Eloquent\Model
      */
     public Model $subject;
 
     /**
      * The new comment for the subject.
-     *
-     * @var string|null
      */
     public ?string $comment = null;
 

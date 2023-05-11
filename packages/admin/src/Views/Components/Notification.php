@@ -8,8 +8,6 @@ class Notification extends Component
 {
     /**
      * An array of messages to show.
-     *
-     * @var array
      */
     public array $messages = [];
 

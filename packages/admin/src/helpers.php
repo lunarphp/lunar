@@ -2,7 +2,6 @@
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Lunar\DataTypes\Price;
 
 if (! function_exists('max_upload_filesize')) {
@@ -57,7 +56,7 @@ if (! function_exists('db_date')) {
             $select .= " as {$alias}";
         }
 
-        return DB::RAW($select);
+        return $select;
     }
 }
 

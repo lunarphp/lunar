@@ -15,8 +15,6 @@ abstract class AbstractAttribute extends Component
 {
     /**
      * Define whether the handle should be treated as manually input.
-     *
-     * @var bool
      */
     public bool $manualHandle = false;
 

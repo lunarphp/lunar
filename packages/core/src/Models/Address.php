@@ -38,8 +38,6 @@ class Address extends BaseModel implements Addressable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\AddressFactory
      */
     protected static function newFactory(): AddressFactory
     {
@@ -67,7 +65,6 @@ class Address extends BaseModel implements Addressable
     /**
      * Mutator for the meta attribute.
      *
-     * @param  array|null  $value
      * @return void
      */
     public function setMetaAttribute(array $value = null)

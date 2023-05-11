@@ -44,7 +44,7 @@ class ProductTypesTable extends Table
             TextColumn::make('name')->heading(
                 __('adminhub::tables.headings.name')
             )->url(function ($record) {
-                return route('hub.product-type.show', $record->id);
+                return route('hub.product-types.show', $record->id);
             }),
             TextColumn::make('product_count', function ($record) {
                 return $record->products_count;
@@ -105,8 +105,6 @@ class ProductTypesTable extends Table
 
     /**
      * Return the saved searches available to the table.
-     *
-     * @return Collection
      */
     public function getSavedSearchesProperty(): Collection
     {

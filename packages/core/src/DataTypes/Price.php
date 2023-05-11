@@ -13,8 +13,6 @@ class Price
      * Initialise the Price datatype.
      *
      * @param  mixed  $value
-     * @param  Currency  $currency
-     * @param  int  $unitQty
      */
     public function __construct(
         public $value,

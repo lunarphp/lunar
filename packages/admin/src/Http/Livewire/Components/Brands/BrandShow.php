@@ -22,8 +22,6 @@ class BrandShow extends Component
 
     /**
      * The current brand we're showing.
-     *
-     * @var Brand
      */
     public Brand $brand;
 

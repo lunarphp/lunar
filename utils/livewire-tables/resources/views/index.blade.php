@@ -1,7 +1,25 @@
 <div x-data="{
     savingSearch: false,
+    selectedRows: [],
+    selectedAll: false,
     init() {
         Livewire.on('savedSearch', () => this.savingSearch = false)
+
+        $watch('selectedRows', (vals) => {
+          $wire.emit('table.selectedRows', vals)
+        })
+
+        $watch('selectedAll', (isChecked) => {
+          this.selectedRows = isChecked ? {{ json_encode($this->rows->pluck('id')->toArray()) }} : []
+        })
+
+        window.livewire.on('bulkAction.reset', () => {
+          this.selectedRows = []
+        })
+
+        window.livewire.on('bulkAction.complete', () => {
+          this.selectedRows = []
+        })
     }
 }">
     <div x-cloak
@@ -19,7 +37,7 @@
                                id="SaveSearchName"
                                placeholder="Name"
                                wire:model="savedSearchName"
-                               class="lt-w-full lt-mt-1 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 lt-form-input">
+                               class="lt-w-full lt-mt-1 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 lt-form-input">
                     </div>
 
                     <x-l-tables::button theme="primary"
@@ -40,15 +58,9 @@
     <div class="lt-overflow-hidden lt-border lt-border-gray-200 lt-rounded-lg">
         <div x-data="{
             showFilters: false,
-            selected: @entangle('selected'),
-            selectedAll: false,
-        }"
-             x-init="$watch('selectedAll', function(isChecked) {
-                 selected = isChecked ? {{ json_encode($this->rows->pluck('id')->toArray()) }} : []
-             })"
-             class="lt-w-full lt-divide-y lt-divide-gray-200">
+        }" class="lt-w-full lt-divide-y lt-divide-gray-200">
             @if ($this->searchable || $this->filterable)
-                <div class="lt-p-4">
+                <div class="lt-p-4 lt-bg-gray-100">
                     <div class="lt-flex lt-items-center lt-gap-2 sm:lt-gap-4">
                         @if ($this->searchable)
                             <div class="lt-flex-1">
@@ -76,7 +88,7 @@
                                            id="Search"
                                            placeholder="{{ $this->searchPlaceholder }}"
                                            wire:model.debounce.500ms="query"
-                                           class="lt-w-full lt-pl-10 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md lt-form-input focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 lt-peer">
+                                           class="lt-w-full lt-pl-10 lt-text-sm lt-text-gray-700 lt-border-gray-200 lt-rounded-md lt-form-input focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 lt-peer">
 
                                     <button wire:click="$set('query', '')"
                                             class="lt-absolute lt-top-1/2 -lt-translate-y-1/2 lt-right-2 lt-rounded-full lt-p-1 hover:lt-bg-gray-100 lt-transition peer-placeholder-shown:lt-hidden">
@@ -122,7 +134,7 @@
                         <div class="lt-flex lt-items-center lt-gap-4 lt-mt-2">
                             @foreach ($this->savedSearches as $savedSearch)
                                 <div
-                                     class="lt-flex lt-items-stretch lt-overflow-hidden lt-text-gray-600 lt-transition lt-bg-white lt-border lt-border-gray-200 lt-rounded-md hover:lt-shadow-sm focus-within:lt-ring focus-within:lt-ring-blue-100">
+                                     class="lt-flex lt-items-stretch lt-overflow-hidden lt-text-gray-600 lt-transition lt-bg-white lt-border lt-border-gray-200 lt-rounded-md hover:lt-shadow-sm focus-within:lt-ring focus-within:lt-ring-sky-100">
                                     <x-l-tables::button size="xs"
                                                         aria-label="Delete Saved Search"
                                                         wire:click="deleteSavedSearch({{ $savedSearch['key'] }})"
@@ -145,7 +157,7 @@
                                                         class="!lt-border-y-0 !lt-border-r-0 !lt-rounded-l-none focus:!lt-ring-transparent focus:lt-bg-gray-50">
                                         <span @class([
                                             'lt-inline-flex lt-items-center lt-gap-2',
-                                            'lt-text-blue-600' => $this->savedSearch == $savedSearch['key'],
+                                            'lt-text-sky-600' => $this->savedSearch == $savedSearch['key'],
                                         ])>
                                             {{ $savedSearch['label'] }}
 
@@ -170,17 +182,17 @@
 
             @if ($this->filterable)
                 <div x-cloak
-                     x-show="showFilters || selected.length"
+                     x-show="showFilters || selectedRows.length"
                      class="lt-p-4 lt-bg-white">
                     <div class="lt-flow-root">
                         <div class="lt--my-4 lt-divide-y lt-divide-gray-100">
-                            <div :hidden="!selected.length"
+                            <div :hidden="!selectedRows.length"
                                  class="py-4">
                                 <p class="lt-text-sm lt-font-medium lt-text-gray-900">
                                     Bulk Actions
                                 </p>
 
-                                <div class="lt-flex lt-flex-wrap lt-gap-4 lt-mt-2">
+                                <div class="lt-flex lt-flex-wrap lt-gap-4 lt-mt-2" wire:ignore>
                                     @foreach ($this->bulkActions as $action)
                                         @livewire($action->getName(), [
                                             'label' => $action->label,
@@ -220,7 +232,7 @@
                                     <td class="lt-w-10 lt-py-3 lt-pl-4 lt-leading-none">
                                         <input type="checkbox"
                                                x-model="selectedAll"
-                                               class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
+                                               class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 focus:lt-ring-offset-0">
                                     </td>
                                 @endif
 
@@ -244,59 +256,28 @@
                             </tr>
 
                             <tr x-cloak
-                                x-show="selected.length">
+                                x-show="selectedRows.length">
                                 <td colspan="50"
                                     class="lt-p-0">
                                     <div
-                                         class="lt-relative lt-px-3 lt-py-2 lt--my-px lt-text-sm lt-text-blue-700 lt-border-blue-200 lt-border-y lt-bg-blue-50">
-                                        Selected <span x-text="selected.length"></span> of {{ $this->rows->count() }}
+                                         class="lt-relative lt-px-3 lt-py-2 lt--my-px lt-text-sm lt-text-sky-700 lt-border-sky-200 lt-border-y lt-bg-sky-50">
+                                        Selected <span x-text="selectedRows.length"></span> of {{ $this->rows->count() }}
                                         results.
                                     </div>
                                 </td>
                             </tr>
                         </thead>
 
-                        <tbody class="lt-hidden"
-                               wire:loading.delay.class.remove="lt-hidden">
-                            @foreach (range(1, count($this->rows)) as $id)
-                                <tr class="lt-border-b lt-border-gray-100 lt-bg-white"
-                                    wire:key="loading_{{ $id }}">
-                                    @if (count($this->bulkActions))
-                                        <x-l-tables::cell class="lt-text-right">
-                                        </x-l-tables::cell>
-                                    @endif
-
-                                    @foreach ($this->columns as $column)
-                                        <x-l-tables::cell
-                                                          wire:key="loading_column_{{ $column->field }}_{{ $id }}">
-                                            <div class="lt-animate-pulse">
-                                                <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
-                                            </div>
-                                        </x-l-tables::cell>
-                                    @endforeach
-
-                                    @if (count($this->actions))
-                                        <x-l-tables::cell class="lt-text-right">
-                                            <div class="lt-animate-pulse">
-                                                <div class="lt-h-4 lt-bg-gray-200 lt-rounded-full"></div>
-                                            </div>
-                                        </x-l-tables::cell>
-                                    @endif
-                                </tr>
-                            @endforeach
-                        </tbody>
-
-                        <tbody class="lt-relative"
-                               wire:loading.delay.remove>
+                        <tbody class="lt-relative">
                             @foreach ($this->rows as $row)
                                 <tr class="lt-bg-white even:lt-bg-gray-50"
                                     wire:key="table_row_{{ $row->id }}">
                                     @if ($this->bulkActions->count())
                                         <x-l-tables::cell class="lt-w-10 lt-pr-0 lt-leading-none">
                                             <input type="checkbox"
-                                                   x-model="selected"
+                                                   x-model="selectedRows"
                                                    value="{{ $row->id }}"
-                                                   class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 focus:lt-ring-offset-0">
+                                                   class="lt-w-5 lt-h-5 lt-border lt-border-gray-300 lt-rounded-md lt-form-checkbox focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 focus:lt-ring-offset-0">
                                         </x-l-tables::cell>
                                     @endif
 

@@ -10,8 +10,6 @@ class ModelManifest implements ModelManifestInterface
 {
     /**
      * The collection of models to register to this manifest.
-     *
-     * @var \Illuminate\Support\Collection
      */
     protected Collection $models;
 
@@ -25,9 +23,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Register models.
-     *
-     * @param  \Illuminate\Support\Collection  $models
-     * @return void
      */
     public function register(Collection $models): void
     {
@@ -41,9 +36,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Get the registered model for a base model class.
-     *
-     * @param  string  $baseModelClass
-     * @return \Illuminate\Database\Eloquent\Model
      */
     public function getRegisteredModel(string $baseModelClass): Model
     {
@@ -52,9 +44,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Removes model from manifest.
-     *
-     * @param  string  $baseModelClass
-     * @return void
      */
     public function removeModel(string $baseModelClass): void
     {
@@ -63,10 +52,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Swap the model implementation.
-     *
-     * @param  string  $currentModelClass
-     * @param  string  $newModelClass
-     * @return void
      */
     public function swapModel(string $currentModelClass, string $newModelClass): void
     {
@@ -77,9 +62,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Get the morph class base model.
-     *
-     * @param  string  $morphClass
-     * @return string|null
      */
     public function getMorphClassBaseModel(string $morphClass): ?string
     {
@@ -90,8 +72,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Get list of registered base model classes.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getBaseModelClasses(): Collection
     {
@@ -100,8 +80,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Get list of all registered models.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getRegisteredModels(): Collection
     {
@@ -111,8 +89,6 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Validate class is an eloquent model.
      *
-     * @param  string  $class
-     * @return void
      *
      * @throws \InvalidArgumentException
      */
@@ -126,8 +102,6 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Validate base class interacts with eloquent model trait.
      *
-     * @param  string  $baseClass
-     * @return void
      *
      * @throws \InvalidArgumentException
      */

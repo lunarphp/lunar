@@ -7,8 +7,8 @@ use InvalidArgumentException;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
 use Lunar\Base\Validation\CouponValidator;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\DiscountTypes\Discount as TypesDiscount;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\CustomerGroup;
@@ -32,8 +32,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * The available discounts
-     *
-     * @var null|Collection
      */
     protected ?Collection $discounts = null;
 
@@ -43,14 +41,12 @@ class DiscountManager implements DiscountManagerInterface
      * @var array
      */
     protected $types = [
-        TypesDiscount::class,
+        AmountOff::class,
         BuyXGetY::class,
     ];
 
     /**
      * The applied discounts.
-     *
-     * @var Collection
      */
     protected Collection $applied;
 
@@ -66,9 +62,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Set a single channel or a collection.
-     *
-     * @param  Channel|iterable  $channel
-     * @return self
      */
     public function channel(Channel|iterable $channel): self
     {
@@ -92,9 +85,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Set a single customer group or a collection.
-     *
-     * @param  CustomerGroup|iterable  $customerGroups
-     * @return self
      */
     public function customerGroup(CustomerGroup|iterable $customerGroups): self
     {
@@ -117,8 +107,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Return the applied channels.
-     *
-     * @return Collection
      */
     public function getChannels(): Collection
     {
@@ -127,8 +115,6 @@ class DiscountManager implements DiscountManagerInterface
 
     /**
      * Returns the available discounts.
-     *
-     * @return Collection
      */
     public function getDiscounts(): Collection
     {
@@ -165,13 +151,14 @@ class DiscountManager implements DiscountManagerInterface
                     $query->whereNull("{$joinTable}.ends_at")
                         ->orWhere("{$joinTable}.ends_at", '>', now());
                 });
-        })->orderBy('priority')->get();
+        })
+            ->orderBy('priority', 'desc')
+            ->orderBy('id')
+            ->get();
     }
 
     /**
      * Return the applied customer groups.
-     *
-     * @return Collection
      */
     public function getCustomerGroups(): Collection
     {

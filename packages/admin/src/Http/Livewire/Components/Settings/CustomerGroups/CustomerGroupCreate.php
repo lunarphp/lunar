@@ -13,15 +13,11 @@ class CustomerGroupCreate extends Component
 
     /**
      * A new instance of the customer group model.
-     *
-     * @var CustomerGroup
      */
     public CustomerGroup $customerGroup;
 
     /**
      * Define whether the handle should be treated as manually input.
-     *
-     * @var bool
      */
     public bool $manualHandle = false;
 

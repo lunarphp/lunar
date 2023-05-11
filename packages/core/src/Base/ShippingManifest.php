@@ -11,8 +11,6 @@ class ShippingManifest implements ShippingManifestInterface
 {
     /**
      * The collection of available shipping options.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $options;
 

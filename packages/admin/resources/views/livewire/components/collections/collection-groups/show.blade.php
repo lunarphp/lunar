@@ -137,7 +137,7 @@
                                     <button type="button"
                                             class="flex gap-1.5 items-center flex-wrap w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
                                             wire:click.prevent="setMoveTarget('{{ $collection->id }}')">
-                                        <strong class="rounded px-1.5 py-0.5 bg-blue-50 text-xs text-blue-600">
+                                        <strong class="rounded px-1.5 py-0.5 bg-sky-50 text-xs text-sky-600">
                                             {{ $collection->group->name }}
                                         </strong>
 

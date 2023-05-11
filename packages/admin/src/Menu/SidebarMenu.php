@@ -65,7 +65,10 @@ class SidebarMenu
         $catalogueGroup
             ->section('hub.collections')
             ->name(__('adminhub::menu.sidebar.collections'))
-            ->handle('hub.collection-groups')
+            ->handle([
+                'hub.collection-groups',
+                'hub.collections',
+            ])
             ->route('hub.collection-groups.index')
             ->icon('collection');
 

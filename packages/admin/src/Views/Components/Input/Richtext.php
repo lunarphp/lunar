@@ -15,8 +15,6 @@ class Richtext extends Component
 
     /**
      * The set of options for the rich text field.
-     *
-     * @var array
      */
     public array $options = [
         'theme' => 'snow',

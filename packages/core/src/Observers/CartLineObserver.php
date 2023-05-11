@@ -11,7 +11,6 @@ class CartLineObserver
     /**
      * Handle the CartLine "creating" event.
      *
-     * @param  \Lunar\Models\CartLine  $cartLine
      * @return void
      */
     public function creating(CartLine $cartLine)
@@ -24,7 +23,6 @@ class CartLineObserver
     /**
      * Handle the CartLine "updated" event.
      *
-     * @param  \Lunar\Models\CartLine  $cartLine
      * @return void
      */
     public function updating(CartLine $cartLine)

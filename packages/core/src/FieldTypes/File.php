@@ -15,8 +15,6 @@ class File implements FieldType, JsonSerializable
 
     /**
      * The config to use.
-     *
-     * @var array
      */
     protected array $config = [];
 

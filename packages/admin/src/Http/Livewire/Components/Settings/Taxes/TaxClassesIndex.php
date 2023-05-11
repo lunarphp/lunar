@@ -14,8 +14,6 @@ class TaxClassesIndex extends Component
 
     /**
      * The TaxClass to edit.
-     *
-     * @var null|TaxClass
      */
     public ?TaxClass $taxClass = null;
 
@@ -28,8 +26,6 @@ class TaxClassesIndex extends Component
 
     /**
      * Whether the TaxClass should be deleted on save.
-     *
-     * @var bool
      */
     public bool $deleting = false;
 

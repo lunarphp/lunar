@@ -12,8 +12,6 @@ class CurrencyCreate extends Component
 
     /**
      * The empty currency model.
-     *
-     * @var Currency
      */
     public Currency $currency;
 

@@ -12,8 +12,6 @@ class RemovePurchasable extends AbstractAction
     /**
      * Execute the action
      *
-     * @param  Cart  $cart
-     * @param  int  $cartLineId
      * @return bool
      *
      * @throws CartLineIdMismatchException

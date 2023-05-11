@@ -15,8 +15,6 @@ class DemoSeeder extends Seeder
 
     /**
      * Seed the demo data.
-     *
-     * @return void
      */
     public function run(): void
     {

@@ -15,8 +15,6 @@ class UserDetail extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\UserDetailFactory
      */
     protected static function newFactory(): UserDetailFactory
     {
@@ -25,8 +23,6 @@ class UserDetail extends BaseModel
 
     /**
      * Return the user relationship.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

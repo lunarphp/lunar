@@ -9,7 +9,6 @@ class ChannelObserver
     /**
      * Handle the User "created" event.
      *
-     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function created(Channel $channel)
@@ -20,7 +19,6 @@ class ChannelObserver
     /**
      * Handle the User "updated" event.
      *
-     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function updated(Channel $channel)
@@ -31,7 +29,6 @@ class ChannelObserver
     /**
      * Handle the User "deleted" event.
      *
-     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function deleted(Channel $channel)
@@ -42,7 +39,6 @@ class ChannelObserver
     /**
      * Handle the User "forceDeleted" event.
      *
-     * @param  \Lunar\Models\Channel  $channel
      * @return void
      */
     public function forceDeleted(Channel $channel)
@@ -54,7 +50,6 @@ class ChannelObserver
      * Ensures that only one default channel exists.
      *
      * @param  Channel  $savedChannel  The channel that was just saved.
-     * @return void
      */
     protected function ensureOnlyOneDefault(Channel $savedChannel): void
     {

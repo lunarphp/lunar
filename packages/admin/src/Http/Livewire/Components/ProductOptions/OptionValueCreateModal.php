@@ -14,8 +14,6 @@ class OptionValueCreateModal extends Component
 
     /**
      * The parent product option for this new value.
-     *
-     * @var null|\Lunar\Models\ProductOption
      */
     public ?ProductOption $option = null;
 

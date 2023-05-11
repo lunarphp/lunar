@@ -15,7 +15,6 @@ trait HasViewComponent
      * Set the view component.
      *
      * @param  string  $viewComponent
-     * @return self
      */
     public function viewComponent($viewComponent): self
     {
@@ -26,8 +25,6 @@ trait HasViewComponent
 
     /**
      * Whether the column is a view component.
-     *
-     * @return bool
      */
     public function isViewComponent(): bool
     {
@@ -36,8 +33,6 @@ trait HasViewComponent
 
     /**
      * Return the reference to the view component.
-     *
-     * @return string
      */
     public function getViewComponent(): string
     {

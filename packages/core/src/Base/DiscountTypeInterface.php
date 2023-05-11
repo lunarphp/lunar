@@ -9,8 +9,6 @@ interface DiscountTypeInterface
 {
     /**
      * Return the name of the discount type.
-     *
-     * @return string
      */
     public function getName(): string;
 

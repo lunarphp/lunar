@@ -1,6 +1,6 @@
 <x-hub::layout.bottom-panel>
     <div class="flex justify-end">
-        <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
           {{ __(
             $discount->id ? 'adminhub::components.discounts.save_btn' : 'adminhub::components.discounts.create_btn'
           ) }}
@@ -97,13 +97,13 @@
             <a href="#{{ $item['id'] }}"
                @class([
                    'flex items-center gap-2 p-2 rounded text-gray-500',
-                   'hover:bg-blue-50 hover:text-blue-700' => empty($item['has_errors']),
+                   'hover:bg-sky-50 hover:text-sky-700' => empty($item['has_errors']),
                    'text-red-600 bg-red-50' => !empty($item['has_errors']),
                ])
                aria-current="page"
                x-data="{ linkId: '#{{ $item['id'] }}' }"
                :class="{
-                   'bg-blue-50 text-blue-700 hover:text-blue-600': linkId === activeAnchorLink
+                   'bg-sky-50 text-sky-700 hover:text-sky-500': linkId === activeAnchorLink
                }"
                x-on:click="activeAnchorLink = linkId">
                 @if (!empty($item['has_errors']))

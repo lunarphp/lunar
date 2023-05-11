@@ -11,8 +11,6 @@ trait LogsActivity
 
     /**
      * Get the log options for the activity log.
-     *
-     * @return LogOptions
      */
     public function getActivitylogOptions(): LogOptions
     {

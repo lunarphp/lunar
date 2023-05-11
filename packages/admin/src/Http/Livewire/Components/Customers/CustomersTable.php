@@ -104,8 +104,6 @@ class CustomersTable extends Table
 
     /**
      * Return the saved searches available to the table.
-     *
-     * @return Collection
      */
     public function getSavedSearchesProperty(): Collection
     {

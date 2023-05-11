@@ -17,7 +17,7 @@ class MenuGroup extends MenuSlot
     /**
      * The display name of the menu group.
      *
-     * @var string
+     * @var string | array
      */
     public $handle;
 
@@ -53,6 +53,8 @@ class MenuGroup extends MenuSlot
      */
     public function isActive($path)
     {
-        return Str::startsWith($path, $this->handle);
+        return (bool) collect($this->handle)->first(function ($handle) use ($path) {
+            return Str::startsWith($path, $handle);
+        });
     }
 }

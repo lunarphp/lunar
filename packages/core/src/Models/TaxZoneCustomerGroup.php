@@ -21,8 +21,6 @@ class TaxZoneCustomerGroup extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TaxZoneCustomerGroupFactory
      */
     protected static function newFactory(): TaxZoneCustomerGroupFactory
     {

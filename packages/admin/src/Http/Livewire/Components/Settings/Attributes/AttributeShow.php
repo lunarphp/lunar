@@ -24,8 +24,6 @@ class AttributeShow extends AbstractAttribute
 
     /**
      * The sorted attribute groups.
-     *
-     * @var Collection
      */
     public Collection $sortedAttributeGroups;
 

@@ -41,8 +41,6 @@ class Manifest
     /**
      * Add an activity log render.
      *
-     * @param  string  $subject
-     * @param  string  $renderer
      * @return self
      */
     public function addRender(string $subject, string $renderer)

@@ -16,7 +16,6 @@ class ValidateCartForOrder
     /**
      * Execute the action.
      *
-     * @param  \Lunar\Models\Cart  $cart
      * @return void
      */
     public function execute(

@@ -45,57 +45,46 @@ class CartLine extends BaseModel
 
     /**
      * The cart line unit price.
-     *
-     * @var null|Price
      */
     public ?Price $unitPrice = null;
 
     /**
      * The cart line sub total.
-     *
-     * @var null|Price
      */
     public ?Price $subTotal = null;
 
     /**
+     * The discounted sub total
+     */
+    public ?Price $subTotalDiscounted = null;
+
+    /**
      * The discount total.
-     *
-     * @var null|Price
      */
     public ?Price $discountTotal = null;
 
     /**
      * The cart line tax amount.
-     *
-     * @var null|Price
      */
     public ?Price $taxAmount = null;
 
     /**
      * The cart line total.
-     *
-     * @var null|Price
      */
     public ?Price $total = null;
 
     /**
      * The promotion description.
-     *
-     * @var string
      */
     public string $promotionDescription = '';
 
     /**
      * All the tax breakdowns for the cart line.
-     *
-     * @var \Lunar\Base\ValueObjects\Cart\TaxBreakdown
      */
     public TaxBreakdown $taxBreakdown;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CartLineFactory
      */
     protected static function newFactory(): CartLineFactory
     {

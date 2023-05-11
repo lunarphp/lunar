@@ -47,10 +47,6 @@ class LunarHub
 
     /**
      * Register script with Lunar.
-     *
-     * @param  string|Script  $name
-     * @param  string  $path
-     * @return static
      */
     public static function script(string|Script $name, string $path): static
     {
@@ -63,7 +59,6 @@ class LunarHub
      * Register remote script with Lunar.
      *
      * @param  string  $path
-     * @return static
      */
     public static function remoteScript($path): static
     {
@@ -72,10 +67,6 @@ class LunarHub
 
     /**
      * Register style with Lunar.
-     *
-     * @param  string|Style  $name
-     * @param  string  $path
-     * @return static
      */
     public static function style(string|Style $name, string $path): static
     {
@@ -88,7 +79,6 @@ class LunarHub
      * Register remote style with Lunar.
      *
      * @param  string  $path
-     * @return static
      */
     public static function remoteStyle($path): static
     {
