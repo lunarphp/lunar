@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Hub\Auth\Manifest;
@@ -181,6 +182,10 @@ class AdminHubServiceProvider extends ServiceProvider
             $this->app->singleton($tableBuilder, function ($app) use ($tableBuilder) {
                 return new $tableBuilder;
             });
+        }
+
+        if ($connection = config('lunar.database.connection', false)) {
+            DB::setDefaultConnection($connection);
         }
     }
 

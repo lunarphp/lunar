@@ -13,6 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
@@ -160,6 +161,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
         });
+
+        if ($connection = config('lunar.database.connection', false)) {
+            DB::setDefaultConnection($connection);
+        }
     }
 
     /**
