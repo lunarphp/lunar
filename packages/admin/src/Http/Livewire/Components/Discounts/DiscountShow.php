@@ -74,7 +74,7 @@ class DiscountShow extends AbstractDiscount
             $this->discount->collections()->delete();
             $this->discount->customerGroups()->detach();
             $this->discount->channels()->detach();
-            $this->discount->users()->delete();
+            $this->discount->users()->detach();
             $this->discount->delete();
         });
 
