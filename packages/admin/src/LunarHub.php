@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Lunar\Hub\Assets\Script;
 use Lunar\Hub\Assets\Style;
 
-class LunarHub
+final class LunarHub
 {
     /**
      * Registered scripts.
