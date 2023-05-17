@@ -1,8 +1,14 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
 parameters:
     level: 0
     paths:
         - packages
         - utils
+    excludePaths:
+        # See: https://github.com/nunomaduro/larastan/issues/1644
+        - packages/admin/src/Jobs/Products/GenerateVariants.php
+    checkOctaneCompatibility: true
     ignoreErrors:
         -
             message: '#Unsafe usage of new static\(\).#'

@@ -32,6 +32,8 @@ trait HasChannels
 
     /**
      * Get all of the models channels.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<Channel>
      */
     public function channels()
     {
