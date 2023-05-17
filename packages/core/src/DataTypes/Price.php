@@ -55,14 +55,25 @@ class Price
     /**
      * Get the decimal value.
      *
-     * @return string
+     * @return float
      */
-    protected function decimal()
+    public function decimal($rounding = true)
     {
-        return round(
-            ($this->value / $this->currency->factor),
-            $this->currency->decimal_places
-        );
+        $convertedValue = $this->value / $this->currency->factor;
+
+        return $rounding ? round($convertedValue, $this->currency->decimal_places) : $convertedValue;
+    }
+
+    /**
+     * Get the decimal unit value.
+     *
+     * @return float
+     */
+    public function unitDecimal($rounding = true)
+    {
+        $convertedValue = $this->value / $this->currency->factor / $this->unitQty;
+
+        return $rounding ? round($convertedValue, $this->currency->decimal_places) : $convertedValue;
     }
 
     /**
@@ -70,17 +81,32 @@ class Price
      *
      * @return string
      */
-    public function formatted($locale = null, $formatter = NumberFormatter::CURRENCY)
+    public function formatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null)
+    {
+        return $this->formatValue($this->decimal(false), $locale, $formatterStyle, $decimalPlaces);
+    }
+
+    /**
+     * Format the unit value with the currency.
+     *
+     * @return string
+     */
+    public function unitFormatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null)
+    {
+        return $this->formatValue($this->unitDecimal(false), $locale, $formatterStyle, $decimalPlaces);
+    }
+
+    protected function formatValue($value, $locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null)
     {
         if (! $locale) {
             $locale = App::currentLocale();
         }
 
-        $formatter = new NumberFormatter($locale, $formatter);
+        $formatter = new NumberFormatter($locale, $formatterStyle);
 
         $formatter->setTextAttribute(NumberFormatter::CURRENCY_CODE, $this->currency->code);
-        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $this->currency->decimal_places);
+        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimalPlaces ?? $this->currency->decimal_places);
 
-        return $formatter->format($this->decimal());
+        return $formatter->format($value);
     }
 }

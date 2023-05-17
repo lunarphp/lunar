@@ -7,6 +7,7 @@ use Lunar\DataTypes\Price;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
 use Lunar\Tests\TestCase;
+use NumberFormatter;
 
 /**
  * @group lunar.datatypes
@@ -51,6 +52,25 @@ class PriceTest extends TestCase
         $this->assertEquals(1155, $dataType->value);
         $this->assertEquals(1.155, $dataType->decimal);
         $this->assertEquals('£1.155', $dataType->formatted);
+    }
+
+    /** @test */
+    public function can_handle_unit_qty()
+    {
+        $currency = Currency::factory()->create([
+            'code' => 'GBP',
+            'decimal_places' => 3,
+        ]);
+
+        $dataType = new Price(1155, $currency, 10);
+
+        $this->assertEquals(1155, $dataType->value);
+        $this->assertEquals(1.155, $dataType->decimal);
+        $this->assertEquals(0.116, $dataType->unitDecimal);
+        $this->assertEquals(0.1155, $dataType->unitDecimal(false));
+        $this->assertEquals('£1.155', $dataType->formatted);
+        $this->assertEquals('£0.116', $dataType->unitFormatted);
+        $this->assertEquals('£0.1155', $dataType->unitFormatted(null, NumberFormatter::CURRENCY, 4));
     }
 
     /** @test */
