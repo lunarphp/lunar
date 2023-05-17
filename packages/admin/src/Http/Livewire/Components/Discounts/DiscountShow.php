@@ -59,7 +59,7 @@ class DiscountShow extends AbstractDiscount
     /**
      * Delete the discount.
      *
-     * @return Redirector
+     * @return void
      */
     public function delete()
     {

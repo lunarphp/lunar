@@ -311,7 +311,7 @@ abstract class AbstractDiscount extends Component
     /**
      * Save the discount.
      *
-     * @return RedirectResponse
+     * @return RedirectResponse|void
      */
     public function save()
     {
