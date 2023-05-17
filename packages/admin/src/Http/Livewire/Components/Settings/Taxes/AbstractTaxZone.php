@@ -84,7 +84,6 @@ abstract class AbstractTaxZone extends Component
         return [
             'taxZone.name' => 'required',
             'taxZone.zone_type' => 'required',
-            'taxZone.zone_type' => 'required',
             'taxZone.price_display' => 'required',
             'taxZone.active' => 'boolean|nullable',
             'taxZone.default' => 'boolean|nullable',
