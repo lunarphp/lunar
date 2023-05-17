@@ -11,6 +11,7 @@ use Lunar\Base\Traits\HasPersonalDetails;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CustomerFactory;
+use Lunar\FieldTypes\TranslatedText;
 
 /**
  * @property int $id
