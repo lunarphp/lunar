@@ -3,3 +3,7 @@ parameters:
     paths:
         - packages
         - utils
+    ignoreErrors:
+        -
+            message: '#Unsafe usage of new static\(\).#'
+            path: packages/core/src/Base/Traits/HasModelExtending.php
