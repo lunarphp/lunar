@@ -438,7 +438,7 @@ class Cart extends BaseModel
         foreach (config('lunar.cart.validators.add_address', []) as $action) {
             app($action)->using(
                 cart: $this,
-                address: $type,
+                address: $address,
                 type: $type,
             )->validate();
         }
