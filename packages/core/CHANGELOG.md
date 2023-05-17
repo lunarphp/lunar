@@ -42,6 +42,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Laravel 8 support removed.
 - Laravel 10 support added.
 
+## 0.2.6
+
+### Fixed
+
+- When deleting a discount the users relationship will now `detach` rather than trying to `delete`.
+
 ## 0.2.5
 
 ### Fixed

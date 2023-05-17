@@ -38,6 +38,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed Auth guard to use Laravel's default driver.
 - Updated `db_date` function to return just the formmatted string.
 
+## 0.2.6
+
+### Fixed
+
+- When creating an option, `wire:model` should now correctly reference `newProductOption` when editing the name in a different locale.
+
 ## 0.2.5
 
 ### Fixed
