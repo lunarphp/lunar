@@ -221,6 +221,7 @@ class CartTest extends TestCase
             'currency_id' => $currency->id,
         ]);
 
+        // Add product
         $purchasable = ProductVariant::factory()->create();
 
         Price::factory()->create([
@@ -237,15 +238,37 @@ class CartTest extends TestCase
             'quantity' => 1,
         ]);
 
+        // Add product with unit qty
+        $purchasable = ProductVariant::factory()
+            ->state([
+                'unit_quantity' => 100,
+            ])
+            ->create();
+
+        Price::factory()->create([
+            'price' => 158,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 2,
+        ]);
+
+        // Set user
         $this->actingAs(
             StubUser::factory()->create()
         );
 
         $cart->calculate();
 
-        $this->assertEquals(100, $cart->subTotal->value);
-        $this->assertEquals(120, $cart->total->value);
-        $this->assertCount(1, $cart->taxBreakdown);
+        $this->assertEquals(103, $cart->subTotal->value);
+        $this->assertEquals(124, $cart->total->value);
+        $this->assertCount(2, $cart->taxBreakdown);
     }
 
     /**

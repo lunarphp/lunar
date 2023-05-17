@@ -30,7 +30,7 @@ class CalculateLines
             $purchasable = $cartLine->purchasable;
             $unitQuantity = $purchasable->getUnitQuantity();
 
-            $unitPrice = ($cartLine->unitPrice->decimal / $unitQuantity) * $cart->currency->factor;
+            $unitPrice = $cartLine->unitPrice->unitDecimal(false) * $cart->currency->factor;
 
             $subTotal = (int) round($unitPrice * $cartLine->quantity, $cart->currency->decimal_places);
 
