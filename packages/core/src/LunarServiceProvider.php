@@ -62,7 +62,6 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
-use Lunar\Models\ProductType;
 use Lunar\Models\Transaction;
 use Lunar\Models\Url;
 use Lunar\Observers\AddressObserver;
@@ -173,10 +172,6 @@ class LunarServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        Relation::morphMap([
-            'product_type' => ProductType::class,
-        ]);
 
         $this->registerObservers();
         $this->registerBlueprintMacros();
