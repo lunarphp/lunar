@@ -3,7 +3,7 @@
 namespace Lunar\Tests\Database\State;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Lunar\FieldTypes\Text;

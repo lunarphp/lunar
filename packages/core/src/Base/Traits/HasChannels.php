@@ -4,7 +4,7 @@ namespace Lunar\Base\Traits;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Channel;
 
 trait HasChannels

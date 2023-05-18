@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Discounts\Types;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;

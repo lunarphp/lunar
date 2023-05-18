@@ -4,7 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
 use Carbon\CarbonPeriod;
 use Exception;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Livewire\Component;
