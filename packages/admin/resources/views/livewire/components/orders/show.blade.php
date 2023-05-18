@@ -101,17 +101,6 @@
         </div>
 
         <div class="space-y-4">
-        <section class="p-4 bg-white rounded-lg shadow">
-            <header>
-                <strong class="text-gray-700">
-                  {{ __('adminhub::components.orders.show.tags_header') }}
-                </strong>
-            </header>
-            @livewire('hub.components.tags', [
-              'taggable' => $order,
-              'independant' => true,
-            ])
-        </section>
             @if ($order->customer)
                 <header class="flex items-center justify-between">
                     <strong class="text-gray-700 truncate">
@@ -154,6 +143,18 @@
                     'hidden' => $this->shippingEqualsBilling,
                     'message' => __('adminhub::components.orders.show.billing_matches_shipping'),
                     'address' => $this->billingAddress,
+                ])
+            </section>
+
+            <section class="p-4 bg-white rounded-lg shadow">
+                <header>
+                    <strong class="text-gray-700">
+                      {{ __('adminhub::components.orders.show.tags_header') }}
+                    </strong>
+                </header>
+                @livewire('hub.components.tags', [
+                  'taggable' => $order,
+                  'independant' => true,
                 ])
             </section>
 
