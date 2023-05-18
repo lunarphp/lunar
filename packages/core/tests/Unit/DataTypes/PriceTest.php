@@ -104,6 +104,23 @@ class PriceTest extends TestCase
     }
 
     /** @test */
+    public function can_format_numbers_specifying_decimal_places()
+    {
+        $currency = Currency::factory()->create([
+            'code' => 'USD',
+            'decimal_places' => 2,
+        ]);
+
+        $dataType = new Price(1500, $currency, 1);
+        $this->assertEquals('$15.00', $dataType->formatted(decimalPlaces: 6));
+        $this->assertEquals('$15.000000', $dataType->formatted(decimalPlaces: 6, trimTrailingZeros: false));
+
+        $dataType = new Price(507, $currency, 100);
+        $this->assertEquals('$0.0507', $dataType->unitFormatted(decimalPlaces: 6));
+        $this->assertEquals('$0.050700', $dataType->unitFormatted(decimalPlaces: 6, trimTrailingZeros: false));
+    }
+
+    /** @test */
     public function can_handle_decimals_being_passed()
     {
         $currency = Currency::factory()->create([

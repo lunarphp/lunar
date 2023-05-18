@@ -272,9 +272,12 @@ class CartTest extends TestCase
         $cart->calculate();
 
         $this->assertEquals(100, $cart->lines[0]->unitPrice->value);
+        $this->assertEquals('$1.00', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
+        $this->assertEquals('$1.000000', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
         $this->assertEquals(158, $cart->lines[1]->unitPrice->value);
         $this->assertEquals(0.0158, $cart->lines[1]->unitPrice->unitDecimal(false));
-        $this->assertEquals('$0.0158', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 4));
+        $this->assertEquals('$0.0158', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
+        $this->assertEquals('$0.015800', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
         $this->assertEquals(103, $cart->subTotal->value);
         $this->assertEquals(124, $cart->total->value);
         $this->assertCount(2, $cart->taxBreakdown);

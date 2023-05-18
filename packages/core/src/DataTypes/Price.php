@@ -81,9 +81,9 @@ class Price
      *
      * @return string
      */
-    public function formatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null)
+    public function formatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null, $trimTrailingZeros = true)
     {
-        return $this->formatValue($this->decimal(false), $locale, $formatterStyle, $decimalPlaces);
+        return $this->formatValue($this->decimal(false), $locale, $formatterStyle, $decimalPlaces, $trimTrailingZeros);
     }
 
     /**
@@ -91,12 +91,12 @@ class Price
      *
      * @return string
      */
-    public function unitFormatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null)
+    public function unitFormatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null, $trimTrailingZeros = true)
     {
-        return $this->formatValue($this->unitDecimal(false), $locale, $formatterStyle, $decimalPlaces);
+        return $this->formatValue($this->unitDecimal(false), $locale, $formatterStyle, $decimalPlaces, $trimTrailingZeros);
     }
 
-    protected function formatValue($value, $locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null)
+    protected function formatValue($value, $locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null, $trimTrailingZeros = true)
     {
         if (! $locale) {
             $locale = App::currentLocale();
@@ -107,6 +107,12 @@ class Price
         $formatter->setTextAttribute(NumberFormatter::CURRENCY_CODE, $this->currency->code);
         $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimalPlaces ?? $this->currency->decimal_places);
 
-        return $formatter->format($value);
+        $formattedPrice = $formatter->format($value);
+
+        if ($trimTrailingZeros) {
+            $formattedPrice = preg_replace('/(\.\d{'.$this->currency->decimal_places.'}\d*?)0+$/', '$1', $formattedPrice);
+        }
+
+        return $formattedPrice;
     }
 }
