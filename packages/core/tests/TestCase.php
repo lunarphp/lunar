@@ -29,6 +29,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         });
 
         activity()->disableLogging();
+
+        // Freeze time to avoid timestamp errors
+        $this->freezeTime();
     }
 
     protected function getPackageProviders($app)
