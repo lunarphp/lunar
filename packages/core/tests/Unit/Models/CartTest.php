@@ -29,6 +29,7 @@ use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
+use NumberFormatter;
 
 /**
  * @group lunar.carts
@@ -215,7 +216,11 @@ class CartTest extends TestCase
     /** @test */
     public function can_calculate_the_cart()
     {
-        $currency = Currency::factory()->create();
+        $currency = Currency::factory()
+            ->state([
+                'code' => 'USD',
+            ])
+            ->create();
 
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
@@ -266,6 +271,10 @@ class CartTest extends TestCase
 
         $cart->calculate();
 
+        $this->assertEquals(100, $cart->lines[0]->unitPrice->value);
+        $this->assertEquals(158, $cart->lines[1]->unitPrice->value);
+        $this->assertEquals(0.0158, $cart->lines[1]->unitPrice->unitDecimal(false));
+        $this->assertEquals('$0.0158', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 4));
         $this->assertEquals(103, $cart->subTotal->value);
         $this->assertEquals(124, $cart->total->value);
         $this->assertCount(2, $cart->taxBreakdown);
