@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- Cart lines now calculate unit quantity pricing correctly.
+- Order line prices now take unit quantity into consideration.
+
+### Added
+
+- Added unit price methods, `unitDecimal()` and `unitFormatted()`, to the Price data type.
+
 ## 0.3.0-beta.3
 
 ### Added

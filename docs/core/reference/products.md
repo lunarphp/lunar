@@ -431,6 +431,19 @@ $price->price->formatted('fr') // 1,99 £GB
 $price->price->formatted('en-gb', \NumberFormatter::SPELLOUT) // one point nine nine.
 ```
 
+If you are using unit quantities in your product pricing, then you may wish to also use the following methods.
+
+```php
+// will give the decimal price for a single unit
+$price->price->unitDecimal  
+
+// will give the decimal price for a single unit, without rounding
+$price->price->unitDecimal(false)  
+
+// will give the formatted price for a single unit
+$price->price->unitFormatted  
+```
+
 ### Base Pricing
 
 Pricing is defined on a variant level, meaning you will have a different price for each variant and also for each currency in the system. In order to add pricing to a variant, you can either create the model directly or use the relationship method.
