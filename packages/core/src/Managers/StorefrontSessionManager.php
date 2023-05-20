@@ -4,9 +4,11 @@ namespace Lunar\Managers;
 
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 
 class StorefrontSessionManager implements StorefrontSessionInterface
@@ -33,6 +35,13 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     protected ?Currency $currency = null;
 
     /**
+     * The current currency
+     *
+     * @var Customer
+     */
+    protected ?Customer $customer = null;
+
+    /**
      * Initialise the manager
      *
      * @param protected SessionManager
@@ -40,12 +49,13 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     public function __construct(
         protected SessionManager $sessionManager
     ) {
-        if (!$this->customerGroups) {
+        if (! $this->customerGroups) {
             $this->customerGroups = collect();
         }
 
         $this->initChannel();
         $this->initCustomerGroups();
+        $this->initCustomer();
     }
 
     /**
@@ -70,19 +80,19 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
 
         if ($this->customerGroups?->count()) {
-            if (!$groupHandles) {
+            if (! $groupHandles) {
                 return $this->setCustomerGroups(
                     $this->customerGroups
                 );
             }
+
             return $this->customerGroups;
         }
 
-
-        if (!$this->customerGroups?->count()) {
+        if (! $this->customerGroups?->count()) {
             return $this->setCustomerGroups(
                 collect([
-                    CustomerGroup::getDefault()
+                    CustomerGroup::getDefault(),
                 ])
             );
         }
@@ -105,7 +115,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             $this->getSessionKey().'_channel'
         );
 
-        if (!$channelHandle) {
+        if (! $channelHandle) {
             return $this->setChannel(
                 Channel::getDefault()
             );
@@ -113,13 +123,45 @@ class StorefrontSessionManager implements StorefrontSessionInterface
 
         $channel = Channel::whereHandle($channelHandle)->first();
 
-        if (!$channel) {
+        if (! $channel) {
             throw new \Exception(
                 "Unable to find channel with handle {$channelHandle}"
             );
         }
 
         return $this->setChannel($channel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initCustomer()
+    {
+        if ($this->customer) {
+            return $this->customer;
+        }
+
+        $customer_id = $this->sessionManager->get(
+            $this->getSessionKey().'_customer'
+        );
+
+        if (! $customer_id) {
+            if (Auth::check() && is_lunar_user(Auth::user())) {
+                $user = Auth::user();
+
+                if ($customer = $user->customers()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first()) {
+                    $customer_id = $customer->id;
+                }
+            }
+        }
+
+        $customer = Customer::find($customer_id);
+
+        if (! $customer) {
+            return null;
+        }
+
+        return $this->setCustomer($customer);
     }
 
     /**
@@ -140,7 +182,31 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             $channel->handle
         );
         $this->channel = $channel;
+
         return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCustomer(Customer $customer): self
+    {
+        $this->sessionManager->put(
+            $this->getSessionKey().'_customer',
+            $customer->id
+        );
+
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer ?: $this->initCustomer();
     }
 
     /**
@@ -154,6 +220,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
 
         $this->customerGroups = $customerGroups;
+
         return $this;
     }
 

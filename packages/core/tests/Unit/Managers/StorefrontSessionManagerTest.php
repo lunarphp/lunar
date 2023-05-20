@@ -3,16 +3,16 @@
 namespace Lunar\Tests\Unit\Managers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use Lunar\Managers\CartSessionManager;
-use Lunar\Tests\TestCase;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Managers\StorefrontSessionManager;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
-
-use function Ramsey\Uuid\v1;
+use Lunar\Tests\Stubs\User as StubUser;
+use Lunar\Tests\TestCase;
 
 /**
  * @group lunar.storefront-session-manager
@@ -20,6 +20,11 @@ use function Ramsey\Uuid\v1;
 class StorefrontSessionManagerTest extends TestCase
 {
     use RefreshDatabase;
+
+    private function setAuthUserConfig()
+    {
+        Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
+    }
 
     /**
      * @test
@@ -84,6 +89,34 @@ class StorefrontSessionManagerTest extends TestCase
         $manager = app(StorefrontSessionInterface::class);
 
         $this->assertEquals($currency->id, $manager->getCurrency()->id);
+    }
+
+    /**
+     * @test
+     */
+    public function can_initialise_the_customer()
+    {
+        Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $this->setAuthUserConfig();
+
+        $user = StubUser::factory()->create();
+
+        $this->actingAs($user);
+
+        $customers = Customer::factory(5)->create();
+
+        $user->customers()->sync($customers->pluck('id'));
+
+        $this->assertCount(5, $user->customers()->get());
+
+        $this->assertDatabaseCount((new Customer)->getTable(), 5);
+
+        $manager = app(StorefrontSessionInterface::class);
+
+        $this->assertEquals($customers->last()->id, $manager->getCustomer()->id);
     }
 
     /**
@@ -156,10 +189,38 @@ class StorefrontSessionManagerTest extends TestCase
         $this->assertEquals(
             [$groupB->handle],
             Session::get(
-                $manager->getSessionKey() . '_customer_groups'
+                $manager->getSessionKey().'_customer_groups'
             )
         );
 
         $this->assertCount(1, $manager->getCustomerGroups());
+    }
+
+    /**
+     * @test
+     */
+    public function can_set_customer()
+    {
+        Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $this->setAuthUserConfig();
+
+        $user = StubUser::factory()->create();
+
+        $this->actingAs($user);
+
+        $customers = Customer::factory(5)->create();
+
+        $user->customers()->sync($customers->pluck('id'));
+
+        $manager = app(StorefrontSessionInterface::class);
+
+        $customer = $customers->first();
+
+        $manager->setCustomer($customer);
+
+        $this->assertEquals($customer->id, $manager->getCustomer()->id);
     }
 }
