@@ -24,6 +24,7 @@ class CreateOrder extends AbstractAction
         return DB::transaction(function () use ($cart) {
             $order = Order::create([
                 'user_id' => $cart->user_id,
+                'customer_id' => $cart->customer_id,
                 'channel_id' => $cart->channel_id,
                 'status' => config('lunar.orders.draft_status'),
                 'reference' => null,

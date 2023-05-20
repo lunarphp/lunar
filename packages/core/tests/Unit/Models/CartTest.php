@@ -146,6 +146,29 @@ class CartTest extends TestCase
     }
 
     /** @test */
+    public function can_associate_cart_with_customer()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $customer = Customer::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $cart->setCustomer($customer);
+
+        $this->assertDatabaseHas((new Cart)->getTable(), [
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'customer_id' => $customer->id,
+        ]);
+    }
+
+    /** @test */
     public function will_not_retrieve_user_cart_if_order_is_present()
     {
         $this->setAuthUserConfig();

@@ -13,6 +13,7 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\Channel;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Order;
@@ -538,5 +539,123 @@ class CreateOrderTest extends TestCase
         $this->assertCount(1, $order->discount_breakdown);
         $this->assertEquals($purchasable->id, $order->discount_breakdown->first()->lines->first()->line->purchasable->id);
         $this->assertEquals(100, $order->discount_breakdown->first()->total->value);
+    }
+
+    /** @test  */
+    public function can_create_order_with_customer()
+    {
+        CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $customer = Customer::factory()->create();
+
+        $billing = CartAddress::factory()->make([
+            'type' => 'billing',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'BILL',
+        ]);
+
+        $shipping = CartAddress::factory()->make([
+            'type' => 'shipping',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'SHIPP',
+        ]);
+
+        $taxClass = TaxClass::factory()->create();
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'customer_id' => $customer->id,
+        ]);
+
+        $taxClass = TaxClass::factory()->create([
+            'name' => 'Foobar',
+        ]);
+
+        $taxClass->taxRateAmounts()->create(
+            TaxRateAmount::factory()->make([
+                'percentage' => 20,
+                'tax_class_id' => $taxClass->id,
+            ])->toArray()
+        );
+
+        $purchasable = ProductVariant::factory()->create([
+            'tax_class_id' => $taxClass->id,
+            'unit_quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+        ]);
+
+        $cart->addresses()->createMany([
+            $billing->toArray(),
+            $shipping->toArray(),
+        ]);
+
+        $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new PriceDataType(500, $cart->currency, 1),
+            taxClass: $taxClass
+        );
+
+        ShippingManifest::addOption($shippingOption);
+
+        $cart->shippingAddress->update([
+            'shipping_option' => $shippingOption->getIdentifier(),
+        ]);
+
+        $cart->shippingAddress->shippingOption = $shippingOption;
+
+        $order = $cart->createOrder();
+
+        $breakdown = $cart->taxBreakdown->map(function ($tax) {
+            return [
+                'description' => $tax['description'],
+                'identifier' => $tax['identifier'],
+                'percentage' => $tax['amounts']->min('percentage'),
+                'total' => $tax['total']->value,
+            ];
+        })->values();
+
+        $datacheck = [
+            'user_id' => $cart->user_id,
+            'customer_id' => $cart->customer_id,
+            'channel_id' => $cart->channel_id,
+            'status' => config('lunar.orders.draft_status'),
+            'customer_reference' => null,
+            'sub_total' => $cart->subTotal->value,
+            'total' => $cart->total->value,
+            'discount_total' => $cart->discountTotal?->value,
+            'shipping_total' => $cart->shippingTotal?->value ?: 0,
+            'tax_breakdown' => json_encode($breakdown),
+        ];
+
+        $cart = $cart->refresh();
+
+        $this->assertDatabaseHas((new Order())->getTable(), $datacheck);
     }
 }

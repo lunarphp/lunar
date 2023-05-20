@@ -37,6 +37,7 @@ use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 /**
  * @property int $id
  * @property ?int $user_id
+ * @property ?int $customer_id
  * @property ?int $merged_id
  * @property int $currency_id
  * @property int $channel_id
@@ -197,6 +198,16 @@ class Cart extends BaseModel
         return $this->belongsTo(config('auth.providers.users.model'));
     }
 
+    /**
+     * Return the customer relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     public function scopeUnmerged($query)
     {
         return $query->whereNull('merged_id');
@@ -258,12 +269,12 @@ class Cart extends BaseModel
     public function calculate(): Cart
     {
         $cart = app(Pipeline::class)
-        ->send($this)
-        ->through(
-            config('lunar.cart.pipelines.cart', [
-                Calculate::class,
-            ])
-        )->thenReturn();
+            ->send($this)
+            ->through(
+                config('lunar.cart.pipelines.cart', [
+                    Calculate::class,
+                ])
+            )->thenReturn();
 
         return $cart->cacheProperties();
     }
@@ -394,6 +405,16 @@ class Cart extends BaseModel
             config('lunar.cart.actions.associate_user', AssociateUser::class)
         )->execute($this, $user, $policy)
             ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+    }
+
+    /**
+     * Associate a customer to the cart
+     */
+    public function setCustomer(Customer $customer): Cart
+    {
+        $this->customer()->associate($customer)->save();
+
+        return $this->refresh()->calculate();
     }
 
     /**

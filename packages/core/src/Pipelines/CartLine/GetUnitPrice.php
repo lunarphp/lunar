@@ -19,7 +19,11 @@ class GetUnitPrice
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
 
-        $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
+        if ($customer = $cart->customer) {
+            $customerGroups = $customer->customerGroups;
+        } else {
+            $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
+        }
 
         $priceResponse = Pricing::currency($cart->currency)
             ->qty($cartLine->quantity)
