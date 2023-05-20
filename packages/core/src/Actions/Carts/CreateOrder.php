@@ -23,7 +23,7 @@ final class CreateOrder extends AbstractAction
         $this->passThrough = DB::transaction(function () use ($cart, $allowMultipleOrders, $orderIdToUpdate) {
             $order = $cart->draftOrder($orderIdToUpdate)->first() ?: new Order;
 
-            if ($cart->hasCompletedOrders() && ! $allowMultipleOrders) {
+            if ($cart->hasCompletedOrders() && !$allowMultipleOrders) {
                 throw new DisallowMultipleCartOrdersException;
             }
 
