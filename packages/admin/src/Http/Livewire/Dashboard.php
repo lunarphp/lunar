@@ -3,8 +3,12 @@
 namespace Lunar\Hub\Http\Livewire;
 
 use Carbon\CarbonPeriod;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+=======
+use Lunar\Facades\DB;
+>>>>>>> 0.2
 use Livewire\Component;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
