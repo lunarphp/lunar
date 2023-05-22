@@ -35,7 +35,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     protected ?Currency $currency = null;
 
     /**
-     * The current currency
+     * The current customer
      *
      * @var Customer
      */
@@ -150,7 +150,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
                 $user = Auth::user();
 
                 if ($customer = $user->customers()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first()) {
-                    $customer_id = $customer->id;
+                    return $this->setCustomer($customer);
                 }
             }
         }
