@@ -876,5 +876,4 @@ class BuyXGetYTest extends TestCase
         $this->assertCount(1, $cart->discountBreakdown);
         $this->assertCount(3, $cart->discountBreakdown->first()->lines);
     }
-
 }
