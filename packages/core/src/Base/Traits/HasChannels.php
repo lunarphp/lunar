@@ -3,10 +3,7 @@
 namespace Lunar\Base\Traits;
 
 use DateTime;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Collection;
 use Lunar\Facades\DB;
 use Lunar\Models\Channel;
 
@@ -32,8 +29,6 @@ trait HasChannels
 
     /**
      * Get all of the models channels.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<Channel>
      */
     public function channels()
     {
@@ -68,72 +63,6 @@ trait HasChannels
                     ];
                 })
             );
-        });
-    }
-
-    /**
-     * Return the active channels relationship.
-     *
-     * @return MorphToMany
-     */
-    public function activeChannels()
-    {
-        return $this->channels()->where(function ($query) {
-            $query->whereNull('starts_at')
-                ->orWhere('starts_at', '<=', now());
-        })->where(function ($query) {
-            $query->whereNull('ends_at')
-            ->orWhere('ends_at', '>=', now());
-        })->whereEnabled(true);
-    }
-
-    /**
-     * Apply the channel scope to the query
-     *
-     * @param Builder $query
-     * @param Channel|iterable $channel
-     *
-     * @return Builder
-     */
-    public function scopeChannel($query, Channel|iterable $channel = null, DateTime $startsAt = null, DateTime $endsAt = null)
-    {
-        if (!$channel) {
-            return $query;
-        }
-
-        if (!$startsAt) {
-            $startsAt = now();
-        }
-
-        if (!$endsAt) {
-            $endsAt = now()->addSecond();
-        }
-
-        $channelIds = collect();
-
-        if (is_a($channel, Channel::class)) {
-            $channelIds = collect([$channel->id]);
-        }
-
-        if (is_a($channel, Collection::class)) {
-            $channelIds = $channel->pluck('id');
-        }
-
-        if (is_array($channel)) {
-            $channelIds = collect($channel)->pluck('id');
-        }
-
-        return $query->whereHas('channels', function ($relation) use ($channelIds, $startsAt, $endsAt) {
-            $relation->whereIn(
-                $this->channels()->getTable() . '.channel_id',
-                $channelIds
-            )->where(function ($query) use ($startsAt) {
-                $query->whereNull('starts_at')
-                    ->orWhere('starts_at', '<=', $startsAt);
-            })->where(function ($query) use ($endsAt) {
-                $query->whereNull('ends_at')
-                ->orWhere('ends_at', '>=', $endsAt);
-            })->whereEnabled(true);
         });
     }
 }

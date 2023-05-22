@@ -3,7 +3,6 @@
 namespace Lunar\Hub\Http\Livewire;
 
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Cache;
 use Lunar\Facades\DB;
 use Livewire\Component;
 use Lunar\DataTypes\Price;
@@ -17,33 +16,44 @@ use Lunar\Models\Product;
 class Dashboard extends Component
 {
     /**
-     * The date to query from.
+     * The date range for the dashboard reports.
      *
-     * @var string
+     * @var array
      */
-    protected string $from;
+    public array $range = [
+        'from' => null,
+        'to' => null,
+    ];
 
     /**
-     * The date to query too.
-     *
-     * @var string
+     * {@inheritDoc}
      */
-    protected string $to;
+    protected $queryString = ['range'];
 
     public function mount()
     {
-        $this->from = now()->subDays(14)->format('Y-m-d');
-        $this->to = now()->format('Y-m-d');
+        $this->range['from'] = $this->range['from'] ?? now()->startOfWeek()->format('Y-m-d');
+        $this->range['to'] = $this->range['too'] ?? now()->endOfWeek()->format('Y-m-d');
+    }
+
+    public function rules()
+    {
+        return [
+            'range.from' => 'date',
+            'range.to' => 'date,after:range.from',
+        ];
     }
 
     /**
      * Get the computed property for new products count.
+     *
+     * @return int
      */
     public function getNewProductsCountProperty(): int
     {
         return Product::whereBetween('created_at', [
-            now()->parse($this->from),
-            now()->parse($this->to),
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
         ])->count();
     }
 
@@ -54,15 +64,13 @@ class Dashboard extends Component
      */
     public function getReturningCustomersPercentProperty()
     {
-        $orders = Cache::remember('dashboard:returning_customers', now()->addDay(), function () {
-            return Order::select(
-                DB::RAW('COUNT(*) as count'),
-                'new_customer'
-            )->whereBetween('created_at', [
-                now()->parse($this->from),
-                now()->parse($this->to),
-            ])->groupBy('new_customer')->get();
-        });
+        $orders = Order::select(
+            DB::RAW('COUNT(*) as count'),
+            'new_customer'
+        )->whereBetween('created_at', [
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
+        ])->groupBy('new_customer')->get();
 
         if ($orders->isEmpty()) {
             return 0;
@@ -90,8 +98,8 @@ class Dashboard extends Component
     public function getOrderCountProperty()
     {
         return number_format(Order::whereBetween('placed_at', [
-            now()->parse($this->from),
-            now()->parse($this->to),
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
         ])->count(), 0);
     }
 
@@ -113,13 +121,109 @@ class Dashboard extends Component
     public function getOrderTotalProperty()
     {
         $query = Order::whereBetween('placed_at', [
-            now()->parse($this->from),
-            now()->parse($this->to),
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
         ])->select(
             DB::RAW('SUM(sub_total) as total')
         )->first();
 
         return new Price($query->total->value, $this->defaultCurrency, 1);
+    }
+
+    /**
+     * Return the computed sales performance property.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSalesPerformanceProperty()
+    {
+        $start = now()->parse($this->range['from']);
+        $end = now()->parse($this->range['to']);
+
+        $thisPeriod = Order::select(
+            DB::RAW('SUM(sub_total) as sub_total'),
+            db_date('placed_at', '%Y-%m', 'format_date')
+        )->whereNotNull('placed_at')
+        ->whereBetween('placed_at', [
+            $start,
+            $end,
+        ])->groupBy('format_date')->get();
+
+        $previousPeriod = Order::select(
+            DB::RAW('SUM(sub_total) as sub_total'),
+            db_date('placed_at', '%Y-%m', 'format_date')
+        )->whereNotNull('placed_at')
+        ->whereBetween('placed_at', [
+            $start->clone()->subYear(),
+            $end->clone()->subYear(),
+        ])->groupBy('format_date')->get();
+
+        $period = CarbonPeriod::create($start, '1 month', $end);
+
+        $thisPeriodMonths = collect();
+        $previousPeriodMonths = collect();
+        $months = collect();
+
+        foreach ($period as $datetime) {
+            $months->push($datetime->toDateTimeString());
+            // Do we have some totals for this month?
+            if ($totals = $thisPeriod->first(fn ($p) => $p->format_date == $datetime->format('Y-m'))) {
+                $thisPeriodMonths->push($totals->sub_total->decimal);
+            } else {
+                $thisPeriodMonths->push(0);
+            }
+            if ($prevTotals = $previousPeriod->first(fn ($p) => $p->format_date == $datetime->format('Y-m'))) {
+                $previousPeriodMonths->push($prevTotals->sub_total->decimal);
+            } else {
+                $previousPeriodMonths->push(0);
+            }
+        }
+
+        return collect([
+            'chart' => [
+                'type' => 'area',
+                'toolbar' => [
+                    'show' => false,
+                ],
+                'height' => '100%',
+            ],
+            'dataLabels' => [
+                'enabled' => false,
+            ],
+            'fill' => [
+                'type' => 'gradient',
+                'gradient' => [
+                    'shadeIntensity' => 1,
+                    'opacityFrom' => 0.45,
+                    'opacityTo' => 0.05,
+                    'stops' => [50, 100, 100, 100],
+                ],
+            ],
+            'series' => [
+                [
+                    'name' => 'This Period',
+                    'data' => $thisPeriodMonths->toArray(),
+                ],
+                [
+                    'name' => 'Previous Period',
+                    'data' => $previousPeriodMonths->toArray(),
+                ],
+            ],
+            'xaxis' => [
+                'type' => 'datetime',
+                'categories' => $months->toArray(),
+            ],
+            'yaxis' => [
+                'title' => [
+                    'text' => "Turnover {$this->defaultCurrency->code}",
+                ],
+            ],
+            'tooltip' => [
+                'x' => [
+                    'format' => 'dd MMM yyyy',
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -154,8 +258,8 @@ class Dashboard extends Component
             '=',
             "{$orderTable}.id"
         )->whereBetween("{$orderTable}.placed_at", [
-            now()->parse($this->from),
-            now()->parse($this->to),
+            now()->parse($this->range['from']),
+            now()->parse($this->range['to']),
         ])->where('type', '!=', 'shipping')
         ->groupBy('purchasable_type', 'purchasable_id')
         ->orderBy('count', 'desc')
@@ -204,8 +308,8 @@ class Dashboard extends Component
                 '=',
                 'ccg.customer_id'
             )->whereBetween('placed_at', [
-                now()->parse($this->from),
-                now()->parse($this->to),
+                now()->parse($this->range['from']),
+                now()->parse($this->range['to']),
             ])->groupBy('ccg.customer_group_id')
             ->get();
 
