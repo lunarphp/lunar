@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\Variants;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;

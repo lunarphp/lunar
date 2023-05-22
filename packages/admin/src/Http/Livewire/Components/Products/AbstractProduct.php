@@ -4,7 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Products;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;

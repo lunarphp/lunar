@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;

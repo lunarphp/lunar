@@ -2,7 +2,7 @@
 
 namespace Lunar\Actions\Carts;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Actions\AbstractAction;
 use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\DataTypes\ShippingOption;

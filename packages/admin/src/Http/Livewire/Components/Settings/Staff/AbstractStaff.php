@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\Staff;
