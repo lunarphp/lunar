@@ -83,7 +83,7 @@ interface StorefrontSessionInterface
     /**
      * Return the current customer.
      *
-     * @return \Lunar\Models\Customer
+     * @return \Lunar\Models\Customer | null
      */
-    public function getCustomer(): Customer;
+    public function getCustomer(): ?Customer;
 }
