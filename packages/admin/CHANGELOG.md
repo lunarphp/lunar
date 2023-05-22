@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.2.7
+
+### Fixed
+
+- Added missing notification translation.
+- Variant stock level will now be validated correctly to prevent DB exception on save.
+- Variant image uploading will now check for S3 usage when uploading, the same as product saving.
+- When reordering items, the `$index` now checks for an integer instead of purely existence to prevent failure when `$index` is `0`.
+- Improved validation on translatable attributes to prevent exception when entering multiple languages.
+
 ## 0.2.6
 
 ### Fixed
