@@ -9,7 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Lunar\Hub\Exceptions\InvalidProductValuesException;
 use Lunar\Hub\Exceptions\VariantsDisabledException;

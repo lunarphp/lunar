@@ -2,7 +2,7 @@
 
 namespace Lunar\Database\State;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;

@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\ProductTypes;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Attribute;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;

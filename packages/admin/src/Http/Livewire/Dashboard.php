@@ -4,7 +4,7 @@ namespace Lunar\Hub\Http\Livewire;
 
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Livewire\Component;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;

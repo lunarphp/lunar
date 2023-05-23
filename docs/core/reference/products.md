@@ -320,6 +320,12 @@ $taxClass = TaxClass::where(...)->first();
 $currency = Currency::where(...)->first();
 ```
 
+You can also specify a status to limit results to using the provided scope.
+
+```php
+Product::status('published')->get();
+```
+
 Then we need to create our base option and it's values.
 
 ```php
@@ -429,6 +435,19 @@ The formatted price uses the native PHP [NumberFormatter](https://www.php.net/ma
 ```php
 $price->price->formatted('fr') // 1,99 £GB
 $price->price->formatted('en-gb', \NumberFormatter::SPELLOUT) // one point nine nine.
+```
+
+If you are using unit quantities in your product pricing, then you may wish to also use the following methods.
+
+```php
+// will give the decimal price for a single unit
+$price->price->unitDecimal  
+
+// will give the decimal price for a single unit, without rounding
+$price->price->unitDecimal(false)  
+
+// will give the formatted price for a single unit
+$price->price->unitFormatted  
 ```
 
 ### Base Pricing

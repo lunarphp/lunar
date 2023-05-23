@@ -268,6 +268,19 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
+     * Apply the status scope.
+     *
+     * @param Builder $query
+     * @param string $status
+     *
+     * @return Builder
+     */
+    public function scopeStatus(Builder $query, $status)
+    {
+        return $query->whereStatus($status);
+    }
+
+    /**
      * Return the prices relationship.
      *
      * @return HasManyThrough
