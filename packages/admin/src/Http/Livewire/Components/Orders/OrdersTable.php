@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
