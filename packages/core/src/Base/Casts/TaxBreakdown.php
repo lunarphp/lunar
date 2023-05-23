@@ -66,7 +66,8 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
     public function serialize($model, $key, $value, $attributes)
     {
         return $value->map(function ($rate) {
-            if (is_array($rate)) $rate = (object) $rate;
+            $rate = is_array($rate) ? (object) $rate : $rate;
+
             if ($rate->total instanceof Price) {
                 $rate->total = (object) [
                     'value' => $rate->total->value,
