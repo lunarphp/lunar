@@ -2,7 +2,7 @@
 
 namespace Lunar\Observers;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Language;
 
 class LanguageObserver

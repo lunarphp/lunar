@@ -3,7 +3,7 @@
 namespace Lunar\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\AdminHubServiceProvider;
