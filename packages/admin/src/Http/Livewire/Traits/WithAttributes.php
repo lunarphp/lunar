@@ -198,9 +198,13 @@ trait WithAttributes
                 foreach ($this->languages as $language) {
                     // all rules set when attribute was created (resets on each iteration)
                     $validationRules = $validation;
-                    if ($language->default && $isRequired) {
+                    if ($language->default) {
                         // append required for the default language
-                        $validationRules = array_merge($validationRules, ['required']);
+                        if ($isRequired) {
+                            $validationRules = array_merge($validationRules, ['required']);
+                        } else {
+                            $validationRules = array_merge($validationRules, ['nullable']);
+                        }
                     }
                     $rules["{$attribute['signature']}.{$language->code}"] = $validationRules;
                 }
@@ -210,6 +214,8 @@ trait WithAttributes
 
             if ($isRequired) {
                 $validation = array_merge($validation, ['required']);
+            } else {
+                $validation = array_merge($validation, ['nullable']);
             }
 
             if ($attribute['type'] == Number::class) {

@@ -67,7 +67,7 @@ class MenuSlot
             });
         }
 
-        if ($index) {
+        if (is_int($index)) {
             $this->items->splice($index + 1, 0, [$item]);
 
             return $this;

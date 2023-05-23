@@ -2,7 +2,7 @@
 
 namespace Lunar\Base;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Order;
 
 class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
