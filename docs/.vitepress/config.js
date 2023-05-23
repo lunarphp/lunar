@@ -69,6 +69,7 @@ export default defineConfig({
             { text: 'Configuration', link: '/core/configuration' },
             { text: 'Initial Set-Up', link: '/core/set-up' },
             { text: 'Upgrade Guide', link: '/core/upgrading' },
+            { text: 'Release Schedule', link: '/core/release-schedule' },
             { text: 'Security', link: '/core/securing-your-site' },
             { text: 'Contributing', link: '/core/contributing' }
           ]
