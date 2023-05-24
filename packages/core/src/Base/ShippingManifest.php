@@ -75,15 +75,11 @@ class ShippingManifest implements ShippingManifestInterface
     /**
      * {@inheritDoc}
      */
-    public function getOption(Cart $cart, $identifier): ?ShippingOption
+    public function getOption(Cart $cart, string $identifier): ?ShippingOption
     {
-        if (blank($this->getOptionUsing)) {
-            return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
-                return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
-            });
-        }
-
-        return call_user_func($this->getOptionUsing, ...func_get_args());
+        return $this->getOptions($cart)
+            ->where('identifier', $identifier)
+            ->first();
     }
 
     /**
@@ -98,5 +94,23 @@ class ShippingManifest implements ShippingManifestInterface
             )->thenReturn();
 
         return $this->options;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getShippingOption(Cart $cart, $identifier): ?ShippingOption
+    {
+        if (! $cart->shippingAddress?->shipping_option) {
+            return null;
+        }
+
+        if (blank($this->getOptionUsing)) {
+            return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
+                return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
+            });
+        }
+
+        return call_user_func($this->getOptionUsing, ...func_get_args());
     }
 }
