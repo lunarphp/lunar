@@ -4,7 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Products;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -241,7 +241,7 @@ abstract class AbstractProduct extends Component
                 $baseRules,
                 $this->hasPriceValidationRules(),
                 [
-                    'variant.stock' => 'numeric|max:10000000',
+                    'variant.stock' => 'required|min:0|numeric|max:10000000',
                     'variant.backorder' => 'numeric|max:10000000',
                     'variant.purchasable' => 'string|required',
                     'variant.length_value' => 'numeric|nullable',

@@ -18,11 +18,6 @@
 composer require lunarphp/lunar
 ```
 
-::: tip Laravel 10
-Laravel 10 support is still in beta release. You can install it by targeting `0.3.0-beta`, but it is not considered production ready at this point.
-```sh
-composer require lunarphp/lunar "^0.3.0-beta"
-```
 :::
 
 ### Add the LunarUser Trait

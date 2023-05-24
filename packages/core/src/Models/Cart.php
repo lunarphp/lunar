@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
@@ -301,7 +301,7 @@ class Cart extends BaseModel
                 $this->add(
                     purchasable: $line['purchasable'],
                     quantity: $line['quantity'],
-                    meta: (array) $line['meta'] ?? null,
+                    meta: (array) ($line['meta'] ?? null),
                     refresh: false
                 );
             });
@@ -404,7 +404,7 @@ class Cart extends BaseModel
         foreach (config('lunar.cart.validators.add_address', []) as $action) {
             app($action)->using(
                 cart: $this,
-                address: $type,
+                address: $address,
                 type: $type,
             )->validate();
         }

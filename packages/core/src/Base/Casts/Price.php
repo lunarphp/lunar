@@ -36,7 +36,7 @@ class Price implements CastsAttributes
         return new PriceDataType(
             (int) $value,
             $currency,
-            $model->priceable->unit_quantity ?? 1
+            $model->priceable->unit_quantity ?? $model->unit_quantity ?? 1,
         );
     }
 
