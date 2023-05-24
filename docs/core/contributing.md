@@ -54,7 +54,7 @@ Open source code belongs to all of us, and it's all of our responsibility to pus
 
 ## Proposing a Feature
 
-Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/lunarphp/lunar/issues/new/choose) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into Lunar.
+Before you start coding away on the next awesome feature, we highly recommend starting a [discussion](https://github.com/lunarphp/lunar/discussions) to check that your contribution will be welcomed. We would hate for you to spend valuable time on something that won't be merged into Lunar.
 
 However, you're more than welcome to code away on your idea if you think it will help the discussion.
 
