@@ -104,8 +104,6 @@ class StorefrontSessionManagerTest extends TestCase
 
         $user = StubUser::factory()->create();
 
-        $this->actingAs($user);
-
         $customers = Customer::factory(5)->create();
 
         $user->customers()->sync($customers->pluck('id'));
@@ -115,6 +113,10 @@ class StorefrontSessionManagerTest extends TestCase
         $this->assertDatabaseCount((new Customer)->getTable(), 5);
 
         $manager = app(StorefrontSessionInterface::class);
+
+        $this->assertNull($manager->getCustomer());
+
+        $this->actingAs($user);
 
         $this->assertEquals($customers->last()->id, $manager->getCustomer()->id);
     }
@@ -209,7 +211,7 @@ class StorefrontSessionManagerTest extends TestCase
 
         $user = StubUser::factory()->create();
 
-        $this->actingAs($user);
+        // $this->actingAs($user);
 
         $customers = Customer::factory(5)->create();
 
@@ -218,6 +220,38 @@ class StorefrontSessionManagerTest extends TestCase
         $manager = app(StorefrontSessionInterface::class);
 
         $customer = $customers->first();
+
+        $manager->setCustomer($customer);
+
+        $this->assertEquals($customer->id, $manager->getCustomer()->id);
+    }
+
+    /**
+     * @test
+     */
+    public function ensure_customer_belongs_to_user()
+    {
+        Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $this->setAuthUserConfig();
+
+        $user = StubUser::factory()->create();
+
+        $this->actingAs($user);
+
+        $customers = Customer::factory(5)->create();
+
+        $manager = app(StorefrontSessionInterface::class);
+
+        $customer = $customers->first();
+
+        $manager->setCustomer($customer);
+
+        $this->assertNull($manager->getCustomer());
+
+        $user->customers()->sync($customers->pluck('id'));
 
         $manager->setCustomer($customer);
 
