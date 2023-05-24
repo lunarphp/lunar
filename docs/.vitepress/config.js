@@ -42,8 +42,7 @@ export default defineConfig({
           { text: 'Livewire Starter Kit', link: 'https://github.com/lunarphp/livewire-starter-kit' },
           { text: 'Add-ons', link: 'https://github.com/lunarphp/awesome' },
           { text: 'Discord', link: 'https://discord.gg/v6qVWaf' },
-          { text: 'Discussions', link: 'https://github.com/lunarphp/lunar/discussions' },
-          { text: 'Roadmap', link: 'https://github.com/orgs/lunarphp/projects/1' }
+          { text: 'Discussions', link: 'https://github.com/lunarphp/lunar/discussions' }
         ]
       },
       {
