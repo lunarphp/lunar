@@ -14,6 +14,12 @@ This repository serves as a monorepo for the main packages that make up Lunar.
 
 - [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything Lunar
 
+## Contribution
+
+- Bug reports should be submitted as a new Github issue
+- Enhancements should [https://github.com/lunarphp/lunar/discussions/new?category=enhancements](be in discussions)
+- Feature requests should [https://github.com/lunarphp/lunar/discussions/new?category=feature-requests](be in discussions)
+
 ## Community
 
 - [Join our discord server](https://discord.gg/v6qVWaf) and chat to the developers and people using Lunar.
