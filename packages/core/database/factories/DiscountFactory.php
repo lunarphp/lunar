@@ -4,7 +4,7 @@ namespace Lunar\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Lunar\DiscountTypes\Coupon;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Discount;
 
 class DiscountFactory extends Factory
@@ -18,7 +18,7 @@ class DiscountFactory extends Factory
         return [
             'name' => $name,
             'handle' => Str::snake($name),
-            'type' => Coupon::class,
+            'type' => AmountOff::class,
             'starts_at' => now(),
         ];
     }
