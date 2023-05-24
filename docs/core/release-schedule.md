@@ -2,19 +2,19 @@
 
 ## Overview
 
-Lunar is currently on a `0.x` version, this means in order to get to a stable `1.0.0` we need to go through quite a rapid development cycle to ensure we are delivering bug fixes and features you want or expect from your e-commerce system.
+Lunar is currently on a `0.x` version. This means in order to get to a stable `1.0.0` release, we need to go through quite a rapid development cycle to ensure we are delivering bug fixes and features you expect from your e-commerce system.
 
-For this reason we have committed to a release schedule we feel will us communicate what new features you can expect, when they will arrive and when important bug fixes will be patched and released. Also, importantly, contributors will know with a certain level of accuracy when the feature they're proposing will be included and at what version.
+For this reason we have committed to a release schedule that we feel will communicate what new features you can expect, when they will arrive and when important bug fixes will be released. Also, importantly, contributors will know with a certain level of accuracy when the feature they are proposing will be included and at what version.
 
-### Summary
+### Schedule
 
-- Feature Releases `0.x` - Every 3 months
-- Bug Fixes `0.x.x` - Grouped and released at the end of the working week (Friday)
+- Feature Releases `0.x` - Released at the start of every month
+- Bug Fixes `0.x.x` - Grouped and released at the end of each working week (Friday)
 - Critical/Security Bug Fixes `0.x.x` - Released within the day they are merged.
 
 ## Backwards Compatibility and Upgrading
 
-One concern is if we're releasing `0.x` versions frequently, what does this mean for you as the developer in terms of the level of effort required to upgrade for each version, for example `0.2` to `0.3` or `0.2` to `0.5` etc.
+One concern is if we are releasing `0.x` versions frequently, what does this mean for you as the developer in terms of the level of effort required to upgrade for each version, for example `0.2` to `0.3` or `0.2` to `0.5` etc.
 
 For each release there will be a dedicated upgrade section on the [Upgrade Guide](/core/upgrading) page, which will provide the required upgrade steps for you to take.
 
