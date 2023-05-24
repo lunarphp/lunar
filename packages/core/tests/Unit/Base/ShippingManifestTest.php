@@ -95,6 +95,18 @@ class ShippingManifestTest extends TestCase
 
         $taxClass = TaxClass::factory()->create();
 
+        ShippingManifest::addOption(
+            $basicOption = new ShippingOption(
+                name: 'Basic Delivery',
+                description: 'Basic Delivery',
+                identifier: 'BASDEL',
+                price: new Price(500, $this->cart->currency, 1),
+                taxClass: $taxClass
+            )
+        );
+
+        $this->assertCount(1, ShippingManifest::getOptions($this->cart));
+
         $options = collect();
 
         for ($i = 1; $i <= 5; $i++) {
@@ -110,10 +122,10 @@ class ShippingManifestTest extends TestCase
         ShippingManifest::addOptions($options);
 
         $manifestOptions = ShippingManifest::getOptions($this->cart);
-        $this->assertCount(5, $manifestOptions);
+        $this->assertCount(6, $manifestOptions);
 
+        $this->assertSame($basicOption, $manifestOptions->first());
         $this->assertSame($options->last(), $manifestOptions->last());
-        $this->assertSame($options->first(), $manifestOptions->first());
     }
 
     /** @test */

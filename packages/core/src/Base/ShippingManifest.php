@@ -47,7 +47,7 @@ class ShippingManifest implements ShippingManifestInterface
      */
     public function addOptions(Collection $options)
     {
-        $this->options = $options;
+        $this->options = $this->options->merge($options);
 
         return $this;
     }
