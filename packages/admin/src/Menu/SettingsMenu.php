@@ -4,7 +4,7 @@ namespace Lunar\Hub\Menu;
 
 use Lunar\Hub\Facades\Menu;
 
-class SettingsMenu
+final class SettingsMenu
 {
     protected MenuSlot $slot;
 

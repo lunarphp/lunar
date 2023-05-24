@@ -27,7 +27,7 @@ class EnsureBrandsAreUpgraded
 
         foreach ($legacyBrands as $productId => $brand) {
             if (empty($brands[$brand])) {
-                $this->legacyBrands[$brand] = [];
+                $brands[$brand] = [];
             }
 
             $brands[$brand][] = $productId;

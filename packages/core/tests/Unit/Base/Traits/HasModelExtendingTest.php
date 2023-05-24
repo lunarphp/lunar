@@ -23,6 +23,7 @@ class HasModelExtendingTest extends ExtendableTestCase
     /** @test */
     public function can_forward_calls_to_extended_model()
     {
+        // @phpstan-ignore-next-line
         $sizeOption = ProductOption::with('sizes')->find(1);
 
         $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\ProductOption::class, $sizeOption);

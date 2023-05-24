@@ -77,7 +77,7 @@ class AttributeGroupEdit extends Component
         $this->attributeGroup->handle = $handle;
 
         $this->validate([
-            'attributeGroup.handle' => 'unique:'.get_class($this->attributeGroup).',handle',
+            'attributeGroup.handle' => 'unique:'.get_class($this->attributeGroup).',handle,'.$this->attributeGroup->id,
         ]);
 
         if ($this->attributeGroup->id) {

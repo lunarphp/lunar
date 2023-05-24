@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.0
+
+> Latest updates from `0.2` have been brought in.
+
+### Fixed
+
+- The sales dashboard graph now correctly shows figures.
+- When going to a new page on table listings, the page will now scroll to the top.
+- The iframe height on email previews has been increased to avoid cut off.
+- Refactor row selection on tables to avoid extra roundtrips to Livewire.
+- AttributeGroup saving will now pass the id if being edited to prevent false validation exception being thrown.
+
+### Changed
+
+- Dashboard stats are now responsible for their own date ranges where applicable.
+- The tags panel on the order detail screen has been moved below the address details.
+- Brands will now list alphabetically by default.
+
+### Added
+
+- Brands are now searchable and can have saved searches.
+
 ## 0.3.0-beta.3
 
 > Maintenance update to bring changes from 0.2.5 in.
@@ -37,6 +59,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Laravel 10 support added.
 - Changed Auth guard to use Laravel's default driver.
 - Updated `db_date` function to return just the formmatted string.
+
+## 0.2.7
+
+### Fixed
+
+- Added missing notification translation.
+- Variant stock level will now be validated correctly to prevent DB exception on save.
+- Variant image uploading will now check for S3 usage when uploading, the same as product saving.
+- When reordering items, the `$index` now checks for an integer instead of purely existence to prevent failure when `$index` is `0`.
+- Improved validation on translatable attributes to prevent exception when entering multiple languages.
+
+## 0.2.6
+
+### Fixed
+
+- When creating an option, `wire:model` should now correctly reference `newProductOption` when editing the name in a different locale.
 
 ## 0.2.5
 

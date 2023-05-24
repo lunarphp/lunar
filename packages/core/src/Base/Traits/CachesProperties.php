@@ -32,7 +32,7 @@ trait CachesProperties
     /**
      * Returns a unique key for the cache.
      *
-     * @return void
+     * @return string
      */
     protected function cachePropertiesPrefix()
     {

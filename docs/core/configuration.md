@@ -19,6 +19,23 @@ So that Lunar tables do not conflict with your existing application database tab
     'table_prefix' => 'lunar_',
 ```
 
+### Database Connection
+
+`lunar/database.php`
+
+ By default, the package uses the default database connection defined in Laravel. Here specify a custom database connection for Lunar.
+
+```php
+    'connection' => 'some_custom_connection',
+```
+
+If you are using a custom database connection that is not the default connection in your Laravel configuration, you need to specify it in the .env file as well.
+
+```
+    ACTIVITY_LOGGER_DB_CONNECTION=some_custom_connection
+```
+In our package, we utilize Spatie's [laravel-activitylog](https://spatie.be/docs/laravel-activitylog) for logging. The mentioned configuration allows the activity logger to use a different database connection instead of the default database connection.
+
 ### Orders
 
 `lunar/orders.php`

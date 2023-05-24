@@ -30,17 +30,13 @@ class CalculateLines
             $purchasable = $cartLine->purchasable;
             $unitQuantity = $purchasable->getUnitQuantity();
 
-            $unitPrice = (int) round(
-                (($cartLine->unitPrice->decimal / $purchasable->getUnitQuantity())
-                    * $cart->currency->factor),
-                $cart->currency->decimal_places);
+            $unitPrice = $cartLine->unitPrice->unitDecimal(false) * $cart->currency->factor;
 
-            $subTotal = $unitPrice * $cartLine->quantity;
+            $subTotal = (int) round($unitPrice * $cartLine->quantity, $cart->currency->decimal_places);
 
             $cartLine->subTotal = new Price($subTotal, $cart->currency, $unitQuantity);
             $cartLine->taxAmount = new Price(0, $cart->currency, $unitQuantity);
             $cartLine->total = new Price($subTotal, $cart->currency, $unitQuantity);
-            $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);
             $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
         }
 

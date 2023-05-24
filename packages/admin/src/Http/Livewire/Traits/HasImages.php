@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\FileUploadConfiguration;
 use Livewire\TemporaryUploadedFile;

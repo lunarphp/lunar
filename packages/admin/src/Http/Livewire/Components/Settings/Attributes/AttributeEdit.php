@@ -143,7 +143,7 @@ class AttributeEdit extends Component
     /**
      * Return the config for the field type.
      *
-     * @return void
+     * @return array|null
      */
     public function getFieldTypeConfig()
     {
