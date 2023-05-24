@@ -2,7 +2,7 @@
 
 namespace Lunar\DataTypes;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
 use NumberFormatter;

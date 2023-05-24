@@ -36,6 +36,11 @@ class TestTaxDriver implements TaxDriver
     protected Purchasable $purchasable;
 
     /**
+     * The cart line.
+     */
+    protected CartLine $cartLine;
+
+    /**
      * {@inheritDoc}
      */
     public function setShippingAddress(Addressable $address = null): self

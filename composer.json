@@ -35,7 +35,8 @@
         "mockery/mockery": "^1.4.4",
         "orchestra/testbench": "^7.0|^8.0",
         "phpunit/phpunit": "^9.5",
-        "symplify/monorepo-builder": "^10.0"
+        "symplify/monorepo-builder": "^10.0",
+        "nunomaduro/larastan": "^2.0"
     },
     "autoload": {
         "files": [

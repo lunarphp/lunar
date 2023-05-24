@@ -177,7 +177,7 @@ class DatabaseEngine extends Engine
      *
      * @param  mixed  $results
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \Illuminate\Support\LazyCollection
+     * @return \Illuminate\Support\LazyCollection|void
      */
     public function lazyMap(Builder $builder, $results, $model)
     {

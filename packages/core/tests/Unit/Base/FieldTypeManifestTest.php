@@ -59,6 +59,6 @@ class FieldTypeManifestTest extends TestCase
             FieldTypeMissingException::class
         );
 
-        $manifest->add(Foo::class);
+        $manifest->add(\Lunar\Models\Cart::class);
     }
 }
