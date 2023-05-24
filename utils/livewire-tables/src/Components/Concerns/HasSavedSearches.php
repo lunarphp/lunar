@@ -91,6 +91,8 @@ trait HasSavedSearches
      */
     public function resetSavedSearch()
     {
+        $this->resetPage();
+
         $this->savedSearch = false;
     }
 
