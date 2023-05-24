@@ -33,23 +33,24 @@ interface ShippingManifestInterface
 
     /**
      * Define closure to retrieve shipping option
-     *
-     * @param  Closure  $closure
-     * @return self
      */
     public function getOptionUsing(Closure $closure): self;
 
     /**
-     * Retrieve shipping option for a given cart by identifier
-     *
-     * @param  \Lunar\Models\Cart  $cart
-     * @param  string  $identifier
-     * @return self
+     * Return option for a given cart by identifier.
      */
-    public function getOption(Cart $cart, $identifier): ?ShippingOption;
+    public function getOption(Cart $cart, string $identifier): ?ShippingOption;
 
     /**
      * Return available options for a given cart.
      */
     public function getOptions(Cart $cart): Collection;
+
+    /**
+     * Retrieve shipping option for a given cart by identifier
+     *
+     * @param  string  $identifier
+     * @return self
+     */
+    public function getShippingOption(Cart $cart, $identifier): ?ShippingOption;
 }
