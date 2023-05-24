@@ -18,10 +18,9 @@ One concern is if we're releasing `0.x` versions frequently, what does this mean
 
 For each release there will be a dedicated upgrade section on the [Upgrade Guide](/core/upgrading) page, which will provide the required upgrade steps for you to take.
 
-
 ## Feature Releases (`0.x`)
 
-Minor versions will be releases around every 3 months, all features for the next version will be on the `main` branch and available for testing purposes prior to official release, for those who want to get their hands on the next version early to prepare.
+Minor versions will be released at the start of each month. The `main` branch is considered the "edge" version and will contain features for the next release.
 
 This timeframe will give all contributors enough time to finalise their pull requests and also allow us to test the features to ensure they are ready for release.
 
