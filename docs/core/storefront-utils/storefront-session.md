@@ -73,6 +73,33 @@ StorefrontSession::setCustomerGroup($customerGroup);
 StorefrontSession::getCustomerGroups();
 ```
 
+## Customer
+
+### Initialise the Customer
+
+This will set the Customer based on what's been previously set (from the session), otherwise it will retrieve the latest customer attached with the logged in user.
+
+```php
+StorefrontSession::initCustomer();
+```
+
+:::tip This is automatically called when using the facade.
+:::
+
+### Set the Customer
+
+```php
+$customer = /** your store logic to determine current customer */ ;
+
+StorefrontSession::setCustomer($customer);
+```
+
+### Get the Customer
+
+```php
+StorefrontSession::getCustomer();
+```
+
 ## Currencies
 
 ### Set the Currency

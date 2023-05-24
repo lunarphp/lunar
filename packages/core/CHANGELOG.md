@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `orders` relationship to the `LunarUser` trait.
 - Added 'label' JSON field to `ProductOption` model.
 - Added pipelines to PricingManager
+- Added `customer_id` to carts table
+- Added `customer` relationship to Cart model
+- Added `setCustomer` method to Cart model
+- Added `setCustomer` and `getCustomer` to StorefrontSessionManager
 
 ### Changed
 
