@@ -17,10 +17,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Line meta will now be cast to an array on save correctly for CartLines.
 - `$rate` will now be serialised correctly when passed as an array on `TaxBreakdown`.
 
-### Changed
-
-- Dashboard stats are now responsible for their own date ranges where applicable.
-
 ### Added
 
 - Added unit price methods, `unitDecimal()` and `unitFormatted()`, to the Price data type.
