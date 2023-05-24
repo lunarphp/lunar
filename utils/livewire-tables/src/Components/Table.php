@@ -109,11 +109,13 @@ class Table extends Component
 
     public function updatedQuery()
     {
+        $this->resetPage();
         $this->resetSavedSearch();
     }
 
     public function updatedFilters()
     {
+        $this->resetPage();
         $this->resetSavedSearch();
     }
 
