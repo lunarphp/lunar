@@ -133,7 +133,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function initCustomer()
+    public function initCustomer(): ?Customer
     {
         if ($this->customer) {
             return $this->customer;
@@ -148,9 +148,13 @@ class StorefrontSessionManager implements StorefrontSessionInterface
                 $user = Auth::user();
 
                 if ($customer = $user->customers()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first()) {
-                    return $this->setCustomer($customer);
+                    $this->setCustomer($customer);
+
+                    return $this->customer;
                 }
             }
+
+            return null;
         }
 
         $customer = Customer::find($customer_id);
@@ -159,7 +163,9 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             return null;
         }
 
-        return $this->setCustomer($customer);
+        $this->setCustomer($customer);
+
+        return $this->customer;
     }
 
     /**
@@ -184,6 +190,15 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this;
     }
 
+    private function customerBelongsToUser(Customer $customer): bool
+    {
+        $user = Auth::user();
+
+        return $customer->query()
+            ->whereHas('users', fn ($query) => $query->where('user_id', $user->id))
+            ->exists();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -193,6 +208,14 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             $this->getSessionKey().'_customer',
             $customer->id
         );
+
+        if (
+            Auth::check()
+            && is_lunar_user(Auth::user())
+            && ! $this->customerBelongsToUser($customer)
+        ) {
+            return $this;
+        }
 
         $this->customer = $customer;
 

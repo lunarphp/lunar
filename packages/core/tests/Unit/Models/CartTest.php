@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
@@ -169,6 +170,7 @@ class CartTest extends TestCase
             'customer_id' => $customer->id,
         ]);
     }
+
     /** @test */
     public function ensure_associate_user_belongs_to_customer()
     {

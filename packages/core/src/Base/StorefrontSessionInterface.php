@@ -57,15 +57,11 @@ interface StorefrontSessionInterface
 
     /**
      * Set the session customer.
-     *
-     * @return self
      */
     public function setCustomer(Customer $customer): self;
 
     /**
      * Return the current customer.
-     *
-     * @return \Lunar\Models\Customer | null
      */
     public function getCustomer(): ?Customer;
 }

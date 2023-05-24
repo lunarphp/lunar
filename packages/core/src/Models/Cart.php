@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -452,6 +453,14 @@ class Cart extends BaseModel
      */
     public function associate(User $user, $policy = 'merge', $refresh = true)
     {
+        if ($this->customer()->exists()) {
+            if (!$user->query()
+                ->whereHas('customers', fn ($query) => $query->where('customer_id', $this->customer->id))
+                ->exists()) {
+                throw new Exception('Invalid user');
+            }
+        }
+
         return app(
             config('lunar.cart.actions.associate_user', AssociateUser::class)
         )->execute($this, $user, $policy)
@@ -463,6 +472,14 @@ class Cart extends BaseModel
      */
     public function setCustomer(Customer $customer): Cart
     {
+        if ($this->user()->exists()) {
+            if (!$customer->query()
+                ->whereHas('users', fn ($query) => $query->where('user_id', $this->user->id))
+                ->exists()) {
+                throw new Exception('Invalid customer');
+            }
+        }
+
         $this->customer()->associate($customer)->save();
 
         return $this->refresh()->calculate();
@@ -530,7 +547,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ShippingOption|null
     {
-        if (! $this->shippingAddress) {
+        if (!$this->shippingAddress) {
             return null;
         }
 
