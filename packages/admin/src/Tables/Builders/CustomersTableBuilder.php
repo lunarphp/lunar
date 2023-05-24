@@ -21,7 +21,11 @@ class CustomersTableBuilder extends TableBuilder
         $query = Customer::query();
 
         if ($this->searchTerm) {
-            $query->whereIn('id', Customer::search($this->searchTerm)->keys());
+            $query->whereIn('id', Customer::search($this->searchTerm)
+                ->query(fn ($query) => $query->select('id'))
+                ->options([
+                    'hitsPerPage' => 500,
+                ])->keys());
         }
 
         return $query->paginate($this->perPage);

@@ -79,7 +79,11 @@ class OrdersTableBuilder extends TableBuilder
         ])->orderBy($this->sortField, $this->sortDir);
 
         if ($this->searchTerm) {
-            $query->whereIn('id', Order::search($this->searchTerm)->keys());
+            $query->whereIn('id', Order::search($this->searchTerm)
+                ->query(fn ($query) => $query->select('id'))
+                ->options([
+                    'hitsPerPage' => 100,
+                ])->keys());
         }
 
         $filters = collect($this->queryStringFilters)->filter(function ($value) {
