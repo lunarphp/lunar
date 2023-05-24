@@ -8,13 +8,13 @@ You can contribute to the project in many different ways. Reporting bugs, fixing
 
 ## Monorepo
 
-Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) to house the core, admin hub and documentation. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
+Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) approach to maintaining its codebase. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
 
 ## Repository Branching
 
 **Bug Fixes** should target the latest compatible branch version i.e `0.3`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
 
-**Features** should target the `main` branch if they introduce breaking changes, otherwise they can target the latest compatible branch version i.e `0.3`.
+**Features** which bring new (or enhance current) functionality to Lunar should always target the `main` branch.
 
 ## Contributing Code
 
@@ -65,7 +65,7 @@ If the pull request is missing information or unclear as to what it offers or so
 
 A PR should be able to include the following:
 
-- Clearly show in the title the version the PR is targeting i.e. `[0.3]` or `[0.4]`.
+- The title should be relevant and quickly explain what to expect inside
 - A clear description of the feature or fix
 - Any relevant documentation updates
 - Unit tests with adequate code coverage
