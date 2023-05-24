@@ -68,6 +68,7 @@ A PR should be able to include the following:
 - The title should be relevant and quickly explain what to expect inside
 - A clear description of the feature or fix
 - References to any issues the PR resolves
+- Label as either a `bug`, `enhancement`, `feature` or `documentation`
 - Any relevant documentation updates
 - Unit tests with adequate code coverage
 - Changelog entry
