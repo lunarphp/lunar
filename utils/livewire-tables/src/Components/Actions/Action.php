@@ -37,7 +37,6 @@ class Action extends Component implements Htmlable
      * Set the label on the action.
      *
      * @param  string  $label
-     * @return self
      */
     public function label($label): self
     {

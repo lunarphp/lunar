@@ -24,7 +24,6 @@
         <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
             <div x-show="show"
                  x-trap.noscroll="show"
-                 x-on:click.away="show = false"
                  x-cloak
                  x-init="$watch('show', (isShown) => isShown && $focus.first())"
                  class="w-screen {{ $nested ? 'max-w-xl' : 'max-w-2xl' }}"
@@ -44,7 +43,7 @@
                             <div class="flex items-center ml-3 h-7">
                                 <button x-on:click="show = false"
                                         type="button"
-                                        class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                                     <span class="sr-only">Close panel</span>
 
                                     <svg class="w-6 h-6"

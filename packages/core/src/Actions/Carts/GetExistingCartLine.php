@@ -12,11 +12,6 @@ class GetExistingCartLine extends AbstractAction
 {
     /**
      * Execute the action
-     *
-     * @param  Cart  $cart
-     * @param  Purchasable  $purchasable
-     * @param  array  $meta
-     * @return CartLine|null
      */
     public function execute(
         Cart $cart,

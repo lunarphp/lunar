@@ -70,8 +70,6 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductVariantFactory
      */
     protected static function newFactory(): ProductVariantFactory
     {
@@ -122,8 +120,6 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * Return the unit quantity for the variant.
-     *
-     * @return int
      */
     public function getUnitQuantity(): int
     {

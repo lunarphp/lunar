@@ -14,15 +14,11 @@ abstract class AbstractStaff extends Component
 
     /**
      * The staff model for the staff member we want to show.
-     *
-     * @var \Lunar\Hub\Models\Staff
      */
     public Staff $staff;
 
     /**
      * The current staff assigned permissions.
-     *
-     * @var Collection
      */
     public Collection $staffPermissions;
 

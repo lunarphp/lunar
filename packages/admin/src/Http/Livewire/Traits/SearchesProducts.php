@@ -11,8 +11,6 @@ trait SearchesProducts
 {
     /**
      * Method to return computed brands.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getBrandsProperty(): Collection
     {
@@ -21,8 +19,6 @@ trait SearchesProducts
 
     /**
      * Method to return computed product types.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getProductTypesProperty(): Collection
     {
@@ -34,7 +30,6 @@ trait SearchesProducts
      *
      * @param  string  $column
      * @param  string  $term
-     * @return \Illuminate\Support\Collection
      */
     protected function searchDistinct($column, $term = null): Collection
     {

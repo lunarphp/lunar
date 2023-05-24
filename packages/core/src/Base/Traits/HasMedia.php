@@ -13,8 +13,6 @@ trait HasMedia
 
     /**
      * Relationship for thumbnail.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function thumbnail(): MorphOne
     {

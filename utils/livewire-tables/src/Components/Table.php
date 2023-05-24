@@ -33,15 +33,11 @@ class Table extends Component
 
     /**
      * Whether this table is searchable.
-     *
-     * @var bool
      */
     public bool $searchable = false;
 
     /**
      * If the table should show filters
-     *
-     * @var bool
      */
     public bool $filterable = true;
 
@@ -54,22 +50,16 @@ class Table extends Component
 
     /**
      * The array of selected rows.
-     *
-     * @var array
      */
     public array $selected = [];
 
     /**
      * The applied filters.
-     *
-     * @var array
      */
     public array $filters = [];
 
     /**
      * The number of records per page.
-     *
-     * @var int
      */
     public int $perPage = 50;
 
@@ -130,6 +120,11 @@ class Table extends Component
     public function updatedFilters()
     {
         $this->resetSavedSearch();
+    }
+
+    public function updatedPage($page)
+    {
+        $this->emit('updatedPage', $page);
     }
 
     public function updatedSelected($value)
@@ -214,8 +209,6 @@ class Table extends Component
 
     /**
      * Return the search placeholder.
-     *
-     * @return string
      */
     public function getSearchPlaceholderProperty(): string
     {

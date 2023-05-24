@@ -43,15 +43,11 @@ class Group extends Component
 
     /**
      * Whether this input group is required.
-     *
-     * @var bool
      */
     public bool $required = false;
 
     /**
      * Determine whether error icon should be shown.
-     *
-     * @var bool
      */
     public bool $errorIcon = true;
 

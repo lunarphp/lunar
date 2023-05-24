@@ -48,15 +48,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * The current product we are editing.
-     *
-     * @var Product
      */
     public Product $product;
 
     /**
      * The current variant we're editing.
-     *
-     * @var ProductVariant
      */
     public ProductVariant $variant;
 
@@ -69,15 +65,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * Whether to use a custom brand.
-     *
-     * @var bool
      */
     public bool $useNewBrand = false;
 
     /**
      * The options we want to use for the product.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $options;
 
@@ -104,8 +96,6 @@ abstract class AbstractProduct extends Component
 
     /**
      * Determines whether the options panel should be on show.
-     *
-     * @var bool
      */
     public bool $optionsPanelVisible = false;
 
@@ -167,15 +157,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * The current product associations.
-     *
-     * @var Collection
      */
     public Collection $associations;
 
     /**
      * Associations that need removing.
-     *
-     * @var array
      */
     public array $associationsToRemove = [];
 
@@ -694,6 +680,10 @@ abstract class AbstractProduct extends Component
         $this->associations = $this->product->associations
             ->merge($this->product->inverseAssociations)
             ->map(function ($assoc) {
+                if (! $assoc->target) {
+                    return;
+                }
+
                 $inverse = $assoc->target->id == $this->product->id;
 
                 $product = $inverse ? $assoc->parent : $assoc->target;
@@ -706,7 +696,8 @@ abstract class AbstractProduct extends Component
                     'name' => $product->translateAttribute('name'),
                     'type' => $assoc->type,
                 ];
-            });
+            })
+            ->filter();
     }
 
     /**

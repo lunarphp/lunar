@@ -9,8 +9,6 @@ class OptionEdit extends Component
 {
     /**
      * The option to edit.
-     *
-     * @var \Lunar\Models\ProductOption
      */
     public ProductOption $productOption;
 

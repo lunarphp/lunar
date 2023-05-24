@@ -7,5 +7,5 @@
     <input id="{{ $field }}"
            wire:model="filters.{{ $field }}"
            type="checkbox"
-           class="lt-mt-1 lt-border-gray-200 lt-w-5 lt-rounded lt-h-5 focus:lt-outline-none focus:lt-ring focus:lt-ring-blue-100 focus:lt-border-blue-300 lt-form-checkbox" />
+           class="lt-mt-1 lt-border-gray-200 lt-w-5 lt-rounded lt-h-5 focus:lt-outline-none focus:lt-ring focus:lt-ring-sky-100 focus:lt-border-sky-300 lt-form-checkbox" />
 </div>

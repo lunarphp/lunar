@@ -3,7 +3,6 @@
 namespace Lunar\Pipelines\CartLine;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\Pricing;
 use Lunar\Models\CartLine;
@@ -20,11 +19,7 @@ class GetUnitPrice
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
 
-        $customerGroups = collect();
-
-        if ($user = Auth::user()) {
-            $customerGroups = $user->customers->first()?->customerGroups;
-        }
+        $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
 
         $priceResponse = Pricing::currency($cart->currency)
             ->qty($cartLine->quantity)

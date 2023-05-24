@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/lunar/:path(.*)",
+      "destination": "/core/reference/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/extending/:path(.*)",
+      "destination": "/core/extending/:path",
+      "statusCode": 301
+    }
+  ]
+}

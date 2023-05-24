@@ -38,15 +38,11 @@ class VariantShow extends Component
 
     /**
      * Instance of the parent product.
-     *
-     * @var \Lunar\Models\Product
      */
     public Product $product;
 
     /**
      * Instance of the product variant.
-     *
-     * @var \Lunar\Models\ProductVariant
      */
     public ProductVariant $variant;
 
@@ -66,8 +62,6 @@ class VariantShow extends Component
 
     /**
      * The new values to generate the variant.
-     *
-     * @var array
      */
     public array $newValues = [];
 
@@ -100,6 +94,7 @@ class VariantShow extends Component
     {
         return array_merge(
             [
+                'updatedAttributes',
                 'option-value-create-modal.value-created' => 'refreshAndSelectOption',
             ],
             $this->getHasSlotsListeners(),

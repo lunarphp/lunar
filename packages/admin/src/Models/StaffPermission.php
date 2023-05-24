@@ -11,8 +11,6 @@ class StaffPermission extends BaseModel
 
     /**
      * Return the staff relationship.
-     *
-     * @return BelongsTo
      */
     public function staff(): BelongsTo
     {

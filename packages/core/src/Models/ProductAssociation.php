@@ -51,8 +51,6 @@ class ProductAssociation extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductAssociationFactory
      */
     protected static function newFactory(): ProductAssociationFactory
     {
@@ -82,7 +80,6 @@ class ProductAssociation extends BaseModel
     /**
      * Apply the cross sell scope.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
     public function scopeCrossSell(Builder $query)
@@ -93,7 +90,6 @@ class ProductAssociation extends BaseModel
     /**
      * Apply the up sell scope.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
     public function scopeUpSell(Builder $query)
@@ -104,7 +100,6 @@ class ProductAssociation extends BaseModel
     /**
      * Apply the up alternate scope.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
     public function scopeAlternate(Builder $query)
@@ -115,7 +110,6 @@ class ProductAssociation extends BaseModel
     /**
      * Apply the type scope.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $type
      * @return void
      */

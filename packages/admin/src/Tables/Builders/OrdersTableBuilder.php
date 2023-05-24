@@ -12,8 +12,6 @@ class OrdersTableBuilder extends TableBuilder
 {
     /**
      * The field to sort using.
-     *
-     * @var string|null
      */
     public ?string $sortField = 'placed_at';
 

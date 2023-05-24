@@ -22,8 +22,6 @@ class TaxZonePostcode extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TaxZonePostcodeFactory
      */
     protected static function newFactory(): TaxZonePostcodeFactory
     {

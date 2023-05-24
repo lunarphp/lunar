@@ -12,8 +12,6 @@ class ChannelShow extends Component
 
     /**
      * The current channel we're showing.
-     *
-     * @var Channel
      */
     public Channel $channel;
 

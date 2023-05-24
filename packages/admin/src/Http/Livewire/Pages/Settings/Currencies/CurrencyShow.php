@@ -9,8 +9,6 @@ class CurrencyShow extends Component
 {
     /**
      * The instance of the channel we want to edit.
-     *
-     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 

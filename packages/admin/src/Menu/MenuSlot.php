@@ -51,7 +51,6 @@ class MenuSlot
     /**
      * Add an item to the menu slot.
      *
-     * @param  \Closure  $callback
      * @param  string  $after
      * @return static
      */
@@ -81,7 +80,6 @@ class MenuSlot
     /**
      * Add multiple items.
      *
-     * @param  array  $items
      * @return static
      */
     public function addItems(array $items)
@@ -95,8 +93,6 @@ class MenuSlot
 
     /**
      * Get the items for the menu slot.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getItems(): Collection
     {

@@ -16,8 +16,6 @@ class PricingManager implements PricingManagerInterface
 {
     /**
      * The instance of the purchasable model.
-     *
-     * @var \Lunar\Base\Purchasable
      */
     protected Purchasable $purchasable;
 
@@ -37,8 +35,6 @@ class PricingManager implements PricingManagerInterface
 
     /**
      * The quantity value.
-     *
-     * @var int
      */
     protected int $qty = 1;
 
@@ -59,7 +55,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the purchasable property.
      *
-     * @param  \Lunar\Base\Purchasable  $purchasable
      * @return self
      */
     public function for(Purchasable $purchasable)
@@ -110,7 +105,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the quantity property.
      *
-     * @param  int  $qty
      * @return self
      */
     public function qty(int $qty)

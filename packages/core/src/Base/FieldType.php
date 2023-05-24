@@ -21,15 +21,11 @@ interface FieldType
 
     /**
      * Return the display label for the field type.
-     *
-     * @return string
      */
     public function getLabel(): string;
 
     /**
      * Return the config for the field type.
-     *
-     * @return array
      */
     public function getConfig(): array;
 
@@ -40,8 +36,6 @@ interface FieldType
 
     /**
      * Return the view used in editing.
-     *
-     * @return string
      */
     public function getView(): string;
 }

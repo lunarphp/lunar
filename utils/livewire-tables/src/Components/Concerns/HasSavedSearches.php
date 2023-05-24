@@ -8,15 +8,11 @@ trait HasSavedSearches
 {
     /**
      * Whether the table can save searches.
-     *
-     * @var bool
      */
     public bool $canSaveSearches = false;
 
     /**
      * The saved search reference
-     *
-     * @var string|null
      */
     public ?string $savedSearch = null;
 
@@ -29,8 +25,6 @@ trait HasSavedSearches
 
     /**
      * Return the saved searches available to the table.
-     *
-     * @return Collection
      */
     public function getSavedSearchesProperty(): Collection
     {
@@ -100,8 +94,6 @@ trait HasSavedSearches
 
     /**
      * Return whether the search state has filters or search applied.
-     *
-     * @return bool
      */
     public function getHasSearchAppliedProperty(): bool
     {

@@ -22,15 +22,11 @@ class UpdateProductPositions implements ShouldQueue
 
     /**
      * The target collection.
-     *
-     * @var Collection
      */
     public Collection $collection;
 
     /**
      * Create a new job instance.
-     *
-     * @param  Collection  $collection
      */
     public function __construct(Collection $collection)
     {

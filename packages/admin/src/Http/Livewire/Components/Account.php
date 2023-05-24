@@ -13,8 +13,6 @@ class Account extends Component
 
     /**
      * The staff account being edited.
-     *
-     * @var Staff
      */
     public Staff $staff;
 

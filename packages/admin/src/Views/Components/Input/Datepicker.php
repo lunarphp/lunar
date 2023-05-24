@@ -8,15 +8,11 @@ class Datepicker extends Component
 {
     /**
      * Whether or not the input has an error to show.
-     *
-     * @var bool
      */
     public bool $error = false;
 
     /**
      * Any options to pass to the datepicker.
-     *
-     * @var array
      */
     public array $options = [];
 

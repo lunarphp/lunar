@@ -49,12 +49,20 @@ class Discount extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return DiscountFactory
      */
     protected static function newFactory(): DiscountFactory
     {
         return DiscountFactory::new();
+    }
+
+    public function users()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            config('auth.providers.users.model'),
+            "{$prefix}discount_user"
+        )->withTimestamps();
     }
 
     /**
@@ -104,8 +112,6 @@ class Discount extends BaseModel
 
     /**
      * Return the customer groups relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {
@@ -135,7 +141,6 @@ class Discount extends BaseModel
     /**
      * Return the active scope.
      *
-     * @param  Builder  $query
      * @return void
      */
     public function scopeActive(Builder $query)

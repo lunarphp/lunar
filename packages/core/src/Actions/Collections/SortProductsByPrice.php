@@ -11,8 +11,6 @@ class SortProductsByPrice
     /**
      * Execute the action.
      *
-     * @param  \Illuminate\Support\Collection  $products
-     * @param  \Lunar\Models\Currency  $currency
      * @param  string  $direction
      * @return void
      */

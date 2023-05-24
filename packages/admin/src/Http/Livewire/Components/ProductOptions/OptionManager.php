@@ -10,15 +10,11 @@ class OptionManager extends Component
 {
     /**
      * The options to display.
-     *
-     * @var Collection
      */
     public Collection $options;
 
     /**
      * Which option values we have selected.
-     *
-     * @var array
      */
     public array $selectedValues = [];
 
@@ -116,7 +112,6 @@ class OptionManager extends Component
      * Remove an option from the collection
      *
      * @param  int|string  $key
-     * @return
      */
     public function removeOption($key)
     {

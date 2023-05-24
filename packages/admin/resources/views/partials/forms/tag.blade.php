@@ -9,7 +9,7 @@
         </div>
 
         <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
-            <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                 {{ __(
                   $tag->id ? 'adminhub::settings.tags.form.update_btn' : 'adminhub::settings.tags.form.create_btn'
                 ) }}

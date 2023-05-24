@@ -76,8 +76,6 @@ class Collection extends BaseModel implements SpatieHasMedia
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CollectionFactory
      */
     protected static function newFactory(): CollectionFactory
     {
@@ -162,8 +160,6 @@ class Collection extends BaseModel implements SpatieHasMedia
 
     /**
      * Return the customer groups relationship.
-     *
-     * @return BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {

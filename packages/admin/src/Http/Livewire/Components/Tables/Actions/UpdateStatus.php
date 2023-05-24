@@ -12,8 +12,6 @@ class UpdateStatus extends Component
 
     /**
      * The array of selected IDs
-     *
-     * @var array
      */
     public array $ids = [];
 
@@ -47,7 +45,6 @@ class UpdateStatus extends Component
     /**
      * Set the selected ids
      *
-     * @param  array  $rows
      * @return void
      */
     public function setSelected(array $rows)
@@ -57,8 +54,6 @@ class UpdateStatus extends Component
 
     /**
      * Save the updated status
-     *
-     * @return
      */
     public function updateStatus()
     {

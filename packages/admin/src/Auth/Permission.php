@@ -29,15 +29,11 @@ class Permission
 
     /**
      * Whether this is a first party permission, set by Lunar.
-     *
-     * @var bool
      */
     public bool $firstParty = true;
 
     /**
      * A collection of related, children permissions.
-     *
-     * @var Collection
      */
     public Collection $children;
 

@@ -16,7 +16,6 @@ class TestUrlGenerator
     /**
      * Handle the URL generation.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
     public function handle(Model $model)

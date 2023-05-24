@@ -10,7 +10,6 @@ class SortProducts
     /**
      * Execute the action.
      *
-     * @param  \Lunar\Models\Collection  $collection
      * @return void
      */
     public function execute(Collection $collection)

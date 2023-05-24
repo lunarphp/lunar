@@ -16,8 +16,6 @@ interface Purchasable
 
     /**
      * Return the purchasable unit quantity.
-     *
-     * @return int
      */
     public function getUnitQuantity(): int;
 

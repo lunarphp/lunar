@@ -9,8 +9,6 @@ abstract class CartLineModifier
 {
     /**
      * Called just before cart totals are calculated.
-     *
-     * @return CartLine
      */
     public function calculating(CartLine $cartLine, Closure $next): CartLine
     {
@@ -19,8 +17,6 @@ abstract class CartLineModifier
 
     /**
      * Called just after cart totals are calculated.
-     *
-     * @return CartLine
      */
     public function calculated(CartLine $cartLine, Closure $next): CartLine
     {
@@ -29,8 +25,6 @@ abstract class CartLineModifier
 
     /**
      * Called just after cart sub total is calculated.
-     *
-     * @return CartLine
      */
     public function subtotalled(CartLine $cartLine, Closure $next): CartLine
     {

@@ -16,8 +16,6 @@ interface AttributeManifestInterface
 
     /**
      * Return the attribute types.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getTypes(): Collection;
 

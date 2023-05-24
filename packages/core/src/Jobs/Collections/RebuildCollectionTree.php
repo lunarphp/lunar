@@ -42,10 +42,6 @@ class RebuildCollectionTree implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @param  array  $newTree
-     * @param  array  $currentTree
-     * @param  \Lunar\Models\Collection|null  $parent
      */
     public function __construct(array $newTree, array $currentTree, Collection $parent = null)
     {

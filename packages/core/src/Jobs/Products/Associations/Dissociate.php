@@ -29,8 +29,6 @@ class Dissociate implements ShouldQueue
 
     /**
      * The parent product instance.
-     *
-     * @var \Lunar\Models\Product
      */
     protected Product $product;
 
@@ -44,7 +42,6 @@ class Dissociate implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \Lunar\Models\Product  $product
      * @param  mixed  $targets
      * @param  string  $type
      */

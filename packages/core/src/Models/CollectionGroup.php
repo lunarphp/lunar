@@ -23,8 +23,6 @@ class CollectionGroup extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CollectionGroupFactory
      */
     protected static function newFactory(): CollectionGroupFactory
     {
