@@ -15,4 +15,15 @@ return [
     |
     */
     'users_id_type' => 'bigint',
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Disable migrations
+    |--------------------------------------------------------------------------
+    |
+    | Prevent Lunar`s default package migrations from running. 
+    | Set to 'true' to disable. Useful for working with 3rd party packages etc.
+    |
+    */
+    'disable_migrations' => 'false',
 ];
