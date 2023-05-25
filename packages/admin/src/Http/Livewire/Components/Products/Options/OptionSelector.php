@@ -22,6 +22,8 @@ class OptionSelector extends Component
      */
     public $searchTerm = null;
 
+    public bool $hasOptions = false;
+
     /**
      * Whether the main panel is visible.
      *
@@ -49,6 +51,7 @@ class OptionSelector extends Component
     public function mount($openPanel = true)
     {
         $this->mainPanelVisible = $openPanel;
+        $this->hasOptions = count($this->selected) > 0;
     }
 
     public function toggleOptionSelector($toggle = null)
@@ -58,6 +61,10 @@ class OptionSelector extends Component
 
     public function updatedMainPanelVisible($val)
     {
+        if ($this->hasOptions) {
+            return;
+        }
+
         $this->emit('productOptionSelectorPanelToggled', $val);
     }
 
