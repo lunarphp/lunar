@@ -111,7 +111,6 @@ foreach ($cart->discountBreakdown as $discountBreakdown) {
     }
     $discountBreakdown->total->value
 }
-```
 
 foreach ($cart->discountBreakdown as $discountBreakdown) {
     $discountBreakdown->discount_id
