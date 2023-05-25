@@ -25,5 +25,5 @@ return [
     | Set to 'true' to disable. Useful for working with 3rd party packages etc.
     |
     */
-    'disable_migrations' => 'false',
+    'disable_migrations' => false,
 ];
