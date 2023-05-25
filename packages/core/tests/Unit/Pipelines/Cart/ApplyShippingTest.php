@@ -140,4 +140,73 @@ class ApplyShippingTest extends TestCase
         $this->assertInstanceOf(PriceDataType::class, $cart->shippingTotal);
         $this->assertEquals(500, $cart->shippingTotal->value);
     }
+
+    /** @test */
+    public function cannot_get_shipping_option_if_null()
+    {
+        $currency = Currency::factory()->create();
+
+        $billing = CartAddress::factory()->make([
+            'type' => 'billing',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'BILL',
+        ]);
+
+        $shipping = CartAddress::factory()->make([
+            'type' => 'shipping',
+            'country_id' => Country::factory(),
+            'first_name' => 'Santa',
+            'line_one' => '123 Elf Road',
+            'city' => 'Lapland',
+            'postcode' => 'SHIPP',
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $taxClass = TaxClass::factory()->create([
+            'name' => 'Foobar',
+        ]);
+
+        $taxClass->taxRateAmounts()->create(
+            TaxRateAmount::factory()->make([
+                'percentage' => 20,
+                'tax_class_id' => $taxClass->id,
+            ])->toArray()
+        );
+
+        $cart->addresses()->createMany([
+            $billing->toArray(),
+            $shipping->toArray(),
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+        ]);
+
+        $this->assertNull($cart->shippingTotal);
+
+        app(ApplyShipping::class)->handle($cart, function ($cart) {
+            return $cart;
+        });
+
+        $this->assertInstanceOf(PriceDataType::class, $cart->shippingTotal);
+        $this->assertEquals(0, $cart->shippingTotal->value);
+    }
 }
