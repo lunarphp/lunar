@@ -85,7 +85,6 @@ trait HasDimensions
     protected function formatMeasurements($measurements)
     {
         return collect($measurements)
-        ->sortByDesc('unit')
         ->keys();
     }
 }
