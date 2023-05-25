@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.1
+
+### Fixed
+ - Fixed bug where the default weight was set incorrectly.
+ - Fixed bug where it would try to set the shipping option even it is null.
+
+### Changed
+- Removed sorting for the shipping dropdown options (mm, cm, m, kg, g, etc.) It's now sorted in the same order they are set in the `lunar/shipping.php` config file.
+
 ## 0.3.0
 
 > Latest updates from `0.2` have been brought in.
