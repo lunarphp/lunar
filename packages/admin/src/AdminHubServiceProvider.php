@@ -190,8 +190,11 @@ class AdminHubServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'adminhub');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
+        
+        if (!config('lunar-hub.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
 
         Config::set('livewire-tables.translate_namespace', 'adminhub');
 
