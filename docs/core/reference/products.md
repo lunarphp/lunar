@@ -228,6 +228,7 @@ You can configure the available UOM's in the `lunar/shipping.php` config file. H
 
 - kg
 - g
+- oz
 - lbs
 
 **Volume**
@@ -236,6 +237,64 @@ You can configure the available UOM's in the `lunar/shipping.php` config file. H
 - gal
 - floz
 
+### Sorting dropdown measurements in the admin hub
+
+You can adjust the order of the `lunar/shipping.php` config file array to change the order of the dropdown measurements in the admin hub.
+
+### Changing to the imperial system
+
+Currently, the units in the `lunar/shipping.php` are based on the metric system. It is simple to convert to the imperial system as a base. This prevents slight rounding errors when converting.
+
+When you have a 5 kg product and want to display it in pounds, 
+
+Here is what the weight portion of the `lunar/shipping.php` looks like:
+
+```php
+'weight' => [
+    'kg' => [
+        'format' => '1,0.00 kg',
+        'unit' => 1.00,
+    ],
+    'g' => [
+        'format' => '1,0.00 g',
+        'unit' => 1000.00,
+    ],
+    'oz' => [
+        'format' => '1,0.00 oz',
+        'unit' => 35.274,
+    ],
+    'lbs' => [
+        'format' => '1,0.00 lbs',
+        'unit' => 2.20462,
+    ],
+],
+```
+
+To convert this to the imperial system, you would change it to look like this:
+
+```php
+'weight' => [
+    'oz' => [
+        'format' => '1.00 oz',
+        'unit' => 16.00,
+    ],
+    'lbs' => [
+        'format' => '1.00 lbs',
+        'unit' => 1.00,
+    ],
+    'kg' => [
+        'format' => '1.00 kg',
+        'unit' => 0.453592,
+    ],
+    'g' => [
+        'format' => '1.00 g',
+        'unit' => 453.592,
+    ],
+],
+```
+This sorts it in the admin hub automatically since you changed the order of the array, so oz will be first followed by lbs.
+
+For the conversion, all you have to do is set the base unit you want to 1.00 and then do the conversions from that unit.
 
 ### Getting and converting measurement values
 
