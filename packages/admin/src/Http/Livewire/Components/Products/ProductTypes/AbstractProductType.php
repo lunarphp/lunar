@@ -28,22 +28,16 @@ abstract class AbstractProductType extends Component
 
     /**
      * Instance of the parent product.
-     *
-     * @var \Lunar\Models\ProductType
      */
     public ProductType $productType;
 
     /**
      * Attributes which are ready to be synced.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $selectedProductAttributes;
 
     /**
      * Attributes which are ready to be synced.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $selectedVariantAttributes;
 

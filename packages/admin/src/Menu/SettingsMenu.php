@@ -4,14 +4,12 @@ namespace Lunar\Hub\Menu;
 
 use Lunar\Hub\Facades\Menu;
 
-class SettingsMenu
+final class SettingsMenu
 {
     protected MenuSlot $slot;
 
     /**
      * Make our menu.
-     *
-     * @return void
      */
     public static function make(): void
     {
@@ -21,8 +19,6 @@ class SettingsMenu
 
     /**
      * Create our top level menu.
-     *
-     * @return static
      */
     protected function makeTopLevel(): static
     {
@@ -37,8 +33,6 @@ class SettingsMenu
 
     /**
      * Create the store sections.
-     *
-     * @return void
      */
     protected function makeStoreSection(): void
     {
@@ -103,8 +97,6 @@ class SettingsMenu
 
     /**
      * Create the product sections.
-     *
-     * @return void
      */
     protected function makeProductSection(): void
     {
@@ -121,8 +113,6 @@ class SettingsMenu
 
     /**
      * Create the admin sections.
-     *
-     * @return void
      */
     protected function makeAdminSection(): void
     {

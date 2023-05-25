@@ -29,6 +29,7 @@ use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Stubs\User as StubUser;
 use Lunar\Tests\TestCase;
+use NumberFormatter;
 
 /**
  * @group lunar.carts
@@ -215,12 +216,17 @@ class CartTest extends TestCase
     /** @test */
     public function can_calculate_the_cart()
     {
-        $currency = Currency::factory()->create();
+        $currency = Currency::factory()
+            ->state([
+                'code' => 'USD',
+            ])
+            ->create();
 
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
         ]);
 
+        // Add product
         $purchasable = ProductVariant::factory()->create();
 
         Price::factory()->create([
@@ -237,15 +243,44 @@ class CartTest extends TestCase
             'quantity' => 1,
         ]);
 
+        // Add product with unit qty
+        $purchasable = ProductVariant::factory()
+            ->state([
+                'unit_quantity' => 100,
+            ])
+            ->create();
+
+        Price::factory()->create([
+            'price' => 158,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 2,
+        ]);
+
+        // Set user
         $this->actingAs(
             StubUser::factory()->create()
         );
 
         $cart->calculate();
 
-        $this->assertEquals(100, $cart->subTotal->value);
-        $this->assertEquals(120, $cart->total->value);
-        $this->assertCount(1, $cart->taxBreakdown);
+        $this->assertEquals(100, $cart->lines[0]->unitPrice->value);
+        $this->assertEquals('$1.00', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
+        $this->assertEquals('$1.000000', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
+        $this->assertEquals(158, $cart->lines[1]->unitPrice->value);
+        $this->assertEquals(0.0158, $cart->lines[1]->unitPrice->unitDecimal(false));
+        $this->assertEquals('$0.0158', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
+        $this->assertEquals('$0.015800', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
+        $this->assertEquals(103, $cart->subTotal->value);
+        $this->assertEquals(124, $cart->total->value);
+        $this->assertCount(2, $cart->taxBreakdown);
     }
 
     /**
@@ -461,5 +496,72 @@ class CartTest extends TestCase
 
         $this->assertEquals(600, $cart->subTotal->value);
         $this->assertEquals(720, $cart->total->value);
+    }
+
+    /** @test */
+    public function can_create_a_discount_breakdown()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => 'valid-coupon',
+            'data' => [
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'visible' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'meta' => ['foo' => 'bar'],
+        ]);
+
+        $variant = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($variant),
+            'priceable_id' => $variant->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+
+        $this->assertNull($cart->coupon_code);
+
+        $cart->coupon_code = 'valid-coupon';
+
+        $cart->calculate();
+
+        $this->assertCount(1, $cart->discountBreakdown);
+        $this->assertSame(10, $cart->discountBreakdown->first()->price->value);
     }
 }

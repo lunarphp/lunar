@@ -3,6 +3,7 @@
 namespace Lunar\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
@@ -15,15 +16,13 @@ class DemoSeeder extends Seeder
 
     /**
      * Seed the demo data.
-     *
-     * @return void
      */
     public function run(): void
     {
         Schema::disableForeignKeyConstraints();
 
         foreach ($this->toTruncate as $table) {
-            \DB::table(config('lunar.table_prefix').$table)->truncate();
+            DB::table(config('lunar.table_prefix').$table)->truncate();
         }
 
         Schema::enableForeignKeyConstraints();

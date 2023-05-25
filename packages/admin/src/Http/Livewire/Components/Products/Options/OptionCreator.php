@@ -15,29 +15,21 @@ class OptionCreator extends Component
 
     /**
      * The name of the new option.
-     *
-     * @var array
      */
     public array $name = [];
 
     /**
      * The instance of the option to be created.
-     *
-     * @var \Lunar\Models\ProductOption
      */
     public ProductOption $option;
 
     /**
      * The collection of new values to associate to the option.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $values;
 
     /**
      * The collection of current languages.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $languages;
 

@@ -17,8 +17,6 @@ class UrlGenerator
 
     /**
      * The default language.
-     *
-     * @var \Lunar\Models\Language
      */
     protected Language $defaultLanguage;
 
@@ -33,7 +31,6 @@ class UrlGenerator
     /**
      * Handle the URL generation.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
     public function handle(Model $model)
@@ -42,13 +39,15 @@ class UrlGenerator
 
         if (! $model->urls->count()) {
             if ($model->attribute_data) {
-                return $this->createUrl(
+                $this->createUrl(
                     $model->attr('name')
                 );
+
+                return;
             }
 
             if ($name = $model->name) {
-                return $this->createUrl($name);
+                $this->createUrl($name);
             }
         }
     }
@@ -56,7 +55,7 @@ class UrlGenerator
     /**
      * Create default url from an attribute.
      *
-     * @param  string  $attribute
+     * @param  string  $value
      * @return void
      */
     protected function createUrl($value)

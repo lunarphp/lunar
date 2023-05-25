@@ -11,7 +11,6 @@ interface ShippingManifestInterface
     /**
      * Add a shipping option to the manifest.
      *
-     * @param  \Lunar\DataTypes\ShippingOption  $shippingOption
      * @return self
      */
     public function addOption(ShippingOption $shippingOption);
@@ -25,9 +24,6 @@ interface ShippingManifestInterface
 
     /**
      * Return available options for a given cart.
-     *
-     * @param  \Lunar\Models\Cart  $cart
-     * @return \Illuminate\Support\Collection
      */
     public function getOptions(Cart $cart): Collection;
 }

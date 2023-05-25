@@ -11,6 +11,7 @@ use Lunar\Base\Traits\HasPersonalDetails;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CustomerFactory;
+use Lunar\FieldTypes\TranslatedText;
 
 /**
  * @property int $id
@@ -71,8 +72,6 @@ class Customer extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CustomerFactory
      */
     protected static function newFactory(): CustomerFactory
     {

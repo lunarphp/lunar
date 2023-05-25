@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Facades\DB;
 use Lunar\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
 use Lunar\Hub\Actions\Pricing\UpdatePrices;
 use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
@@ -54,15 +54,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * The current product we are editing.
-     *
-     * @var Product
      */
     public Product $product;
 
     /**
      * The current variant we're editing.
-     *
-     * @var ProductVariant
      */
     public ProductVariant $variant;
 
@@ -77,15 +73,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * Whether to use a custom brand.
-     *
-     * @var bool
      */
     public bool $useNewBrand = false;
 
     /**
      * The options we want to use for the product.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public EloquentCollection $options;
 
@@ -112,8 +104,6 @@ abstract class AbstractProduct extends Component
 
     /**
      * Determines whether the options panel should be on show.
-     *
-     * @var bool
      */
     public bool $optionsPanelVisible = false;
 
@@ -175,15 +165,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * The current product associations.
-     *
-     * @var Collection
      */
     public Collection $associations;
 
     /**
      * Associations that need removing.
-     *
-     * @var array
      */
     public array $associationsToRemove = [];
 
@@ -247,7 +233,7 @@ abstract class AbstractProduct extends Component
             'variant.volume_value' => 'numeric|nullable',
             'variant.volume_unit' => 'string|nullable',
             'variant.shippable' => 'boolean|nullable',
-            'variant.stock' => 'numeric|max:10000000',
+            'variant.stock' => 'required|min:0|numeric|max:10000000',
             'variant.backorder' => 'numeric|max:10000000',
             'variant.purchasable' => 'string|required',
             'variant.tax_class_id' => 'required',
@@ -933,6 +919,10 @@ abstract class AbstractProduct extends Component
         $this->associations = $this->product->associations
             ->merge($this->product->inverseAssociations)
             ->map(function ($assoc) {
+                if (! $assoc->target) {
+                    return;
+                }
+
                 $inverse = $assoc->target->id == $this->product->id;
 
                 $product = $inverse ? $assoc->parent : $assoc->target;
@@ -945,7 +935,8 @@ abstract class AbstractProduct extends Component
                     'name' => $product->translateAttribute('name'),
                     'type' => $assoc->type,
                 ];
-            });
+            })
+            ->filter();
     }
 
     /**

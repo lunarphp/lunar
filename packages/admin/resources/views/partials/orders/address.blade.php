@@ -47,7 +47,7 @@
       <div class="flex items-center">
         <x-hub::icon ref="phone" class="w-4 mr-2" />
         @if($address->contact_phone)
-          <a href="tel:{{ $address->contact_phone }}" class="text-blue-600 underline">{{ $address->contact_phone }}</a>
+          <a href="tel:{{ $address->contact_phone }}" class="text-sky-500 underline">{{ $address->contact_phone }}</a>
         @else
           <span class="text-xs text-gray-500">{{ __('adminhub::global.not_provided') }}</span>
         @endif
@@ -56,7 +56,7 @@
       <div class="flex items-center">
         <x-hub::icon ref="mail" class="w-4 mr-2" />
         @if($address->contact_email)
-          <a href="mailto:{{ $address->contact_email }}" class="text-blue-600 underline">{{ $address->contact_email }}</a>
+          <a href="mailto:{{ $address->contact_email }}" class="text-sky-500 underline">{{ $address->contact_email }}</a>
         @else
           <span class="text-xs text-gray-500">{{ __('adminhub::global.not_provided') }}</span>
         @endif

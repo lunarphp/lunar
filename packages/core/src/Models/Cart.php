@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
@@ -22,6 +22,7 @@ use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
+use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\FreeItem;
 use Lunar\Base\ValueObjects\Cart\Promotion;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
@@ -61,7 +62,9 @@ class Cart extends BaseModel
         'subTotal',
         'shippingTotal',
         'taxTotal',
+        'discounts',
         'discountTotal',
+        'discountBreakdown',
         'total',
         'taxBreakdown',
         'promotions',
@@ -71,39 +74,42 @@ class Cart extends BaseModel
     /**
      * The cart sub total.
      * Sum of cart line amounts, before tax, shipping and cart-level discounts.
-     *
-     * @var null|Price
      */
     public ?Price $subTotal = null;
 
     /**
+     * The cart sub total.
+     * Sum of cart line amounts, before tax, shipping minus discount totals.
+     */
+    public ?Price $subTotalDiscounted = null;
+
+    /**
      * The shipping total for the cart.
-     *
-     * @var null|Price
      */
     public ?Price $shippingTotal = null;
 
     /**
      * The cart tax total.
      * Sum of all tax to pay across cart lines and shipping.
-     *
-     * @var null|Price
      */
     public ?Price $taxTotal = null;
 
     /**
      * The discount total.
      * Sum of all cart line discounts and cart-level discounts.
-     *
-     * @var null|Price
      */
     public ?Price $discountTotal = null;
 
     /**
+     * All the discount breakdowns for the cart.
+     *
+     * @var null|Collection<DiscountBreakdown>
+     */
+    public ?Collection $discountBreakdown = null;
+
+    /**
      * The cart total.
      * Sum of the cart-line amounts, shipping and tax, minus cart-level discount amount.
-     *
-     * @var null|Price
      */
     public ?Price $total = null;
 
@@ -137,8 +143,6 @@ class Cart extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CartFactory
      */
     protected static function newFactory(): CartFactory
     {
@@ -241,7 +245,6 @@ class Cart extends BaseModel
     /**
      * Apply scope to get active cart.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
     public function scopeActive(Builder $query)
@@ -251,8 +254,6 @@ class Cart extends BaseModel
 
     /**
      * Calculate the cart totals and cache the result.
-     *
-     * @return Cart
      */
     public function calculate(): Cart
     {
@@ -269,11 +270,6 @@ class Cart extends BaseModel
 
     /**
      * Add or update a purchasable item to the cart
-     *
-     * @param  Purchasable  $purchasable
-     * @param  int  $quantity
-     * @param  array  $meta
-     * @return Cart
      */
     public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true): Cart
     {
@@ -296,7 +292,6 @@ class Cart extends BaseModel
     /**
      * Add cart lines.
      *
-     * @param  iterable  $lines
      * @return bool
      */
     public function addLines(iterable $lines)
@@ -306,7 +301,7 @@ class Cart extends BaseModel
                 $this->add(
                     purchasable: $line['purchasable'],
                     quantity: $line['quantity'],
-                    meta: $line['meta'] ?? null,
+                    meta: (array) ($line['meta'] ?? null),
                     refresh: false
                 );
             });
@@ -317,9 +312,6 @@ class Cart extends BaseModel
 
     /**
      * Remove a cart line
-     *
-     * @param  int  $cartLineId
-     * @return Cart
      */
     public function remove(int $cartLineId, bool $refresh = true): Cart
     {
@@ -339,10 +331,7 @@ class Cart extends BaseModel
     /**
      * Update cart line
      *
-     * @param  int  $cartLineId
-     * @param  int  $quantity
      * @param  array  $meta
-     * @return Cart
      */
     public function updateLine(int $cartLineId, int $quantity, $meta = null, bool $refresh = true): Cart
     {
@@ -364,7 +353,6 @@ class Cart extends BaseModel
     /**
      * Update cart lines.
      *
-     * @param  Collection  $lines
      * @return \Lunar\Models\Cart
      */
     public function updateLines(Collection $lines)
@@ -396,7 +384,6 @@ class Cart extends BaseModel
     /**
      * Associate a user to the cart
      *
-     * @param  User  $user
      * @param  string  $policy
      * @param  bool  $refresh
      * @return Cart
@@ -411,18 +398,13 @@ class Cart extends BaseModel
 
     /**
      * Add an address to the Cart.
-     *
-     * @param  array|Addressable  $address
-     * @param  string  $type
-     * @param  bool  $refresh
-     * @return Cart
      */
     public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.add_address', []) as $action) {
             app($action)->using(
                 cart: $this,
-                address: $type,
+                address: $address,
                 type: $type,
             )->validate();
         }
@@ -436,7 +418,6 @@ class Cart extends BaseModel
     /**
      * Set the shipping address.
      *
-     * @param  \Lunar\Base\Addressable|array  $address
      * @return \Lunar\Models\Cart
      */
     public function setShippingAddress(array|Addressable $address)
@@ -447,7 +428,6 @@ class Cart extends BaseModel
     /**
      * Set the billing address.
      *
-     * @param  array|Addressable  $address
      * @return self
      */
     public function setBillingAddress(array|Addressable $address)
@@ -457,9 +437,6 @@ class Cart extends BaseModel
 
     /**
      * Set the shipping option to the shipping address.
-     *
-     * @param  ShippingOption  $option
-     * @return Cart
      */
     public function setShippingOption(ShippingOption $option, $refresh = true): Cart
     {
@@ -478,8 +455,6 @@ class Cart extends BaseModel
 
     /**
      * Get the shipping option for the cart
-     *
-     * @return ShippingOption|null
      */
     public function getShippingOption(): ShippingOption|null
     {
@@ -522,7 +497,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute($this->refresh()->calculate())
-            ->then(fn () => $this->refresh()->order);
+            ->then(fn () => $this->order->refresh());
     }
 
     /**

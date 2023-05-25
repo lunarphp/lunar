@@ -10,8 +10,6 @@ class TableBuilder extends LivewireTableBuilder
 {
     /**
      * The query extenders for the table.
-     *
-     * @var Collection
      */
     protected Collection $queryExtenders;
 
@@ -28,7 +26,6 @@ class TableBuilder extends LivewireTableBuilder
     /**
      * Add a query extender to the table.
      *
-     * @param  Closure  $closure
      * @return void
      */
     public function extendQuery(Closure $closure)

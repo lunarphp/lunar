@@ -15,7 +15,6 @@ trait HasLivewireComponent
      * Set the livewire component to render.
      *
      * @param  string  $livewire
-     * @return self
      */
     public function livewire($livewire): self
     {
@@ -26,8 +25,6 @@ trait HasLivewireComponent
 
     /**
      * Get the Livewire component name.
-     *
-     * @return string
      */
     public function getLivewire(): string
     {
@@ -40,8 +37,6 @@ trait HasLivewireComponent
 
     /**
      * Returns whether we have the Livewire component set.
-     *
-     * @return bool
      */
     public function isLivewire(): bool
     {

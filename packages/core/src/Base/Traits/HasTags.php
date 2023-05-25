@@ -9,7 +9,9 @@ use Lunar\Models\Tag;
 trait HasTags
 {
     /**
-     * Get all of the models channels.
+     * Get the tags
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<Tag>
      */
     public function tags()
     {

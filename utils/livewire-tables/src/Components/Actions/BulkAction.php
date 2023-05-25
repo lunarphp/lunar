@@ -13,8 +13,6 @@ class BulkAction extends Action
 
     /**
      * Whether to show the modal.
-     *
-     * @var bool
      */
     public bool $showModal = false;
 
@@ -39,7 +37,6 @@ class BulkAction extends Action
     /**
      * Set the selected ids
      *
-     * @param  array  $rows
      * @return void
      */
     public function setSelected(array $rows)

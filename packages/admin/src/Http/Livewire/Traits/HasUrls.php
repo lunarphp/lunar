@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Lunar\Models\Url;

@@ -16,15 +16,11 @@ class ModelUrl extends Component
 
     /**
      * The model which has the routes.
-     *
-     * @var BaseModel|null
      */
     protected ?BaseModel $model = null;
 
     /**
      * Whether the preview URL should be returned.
-     *
-     * @var bool
      */
     public bool $preview = false;
 

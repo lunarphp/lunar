@@ -9,8 +9,6 @@ class CartException extends Exception
 {
     /**
      * The cart exception message bag
-     *
-     * @var MessageBag
      */
     protected MessageBag $messageBag;
 

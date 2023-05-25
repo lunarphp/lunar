@@ -9,7 +9,6 @@ class AddressObserver
     /**
      * Handle the Address "creating" event.
      *
-     * @param  \Lunar\Models\Address  $address
      * @return void
      */
     public function creating(Address $address)
@@ -21,7 +20,6 @@ class AddressObserver
     /**
      * Handle the Address "updating" event.
      *
-     * @param  \Lunar\Models\Address  $address
      * @return void
      */
     public function updating(Address $address)

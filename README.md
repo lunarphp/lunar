@@ -1,4 +1,4 @@
-<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo-dark.svg" width="200" alt="Lunar"></a></p>
+<p align="center"><a href="https://lunarphp.io/" target="_blank"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo-dark.svg"><img alt="Lunar" width="200" src="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo.svg"></picture></a></p>
 
 [Lunar](https://lunarphp.io) is a set of Laravel packages that bring functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
 
@@ -6,13 +6,19 @@ This repository serves as a monorepo for the main packages that make up Lunar.
 
 ## Requirements
 
-- PHP ^8.0
-- Laravel 8+
+- PHP ^8.1
+- Laravel 9+
 - MySQL 5.7+ / PostgreSQL 9.2+
 
 ## Documentation
 
 - [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything Lunar
+
+## Contribution
+
+- Bug reports should be submitted as a new Github issue
+- Enhancements should [https://github.com/lunarphp/lunar/discussions/new?category=enhancements](be in discussions)
+- Feature requests should [https://github.com/lunarphp/lunar/discussions/new?category=feature-requests](be in discussions)
 
 ## Community
 

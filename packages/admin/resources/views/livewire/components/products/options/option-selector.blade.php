@@ -12,7 +12,7 @@
               x-on:click.prevent="tab = 'search'"
               class="px-3 py-2 text-sm font-medium rounded-md"
               :class="{
-                'bg-indigo-100 text-indigo-700': tab == 'search',
+                'bg-sky-100 text-sky-700': tab == 'search',
                 'text-gray-500 hover:text-gray-700': tab != 'search'
               }"
             >
@@ -24,7 +24,7 @@
               class="px-3 py-2 text-sm font-medium rounded-md"
               @click.prevent="tab = 'selected'"
               :class="{
-                'bg-indigo-100 text-indigo-700': tab == 'selected',
+                'bg-sky-100 text-sky-700': tab == 'selected',
                 'text-gray-500 hover:text-gray-700': tab != 'selected'
               }"
             >
@@ -56,7 +56,7 @@
                       </button>
                     @else
                       <button
-                        class="px-2 py-1 text-xs text-blue-700 border border-blue-200 rounded shadow-sm hover:bg-blue-50"
+                        class="px-2 py-1 text-xs text-sky-700 border border-sky-200 rounded shadow-sm hover:bg-sky-50"
                         wire:click.prevent="select('{{ $option->id }}')"
                       >
                         {{ __('adminhub::global.select') }}

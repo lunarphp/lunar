@@ -3,6 +3,7 @@
 namespace Lunar\Base\Traits;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Lunar\Models\CustomerGroup;
@@ -67,5 +68,68 @@ trait HasCustomerGroups
                 return false;
             }
         }
+    }
+
+    /**
+     * Apply customer group scope.
+     *
+     * @param Builder $query
+     * @param Collection $customerGroups
+     *
+     * @return Builder
+     */
+    public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTime $startsAt, DateTime $endsAt)
+    {
+        return $query->whereHas('customerGroups', function ($relation) use ($groupIds, $startsAt, $endsAt) {
+            $relation->whereIn(
+                $this->customerGroups()->getTable() . '.customer_group_id',
+                $groupIds
+            )->where(function ($query) use ($startsAt) {
+                $query->whereNull('starts_at')
+                    ->orWhere('starts_at', '<=', $startsAt);
+            })->where(function ($query) use ($endsAt) {
+                $query->whereNull('ends_at')
+                ->orWhere('ends_at', '>=', $endsAt);
+            })->whereEnabled(true)->whereVisible(true);
+        });
+    }
+
+    /**
+     * Apply the customer group scope
+     *
+     * @param Builder $query
+     * @param CustomerGroup|string $customerGroup
+     *
+     * @return Builder
+     */
+    public function scopeCustomerGroup($query, CustomerGroup|iterable $customerGroup = null, DateTime $startsAt = null, DateTime $endsAt = null)
+    {
+        if (!$customerGroup) {
+            return $query;
+        }
+
+        $groupIds = collect();
+
+        if (is_a($customerGroup, CustomerGroup::class)) {
+            $groupIds = collect([$customerGroup->id]);
+        }
+
+        if (is_a($customerGroup, Collection::class)) {
+            $groupIds = $customerGroup->pluck('id');
+        }
+
+        if (is_array($customerGroup)) {
+            $groupIds = collect($customerGroup)->pluck('id');
+        }
+
+        if (!$startsAt) {
+            $startsAt = now();
+        }
+
+        if (!$endsAt) {
+            $endsAt = now()->addSecond();
+        }
+
+        return $this->applyCustomerGroupScope($query, $groupIds, $startsAt, $endsAt);
     }
 }

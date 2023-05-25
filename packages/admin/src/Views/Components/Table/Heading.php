@@ -8,8 +8,6 @@ class Heading extends Component
 {
     /**
      * Whether the heading should be sortable.
-     *
-     * @var bool
      */
     public bool $sortable = false;
 
@@ -22,15 +20,12 @@ class Heading extends Component
 
     /**
      * Whether the heading spans multiple columns.
-     *
-     * @var bool
      */
     public bool $multiColumn;
 
     /**
      * Create the component instance.
      *
-     * @param  bool  $sortable
      * @param  null|string  $direction
      * @param  null|string  $multiColumn
      */

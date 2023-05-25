@@ -60,7 +60,6 @@ trait Searchable
     /**
      * Add additional fields to filter on.
      *
-     * @param  array  $attributes
      * @return void
      */
     public function addFilterableAttributes(array $attributes)
@@ -75,7 +74,6 @@ trait Searchable
     /**
      * Add additional sortable attributes.
      *
-     * @param  array  $attributes
      * @return void
      */
     public function addSortableAttributes(array $attributes)

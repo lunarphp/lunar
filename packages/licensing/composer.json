@@ -1,0 +1,31 @@
+{
+    "name": "lunarphp/licensing",
+    "description": "Lunar Licensing Package",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lunar\\Licensing\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lunar\\Licensing\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lunar\\Licensing\\LicensingServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "illuminate/http": "^9.0|^10.0",
+        "guzzlehttp/guzzle": "^7.3"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0|^8.0",
+        "phpunit/phpunit": "^9.5"
+    }
+}

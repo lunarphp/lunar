@@ -4,7 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
 use Carbon\CarbonPeriod;
 use Exception;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -35,15 +35,11 @@ class CustomerShow extends Component
 
     /**
      * The current customer in view.
-     *
-     * @var \Lunar\Models\Customer
      */
     public Customer $customer;
 
     /**
      * An array of synced customer groups.
-     *
-     * @var array
      */
     public array $syncedGroups = [];
 
@@ -103,8 +99,6 @@ class CustomerShow extends Component
 
     /**
      * The current address we want to edit.
-     *
-     * @var Address|null
      */
     public ?Address $address = null;
 
@@ -201,7 +195,9 @@ class CustomerShow extends Component
     protected function getListeners()
     {
         return array_merge(
-            [],
+            [
+                'updatedAttributes',
+            ],
             $this->getHasSlotsListeners()
         );
     }
@@ -452,7 +448,7 @@ class CustomerShow extends Component
 
         $thisPeriod = $this->customer->orders()->select(
             DB::RAW('SUM(sub_total) as sub_total'),
-            db_date('placed_at', '%Y-%m', 'format_date')
+            DB::RAW(db_date('placed_at', '%Y-%m', 'format_date'))
         )->whereNotNull('placed_at')
             ->whereBetween('placed_at', [
                 $start,
@@ -461,7 +457,7 @@ class CustomerShow extends Component
 
         $previousPeriod = $this->customer->orders()->select(
             DB::RAW('SUM(sub_total) as sub_total'),
-            db_date('placed_at', '%Y-%m', 'format_date')
+            DB::RAW(db_date('placed_at', '%Y-%m', 'format_date'))
         )->whereNotNull('placed_at')
             ->whereBetween('placed_at', [
                 $start->clone()->subYear(),

@@ -106,5 +106,6 @@ return [
     'postcodes.label' => 'Postcodes',
     'postcodes.instructions' => 'List each postcode on a new line. Supports wildcards such as NW*',
     'max_uses.label' => 'Max uses',
+    'max_uses_per_user.label' => 'Max uses per user',
     'size.placeholder' => 'Size',
 ];

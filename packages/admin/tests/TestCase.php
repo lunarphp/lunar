@@ -20,10 +20,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         // additional setup
-        Config::set('auth.guards.staff', [
-            'driver' => 'lunarhub',
-        ]);
         Config::set('lunar.urls.generator', TestUrlGenerator::class);
 
         View::addLocation(__DIR__.'/resources/views');

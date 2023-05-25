@@ -27,8 +27,6 @@ class OrderRefund extends Component
 
     /**
      * Any notes for the refund.
-     *
-     * @var string
      */
     public string $notes = '';
 
@@ -41,8 +39,6 @@ class OrderRefund extends Component
 
     /**
      * The instance of the order to refund.
-     *
-     * @var Order
      */
     public Order $order;
 
@@ -90,7 +86,6 @@ class OrderRefund extends Component
     /**
      * Update the refund amount.
      *
-     * @param  int  $val
      * @return void
      */
     public function updateRefundAmount(int $val)

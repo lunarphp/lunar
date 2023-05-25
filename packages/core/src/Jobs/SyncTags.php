@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Lunar\Models\Tag;
 
@@ -24,23 +24,17 @@ class SyncTags implements ShouldQueue
 
     /**
      * The product instance.
-     *
-     * @var \Illuminate\Database\Eloquent\Model
      */
     protected Model $model;
 
     /**
      * The option values to use to generate variants.
-     *
-     * @var \Illuminate\Support\Collection
      */
     protected Collection $tags;
 
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  \Illuminate\Support\Collection  $tags
      * @return void
      */
     public function __construct(Model $model, Collection $tags)

@@ -16,36 +16,26 @@ class SystemTaxDriver implements TaxDriver
 {
     /**
      * The taxable shipping address.
-     *
-     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $shippingAddress = null;
 
     /**
      * The taxable billing address.
-     *
-     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $billingAddress = null;
 
     /**
      * The currency model.
-     *
-     * @var Currency
      */
     protected Currency $currency;
 
     /**
      * The purchasable item.
-     *
-     * @var Purchasable
      */
     protected Purchasable $purchasable;
 
     /**
      * The cart line model.
-     *
-     * @var CartLine|null
      */
     protected ?CartLine $cartLine = null;
 
@@ -91,9 +81,6 @@ class SystemTaxDriver implements TaxDriver
 
     /**
      * Set the cart line.
-     *
-     * @param  CartLine  $cartLine
-     * @return self
      */
     public function setCartLine(CartLine $cartLine): self
     {

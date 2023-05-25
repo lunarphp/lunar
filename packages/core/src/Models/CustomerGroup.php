@@ -29,8 +29,6 @@ class CustomerGroup extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CustomerGroupFactory
      */
     protected static function newFactory(): CustomerGroupFactory
     {

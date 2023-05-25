@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\FieldTypes\TranslatedText;
@@ -20,8 +20,6 @@ class CollectionGroupShow extends Component
 
     /**
      * The current collection group.
-     *
-     * @var CollectionGroup
      */
     public CollectionGroup $group;
 
@@ -34,15 +32,11 @@ class CollectionGroupShow extends Component
 
     /**
      * Show confirmation if we want to delete the group.
-     *
-     * @var bool
      */
     public bool $showDeleteConfirm = false;
 
     /**
      * Failsafe confirmation in order to delete the collection group.
-     *
-     * @var bool
      */
     public bool $deletionConfirm = false;
 

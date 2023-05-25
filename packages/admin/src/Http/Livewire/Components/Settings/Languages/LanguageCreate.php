@@ -12,8 +12,6 @@ class LanguageCreate extends Component
 
     /**
      * A new instance of the language model.
-     *
-     * @var \Lunar\Models\Language
      */
     public Language $language;
 

@@ -9,8 +9,6 @@ class MenuRegistry
 {
     /**
      * The slots which are currently registered.
-     *
-     * @var \Illuminate\Support\Collection
      */
     protected Collection $slots;
 

@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -32,15 +32,11 @@ class OptionEdit extends Component
 
     /**
      * The new option value to create.
-     *
-     * @var ProductOptionValue
      */
     public ProductOptionValue $newProductOptionValue;
 
     /**
      * The option values.
-     *
-     * @var array
      */
     public array $values = [];
 
@@ -119,7 +115,6 @@ class OptionEdit extends Component
     /**
      * Sort the option values.
      *
-     * @param  array  $optionValues
      * @return void
      */
     public function sortOptionValues(array $optionValues)

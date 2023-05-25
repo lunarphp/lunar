@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Products\Variants;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
@@ -10,6 +10,7 @@ use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
+use Livewire\FileUploadConfiguration;
 use Lunar\Hub\Http\Livewire\Traits\HasPrices;
 use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -38,15 +39,11 @@ class VariantShow extends Component
 
     /**
      * Instance of the parent product.
-     *
-     * @var \Lunar\Models\Product
      */
     public Product $product;
 
     /**
      * Instance of the product variant.
-     *
-     * @var \Lunar\Models\ProductVariant
      */
     public ProductVariant $variant;
 
@@ -66,8 +63,6 @@ class VariantShow extends Component
 
     /**
      * The new values to generate the variant.
-     *
-     * @var array
      */
     public array $newValues = [];
 
@@ -100,6 +95,7 @@ class VariantShow extends Component
     {
         return array_merge(
             [
+                'updatedAttributes',
                 'option-value-create-modal.value-created' => 'refreshAndSelectOption',
             ],
             $this->getHasSlotsListeners(),
@@ -145,7 +141,7 @@ class VariantShow extends Component
         return array_merge(
             [
                 'newValues' => 'array',
-                'variant.stock' => 'numeric|max:10000000',
+                'variant.stock' => 'required|min:0|numeric|max:10000000',
                 'variant.tax_class_id' => 'required',
                 'variant.length_value' => 'numeric|nullable',
                 'variant.length_unit' => 'string|nullable',
@@ -258,9 +254,15 @@ class VariantShow extends Component
                         ->substr(0, 128)
                         ->append('.', $file->getClientOriginalExtension());
 
-                    $media = $owner->addMedia($file->getRealPath())
-                        ->usingFileName($filename)
-                        ->toMediaCollection('images');
+                    if (FileUploadConfiguration::isUsingS3()) {
+                        $media = $owner->addMediaFromDisk($file->getRealPath())
+                            ->usingFileName($filename)
+                            ->toMediaCollection('images');
+                    } else {
+                        $media = $owner->addMedia($file->getRealPath())
+                            ->usingFileName($filename)
+                            ->toMediaCollection('images');
+                    }
 
                     activity()
                         ->performedOn($this->variant)

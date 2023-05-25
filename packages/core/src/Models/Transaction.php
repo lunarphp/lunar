@@ -50,8 +50,6 @@ class Transaction extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TransactionFactory
      */
     protected static function newFactory(): TransactionFactory
     {

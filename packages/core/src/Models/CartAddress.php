@@ -58,29 +58,21 @@ class CartAddress extends BaseModel implements Addressable
 
     /**
      * The applied shipping option.
-     *
-     * @var ShippingOption|null
      */
     public ?ShippingOption $shippingOption = null;
 
     /**
      * The shipping sub total.
-     *
-     * @var Price|null
      */
     public ?Price $shippingSubTotal = null;
 
     /**
      * The shipping tax total.
-     *
-     * @var Price|null
      */
     public ?Price $shippingTaxTotal = null;
 
     /**
      * The shipping total.
-     *
-     * @var Price|null
      */
     public ?Price $shippingTotal = null;
 
@@ -93,8 +85,6 @@ class CartAddress extends BaseModel implements Addressable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return CartAddressFactory
      */
     protected static function newFactory(): CartAddressFactory
     {

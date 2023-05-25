@@ -33,7 +33,7 @@
                 @forelse($product->images as $productImage)
                   <label class="cursor-pointer">
                     <input wire:model="imageToSelect" name="imageToSelect" value="{{ $productImage->id }}" class="sr-only peer" type="radio">
-                    <img src="{{ $productImage->getFullUrl('small') }}" class="border-2 border-transparent rounded-lg shadow-sm peer-checked:border-blue-500">
+                    <img src="{{ $productImage->getFullUrl('small') }}" class="border-2 border-transparent rounded-lg shadow-sm peer-checked:border-sky-500">
                   </label>
                 @empty
                   <div class="col-span-3">

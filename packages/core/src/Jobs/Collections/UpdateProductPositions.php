@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Actions\Collections\SortProducts;
 use Lunar\Models\Collection;
 
@@ -22,15 +22,11 @@ class UpdateProductPositions implements ShouldQueue
 
     /**
      * The target collection.
-     *
-     * @var Collection
      */
     public Collection $collection;
 
     /**
      * Create a new job instance.
-     *
-     * @param  Collection  $collection
      */
     public function __construct(Collection $collection)
     {

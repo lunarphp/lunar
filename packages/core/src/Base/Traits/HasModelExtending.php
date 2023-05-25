@@ -49,7 +49,6 @@ trait HasModelExtending
      * Swap the model implementation.
      *
      * @param  string  $model
-     * @return \Illuminate\Database\Eloquent\Model
      */
     public function swap(string $newModelClass): Model
     {
@@ -63,8 +62,6 @@ trait HasModelExtending
 
     /**
      * Get the class name of the base model.
-     *
-     * @return string
      */
     public function getMorphClass(): string
     {
@@ -75,10 +72,6 @@ trait HasModelExtending
 
     /**
      * Forward a method call to the model only when calling a method on the model.
-     *
-     * @param  string  $method
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return bool
      */
     protected function forwardCallsWhen(string $method, Model $model): bool
     {

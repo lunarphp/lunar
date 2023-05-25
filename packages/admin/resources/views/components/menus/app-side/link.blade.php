@@ -7,7 +7,7 @@
     <a href="{{ route($item->route) }}"
        @class([
            'flex items-center gap-2 p-2 rounded w-full text-sm font-medium',
-           'bg-blue-50 text-blue-700' => $active,
+           'bg-sky-50 text-sky-700' => $active,
            'text-gray-500 hover:text-gray-900' => !$active,
        ])
     >

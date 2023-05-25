@@ -22,8 +22,6 @@ class State extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\StateFactory
      */
     protected static function newFactory(): StateFactory
     {

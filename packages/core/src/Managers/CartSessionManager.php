@@ -66,7 +66,10 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the cart to be used for the session.
+     *
+     * @param  \Lunar\Models\Cart  $cart
+     * @return \Lunar\Models\Cart
      */
     public function use(Cart $cart)
     {
@@ -110,7 +113,7 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Get the cart session key.
      */
     public function getSessionKey()
     {
@@ -118,7 +121,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the current channel.
+     *
+     * @return void
      */
     public function setChannel(Channel $channel)
     {
@@ -132,7 +137,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the current currency.
+     *
+     * @return void
      */
     public function setCurrency(Currency $currency)
     {
@@ -147,8 +154,6 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Return the current currency.
-     *
-     * @return \Lunar\Models\Currency
      */
     public function getCurrency(): Currency
     {
@@ -157,8 +162,6 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Return the current channel.
-     *
-     * @return \Lunar\Models\Channel
      */
     public function getChannel(): Channel
     {
@@ -195,7 +198,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Create a new cart instance.
      *
-     * @return void
+     * @return \Lunar\Models\Cart
      */
     protected function createNewCart()
     {

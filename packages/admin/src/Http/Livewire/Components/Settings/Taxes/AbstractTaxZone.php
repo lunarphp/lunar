@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -20,22 +20,16 @@ abstract class AbstractTaxZone extends Component
 
     /**
      * The instance of the Tax Zone.
-     *
-     * @var TaxZone
      */
     public TaxZone $taxZone;
 
     /**
      * The selected countries for the zone.
-     *
-     * @var array
      */
     public array $selectedCountries = [];
 
     /**
      * The selected states for the zone.
-     *
-     * @var array
      */
     public array $selectedStates = [];
 
@@ -69,22 +63,16 @@ abstract class AbstractTaxZone extends Component
 
     /**
      * The tax rates for the tax zone.
-     *
-     * @var array
      */
     public array $taxRates = [];
 
     /**
      * The tax rate amounts for the tax zone.
-     *
-     * @var array
      */
     public array $taxRateAmounts = [];
 
     /**
      * The linked customer groups.
-     *
-     * @var array
      */
     public array $customerGroups = [];
 
@@ -95,7 +83,6 @@ abstract class AbstractTaxZone extends Component
     {
         return [
             'taxZone.name' => 'required',
-            'taxZone.zone_type' => 'required',
             'taxZone.zone_type' => 'required',
             'taxZone.price_display' => 'required',
             'taxZone.active' => 'boolean|nullable',
@@ -305,7 +292,6 @@ abstract class AbstractTaxZone extends Component
     /**
      * Sync states for the TaxZone.
      *
-     * @param  array  $selectedStates
      * @return void
      */
     protected function syncStates(array $selectedStates)

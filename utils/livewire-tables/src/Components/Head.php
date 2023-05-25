@@ -8,8 +8,6 @@ class Head extends Component
 {
     /**
      * Whether the column should be sortable.
-     *
-     * @var bool
      */
     public bool $sortable = false;
 

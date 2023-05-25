@@ -1,7 +1,7 @@
 <div class="flex justify-between items-center">
     <div class="flex items-center gap-4">
         <a href="{{ route('hub.products.index') }}"
-           class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+           class="text-gray-600 rounded bg-gray-50 hover:bg-sky-500 hover:text-white"
            title="{{ __('adminhub::catalogue.products.show.back_link_title') }}">
             <x-hub::icon ref="chevron-left"
                          style="solid"
@@ -268,7 +268,7 @@
                 <a href="#{{ $slot->handle }}"
                    @class([
                        'flex items-center gap-2 p-2 rounded text-gray-500',
-                       'hover:bg-blue-50 hover:text-blue-700' => empty(
+                       'hover:bg-sky-50 hover:text-sky-700' => empty(
                            $this->getSlotErrorsByHandle($slot->handle)
                        ),
                        'text-red-600 bg-red-50' => !empty(
@@ -278,7 +278,7 @@
                    aria-current="page"
                    x-data="{ linkId: '#{{ $slot->handle }}' }"
                    :class="{
-                       'bg-blue-50 text-blue-700 hover:text-blue-600': linkId === activeAnchorLink
+                       'bg-sky-50 text-sky-700 hover:text-sky-500': linkId === activeAnchorLink
                    }"
                    x-on:click="activeAnchorLink = linkId">
                     @if (!empty($this->getSlotErrorsByHandle($slot->handle)))
@@ -296,13 +296,13 @@
                 <a href="#{{ $item['id'] }}"
                    @class([
                        'flex items-center gap-2 p-2 rounded text-gray-500',
-                       'hover:bg-blue-50 hover:text-blue-700' => empty($item['has_errors']),
+                       'hover:bg-sky-50 hover:text-sky-700' => empty($item['has_errors']),
                        'text-red-600 bg-red-50' => !empty($item['has_errors']),
                    ])
                    aria-current="page"
                    x-data="{ linkId: '#{{ $item['id'] }}' }"
                    :class="{
-                       'bg-blue-50 text-blue-700 hover:text-blue-600': linkId === activeAnchorLink
+                       'bg-sky-50 text-sky-700 hover:text-sky-500': linkId === activeAnchorLink
                    }"
                    x-on:click="activeAnchorLink = linkId">
                     @if (!empty($item['has_errors']))
@@ -320,7 +320,7 @@
                 <a href="#{{ $slot->handle }}"
                    @class([
                        'flex items-center gap-2 p-2 rounded text-gray-500',
-                       'hover:bg-blue-50 hover:text-blue-700' => empty(
+                       'hover:bg-sky-50 hover:text-sky-700' => empty(
                            $this->getSlotErrorsByHandle($slot->handle)
                        ),
                        'text-red-600 bg-red-50' => !empty(
@@ -330,7 +330,7 @@
                    aria-current="page"
                    x-data="{ linkId: '#{{ $slot->handle }}' }"
                    :class="{
-                       'bg-blue-50 text-blue-700 hover:text-blue-600': linkId === activeAnchorLink
+                       'bg-sky-50 text-sky-700 hover:text-sky-500': linkId === activeAnchorLink
                    }"
                    x-on:click="activeAnchorLink = linkId">
                     @if (!empty($this->getSlotErrorsByHandle($slot->handle)))

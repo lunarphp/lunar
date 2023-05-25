@@ -12,8 +12,6 @@ class OptionSelector extends Component
 
     /**
      * The selected options that have been chosen.
-     *
-     * @var array
      */
     public array $selected = [];
 

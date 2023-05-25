@@ -34,6 +34,8 @@ use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
+use Lunar\Managers\StorefrontSessionManager;
+use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
@@ -92,8 +94,6 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -119,6 +119,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(CartSessionInterface::class, function ($app) {
             return $app->make(CartSessionManager::class);
+        });
+
+        $this->app->singleton(StorefrontSessionInterface::class, function ($app) {
+            return $app->make(StorefrontSessionManager::class);
         });
 
         $this->app->singleton(ShippingModifiers::class, function ($app) {
@@ -164,17 +168,10 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        Relation::morphMap([
-            'product_type' => Lunar\Models\ProductType::class,
-            //'order' => Lunar\Models\Order::class,
-        ]);
 
         $this->registerObservers();
         $this->registerBlueprintMacros();
@@ -188,7 +185,11 @@ class LunarServiceProvider extends ServiceProvider
             });
 
             $this->publishes([
-                __DIR__.'/../database/migrations/' => database_path('migrations'),
+                __DIR__ . '/../resources/lang' => lang_path('vendor/lunar')
+            ], 'lunar.translation');
+
+            $this->publishes([
+                __DIR__ . '/../database/migrations/' => database_path('migrations'),
             ], 'lunar.migrations');
 
             $this->commands([
@@ -258,8 +259,6 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register the observers used in Lunar.
-     *
-     * @return void
      */
     protected function registerObservers(): void
     {
@@ -278,18 +277,18 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register the blueprint macros.
-     *
-     * @return void
      */
     protected function registerBlueprintMacros(): void
     {
         Blueprint::macro('scheduling', function () {
+            /** @var Blueprint $this */
             $this->boolean('enabled')->default(false)->index();
             $this->timestamp('starts_at')->nullable()->index();
             $this->timestamp('ends_at')->nullable()->index();
         });
 
         Blueprint::macro('dimensions', function () {
+            /** @var Blueprint $this */
             $columns = ['length', 'width', 'height', 'weight', 'volume'];
             foreach ($columns as $column) {
                 $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
@@ -298,6 +297,7 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         Blueprint::macro('userForeignKey', function ($field_name = 'user_id', $nullable = false) {
+            /** @var Blueprint $this */
             $userModel = config('auth.providers.users.model');
 
             $type = config('lunar.database.users_id_type', 'bigint');

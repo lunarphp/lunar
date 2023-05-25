@@ -13,7 +13,6 @@ interface SearchInterface
      * @param  array  $options
      * @param  int  $perPage
      * @param  int  $page
-     * @return SearchResults
      */
     public function search($term, $options = [], $perPage = 25, $page = 1): SearchResults;
 }

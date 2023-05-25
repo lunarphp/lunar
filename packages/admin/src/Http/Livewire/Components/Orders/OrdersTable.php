@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
@@ -208,8 +208,6 @@ class OrdersTable extends Table
 
     /**
      * Return the saved searches available to the table.
-     *
-     * @return Collection
      */
     public function getSavedSearchesProperty(): Collection
     {

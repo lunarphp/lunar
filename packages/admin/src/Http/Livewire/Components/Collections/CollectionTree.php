@@ -2,7 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -14,8 +14,6 @@ class CollectionTree extends Component
 
     /**
      * The nodes for the tree.
-     *
-     * @var array
      */
     public array $nodes;
 
@@ -185,7 +183,6 @@ class CollectionTree extends Component
     /**
      * Refresh the tree with a new set of nodes.
      *
-     * @param  array  $nodes
      * @return void
      */
     public function refreshTree(array $nodes)

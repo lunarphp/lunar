@@ -65,8 +65,6 @@ class ProductOption extends BaseModel implements SpatieHasMedia
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductOptionFactory
      */
     protected static function newFactory(): ProductOptionFactory
     {
@@ -91,6 +89,11 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
+    /**
+     * Get the values.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<ProductOptionValue>
+     */
     public function values()
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('position');

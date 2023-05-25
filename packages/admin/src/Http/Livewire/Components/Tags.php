@@ -4,7 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Tag;
@@ -22,15 +22,11 @@ class Tags extends Component
 
     /**
      * The model to associate tags to.
-     *
-     * @var Model
      */
     public Model $taggable;
 
     /**
      * The search term for showing relevant available tags.
-     *
-     * @var string|null
      */
     public ?string $searchTerm = null;
 

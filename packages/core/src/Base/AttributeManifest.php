@@ -14,8 +14,6 @@ class AttributeManifest
 {
     /**
      * A collection of available attribute types.
-     *
-     * @var \Illuminate\Support\Collection
      */
     protected Collection $types;
 

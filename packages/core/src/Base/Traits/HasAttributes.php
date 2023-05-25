@@ -19,8 +19,6 @@ trait HasAttributes
 
     /**
      * Get the attributes relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function mappedAttributes(): HasMany
     {

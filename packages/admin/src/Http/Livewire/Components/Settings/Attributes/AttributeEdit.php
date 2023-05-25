@@ -32,15 +32,11 @@ class AttributeEdit extends Component
 
     /**
      * Whether the panel should be visible.
-     *
-     * @var bool
      */
     public bool $panelVisible = true;
 
     /**
      * Whether the user has input a handle manually.
-     *
-     * @var bool
      */
     public bool $manualHandle = false;
 
@@ -138,8 +134,6 @@ class AttributeEdit extends Component
 
     /**
      * Return the selected field type.
-     *
-     * @return
      */
     public function getFieldType()
     {
@@ -149,7 +143,7 @@ class AttributeEdit extends Component
     /**
      * Return the config for the field type.
      *
-     * @return void
+     * @return array|null
      */
     public function getFieldTypeConfig()
     {

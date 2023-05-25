@@ -1,19 +1,10 @@
 {
-  "name": "Lunar",
-  "version": "0.0.1",
-  "description": "Laravel E-Commerce Package.",
-  "main": "index.js",
-  "authors": {
-    "name": "",
-    "email": ""
-  },
-  "repository": "lunarphp/docs/lunar",
-  "scripts": {
-    "dev": "vuepress dev src",
-    "build": "vuepress build src"
-  },
-  "license": "MIT",
   "devDependencies": {
-    "vuepress": "^1.5.3"
+    "vitepress": "^1.0.0-alpha.62"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
   }
 }

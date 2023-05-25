@@ -6,8 +6,6 @@ class Style extends Asset
 {
     /**
      * Get asset url.
-     *
-     * @return string
      */
     public function url(): string
     {

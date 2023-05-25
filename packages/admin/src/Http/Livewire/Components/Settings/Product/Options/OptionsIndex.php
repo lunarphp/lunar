@@ -4,7 +4,7 @@ namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -28,8 +28,6 @@ class OptionsIndex extends Component
 
     /**
      * The sorted product options.
-     *
-     * @var Collection
      */
     public Collection $productOptions;
 
@@ -170,8 +168,6 @@ class OptionsIndex extends Component
 
     /**
      * Return the option marked for deletion.
-     *
-     * @return \Lunar\Models\ProductOption|null
      */
     public function getOptionToDeleteProperty(): ?ProductOption
     {
