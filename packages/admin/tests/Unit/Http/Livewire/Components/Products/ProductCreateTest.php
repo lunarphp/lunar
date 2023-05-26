@@ -204,7 +204,7 @@ class ProductCreateTest extends TestCase
             'required' => true,
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -235,7 +235,7 @@ class ProductCreateTest extends TestCase
             'validation_rules' => 'string,max:9',
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -263,7 +263,7 @@ class ProductCreateTest extends TestCase
             'required' => true,
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -297,7 +297,7 @@ class ProductCreateTest extends TestCase
             'validation_rules' => 'numeric',
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -341,7 +341,7 @@ class ProductCreateTest extends TestCase
             'configuration' => ['min' => 2, 'max' => 5],
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -376,7 +376,7 @@ class ProductCreateTest extends TestCase
             'configuration' => ['min' => 2, 'max' => 5],
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 

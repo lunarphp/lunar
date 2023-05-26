@@ -45,7 +45,7 @@ class LoginForm extends Component
     /**
      * Perform the login.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response|void
      */
     public function login()
     {

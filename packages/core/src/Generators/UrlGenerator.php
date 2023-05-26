@@ -39,13 +39,15 @@ class UrlGenerator
 
         if (! $model->urls->count()) {
             if ($model->attribute_data) {
-                return $this->createUrl(
+                $this->createUrl(
                     $model->attr('name')
                 );
+
+                return;
             }
 
             if ($name = $model->name) {
-                return $this->createUrl($name);
+                $this->createUrl($name);
             }
         }
     }
@@ -53,7 +55,7 @@ class UrlGenerator
     /**
      * Create default url from an attribute.
      *
-     * @param  string  $attribute
+     * @param  string  $value
      * @return void
      */
     protected function createUrl($value)

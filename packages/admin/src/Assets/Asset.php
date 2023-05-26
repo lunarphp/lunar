@@ -33,7 +33,7 @@ abstract class Asset implements Responsable
      *
      * @param  bool|null  $remote
      */
-    public function __construct(string|self $name, string $path, $remote = null)
+    final public function __construct(string|self $name, string $path, $remote = null)
     {
         if ($name instanceof self) {
             $this->name = $name->name();

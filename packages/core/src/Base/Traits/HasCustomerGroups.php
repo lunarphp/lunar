@@ -76,7 +76,7 @@ trait HasCustomerGroups
      * @param Builder $query
      * @param Collection $customerGroups
      *
-     * @return void
+     * @return Builder
      */
     public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTime $startsAt, DateTime $endsAt)
     {
