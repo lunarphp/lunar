@@ -53,8 +53,6 @@
                     </x-hub::input.group>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>

@@ -49,8 +49,7 @@ export default defineConfig({
         text: '0.3',
         items: [
           { text: 'Changelog', link: '/core/upgrading' },
-          { text: 'Contributing', link: '/core/contributing' },
-          { text: 'Docs Next', link: 'https://docs-next.lunarphp.io/' }
+          { text: 'Contributing', link: '/core/contributing' }
         ]
       }
     ],
@@ -133,6 +132,7 @@ export default defineConfig({
           text: 'Developer Reference',
           items: [
             { text: 'Overview', link: '/admin-hub/overview' },
+            { text: 'Configuration', link: '/admin-hub/configuration' },
             { text: 'Staff', link: '/admin-hub/staff' },
             { text: 'Tables', link: '/admin-hub/tables' },
             { text: 'Extending', link: '/admin-hub/extending' }
