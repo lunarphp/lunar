@@ -7,6 +7,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price as CastsPrice;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\PriceFactory;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
  * @property int $id
@@ -88,7 +89,9 @@ class Price extends BaseModel
         }
 
         $priceExTax = clone $this->price;
-        $priceExTax->value = $priceExTax->value / 1.2; // TODO: get actual tax rate
+
+        $priceExTax->value = round($priceExTax->value / (1 + $this->getDefaultTaxRate()));
+
         return $priceExTax;
     }
 
@@ -104,7 +107,20 @@ class Price extends BaseModel
         }
 
         $priceIncTax = clone $this->price;
-        $priceIncTax->value = $priceIncTax->value * 1.2; // TODO: get actual tax rate
+        $priceIncTax->value = round($priceIncTax->value * (1 + $this->getDefaultTaxRate()));
         return $priceIncTax;
+    }
+
+    protected function getDefaultTaxRate()
+    {
+        return Blink::once('price_default_tax_rate', function () {
+            $taxZone = TaxZone::where('default', '=', 1)->first();
+
+            if ($taxZone) {
+                return $taxZone->taxAmounts->sum('percentage') / 100;
+            }
+
+            return 0;
+        });
     }
 }
