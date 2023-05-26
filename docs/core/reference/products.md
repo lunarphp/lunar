@@ -595,6 +595,21 @@ $product->prices
 
 This will return a collection of `Price` models.
 
+### Storing Prices Inclusive of Tax
+
+Lunar allows you to store pricing inclusive of tax if you need to. This is helpful if you need to show charm pricing, at $9.99 for example, which wouldn't be possible if pricing is stored exclusive of tax due to rounding.
+
+To start you will need to set the `stored_inclusive_of_tax` config value in `lunar/pricing` to `true`. Then you will need to ensure your default Tax Zone is set up correctly with the correct tax rates.
+
+Once set, the cart will automatically calculate the tax for you.
+
+If you need to show both ex. and inc. tax pricing on your product pages, you can use the following methods which are available on the `Lunar\Models\Price` model.
+
+```php
+$price->priceIncTax();
+$price->priceExTax();
+```
+
 ## Full Example
 
 For this example, we're going to be creating some Dr. Martens boots. Below is a screenshot of what we're aiming for:
