@@ -70,10 +70,10 @@ Lunar\Models\ProductType::create([
 
 Product Types also have [Attributes](/core/reference/attributes) associated to them. These associated attributes will determine what fields are available to products when editing. For example if you had an attribute of `Screen Type` associated to a `TVs` product type, any products with that product type would have access to that attribute when editing.
 
-You can associate attributes to a product type like so (it's just a straight forward [Polymorphic relationship](https://laravel.com/docs/8.x/eloquent-relationships#many-to-many-polymorphic-relations)).
+You can attach attributes to a product type like so (it's just a straight forward [Polymorphic relationship](https://laravel.com/docs/10.x/eloquent-relationships#updating-many-to-many-relationships)).
 
 ```php
-$productType->mappedAttributes()->associate([ /* attribute ids ... */ ]);
+$productType->mappedAttributes()->attach([ /* attribute ids ... */ ]);
 ```
 
 You can associate both `Product` and `ProductVariant` attributes to a product type which will then display on either the product or product variant when editing.
