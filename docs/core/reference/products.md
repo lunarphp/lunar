@@ -156,6 +156,10 @@ $option = Lunar\Models\ProductOption::create([
         'en' => 'Colour',
         'fr' => 'Couleur',
     ],
+    'label' => [
+        'en' => 'Colour',
+        'fr' => 'Couleur',
+    ],
 ]);
 ```
 
@@ -333,6 +337,9 @@ $option = \Lunar\Models\ProductOption::create([
     'name' => [
         'en' => 'Colour',
     ];
+    'label' => [
+        'en' => 'Colour',
+    ];
 ]);
 
 $blueOption = $option->values()->create([
@@ -377,10 +384,10 @@ $variant->prices()->create([
 ### Exceptions
 When creating variants there are some exceptions that will be thrown if certain conditions are met.
 
-|Exception|Conditions
-|:-|:-|
-|`Lunar\Exceptions\InvalidProductValuesException`|Thrown if you try and create a variant with less option values than what are required.|
-|`Illuminate\Validation\ValidationException`|Thrown if validation fails on the value options array.|
+| Exception                                        | Conditions                                                                             |
+| :----------------------------------------------- | :------------------------------------------------------------------------------------- |
+| `Lunar\Exceptions\InvalidProductValuesException` | Thrown if you try and create a variant with less option values than what are required. |
+| `Illuminate\Validation\ValidationException`      | Thrown if validation fails on the value options array.                                 |
 
 ## Pricing
 
@@ -388,15 +395,15 @@ When creating variants there are some exceptions that will be thrown if certain 
 
 Prices are stored in the database as integers. When retrieving a `Price` model the `price` and `compare_price` attributes are cast to a `Price` datatype. This casting gives you some useful helpers when dealing with prices on your front end.
 
-|Field|Description|Default|Required
-|:-|:-|:-|:-|
-|`price`|A integer value for the price|`null`|yes
-|`compare_price`|For display purposes, allows you to show a comparison price, e.g. RRP.|`null`|no
-|`currency_id`|The ID of the related currency|`null`|yes
-|`tier`|The lower limit to get this price, 1 is the default for base pricing.|`1`|no
-|`customer_group_id`|The customer group this price relates to, leaving as `null` means any customer group|`null`|no
-|`priceable_type`|This is the class reference to the related model which owns the price|`null`|yes
-|`priceable_id`|This is the id of the related model which owns the price|`null`|yes
+| Field               | Description                                                                          | Default | Required |
+| :------------------ | :----------------------------------------------------------------------------------- | :------ | :------- |
+| `price`             | A integer value for the price                                                        | `null`  | yes      |
+| `compare_price`     | For display purposes, allows you to show a comparison price, e.g. RRP.               | `null`  | no       |
+| `currency_id`       | The ID of the related currency                                                       | `null`  | yes      |
+| `tier`              | The lower limit to get this price, 1 is the default for base pricing.                | `1`     | no       |
+| `customer_group_id` | The customer group this price relates to, leaving as `null` means any customer group | `null`  | no       |
+| `priceable_type`    | This is the class reference to the related model which owns the price                | `null`  | yes      |
+| `priceable_id`      | This is the id of the related model which owns the price                             | `null`  | yes      |
 
 ```php
 $price = \Lunar\Models\Price::create([
@@ -646,10 +653,16 @@ $colour = Lunar\Models\ProductOption::create([
     'name' => [
         'en' => 'Colour',
     ],
+    'label' => [
+        'en' => 'Colour',
+    ],
 ]);
 
 $size = Lunar\Models\ProductOption::create([
     'name' => [
+        'en' => 'Size',
+    ],
+    'label' => [
         'en' => 'Size',
     ],
 ]);
@@ -713,15 +726,15 @@ When generating variants, the sku will be derived from the Product's base SKU, i
 
 The resulting generation is as follows:
 
-|SKU|Colour|Size
-|:-|:-|:-|
-|DRBOOT-1|Black|3
-|DRBOOT-2|Black|6
-|DRBOOT-3|White|3
-|DRBOOT-4|White|6
-|DRBOOT-5|Pale Pink|3
-|DRBOOT-6|Pale Pink|6
-|DRBOOT-7|Mid Blue|3
-|DRBOOT-8|Mid Blue|6
+| SKU      | Colour    | Size |
+| :------- | :-------- | :--- |
+| DRBOOT-1 | Black     | 3    |
+| DRBOOT-2 | Black     | 6    |
+| DRBOOT-3 | White     | 3    |
+| DRBOOT-4 | White     | 6    |
+| DRBOOT-5 | Pale Pink | 3    |
+| DRBOOT-6 | Pale Pink | 6    |
+| DRBOOT-7 | Mid Blue  | 3    |
+| DRBOOT-8 | Mid Blue  | 6    |
 
 You are then free to change the SKU's as you see fit, update the pricing for each variant etc before publishing.
