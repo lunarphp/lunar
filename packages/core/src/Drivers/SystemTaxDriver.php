@@ -96,7 +96,46 @@ class SystemTaxDriver implements TaxDriver
     {
         $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
+
         $taxAmounts = $taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();
+
+        if (prices_inc_tax()) {
+            // Remove tax from price
+            $totalTaxPercentage = $taxAmounts->sum('percentage') / 100; // E.g. 0.2 for 20%
+            $priceExTax = round($subTotal / (1 + $totalTaxPercentage));
+
+            // Check to see if the included tax uses the same tax zone
+            if ($this->defaultTaxZone() === $taxZone) {
+                // Manually return the tax breakdown
+                $breakdown = new TaxBreakdown;
+
+                $taxTally = 0;
+
+                foreach ($taxAmounts as $key => $amount) {
+                    $taxTally += $result;
+
+                    if ($taxAmounts->keys()->last() == $key) {
+                        // Ensure the final tax amount adds up to the original price
+                        $result = $subTotal - $taxTally;
+                    } else {
+                        $result = round($priceExTax * ($amount->percentage / 100));
+                    }
+
+                    $amount = new TaxBreakdownAmount(
+                        price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
+                        description: $amount->taxRate->name,
+                        identifier: "tax_rate_{$amount->taxRate->id}",
+                        percentage: $amount->percentage
+                    );
+                    $breakdown->addAmount($amount);
+                }
+
+                return $breakdown;
+            }
+
+            // Set subTotal to ex. tax price
+            $subTotal = $priceExTax;
+        }
 
         $breakdown = new TaxBreakdown;
 

@@ -10,3 +10,10 @@ if (! function_exists('is_lunar_user')) {
         return in_array(LunarUser::class, $traits);
     }
 }
+
+if (! function_exists('prices_inc_tax')) {
+    function prices_inc_tax()
+    {
+        return config('pricing.stored_inclusive_of_tax', false);
+    }
+}

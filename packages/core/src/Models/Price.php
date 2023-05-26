@@ -75,4 +75,36 @@ class Price extends BaseModel
     {
         return $this->belongsTo(CustomerGroup::class);
     }
+
+    /**
+     * Return the price exclusive of tax.
+     *
+     * @return \Lunar\DataTypes\Price
+     */
+    public function priceExTax()
+    {
+        if (! prices_inc_tax()) {
+            return $this->price;
+        }
+
+        $priceExTax = clone $this->price;
+        $priceExTax->value = $priceExTax->value / 1.2; // TODO: get actual tax rate
+        return $priceExTax;
+    }
+
+    /**
+     * Return the price inclusive of tax.
+     *
+     * @return \Lunar\DataTypes\Price
+     */
+    public function priceIncTax()
+    {
+        if (prices_inc_tax()) {
+            return $this->price;
+        }
+
+        $priceIncTax = clone $this->price;
+        $priceIncTax->value = $priceIncTax->value * 1.2; // TODO: get actual tax rate
+        return $priceIncTax;
+    }
 }
