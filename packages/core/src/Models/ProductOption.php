@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -15,6 +16,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 /**
  * @property int $id
  * @property string $name
+ * @property string $alt_name
  * @property int $position
  * @property ?string $handle
  * @property ?\Illuminate\Support\Carbon $created_at
@@ -51,6 +53,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $casts = [
         'name' => AsCollection::class,
+        'alt_name' => AsCollection::class,
     ];
 
     /**
@@ -79,6 +82,14 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     protected function setNameAttribute($value)
     {
         $this->attributes['name'] = json_encode($value);
+    }
+
+    protected function alt_name(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => json_decode($value),
+            set: fn (string $value) => json_encode($value),
+        );
     }
 
     /**
