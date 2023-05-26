@@ -3,6 +3,8 @@
 namespace Lunar\Hub\Http\Livewire\Components\Products\Options;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Language;
@@ -55,12 +57,12 @@ class OptionCreator extends Component
     protected function validationAttributes()
     {
         $attributes = [
-            "name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
+            "name.{$this->defaultLanguage->code}" => lang(key: 'inputs.name', lower: true),
         ];
 
         foreach ($this->values as $key => $value) {
             $sequence = (int) $key + 1;
-            $attributes["values.{$key}.name.{$this->defaultLanguage->code}"] = lang(key:'inputs.value', lower: true)." #{$sequence}";
+            $attributes["values.{$key}.name.{$this->defaultLanguage->code}"] = lang(key: 'inputs.value', lower: true)." #{$sequence}";
         }
 
         return $attributes;
@@ -100,7 +102,25 @@ class OptionCreator extends Component
     {
         $this->validate();
 
+        $handle = Str::slug(
+            $this->name[$this->defaultLanguage->code]
+        );
+
+        $this->withValidator(function (Validator $validator) use ($handle) {
+            $validator->after(function ($validator) use ($handle) {
+                if (ProductOption::whereHandle($handle)->exists()) {
+                    $validator->errors()->add(
+                        'option_handle',
+                        __('adminhub::validation.name_taken')
+                    );
+                }
+            });
+        })->validate();
+
+        $this->option->handle = $handle;
         $this->option->name = $this->name;
+        $this->option->label = $this->name;
+
         $this->option->save();
 
         $this->option->values()->createMany($this->values->toArray());

@@ -4,9 +4,9 @@ namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
@@ -76,7 +76,7 @@ class OptionsIndex extends Component
     public function mount()
     {
         $this->newProductOption = new ProductOption;
-        $this->productOptions = $this->mapProductOptions();
+        $this->syncProductOptions();
     }
 
     public function createOption()
@@ -96,27 +96,24 @@ class OptionsIndex extends Component
             });
         })->validate();
 
-        $handle = Str::slug(
-            $this->newProductOption->translate('name')
-        );
         $this->newProductOption->handle = $handle;
+        $this->newProductOption->label = $this->newProductOption->name;
+
         $this->newProductOption->save();
 
         $this->showOptionCreate = false;
         $this->newProductOption = new ProductOption;
-        $this->sortedProductOptions = $this->productOptions;
+        $this->syncProductOptions();
 
         $this->notify('Product option created');
     }
 
     /**
-     * Map the product options.
-     *
-     * @return Collection
+     * Sync the product options.
      */
-    public function mapProductOptions()
+    private function syncProductOptions()
     {
-        return ProductOption::withCount(['values'])->orderBy('position')->get()->map(function ($option) {
+        $this->productOptions = ProductOption::withCount(['values'])->orderBy('position')->get()->map(function ($option) {
             return [
                 'id' => $option->id,
                 'name' => $option->translate('name'),
@@ -139,16 +136,15 @@ class OptionsIndex extends Component
                 $updatedOrder = collect($groups['items'])->first(function ($updated) use ($group) {
                     return $updated['id'] == $group['id'];
                 });
-                $group = ProductOption::where(
-                    'id', '=', $group['id']
-                )->update([
-                    'position' => $updatedOrder['order'],
-                ]);
+                $group = ProductOption::where('id', '=', $group['id'])
+                    ->update([
+                        'position' => $updatedOrder['order'],
+                    ]);
 
                 return $group;
             })->sortBy('position');
 
-            $this->productOptions = $this->mapProductOptions();
+            $this->syncProductOptions();
         });
         $this->notify(
             __('adminhub::notifications.attribute-groups.reordered')
@@ -208,9 +204,7 @@ class OptionsIndex extends Component
             });
         }
 
-        $this->notify(
-            __('adminhub::notifications.'.$notificationText), null, [], $level
-        );
+        $this->notify(__('adminhub::notifications.'.$notificationText), null, [], $level);
 
         $this->deleteOptionId = null;
         $this->refreshGroups();
