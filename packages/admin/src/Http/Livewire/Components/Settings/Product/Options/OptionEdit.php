@@ -105,7 +105,7 @@ class OptionEdit extends Component
 
         foreach ($this->languages as $language) {
             $rules["productOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
-            $rules["productOption.alt_name.{$language->code}"] = 'nullable|max:255';
+            $rules["productOption.label.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
             $rules["newProductOptionValue.name.{$language->code}"] = 'nullable|max:255';
             $rules["productOptionValue.name.{$language->code}"] = 'nullable|max:255';
         }
