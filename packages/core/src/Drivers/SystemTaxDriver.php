@@ -11,6 +11,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
+use Lunar\Models\TaxZone;
 
 class SystemTaxDriver implements TaxDriver
 {
@@ -151,5 +152,10 @@ class SystemTaxDriver implements TaxDriver
         }
 
         return $breakdown;
+    }
+
+    protected function defaultTaxZone()
+    {
+        return TaxZone::where('default', '=', 1)->first();
     }
 }
