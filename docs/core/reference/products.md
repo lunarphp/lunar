@@ -237,10 +237,6 @@ You can configure the available UOM's in the `lunar/shipping.php` config file. H
 - gal
 - floz
 
-### Sorting dropdown measurements in the admin hub
-
-You can adjust the order of the `lunar/shipping.php` config file array to change the order of the dropdown measurements in the admin hub.
-
 ### Changing to the imperial system
 
 Currently, the units in the `lunar/shipping.php` are based on the metric system. It is simple to convert to the imperial system as a base. This prevents slight rounding errors when converting.
