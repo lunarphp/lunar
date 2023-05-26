@@ -106,21 +106,21 @@ class SystemTaxDriver implements TaxDriver
             $priceExTax = round($subTotal / (1 + $totalTaxPercentage));
 
             // Check to see if the included tax uses the same tax zone
-            if ($this->defaultTaxZone() === $taxZone) {
+            if ($this->defaultTaxZone()->id === $taxZone->id) {
                 // Manually return the tax breakdown
                 $breakdown = new TaxBreakdown;
 
                 $taxTally = 0;
 
                 foreach ($taxAmounts as $key => $amount) {
-                    $taxTally += $result;
-
                     if ($taxAmounts->keys()->last() == $key) {
                         // Ensure the final tax amount adds up to the original price
-                        $result = $subTotal - $taxTally;
+                        $result = $subTotal - $priceExTax - $taxTally;
                     } else {
                         $result = round($priceExTax * ($amount->percentage / 100));
                     }
+
+                    $taxTally += $result;
 
                     $amount = new TaxBreakdownAmount(
                         price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
@@ -142,6 +142,7 @@ class SystemTaxDriver implements TaxDriver
 
         foreach ($taxAmounts as $amount) {
             $result = round($subTotal * ($amount->percentage / 100));
+
             $amount = new TaxBreakdownAmount(
                 price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
                 description: $amount->taxRate->name,
