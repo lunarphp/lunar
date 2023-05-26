@@ -190,7 +190,7 @@ class OptionEdit extends Component
 
         if ($this->productOption->id) {
             $this->productOption->save();
-            $this->emit('option-edit.updated', $this->productOption->id);
+
             $this->notify(
                 __('adminhub::notifications.attribute-groups.updated')
             );
@@ -203,8 +203,6 @@ class OptionEdit extends Component
         }
 
         $this->productOption->save();
-
-        $this->emit('option-edit.created', $this->productOption->id);
 
         $this->productOption = new ProductOption();
 

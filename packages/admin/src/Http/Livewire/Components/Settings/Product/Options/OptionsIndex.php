@@ -10,7 +10,6 @@ use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
-use Lunar\Models\ProductOptionValue;
 
 class OptionsIndex extends Component
 {
@@ -52,14 +51,6 @@ class OptionsIndex extends Component
      */
     public $editOptionValueId = null;
 
-    /**
-     * {@inheritDoc}
-     */
-    protected $listeners = [
-        'option-edit.created' => 'refreshGroups',
-        'option-edit.updated' => 'resetGroupEdit',
-    ];
-
     public function rules()
     {
         $rules = [];
@@ -77,6 +68,21 @@ class OptionsIndex extends Component
     {
         $this->newProductOption = new ProductOption;
         $this->syncProductOptions();
+    }
+
+    /**
+     * Sync the product options.
+     */
+    private function syncProductOptions()
+    {
+        $this->productOptions = ProductOption::withCount(['values'])->orderBy('position')->get()->map(function ($option) {
+            return [
+                'id' => $option->id,
+                'name' => $option->translate('name'),
+                'position' => $option->position,
+                'values_count' => $option->values_count,
+            ];
+        });
     }
 
     public function createOption()
@@ -109,21 +115,6 @@ class OptionsIndex extends Component
     }
 
     /**
-     * Sync the product options.
-     */
-    private function syncProductOptions()
-    {
-        $this->productOptions = ProductOption::withCount(['values'])->orderBy('position')->get()->map(function ($option) {
-            return [
-                'id' => $option->id,
-                'name' => $option->translate('name'),
-                'position' => $option->position,
-                'values_count' => $option->values_count,
-            ];
-        });
-    }
-
-    /**
      * Sort the options.
      *
      * @param  array  $groups
@@ -143,23 +134,13 @@ class OptionsIndex extends Component
 
                 return $group;
             })->sortBy('position');
-
-            $this->syncProductOptions();
         });
-        $this->notify(
-            __('adminhub::notifications.attribute-groups.reordered')
-        );
-    }
 
-    /**
-     * Refresh the options.
-     *
-     * @return void
-     */
-    public function refreshGroups()
-    {
-        $this->sortedProductOptions = $this->productOptions;
-        $this->showOptionCreate = false;
+        $this->syncProductOptions();
+
+        $this->notify(
+            __('adminhub::notifications.product-options.reordered')
+        );
     }
 
     /**
@@ -168,28 +149,6 @@ class OptionsIndex extends Component
     public function getOptionToDeleteProperty(): ?ProductOption
     {
         return ProductOption::withCount(['values'])->find($this->deleteOptionId);
-    }
-
-    /**
-     * Return the option value to edit.
-     *
-     * @return \Lunar\Models\Attribute
-     */
-    public function getOptionValueToEditProperty()
-    {
-        return ProductOptionValue::find($this->editOptionValueId);
-    }
-
-    /**
-     * Reset the option value edit state.
-     *
-     * @return void
-     */
-    public function resetOptionValueEdit()
-    {
-        $this->optionValueToDelete = null;
-        $this->editOptionValueId = null;
-        $this->refreshGroups();
     }
 
     public function deleteOption()
@@ -207,7 +166,8 @@ class OptionsIndex extends Component
         $this->notify(__('adminhub::notifications.'.$notificationText), null, [], $level);
 
         $this->deleteOptionId = null;
-        $this->refreshGroups();
+
+        $this->syncProductOptions();
     }
 
     /**
