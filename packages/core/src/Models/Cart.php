@@ -523,4 +523,28 @@ class Cart extends BaseModel
 
         return $passes;
     }
+
+    /**
+     * Get a unique fingerprint for the cart to indentify if the contents have changed.
+     *
+     * @return string
+     */
+    public function fingerprint()
+    {
+        $value = $this->lines->reduce(function (?string $carry, CartLine $line) {
+            $meta = is_array($line->meta) ? json_encode($line->meta) : $line->meta;
+
+            return $carry .
+                $line->purchasable_type .
+                $line->purchasable_id .
+                $line->quantity .
+                $meta .
+                $line->total;
+        });
+
+        $value .= $this->user_id . $this->currency_id . $this->coupon;
+        $value .= is_array($this->meta) ? json_encode($this->meta) : $this->meta;
+
+        return sha1($value);
+    }
 }
