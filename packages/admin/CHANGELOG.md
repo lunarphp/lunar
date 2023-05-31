@@ -14,10 +14,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - `values` are now detached from the product variant when it's the only one left.
+- Setting menu now route to first accessible page
 
 ### Changed
 
 - Improved `wire:key` on product associations when editing a product to avoid duplicate keys causing DOM diffing issues.
+- Menu Link/Group/Section now is hidden if no permission given
 
 ## 0.3.1
 
