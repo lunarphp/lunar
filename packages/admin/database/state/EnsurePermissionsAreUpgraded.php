@@ -3,12 +3,13 @@
 namespace Lunar\Hub\Database\State;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Lunar\Hub\Console\Commands\SyncRolesPermissions;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Models\StaffPermission;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class EnsurePermissionsAreUpgraded
 {
@@ -40,44 +41,22 @@ class EnsurePermissionsAreUpgraded
         $permissions = null;
 
         try {
+            Artisan::call(SyncRolesPermissions::class);
+
             $permissions = json_decode(Storage::get($this->backupFile), true);
         } catch (FileNotFoundException $e) {
         }
 
         if ($permissions) {
-
-            $rolesData = [];
-            $permissionsData = [];
-
             $staffs = Staff::get();
 
             foreach ($staffs as $staff) {
 
                 $staffPermissions = isset($permissions[$staff->id]) ? $permissions[$staff->id] : [];
 
-                $roleName = $staff->admin ? 'admin' : 'staff';
-
-                if (! isset($rolesData[$roleName])) {
-                    $rolesData[$roleName] = Role::query()->firstOrCreate([
-                        'name' => $roleName,
-                        'guard_name' => 'staff',
-                    ]);
-                }
-
-                $role = $rolesData[$roleName];
+                $role = $staff->admin ? 'admin' : 'staff';
 
                 $staff->assignRole($role);
-
-                foreach ($staffPermissions as $idx => $permission) {
-                    if (! isset($permissionsData[$permission])) {
-                        $permissionsData[$permission] = Permission::firstOrCreate([
-                            'name' => $permission,
-                            'guard_name' => 'staff',
-                        ]);
-                    }
-
-                    $staffPermissions[$idx] = $permissionsData[$permission];
-                }
 
                 $staff->givePermissionTo($staffPermissions);
             }
