@@ -3,8 +3,8 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\Staff;
 
@@ -103,6 +103,7 @@ abstract class AbstractStaff extends Component
 
         if ($index !== false) {
             $this->removePermission($handle);
+
             foreach ($children as $child) {
                 $this->removePermission($child);
             }
@@ -135,7 +136,6 @@ abstract class AbstractStaff extends Component
      */
     public function removePermission($handle)
     {
-        $index = $this->staffPermissions->search($handle);
-        $this->staffPermissions->splice($index, 1);
+        $this->staffPermissions = $this->staffPermissions->filter(fn ($permission) => $permission != $handle);
     }
 }
