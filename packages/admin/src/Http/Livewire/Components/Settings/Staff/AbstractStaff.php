@@ -3,8 +3,8 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Staff;
 
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\Staff;
 
@@ -73,21 +73,18 @@ abstract class AbstractStaff extends Component
      */
     protected function syncPermissions()
     {
-        // Current user permissions
-        $this->staff
-            ->permissions()
-            ->whereNotIn(
-                'handle',
-                $this->staffPermissions->toArray()
-            )->delete();
 
         DB::transaction(function () {
-            foreach ($this->staffPermissions as $permission) {
-                $this->staff->permissions()->updateOrCreate([
-                    'handle' => $permission,
-                ]);
-            }
+            $this->staff->syncPermissions($this->staffPermissions);
         });
+    }
+
+    /**
+     * Sync staff role
+     */
+    protected function syncRole()
+    {
+        $this->staff->syncRoles($this->staff->admin ? 'admin' : 'staff');
     }
 
     /**

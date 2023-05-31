@@ -33,7 +33,7 @@ class StaffShow extends AbstractStaff
      */
     public function mount()
     {
-        $this->staffPermissions = $this->staff->permissions->pluck('handle');
+        $this->staffPermissions = $this->staff->getAllPermissions()->pluck('name');
     }
 
     /**
@@ -120,6 +120,7 @@ class StaffShow extends AbstractStaff
 
         $this->staff->save();
 
+        $this->syncRole();
         $this->syncPermissions();
 
         $this->notify('Staff member updated');
