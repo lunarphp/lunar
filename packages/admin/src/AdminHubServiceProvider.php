@@ -2,6 +2,9 @@
 
 namespace Lunar\Hub;
 
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
+use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -15,6 +18,7 @@ use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
 use Lunar\Hub\Base\DiscountTypesInterface;
 use Lunar\Hub\Console\Commands\InstallHub;
+use Lunar\Hub\Database\State\EnsurePermissionsAreUpgraded;
 use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Facades\ActivityLog;
 use Lunar\Hub\Http\Livewire\Components\Account;
@@ -199,6 +203,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerAuthGuard();
         $this->registerPermissionManifest();
         $this->registerPublishables();
+        $this->registerStateListeners();
 
         Route::bind('product', function ($id) {
             return Product::withTrashed()->findOrFail($id);
@@ -222,7 +227,7 @@ class AdminHubServiceProvider extends ServiceProvider
             ], 'lunar.hub.views');
 
             $this->publishes([
-                __DIR__ . '/../resources/lang' => lang_path('vendor/adminhub'),
+                __DIR__.'/../resources/lang' => lang_path('vendor/adminhub'),
             ], 'lunar.hub.translations');
 
             $this->commands([
@@ -519,12 +524,32 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        Gate::after(function ($user, $ability) {
-            // Are we trying to authorize something within the hub?
+        Gate::after(function (Staff $user, $ability) {
             $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
-                return $user->admin || $user->authorize($ability);
+                return $user->admin || $user->hasPermissionTo($ability, 'staff');
             }
         });
+    }
+
+    protected function registerStateListeners()
+    {
+        $states = [
+            EnsurePermissionsAreUpgraded::class,
+        ];
+
+        foreach ($states as $state) {
+            $class = new $state;
+
+            Event::listen(
+                [MigrationsStarted::class],
+                [$class, 'prepare']
+            );
+
+            Event::listen(
+                [MigrationsEnded::class, NoPendingMigrations::class],
+                [$class, 'run']
+            );
+        }
     }
 }
