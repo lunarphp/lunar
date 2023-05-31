@@ -7,6 +7,7 @@ use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Menu\MenuSlot;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tests\TestCase;
+use Spatie\Permission\Models\Permission;
 
 /**
  * @group hub.menu
@@ -58,14 +59,17 @@ class MenuSlotTest extends TestCase
 
         $this->assertCount(1, $slot->getItems());
 
-        $staff->permissions()->create([
-            'handle' => 'item-one-gate',
-        ]);
-
         $manifest = $this->app->make(Manifest::class);
         $manifest->addPermission(function ($perm) {
             $perm->handle('item-one-gate');
         });
+
+        $perm = Permission::firstOrCreate([
+            'name' => 'item-one-gate',
+            'guard_name' => 'staff',
+        ]);
+
+        $staff->givePermissionTo($perm);
 
         $this->assertCount(2, $slot->getItems());
     }
