@@ -24,6 +24,15 @@ php artisan lunar:hub:install
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`. 
 
+## Unreleased
+
+### High Impact
+
+#### Changed Lunar Hub authorization to use `spatie/laravel-permission`
+
+Existing assigned staff permissions are migrated, this should not impact your project.
+If you have custom authorization checking using `Staff->authorize('permission')`, change it to `Staff->hasPermissionTo('permission')`
+
 ## 0.3
 
 ### High Impact

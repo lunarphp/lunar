@@ -529,7 +529,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Gate::after(function (Staff $user, $ability) {
             $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
-                return $user->admin || $user->hasPermissionTo($ability, 'staff');
+                return $user->admin || $user->hasPermissionTo($ability);
             }
         });
     }
