@@ -16,6 +16,39 @@ command below.
 php artisan vendor:publish --tag=lunar.hub.views
 ```
 
+## Staff Permissions
+
+You can add additional permissions to authorise staff access. It will be shown in staff management screens for assign/revoke.
+
+Here is an example of how you would add a permission in ServiceProvider
+
+```php
+
+use Lunar\Hub\Auth\Manifest;
+use Lunar\Hub\Auth\Permission;
+
+public function boot()
+{
+    // ...
+    $manifest = $this->app->get(Manifest::class);
+    
+    $manifest->addPermission(function (Permission $permission) {
+        $permission->name = 'Permission name';
+        $permission->handle = 'permission-handle'; // or 'group:handle to group permissions 
+        $permission->description = 'Permission description';
+    });
+    // ...
+}
+```
+
+::: warning 
+Additional permissions are catogarised as third-party permissions. You should still implement authorisation checking respectively.
+
+Example:
+`middleware` 'can:permission-handle'
+`in-code` Auth::user()->authorize('permission-handle')
+:::
+
 ## Adding to Menus
 
 Lunar uses dynamic menus in the UI which you can extend to add further links.
@@ -83,6 +116,21 @@ $productsSection->addItem(function ($item) {
         ->name(__('menu.sidebar.tickets'))
         ->handle('hub.tickets')
         ->route('hub.tickets.index')
+        ->icon('ticket');
+});
+```
+
+### Menu authorization
+
+You can also authorize the staff access using the `gate` method.
+
+```php
+$productsSection->addItem(function ($item) {
+    $item
+        ->name(__('menu.sidebar.tickets'))
+        ->handle('hub.tickets')
+        ->route('hub.tickets.index')
+        ->gate('view-tickets')
         ->icon('ticket');
 });
 ```
