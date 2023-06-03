@@ -46,7 +46,7 @@ Additional permissions are catogarised as third-party permissions. You should st
 
 Example:
 `middleware` 'can:permission-handle'
-`in-code` Auth::user()->authorize('permission-handle')
+`in-code` Auth::user()->can('permission-handle')
 :::
 
 ## Adding to Menus
