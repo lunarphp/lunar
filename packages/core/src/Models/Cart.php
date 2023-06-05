@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User;
@@ -12,6 +13,7 @@ use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
 use Lunar\Actions\Carts\CreateOrder;
+use Lunar\Actions\Carts\GenerateFingerprint;
 use Lunar\Actions\Carts\RemovePurchasable;
 use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
@@ -30,6 +32,7 @@ use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
+use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
@@ -164,7 +167,7 @@ class Cart extends BaseModel
      */
     protected $casts = [
         'completed_at' => 'datetime',
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**
@@ -525,26 +528,31 @@ class Cart extends BaseModel
     }
 
     /**
-     * Get a unique fingerprint for the cart to indentify if the contents have changed.
+     * Get a unique fingerprint for the cart to identify if the contents have changed.
      *
      * @return string
      */
     public function fingerprint()
     {
-        $value = $this->lines->reduce(function (?string $carry, CartLine $line) {
-            $meta = is_array($line->meta) ? json_encode($line->meta) : $line->meta;
+        $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
+        return (new $generator())->execute($this);
+    }
 
-            return $carry .
-                $line->purchasable_type .
-                $line->purchasable_id .
-                $line->quantity .
-                $meta .
-                $line->total;
+    /**
+     * Check whether a given fingerprint matches the one being generated for the cart.
+     *
+     * @param string $fingerprint
+     *
+     * @throws FingerprintMismatchException
+     * @return boolean
+     */
+    public function checkFingerprint($fingerprint)
+    {
+        return tap($fingerprint == $this->fingerprint(), function ($result) {
+            throw_unless(
+                $result,
+                FingerprintMismatchException::class
+            );
         });
-
-        $value .= $this->user_id . $this->currency_id . $this->coupon;
-        $value .= is_array($this->meta) ? json_encode($this->meta) : $this->meta;
-
-        return sha1($value);
     }
 }
