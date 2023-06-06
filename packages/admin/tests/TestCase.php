@@ -3,13 +3,12 @@
 namespace Lunar\Hub\Tests;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
+use Lunar\Hub\Actions\Permission\SyncRolesPermissions;
 use Lunar\Hub\AdminHubServiceProvider;
-use Lunar\Hub\Console\Commands\SyncRolesPermissions;
 use Lunar\LivewireTables\LivewireTablesServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Tests\Stubs\TestUrlGenerator;
@@ -63,6 +62,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function setupRolesPermissions()
     {
-        Artisan::call(SyncRolesPermissions::class);
+        app(SyncRolesPermissions::class)();
     }
 }

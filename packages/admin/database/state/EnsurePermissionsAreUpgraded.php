@@ -3,10 +3,9 @@
 namespace Lunar\Hub\Database\State;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
-use Lunar\Hub\Console\Commands\SyncRolesPermissions;
+use Lunar\Hub\Actions\Permission\SyncRolesPermissions;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Models\StaffPermission;
 use Spatie\Permission\Models\Permission;
@@ -41,7 +40,7 @@ class EnsurePermissionsAreUpgraded
         $permissions = null;
 
         try {
-            Artisan::call(SyncRolesPermissions::class);
+            app(SyncRolesPermissions::class)();
 
             $permissions = json_decode(Storage::get($this->backupFile), true);
         } catch (FileNotFoundException $e) {

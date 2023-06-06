@@ -18,7 +18,7 @@ use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
 use Lunar\Hub\Base\DiscountTypesInterface;
 use Lunar\Hub\Console\Commands\InstallHub;
-use Lunar\Hub\Console\Commands\SyncRolesPermissions;
+use Lunar\Hub\Console\Commands\InstallPermissions;
 use Lunar\Hub\Database\State\EnsurePermissionsAreUpgraded;
 use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Facades\ActivityLog;
@@ -233,7 +233,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
             $this->commands([
                 InstallHub::class,
-                SyncRolesPermissions::class,
+                InstallPermissions::class,
             ]);
         }
 
