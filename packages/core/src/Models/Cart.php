@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
@@ -30,6 +29,7 @@ use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
+use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
@@ -235,21 +235,57 @@ class Cart extends BaseModel
     /**
      * Return the order relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function order()
+    public function orders()
     {
-        return $this->belongsTo(Order::class);
+        return $this->hasMany(Order::class);
     }
 
     /**
      * Apply scope to get active cart.
      *
-     * @return void
+     * @return Builder
      */
     public function scopeActive(Builder $query)
     {
-        return $query->whereDoesntHave('order');
+        return $query->whereDoesntHave('orders')->orWhereHas('orders', function ($query) {
+            return $query->whereNull('placed_at');
+        });
+    }
+
+    /**
+     * Return the draft order relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function draftOrder(int $draftOrderId = null)
+    {
+        return $this->hasOne(Order::class)
+            ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
+                $query->where('id', $draftOrderId);
+            })->whereNull('placed_at');
+    }
+
+    /**
+     * Return the carts completed order.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function completedOrders()
+    {
+        return $this->hasMany(Order::class)
+            ->whereNotNull('placed_at');
+    }
+
+    /**
+     * Return whether the cart has any completed order.
+     *
+     * @return bool
+     */
+    public function hasCompletedOrders()
+    {
+        return (bool) $this->completedOrders()->count();
     }
 
     /**
@@ -258,12 +294,12 @@ class Cart extends BaseModel
     public function calculate(): Cart
     {
         $cart = app(Pipeline::class)
-        ->send($this)
-        ->through(
-            config('lunar.cart.pipelines.cart', [
-                Calculate::class,
-            ])
-        )->thenReturn();
+            ->send($this)
+            ->through(
+                config('lunar.cart.pipelines.cart', [
+                    Calculate::class,
+                ])
+            )->thenReturn();
 
         return $cart->cacheProperties();
     }
