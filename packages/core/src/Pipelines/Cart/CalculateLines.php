@@ -18,14 +18,14 @@ class CalculateLines
     {
         foreach ($cart->lines as $line) {
             $cartLine = app(Pipeline::class)
-            ->send($line)
-            ->through(
-                config('lunar.cart.pipelines.cart_lines', [])
-            )->thenReturn(function ($cartLine) {
-                $cartLine->cacheProperties();
+                ->send($line)
+                ->through(
+                    config('lunar.cart.pipelines.cart_lines', [])
+                )->thenReturn(function ($cartLine) {
+                    $cartLine->cacheProperties();
 
-                return $cartLine;
-            });
+                    return $cartLine;
+                });
 
             $purchasable = $cartLine->purchasable;
             $unitQuantity = $purchasable->getUnitQuantity();
