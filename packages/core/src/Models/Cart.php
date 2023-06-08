@@ -268,6 +268,19 @@ class Cart extends BaseModel
     }
 
     /**
+     * Return the completed order relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function completedOrder(int $completedOrderId = null)
+    {
+        return $this->hasOne(Order::class)
+            ->when($draftOrderId, function (Builder $query, int $completedOrderId) {
+                $query->where('id', $completedOrderId);
+            })->whereNotNull('placed_at');
+    }
+
+    /**
      * Return the carts completed order.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
