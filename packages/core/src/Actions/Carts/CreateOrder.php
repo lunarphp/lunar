@@ -9,12 +9,6 @@ use Lunar\Facades\DB;
 use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Cart;
 use Lunar\Models\Order;
-use Lunar\Pipelines\Order\Creation\CleanUpOrderLines;
-use Lunar\Pipelines\Order\Creation\CreateOrderAddresses;
-use Lunar\Pipelines\Order\Creation\CreateOrderLines;
-use Lunar\Pipelines\Order\Creation\CreateShippingLine;
-use Lunar\Pipelines\Order\Creation\FillOrderFromCart;
-use Lunar\Pipelines\Order\Creation\MapDiscountBreakdown;
 
 class CreateOrder extends AbstractAction
 {
@@ -26,15 +20,7 @@ class CreateOrder extends AbstractAction
         bool $allowMultipleOrders = false,
         int $orderIdToUpdate = null
     ): self {
-        // Change relationship to order has the cart_id
-        // $cart->draftOrder
-        //
-        // $cart->createOrder();
-        // $cart->syncToOrder(1)
-        // $cart->syncToOrder();
-        // Fingerprint on checkout (Inertia)
 
-        // You can't update the order unless it's a draft.
         $this->passThrough = DB::transaction(function () use ($cart, $allowMultipleOrders, $orderIdToUpdate) {
             $order = $cart->draftOrder($orderIdToUpdate)->first() ?: new Order;
 
@@ -48,14 +34,9 @@ class CreateOrder extends AbstractAction
 
             $order = app(Pipeline::class)
                 ->send($order)
-                ->through([
-                    FillOrderFromCart::class,
-                    CreateOrderLines::class,
-                    CreateOrderAddresses::class,
-                    CreateShippingLine::class,
-                    CleanUpOrderLines::class,
-                    MapDiscountBreakdown::class,
-                ])->thenReturn(function ($order) {
+                ->through(
+                    config('lunar.orders.pipelines.creation', [])
+                )->thenReturn(function ($order) {
                     return $order;
                 });
 
