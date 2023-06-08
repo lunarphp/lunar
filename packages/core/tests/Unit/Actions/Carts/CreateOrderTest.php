@@ -3,25 +3,22 @@
 namespace Lunar\Tests\Unit\Actions\Carts;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Actions\Carts\CreateOrder;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\DiscountTypes\AmountOff;
-use Lunar\Exceptions\Carts\CartException;
+use Lunar\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
-use Lunar\Models\Channel;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
-use Lunar\Models\Discount;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Models\OrderLine;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
-use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Tests\TestCase;
 
@@ -34,6 +31,96 @@ class CreateOrderTest extends TestCase
     use RefreshDatabase;
 
     private $cart;
+
+    /** @test  */
+    public function cant_create_order_if_already_has_complete_and_multiple_disabled()
+    {
+        TaxClass::factory()->create([
+            'default' => true,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $order = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => now(),
+        ]);
+
+        $this->expectException(DisallowMultipleCartOrdersException::class);
+
+        (new CreateOrder)->execute($cart);
+    }
+
+    /** @test  */
+    public function can_create_order_if_multiple_enabled()
+    {
+        TaxClass::factory()->create([
+            'default' => true,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $order = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => now(),
+        ]);
+
+        $newOrder = (new CreateOrder)->execute($cart, allowMultipleOrders: true)->then(
+            fn ($order) => $order->refresh()
+        );
+
+        $this->assertNotSame($newOrder->id, $order->id);
+    }
+
+    /** @test  */
+    public function can_update_draft_order()
+    {
+        TaxClass::factory()->create([
+            'default' => true,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $updatedAt = now()->setTime('10', '00', '00');
+
+        $orderA = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'updated_at' => $updatedAt,
+            'placed_at' => now(),
+        ]);
+
+        $orderB = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'updated_at' => $updatedAt,
+        ]);
+
+        $updatedOrder = (new CreateOrder)->execute($cart, allowMultipleOrders: true)->then(
+            fn ($order) => $order->refresh()
+        );
+
+        $this->assertSame($updatedOrder->id, $orderB->id);
+        $this->assertFalse($orderB->updated_at->eq($updatedOrder->updated_at));
+        $this->assertTrue($orderA->updated_at->eq($updatedAt));
+
+    }
 
     /** @test  */
     public function can_create_order()
