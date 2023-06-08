@@ -275,7 +275,7 @@ class Cart extends BaseModel
     public function completedOrder(int $completedOrderId = null)
     {
         return $this->hasOne(Order::class)
-            ->when($draftOrderId, function (Builder $query, int $completedOrderId) {
+            ->when($completedOrderId, function (Builder $query, int $completedOrderId) {
                 $query->where('id', $completedOrderId);
             })->whereNotNull('placed_at');
     }
