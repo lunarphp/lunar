@@ -10,17 +10,16 @@ use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Cart;
 use Lunar\Models\Order;
 
-class CreateOrder extends AbstractAction
+final class CreateOrder extends AbstractAction
 {
     /**
      * Execute the action.
      */
-    final public function execute(
+    public function execute(
         Cart $cart,
         bool $allowMultipleOrders = false,
         int $orderIdToUpdate = null
     ): self {
-
         $this->passThrough = DB::transaction(function () use ($cart, $allowMultipleOrders, $orderIdToUpdate) {
             $order = $cart->draftOrder($orderIdToUpdate)->first() ?: new Order;
 
