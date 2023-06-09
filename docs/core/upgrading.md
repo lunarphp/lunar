@@ -26,9 +26,9 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ## [Unreleased]
 
-### High impact
+### Low impact
 
-Add the new fingerprint class reference to `config/lunar/carts.php`.
+Add the new fingerprint class reference to `config/lunar/carts.php` if you have published the config.
 
 ```php
 'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
