@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Actions\Carts\GenerateFingerprint;
-
 return [
     /*
     |--------------------------------------------------------------------------
@@ -21,7 +19,7 @@ return [
     | Specify which class should be used when generating a cart fingerprint.
     |
     */
-    'fingerprint_generator' => GenerateFingerprint::class,
+    'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
 
     /*
     |--------------------------------------------------------------------------

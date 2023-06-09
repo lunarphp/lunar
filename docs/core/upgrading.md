@@ -22,7 +22,17 @@ php artisan lunar:hub:install
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`. 
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`.
+
+## [Unreleased]
+
+### High impact
+
+Add the new fingerprint class reference to `config/lunar/carts.php`.
+
+```php
+'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
+```
 
 ## 0.3
 
@@ -46,7 +56,8 @@ If you were using `db_date` helper function, you will now need to wrap it with `
 
 ### Low Impact
 
-If you have a custom DiscountType, you should update the `save` method to expect the recently saved discount id to be passed.
+If you have a custom DiscountType, you should update the `save` method to expect the recently saved discount id to be
+passed.
 
 ```php
 // Before
@@ -101,7 +112,8 @@ All publishing commands for Lunar now use `.` as a separator.
 
 #### Brand requirement is now configurable.
 
-Whether the product brand is required on your store is now configurable, the default behaviour is set to `true`. If you wish to change this, simply update `config/lunar-hub/products.php`.
+Whether the product brand is required on your store is now configurable, the default behaviour is set to `true`. If you
+wish to change this, simply update `config/lunar-hub/products.php`.
 
 ```php
 'require_brand' => false,
@@ -209,7 +221,6 @@ php artisan lunar:migrate:getcandy
 - Copy across the data from the old `getcandy_` tables into the new `lunar_` tables.
 - Update any polymorphic `GetCandy` classes to the `Lunar` namespace.
 - Update field types in `attribute_data` to the `Lunar` namespace.
-
 
 #### What this command will not do
 
