@@ -19,17 +19,11 @@ class MigrateCartOrderRelationship
         if (! $this->canRun()) {
             return;
         }
-
-        DB::transaction(function () use ($prefix) {
-            DB::table("{$prefix}carts")->whereNotNull('order_id')->select([
-                'id',
-                'order_id',
-            ])->get()->each(function ($cart) use ($prefix) {
-                DB::table("{$prefix}orders")->where('id', $cart->order_id)->update([
-                    'cart_id' => $cart->id,
-                ]);
-            });
-        });
+        DB::select("
+            update {$prefix}orders set cart_id = (select id from {$prefix}carts where order_id = {$prefix}orders.id)
+            where exists (select 1 from {$prefix}carts where {$prefix}orders.id = {$prefix}carts.order_id and {$prefix}carts.order_id is not null)
+        ");
+        DB::select("update {$prefix}carts set order_id = null");
     }
 
     protected function canRun()
