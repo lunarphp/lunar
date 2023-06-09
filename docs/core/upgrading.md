@@ -64,6 +64,14 @@ implementation.
 
 See [Extending Orders](/core/extending/orders)
 
+### Low impact
+
+Add the new fingerprint class reference to `config/lunar/carts.php` if you have published the config.
+
+```php
+'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
+```
+
 ## 0.3
 
 ### High Impact

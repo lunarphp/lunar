@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added base pipelines for order creation.
 - Added new `draftOrder` and `completedOrders` relationships to the `Cart` model
 - Added `PaymentAttemptedEvent`
+- Added `fingerprint` method to the `Cart` model.
+- Added `checkFingerprint` method to the `Cart` model.
 
 ## 0.3.0
 
