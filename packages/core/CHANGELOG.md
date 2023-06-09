@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Changed
+
+- The logic in the `CreateOrder` action has been extracted into pipelines.
+- `order_id` has been deprecated on the `carts` table in favour of a `cart_id` column on the `orders` table.
+- The `CreateOrder` action will now ensure we are working with a draft order before proceeding.
+- The `CreateOrder` pipelines will now handle and update the order if it already exists.
+
+### Added
+
+- Added base pipelines for order creation.
+- Added new `draftOrder` and `completedOrders` relationships to the `Cart` model
+- Added `PaymentAttemptedEvent`
+
 ## 0.3.0
 
 > Latest updates from `0.2` have been brought in.
@@ -76,7 +91,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 0.2.5
 
-### Fixed
+### Fixed
 
 - `BuyXGetY` will now factor in minimum qty when calculating the amount to allocate.
 - The `ApplyDiscounts` pipeline will now reset the discount breakdown when run to avoid duplicates.

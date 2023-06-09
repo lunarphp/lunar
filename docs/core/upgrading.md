@@ -22,7 +22,47 @@ php artisan lunar:hub:install
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`. 
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`.
+
+## [Unreleased]
+
+### High Impact
+
+#### Cart/Order Relationship
+
+The relationship between a cart and an order has been changed, previously the `carts` table had an `order_id` column,
+this has been changed so the `cart_id` is now on the `orders` table.
+
+You should update any code that sets the `order_id` on a cart to `cart_id` on the order.
+
+We've also introduced the concept of `draft` and `complete` orders for carts, so you should update any code that
+references an order from a cart to the following methods:
+
+```php
+// Old
+$cart->order
+
+// New
+
+/* The order which doesn't have a `placed_at` value */
+$cart->draftOrder
+
+/* Any orders which have a `placed_at` value */
+$cart->completedOrder
+```
+
+### Changes to `CreateOrder` action
+
+The `Lunar\Actions\Cart/CreateOrder` action has been refactored to run through pipelines, much like how carts are
+currently calculated. If you are currently using your own `CreateOrder` action, you should refactor the logic into
+pipelines and ues the provided action.
+
+:::danger
+The `CreateAction` class is now final, so if you are extending this action you will need to refactor your
+implementation.
+:::
+
+See [Extending Orders](/core/extending/orders)
 
 ## 0.3
 
@@ -46,7 +86,8 @@ If you were using `db_date` helper function, you will now need to wrap it with `
 
 ### Low Impact
 
-If you have a custom DiscountType, you should update the `save` method to expect the recently saved discount id to be passed.
+If you have a custom DiscountType, you should update the `save` method to expect the recently saved discount id to be
+passed.
 
 ```php
 // Before
@@ -101,7 +142,8 @@ All publishing commands for Lunar now use `.` as a separator.
 
 #### Brand requirement is now configurable.
 
-Whether the product brand is required on your store is now configurable, the default behaviour is set to `true`. If you wish to change this, simply update `config/lunar-hub/products.php`.
+Whether the product brand is required on your store is now configurable, the default behaviour is set to `true`. If you
+wish to change this, simply update `config/lunar-hub/products.php`.
 
 ```php
 'require_brand' => false,
@@ -209,7 +251,6 @@ php artisan lunar:migrate:getcandy
 - Copy across the data from the old `getcandy_` tables into the new `lunar_` tables.
 - Update any polymorphic `GetCandy` classes to the `Lunar` namespace.
 - Update field types in `attribute_data` to the `Lunar` namespace.
-
 
 #### What this command will not do
 
