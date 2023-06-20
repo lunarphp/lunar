@@ -119,6 +119,13 @@ class CartLine extends BaseModel
     {
         return $this->belongsTo(Cart::class);
     }
+    
+    public function getCartAttribute()
+    {
+        return $this->getCachedRelation('cart_id', function () {
+            return $this->cart()->first();    
+        });
+    }
 
     /**
      * Return the tax class relationship.
@@ -153,5 +160,12 @@ class CartLine extends BaseModel
     public function purchasable()
     {
         return $this->morphTo();
+    }
+    
+    public function getPurchasableAttribute()
+    {
+        return $this->getCachedRelation('purchasable_id', function () {
+            return $this->purchasable()->first();    
+        }, 'purchasable_type');
     }
 }

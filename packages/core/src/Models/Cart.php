@@ -189,6 +189,13 @@ class Cart extends BaseModel
     {
         return $this->belongsTo(Currency::class);
     }
+    
+    public function getCurrencyAttribute()
+    {
+        return $this->getCachedRelation('currency_id', function () {
+            return $this->currency()->first();    
+        });
+    }
 
     /**
      * Return the user relationship.
@@ -198,6 +205,13 @@ class Cart extends BaseModel
     public function user()
     {
         return $this->belongsTo(config('auth.providers.users.model'));
+    }
+    
+    public function getUserAttribute()
+    {
+        return $this->getCachedRelation('user_id', function () {
+            return $this->user()->first();    
+        });
     }
 
     public function scopeUnmerged($query)

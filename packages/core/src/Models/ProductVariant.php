@@ -85,6 +85,13 @@ class ProductVariant extends BaseModel implements Purchasable
     {
         return $this->belongsTo(Product::class)->withTrashed();
     }
+    
+    public function getProductAttribute()
+    {
+        return $this->getCachedRelation('product_id', function () {
+            return $this->product()->first();    
+        });
+    }
 
     /**
      * Return the tax class relationship.
@@ -94,6 +101,13 @@ class ProductVariant extends BaseModel implements Purchasable
     public function taxClass()
     {
         return $this->belongsTo(TaxClass::class);
+    }
+    
+    public function getTaxClassAttribute()
+    {
+        return $this->getCachedRelation('tax_class_id', function () {
+            return $this->taxClass()->first();    
+        });
     }
 
     /**

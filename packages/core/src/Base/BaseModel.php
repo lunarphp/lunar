@@ -4,6 +4,7 @@ namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Base\Traits\HasModelExtending;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 abstract class BaseModel extends Model
 {
@@ -21,5 +22,12 @@ abstract class BaseModel extends Model
         if ($connection = config('lunar.database.connection', false)) {
             $this->setConnection($connection);
         }
+    }
+    
+    protected function getCachedRelation($attribute, $callback, $morphType = '')
+    {
+        return Blink::once('lunar:'.$attribute.$morphType.':'.$this->{$attribute}, function() use ($callback) {
+            return $callback();    
+        });
     }
 }

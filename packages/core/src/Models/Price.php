@@ -55,6 +55,13 @@ class Price extends BaseModel
     {
         return $this->morphTo();
     }
+    
+    public function getPriceableAttribute()
+    {
+        return $this->getCachedRelation('priceable_id', function () {
+            return $this->priceable()->first();    
+        }, 'priceable_type');
+    }
 
     /**
      * Return the currency relationship.
@@ -65,6 +72,13 @@ class Price extends BaseModel
     {
         return $this->belongsTo(Currency::class);
     }
+    
+    public function getCurrencyAttribute()
+    {
+        return $this->getCachedRelation('currency_id', function () {
+            return $this->currency()->first();    
+        });
+    }
 
     /**
      * Return the customer group relationship.
@@ -74,5 +88,12 @@ class Price extends BaseModel
     public function customerGroup()
     {
         return $this->belongsTo(CustomerGroup::class);
+    }
+    
+    public function getCustomerGroupAttribute()
+    {
+        return $this->getCachedRelation('customer_group_id', function () {
+            return $this->customerGroup()->first();    
+        });
     }
 }
