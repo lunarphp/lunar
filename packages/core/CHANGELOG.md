@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- The `channel` and `customerGroup` scope will now do additional checks in the event an empty collection or value is
+  passed.
+
 ### Added
 
 - Added `fingerprint` method to the `Cart` model.
