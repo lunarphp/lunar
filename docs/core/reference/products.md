@@ -597,7 +597,7 @@ This will return a collection of `Price` models.
 
 ### Storing Prices Inclusive of Tax
 
-Lunar allows you to store pricing inclusive of tax if you need to. This is helpful if you need to show charm pricing, at $9.99 for example, which wouldn't be possible if pricing is stored exclusive of tax due to rounding.
+Lunar allows you to store pricing inclusive of tax if you need to. This is helpful if you need to show charm pricing, at $9.99 for example, which may not be possible if pricing is stored exclusive of tax due to rounding.
 
 To start you will need to set the `stored_inclusive_of_tax` config value in `lunar/pricing` to `true`. Then you will need to ensure your default Tax Zone is set up correctly with the correct tax rates.
 
