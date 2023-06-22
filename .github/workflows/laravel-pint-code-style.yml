@@ -1,10 +1,6 @@
 name: Laravel Pint Code Style Tests
 on:
   pull_request:
-    branches:
-      - develop
-    tags:
-      - '*'
 jobs:
   Test:
     runs-on: ubuntu-latest
