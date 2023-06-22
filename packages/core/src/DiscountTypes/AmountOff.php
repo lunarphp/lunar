@@ -145,7 +145,9 @@ class AmountOff extends AbstractDiscountType
     {
         $collectionIds = $this->discount->collections->pluck('id');
         $brandIds = $this->discount->brands->pluck('id');
-        $productIds = $this->discount->purchasableLimitations->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
+        $productIds = $this->discount->purchasableLimitations
+            ->reject(fn ($limitation) => ! $limitation->purchasable)
+            ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
 
         $lines = $cart->lines;
 
