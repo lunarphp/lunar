@@ -142,7 +142,6 @@ class HasCustomerGroupsTest extends TestCase
         }
     }
 
-
     /** @test */
     public function can_scope_results_to_a_customer_group()
     {

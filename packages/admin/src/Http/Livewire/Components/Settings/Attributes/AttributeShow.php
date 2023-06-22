@@ -3,8 +3,8 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Lunar\Facades\AttributeManifest;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\Attribute;
@@ -175,7 +175,7 @@ class AttributeShow extends AbstractAttribute
     public function refreshGroups()
     {
         $this->sortedAttributeGroups = AttributeGroup::whereAttributableType($this->typeClass)
-        ->orderBy('position')->get();
+            ->orderBy('position')->get();
 
         $this->showGroupCreate = false;
     }

@@ -2,9 +2,7 @@
 
 namespace Lunar\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\DB as DBFacade;
-use Lunar\Managers\DatabaseManager;
 
 class DB extends DBFacade
 {
@@ -19,4 +17,3 @@ class DB extends DBFacade
         return parent::connection(config('lunar.database.connection'));
     }
 }
-
