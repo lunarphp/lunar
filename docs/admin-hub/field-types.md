@@ -136,7 +136,7 @@ Once you've made the FieldType, you need to register it. Typically this could do
 
 ## Registering FieldType Assets
 
-If you need to register styles or scripts, you can do so in a service provider. More on this topic in [registering assets](/core/extending/assets).
+If you need to register styles or scripts, you can do so in a service provider. More on this topic in [registering assets](/admin-hub/assets).
 
 ```php
 // Register compiled script
