@@ -2,8 +2,8 @@
 
 ## Overview
 
-As you'd expect, orders on an online system show what users have purchased. They are linked to a Cart and you can only
-have 1 order per cart in the database.
+As you'd expect, orders on an online system show what users have purchased. Orders are linked to Carts and although you
+would generally only have one Order per cart, the system will support multiple if your store requires it.
 
 ```php
 Lunar\Models\Order
@@ -69,7 +69,7 @@ return [
 At minimum your class should look like the following:
 
 ```php
-final class CreateOrder extends Lunar\Actions\AbstractAction\AbstractAction
+final class CreateOrder extends Lunar\Actions\AbstractAction
 {
     /**
      * Execute the action.
