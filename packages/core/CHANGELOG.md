@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
+- Added `products` scope to the `Discount` model.
+- Added `usable` scope to the `Discount` model.
+
+### Changed
 
 ## 0.3.0
 
