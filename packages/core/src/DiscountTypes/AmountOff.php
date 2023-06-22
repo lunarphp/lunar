@@ -201,7 +201,7 @@ class AmountOff extends AbstractDiscountType
             $totalDiscount += $amount;
 
             $line->discountTotal = new Price(
-                $subTotalDiscounted + $amount,
+                $line->discountTotal?->value + $amount,
                 $cart->currency,
                 1
             );
