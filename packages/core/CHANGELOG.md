@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Pricing can now be stored inclusive of tax.
 - The `Lunar\Models\Price` model now provides two new methods to return the price exclusive and inclusive of tax.
+- Added `fingerprint` method to the `Cart` model.
+- Added `checkFingerprint` method to the `Cart` model.
 
 ## 0.3.0
 
@@ -83,7 +85,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 0.2.5
 
-### Fixed
+### Fixed
 
 - `BuyXGetY` will now factor in minimum qty when calculating the amount to allocate.
 - The `ApplyDiscounts` pipeline will now reset the discount breakdown when run to avoid duplicates.
