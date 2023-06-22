@@ -202,13 +202,14 @@ class ProductVariant extends BaseModel implements Purchasable
             ->withTimestamps();
     }
 
-    public function primaryImages()
-    {
-        return $this->images()->wherePivot('primary', true);
-    }
-
     public function getThumbnail()
     {
-        return $this->primaryImages->first() ?: $this->product->thumbnail;
+        $thumbnail = $this->images()->wherePivot('primary', true)?->first();
+
+        if (! $thumbnail) {
+            return $this->product->thumbnail;
+        }
+
+        return $thumbnail;
     }
 }
