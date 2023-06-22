@@ -54,7 +54,7 @@ class License
 
     public function isValid()
     {
-        return $this->valid;
+        return $this->verified;
     }
 
     public function checkDomain($url)

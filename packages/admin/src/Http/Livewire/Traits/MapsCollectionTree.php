@@ -8,7 +8,7 @@ trait MapsCollectionTree
      * Map collections so they're ready to be used.
      *
      * @param  \Illuminate\Support\Collection  $collections
-     * @return void
+     * @return array
      */
     public function mapCollections($collections)
     {

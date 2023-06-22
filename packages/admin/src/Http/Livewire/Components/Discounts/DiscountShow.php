@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Discount;
 
 class DiscountShow extends AbstractDiscount
@@ -59,7 +59,7 @@ class DiscountShow extends AbstractDiscount
     /**
      * Delete the discount.
      *
-     * @return Redirector
+     * @return void
      */
     public function delete()
     {
@@ -70,7 +70,7 @@ class DiscountShow extends AbstractDiscount
             $this->discount->collections()->delete();
             $this->discount->customerGroups()->detach();
             $this->discount->channels()->detach();
-            $this->discount->users()->delete();
+            $this->discount->users()->detach();
             $this->discount->delete();
         });
 

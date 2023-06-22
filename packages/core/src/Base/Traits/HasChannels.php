@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Channel;
 
 trait HasChannels
@@ -32,6 +32,8 @@ trait HasChannels
 
     /**
      * Get all of the models channels.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<Channel>
      */
     public function channels()
     {

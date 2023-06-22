@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.0
+
+> Latest updates from `0.2` have been brought in.
+
+### Fixed
+
+- Cart lines now calculate unit quantity pricing correctly.
+- Order line prices now take unit quantity into consideration.
+- The `lunarphp/scout-database-engine` now uses `self.version` in composer.
+- Time is now frozen in tests to prevent issues with date matching.
+- Line meta will now be cast to an array on save correctly for CartLines.
+- `$rate` will now be serialised correctly when passed as an array on `TaxBreakdown`.
+
+### Added
+
+- Added unit price methods, `unitDecimal()` and `unitFormatted()`, to the Price data type.
+- The `Price` model now has a `prices` relationship.
+- The `Price` model now has a `scope` relationship.
+- PHPStan has now been added and fixed across the codebase
+
 ## 0.3.0-beta.3
 
 ### Added
@@ -41,6 +61,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Laravel 8 support removed.
 - Laravel 10 support added.
+
+## 0.2.7
+
+### Fixed
+
+- The `addAddress` method for a `Cart` will now pass the address to the pipelines correctly.
+
+## 0.2.6
+
+### Fixed
+
+- When deleting a discount the users relationship will now `detach` rather than trying to `delete`.
 
 ## 0.2.5
 

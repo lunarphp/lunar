@@ -60,7 +60,6 @@ class UpdateStatus extends Component
         Order::whereIn('id', $this->ids)->update([
             'status' => $this->status,
         ]);
-
         $this->notify('Order statuses updated');
         $this->emit('bulkAction.complete');
     }

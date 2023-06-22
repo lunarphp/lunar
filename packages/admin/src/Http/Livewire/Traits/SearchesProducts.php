@@ -14,7 +14,9 @@ trait SearchesProducts
      */
     public function getBrandsProperty(): Collection
     {
-        return Brand::get();
+        return Brand::query()
+            ->orderBy('name')
+            ->get();
     }
 
     /**
