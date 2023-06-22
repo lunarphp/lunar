@@ -245,7 +245,7 @@ class PriceTest extends TestCase
     /** @test */
     public function can_get_a_price_ex_tax()
     {
-        Config::set('pricing.stored_inclusive_of_tax', true);
+        Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
         $variant = ProductVariant::factory()->create();
 
@@ -269,7 +269,7 @@ class PriceTest extends TestCase
     /** @test */
     public function can_get_a_price_inc_tax()
     {
-        Config::set('pricing.stored_inclusive_of_tax', false);
+        Config::set('lunar.pricing.stored_inclusive_of_tax', false);
 
         $variant = ProductVariant::factory()->create();
 

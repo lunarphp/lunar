@@ -121,7 +121,7 @@ class SystemTaxDriverTest extends TestCase
     /** @test */
     public function can_get_breakdown_price_inc()
     {
-        Config::set('pricing.stored_inclusive_of_tax', true);
+        Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
         $address = Address::factory()->create();
         $currency = Currency::factory()->create();
