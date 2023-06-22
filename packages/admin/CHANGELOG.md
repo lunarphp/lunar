@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The iframe height on email previews has been increased to avoid cut off.
 - Refactor row selection on tables to avoid extra roundtrips to Livewire.
 - AttributeGroup saving will now pass the id if being edited to prevent false validation exception being thrown.
+- Added a validation check for the product variant backorder.
 
 ### Changed
 
