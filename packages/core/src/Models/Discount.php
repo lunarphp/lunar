@@ -141,7 +141,7 @@ class Discount extends BaseModel
     /**
      * Return the active scope.
      *
-     * @return void
+     * @return Builder
      */
     public function scopeActive(Builder $query)
     {
@@ -151,5 +151,32 @@ class Discount extends BaseModel
                 $query->whereNull('ends_at')
                     ->orWhere('ends_at', '>', now());
             });
+    }
+
+    /**
+     * Return the products scope.
+     *
+     * @return Builder
+     */
+    public function scopeProducts(Builder $query, iterable $productIds = [])
+    {
+        if (is_array($productIds)) {
+            $productIds = collect($productIds);
+        }
+
+        return $query->where(function ($subQuery) use ($productIds) {
+            $subQuery->whereDoesntHave('purchasables')
+                ->orWhereHas('purchasables', function ($relation) use ($productIds) {
+                    $relation->whereIn('purchasable_id', $productIds);
+                });
+        });
+    }
+
+    public function scopeUsable(Builder $query)
+    {
+        return $query->where(function ($subQuery) {
+            $subQuery->whereRaw('uses < max_uses')
+                ->orWhereNull('max_uses');
+        });
     }
 }

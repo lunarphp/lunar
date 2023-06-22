@@ -528,6 +528,7 @@ class AmountOffTest extends TestCase
         $discount = Discount::factory()->create([
             'type' => AmountOff::class,
             'name' => 'Test Coupon',
+            'coupon' => null,
             'data' => [
                 'fixed_value' => true,
                 'fixed_values' => [
