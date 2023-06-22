@@ -2,8 +2,8 @@
 
 namespace Lunar\Models;
 
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
@@ -31,8 +31,8 @@ use Lunar\Database\Factories\CartFactory;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
-use Lunar\Facades\DB;
 use Lunar\Exceptions\FingerprintMismatchException;
+use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
@@ -536,8 +536,10 @@ class Cart extends BaseModel
      *
      * @return Cart
      */
-    public function createOrder(): Order
-    {
+    public function createOrder(
+        bool $allowMultipleOrders = false,
+        int $orderIdToUpdate = null
+    ): Order {
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,
         ]) as $action) {
@@ -548,8 +550,11 @@ class Cart extends BaseModel
 
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
-        )->execute($this->refresh()->calculate())
-            ->then(fn ($order) => $order->refresh());
+        )->execute(
+            $this->refresh()->calculate(),
+            $allowMultipleOrders,
+            $orderIdToUpdate
+        )->then(fn ($order) => $order->refresh());
     }
 
     /**
@@ -584,16 +589,17 @@ class Cart extends BaseModel
     public function fingerprint()
     {
         $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
+
         return (new $generator())->execute($this);
     }
 
     /**
      * Check whether a given fingerprint matches the one being generated for the cart.
      *
-     * @param string $fingerprint
+     * @param  string  $fingerprint
+     * @return bool
      *
      * @throws FingerprintMismatchException
-     * @return boolean
      */
     public function checkFingerprint($fingerprint)
     {
