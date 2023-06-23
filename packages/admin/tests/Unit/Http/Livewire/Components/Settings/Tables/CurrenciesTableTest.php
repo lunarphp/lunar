@@ -38,7 +38,7 @@ class CurrenciesTableTest extends TestCase
         $records = Currency::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(CurrenciesTable::class)
-                        ->assertViewIs('l-tables::index');
+            ->assertViewIs('l-tables::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());

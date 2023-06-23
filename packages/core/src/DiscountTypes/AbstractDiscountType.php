@@ -82,7 +82,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     /**
      * Check if discount's conditions met.
      *
-     * @param  Cart  $cart
      * @param  Lunar\Base\ValueObjects\Cart\DiscountBreakdown  $breakdown
      * @return self
      */

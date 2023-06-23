@@ -17,6 +17,6 @@ class AddonsIndex extends Component
     public function render()
     {
         return view('adminhub::livewire.components.settings.addons.index')
-        ->layout('adminhub::layouts.base');
+            ->layout('adminhub::layouts.base');
     }
 }

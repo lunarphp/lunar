@@ -4,10 +4,10 @@ namespace Lunar\Hub\Http\Livewire\Components\Products;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
@@ -403,6 +403,7 @@ abstract class AbstractProduct extends Component
 
             if (! $this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
+                $variantToKeep->values()->detach();
 
                 $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
                     return $variant->id != $variantToKeep->id;

@@ -13,8 +13,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
 {
     /**
      * The current channel
-     *
-     * @var Channel|null
      */
     protected ?Channel $channel = null;
 
@@ -40,7 +38,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     public function __construct(
         protected SessionManager $sessionManager
     ) {
-        if (!$this->customerGroups) {
+        if (! $this->customerGroups) {
             $this->customerGroups = collect();
         }
 
@@ -70,19 +68,19 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
 
         if ($this->customerGroups?->count()) {
-            if (!$groupHandles) {
+            if (! $groupHandles) {
                 return $this->setCustomerGroups(
                     $this->customerGroups
                 );
             }
+
             return $this->customerGroups;
         }
 
-
-        if (!$this->customerGroups?->count()) {
+        if (! $this->customerGroups?->count()) {
             return $this->setCustomerGroups(
                 collect([
-                    CustomerGroup::getDefault()
+                    CustomerGroup::getDefault(),
                 ])
             );
         }
@@ -105,7 +103,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             $this->getSessionKey().'_channel'
         );
 
-        if (!$channelHandle) {
+        if (! $channelHandle) {
             return $this->setChannel(
                 Channel::getDefault()
             );
@@ -113,7 +111,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
 
         $channel = Channel::whereHandle($channelHandle)->first();
 
-        if (!$channel) {
+        if (! $channel) {
             throw new \Exception(
                 "Unable to find channel with handle {$channelHandle}"
             );
@@ -140,6 +138,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             $channel->handle
         );
         $this->channel = $channel;
+
         return $this;
     }
 
@@ -154,6 +153,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
 
         $this->customerGroups = $customerGroups;
+
         return $this;
     }
 

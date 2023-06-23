@@ -5,7 +5,6 @@ namespace Lunar;
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -34,7 +33,6 @@ use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
-use Lunar\Managers\StorefrontSessionManager;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
@@ -47,11 +45,13 @@ use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
 use Lunar\Database\State\EnsureBrandsAreUpgraded;
 use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
+use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
 use Lunar\Managers\DiscountManager;
 use Lunar\Managers\PaymentManager;
 use Lunar\Managers\PricingManager;
+use Lunar\Managers\StorefrontSessionManager;
 use Lunar\Managers\TaxManager;
 use Lunar\Models\Address;
 use Lunar\Models\CartLine;
@@ -186,11 +186,11 @@ class LunarServiceProvider extends ServiceProvider
             });
 
             $this->publishes([
-                __DIR__ . '/../resources/lang' => lang_path('vendor/lunar')
+                __DIR__.'/../resources/lang' => lang_path('vendor/lunar'),
             ], 'lunar.translation');
 
             $this->publishes([
-                __DIR__ . '/../database/migrations/' => database_path('migrations'),
+                __DIR__.'/../database/migrations/' => database_path('migrations'),
             ], 'lunar.migrations');
 
             $this->commands([
@@ -241,6 +241,7 @@ class LunarServiceProvider extends ServiceProvider
             EnsureDefaultTaxClassExists::class,
             EnsureBrandsAreUpgraded::class,
             EnsureMediaCollectionsAreRenamed::class,
+            MigrateCartOrderRelationship::class,
         ];
 
         foreach ($states as $state) {
@@ -305,19 +306,19 @@ class LunarServiceProvider extends ServiceProvider
 
             if ($type == 'uuid') {
                 $this->foreignUuId($field_name)
-                     ->nullable($nullable)
-                     ->constrained(
-                         (new $userModel())->getTable()
-                     );
+                    ->nullable($nullable)
+                    ->constrained(
+                        (new $userModel())->getTable()
+                    );
             } elseif ($type == 'int') {
                 $this->unsignedInteger($field_name)->nullable($nullable);
                 $this->foreign($field_name)->references('id')->on('users');
             } else {
                 $this->foreignId($field_name)
-                     ->nullable($nullable)
-                     ->constrained(
-                         (new $userModel())->getTable()
-                     );
+                    ->nullable($nullable)
+                    ->constrained(
+                        (new $userModel())->getTable()
+                    );
             }
         });
     }
