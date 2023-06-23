@@ -207,6 +207,6 @@ abstract class AbstractProductType extends Component
                 fn ($query, $search) => $query->where("name->{$this->defaultLanguage->code}", 'LIKE', '%'.$search.'%')
             )->whereSystem(false)
             ->whereNotIn('id', $existing->pluck('id')->toArray())
-            ->paginate(25);
+            ->paginate(250);
     }
 }
