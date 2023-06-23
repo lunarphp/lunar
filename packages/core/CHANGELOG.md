@@ -17,6 +17,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
 
+### Changed
+
+- The `getThumbnail()` method on variants has been changed to allow for eager loading.
+
 ## 0.3.0
 
 > Latest updates from `0.2` have been brought in.
