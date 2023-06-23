@@ -2,9 +2,9 @@
 
 namespace Lunar\Actions\Carts;
 
-use Lunar\Facades\DB;
 use Lunar\Actions\AbstractAction;
 use Lunar\Exceptions\CartLineIdMismatchException;
+use Lunar\Facades\DB;
 use Lunar\Models\Cart;
 
 class RemovePurchasable extends AbstractAction

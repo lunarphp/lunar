@@ -38,7 +38,7 @@ class LanguagesTableTest extends TestCase
         $records = Language::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(LanguagesTable::class)
-                        ->assertViewIs('l-tables::index');
+            ->assertViewIs('l-tables::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());

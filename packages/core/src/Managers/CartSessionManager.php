@@ -49,7 +49,7 @@ class CartSessionManager implements CartSessionInterface
     public function manager()
     {
         if (! $this->cart) {
-            $this->fetchOrCreate(create:true);
+            $this->fetchOrCreate(create: true);
         }
 
         return $this->cart;
@@ -68,7 +68,6 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Set the cart to be used for the session.
      *
-     * @param  \Lunar\Models\Cart  $cart
      * @return \Lunar\Models\Cart
      */
     public function use(Cart $cart)

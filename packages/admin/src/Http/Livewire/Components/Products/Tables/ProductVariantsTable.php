@@ -78,8 +78,8 @@ class ProductVariantsTable extends Table
         $query = $this->query;
 
         return $this->tableBuilder
-        ->product($this->product)
-        ->perPage($this->perPage)
-        ->getData();
+            ->product($this->product)
+            ->perPage($this->perPage)
+            ->getData();
     }
 }
