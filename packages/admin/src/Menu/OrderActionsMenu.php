@@ -13,7 +13,7 @@ final class OrderActionsMenu
      */
     public static function make()
     {
-        (new static())
+        (new self())
             ->makeTopLevel();
     }
 

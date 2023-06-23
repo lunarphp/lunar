@@ -26,6 +26,44 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ## [Unreleased]
 
+### High Impact
+
+#### Cart/Order Relationship
+
+The relationship between a cart and an order has been changed, previously the `carts` table had an `order_id` column,
+this has been changed so the `cart_id` is now on the `orders` table.
+
+You should update any code that sets the `order_id` on a cart to `cart_id` on the order.
+
+We've also introduced the concept of `draft` and `complete` orders for carts, so you should update any code that
+references an order from a cart to the following methods:
+
+```php
+// Old
+$cart->order
+
+// New
+
+/* The order which doesn't have a `placed_at` value */
+$cart->draftOrder
+
+/* Any orders which have a `placed_at` value */
+$cart->completedOrder
+```
+
+### Changes to `CreateOrder` action
+
+The `Lunar\Actions\Cart/CreateOrder` action has been refactored to run through pipelines, much like how carts are
+currently calculated. If you are currently using your own `CreateOrder` action, you should refactor the logic into
+pipelines and ues the provided action.
+
+:::danger
+The `CreateAction` class is now final, so if you are extending this action you will need to refactor your
+implementation.
+:::
+
+See [Extending Orders](/core/extending/orders)
+
 ### Low impact
 
 Add the new fingerprint class reference to `config/lunar/carts.php` if you have published the config.

@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
-use Lunar\Facades\DB;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
