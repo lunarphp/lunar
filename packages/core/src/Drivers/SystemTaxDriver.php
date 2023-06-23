@@ -97,9 +97,9 @@ class SystemTaxDriver implements TaxDriver
     {
         $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
-        $taxAmounts = Blink::once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone){
+        $taxAmounts = Blink::once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone) {
             return $taxZone->taxAmounts->first(
-               fn($amount) => $amount->tax_class_id == $taxClass->id
+                fn ($amount) => $amount->tax_class_id == $taxClass->id
             )->get();
         });
 
