@@ -146,14 +146,17 @@ class MenuSlotTest extends TestCase
 
         $this->assertCount(0, $slot->getItems());
 
-        $staff->permissions()->create([
-            'handle' => 'item-two-gate',
-        ]);
-
         $manifest = $this->app->make(Manifest::class);
         $manifest->addPermission(function ($perm) {
             $perm->handle('item-two-gate');
         });
+
+        $perm = Permission::firstOrCreate([
+            'name' => 'item-two-gate',
+            'guard_name' => 'staff',
+        ]);
+
+        $staff->givePermissionTo($perm);
 
         $this->assertCount(1, $slot->getItems());
 
