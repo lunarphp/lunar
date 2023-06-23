@@ -173,7 +173,7 @@ class LunarServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (!config('lunar.database.disable_migrations', false)) {
+        if (! config('lunar.database.disable_migrations', false)) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
 
