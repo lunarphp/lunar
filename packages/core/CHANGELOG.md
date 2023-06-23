@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
 - Added `orders` relationship to the `LunarUser` trait.
+- Added 'label' JSON field to `ProductOption` model.
 - Added pipelines to PricingManager
 
 ### Changed
@@ -32,6 +33,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The `CreateOrder` action will now ensure we are working with a draft order before proceeding.
 - The `CreateOrder` pipelines will now handle and update the order if it already exists.
 - PricingManager properties changed from `protected` to `public`
+
+## 0.3.1
+
+### Fixed
+
+- The `getWeightAttribute` will now correctly convert from `kg`.
+
+### Changed
+
+- Remove `isset` from `addSearchableAttribute`
+
+### Added
+
+- Added `Blink` cache to parts of the cart to improve speed for duplicated queries.
 
 ## 0.3.0
 
