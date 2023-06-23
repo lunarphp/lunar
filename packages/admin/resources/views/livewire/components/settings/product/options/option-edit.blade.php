@@ -18,6 +18,17 @@
                     </x-hub::translatable>
                 </x-hub::input.group>
 
+                <x-hub::input.group :label="__('adminhub::inputs.label')" for="label" :error="$errors->first('productOption.label.' . $this->defaultLanguage->code)">
+                    <x-hub::translatable>
+                        <x-hub::input.text wire:model.defer="productOption.label.{{ $this->defaultLanguage->code }}" :error="$errors->first('productOption.label.' . $this->defaultLanguage->code)" />
+                        @foreach($this->languages->filter(fn ($lang) => !$lang->default) as $language)
+                        <x-slot :name="$language['code']">
+                            <x-hub::input.text wire:model="productOption.label.{{ $language->code }}" />
+                        </x-slot>
+                        @endforeach
+                    </x-hub::translatable>
+                </x-hub::input.group>
+
                 <x-hub::input.group required :label="__('adminhub::inputs.handle')" for="handle" :error="$errors->first('productOption.handle')">
                     <x-hub::input.text wire:model.defer="productOption.handle" id="handle" :error="$errors->first('productOption.handle')" />
                 </x-hub::input.group>

@@ -31,13 +31,16 @@ use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZoneShow;
 use Lunar\Hub\Http\Livewire\Pages\Settings\Taxes\TaxZonesIndex;
 
 Route::get('/', function () {
-    return redirect()->route('hub.attributes.index');
+    $settings = Lunar\Hub\Facades\Menu::slot('settings');
+
+    return redirect()->route($settings->getFirstLink()->route ?? 'hub.index');
 })->name('hub.settings');
 
 /**
  * Activity Log.
  */
-Route::get('activity-log', ActivityLogIndex::class)->name('hub.activity-log.index');
+Route::get('activity-log', ActivityLogIndex::class)->name('hub.activity-log.index')
+    ->middleware('can:settings:core');
 
 /**
  * Attribute routes.
@@ -109,7 +112,7 @@ Route::group([
  * Addons.
  */
 Route::group([
-    'middleware' => 'can:settings',
+    'middleware' => 'can:settings:core',
 ], function () {
     Route::get('addons', AddonsIndex::class)->name('hub.addons.index');
     Route::get('addons/{addon}', AddonShow::class)->name('hub.addons.show');
