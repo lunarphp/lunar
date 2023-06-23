@@ -403,6 +403,7 @@ abstract class AbstractProduct extends Component
 
             if (! $this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
+                $variantToKeep->values()->detach();
 
                 $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
                     return $variant->id != $variantToKeep->id;
