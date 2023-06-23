@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateStaffPermissionsTable extends Migration
+class DropStaffPermissionsTable extends Migration
 {
     public function up()
     {
