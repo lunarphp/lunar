@@ -90,7 +90,7 @@ class Price extends BaseModel
 
         $priceExTax = clone $this->price;
 
-        $priceExTax->value = round($priceExTax->value / (1 + $this->getDefaultTaxRate()));
+        $priceExTax->value = (int) round($priceExTax->value / (1 + $this->getDefaultTaxRate()));
 
         return $priceExTax;
     }
@@ -107,7 +107,7 @@ class Price extends BaseModel
         }
 
         $priceIncTax = clone $this->price;
-        $priceIncTax->value = round($priceIncTax->value * (1 + $this->getDefaultTaxRate()));
+        $priceIncTax->value = (int) round($priceIncTax->value * (1 + $this->getDefaultTaxRate()));
         return $priceIncTax;
     }
 
