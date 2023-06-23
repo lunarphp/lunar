@@ -137,7 +137,7 @@ class StaffShow extends AbstractStaff
         $permissions = $manifest->getGroupedPermissions();
 
         return view('adminhub::livewire.components.settings.staff.show', [
-            'firstPartyPermissions' => $permissions->filter(fn ($permission) => (bool) $permission->firstParty),
+            'permissions' => $permissions->sortByDesc(fn ($permission) => (bool) $permission->firstParty),
         ])->layout('adminhub::layouts.base');
     }
 }

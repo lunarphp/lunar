@@ -11,6 +11,7 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Stubs\TestPricingPipeline;
 use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
 
@@ -370,5 +371,53 @@ class PricingManagerTest extends TestCase
         $this->assertEquals($base->id, $pricing->base->id);
         $this->assertEquals($groupPrice->id, $pricing->matched->id);
         $this->assertCount(1, $pricing->customerGroupPrices);
+    }
+
+    /** @test */
+    public function can_pipeline_purchasable_price()
+    {
+        $manager = new PricingManager();
+
+        $currency = Currency::factory()->create([
+            'default' => true,
+            'exchange_rate' => 1,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        $price = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id' => $variant->id,
+            'currency_id' => $currency->id,
+            'tier' => 1,
+        ]);
+
+        $pricing = $manager->for($variant)->get();
+
+        $this->assertInstanceOf(PricingResponse::class, $pricing);
+
+        $this->assertEquals($price->id, $pricing->matched->id);
+        $this->assertEquals($price->price->value, $pricing->matched->price->value);
+
+        config()->set('lunar.pricing.pipelines', [
+            // set price to 200
+            TestPricingPipeline::class,
+        ]);
+
+        $pricing = $manager->for($variant)->get();
+
+        $this->assertInstanceOf(PricingResponse::class, $pricing);
+
+        $this->assertEquals($price->id, $pricing->matched->id);
+
+        $this->assertNotEquals($price->price->value, $pricing->matched->price->value);
+        $this->assertEquals(200, $pricing->matched->price->value);
     }
 }

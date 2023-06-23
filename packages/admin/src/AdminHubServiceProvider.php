@@ -120,6 +120,8 @@ use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use Lunar\Hub\Http\Livewire\Components\Tags;
 use Lunar\Hub\Http\Livewire\Dashboard;
 use Lunar\Hub\Http\Livewire\HubLicense;
+use Lunar\Hub\Http\Middleware\Authenticate;
+use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Lunar\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use Lunar\Hub\Menu\MenuRegistry;
 use Lunar\Hub\Menu\OrderActionsMenu;
@@ -515,6 +517,11 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->app['config']->set('auth.guards.staff', [
             'driver' => 'session',
             'provider' => 'staff',
+        ]);
+
+        Livewire::addPersistentMiddleware([
+            Authenticate::class,
+            RedirectIfAuthenticated::class,
         ]);
     }
 

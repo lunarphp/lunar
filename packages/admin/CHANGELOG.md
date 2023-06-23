@@ -6,15 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Added Label field when editing product options.
+- Ability to add and sort child collections when editing a collection.
+
 ### Fixed
 
 - `values` are now detached from the product variant when it's the only one left.
+- Setting menu now route to first accessible page
 
 ### Changed
 
 - Improved `wire:key` on product associations when editing a product to avoid duplicate keys causing DOM diffing issues.
 - Use `spatie/laravel-permission` for hub authorization
 - Removed `Staff->authorize()`
+- Show third-party permissions in staff setting
+- Menu Link/Group/Section now is hidden if no permission given
+
+## 0.3.1
+
+### Fixed
+
+- Added a validation check for the product variant backorder.
+- Payment capture modal now takes currency's decimal places into account when deciding whether to display a warning
+  message
+
+### Changed
+
+- Persist Lunar middlewares in Livewire
 
 ## 0.3.0
 

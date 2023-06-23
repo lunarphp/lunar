@@ -22,6 +22,7 @@ return [
     'option-values.created' => 'Created option value',
     'product-options.created' => 'Product option created',
     'product-options.deleted' => 'Product option deleted',
+    'product-options.reordered' => 'Product option reordered',
     'product-options.not.deleted' => 'Product option could not be deleted as there are values associated with it',
     'password-reset.invalid_token' => 'Reset token is invalid',
     'password-reset.password_updated' => 'Password updated',
