@@ -83,7 +83,6 @@ class HasChannelsTest extends TestCase
 
         $this->assertCount(0, Product::channel($channelA)->get());
 
-
         $startsAt = now()->addDay();
         $endsAt = now()->addDays(2);
 

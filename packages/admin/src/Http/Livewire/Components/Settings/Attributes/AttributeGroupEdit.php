@@ -57,7 +57,7 @@ class AttributeGroupEdit extends Component
     protected function validationAttributes()
     {
         return [
-            "attributeGroup.name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
+            "attributeGroup.name.{$this->defaultLanguage->code}" => lang(key: 'inputs.name', lower: true),
         ];
     }
 

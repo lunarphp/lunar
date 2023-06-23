@@ -83,29 +83,28 @@ trait HasChannels
                 ->orWhere('starts_at', '<=', now());
         })->where(function ($query) {
             $query->whereNull('ends_at')
-            ->orWhere('ends_at', '>=', now());
+                ->orWhere('ends_at', '>=', now());
         })->whereEnabled(true);
     }
 
     /**
      * Apply the channel scope to the query
      *
-     * @param Builder $query
-     * @param Channel|iterable $channel
-     *
+     * @param  Builder  $query
+     * @param  Channel|iterable  $channel
      * @return Builder
      */
     public function scopeChannel($query, Channel|iterable $channel = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
-        if (!$channel) {
+        if (! $channel) {
             return $query;
         }
 
-        if (!$startsAt) {
+        if (! $startsAt) {
             $startsAt = now();
         }
 
-        if (!$endsAt) {
+        if (! $endsAt) {
             $endsAt = now()->addSecond();
         }
 
@@ -125,14 +124,14 @@ trait HasChannels
 
         return $query->whereHas('channels', function ($relation) use ($channelIds, $startsAt, $endsAt) {
             $relation->whereIn(
-                $this->channels()->getTable() . '.channel_id',
+                $this->channels()->getTable().'.channel_id',
                 $channelIds
             )->where(function ($query) use ($startsAt) {
                 $query->whereNull('starts_at')
                     ->orWhere('starts_at', '<=', $startsAt);
             })->where(function ($query) use ($endsAt) {
                 $query->whereNull('ends_at')
-                ->orWhere('ends_at', '>=', $endsAt);
+                    ->orWhere('ends_at', '>=', $endsAt);
             })->whereEnabled(true);
         });
     }
