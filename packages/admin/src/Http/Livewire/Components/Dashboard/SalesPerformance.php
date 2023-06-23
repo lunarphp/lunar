@@ -3,13 +3,10 @@
 namespace Lunar\Hub\Http\Livewire\Components\Dashboard;
 
 use Carbon\CarbonPeriod;
-use DateTime;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Lunar\Models\Attribute;
 use Lunar\Models\Currency;
-use Lunar\Models\Customer;
 use Lunar\Models\Order;
 
 class SalesPerformance extends Component
@@ -71,19 +68,19 @@ class SalesPerformance extends Component
             DB::RAW('SUM(sub_total) as sub_total'),
             DB::RAW(db_date('placed_at', '%Y-%d', 'format_date'))
         )->whereNotNull('placed_at')
-        ->whereBetween('placed_at', [
-            $start,
-            $end,
-        ])->groupBy('format_date')->get();
+            ->whereBetween('placed_at', [
+                $start,
+                $end,
+            ])->groupBy('format_date')->get();
 
         $previousPeriod = Order::select(
             DB::RAW('SUM(sub_total) as sub_total'),
             DB::RAW(db_date('placed_at', '%Y-%d', 'format_date'))
         )->whereNotNull('placed_at')
-        ->whereBetween('placed_at', [
-            $start->clone()->subYear(),
-            $end->clone()->subYear(),
-        ])->groupBy('format_date')->get();
+            ->whereBetween('placed_at', [
+                $start->clone()->subYear(),
+                $end->clone()->subYear(),
+            ])->groupBy('format_date')->get();
 
         $period = CarbonPeriod::create($start, '1 day', $end);
 
@@ -108,7 +105,6 @@ class SalesPerformance extends Component
                 $previousPeriodDays->push(0);
             }
         }
-
 
         return collect([
             'chart' => [
@@ -156,7 +152,6 @@ class SalesPerformance extends Component
             ],
         ]);
     }
-
 
     /**
      * Render the livewire component.

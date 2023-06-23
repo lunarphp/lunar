@@ -3,7 +3,6 @@
 namespace Lunar\Hub;
 
 use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -116,6 +115,8 @@ use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use Lunar\Hub\Http\Livewire\Components\Tags;
 use Lunar\Hub\Http\Livewire\Dashboard;
 use Lunar\Hub\Http\Livewire\HubLicense;
+use Lunar\Hub\Http\Middleware\Authenticate;
+use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Lunar\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use Lunar\Hub\Menu\MenuRegistry;
 use Lunar\Hub\Menu\OrderActionsMenu;
@@ -231,7 +232,7 @@ class AdminHubServiceProvider extends ServiceProvider
             ], 'lunar.hub.views');
 
             $this->publishes([
-                __DIR__ . '/../resources/lang' => lang_path('vendor/adminhub'),
+                __DIR__.'/../resources/lang' => lang_path('vendor/adminhub'),
             ], 'lunar.hub.translations');
 
             $this->commands([
@@ -519,6 +520,11 @@ class AdminHubServiceProvider extends ServiceProvider
             'driver' => 'session',
             'provider' => 'staff',
         ]);
+
+        Livewire::addPersistentMiddleware([
+            Authenticate::class,
+            RedirectIfAuthenticated::class,
+        ]);
     }
 
     /**
@@ -528,7 +534,7 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        Gate::after(function ($user, $ability) {
+        Gate::after(function (Staff $user, $ability) {
             // Are we trying to authorize something within the hub?
             $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {

@@ -80,6 +80,7 @@ class PasswordReset extends Component
     {
         if (! $this->token) {
             $this->sendResetEmail();
+
             return;
         }
 

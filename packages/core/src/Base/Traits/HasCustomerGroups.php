@@ -14,8 +14,6 @@ trait HasCustomerGroups
 
     /**
      * Get the relationship for the customer groups.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     abstract public function customerGroups(): Relation;
 
@@ -23,9 +21,6 @@ trait HasCustomerGroups
      * Schedule models against customer groups.
      *
      * @param  mixed  $models
-     * @param  DateTime|null  $starts
-     * @param  DateTime|null  $ends
-     * @param  array  $pivotData
      * @return void
      */
     public function scheduleCustomerGroup(
@@ -47,7 +42,6 @@ trait HasCustomerGroups
      * Unschedule models against a customer group.
      *
      * @param  mixed  $models
-     * @param  array  $pivotData
      * @return void
      */
     public function unscheduleCustomerGroup(
@@ -73,23 +67,21 @@ trait HasCustomerGroups
     /**
      * Apply customer group scope.
      *
-     * @param Builder $query
-     * @param Collection $customerGroups
-     *
+     * @param  Collection  $customerGroups
      * @return Builder
      */
     public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTime $startsAt, DateTime $endsAt)
     {
         return $query->whereHas('customerGroups', function ($relation) use ($groupIds, $startsAt, $endsAt) {
             $relation->whereIn(
-                $this->customerGroups()->getTable() . '.customer_group_id',
+                $this->customerGroups()->getTable().'.customer_group_id',
                 $groupIds
             )->where(function ($query) use ($startsAt) {
                 $query->whereNull('starts_at')
                     ->orWhere('starts_at', '<=', $startsAt);
             })->where(function ($query) use ($endsAt) {
                 $query->whereNull('ends_at')
-                ->orWhere('ends_at', '>=', $endsAt);
+                    ->orWhere('ends_at', '>=', $endsAt);
             })->whereEnabled(true)->whereVisible(true);
         });
     }
@@ -97,14 +89,13 @@ trait HasCustomerGroups
     /**
      * Apply the customer group scope
      *
-     * @param Builder $query
-     * @param CustomerGroup|string $customerGroup
-     *
+     * @param  Builder  $query
+     * @param  CustomerGroup|string  $customerGroup
      * @return Builder
      */
     public function scopeCustomerGroup($query, CustomerGroup|iterable $customerGroup = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
-        if (!$customerGroup) {
+        if (blank($customerGroup)) {
             return $query;
         }
 
@@ -122,11 +113,11 @@ trait HasCustomerGroups
             $groupIds = collect($customerGroup)->pluck('id');
         }
 
-        if (!$startsAt) {
+        if (! $startsAt) {
             $startsAt = now();
         }
 
-        if (!$endsAt) {
+        if (! $endsAt) {
             $endsAt = now()->addSecond();
         }
 

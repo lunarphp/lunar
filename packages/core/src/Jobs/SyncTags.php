@@ -9,8 +9,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Illuminate\Support\Str;
+use Lunar\Facades\DB;
 use Lunar\Models\Tag;
 
 class SyncTags implements ShouldQueue
@@ -54,12 +54,12 @@ class SyncTags implements ShouldQueue
             $tagIds = [];
             // Make sure the tags are uppercase
             $this->tags->map(fn ($tag) => Str::upper($tag))
-            ->each(function ($tag) use (&$tagIds) {
-                $model = Tag::firstOrCreate([
-                    'value' => $tag,
-                ]);
-                $tagIds[] = $model->id;
-            });
+                ->each(function ($tag) use (&$tagIds) {
+                    $model = Tag::firstOrCreate([
+                        'value' => $tag,
+                    ]);
+                    $tagIds[] = $model->id;
+                });
             $this->model->tags()->sync($tagIds);
         });
     }

@@ -67,7 +67,7 @@ trait HasDimensions
      */
     public function getWeightAttribute()
     {
-        $unit = $this->weight_unit ?: 'mm';
+        $unit = $this->weight_unit ?: 'kg';
 
         return Converter::from("weight.{$unit}")->value($this->weight_value ?: 0);
     }

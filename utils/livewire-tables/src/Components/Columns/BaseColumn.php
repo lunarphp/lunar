@@ -71,7 +71,6 @@ abstract class BaseColumn extends Component
     /**
      * Set the property value for sortable.
      *
-     * @param  bool  $sortable
      * @return $this
      */
     public function sortable(bool $sortable = true): self

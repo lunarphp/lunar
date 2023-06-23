@@ -168,7 +168,7 @@ class DatabaseEngine extends Engine
         )->filter(function ($model) use ($objectIds) {
             return in_array($model->getScoutKey(), $objectIds);
             // })->sortBy(function ($model) use ($objectIdPositions) {
-        //     return $objectIdPositions[$model->getScoutKey()];
+            //     return $objectIdPositions[$model->getScoutKey()];
         })->values();
     }
 
