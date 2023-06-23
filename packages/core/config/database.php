@@ -21,8 +21,8 @@ return [
     | Disable migrations
     |--------------------------------------------------------------------------
     |
-    | Prevent Lunar`s default package migrations from running.
-    | Set to 'true' to disable. Useful for working with 3rd party packages etc.
+    | Prevent Lunar`s default package migrations from running for the core.
+    | Set to 'true' to disable.
     |
     */
     'disable_migrations' => false,
