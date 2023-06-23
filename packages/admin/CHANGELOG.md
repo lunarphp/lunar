@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Improved `wire:key` on product associations when editing a product to avoid duplicate keys causing DOM diffing issues.
+- Show third-party permissions in staff setting
 - Menu Link/Group/Section now is hidden if no permission given
 
 ## 0.3.1
