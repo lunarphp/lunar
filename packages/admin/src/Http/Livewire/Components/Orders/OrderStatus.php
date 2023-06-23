@@ -177,14 +177,14 @@ class OrderStatus extends Component
                 );
 
                 activity()
-                ->causedBy(auth()->user())
-                ->performedOn($this->order)
-                ->event('email-notification')
-                ->withProperties([
-                    'template' => $storedPath,
-                    'email' => $email,
-                    'mailer' => $mailer['name'],
-                ])->log('email-notification');
+                    ->causedBy(auth()->user())
+                    ->performedOn($this->order)
+                    ->event('email-notification')
+                    ->withProperties([
+                        'template' => $storedPath,
+                        'email' => $email,
+                        'mailer' => $mailer['name'],
+                    ])->log('email-notification');
             }
         }
 

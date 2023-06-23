@@ -3,9 +3,9 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Arr;
-use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Lunar\Facades\DB;
 use Lunar\Models\Url;
 
 trait HasUrls
@@ -51,7 +51,7 @@ trait HasUrls
 
         foreach ($this->urls as $key => $value) {
             $sequence = (int) $key + 1;
-            $attributes["urls.{$key}.slug"] = lang(key:'global.slug', lower:true)." #{$sequence}";
+            $attributes["urls.{$key}.slug"] = lang(key: 'global.slug', lower: true)." #{$sequence}";
         }
 
         return $attributes;

@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Schema\Blueprint;
-use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
+use Lunar\Facades\DB;
 
 class AddBrandIdToProductsTable extends Migration
 {
@@ -11,8 +11,8 @@ class AddBrandIdToProductsTable extends Migration
     {
         Schema::table($this->prefix.'products', function (Blueprint $table) {
             $table->foreignId('brand_id')->after('id')
-                  ->nullable()
-                  ->constrained($this->prefix.'brands');
+                ->nullable()
+                ->constrained($this->prefix.'brands');
         });
 
         Schema::table($this->prefix.'products', function (Blueprint $table) {
