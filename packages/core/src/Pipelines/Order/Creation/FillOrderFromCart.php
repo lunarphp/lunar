@@ -22,6 +22,7 @@ class FillOrderFromCart
 
         $order->fill([
             'user_id' => $cart->user_id,
+            'customer_id' => $cart->customer_id,
             'channel_id' => $cart->channel_id,
             'status' => config('lunar.orders.draft_status'),
             'reference' => null,
