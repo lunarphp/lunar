@@ -1,4 +1,4 @@
-# Admin Hub
+# Extending
 
 ## Overview
 
@@ -6,15 +6,6 @@ The admin hub is designed to be extended so you can add your own screens.
 
 You should develop your additional functionality using Laravel Livewire using
 the same approach as the core admin hub screens.
-
-## Brand Customisation
-
-You can now modify the hub logo and fav icon, please publish views using the
-command below.
-
-```bash
-php artisan vendor:publish --tag=lunar.hub.views
-```
 
 ## Adding to Menus
 
@@ -302,137 +293,3 @@ Rendered on the product creation screen
 | :------- | :------------------------------------------------------------------- |
 | `top`    | Displayed at the top of both the product variant editing sections    |
 | `bottom` | Displayed at the bottom of both the product variant editing sections |
-
-
-## Model View/Preview URLs
-
-It can be useful to provide a link to a product in order for a store admin to see how it will live prior to
-it going live, or just to have a direct link to it. To enable this feature you will need to add a supporting class to `config/lunar-hub/storefront.php`.
-
-```php
-<?php
-
-namespace App\Storefront;
-
-use Lunar\Models\Product;
-
-class ProductUrls
-{
-    public function preview(Product $product)
-    {
-        return route('product.preview', $product->defaultUrl?->slug, [
-            'preview' => true,
-        ]);
-    }
-
-    public function view(Product $product)
-    {
-        return route('product.view', $product->defaultUrl?->slug);
-    }
-}
-```
-
-```php
-'model_routes' => [
-    // ...
-    \Lunar\Models\Product::class => \App\Storefront\ProductUrls::class,
-],
-```
-
-## Discounts
-
-If you have [registered your own discount types](/core/extending/discounts) in the core, you will likely want to provide an interface so authenticated staff members can add the data required.
-
-:::warning
-You need to make sure you have [registered your discount](/core/extending/discounts) with the Lunar core beforehand.
-:::
-
-```php
-use Lunar\Hub\Facades\DiscountTypes;
-use App\Http\Livewire\Components\CustomDiscountComponent;
-use App\DiscountTypes\MyCustomDiscountType;
-
-DiscountTypes::register(MyCustomDiscountType::class, CustomDiscountComponent::class);
-```
-
-The component UI should then appear when the user has chosen the custom discount type.
-
-Create a Livewire component to handle your custom discount type.
-
-```php
-<?php
-
-namespace App\Http\Livewire\Components;
-
-use Lunar\Facades\DB;
-use Lunar\Models\Discount;
-use Lunar\Hub\Http\Livewire\Components\Discounts\Types\AbstractDiscountType;
-
-class CustomDiscountComponent extends AbstractDiscountType
-{
-    /**
-     * The instance of the discount.
-     *
-     * @var Discount
-     */
-    public Discount $discount;
-
-    /**
-     * {@ineheritDoc}.
-     */
-    public function rules()
-    {
-        return [
-            'discount.data' => 'array',
-        ];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function mount()
-    {
-        parent::mount();
-    }
-
-    public function getValidationMessages()
-    {
-        return [];
-    }
-    
-    /**
-     * Handle when the discount data is updated.
-     *
-     * @return void
-     */
-    public function updatedDiscountData()
-    {
-        $this->emitUp('discountData.updated', $this->discount->data);
-    }
-
-    /**
-     * Save the product discount.
-     *
-     * @return void
-     */
-    public function save($discountId)
-    {
-        $this->discount = Discount::find($discountId);
-            
-        DB::transaction(function () {
-            // ...
-        });
-    }
-
-    /**
-     * Render the livewire component.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function render()
-    {
-        return view('my-custom-discount-ui')
-            ->layout('adminhub::layouts.base');
-    }
-}
-```
