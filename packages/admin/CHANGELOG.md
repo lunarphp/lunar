@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - persist Lunar middlewares in livewire
+- Payment capture modal now takes currency's decimal places into account when deciding whether to display a warning message
 
 ## 0.3.0
 
