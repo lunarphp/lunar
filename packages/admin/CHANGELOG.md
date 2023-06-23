@@ -18,6 +18,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Improved `wire:key` on product associations when editing a product to avoid duplicate keys causing DOM diffing issues.
 
+## 0.3.1
+
+### Fixed
+
+- Added a validation check for the product variant backorder.
+- Payment capture modal now takes currency's decimal places into account when deciding whether to display a warning
+  message
+
+### Changed
+
+- Persist Lunar middlewares in Livewire
+
 ## 0.3.0
 
 > Latest updates from `0.2` have been brought in.

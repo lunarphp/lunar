@@ -504,7 +504,7 @@ Price::create([
 
 In the above example if you order between 1 and 9 items you will pay `1.99` per item. But if you order at least 10 you will pay `1.50` per item.
 
-### Fetching the price
+## Fetching the price
 
 Once you've got your pricing all set up, you're likely going to want to display it on your storefront. We've created a `PricingManager` which is available via a facade to make this process as painless as possible.
 
@@ -601,6 +601,52 @@ $product->prices
 ```
 
 This will return a collection of `Price` models.
+
+### Customising Prices with Pipelines
+
+All pipelines are defined in `config/lunar/pricing.php`
+
+```php
+'pipelines' => [
+    //,
+],
+```
+
+You can add your own pipelines to the configuration, they might look something like:
+
+```php
+<?php
+
+namespace App\Pipelines\Pricing;
+
+use Closure;
+use Lunar\Base\PricingManagerInterface;
+
+class CustomPricingPipeline
+{
+    public function handle(PricingManagerInterface $pricingManager, Closure $next)
+    {
+        $matchedPrice = $pricingManager->pricing->matched;
+
+        $matchedPrice->price->value = 200;
+
+        $pricingManager->pricing->matched = $matchedPrice;
+
+        return $next($pricingManager);
+    }
+}
+```
+
+```php
+'pipelines' => [
+    // ...
+    App\Pipelines\Pricing\CustomPricingPipeline::class,
+],
+```
+
+::: tip
+Pipelines will run from top to bottom
+:::
 
 ## Full Example
 
