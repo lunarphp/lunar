@@ -3,11 +3,11 @@
 namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
 use Illuminate\Support\Arr;
-use Lunar\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
@@ -281,7 +281,6 @@ class CollectionShow extends Component
                 }
             });
         })->validate(null, $this->getValidationMessages());
-
 
         $this->collection->attribute_data = $this->prepareAttributeData();
 

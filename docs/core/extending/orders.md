@@ -1,65 +1,63 @@
-# Order Modifiers
+# Order Extending
 
 ## Overview
 
-If you want to add additional functionality to the Order creation process, you can do so using Order Modifiers.
+If you want to add additional functionality to the Order creation process, you can do so using pipelines.
 
-## Registering an Order modifier
+## Pipelines
 
-Much like Carts, we just need to register these in our service provider.
+### Adding an Order Pipeline
+
+All pipelines are defined in `config/lunar/orders.php`
 
 ```php
-public function boot(OrderModifiers $orderModifiers)
-{
-    $orderModifiers->add(
-        \App\Modifiers\CustomOrderModifier::class
-    )
-}
+'pipelines' => [
+    'creation' => [
+        Lunar\Pipelines\Order\Creation\FillOrderFromCart::class,
+        Lunar\Pipelines\Order\Creation\CreateOrderLines::class,
+        Lunar\Pipelines\Order\Creation\CreateOrderAddresses::class,
+        Lunar\Pipelines\Order\Creation\CreateShippingLine::class,
+        Lunar\Pipelines\Order\Creation\CleanUpOrderLines::class,
+        Lunar\Pipelines\Order\Creation\MapDiscountBreakdown::class,
+        // ...
+    ],
+],
 ```
 
+You can add your own pipelines to the configuration, they might look something like:
+
 ```php
-namespace App\Modifiers;
+<?php
+
+namespace App\Pipelines\Orders;
 
 use Closure;
-use Lunar\Base\OrderModifier;
-use Lunar\Models\Cart;
+use Lunar\DataTypes\Price;
 use Lunar\Models\Order;
 
-class CustomOrderModifier extends OrderModifier
+class CustomOrderPipeline
 {
-    public function creating(Cart $cart, Closure $next): Cart
+    /**
+     * @return void
+     */
+    public function handle(Order $order, Closure $next)
     {
-        //...
-        return $next($cart);
-    }
+        // Do something to the cart...
 
-    public function created(Order $order, Closure $next): Order
-    {
-        //...
         return $next($order);
     }
 }
-
-```
-
-When using your own `OrderModifier` things can go wrong or for whatever reason you may need to abort the process and take the customer back to the checkout. For this you can throw a `CartException` (or your own exception that extends this) at any point in the flow and it'll stop.
-
-The process is wrapped in a transaction so no need to worry about incomplete data making it's way in to the database.
-
-```php
-namespace App\Exceptions;
-
-class MyCustomException extends \Lunar\Exceptions\CartException
-{
-
-}
 ```
 
 ```php
-public function creating(Cart $cart)
-{
-    if ($somethingWentTerriblyWrong) {
-        throw new MyCustomException;
-    }
-}
+'pipelines' => [
+    'creation' => [
+        // ...
+        App\Pipelines\Orders\CustomOrderPipeline::class,
+    ],   
+],
 ```
+
+::: tip
+Pipelines will run from top to bottom
+:::

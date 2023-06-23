@@ -8,6 +8,7 @@ use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Exceptions\Carts\CartException;
+use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\Discounts;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
@@ -139,7 +140,7 @@ class CartTest extends TestCase
             'user_id' => $user->getKey(),
         ]);
 
-        $this->assertDatabaseHas((new Cart)->getTable(), [
+        $this->assertDatabaseHas((new Cart())->getTable(), [
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
             'user_id' => $user->getKey(),
@@ -147,7 +148,7 @@ class CartTest extends TestCase
     }
 
     /** @test */
-    public function will_not_retrieve_user_cart_if_order_is_present()
+    public function will_not_retrieve_user_cart_if_order_is_placed()
     {
         $this->setAuthUserConfig();
 
@@ -156,15 +157,105 @@ class CartTest extends TestCase
         $user = StubUser::factory()->create();
 
         $cart = Cart::create([
-            'order_id' => Order::factory()->create()->id,
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
             'user_id' => $user->getKey(),
         ]);
 
+        Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => now(),
+        ]);
+
         $this->assertNull(
             Cart::whereUserId($user->getKey())->active()->first()
         );
+    }
+
+    /** @test */
+    public function can_get_cart_draft_order()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $user = StubUser::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => now(),
+        ]);
+
+        $draftOrder = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => null,
+        ]);
+
+        $this->assertEquals($draftOrder->id, $cart->draftOrder->id);
+
+        $draftOrder->delete();
+
+        $this->assertNull($cart->draftOrder()->first());
+    }
+
+    /** @test */
+    public function can_get_cart_draft_order_by_id()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $user = StubUser::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => now(),
+        ]);
+
+        $draftOrder = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => null,
+        ]);
+
+        $draftOrderTwo = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => null,
+        ]);
+
+        $this->assertEquals($draftOrder->id, $cart->draftOrder->id);
+        $this->assertEquals($draftOrderTwo->id, $cart->draftOrder($draftOrderTwo->id)->first()->id);
+    }
+
+    /** @test */
+    public function can_check_for_completed_order()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $user = StubUser::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $order = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'placed_at' => null,
+        ]);
+
+        $this->assertFalse($cart->hasCompletedOrders());
+
+        $order->update([
+            'placed_at' => now(),
+        ]);
+
+        $this->assertTrue($cart->hasCompletedOrders());
     }
 
     /** @test */
@@ -206,7 +297,7 @@ class CartTest extends TestCase
             'user_id' => $user->getKey(),
         ]);
 
-        $this->assertDatabaseHas((new Cart)->getTable(), [
+        $this->assertDatabaseHas((new Cart())->getTable(), [
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
             'user_id' => $user->getKey(),
@@ -563,5 +654,51 @@ class CartTest extends TestCase
 
         $this->assertCount(1, $cart->discountBreakdown);
         $this->assertSame(10, $cart->discountBreakdown->first()->price->value);
+    }
+
+    /** @test */
+    public function can_validate_fingerprint()
+    {
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'meta' => [
+                'A' => 'B',
+                'C' => 'D',
+            ],
+        ]);
+
+        $variant = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($variant),
+            'priceable_id' => $variant->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+
+        $fingerprint = $cart->fingerprint();
+
+        $this->assertTrue(
+            $cart->checkFingerprint($fingerprint)
+        );
+
+        $cart->update([
+            'coupon_code' => 'FOOBAR',
+        ]);
+
+        $this->expectException(FingerprintMismatchException::class);
+
+        $cart->checkFingerprint($fingerprint);
     }
 }

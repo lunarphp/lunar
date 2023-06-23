@@ -3,7 +3,6 @@
 namespace Lunar\Hub;
 
 use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -222,7 +221,7 @@ class AdminHubServiceProvider extends ServiceProvider
             ], 'lunar.hub.views');
 
             $this->publishes([
-                __DIR__ . '/../resources/lang' => lang_path('vendor/adminhub'),
+                __DIR__.'/../resources/lang' => lang_path('vendor/adminhub'),
             ], 'lunar.hub.translations');
 
             $this->commands([
