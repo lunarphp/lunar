@@ -29,8 +29,8 @@ class TaxBreakdownTest extends TestCase
                         'value' => 123,
                         'formatted' => '£1.23',
                         'currency' => Currency::factory()->create()->toArray(),
-                    ]
-                ]
+                    ],
+                ],
             ]),
             []
         );

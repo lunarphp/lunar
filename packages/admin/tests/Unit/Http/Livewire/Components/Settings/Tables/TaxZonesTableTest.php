@@ -38,7 +38,7 @@ class TaxZonesTableTest extends TestCase
         TaxZone::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(TaxZonesTable::class)
-                        ->assertViewIs('l-tables::index');
+            ->assertViewIs('l-tables::index');
 
         foreach ($component->get('columns') as $column) {
             $component->assertSee($column->getHeading());

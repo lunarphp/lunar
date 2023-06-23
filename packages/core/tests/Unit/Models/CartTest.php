@@ -597,7 +597,6 @@ class CartTest extends TestCase
             'quantity' => 1,
         ]);
 
-
         $fingerprint = $cart->fingerprint();
 
         $this->assertTrue(

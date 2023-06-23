@@ -120,8 +120,8 @@ class Staff extends Authenticatable
 
             foreach ($parts as $part) {
                 $query->where('email', 'LIKE', "%$part%")
-                        ->orWhere('firstname', 'LIKE', "%$part%")
-                        ->orWhere('lastname', 'LIKE', "%$part%");
+                    ->orWhere('firstname', 'LIKE', "%$part%")
+                    ->orWhere('lastname', 'LIKE', "%$part%");
             }
         }
     }

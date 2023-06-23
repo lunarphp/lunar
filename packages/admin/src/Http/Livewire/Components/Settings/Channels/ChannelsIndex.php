@@ -14,6 +14,6 @@ class ChannelsIndex extends Component
     public function render()
     {
         return view('adminhub::livewire.components.settings.channels.index')
-        ->layout('adminhub::layouts.base');
+            ->layout('adminhub::layouts.base');
     }
 }

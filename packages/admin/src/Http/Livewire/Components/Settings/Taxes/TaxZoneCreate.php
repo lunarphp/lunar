@@ -36,8 +36,8 @@ class TaxZoneCreate extends AbstractTaxZone
     protected function validationAttributes()
     {
         return [
-            'taxRates.*.priority' => lang(key:'inputs.priority.label', lower:true),
-            'taxRates.*.name' => lang(key:'inputs.name', lower:true),
+            'taxRates.*.priority' => lang(key: 'inputs.priority.label', lower: true),
+            'taxRates.*.name' => lang(key: 'inputs.name', lower: true),
         ];
     }
 
@@ -71,7 +71,7 @@ class TaxZoneCreate extends AbstractTaxZone
         $this->taxZone->default = $this->taxZone->default ?: false;
 
         $this->taxZone->save();
-//
+        //
         $this->saveDetails();
 
         $this->notify('Tax Zone created');
