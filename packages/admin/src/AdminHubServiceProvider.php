@@ -131,7 +131,13 @@ use Lunar\Models\Product;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
-    protected $configFiles = ['products', 'customers', 'storefront', 'system'];
+    protected $configFiles = [
+        'customers',
+        'database',
+        'products',
+        'storefront',
+        'system',
+    ];
 
     protected $root = __DIR__.'/..';
 
@@ -191,7 +197,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'adminhub');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
-        
+
         if (!config('lunar-hub.database.disable_migrations', false)) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
