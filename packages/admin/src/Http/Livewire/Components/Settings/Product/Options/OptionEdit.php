@@ -105,6 +105,7 @@ class OptionEdit extends Component
 
         foreach ($this->languages as $language) {
             $rules["productOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
+            $rules["productOption.label.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
             $rules["newProductOptionValue.name.{$language->code}"] = 'nullable|max:255';
             $rules["productOptionValue.name.{$language->code}"] = 'nullable|max:255';
         }
@@ -189,7 +190,7 @@ class OptionEdit extends Component
 
         if ($this->productOption->id) {
             $this->productOption->save();
-            $this->emit('option-edit.updated', $this->productOption->id);
+
             $this->notify(
                 __('adminhub::notifications.attribute-groups.updated')
             );
@@ -202,8 +203,6 @@ class OptionEdit extends Component
         }
 
         $this->productOption->save();
-
-        $this->emit('option-edit.created', $this->productOption->id);
 
         $this->productOption = new ProductOption();
 

@@ -23,7 +23,7 @@ class GetUnitPrice
         $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
 
         $currency = Blink::once('currency_'.$cart->currency_id, function () use ($cart) {
-           return $cart->currency;
+            return $cart->currency;
         });
 
         $priceResponse = Pricing::currency($currency)
