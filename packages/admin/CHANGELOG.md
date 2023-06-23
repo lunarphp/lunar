@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - `values` are now detached from the product variant when it's the only one left.
 
+### Changed
+
+- Improved `wire:key` on product associations when editing a product to avoid duplicate keys causing DOM diffing issues.
+
 ## 0.3.0
 
 > Latest updates from `0.2` have been brought in.
