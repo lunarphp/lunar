@@ -374,7 +374,6 @@ class CartTest extends TestCase
         $this->assertCount(2, $cart->taxBreakdown);
     }
 
-
     /** @test */
     public function can_calculate_the_cart_inc_vat()
     {

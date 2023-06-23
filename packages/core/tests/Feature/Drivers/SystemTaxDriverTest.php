@@ -140,5 +140,4 @@ class SystemTaxDriverTest extends TestCase
         $this->assertInstanceOf(TaxBreakdown::class, $breakdown);
         $this->assertEquals(166, $breakdown->amounts[0]->price->value);
     }
-
 }

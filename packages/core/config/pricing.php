@@ -10,7 +10,7 @@ return [
     |
     */
     'stored_inclusive_of_tax' => false,
-  
+
     /*
     |--------------------------------------------------------------------------
     | Pricing Pipelines
