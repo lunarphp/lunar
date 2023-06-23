@@ -59,12 +59,12 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     {
         $data = $this->discount->data;
 
-        $cartCoupon = strtoupper($cart->coupon_code ?? null);
-        $conditionCoupon = strtoupper($this->discount->coupon ?? null);
+        $cartCoupon = strtoupper($cart->coupon_code ?? '');
+        $conditionCoupon = strtoupper($this->discount->coupon ?? '');
 
         $validCoupon = $cartCoupon ? ($cartCoupon === $conditionCoupon) : blank($conditionCoupon);
 
-        $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
+        $minSpend = $data['min_prices'][$cart->currency->code] ?? 0;
         $minSpend = (int) bcmul($minSpend, $cart->currency->factor);
 
         $lines = $this->getEligibleLines($cart);
