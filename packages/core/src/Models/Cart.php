@@ -454,7 +454,7 @@ class Cart extends BaseModel
     public function associate(User $user, $policy = 'merge', $refresh = true)
     {
         if ($this->customer()->exists()) {
-            if (!$user->query()
+            if (! $user->query()
                 ->whereHas('customers', fn ($query) => $query->where('customer_id', $this->customer->id))
                 ->exists()) {
                 throw new Exception('Invalid user');
@@ -473,7 +473,7 @@ class Cart extends BaseModel
     public function setCustomer(Customer $customer): Cart
     {
         if ($this->user()->exists()) {
-            if (!$customer->query()
+            if (! $customer->query()
                 ->whereHas('users', fn ($query) => $query->where('user_id', $this->user->id))
                 ->exists()) {
                 throw new Exception('Invalid customer');
@@ -547,7 +547,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ShippingOption|null
     {
-        if (!$this->shippingAddress) {
+        if (! $this->shippingAddress) {
             return null;
         }
 

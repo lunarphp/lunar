@@ -191,7 +191,7 @@ class StorefrontSessionManagerTest extends TestCase
         $this->assertEquals(
             [$groupB->handle],
             Session::get(
-                $manager->getSessionKey() . '_customer_groups'
+                $manager->getSessionKey().'_customer_groups'
             )
         );
 

@@ -1,9 +1,9 @@
 <?php
 
-use Lunar\Base\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
+use Lunar\Base\Migration;
 
 class AddCustomerIdToCartsTable extends Migration
 {
@@ -14,10 +14,10 @@ class AddCustomerIdToCartsTable extends Migration
      */
     public function up()
     {
-        Schema::table($this->prefix . 'carts', function (Blueprint $table) {
+        Schema::table($this->prefix.'carts', function (Blueprint $table) {
             $table->foreignId('customer_id')->after('user_id')
                 ->nullable()
-                ->constrained($this->prefix . 'customers');
+                ->constrained($this->prefix.'customers');
         });
     }
 
@@ -28,7 +28,7 @@ class AddCustomerIdToCartsTable extends Migration
      */
     public function down()
     {
-        Schema::table($this->prefix . 'carts', function (Blueprint $table) {
+        Schema::table($this->prefix.'carts', function (Blueprint $table) {
             if (DB::getDriverName() !== 'sqlite') {
                 $table->dropForeign(['customer_id']);
             }
