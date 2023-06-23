@@ -95,7 +95,7 @@ trait HasCustomerGroups
      */
     public function scopeCustomerGroup($query, CustomerGroup|iterable $customerGroup = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
-        if (! $customerGroup) {
+        if (blank($customerGroup)) {
             return $query;
         }
 

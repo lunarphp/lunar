@@ -180,10 +180,16 @@ class HasCustomerGroupsTest extends TestCase
         $resultA = Product::customerGroup($groupA)->get();
         $resultB = Product::customerGroup($groupB)->get();
         $resultC = Product::customerGroup([$groupA, $groupB])->get();
+        $resultD = Product::customerGroup()->get();
+        $resultE = Product::customerGroup([])->get();
+        $resultF = Product::customerGroup(collect())->get();
 
         $this->assertCount(1, $resultA);
         $this->assertCount(1, $resultB);
         $this->assertCount(2, $resultC);
+        $this->assertCount(2, $resultD);
+        $this->assertCount(2, $resultE);
+        $this->assertCount(2, $resultF);
 
         $this->assertEquals($productA->id, $resultA->first()->id);
         $this->assertEquals($productB->id, $resultB->first()->id);

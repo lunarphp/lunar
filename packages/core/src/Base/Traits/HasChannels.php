@@ -96,7 +96,7 @@ trait HasChannels
      */
     public function scopeChannel($query, Channel|iterable $channel = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
-        if (! $channel) {
+        if (blank($channel)) {
             return $query;
         }
 

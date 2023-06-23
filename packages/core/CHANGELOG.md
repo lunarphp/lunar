@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- The `channel` and `customerGroup` scope will now do additional checks in the event an empty collection or value is
+  passed.
 - `AmountOff` discount type will now use `discountTotal` when adding up the total discount for that line.
 - `getEligibleLines` method will now reject any lines where the `purchasableLimitations` doesn't exist.
 - `subTotalDiscounted` will now reset when calling the `CalculateLines` pipeline.
