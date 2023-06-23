@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.1
+
+### Fixed
+
+- The `getWeightAttribute` will now correctly convert from `kg`.
+
+### Changed
+
+- Remove `isset` from `addSearchableAttribute`
+
+### Added
+
+- Added `Blink` cache to parts of the cart to improve speed for duplicated queries.
+
 ## 0.3.0
 
 > Latest updates from `0.2` have been brought in.
@@ -76,7 +90,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 0.2.5
 
-### Fixed
+### Fixed
 
 - `BuyXGetY` will now factor in minimum qty when calculating the amount to allocate.
 - The `ApplyDiscounts` pipeline will now reset the discount breakdown when run to avoid duplicates.
