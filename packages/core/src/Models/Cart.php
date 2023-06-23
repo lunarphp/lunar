@@ -237,21 +237,70 @@ class Cart extends BaseModel
     /**
      * Return the order relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function order()
+    public function orders()
     {
-        return $this->belongsTo(Order::class);
+        return $this->hasMany(Order::class);
     }
 
     /**
      * Apply scope to get active cart.
      *
-     * @return void
+     * @return Builder
      */
     public function scopeActive(Builder $query)
     {
-        return $query->whereDoesntHave('order');
+        return $query->whereDoesntHave('orders')->orWhereHas('orders', function ($query) {
+            return $query->whereNull('placed_at');
+        });
+    }
+
+    /**
+     * Return the draft order relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function draftOrder(int $draftOrderId = null)
+    {
+        return $this->hasOne(Order::class)
+            ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
+                $query->where('id', $draftOrderId);
+            })->whereNull('placed_at');
+    }
+
+    /**
+     * Return the completed order relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function completedOrder(int $completedOrderId = null)
+    {
+        return $this->hasOne(Order::class)
+            ->when($completedOrderId, function (Builder $query, int $completedOrderId) {
+                $query->where('id', $completedOrderId);
+            })->whereNotNull('placed_at');
+    }
+
+    /**
+     * Return the carts completed order.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function completedOrders()
+    {
+        return $this->hasMany(Order::class)
+            ->whereNotNull('placed_at');
+    }
+
+    /**
+     * Return whether the cart has any completed order.
+     *
+     * @return bool
+     */
+    public function hasCompletedOrders()
+    {
+        return (bool) $this->completedOrders()->count();
     }
 
     /**
@@ -486,8 +535,10 @@ class Cart extends BaseModel
      *
      * @return Cart
      */
-    public function createOrder(): Order
-    {
+    public function createOrder(
+        bool $allowMultipleOrders = false,
+        int $orderIdToUpdate = null
+    ): Order {
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,
         ]) as $action) {
@@ -498,8 +549,11 @@ class Cart extends BaseModel
 
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
-        )->execute($this->refresh()->calculate())
-            ->then(fn () => $this->order->refresh());
+        )->execute(
+            $this->refresh()->calculate(),
+            $allowMultipleOrders,
+            $orderIdToUpdate
+        )->then(fn ($order) => $order->refresh());
     }
 
     /**
