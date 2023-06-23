@@ -20,7 +20,7 @@ class PopulateProductOptionLabelWithName
         }
 
         DB::transaction(function () {
-            ProductOption::where('label', '')
+            ProductOption::whereRaw('JSON_KEYS(label) IS NULL')
                 ->update([
                     'label' => DB::raw('name'),
                 ]);
@@ -36,6 +36,6 @@ class PopulateProductOptionLabelWithName
 
     protected function shouldRun()
     {
-        return ProductOption::where('label', '')->count() > 0;
+        return ProductOption::whereRaw('JSON_KEYS(label) IS NULL')->count() > 0;
     }
 }
