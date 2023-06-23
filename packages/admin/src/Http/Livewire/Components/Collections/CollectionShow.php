@@ -8,6 +8,7 @@ use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Lunar\Facades\DB;
+use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
@@ -35,6 +36,8 @@ class CollectionShow extends Component
      */
     public Collection $collection;
 
+    public \Illuminate\Support\Collection $children;
+
     /**
      * Define availability properties.
      *
@@ -51,6 +54,19 @@ class CollectionShow extends Component
      * Whether products have been loaded.
      */
     public bool $productsLoaded = false;
+
+    public bool $showCreateChildForm = false;
+
+    public bool $showDeleteConfirm = false;
+
+    /**
+     * The new child collection we're making.
+     *
+     * @var array
+     */
+    public $childCollection = null;
+
+    public $slug = null;
 
     protected function getListeners()
     {
@@ -71,6 +87,8 @@ class CollectionShow extends Component
         if ($this->productCount <= 30) {
             $this->loadProducts();
         }
+
+        $this->syncChildren();
 
         $this->syncAvailability();
     }
@@ -316,6 +334,140 @@ class CollectionShow extends Component
     }
 
     /**
+     * Create the new child collection.
+     *
+     * @return void
+     */
+    public function createChildCollection()
+    {
+        $rules = [
+            'childCollection.name' => 'required|string|max:255',
+        ];
+
+        if ($this->slugIsRequired) {
+            $rules['slug'] = 'required|string|max:255';
+        }
+
+        $this->validate($rules, [
+            'childCollection.name.required' => __('adminhub::validation.generic_required'),
+        ]);
+
+        $attribute = Attribute::whereHandle('name')->whereAttributeType(Collection::class)->first();
+
+        $attributeType = $attribute?->type ?: TranslatedText::class;
+
+        $name = $this->childCollection['name'];
+
+        if ($attributeType == TranslatedText::class) {
+            $name = [
+                $this->defaultLanguage->code => $this->childCollection['name'],
+            ];
+        }
+
+        $collection = Collection::create([
+            'collection_group_id' => $this->collection->group->id,
+            'attribute_data' => collect([
+                'name' => new $attributeType($name),
+            ]),
+        ], $this->collection);
+
+        if ($this->slug) {
+            $collection->urls()->create([
+                'slug' => $this->slug,
+                'default' => true,
+                'language_id' => $this->defaultLanguage->id,
+            ]);
+        }
+
+        $this->childCollection = null;
+        $this->slug = null;
+
+        $this->showCreateChildForm = false;
+
+        $this->syncChildren();
+
+        $this->notify(
+            __('adminhub::notifications.collections.added')
+        );
+    }
+
+    /**
+     * Sort the collections.
+     *
+     * @param  array  $payload
+     * @return void
+     */
+    public function sort($payload)
+    {
+        DB::transaction(function () use ($payload) {
+            $ids = collect($payload['items'])->pluck('id')->toArray();
+
+            $objectIdPositions = array_flip($ids);
+
+            $models = Collection::findMany($ids)
+                ->sortBy(function ($model) use ($objectIdPositions) {
+                    return $objectIdPositions[$model->getKey()];
+                })->values();
+
+            Collection::rebuildSubtree(
+                $this->collection,
+                $models->map(fn ($model) => ['id' => $model->id])->toArray()
+            );
+
+            $this->syncChildren();
+        });
+
+        $this->notify(
+            __('adminhub::notifications.collections.reordered')
+        );
+    }
+
+    /**
+     * Delete the collection.
+     *
+     * @return void
+     */
+    public function deleteCollection()
+    {
+        DB::transaction(function () {
+            $group = $this->collection->collection_group_id;
+
+            foreach ($this->collection->descendants()->get() as $descendant) {
+                $descendant->products()->detach();
+                $descendant->customerGroups()->detach();
+                $descendant->channels()->detach();
+                $descendant->urls()->delete();
+                $descendant->forceDelete();
+            }
+
+            $this->collection->products()->detach();
+            $this->collection->customerGroups()->detach();
+            $this->collection->channels()->detach();
+            $this->collection->urls()->delete();
+            $this->collection->forceDelete();
+
+            $this->notify(
+                __('adminhub::notifications.collections.deleted'),
+                'hub.collection-groups.show',
+                [
+                    'group' => $group,
+                ]
+            );
+        });
+    }
+
+    /**
+     * Returns whether the slug should be required.
+     *
+     * @return bool
+     */
+    public function getSlugIsRequiredProperty()
+    {
+        return config('lunar.urls.required', false) &&
+            ! config('lunar.urls.generator', null);
+    }
+
+    /**
      * Return the side menu links.
      *
      * @return \Illuminate\Support\Collection
@@ -340,26 +492,22 @@ class CollectionShow extends Component
             [
                 'title' => __('adminhub::menu.availability'),
                 'id' => 'availability',
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.urls'),
                 'id' => 'urls',
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.products'),
                 'id' => 'products',
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
             [
                 'title' => __('adminhub::menu.collections'),
                 'id' => 'collections',
-                'has_errors' => $this->errorBag->hasAny([
-                ]),
+                'has_errors' => $this->errorBag->hasAny([]),
             ],
         ]);
     }
@@ -400,8 +548,7 @@ class CollectionShow extends Component
     {
         $this->products = $this->products->sort(function ($current, $next) use ($column, $direction) {
             return $direction == 'desc' ?
-                ($current[$column] < $next[$column]) :
-                ($current[$column] > $next[$column]);
+                ($current[$column] < $next[$column]) : ($current[$column] > $next[$column]);
         })->values();
     }
 
@@ -431,6 +578,11 @@ class CollectionShow extends Component
             })->join(','),
             'base_price' => $basePrice->load('currency')->formatted,
         ];
+    }
+
+    protected function syncChildren()
+    {
+        $this->children = $this->collection->children()->defaultOrder()->get();
     }
 
     /**
