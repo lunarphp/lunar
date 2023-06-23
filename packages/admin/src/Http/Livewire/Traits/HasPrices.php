@@ -3,8 +3,8 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Facades\DB;
 use Lunar\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
 use Lunar\Hub\Actions\Pricing\UpdatePrices;
 use Lunar\Hub\Actions\Pricing\UpdateTieredPricing;
@@ -437,5 +437,13 @@ trait HasPrices
         }
 
         return $messages;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPricesIncludeTaxProperty()
+    {
+        return (bool) prices_inc_tax();
     }
 }
