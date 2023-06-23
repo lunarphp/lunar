@@ -4,15 +4,12 @@ namespace Lunar\Tests\Unit\Managers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
-use Lunar\Managers\CartSessionManager;
-use Lunar\Tests\TestCase;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Managers\StorefrontSessionManager;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
-
-use function Ramsey\Uuid\v1;
+use Lunar\Tests\TestCase;
 
 /**
  * @group lunar.storefront-session-manager
@@ -156,7 +153,7 @@ class StorefrontSessionManagerTest extends TestCase
         $this->assertEquals(
             [$groupB->handle],
             Session::get(
-                $manager->getSessionKey() . '_customer_groups'
+                $manager->getSessionKey().'_customer_groups'
             )
         );
 

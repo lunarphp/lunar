@@ -21,9 +21,9 @@ final class ApplyShipping
 
         if ($shippingOption = $this->getShippingOption($cart)) {
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
-                            ->setCurrency($cart->currency)
-                            ->setPurchasable($shippingOption)
-                            ->getBreakdown($shippingOption->price->value);
+                ->setCurrency($cart->currency)
+                ->setPurchasable($shippingOption)
+                ->getBreakdown($shippingOption->price->value);
 
             $shippingSubTotal = $shippingOption->price->value;
             $shippingTaxTotal = $shippingTax->amounts->sum('price.value');

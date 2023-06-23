@@ -33,7 +33,7 @@
       </x-hub:alert>
     @else
       <ul role="list" class="mt-2 divide-y divide-gray-200 @if($staff->admin) opacity-50 pointer-events-none @endif">
-        @foreach($firstPartyPermissions as $permission)
+        @foreach($permissions as $permission)
           <li class="py-4">
             <div class="flex items-center justify-between ">
               <div class="flex flex-col">

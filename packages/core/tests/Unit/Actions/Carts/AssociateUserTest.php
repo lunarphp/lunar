@@ -54,14 +54,16 @@ class AssociateUserTest extends TestCase
     {
         $currency = Currency::factory()->create();
 
-        $order = Order::factory()->create();
-
         $user = User::factory()->create();
 
         $userCart = Cart::factory()->create([
             'user_id' => $user->id,
             'currency_id' => $currency->id,
-            'order_id' => $order->id,
+        ]);
+
+        Order::factory()->create([
+            'placed_at' => now(),
+            'cart_id' => $userCart->id,
         ]);
 
         $cart = Cart::factory()->create([
@@ -78,7 +80,6 @@ class AssociateUserTest extends TestCase
             'user_id' => $user->id,
             'id' => $userCart->id,
             'merged_id' => null,
-            'order_id' => $order->id,
         ]);
 
         $action = new AssociateUser;

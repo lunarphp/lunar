@@ -7,7 +7,6 @@ use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\AttributeGroup;
-use Lunar\Models\Language;
 
 trait WithAttributes
 {

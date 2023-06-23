@@ -1,9 +1,11 @@
 <div class="mt-4 space-y-2">
-    <header
-        class="text-sm font-semibold text-gray-600 px-2"
-    >
-        {{ $group->name }}
-    </header>
+    @if($group->hasLinks())
+        <header
+            class="text-sm font-semibold text-gray-600 px-2"
+            >
+            {{ $group->name }}
+        </header>
+    @endif 
 
     @if (count($group->getItems()))
         @foreach ($group->getItems() as $item)

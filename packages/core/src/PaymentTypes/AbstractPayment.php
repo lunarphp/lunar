@@ -27,7 +27,6 @@ abstract class AbstractPayment implements PaymentTypeInterface
      */
     protected array $config = [];
 
-
     /**
      * Data storage.
      */
