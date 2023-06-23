@@ -18,7 +18,6 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\Address;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;

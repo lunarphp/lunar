@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use Lunar\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\TaxClass;
 
