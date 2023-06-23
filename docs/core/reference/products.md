@@ -156,6 +156,10 @@ $option = Lunar\Models\ProductOption::create([
         'en' => 'Colour',
         'fr' => 'Couleur',
     ],
+    'label' => [
+        'en' => 'Colour',
+        'fr' => 'Couleur',
+    ],
 ]);
 ```
 
@@ -331,6 +335,9 @@ Then we need to create our base option and it's values.
 ```php
 $option = \Lunar\Models\ProductOption::create([
     'name' => [
+        'en' => 'Colour',
+    ];
+    'label' => [
         'en' => 'Colour',
     ];
 ]);
@@ -707,10 +714,16 @@ $colour = Lunar\Models\ProductOption::create([
     'name' => [
         'en' => 'Colour',
     ],
+    'label' => [
+        'en' => 'Colour',
+    ],
 ]);
 
 $size = Lunar\Models\ProductOption::create([
     'name' => [
+        'en' => 'Size',
+    ],
+    'label' => [
         'en' => 'Size',
     ],
 ]);
