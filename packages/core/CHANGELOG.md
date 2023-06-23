@@ -10,11 +10,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - The `channel` and `customerGroup` scope will now do additional checks in the event an empty collection or value is
   passed.
+- `AmountOff` discount type will now use `discountTotal` when adding up the total discount for that line.
+- `getEligibleLines` method will now reject any lines where the `purchasableLimitations` doesn't exist.
+- `subTotalDiscounted` will now reset when calling the `CalculateLines` pipeline.
 
 ### Added
 
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
+
+### Changed
+
+- The `getThumbnail()` method on variants has been changed to allow for eager loading.
 
 ## 0.3.0
 
