@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `PaymentAttemptedEvent`
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
+- Added 'label' JSON field to `ProductOption` model.
 
 ### Changed
 

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Added Label field when editing product options.
+
 ### Fixed
 
 - `values` are now detached from the product variant when it's the only one left.
