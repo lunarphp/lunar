@@ -37,6 +37,7 @@ class CalculateLines
             $cartLine->subTotal = new Price($subTotal, $cart->currency, $unitQuantity);
             $cartLine->taxAmount = new Price(0, $cart->currency, $unitQuantity);
             $cartLine->total = new Price($subTotal, $cart->currency, $unitQuantity);
+            $cartLine->subTotalDiscounted = new Price($subTotal, $cart->currency, $unitQuantity);
             $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
         }
 
