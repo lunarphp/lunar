@@ -21,6 +21,7 @@ class PopulateProductOptionLabelWithName
 
         DB::transaction(function () {
             ProductOption::where('label', '')
+                ->orWhereNull('label')
                 ->update([
                     'label' => DB::raw('name'),
                 ]);
@@ -36,6 +37,6 @@ class PopulateProductOptionLabelWithName
 
     protected function shouldRun()
     {
-        return ProductOption::where('label', '')->count() > 0;
+        return ProductOption::where('label', '')->orWhereNull('label')->count() > 0;
     }
 }

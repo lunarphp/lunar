@@ -9,7 +9,7 @@ class AddLabelToProductOptionsTable extends Migration
     public function up()
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
-            $table->json('label')->after('name');
+            $table->json('label')->nullable()->after('name');
         });
     }
 
