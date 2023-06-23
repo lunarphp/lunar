@@ -251,3 +251,21 @@ If you omit the second parameter the scope will take the current date and time.
 ::: tip
 A model will only be returned if the `enabled` column is positive, regardless of whether the start and end dates match.
 :::
+
+### Limit by customer group
+
+Eloquent models which use the `HasCustomerGroups` trait have a useful scope available:
+
+```php
+// Limit products available to a single customer group
+Product::customerGroup($customerGroup)->get();
+
+// Limit products available to multiple customer groups
+Product::customerGroup([$groupA, $groupB])->get();
+
+// Limit to products which are available the next day
+Product::customerGroup($groupA, now()->addDay())->get();
+
+// Limit to products which are available within a date range.
+Product::customerGroup($groupA, now()->addDay(), now()->addDays(2))->get();
+```

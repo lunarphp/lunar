@@ -2,8 +2,10 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
@@ -263,5 +265,31 @@ class Product extends BaseModel implements SpatieHasMedia
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    /**
+     * Apply the status scope.
+     *
+     * @param  string  $status
+     * @return Builder
+     */
+    public function scopeStatus(Builder $query, $status)
+    {
+        return $query->whereStatus($status);
+    }
+
+    /**
+     * Return the prices relationship.
+     *
+     * @return HasManyThrough
+     */
+    public function prices()
+    {
+        return $this->hasManyThrough(
+            Price::class,
+            ProductVariant::class,
+            'product_id',
+            'priceable_id'
+        )->wherePriceableType(ProductVariant::class);
     }
 }

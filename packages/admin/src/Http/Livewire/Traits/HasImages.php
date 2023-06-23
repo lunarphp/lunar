@@ -3,10 +3,10 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\FileUploadConfiguration;
 use Livewire\TemporaryUploadedFile;
+use Lunar\Facades\DB;
 use Spatie\Activitylog\Facades\LogBatch;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 

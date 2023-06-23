@@ -3,9 +3,9 @@
 namespace Lunar\Tests\Database\State;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Lunar\Facades\DB;
 use Lunar\FieldTypes\Text;
 use Lunar\Models\Brand;
 use Lunar\Models\Language;

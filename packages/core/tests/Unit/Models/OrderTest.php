@@ -4,6 +4,7 @@ namespace Lunar\Tests\Unit\Models;
 
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\Language;
@@ -34,6 +35,22 @@ class OrderTest extends TestCase
             'default' => true,
             'decimal_places' => 2,
         ]);
+    }
+
+    /** @test */
+    public function can_fetch_cart_relationship()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+        $cart = Cart::factory()->create();
+
+        $order = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'user_id' => null,
+        ]);
+
+        $this->assertEquals($cart->id, $order->cart->id);
     }
 
     /** @test */

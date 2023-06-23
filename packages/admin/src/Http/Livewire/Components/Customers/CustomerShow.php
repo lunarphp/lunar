@@ -4,12 +4,12 @@ namespace Lunar\Hub\Http\Livewire\Components\Customers;
 
 use Carbon\CarbonPeriod;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Lunar\DataTypes\Price;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithAttributes;

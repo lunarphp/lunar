@@ -4,6 +4,63 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- The `channel` and `customerGroup` scope will now do additional checks in the event an empty collection or value is
+  passed.
+- `AmountOff` discount type will now use `discountTotal` when adding up the total discount for that line.
+- `getEligibleLines` method will now reject any lines where the `purchasableLimitations` doesn't exist.
+- `subTotalDiscounted` will now reset when calling the `CalculateLines` pipeline.
+
+### Added
+
+- Added base pipelines for order creation.
+- Added new `draftOrder` and `completedOrders` relationships to the `Cart` model
+- Added `PaymentAttemptedEvent`
+- Added `fingerprint` method to the `Cart` model.
+- Added `checkFingerprint` method to the `Cart` model.
+- Added pipelines to PricingManager
+
+### Changed
+
+- The `getThumbnail()` method on variants has been changed to allow for eager loading.
+- The logic in the `CreateOrder` action has been extracted into pipelines.
+- `order_id` has been deprecated on the `carts` table in favour of a `cart_id` column on the `orders` table.
+- The `CreateOrder` action will now ensure we are working with a draft order before proceeding.
+- The `CreateOrder` pipelines will now handle and update the order if it already exists.
+- PricingManager properties changed from `protected` to `public`
+
+## 0.3.0
+
+> Latest updates from `0.2` have been brought in.
+
+### Fixed
+
+- Cart lines now calculate unit quantity pricing correctly.
+- Order line prices now take unit quantity into consideration.
+- The `lunarphp/scout-database-engine` now uses `self.version` in composer.
+- Time is now frozen in tests to prevent issues with date matching.
+- Line meta will now be cast to an array on save correctly for CartLines.
+- `$rate` will now be serialised correctly when passed as an array on `TaxBreakdown`.
+
+### Added
+
+- Added unit price methods, `unitDecimal()` and `unitFormatted()`, to the Price data type.
+- The `Price` model now has a `prices` relationship.
+- The `Price` model now has a `scope` relationship.
+- PHPStan has now been added and fixed across the codebase
+
+## 0.3.0-beta.3
+
+### Added
+
+- Added missing translations and updated publishing of lang files to L10.
+- Added customer group scope to `HasCustomerGroups` trait.
+- Added channel scope to `HasChannels` trait.
+- Added new `StorefrontSession` manager.
+
 ## 0.3.0-beta.2
 
 > Maintenance update to bring changes from 0.2.4 in.
@@ -33,9 +90,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Laravel 8 support removed.
 - Laravel 10 support added.
 
+## 0.2.7
+
+### Fixed
+
+- The `addAddress` method for a `Cart` will now pass the address to the pipelines correctly.
+
+## 0.2.6
+
+### Fixed
+
+- When deleting a discount the users relationship will now `detach` rather than trying to `delete`.
+
 ## 0.2.5
 
-### Fixed
+### Fixed
 
 - `BuyXGetY` will now factor in minimum qty when calculating the amount to allocate.
 - The `ApplyDiscounts` pipeline will now reset the discount breakdown when run to avoid duplicates.

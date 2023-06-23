@@ -79,10 +79,12 @@ class PasswordReset extends Component
     public function process()
     {
         if (! $this->token) {
-            return $this->sendResetEmail();
+            $this->sendResetEmail();
+
+            return;
         }
 
-        return $this->updatePasswordAndLogin();
+        $this->updatePasswordAndLogin();
     }
 
     /**

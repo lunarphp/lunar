@@ -141,4 +141,105 @@ class HasCustomerGroupsTest extends TestCase
             );
         }
     }
+
+    /** @test */
+    public function can_scope_results_to_a_customer_group()
+    {
+        $groupA = CustomerGroup::factory()->create([
+            'handle' => 'group-a',
+        ]);
+
+        $groupB = CustomerGroup::factory()->create([
+            'handle' => 'group-b',
+        ]);
+
+        $productA = Product::factory()->create();
+        $productB = Product::factory()->create();
+
+        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+            'starts_at' => now(),
+            'enabled' => true,
+            'visible' => true,
+            'ends_at' => now()->addDay(),
+        ]);
+
+        $productB->customerGroups()->syncWithPivotValues([$groupB->id], [
+            'starts_at' => now(),
+            'enabled' => true,
+            'visible' => true,
+            'ends_at' => now()->addDay(),
+        ]);
+
+        $this->assertDatabaseHas($productA->customerGroups()->getTable(), [
+            'product_id' => $productA->id,
+            'starts_at' => now(),
+            'ends_at' => now()->addDay(),
+            'enabled' => true,
+        ]);
+
+        $resultA = Product::customerGroup($groupA)->get();
+        $resultB = Product::customerGroup($groupB)->get();
+        $resultC = Product::customerGroup([$groupA, $groupB])->get();
+        $resultD = Product::customerGroup()->get();
+        $resultE = Product::customerGroup([])->get();
+        $resultF = Product::customerGroup(collect())->get();
+
+        $this->assertCount(1, $resultA);
+        $this->assertCount(1, $resultB);
+        $this->assertCount(2, $resultC);
+        $this->assertCount(2, $resultD);
+        $this->assertCount(2, $resultE);
+        $this->assertCount(2, $resultF);
+
+        $this->assertEquals($productA->id, $resultA->first()->id);
+        $this->assertEquals($productB->id, $resultB->first()->id);
+
+        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+            'starts_at' => now(),
+            'enabled' => false,
+            'ends_at' => now()->addDay(),
+        ]);
+
+        $this->assertCount(0, Product::customerGroup($groupA)->get());
+
+        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+            'starts_at' => null,
+            'enabled' => true,
+            'visible' => true,
+            'ends_at' => now()->addDay(),
+        ]);
+
+        $this->assertCount(1, Product::customerGroup($groupA)->get());
+
+        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+            'starts_at' => now()->subDay(),
+            'enabled' => true,
+            'visible' => true,
+            'ends_at' => now()->subHour(),
+        ]);
+
+        $this->assertCount(0, Product::customerGroup($groupA)->get());
+
+        $startsAt = now()->addDay();
+        $endsAt = now()->addDays(2);
+
+        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+            'starts_at' => $startsAt,
+            'enabled' => true,
+            'visible' => true,
+            'ends_at' => $endsAt,
+        ]);
+
+        $this->assertDatabaseHas($productA->customerGroups()->getTable(), [
+            'product_id' => $productA->id,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
+            'enabled' => true,
+            'visible' => true,
+        ]);
+
+        $this->assertCount(0, Product::customerGroup($groupA)->get());
+
+        $this->assertCount(1, Product::customerGroup($groupA, $startsAt, $endsAt)->get());
+    }
 }

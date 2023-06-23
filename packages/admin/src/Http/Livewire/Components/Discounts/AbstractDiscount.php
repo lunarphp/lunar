@@ -5,12 +5,11 @@ namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Facades\Discounts;
 use Lunar\Hub\Base\DiscountTypesInterface;
-use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -311,7 +310,7 @@ abstract class AbstractDiscount extends Component
     /**
      * Save the discount.
      *
-     * @return RedirectResponse
+     * @return RedirectResponse|void
      */
     public function save()
     {

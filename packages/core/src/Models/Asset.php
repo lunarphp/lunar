@@ -23,6 +23,11 @@ class Asset extends BaseModel implements HasMedia
      */
     protected $guarded = [];
 
+    /**
+     * Get the associated file.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
     public function file()
     {
         return $this->morphOne(config('media-library.media_model'), 'model');

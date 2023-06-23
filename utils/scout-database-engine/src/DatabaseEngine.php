@@ -168,7 +168,7 @@ class DatabaseEngine extends Engine
         )->filter(function ($model) use ($objectIds) {
             return in_array($model->getScoutKey(), $objectIds);
             // })->sortBy(function ($model) use ($objectIdPositions) {
-        //     return $objectIdPositions[$model->getScoutKey()];
+            //     return $objectIdPositions[$model->getScoutKey()];
         })->values();
     }
 
@@ -177,7 +177,7 @@ class DatabaseEngine extends Engine
      *
      * @param  mixed  $results
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \Illuminate\Support\LazyCollection
+     * @return \Illuminate\Support\LazyCollection|void
      */
     public function lazyMap(Builder $builder, $results, $model)
     {

@@ -2,9 +2,9 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
@@ -83,7 +83,6 @@ abstract class AbstractTaxZone extends Component
     {
         return [
             'taxZone.name' => 'required',
-            'taxZone.zone_type' => 'required',
             'taxZone.zone_type' => 'required',
             'taxZone.price_display' => 'required',
             'taxZone.active' => 'boolean|nullable',

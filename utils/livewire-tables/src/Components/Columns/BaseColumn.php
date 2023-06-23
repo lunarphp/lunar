@@ -55,6 +55,12 @@ abstract class BaseColumn extends Component
         return $this;
     }
 
+    /**
+     * Set the field property.
+     *
+     * @param  string  $column
+     * @return $this
+     */
     public function after($column)
     {
         $this->after = $column;
@@ -64,6 +70,8 @@ abstract class BaseColumn extends Component
 
     /**
      * Set the property value for sortable.
+     *
+     * @return $this
      */
     public function sortable(bool $sortable = true): self
     {
@@ -98,7 +106,7 @@ abstract class BaseColumn extends Component
     /**
      * Return the column value.
      *
-     * @return void
+     * @return mixed|void
      */
     public function getValue()
     {

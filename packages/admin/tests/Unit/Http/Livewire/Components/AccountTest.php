@@ -91,10 +91,10 @@ class AccountTest extends TestCase
         ]);
 
         Livewire::actingAs($staff, 'staff')->test(Account::class, ['staff' => $staff])
-          ->set('staff.firstname', 'Billy')
-          ->set('staff.lastname', 'Rabbit')
-          ->call('save')
-          ->assertHasNoErrors();
+            ->set('staff.firstname', 'Billy')
+            ->set('staff.lastname', 'Rabbit')
+            ->call('save')
+            ->assertHasNoErrors();
 
         $staff = $staff->refresh();
 

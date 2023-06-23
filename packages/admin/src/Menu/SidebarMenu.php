@@ -4,7 +4,7 @@ namespace Lunar\Hub\Menu;
 
 use Lunar\Hub\Facades\Menu;
 
-class SidebarMenu
+final class SidebarMenu
 {
     /**
      * Make menu.
@@ -13,7 +13,7 @@ class SidebarMenu
      */
     public static function make()
     {
-        (new static())
+        (new self())
             ->makeTopLevel()
             ->addSections();
     }

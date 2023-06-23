@@ -89,6 +89,11 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
+    /**
+     * Get the values.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<ProductOptionValue>
+     */
     public function values()
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('position');

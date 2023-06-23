@@ -37,3 +37,19 @@ $product->scheduleChannel($channel);
 // The schedule method will accept and array or collection of channels.
 $product->scheduleChannel(Channel::get());
 ```
+
+There is also a channel scope available to models which use this trait:
+
+```php
+// Limit to a single channel
+Product::channel($channel)->get();
+
+// Limit to multiple channels
+Product::channel([$channelA, $channelB])->get();
+
+// Limit to a channel available the next day
+Product::channel($channelA, now()->addDay())->get();
+
+// Limit to a channel within a date range.
+Product::channel($channelA, now()->addDay(), now()->addDays(2))->get();
+```

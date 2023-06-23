@@ -6,8 +6,13 @@ use Closure;
 
 abstract class AbstractAction
 {
+    /**
+     * The property to pass back to the callback
+     */
+    protected mixed $passThrough = null;
+
     public function then(Closure $callback)
     {
-        return app()->call($callback);
+        return $callback($this->passThrough);
     }
 }

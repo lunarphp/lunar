@@ -49,7 +49,7 @@ class CartSessionManager implements CartSessionInterface
     public function manager()
     {
         if (! $this->cart) {
-            $this->fetchOrCreate(create:true);
+            $this->fetchOrCreate(create: true);
         }
 
         return $this->cart;
@@ -66,7 +66,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the cart to be used for the session.
+     *
+     * @return \Lunar\Models\Cart
      */
     public function use(Cart $cart)
     {
@@ -110,7 +112,7 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Get the cart session key.
      */
     public function getSessionKey()
     {
@@ -118,7 +120,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the current channel.
+     *
+     * @return void
      */
     public function setChannel(Channel $channel)
     {
@@ -132,7 +136,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the current currency.
+     *
+     * @return void
      */
     public function setCurrency(Currency $currency)
     {
@@ -191,7 +197,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Create a new cart instance.
      *
-     * @return void
+     * @return \Lunar\Models\Cart
      */
     protected function createNewCart()
     {

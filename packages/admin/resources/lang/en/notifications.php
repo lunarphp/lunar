@@ -40,6 +40,7 @@ return [
     'customers.reset_failed' => 'Unable to send password reset',
     'customers.address_updated' => 'Address updated',
     'customers.address_removed' => 'Address removed',
+    'customer.updated' => 'Customer Updated',
     'saved_searches.saved' => 'Search saved',
     'saved_searches.deleted' => 'Search deleted',
     'billing_address.saved' => 'Billing address saved',

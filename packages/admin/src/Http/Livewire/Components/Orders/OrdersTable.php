@@ -3,7 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Orders;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Models\SavedSearch;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
@@ -84,17 +84,17 @@ class OrdersTable extends Table
                 $tagTable = (new Tag)->getTable();
 
                 $tags = DB::connection(config('lunar.database.connection'))
-                ->table(config('lunar.database.table_prefix').'taggables')
-                ->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
-                ->whereTaggableType(Order::class)
-                ->distinct()
-                ->pluck('value')
-                ->map(function ($value) {
-                    return [
-                        'value' => $value,
-                        'label' => $value,
-                    ];
-                });
+                    ->table(config('lunar.database.table_prefix').'taggables')
+                    ->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
+                    ->whereTaggableType(Order::class)
+                    ->distinct()
+                    ->pluck('value')
+                    ->map(function ($value) {
+                        return [
+                            'value' => $value,
+                            'label' => $value,
+                        ];
+                    });
 
                 return collect([
                     null => 'None',

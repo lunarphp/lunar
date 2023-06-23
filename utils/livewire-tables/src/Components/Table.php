@@ -49,11 +49,6 @@ class Table extends Component
     public $query = null;
 
     /**
-     * The array of selected rows.
-     */
-    public array $selected = [];
-
-    /**
      * The applied filters.
      */
     public array $filters = [];
@@ -82,7 +77,7 @@ class Table extends Component
     {
         return [
             'sort',
-            'bulkAction.reset' => 'resetBulkActions',
+            'bulkAction.reset' => '$refresh',
         ];
     }
 
@@ -120,6 +115,11 @@ class Table extends Component
     public function updatedFilters()
     {
         $this->resetSavedSearch();
+    }
+
+    public function updatedPage($page)
+    {
+        $this->emit('updatedPage', $page);
     }
 
     public function updatedSelected($value)

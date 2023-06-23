@@ -22,6 +22,13 @@ class MenuGroup extends MenuSlot
     public $handle;
 
     /**
+     * The display icon of the menu group.
+     *
+     * @var string
+     */
+    public $icon;
+
+    /**
      * Setter for the name property.
      *
      * @param  string  $name

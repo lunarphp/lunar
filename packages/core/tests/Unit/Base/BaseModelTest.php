@@ -42,10 +42,12 @@ class BaseModelTest extends TestCase
         })->name('test.collections');
 
         Product::macro('getPermalink', function () {
+            /** @var ModelsCollection $this */
             return route('test.products', $this->defaultUrl->slug);
         });
 
         ModelsCollection::macro('getPermalink', function () {
+            /** @var ModelsCollection $this */
             return route('test.collections', $this->defaultUrl->slug);
         });
 

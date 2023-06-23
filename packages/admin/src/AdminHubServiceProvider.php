@@ -3,7 +3,6 @@
 namespace Lunar\Hub;
 
 use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -37,6 +36,7 @@ use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
+use Lunar\Hub\Http\Livewire\Components\Dashboard\SalesPerformance;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountCreate;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
@@ -120,7 +120,6 @@ use Lunar\Hub\Menu\MenuRegistry;
 use Lunar\Hub\Menu\OrderActionsMenu;
 use Lunar\Hub\Menu\SettingsMenu;
 use Lunar\Hub\Menu\SidebarMenu;
-use Lunar\Hub\Menu\SlotRegistry;
 use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tables\Builders\CustomersTableBuilder;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
@@ -152,10 +151,6 @@ class AdminHubServiceProvider extends ServiceProvider
 
         $this->app->singleton(MenuRegistry::class, function () {
             return new MenuRegistry();
-        });
-
-        $this->app->singleton(SlotRegistry::class, function () {
-            return new SlotRegistry();
         });
 
         $this->app->singleton(DiscountTypesInterface::class, function () {
@@ -226,7 +221,7 @@ class AdminHubServiceProvider extends ServiceProvider
             ], 'lunar.hub.views');
 
             $this->publishes([
-                __DIR__ . '/../resources/lang' => lang_path('vendor/adminhub'),
+                __DIR__.'/../resources/lang' => lang_path('vendor/adminhub'),
             ], 'lunar.hub.translations');
 
             $this->commands([
@@ -268,6 +263,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerCustomerComponents();
         $this->registerFieldtypeComponents();
         $this->registerDiscountComponents();
+        $this->registerDashboardComponents();
 
         // Blade Components
         Blade::componentNamespace('Lunar\\Hub\\Views\\Components', 'hub');
@@ -291,6 +287,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
 
         Livewire::component('hub.components.tags', Tags::class);
+    }
+
+    protected function registerDashboardComponents()
+    {
+        Livewire::component('hub.components.dashboard.sales-performance', SalesPerformance::class);
     }
 
     /**
