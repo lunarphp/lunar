@@ -2,10 +2,10 @@
 
 namespace Lunar\Actions\Carts;
 
-use Lunar\Facades\DB;
 use Lunar\Actions\AbstractAction;
 use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\DataTypes\ShippingOption;
+use Lunar\Facades\DB;
 use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;

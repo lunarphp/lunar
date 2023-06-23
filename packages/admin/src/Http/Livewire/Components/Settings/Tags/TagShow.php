@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Tags;
 
-use Lunar\Facades\DB;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Tag;
 
@@ -30,12 +30,12 @@ class TagShow extends Component
         $prefix = config('lunar.database.table_prefix');
 
         return DB::connection(config('lunar.database.connection'))
-        ->table(
-            "{$prefix}taggables"
-        )->select([
-            'taggable_type',
-            DB::RAW('COUNT(*) as count'),
-        ])->groupBy('taggable_type')->get();
+            ->table(
+                "{$prefix}taggables"
+            )->select([
+                'taggable_type',
+                DB::RAW('COUNT(*) as count'),
+            ])->groupBy('taggable_type')->get();
     }
 
     /**

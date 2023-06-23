@@ -62,10 +62,9 @@ class GenerateFingerprintTest extends TestCase
         $cart->update([
             'meta' => [
                 'C' => 'D',
-                'A' => 'B'
-            ]
+                'A' => 'B',
+            ],
         ]);
-
 
         $this->assertSame($fingerprintFromCart, $cart->fingerprint());
 
@@ -76,7 +75,7 @@ class GenerateFingerprintTest extends TestCase
         $this->assertNotSame($fingerprintFromCart, $cart->fingerprint());
 
         $cart->update([
-            'meta' => null
+            'meta' => null,
         ]);
 
         $this->assertNotSame($fingerprintFromCart, $cart->fingerprint());

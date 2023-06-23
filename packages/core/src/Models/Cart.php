@@ -2,13 +2,12 @@
 
 namespace Lunar\Models;
 
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
 use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
@@ -19,7 +18,6 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\Address;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
@@ -33,6 +31,7 @@ use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
+use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
@@ -261,12 +260,12 @@ class Cart extends BaseModel
     public function calculate(): Cart
     {
         $cart = app(Pipeline::class)
-        ->send($this)
-        ->through(
-            config('lunar.cart.pipelines.cart', [
-                Calculate::class,
-            ])
-        )->thenReturn();
+            ->send($this)
+            ->through(
+                config('lunar.cart.pipelines.cart', [
+                    Calculate::class,
+                ])
+            )->thenReturn();
 
         return $cart->cacheProperties();
     }
@@ -535,16 +534,17 @@ class Cart extends BaseModel
     public function fingerprint()
     {
         $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
+
         return (new $generator())->execute($this);
     }
 
     /**
      * Check whether a given fingerprint matches the one being generated for the cart.
      *
-     * @param string $fingerprint
+     * @param  string  $fingerprint
+     * @return bool
      *
      * @throws FingerprintMismatchException
-     * @return boolean
      */
     public function checkFingerprint($fingerprint)
     {
