@@ -120,9 +120,7 @@ trait Searchable
      */
     public function addSearchableAttribute($key, $value)
     {
-        if (! isset($this->additionalSearchFields[$key])) {
-            $this->additionalSearchFields[$key] = $value;
-        }
+        $this->additionalSearchFields[$key] = $value;
     }
 
     /**
