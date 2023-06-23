@@ -10,6 +10,7 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class CartSessionManager implements CartSessionInterface
 {
@@ -97,9 +98,11 @@ class CartSessionManager implements CartSessionInterface
             return $create ? $this->cart = $this->createNewCart() : null;
         }
 
-        $this->cart = Cart::with(
-            config('lunar.cart.eager_load', [])
-        )->find($cartId);
+        $this->cart = Blink::once("cart_{$cartId}", function () use ($cartId) {
+            return Cart::with(
+                config('lunar.cart.eager_load', [])
+            )->find($cartId);
+        });
 
         if (! $this->cart) {
             if (! $create) {

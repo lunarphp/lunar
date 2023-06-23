@@ -11,6 +11,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class SystemTaxDriver implements TaxDriver
 {
@@ -96,7 +97,11 @@ class SystemTaxDriver implements TaxDriver
     {
         $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
-        $taxAmounts = $taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();
+        $taxAmounts = Blink::once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone){
+            return $taxZone->taxAmounts->first(
+               fn($amount) => $amount->tax_class_id == $taxClass->id
+            )->get();
+        });
 
         $breakdown = new TaxBreakdown;
 
