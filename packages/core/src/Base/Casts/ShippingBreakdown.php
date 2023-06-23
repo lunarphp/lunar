@@ -43,7 +43,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (!$value instanceof Collection) {
+        if (! $value instanceof Collection) {
             $value = $value->items;
         }
 

@@ -3,7 +3,6 @@
 namespace Lunar\Base\ValueObjects\Cart;
 
 use Illuminate\Support\Collection;
-use Lunar\DataTypes\Price;
 
 class ShippingBreakdown
 {
