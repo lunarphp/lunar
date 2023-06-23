@@ -14,6 +14,7 @@ Lunar\Models\Order
 | id                    |                                                                                                                    |
 | user_id               | If this is not a guest order, this will have the users id                                                          |
 | customer_id           | Can be `null`, stores customer                                                                                     |
+| cart_id               | The related cart                                                                                                   |
 | channel_id            | Which channel this was purchased through                                                                           |
 | status                | A status that makes sense to you as the store owner                                                                |
 | reference             | Your stores own reference                                                                                          
