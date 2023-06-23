@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## 0.3.1
+
+### Fixed
+
+- Added a validation check for the product variant backorder.
+- Payment capture modal now takes currency's decimal places into account when deciding whether to display a warning
+  message
+-
 
 ### Changed
-- persist Lunar middlewares in livewire
-- Payment capture modal now takes currency's decimal places into account when deciding whether to display a warning message
+
+- Persist Lunar middlewares in Livewire
 
 ## 0.3.0
 
@@ -21,7 +28,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The iframe height on email previews has been increased to avoid cut off.
 - Refactor row selection on tables to avoid extra roundtrips to Livewire.
 - AttributeGroup saving will now pass the id if being edited to prevent false validation exception being thrown.
-- Added a validation check for the product variant backorder.
 
 ### Changed
 
@@ -74,14 +80,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added missing notification translation.
 - Variant stock level will now be validated correctly to prevent DB exception on save.
 - Variant image uploading will now check for S3 usage when uploading, the same as product saving.
-- When reordering items, the `$index` now checks for an integer instead of purely existence to prevent failure when `$index` is `0`.
+- When reordering items, the `$index` now checks for an integer instead of purely existence to prevent failure
+  when `$index` is `0`.
 - Improved validation on translatable attributes to prevent exception when entering multiple languages.
 
 ## 0.2.6
 
 ### Fixed
 
-- When creating an option, `wire:model` should now correctly reference `newProductOption` when editing the name in a different locale.
+- When creating an option, `wire:model` should now correctly reference `newProductOption` when editing the name in a
+  different locale.
 
 ## 0.2.5
 
@@ -103,7 +111,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 0.2.4
 
-### Changed
+### Changed
 
 - Alpinejs CDN now points to `jsdelivr` as per the recommendation.
 
@@ -154,13 +162,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [0.2] Hotfix - Upload Image by @Aslam97 in https://github.com/lunarphp/lunar/pull/810
 - Hotfix [0.2] - Fix duplicate language code on tests by @alecritson in https://github.com/lunarphp/lunar/pull/802
 - Hotfix [0.2] - UI Tweaks by @alecritson in https://github.com/lunarphp/lunar/pull/805
-- fix blade directive issue causing error on products index page in hub by @kylekanderson in https://github.com/lunarphp/lunar/pull/801
+- fix blade directive issue causing error on products index page in hub by @kylekanderson
+  in https://github.com/lunarphp/lunar/pull/801
 - [0.2] Hotfix - Fix save form layout and clean up by @alecritson in https://github.com/lunarphp/lunar/pull/795
 - fix images key by @wychoong in https://github.com/lunarphp/lunar/pull/789
 - Hotfix - Fix discount saving by @alecritson in https://github.com/lunarphp/lunar/pull/793
-- [0.2] Hotfix - Check for variants existence when saving images. by @alecritson in https://github.com/lunarphp/lunar/pull/778
+- [0.2] Hotfix - Check for variants existence when saving images. by @alecritson
+  in https://github.com/lunarphp/lunar/pull/778
 - [0.2] Hotfix - Fix product/collection syncing by @alecritson in https://github.com/lunarphp/lunar/pull/781
-- [0.2] Feat - Delay loading Collection products when large amounts by @alecritson in https://github.com/lunarphp/lunar/pull/770
+- [0.2] Feat - Delay loading Collection products when large amounts by @alecritson
+  in https://github.com/lunarphp/lunar/pull/770
 - [0.2] Feat - Add fallback to images by @charlielangridge in https://github.com/lunarphp/lunar/pull/682
 
 ### Changed
@@ -175,7 +186,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - [0.2] Preview/View URLs for Products by @alecritson in https://github.com/lunarphp/lunar/pull/772
 - [0.2] Image editor by @wychoong in https://github.com/lunarphp/lunar/pull/505
-- Feat [0.2] - Enable validation extending on product variant by @alecritson in https://github.com/lunarphp/lunar/pull/824
+- Feat [0.2] - Enable validation extending on product variant by @alecritson
+  in https://github.com/lunarphp/lunar/pull/824
 - Add products to discount limitations by @ryanmitchell in https://github.com/lunarphp/lunar/pull/813
 - [0.2] File upload field type by @alecritson in https://github.com/lunarphp/lunar/pull/452
 - [0.2] Manage customer groups by @adam-code-labx in https://github.com/lunarphp/lunar/pull/496
