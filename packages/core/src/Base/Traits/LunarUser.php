@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
 
@@ -14,7 +15,10 @@ trait LunarUser
         return $this->belongsToMany(Customer::class, "{$prefix}customer_user");
     }
 
-    public function orders()
+    /**
+     * Return the user orders relationship.
+     */
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
