@@ -17,8 +17,8 @@ This repository serves as a monorepo for the main packages that make up Lunar.
 ## Contribution
 
 - Bug reports should be submitted as a new Github issue
-- Enhancements should [https://github.com/lunarphp/lunar/discussions/new?category=enhancements](be in discussions)
-- Feature requests should [https://github.com/lunarphp/lunar/discussions/new?category=feature-requests](be in discussions)
+- Enhancements should [be in discussions](https://github.com/lunarphp/lunar/discussions/new?category=enhancements)
+- Feature requests should [be in discussions](https://github.com/lunarphp/lunar/discussions/new?category=feature-requests)
 
 ## Community
 
