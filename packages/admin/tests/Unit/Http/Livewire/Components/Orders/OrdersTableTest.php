@@ -57,7 +57,7 @@ class OrdersTableTest extends TestCase
         $orders = Order::factory(5)->create();
 
         $component = Livewire::actingAs($staff, 'staff')->test(OrdersTable::class)
-                        ->assertViewIs('l-tables::index');
+            ->assertViewIs('l-tables::index');
 
         foreach ($columns as $column) {
             $component->assertSee($column->getHeading());

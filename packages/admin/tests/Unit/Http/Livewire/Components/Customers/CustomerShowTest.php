@@ -84,9 +84,9 @@ class CustomerShowTest extends TestCase
             ->test(CustomerShow::class, [
                 'customer' => $customer,
             ])->assertSet('syncedGroups', $initialCustomerGroups->pluck('id')->toArray())
-              ->set('syncedGroups', $updatedCustomerGroups->pluck('id')->toArray())
-              ->call('save')
-              ->assertSet('syncedGroups', $updatedCustomerGroups->pluck('id')->toArray());
+            ->set('syncedGroups', $updatedCustomerGroups->pluck('id')->toArray())
+            ->call('save')
+            ->assertSet('syncedGroups', $updatedCustomerGroups->pluck('id')->toArray());
     }
 
     /** @test  */

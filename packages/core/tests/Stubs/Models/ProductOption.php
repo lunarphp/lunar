@@ -11,8 +11,6 @@ class ProductOption extends \Lunar\Models\ProductOption
 
     /**
      * Get the tags
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function sizes(): HasMany
     {

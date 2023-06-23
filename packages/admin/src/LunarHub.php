@@ -31,7 +31,7 @@ final class LunarHub
      */
     public static function scripts(): array
     {
-        return static::$scripts;
+        return self::$scripts;
     }
 
     /**
@@ -42,7 +42,7 @@ final class LunarHub
      */
     public static function styles(): array
     {
-        return static::$styles;
+        return self::$styles;
     }
 
     /**
@@ -50,9 +50,9 @@ final class LunarHub
      */
     public static function script(string|Script $name, string $path): static
     {
-        static::$scripts[] = new Script($name, $path);
+        self::$scripts[] = new Script($name, $path);
 
-        return new static();
+        return new self();
     }
 
     /**

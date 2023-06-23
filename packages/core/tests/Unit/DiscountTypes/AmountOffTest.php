@@ -496,6 +496,88 @@ class AmountOffTest extends TestCase
     /**
      * @test
      */
+    public function can_only_same_discount_to_line_once()
+    {
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $currency = Currency::getDefault();
+
+        $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
+            'currency_id' => $currency->id,
+            'coupon_code' => '10PERCENTOFF',
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 1,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10PERCENTOFF',
+            'data' => [
+                'percentage' => 10,
+                'fixed_value' => false,
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $this->assertNull($cart->total);
+        $this->assertNull($cart->taxTotal);
+        $this->assertNull($cart->subTotal);
+
+        $cart = $cart->calculate()->calculate();
+
+        $this->assertEquals(100, $cart->discountTotal->value);
+        $this->assertEquals(180, $cart->taxTotal->value);
+        $this->assertEquals(1080, $cart->total->value);
+
+        $cart->lines()->delete();
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasable),
+            'purchasable_id' => $purchasable->id,
+            'quantity' => 2,
+        ]);
+
+        $cart = $cart->refresh()->calculate();
+
+        $this->assertEquals(200, $cart->discountTotal->value);
+        $this->assertEquals(360, $cart->taxTotal->value);
+        $this->assertEquals(2160, $cart->total->value);
+    }
+
+    /**
+     * @test
+     */
     public function can_apply_discount_without_coupon_code()
     {
         $currency = Currency::getDefault();

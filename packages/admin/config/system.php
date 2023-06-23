@@ -3,6 +3,6 @@
 return [
     'path' => 'hub',
     'middleware' => [
-        'web'
+        'web',
     ],
 ];

@@ -2,10 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\FieldTypes;
 
-use Lunar\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Lunar\Facades\DB;
 use Lunar\Models\Asset;
 
 class FileFieldtype extends Component
@@ -66,9 +66,9 @@ class FileFieldtype extends Component
         DB::transaction(function () {
             $asset = Asset::create();
             $asset
-            ->addMedia($this->file->getRealPath())
-            ->usingFileName($this->file->getClientOriginalName())
-            ->toMediaCollection('uploads');
+                ->addMedia($this->file->getRealPath())
+                ->usingFileName($this->file->getClientOriginalName())
+                ->toMediaCollection('uploads');
 
             $this->file = null;
         });
