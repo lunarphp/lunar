@@ -79,15 +79,16 @@ use Lunar\Observers\UrlObserver;
 class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
+        'cart',
         'database',
         'media',
+        'orders',
+        'payments',
+        'pricing',
+        'search',
         'shipping',
         'taxes',
-        'cart',
-        'orders',
         'urls',
-        'search',
-        'payments',
     ];
 
     protected $root = __DIR__.'/..';
