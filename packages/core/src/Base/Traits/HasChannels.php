@@ -96,7 +96,7 @@ trait HasChannels
      */
     public function scopeChannel($query, Channel|iterable $channel = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
-        if (empty($channel) || (is_a($channel, Collection::class) && $channel->isEmpty())) {
+        if (blank($channel)) {
             return $query;
         }
 

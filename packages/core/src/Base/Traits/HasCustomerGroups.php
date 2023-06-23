@@ -95,7 +95,7 @@ trait HasCustomerGroups
      */
     public function scopeCustomerGroup($query, CustomerGroup|iterable $customerGroup = null, DateTime $startsAt = null, DateTime $endsAt = null)
     {
-        if (empty($customerGroup) || (is_a($customerGroup, Collection::class) && $customerGroup->isEmpty())) {
+        if (blank($customerGroup)) {
             return $query;
         }
 
