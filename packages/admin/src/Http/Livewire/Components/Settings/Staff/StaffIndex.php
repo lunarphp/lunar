@@ -14,6 +14,6 @@ class StaffIndex extends Component
     public function render()
     {
         return view('adminhub::livewire.components.settings.staff.index')
-        ->layout('adminhub::layouts.base');
+            ->layout('adminhub::layouts.base');
     }
 }

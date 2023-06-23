@@ -2,11 +2,10 @@
 
 namespace Lunar\Hub\Http\Livewire;
 
-use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Cache;
-use Lunar\Facades\DB;
 use Livewire\Component;
 use Lunar\DataTypes\Price;
+use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
@@ -18,15 +17,11 @@ class Dashboard extends Component
 {
     /**
      * The date to query from.
-     *
-     * @var string
      */
     protected string $from;
 
     /**
      * The date to query too.
-     *
-     * @var string
      */
     protected string $to;
 
@@ -157,9 +152,9 @@ class Dashboard extends Component
             now()->parse($this->from),
             now()->parse($this->to),
         ])->where('type', '!=', 'shipping')
-        ->groupBy('purchasable_type', 'purchasable_id')
-        ->orderBy('count', 'desc')
-        ->take(2)->get();
+            ->groupBy('purchasable_type', 'purchasable_id')
+            ->orderBy('count', 'desc')
+            ->take(2)->get();
     }
 
     /**

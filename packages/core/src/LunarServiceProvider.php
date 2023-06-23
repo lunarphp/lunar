@@ -45,6 +45,7 @@ use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
 use Lunar\Database\State\EnsureBrandsAreUpgraded;
 use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
+use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Database\State\PopulateProductOptionLabelWithName;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
@@ -241,6 +242,7 @@ class LunarServiceProvider extends ServiceProvider
             EnsureBrandsAreUpgraded::class,
             EnsureMediaCollectionsAreRenamed::class,
             PopulateProductOptionLabelWithName::class,
+            MigrateCartOrderRelationship::class,
         ];
 
         foreach ($states as $state) {
