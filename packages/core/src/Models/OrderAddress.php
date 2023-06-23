@@ -55,6 +55,7 @@ class OrderAddress extends BaseModel implements Addressable
      * @var array
      */
     protected $fillable = [
+        'order_id',
         'country_id',
         'title',
         'first_name',

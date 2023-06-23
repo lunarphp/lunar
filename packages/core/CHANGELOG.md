@@ -16,6 +16,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- Added base pipelines for order creation.
+- Added new `draftOrder` and `completedOrders` relationships to the `Cart` model
+- Added `PaymentAttemptedEvent`
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
 - Added `products` scope to the `Discount` model.
@@ -26,6 +29,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - The `getThumbnail()` method on variants has been changed to allow for eager loading.
+- The logic in the `CreateOrder` action has been extracted into pipelines.
+- `order_id` has been deprecated on the `carts` table in favour of a `cart_id` column on the `orders` table.
+- The `CreateOrder` action will now ensure we are working with a draft order before proceeding.
+- The `CreateOrder` pipelines will now handle and update the order if it already exists.
 
 ## 0.3.0
 
