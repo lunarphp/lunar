@@ -3,7 +3,6 @@
 namespace Lunar\Hub;
 
 use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;

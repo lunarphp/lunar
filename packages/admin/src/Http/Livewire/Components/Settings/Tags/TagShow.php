@@ -33,9 +33,9 @@ class TagShow extends Component
             ->table(
                 "{$prefix}taggables"
             )->select([
-            'taggable_type',
-            DB::RAW('COUNT(*) as count'),
-        ])->groupBy('taggable_type')->get();
+                'taggable_type',
+                DB::RAW('COUNT(*) as count'),
+            ])->groupBy('taggable_type')->get();
     }
 
     /**
