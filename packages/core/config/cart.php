@@ -13,6 +13,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Fingerprint Generator
+    |--------------------------------------------------------------------------
+    |
+    | Specify which class should be used when generating a cart fingerprint.
+    |
+    */
+    'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Auto create a cart when none exists for user.
     |--------------------------------------------------------------------------
     |

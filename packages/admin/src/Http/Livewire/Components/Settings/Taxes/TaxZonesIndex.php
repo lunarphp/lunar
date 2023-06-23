@@ -14,6 +14,6 @@ class TaxZonesIndex extends Component
     public function render()
     {
         return view('adminhub::livewire.components.settings.taxes.tax-zones.index')
-        ->layout('adminhub::layouts.base');
+            ->layout('adminhub::layouts.base');
     }
 }
