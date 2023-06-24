@@ -10,9 +10,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added Label field when editing product options.
 - Ability to add and sort child collections when editing a collection.
-- Added `customer` relationship to Cart model
-- Added `setCustomer` method to Cart model
-- Added `setCustomer` and `getCustomer` to StorefrontSessionManager
 - Config to disable database migrations.
 
 ### Fixed
