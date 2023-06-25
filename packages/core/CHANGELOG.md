@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- Pricing can now be stored inclusive of tax.
+- The `Lunar\Models\Price` model now provides two new methods to return the price exclusive and inclusive of tax.
 - Added base pipelines for order creation.
 - Added new `draftOrder` and `completedOrders` relationships to the `Cart` model
 - Added `PaymentAttemptedEvent`

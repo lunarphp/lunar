@@ -11,6 +11,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
+use Lunar\Models\TaxZone;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class SystemTaxDriver implements TaxDriver
@@ -97,16 +98,56 @@ class SystemTaxDriver implements TaxDriver
     {
         $taxZone = app(GetTaxZone::class)->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
+
         $taxAmounts = Blink::once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone) {
             return $taxZone->taxAmounts->first(
                 fn ($amount) => $amount->tax_class_id == $taxClass->id
             )->get();
         });
 
+        if (prices_inc_tax()) {
+            // Remove tax from price
+            $totalTaxPercentage = $taxAmounts->sum('percentage') / 100; // E.g. 0.2 for 20%
+            $priceExTax = round($subTotal / (1 + $totalTaxPercentage));
+
+            // Check to see if the included tax uses the same tax zone
+            if ($this->defaultTaxZone()->id === $taxZone->id) {
+                // Manually return the tax breakdown
+                $breakdown = new TaxBreakdown;
+
+                $taxTally = 0;
+
+                foreach ($taxAmounts as $key => $amount) {
+                    if ($taxAmounts->keys()->last() == $key) {
+                        // Ensure the final tax amount adds up to the original price
+                        $result = $subTotal - $priceExTax - $taxTally;
+                    } else {
+                        $result = round($priceExTax * ($amount->percentage / 100));
+                    }
+
+                    $taxTally += $result;
+
+                    $amount = new TaxBreakdownAmount(
+                        price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
+                        description: $amount->taxRate->name,
+                        identifier: "tax_rate_{$amount->taxRate->id}",
+                        percentage: $amount->percentage
+                    );
+                    $breakdown->addAmount($amount);
+                }
+
+                return $breakdown;
+            }
+
+            // Set subTotal to ex. tax price
+            $subTotal = $priceExTax;
+        }
+
         $breakdown = new TaxBreakdown;
 
         foreach ($taxAmounts as $amount) {
             $result = round($subTotal * ($amount->percentage / 100));
+
             $amount = new TaxBreakdownAmount(
                 price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
                 description: $amount->taxRate->name,
@@ -117,5 +158,10 @@ class SystemTaxDriver implements TaxDriver
         }
 
         return $breakdown;
+    }
+
+    protected function defaultTaxZone()
+    {
+        return TaxZone::where('default', '=', 1)->first();
     }
 }
