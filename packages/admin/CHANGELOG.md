@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Dashboard stats are now responsible for their own date ranges where applicable.
 - The tags panel on the order detail screen has been moved below the address details.
 - Brands will now list alphabetically by default.
+- Dimensions are now sorted by the order in the shipping configuration file.
 
 ### Added
 
