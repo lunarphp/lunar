@@ -37,6 +37,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The `CreateOrder` pipelines will now handle and update the order if it already exists.
 - PricingManager properties changed from `protected` to `public`
 
+## 0.3.2
+
+### Changed
+
+- Removed `Staff` type declaration on permissions as this was causing issues with external packages with
+  authenticated users..
+
 ## 0.3.1
 
 ### Fixed
