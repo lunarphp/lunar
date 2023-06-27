@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.2
+
+### Changed
+
+- Removed `Staff` type declaration on permissions as this was causing issues with external packages with
+  authenticated users..
+
 ## 0.3.1
 
 ### Fixed

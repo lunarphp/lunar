@@ -3,7 +3,6 @@
 namespace Lunar\Hub;
 
 use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -526,7 +525,7 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        Gate::after(function (Staff $user, $ability) {
+        Gate::after(function ($user, $ability) {
             // Are we trying to authorize something within the hub?
             $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
