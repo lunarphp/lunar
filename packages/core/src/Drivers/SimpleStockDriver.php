@@ -45,7 +45,7 @@ class SimpleStockDriver implements StockDriver
      *
      * @return bool
      */
-    public function checkStock(ReservesStock $line, int $quantity)
+    public function checkStock(ReservesStock $line)
     {
         // SimpleStock driver only supports ProductVariants
         $this->checkIsVariant($line->purchasable);
@@ -61,7 +61,7 @@ class SimpleStockDriver implements StockDriver
 
         $totalAvailable = $line->purchasable->stock + $line->purchasable->backorder - $reservedCount;
 
-        return $totalAvailable >= $quantity;
+        return $totalAvailable >= $line->quantity;
     }
 
     /**
@@ -70,7 +70,7 @@ class SimpleStockDriver implements StockDriver
     public function reserveStock(ReservesStock $line, string $location = null): bool
     {
         // Check if we have enough stock available to reserve
-        if (! $this->checkStock($line, $line->quantity)) {
+        if (! $this->checkStock($line)) {
             return false;
         }
 
