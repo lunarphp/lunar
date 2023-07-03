@@ -351,8 +351,6 @@ class Order extends BaseModel
 
     /**
      * Determines if this is a draft order.
-     *
-     * @return bool
      */
     public function isDraft(): bool
     {
@@ -361,8 +359,6 @@ class Order extends BaseModel
 
     /**
      * Determines if this is a placed order.
-     *
-     * @return bool
      */
     public function isPlaced(): bool
     {
