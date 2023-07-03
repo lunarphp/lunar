@@ -5,6 +5,7 @@ namespace Lunar\Tests\Unit\Managers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\DataTransferObjects\StockInfo;
 use Lunar\Base\StockManagerInterface;
+use Lunar\Exceptions\Stock\NotReservedException;
 use Lunar\Facades\Stock;
 use Lunar\Managers\StockManager;
 use Lunar\Models\Cart;
@@ -80,6 +81,8 @@ class StockManagerTest extends TestCase
     /** @test */
     public function cannot_reserve_stock()
     {
+        $this->expectException(NotReservedException::class);
+
         $stockManager = app(StockManagerInterface::class);
 
         $cart = Cart::factory()->create([
@@ -98,7 +101,7 @@ class StockManagerTest extends TestCase
 
         $cartLine = CartLine::create($data);
 
-        $this->assertFalse($stockManager->reserveStock($cartLine));
+        $stockManager->reserveStock($cartLine);
     }
 
     /** @test */

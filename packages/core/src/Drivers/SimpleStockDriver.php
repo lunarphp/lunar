@@ -40,21 +40,10 @@ class SimpleStockDriver implements StockDriver
     }
 
     /**
-     * Get the reserved stock information.
-     */
-    public function reservedStock(Purchasable $purchasable): StockInfo
-    {
-        // TODO:
-        // 1. Check we're using a ProductVariant
-        // 2. Deduct reserved (StockReservation)
-
-        return new StockInfo;
-    }
-
-    /**
      * Check if we can reserve the required quantity.
      *
      * @return bool
+     *
      * @throws Exception
      */
     public function checkStock(ReservesStock $line)
@@ -83,7 +72,7 @@ class SimpleStockDriver implements StockDriver
     {
         // Check if we have enough stock available to reserve
         if (! $this->checkStock($line)) {
-            return false;
+            throw new NotReservedException("Cannot reserve stock for purchasable.");
         }
 
         $reservationDuration = config('lunar.stock.reservation_duration', 30);

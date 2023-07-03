@@ -18,14 +18,6 @@ class NullStockDriver implements StockDriver
     }
 
     /**
-     * Get the reserved stock information.
-     */
-    public function reservedStock(Purchasable $purchasable): StockInfo
-    {
-        return new StockInfo;
-    }
-
-    /**
      * Check if we can reserve the required quantity.
      *
      *

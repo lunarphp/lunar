@@ -4,11 +4,11 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\ReservesStock;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasStockReservations;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Database\Factories\CartLineFactory;
@@ -26,10 +26,11 @@ use Lunar\DataTypes\Price;
  */
 class CartLine extends BaseModel implements ReservesStock
 {
-    use HasFactory;
-    use LogsActivity;
-    use HasMacros;
     use CachesProperties;
+    use HasFactory;
+    use HasMacros;
+    use HasStockReservations;
+    use LogsActivity;
 
     /**
      * Array of cachable class properties.
@@ -155,10 +156,5 @@ class CartLine extends BaseModel implements ReservesStock
     public function purchasable()
     {
         return $this->morphTo();
-    }
-
-    public function stockReservations(): MorphMany
-    {
-        return $this->morphMany(StockReservation::class, 'stockable');
     }
 }

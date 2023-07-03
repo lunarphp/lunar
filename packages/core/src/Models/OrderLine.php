@@ -8,6 +8,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Casts\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasStockReservations;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\OrderLineFactory;
 
@@ -35,9 +36,10 @@ use Lunar\Database\Factories\OrderLineFactory;
  */
 class OrderLine extends BaseModel
 {
-    use LogsActivity;
     use HasFactory;
     use HasMacros;
+    use HasStockReservations;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.
