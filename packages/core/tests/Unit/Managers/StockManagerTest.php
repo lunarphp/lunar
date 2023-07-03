@@ -152,5 +152,10 @@ class StockManagerTest extends TestCase
         $stockManager->reserveStock($cartLine);
 
         $this->assertTrue($stockManager->dispatchStock($cartLine));
+
+        $cartLine->purchasable->refresh();
+
+        $this->assertEquals($cartLine->purchasable->stock, 0);
+        $this->assertEquals($cartLine->purchasable->backorder, 3);
     }
 }
