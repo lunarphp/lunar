@@ -220,4 +220,22 @@ class OrderTest extends TestCase
         $this->assertEquals($customer->id, $order->customer->id);
         $this->assertEquals($user->getKey(), $order->user->getKey());
     }
+
+    /** @test */
+    public function can_check_order_is_placed()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id' => null,
+        ]);
+
+        $this->assertTrue($order->isDraft());
+
+        $order->placed_at = now();
+
+        $this->assertTrue($order->isPlaced());
+    }
 }
