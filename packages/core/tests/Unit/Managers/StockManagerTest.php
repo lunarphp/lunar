@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Unit\Managers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\DataTransferObjects\StockInfo;
 use Lunar\Base\StockManagerInterface;
 use Lunar\Facades\Stock;
 use Lunar\Managers\StockManager;
@@ -156,5 +157,37 @@ class StockManagerTest extends TestCase
 
         $this->assertEquals($cartLine->purchasable->stock, 0);
         $this->assertEquals($cartLine->purchasable->backorder, 3);
+    }
+
+    /** @test */
+    public function can_get_stock_info()
+    {
+        $stockManager = app(StockManagerInterface::class);
+
+        $cart = Cart::factory()->create([
+            'user_id' => User::factory(),
+        ]);
+
+        $data = [
+            'cart_id' => $cart->id,
+            'quantity' => 7,
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => ProductVariant::factory()->state([
+                'stock' => 5,
+                'backorder' => 10,
+            ])->create()->id,
+        ];
+
+        $cartLine = CartLine::create($data);
+
+        $stockManager->reserveStock($cartLine);
+
+        $cartLine->purchasable->refresh();
+
+        $stockInfo = $stockManager->availableStock($cartLine->purchasable);
+
+        $this->assertInstanceOf(StockInfo::class, $stockInfo);
+        $this->assertEquals($stockInfo->stock, 0);
+        $this->assertEquals($stockInfo->backorder, 8);
     }
 }

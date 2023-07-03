@@ -19,12 +19,24 @@ class SimpleStockDriver implements StockDriver
      */
     public function availableStock(Purchasable $purchasable): StockInfo
     {
-        // TODO:
-        // 1. Check we're using a ProductVariant
-        // 2. Get stock + backorder
-        // 3. Deduct reserved (StockReservation)
+        // SimpleStock driver only supports ProductVariants
+        $this->checkIsVariant($purchasable);
 
-        return new StockInfo;
+        $reservedCount = StockReservation::where('variant_id', '=', $purchasable->id)
+            ->where('expires_at', '>', now())
+            ->sum('quantity');
+
+        $stockInfo = new StockInfo($purchasable->stock, $purchasable->backorder);
+
+        $stockInfo->stock -= $reservedCount;
+
+        if ($stockInfo->stock < 0) {
+            // Backorder
+            $stockInfo->backorder += $stockInfo->stock;
+            $stockInfo->stock = 0;
+        }
+
+        return $stockInfo;
     }
 
     /**
@@ -52,7 +64,7 @@ class SimpleStockDriver implements StockDriver
 
         // Ensure we have enough stock to reserve (stock + backorder - reserved)
         $reservedCount = StockReservation::where('variant_id'.'=', $line->purchasable->id)
-            ->where('expires_at', '<', now())
+            ->where('expires_at', '>', now())
             ->whereNot(function (Builder $query) use ($line) {
                 $query->where('stockable_type', '=', $line::class)
                     ->where('stockable_id', '=', $line->id);
@@ -77,7 +89,7 @@ class SimpleStockDriver implements StockDriver
         // Add reservation
         $test = StockReservation::updateOrCreate(
             ['stockable_id' => $line->id, 'stockable_type' => $line::class, 'variant_id' => $line->purchasable->id],
-            ['quantity' => $line->quantity, 'expires_at' => now()]
+            ['quantity' => $line->quantity, 'expires_at' => now()->addMinutes(30)]
         );
 
         return true;
