@@ -360,7 +360,7 @@ class Order extends BaseModel
     }
 
     /**
-     * Determines if this is a draft order.
+     * Determines if this is a placed order.
      *
      * @return bool
      */
