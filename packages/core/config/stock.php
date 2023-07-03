@@ -11,4 +11,14 @@ return [
     |
     */
     'driver' => 'simple',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reservation Duration
+    |--------------------------------------------------------------------------
+    |
+    | The amount of time, in minutes, stock should be reserved for.
+    |
+    */
+    'reservation_duration' => 30,
 ];

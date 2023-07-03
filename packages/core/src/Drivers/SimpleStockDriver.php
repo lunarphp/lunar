@@ -54,8 +54,8 @@ class SimpleStockDriver implements StockDriver
     /**
      * Check if we can reserve the required quantity.
      *
-     *
      * @return bool
+     * @throws Exception
      */
     public function checkStock(ReservesStock $line)
     {
@@ -86,10 +86,12 @@ class SimpleStockDriver implements StockDriver
             return false;
         }
 
+        $reservationDuration = config('lunar.stock.reservation_duration', 30);
+
         // Add reservation
         $test = StockReservation::updateOrCreate(
             ['stockable_id' => $line->id, 'stockable_type' => $line::class, 'variant_id' => $line->purchasable->id],
-            ['quantity' => $line->quantity, 'expires_at' => now()->addMinutes(30)]
+            ['quantity' => $line->quantity, 'expires_at' => now()->addMinutes($reservationDuration)]
         );
 
         return true;
@@ -97,8 +99,6 @@ class SimpleStockDriver implements StockDriver
 
     /**
      * Release stock for the cart/order line.
-     *
-     * @param  int  $quantity
      */
     public function releaseStock(ReservesStock $line, int $quantity = null): bool
     {
@@ -129,8 +129,6 @@ class SimpleStockDriver implements StockDriver
 
     /**
      * Dispatch stock for the order line.
-     *
-     * @param  int  $quantity
      */
     public function dispatchStock(ReservesStock $line, int $quantity = null): bool
     {
