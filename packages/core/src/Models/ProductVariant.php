@@ -10,6 +10,7 @@ use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasDimensions;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasPrices;
+use Lunar\Base\Traits\HasStock;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ProductVariantFactory;
@@ -47,12 +48,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class ProductVariant extends BaseModel implements Purchasable
 {
-    use HasFactory;
-    use HasPrices;
-    use LogsActivity;
     use HasDimensions;
-    use HasTranslations;
+    use HasFactory;
     use HasMacros;
+    use HasPrices;
+    use HasStock;
+    use HasTranslations;
+    use LogsActivity;
 
     /**
      * Define the guarded attributes.
