@@ -3,6 +3,7 @@
 namespace Lunar\Drivers;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Base\DataTransferObjects\StockInfo;
 use Lunar\Base\Purchasable;
 use Lunar\Base\ReservesStock;
@@ -44,17 +45,21 @@ class SimpleStockDriver implements StockDriver
      *
      * @return bool
      */
-    public function checkStock(Purchasable $purchasable, int $quantity)
+    public function checkStock(ReservesStock $line, int $quantity)
     {
         // SimpleStock driver only supports ProductVariants
-        $this->checkIsVariant($purchasable);
+        $this->checkIsVariant($line->purchasable);
 
-        // Ensure we have enough stock to reserve (stock+backorder+reserved)
-        $reservedCount = StockReservation::where('variant_id'.'=', $purchasable->id)
+        // Ensure we have enough stock to reserve (stock + backorder - reserved)
+        $reservedCount = StockReservation::where('variant_id'.'=', $line->purchasable->id)
             ->where('expires_at', '<', now())
+            ->whereNot(function (Builder $query) use ($line) {
+                $query->where('stockable_type', '=', $line::class)
+                    ->where('stockable_id', '=', $line->id);
+            })
             ->sum('quantity');
 
-        $totalAvailable = $purchasable->stock + $purchasable->backorder + $reservedCount;
+        $totalAvailable = $line->purchasable->stock + $line->purchasable->backorder - $reservedCount;
 
         return $totalAvailable >= $quantity;
     }
@@ -65,7 +70,7 @@ class SimpleStockDriver implements StockDriver
     public function reserveStock(ReservesStock $line, string $location = null): bool
     {
         // Check if we have enough stock available to reserve
-        if (! $this->checkStock($line->purchasable, $line->quantity)) {
+        if (! $this->checkStock($line, $line->quantity)) {
             return false;
         }
 

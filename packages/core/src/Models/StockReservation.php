@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
@@ -29,6 +30,15 @@ class StockReservation extends BaseModel
     {
         return StockReservationFactory::new();
     }
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'meta' => AsArrayObject::class,
+    ];
 
     /**
      * Define which attributes should be
