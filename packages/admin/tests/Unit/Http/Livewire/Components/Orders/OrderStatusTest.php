@@ -66,9 +66,9 @@ class OrderStatusTest extends TestCase
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderStatus::class, [
-            'order' => $order,
-        ])->assertSet('order.id', $order->id);
+            ->test(OrderStatus::class, [
+                'order' => $order,
+            ])->assertSet('order.id', $order->id);
     }
 
     /** @test */
@@ -99,19 +99,19 @@ class OrderStatusTest extends TestCase
         ]);
 
         $component = LiveWire::actingAs($staff, 'staff')
-        ->test(OrderStatus::class, [
-            'order' => $order,
-        ])->assertSet('statuses', config('lunar.orders.statuses'))
-        ->assertSet('showStatusSelect', false)
-        ->assertSet('newStatus', null)
-        ->assertSet('selectedMailers', [])
-        ->assertSet('previewTemplate', null)
-        ->assertSet('additionalContent', null)
-        ->assertSet('emailAddresses', [])
-        ->assertSet('additionalEmail', null)
-        ->assertSet('phoneNumbers', [])
-        ->assertSet('availableNotifications', [])
-        ->assertSet('availableMailers', collect());
+            ->test(OrderStatus::class, [
+                'order' => $order,
+            ])->assertSet('statuses', config('lunar.orders.statuses'))
+            ->assertSet('showStatusSelect', false)
+            ->assertSet('newStatus', null)
+            ->assertSet('selectedMailers', [])
+            ->assertSet('previewTemplate', null)
+            ->assertSet('additionalContent', null)
+            ->assertSet('emailAddresses', [])
+            ->assertSet('additionalEmail', null)
+            ->assertSet('phoneNumbers', [])
+            ->assertSet('availableNotifications', [])
+            ->assertSet('availableMailers', collect());
     }
 
     /** @test */
@@ -168,7 +168,7 @@ class OrderStatusTest extends TestCase
         $this->assertArrayHasKey('test_a_mailer', $component->get('availableMailers'));
 
         $component->set('newStatus', 'payment-received')
-        ->assertCount('availableMailers', 0);
+            ->assertCount('availableMailers', 0);
     }
 
     /** @test */

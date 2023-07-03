@@ -131,6 +131,16 @@ class Order extends BaseModel
     }
 
     /**
+     * Return the cart relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
+
+    /**
      * Return the lines relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

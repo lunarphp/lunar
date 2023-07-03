@@ -51,10 +51,16 @@ class HasChannelsTest extends TestCase
         $resultA = Product::channel($channelA)->get();
         $resultB = Product::channel($channelB)->get();
         $resultC = Product::channel([$channelA, $channelB])->get();
+        $resultD = Product::channel()->get();
+        $resultE = Product::channel([])->get();
+        $resultF = Product::channel(collect())->get();
 
         $this->assertCount(1, $resultA);
         $this->assertCount(1, $resultB);
         $this->assertCount(2, $resultC);
+        $this->assertCount(2, $resultD);
+        $this->assertCount(2, $resultE);
+        $this->assertCount(2, $resultF);
 
         $this->assertEquals($productA->id, $resultA->first()->id);
         $this->assertEquals($productB->id, $resultB->first()->id);
@@ -82,7 +88,6 @@ class HasChannelsTest extends TestCase
         ]);
 
         $this->assertCount(0, Product::channel($channelA)->get());
-
 
         $startsAt = now()->addDay();
         $endsAt = now()->addDays(2);

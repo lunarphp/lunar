@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Lunar\Base\BaseModel;
@@ -108,7 +109,7 @@ class CartLine extends BaseModel implements ReservesStock
      */
     protected $casts = [
         'quantity' => 'integer',
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**

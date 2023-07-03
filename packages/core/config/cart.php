@@ -13,6 +13,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Fingerprint Generator
+    |--------------------------------------------------------------------------
+    |
+    | Specify which class should be used when generating a cart fingerprint.
+    |
+    */
+    'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Auto create a cart when none exists for user.
     |--------------------------------------------------------------------------
     |
@@ -125,11 +135,12 @@ return [
     */
     'eager_load' => [
         'currency',
-        'shippingAddress',
-        'billingAddress',
+        'lines.purchasable.taxClass',
+        'lines.purchasable.values',
+        'lines.purchasable.product.thumbnail',
         'lines.purchasable.prices.currency',
         'lines.purchasable.prices.priceable',
         'lines.purchasable.product',
-        'lines.cart',
+        'lines.cart.currency',
     ],
 ];

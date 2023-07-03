@@ -7,7 +7,6 @@ use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
-use Lunar\Models\Discount;
 use Lunar\Models\Product;
 
 class BuyXGetY extends AbstractDiscountType
