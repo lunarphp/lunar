@@ -9,7 +9,6 @@ use Lunar\Managers\StockManager;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\ProductVariant;
-use Lunar\Models\StockReservation;
 use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
 

@@ -9,16 +9,12 @@ use Lunar\Base\ReservesStock;
 use Lunar\Base\StockDriver;
 use Lunar\Exceptions\Stock\NotReservedException;
 use Lunar\Models\ProductVariant;
-use Lunar\Models\StockReservation;use function Symfony\Component\String\u;
+use Lunar\Models\StockReservation;
 
 class SimpleStockDriver implements StockDriver
 {
     /**
      * Get the available stock information, after deducting reservations.
-     *
-     * @param  \Lunar\Base\Purchasable  $purchasable
-     *
-     * @return StockInfo
      */
     public function availableStock(Purchasable $purchasable): StockInfo
     {
@@ -32,10 +28,6 @@ class SimpleStockDriver implements StockDriver
 
     /**
      * Get the reserved stock information.
-     *
-     * @param  \Lunar\Base\Purchasable  $purchasable
-     *
-     * @return StockInfo
      */
     public function reservedStock(Purchasable $purchasable): StockInfo
     {
@@ -49,8 +41,6 @@ class SimpleStockDriver implements StockDriver
     /**
      * Check if we can reserve the required quantity.
      *
-     * @param  \Lunar\Base\Purchasable  $purchasable
-     * @param  int $quantity
      *
      * @return bool
      */
@@ -60,22 +50,17 @@ class SimpleStockDriver implements StockDriver
         $this->checkIsVariant($purchasable);
 
         // Ensure we have enough stock to reserve (stock+backorder+reserved)
-        $reservedCount = StockReservation::where('variant_id'. '=', $purchasable->id)
+        $reservedCount = StockReservation::where('variant_id'.'=', $purchasable->id)
             ->where('expires_at', '<', now())
             ->sum('quantity');
 
         $totalAvailable = $purchasable->stock + $purchasable->backorder + $reservedCount;
 
-        return ($totalAvailable >= $quantity);
+        return $totalAvailable >= $quantity;
     }
 
     /**
      * Reserve stock for the cart/order line.
-     *
-     * @param  ReservesStock $line
-     * @param  string|null   $location
-     *
-     * @return bool
      */
     public function reserveStock(ReservesStock $line, string $location = null): bool
     {
@@ -96,10 +81,7 @@ class SimpleStockDriver implements StockDriver
     /**
      * Release stock for the cart/order line.
      *
-     * @param  ReservesStock $line
-     * @param int $quantity
-     *
-     * @return bool
+     * @param  int  $quantity
      */
     public function releaseStock(ReservesStock $line, int $quantity = null): bool
     {
@@ -107,7 +89,7 @@ class SimpleStockDriver implements StockDriver
             ->where('stockable_id', '=', $line->id)
             ->first();
 
-        if (!$reservation) {
+        if (! $reservation) {
             return true;
         }
 
@@ -131,10 +113,7 @@ class SimpleStockDriver implements StockDriver
     /**
      * Dispatch stock for the order line.
      *
-     * @param  ReservesStock $line
-     * @param int $quantity
-     *
-     * @return bool
+     * @param  int  $quantity
      */
     public function dispatchStock(ReservesStock $line, int $quantity = null): bool
     {
@@ -144,7 +123,7 @@ class SimpleStockDriver implements StockDriver
             $quantity = $line->quantity;
         }
 
-        If (! $this->releaseStock($line, $quantity)) {
+        if (! $this->releaseStock($line, $quantity)) {
             throw new NotReservedException("Cannot release stock that isn't reserved");
         }
 
@@ -164,8 +143,7 @@ class SimpleStockDriver implements StockDriver
     private function checkIsVariant(Purchasable $purchasable): void
     {
         if ($purchasable::class !== ProductVariant::class) {
-            throw new Exception("Purchasable must be of type ".ProductVariant::class." for SimpleStock driver, ".$purchasable::class." given.");
+            throw new Exception('Purchasable must be of type '.ProductVariant::class.' for SimpleStock driver, '.$purchasable::class.' given.');
         }
     }
-
 }

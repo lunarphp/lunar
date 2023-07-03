@@ -3,7 +3,6 @@
 namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Lunar\Models\StockReservation;
 use Lunar\Tests\TestCase;
 
