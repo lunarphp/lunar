@@ -72,7 +72,7 @@ class SimpleStockDriver implements StockDriver
     {
         // Check if we have enough stock available to reserve
         if (! $this->checkStock($line)) {
-            throw new NotReservedException("Cannot reserve stock for purchasable.");
+            throw new NotReservedException('Cannot reserve stock for purchasable.');
         }
 
         $reservationDuration = config('lunar.stock.reservation_duration', 30);

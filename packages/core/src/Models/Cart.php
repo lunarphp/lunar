@@ -612,8 +612,6 @@ class Cart extends BaseModel
 
     /**
      * Reserves stock for all of the Cart's lines.
-     *
-     * @return void
      */
     public function reserveStock(): void
     {
