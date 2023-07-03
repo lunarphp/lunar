@@ -5,7 +5,6 @@ namespace Lunar;
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -36,6 +35,7 @@ use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Managers\StorefrontSessionManager;
 use Lunar\Base\StorefrontSessionInterface;
+use Lunar\Base\StockManagerInterface;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
@@ -52,6 +52,7 @@ use Lunar\Managers\CartSessionManager;
 use Lunar\Managers\DiscountManager;
 use Lunar\Managers\PaymentManager;
 use Lunar\Managers\PricingManager;
+use Lunar\Managers\StockManager;
 use Lunar\Managers\TaxManager;
 use Lunar\Models\Address;
 use Lunar\Models\CartLine;
@@ -79,15 +80,16 @@ use Lunar\Observers\UrlObserver;
 class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
+        'cart',
         'database',
         'media',
-        'shipping',
-        'taxes',
-        'cart',
         'orders',
-        'urls',
-        'search',
         'payments',
+        'search',
+        'shipping',
+        'stock',
+        'taxes',
+        'urls',
     ];
 
     protected $root = __DIR__.'/..';
@@ -151,6 +153,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->bind(PricingManagerInterface::class, function ($app) {
             return $app->make(PricingManager::class);
+        });
+
+        $this->app->singleton(StockManagerInterface::class, function ($app) {
+            return $app->make(StockManager::class);
         });
 
         $this->app->singleton(TaxManagerInterface::class, function ($app) {

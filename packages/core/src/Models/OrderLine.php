@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Casts\TaxBreakdown;
@@ -106,5 +107,10 @@ class OrderLine extends BaseModel
             'order_id',
             'currency_code'
         );
+    }
+
+    public function stockReservations(): MorphMany
+    {
+        return $this->morphMany(StockReservation::class, 'stockable');
     }
 }
