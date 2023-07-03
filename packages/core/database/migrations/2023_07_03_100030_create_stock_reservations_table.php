@@ -14,6 +14,7 @@ class CreateStockReservationsTable extends Migration
             $table->foreignId('variant_id')->constrained($this->prefix.'product_variants');
             $table->unsignedInteger('quantity')->unsigned()->index();
             $table->dateTime('expires_at')->nullable()->index();
+            $table->json('meta')->nullable();
             $table->timestamps();
         });
     }
