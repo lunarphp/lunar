@@ -68,7 +68,7 @@ class SimpleStockDriver implements StockDriver
     /**
      * Reserve stock for the cart/order line.
      */
-    public function reserveStock(ReservesStock $line, string $location = null): bool
+    public function reserveStock(ReservesStock $line, array $location = null): bool
     {
         // Check if we have enough stock available to reserve
         if (! $this->checkStock($line)) {

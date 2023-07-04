@@ -8,7 +8,7 @@ use Lunar\Models\StockReservation;
 
 trait HasStockReservations
 {
-    public function reserveStock(array $location): bool
+    public function reserveStock(array $location = null): bool
     {
         return Stock::reserveStock($this, $location);
     }
