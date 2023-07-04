@@ -616,7 +616,7 @@ class Cart extends BaseModel
     public function reserveStock(): void
     {
         $this->lines->each(
-            fn($line) => $line->reserveStock()
+            fn ($line) => $line->reserveStock()
         );
     }
 }
