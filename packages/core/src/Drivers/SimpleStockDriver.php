@@ -144,10 +144,14 @@ class SimpleStockDriver implements StockDriver
         return true;
     }
 
+    /**
+     * @throws \Throwable
+     */
     private function checkIsVariant(Purchasable $purchasable): void
     {
-        if ($purchasable::class !== ProductVariant::class) {
-            throw new Exception('Purchasable must be of type '.ProductVariant::class.' for SimpleStock driver, '.$purchasable::class.' given.');
-        }
+        throw_if(
+            $purchasable::class !== ProductVariant::class,
+            new Exception('Purchasable must be of type '.ProductVariant::class.' for SimpleStock driver, '.$purchasable::class.' given.')
+        );
     }
 }
