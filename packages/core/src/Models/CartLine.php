@@ -85,7 +85,7 @@ class CartLine extends BaseModel implements ReservesStock
     /**
      * All the tax breakdowns for the cart line.
      */
-    public TaxBreakdown $taxBreakdown;
+    public ?TaxBreakdown $taxBreakdown = null;
 
     /**
      * Return a new factory instance for the model.

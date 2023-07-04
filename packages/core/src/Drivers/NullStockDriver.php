@@ -55,4 +55,9 @@ class NullStockDriver implements StockDriver
     {
         return true;
     }
+
+    public function transferReservation(ReservesStock $line1, ReservesStock $line2): bool
+    {
+        return true;
+    }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Casts\TaxBreakdown;
+use Lunar\Base\ReservesStock;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasStockReservations;
 use Lunar\Base\Traits\LogsActivity;
@@ -34,7 +35,7 @@ use Lunar\Database\Factories\OrderLineFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class OrderLine extends BaseModel
+class OrderLine extends BaseModel implements ReservesStock
 {
     use HasFactory;
     use HasMacros;

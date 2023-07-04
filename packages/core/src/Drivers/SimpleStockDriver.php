@@ -142,6 +142,17 @@ class SimpleStockDriver implements StockDriver
         return true;
     }
 
+    public function transferReservation(ReservesStock $line1, ReservesStock $line2): bool
+    {
+        foreach ($line1->stockReservations as $reservation) {
+            $reservation->stockable_type = $line2::class;
+            $reservation->stockable_id = $line2->id;
+            $reservation->save();
+        }
+
+        return true;
+    }
+
     /**
      * @throws \Throwable
      */

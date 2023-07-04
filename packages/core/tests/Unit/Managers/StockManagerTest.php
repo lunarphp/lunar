@@ -10,6 +10,7 @@ use Lunar\Facades\Stock;
 use Lunar\Managers\StockManager;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
+use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
@@ -160,6 +161,39 @@ class StockManagerTest extends TestCase
 
         $this->assertEquals($cartLine->purchasable->stock, 0);
         $this->assertEquals($cartLine->purchasable->backorder, 3);
+    }
+
+    /** @test */
+    public function can_transfer_stock()
+    {
+        $stockManager = app(StockManagerInterface::class);
+
+        $cart = Cart::factory()->create([
+            'user_id' => User::factory(),
+        ]);
+
+        $data = [
+            'cart_id' => $cart->id,
+            'quantity' => 3,
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => ProductVariant::factory()->state([
+                'stock' => 1,
+                'backorder' => 5,
+            ])->create()->id,
+        ];
+
+        $cartLine = CartLine::factory()->create($data);
+        $orderLine = OrderLine::factory()->create();
+
+        $stockManager->reserveStock($cartLine);
+
+        $this->assertTrue($stockManager->transferReservation($cartLine, $orderLine));
+
+        $cartLine->refresh();
+        $orderLine->refresh();
+
+        $this->assertTrue($cartLine->stockReservations->count() === 0);
+        $this->assertTrue($orderLine->stockReservations->count() === 1);
     }
 
     /** @test */
