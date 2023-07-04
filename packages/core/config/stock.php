@@ -21,4 +21,15 @@ return [
     |
     */
     'reservation_duration' => 30,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-Dispatch
+    |--------------------------------------------------------------------------
+    |
+    | Setting this to "true" will dispatch order lines upon creation, so that
+    | stock is automatically deducted straight away.
+    |
+    */
+    'auto-dispatch' => false,
 ];

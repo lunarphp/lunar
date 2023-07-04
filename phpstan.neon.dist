@@ -6,6 +6,11 @@ parameters:
         - packages
         - utils
     excludePaths:
+        - packages/core/vendor
+        - packages/admin/vendor
+        - packages/licensing/vendor
+        - utils/livewire-tables/vendor
+        - utils/scout-database-engine/vendor
         # See: https://github.com/nunomaduro/larastan/issues/1644
         - packages/admin/src/Jobs/Products/GenerateVariants.php
     checkOctaneCompatibility: true
