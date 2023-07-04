@@ -46,7 +46,7 @@ class SimpleStockDriver implements StockDriver
      *
      * @throws Exception
      */
-    public function checkStock(ReservesStock $line)
+    protected function checkStock(ReservesStock $line)
     {
         // SimpleStock driver only supports ProductVariants
         $this->checkIsVariant($line->purchasable);
@@ -96,7 +96,7 @@ class SimpleStockDriver implements StockDriver
             ->first();
 
         if (! $reservation) {
-            return true;
+            return false;
         }
 
         if (! $quantity) {
