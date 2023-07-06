@@ -438,4 +438,12 @@ trait HasPrices
 
         return $messages;
     }
+
+    /**
+     * @return bool
+     */
+    public function getPricesIncludeTaxProperty()
+    {
+        return (bool) prices_inc_tax();
+    }
 }

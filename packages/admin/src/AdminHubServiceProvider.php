@@ -541,7 +541,8 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        Gate::after(function (Staff $user, $ability) {
+        Gate::after(function ($user, $ability) {
+            // Are we trying to authorize something within the hub?
             $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
                 return $user->admin || $user->hasPermissionTo($ability);
