@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Lunar\Base\StorefrontSessionInterface;
+use Lunar\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Managers\StorefrontSessionManager;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
@@ -247,14 +248,8 @@ class StorefrontSessionManagerTest extends TestCase
 
         $customer = $customers->first();
 
-        $manager->setCustomer($customer);
-
-        $this->assertNull($manager->getCustomer());
-
-        $user->customers()->sync($customers->pluck('id'));
+        $this->expectException(CustomerNotBelongsToUserException::class);
 
         $manager->setCustomer($customer);
-
-        $this->assertEquals($customer->id, $manager->getCustomer()->id);
     }
 }

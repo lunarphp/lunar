@@ -6,6 +6,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
 use Lunar\Base\StorefrontSessionInterface;
+use Lunar\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
@@ -215,7 +216,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             && is_lunar_user($this->authManager->user())
             && ! $this->customerBelongsToUser($customer)
         ) {
-            return $this;
+            throw new CustomerNotBelongsToUserException();
         }
 
         $this->customer = $customer;
