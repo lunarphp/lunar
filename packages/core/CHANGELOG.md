@@ -23,20 +23,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `PaymentAttemptedEvent`
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
-- Added `orders` relationship to the `LunarUser` trait.
-- Added 'label' JSON field to `ProductOption` model.
-- Added pipelines to PricingManager.
-- Config to disable database migrations.
+- Added `products` scope to the `Discount` model.
+- Added `usable` scope to the `Discount` model.
 - Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
 
 ### Changed
 
+- Added `orders` relationship to the `LunarUser` trait.
+- Added 'label' JSON field to `ProductOption` model.
+- Added pipelines to PricingManager.
+- Config to disable database migrations.
 - The `getThumbnail()` method on variants has been changed to allow for eager loading.
 - The logic in the `CreateOrder` action has been extracted into pipelines.
 - `order_id` has been deprecated on the `carts` table in favour of a `cart_id` column on the `orders` table.
 - The `CreateOrder` action will now ensure we are working with a draft order before proceeding.
 - The `CreateOrder` pipelines will now handle and update the order if it already exists.
 - PricingManager properties changed from `protected` to `public`
+- MySQL 5.7 is no longer supported, MySQL 8.0+ is required.
 
 ## 0.3.2
 

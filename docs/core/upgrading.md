@@ -31,6 +31,10 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 #### ShippingManifestInterface
 Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
 
+#### MySQL 8.x Requirement
+With MySQL 5.7 EOL coming in October 2023 and Lunar's heavy use of JSON fields, Lunar now only supports MySQL 8.x.
+You may find your project continues to work fine in MySQL 5.7, but we advise upgrading.
+
 #### Cart/Order Relationship
 
 The relationship between a cart and an order has been changed, previously the `carts` table had an `order_id` column,
