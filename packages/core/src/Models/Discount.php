@@ -158,20 +158,23 @@ class Discount extends BaseModel
      *
      * @return Builder
      */
-    public function scopeProducts(Builder $query, iterable $productIds = [], string $type = 'condition')
+    public function scopeProducts(Builder $query, iterable $productIds = [], string $type = null)
     {
         if (is_array($productIds)) {
             $productIds = collect($productIds);
         }
 
-        return $query->where(function ($subQuery) use ($productIds, $type) {
-            $subQuery->whereDoesntHave('purchasables')
-                ->orWhereHas('purchasables', function ($relation) use ($productIds, $type) {
-                    $relation->whereIn('purchasable_id', $productIds)
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+                ->orWhereHas('purchasables',
+                    fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
                         ->wherePurchasableType(Product::class)
-                        ->whereType($type);
-                });
-        });
+                        ->when(
+                            $type,
+                            fn ($query) => $query->whereType($type)
+                        )
+                )
+        );
     }
 
     public function scopeUsable(Builder $query)
