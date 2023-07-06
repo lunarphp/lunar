@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Unit\Models;
 
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
@@ -145,6 +146,121 @@ class CartTest extends TestCase
             'channel_id' => $channel->id,
             'user_id' => $user->getKey(),
         ]);
+    }
+
+    /** @test */
+    public function can_associate_cart_with_customer()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $customer = Customer::factory()->create();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $cart->setCustomer($customer);
+
+        $this->assertDatabaseHas((new Cart)->getTable(), [
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'customer_id' => $customer->id,
+        ]);
+    }
+
+    /** @test */
+    public function ensure_associate_user_belongs_to_customer()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $customer = Customer::factory()->create();
+        $users = StubUser::factory(5)->create();
+
+        $user = $users->first();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $cartData = [
+            'id' => $cart->id,
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'customer_id' => $customer->id,
+            'user_id' => $user->id,
+        ];
+
+        $cart->setCustomer($customer);
+
+        $checked = false;
+
+        try {
+            $cart->associate($user);
+        } catch (Exception $e) {
+            $checked = true;
+        }
+
+        $this->assertTrue($checked);
+
+        $this->assertDatabaseMissing((new Cart)->getTable(), $cartData);
+
+        $user->customers()->attach($customer);
+
+        $cart->associate($user);
+
+        $this->assertDatabaseHas((new Cart)->getTable(), $cartData);
+    }
+
+    /** @test */
+    public function ensure_associate_customer_belongs_to_user()
+    {
+        $this->setAuthUserConfig();
+
+        $currency = Currency::factory()->create();
+        $channel = Channel::factory()->create();
+        $customer = Customer::factory()->create();
+        $users = StubUser::factory(5)->create();
+
+        $user = $users->first();
+
+        $cart = Cart::create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $cartData = [
+            'id' => $cart->id,
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'customer_id' => $customer->id,
+            'user_id' => $user->id,
+        ];
+
+        $cart->associate($user);
+
+        $checked = false;
+
+        try {
+            $cart->setCustomer($customer);
+        } catch (Exception $e) {
+            $checked = true;
+        }
+
+        $this->assertTrue($checked);
+
+        $this->assertDatabaseMissing((new Cart)->getTable(), $cartData);
+
+        $user->customers()->attach($customer);
+
+        $cart->setCustomer($customer);
+
+        $this->assertDatabaseHas((new Cart)->getTable(), $cartData);
     }
 
     /** @test */

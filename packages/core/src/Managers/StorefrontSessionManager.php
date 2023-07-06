@@ -2,11 +2,14 @@
 
 namespace Lunar\Managers;
 
+use Illuminate\Auth\AuthManager;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
 use Lunar\Base\StorefrontSessionInterface;
+use Lunar\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 
 class StorefrontSessionManager implements StorefrontSessionInterface
@@ -31,12 +34,20 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     protected ?Currency $currency = null;
 
     /**
+     * The current customer
+     *
+     * @var Customer
+     */
+    protected ?Customer $customer = null;
+
+    /**
      * Initialise the manager
      *
      * @param protected SessionManager
      */
     public function __construct(
-        protected SessionManager $sessionManager
+        protected SessionManager $sessionManager,
+        protected AuthManager $authManager
     ) {
         if (! $this->customerGroups) {
             $this->customerGroups = collect();
@@ -44,6 +55,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
 
         $this->initChannel();
         $this->initCustomerGroups();
+        $this->initCustomer();
     }
 
     /**
@@ -123,6 +135,44 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
+    public function initCustomer(): ?Customer
+    {
+        if ($this->customer) {
+            return $this->customer;
+        }
+
+        $customer_id = $this->sessionManager->get(
+            $this->getSessionKey().'_customer'
+        );
+
+        if (! $customer_id) {
+            if ($this->authManager->check() && is_lunar_user($this->authManager->user())) {
+                $user = $this->authManager->user();
+
+                if ($customer = $user->latestCustomer()) {
+                    $this->setCustomer($customer);
+
+                    return $this->customer;
+                }
+            }
+
+            return null;
+        }
+
+        $customer = Customer::find($customer_id);
+
+        if (! $customer) {
+            return null;
+        }
+
+        $this->setCustomer($customer);
+
+        return $this->customer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getSessionKey(): string
     {
         return 'lunar_storefront';
@@ -140,6 +190,46 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         $this->channel = $channel;
 
         return $this;
+    }
+
+    private function customerBelongsToUser(Customer $customer): bool
+    {
+        $user = $this->authManager->user();
+
+        return $customer->query()
+            ->whereHas('users', fn ($query) => $query->where('user_id', $user->id))
+            ->exists();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCustomer(Customer $customer): self
+    {
+        $this->sessionManager->put(
+            $this->getSessionKey().'_customer',
+            $customer->id
+        );
+
+        if (
+            $this->authManager->check()
+            && is_lunar_user($this->authManager->user())
+            && ! $this->customerBelongsToUser($customer)
+        ) {
+            throw new CustomerNotBelongsToUserException();
+        }
+
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer ?: $this->initCustomer();
     }
 
     /**

@@ -19,6 +19,7 @@ Lunar\Models\Cart
 |:------------|:--------------------------------------------------------------------------------|
 | id          | Unique ID for the cart.                                                         |
 | user_id     | Can be `null` for guest users.                                                  |
+| customer_id | Can be `null`.                                                                  |
 | merged_id   | If a cart was merged with another cart, it defines the cart it was merged into. |
 | currency_id | Carts can only be for a single currency.                                        |
 | channel_id  |                                                                                 |
@@ -327,9 +328,17 @@ CartSession::clear();
 You can easily associate a cart to a user.
 
 ```php
-$cart = \Lunar\Models\Cart::first();
-CartSession::associate($cart, $user, 'merge');
+CartSession::associate($user, 'merge');
 ```
+
+### Associating a cart to a customer
+
+You can easily associate a cart to a customer.
+
+```php
+CartSession::setCustomer($customer);
+```
+
 
 ### Adding shipping/billing address
 

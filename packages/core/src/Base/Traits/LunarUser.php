@@ -15,6 +15,11 @@ trait LunarUser
         return $this->belongsToMany(Customer::class, "{$prefix}customer_user");
     }
 
+    public function latestCustomer()
+    {
+        return $this->customers()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first();
+    }
+
     /**
      * Return the user orders relationship.
      */

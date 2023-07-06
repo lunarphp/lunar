@@ -20,7 +20,11 @@ class GetUnitPrice
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
 
-        $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
+        if ($customer = $cart->customer) {
+            $customerGroups = $customer->customerGroups;
+        } else {
+            $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
+        }
 
         $currency = Blink::once('currency_'.$cart->currency_id, function () use ($cart) {
             return $cart->currency;

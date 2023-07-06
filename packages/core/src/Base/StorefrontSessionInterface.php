@@ -5,6 +5,7 @@ namespace Lunar\Base;
 use Illuminate\Support\Collection;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 
 interface StorefrontSessionInterface
@@ -53,4 +54,14 @@ interface StorefrontSessionInterface
      * @return Collection
      */
     public function getCustomerGroups(): ?Collection;
+
+    /**
+     * Set the session customer.
+     */
+    public function setCustomer(Customer $customer): self;
+
+    /**
+     * Return the current customer.
+     */
+    public function getCustomer(): ?Customer;
 }
