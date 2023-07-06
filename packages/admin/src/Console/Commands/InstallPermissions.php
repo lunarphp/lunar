@@ -30,6 +30,6 @@ class InstallPermissions extends Command
     {
         $this->info('Sync hub roles and permissions');
 
-        app(SyncRolesPermissions::class);
+        app(SyncRolesPermissions::class)();
     }
 }
