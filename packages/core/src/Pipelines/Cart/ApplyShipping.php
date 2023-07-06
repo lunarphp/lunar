@@ -44,10 +44,6 @@ final class ApplyShipping
 
     private function getShippingOption(Cart $cart)
     {
-        if (! $cart->shippingAddress?->shipping_option) {
-            return null;
-        }
-
-        return ShippingManifest::getOption($cart, $cart->shippingAddress->shipping_option);
+        return ShippingManifest::getShippingOption($cart);
     }
 }

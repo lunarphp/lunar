@@ -75,16 +75,6 @@ class ShippingManifest implements ShippingManifestInterface
     /**
      * {@inheritDoc}
      */
-    public function getOption(Cart $cart, string $identifier): ?ShippingOption
-    {
-        return $this->getOptions($cart)
-            ->where('identifier', $identifier)
-            ->first();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getOptions(Cart $cart): Collection
     {
         app(Pipeline::class)
@@ -99,18 +89,30 @@ class ShippingManifest implements ShippingManifestInterface
     /**
      * {@inheritDoc}
      */
-    public function getShippingOption(Cart $cart, $identifier): ?ShippingOption
+    public function getOption(Cart $cart, string $identifier): ?ShippingOption
+    {
+        if (filled($this->getOptionUsing)) {
+            $shippingOption = ($this->getOptionUsing)($cart, $identifier);
+
+            if ($shippingOption) {
+                return $shippingOption;
+            }
+        }
+
+        return $this->getOptions($cart)
+            ->where('identifier', $identifier)
+            ->first();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getShippingOption(Cart $cart): ?ShippingOption
     {
         if (! $cart->shippingAddress?->shipping_option) {
             return null;
         }
 
-        if (blank($this->getOptionUsing)) {
-            return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
-                return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
-            });
-        }
-
-        return call_user_func($this->getOptionUsing, ...func_get_args());
+        return ShippingManifest::getOption($cart, $cart->shippingAddress->shipping_option);
     }
 }

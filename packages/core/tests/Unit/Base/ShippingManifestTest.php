@@ -236,11 +236,11 @@ class ShippingManifestTest extends TestCase
 
         $this->cart->setShippingAddress($shipping);
 
-        $this->assertNull(ShippingManifest::getShippingOption($this->cart, $option->getIdentifier()));
+        $this->assertNull(ShippingManifest::getShippingOption($this->cart));
 
         $this->cart->setShippingOption($option);
 
-        $this->assertSame($option, ShippingManifest::getShippingOption($this->cart, $option->getIdentifier()));
+        $this->assertSame($option, ShippingManifest::getShippingOption($this->cart));
     }
 
     /** @test */
@@ -271,10 +271,10 @@ class ShippingManifestTest extends TestCase
 
         $this->cart->setShippingOption($option);
 
-        $this->assertNull(ShippingManifest::getShippingOption($this->cart, $option->getIdentifier()));
+        $this->assertNull(ShippingManifest::getShippingOption($this->cart));
 
         ShippingManifest::getOptionUsing(fn (Cart $cart, $identifier): ShippingOption => $option->getIdentifier() == $identifier ? $option : null);
 
-        $this->assertSame($option, ShippingManifest::getShippingOption($this->cart, $option->getIdentifier()));
+        $this->assertSame($option, ShippingManifest::getShippingOption($this->cart));
     }
 }

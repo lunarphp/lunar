@@ -37,20 +37,17 @@ interface ShippingManifestInterface
     public function getOptionUsing(Closure $closure): self;
 
     /**
-     * Return option for a given cart by identifier.
-     */
-    public function getOption(Cart $cart, string $identifier): ?ShippingOption;
-
-    /**
      * Return available options for a given cart.
      */
     public function getOptions(Cart $cart): Collection;
 
     /**
-     * Retrieve shipping option for a given cart by identifier
-     *
-     * @param  string  $identifier
-     * @return self
+     * Return available option for a given cart by identifier.
      */
-    public function getShippingOption(Cart $cart, $identifier): ?ShippingOption;
+    public function getOption(Cart $cart, string $identifier): ?ShippingOption;
+
+    /**
+     * Retrieve shipping option for a given cart
+     */
+    public function getShippingOption(Cart $cart): ?ShippingOption;
 }
