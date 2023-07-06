@@ -16,7 +16,7 @@ class StaffCreate extends AbstractStaff
     public function mount()
     {
         $this->staff = new Staff();
-        $this->staffPermissions = $this->staff->permissions->pluck('handle');
+        $this->staffPermissions = $this->staff->getAllPermissions()->pluck('name');
     }
 
     /**
@@ -51,6 +51,7 @@ class StaffCreate extends AbstractStaff
 
         $this->staff->save();
 
+        $this->syncRole();
         $this->syncPermissions();
 
         $this->notify('Staff member added.', 'hub.staff.index');

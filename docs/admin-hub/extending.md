@@ -41,6 +41,11 @@ public function boot()
 }
 ```
 
+::: tip
+After adding new permissions, you must run `lunar:hub:permissions` command to register into the hub.
+The hub is using `spatie/laravel-permission` package
+:::
+
 ::: warning 
 Additional permissions are catogarised as third-party permissions. You should still implement authorisation checking respectively.
 

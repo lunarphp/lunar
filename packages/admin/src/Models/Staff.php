@@ -3,17 +3,18 @@
 namespace Lunar\Hub\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lunar\Hub\Database\Factories\StaffFactory;
+use Spatie\Permission\Traits\HasRoles;
 
 class Staff extends Authenticatable
 {
     use HasFactory;
     use Notifiable;
     use SoftDeletes;
+    use HasRoles;
 
     /**
      * Return a new factory instance for the model.
@@ -35,6 +36,8 @@ class Staff extends Authenticatable
         'email',
         'password',
     ];
+
+    protected $guard_name = 'staff';
 
     /**
      * The attributes that should be hidden for arrays.
@@ -82,28 +85,6 @@ class Staff extends Authenticatable
     public function resolveRouteBinding($value, $field = null)
     {
         return $this->resolveSoftDeletableRouteBinding($value, $field);
-    }
-
-    /**
-     * Return the user permissions relationship.
-     */
-    public function permissions(): HasMany
-    {
-        return $this->hasMany(StaffPermission::class);
-    }
-
-    /**
-     * Authorize an action via permissions.
-     *
-     * @param  string  $permission
-     */
-    public function authorize($permission): bool
-    {
-        if (! is_array($permission)) {
-            $permission = [$permission];
-        }
-
-        return $this->permissions()->whereIn('handle', $permission)->exists();
     }
 
     /**
