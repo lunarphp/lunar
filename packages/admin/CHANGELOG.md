@@ -11,7 +11,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added Label field when editing product options.
 - Ability to add and sort child collections when editing a collection.
 - Config to disable database migrations.
-- Added `addOptions`, `getOptionUsing` to ShippingManifest
 
 ### Fixed
 
