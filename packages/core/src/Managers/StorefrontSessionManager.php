@@ -2,9 +2,9 @@
 
 namespace Lunar\Managers;
 
+use Illuminate\Auth\AuthManager;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
@@ -45,7 +45,8 @@ class StorefrontSessionManager implements StorefrontSessionInterface
      * @param protected SessionManager
      */
     public function __construct(
-        protected SessionManager $sessionManager
+        protected SessionManager $sessionManager,
+        protected AuthManager $authManager
     ) {
         if (! $this->customerGroups) {
             $this->customerGroups = collect();
@@ -144,8 +145,8 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
 
         if (! $customer_id) {
-            if (Auth::check() && is_lunar_user(Auth::user())) {
-                $user = Auth::user();
+            if ($this->authManager->check() && is_lunar_user($this->authManager->user())) {
+                $user = $this->authManager->user();
 
                 if ($customer = $user->customers()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first()) {
                     $this->setCustomer($customer);
@@ -192,7 +193,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
 
     private function customerBelongsToUser(Customer $customer): bool
     {
-        $user = Auth::user();
+        $user = $this->authManager->user();
 
         return $customer->query()
             ->whereHas('users', fn ($query) => $query->where('user_id', $user->id))
@@ -210,8 +211,8 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
 
         if (
-            Auth::check()
-            && is_lunar_user(Auth::user())
+            $this->authManager->check()
+            && is_lunar_user($this->authManager->user())
             && ! $this->customerBelongsToUser($customer)
         ) {
             return $this;
