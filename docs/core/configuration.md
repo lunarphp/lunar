@@ -103,3 +103,14 @@ Transformations for all uploaded images.
     'unique'   => false,
 ],
 ```
+
+### Pricing
+
+`lunar/pricing.php`
+
+If you want to store pricing inclusive of tax then set this config value to `true`.
+
+```
+    'stored_inclusive_of_tax' => false,
+```
+

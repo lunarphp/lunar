@@ -45,7 +45,12 @@ class CalculateTax
 
             $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
             $cartLine->taxAmount = new Price($taxTotal, $cart->currency, $unitQuantity);
-            $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
+
+            if (prices_inc_tax()) {
+                $cartLine->total = new Price($subTotal, $cart->currency, $unitQuantity);
+            } else {
+                $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
+            }
         }
 
         $taxBreakDown = new TaxBreakdown($taxBreakDownAmounts);
