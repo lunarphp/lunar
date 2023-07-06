@@ -125,7 +125,6 @@ class SystemTaxDriverTest extends TestCase
 
         $address = Address::factory()->create();
         $currency = Currency::factory()->create();
-        $variant = ProductVariant::factory()->create();
         $line = CartLine::factory()->create();
         $subTotal = 999;
 
@@ -133,7 +132,7 @@ class SystemTaxDriverTest extends TestCase
             ->setShippingAddress($address)
             ->setBillingAddress($address)
             ->setCurrency($currency)
-            ->setPurchasable($variant)
+            ->setPurchasable($line->purchasable)
             ->setCartLine($line)
             ->getBreakdown($subTotal);
 

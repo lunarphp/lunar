@@ -5,6 +5,7 @@ namespace Lunar\Pipelines\Cart;
 use Closure;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DataTypes\Price;
+use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
 
@@ -58,15 +59,32 @@ class CalculateTax
         $taxTotal = $cart->lines->sum('taxAmount.value');
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
-        if ($shippingAddress = $cart->shippingAddress) {
-            $taxTotal += $shippingAddress->shippingTaxTotal?->value;
-            $shippingTaxBreakdown = $shippingAddress->taxBreakdown;
+        if ($shippingOption = $this->getShippingOption($cart)) {
+            $shippingSubTotal = $cart->shippingBreakdown->items->sum('price.value');
 
-            if ($shippingTaxBreakdown) {
-                $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
-                    $shippingTaxBreakdown->amounts
-                );
-            }
+            $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
+                ->setCurrency($cart->currency)
+                ->setPurchasable($shippingOption)
+                ->getBreakdown($shippingSubTotal);
+
+            $shippingTaxTotal = $shippingTax->amounts->sum('price.value');
+            $shippingTaxTotal = new Price($shippingTaxTotal, $cart->currency, 1);
+
+            $taxTotal += $shippingTaxTotal?->value;
+
+            $cart->shippingAddress->taxBreakdown = $shippingTax;
+
+            $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+
+            $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
+                $shippingTax->amounts
+            );
+
+            $cart->shippingTotal = new Price(
+                $shippingSubTotal + $shippingTaxTotal?->value,
+                $cart->currency,
+                1
+            );
         }
 
         $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
@@ -83,5 +101,16 @@ class CalculateTax
         });
 
         return $next($cart);
+    }
+
+    private function getShippingOption(Cart $cart)
+    {
+        if (! $cart->shippingAddress) {
+            return null;
+        }
+
+        return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
+            return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
+        });
     }
 }
