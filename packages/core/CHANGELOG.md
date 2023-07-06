@@ -16,11 +16,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- Pricing can now be stored inclusive of tax.
+- The `Lunar\Models\Price` model now provides two new methods to return the price exclusive and inclusive of tax.
 - Added base pipelines for order creation.
 - Added new `draftOrder` and `completedOrders` relationships to the `Cart` model
 - Added `PaymentAttemptedEvent`
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
+- Added `products` scope to the `Discount` model.
+- Added `usable` scope to the `Discount` model.
+
+### Changed
+
 - Added `orders` relationship to the `LunarUser` trait.
 - Added 'label' JSON field to `ProductOption` model.
 - Added pipelines to PricingManager
@@ -30,15 +37,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `setCustomer` and `getCustomer` to StorefrontSessionManager
 - Added pipelines to PricingManager.
 - Config to disable database migrations.
-
-### Changed
-
 - The `getThumbnail()` method on variants has been changed to allow for eager loading.
 - The logic in the `CreateOrder` action has been extracted into pipelines.
 - `order_id` has been deprecated on the `carts` table in favour of a `cart_id` column on the `orders` table.
 - The `CreateOrder` action will now ensure we are working with a draft order before proceeding.
 - The `CreateOrder` pipelines will now handle and update the order if it already exists.
 - PricingManager properties changed from `protected` to `public`
+- MySQL 5.7 is no longer supported, MySQL 8.0+ is required.
+
+## 0.3.2
+
+### Changed
+
+- Removed `Staff` type declaration on permissions as this was causing issues with external packages with
+  authenticated users..
 
 ## 0.3.1
 
