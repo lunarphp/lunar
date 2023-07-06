@@ -212,12 +212,14 @@ Lunar\Models\OrderLine
 | sub_total        | The sub total minus any discounts, excl. tax                                                
 | discount_total   | Any discount amount excl. tax                                                               
 | tax_breakdown    | A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]` 
+| shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
 | tax_total        | The total amount of tax applied                                                             
 | total            | The grand total with tax                                                                    
 | notes            | Any additional order notes                                                                  
 | meta             | Any additional meta info you wish to store                                                  
 | created_at       |                                                                                             |
 | updated_at       |                                                                                             |
+
 
 ### Create an order line
 
@@ -372,6 +374,16 @@ the rest is completely up to you how you want to handle that. We have some helpe
 for you as laid out above.
 
 And as always, if you have any questions you can reach out on our Discord!
+
+## Order Status
+
+The `placed_at` field determines whether an Order is considered draft or placed. The Order model has two helper methods
+to determine the status of an Order.
+
+```php
+$order->isDraft();
+$order->isPlaced();
+```
 
 ## Order Notifications
 

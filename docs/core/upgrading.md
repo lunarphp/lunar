@@ -35,6 +35,28 @@ Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to Shippi
 With MySQL 5.7 EOL coming in October 2023 and Lunar's heavy use of JSON fields, Lunar now only supports MySQL 8.x.
 You may find your project continues to work fine in MySQL 5.7, but we advise upgrading.
 
+#### Carts
+
+- The `shippingTotal` property now includes the tax in the amount, use `shippingSubTotal` instead.
+- A new `shippingBreakdown` property has been added which will include all shipping costs and be available to pipelines.
+
+If you are modifying the shipping cost outside of your own shipping options in the shipping manifest, you should create a custom cart pipeline and use the shipping breakdown property as this is where the shipping total will be calculated from.
+
+```php
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
+
+$shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
+
+$shippingBreakdown->items->put('ADDSHIP',
+    new ShippingBreakdownItem(
+        name: 'Additional Shipping Cost',
+        identifier: 'ADDSHIP',
+        price: new Price(123, $currency, 1),
+    )
+);
+```
+
 #### Cart/Order Relationship
 
 The relationship between a cart and an order has been changed, previously the `carts` table had an `order_id` column,
@@ -78,6 +100,7 @@ Add the new fingerprint class reference to `config/lunar/carts.php` if you have 
 ```php
 'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
 ```
+
 
 ## 0.3
 
