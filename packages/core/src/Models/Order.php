@@ -354,7 +354,7 @@ class Order extends BaseModel
      */
     public function isDraft(): bool
     {
-        return !$this->isPlaced();
+        return ! $this->isPlaced();
     }
 
     /**
@@ -362,6 +362,6 @@ class Order extends BaseModel
      */
     public function isPlaced(): bool
     {
-        return !blank($this->placed_at);
+        return ! blank($this->placed_at);
     }
 }
