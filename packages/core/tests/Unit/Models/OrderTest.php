@@ -241,8 +241,8 @@ class OrderTest extends TestCase
 
         $this->assertTrue($order->isPlaced());
     }
-  
-    /** @test */    
+
+    /** @test */
     public function can_cast_and_store_shipping_breakdown()
     {
         $order = Order::factory()->create();
