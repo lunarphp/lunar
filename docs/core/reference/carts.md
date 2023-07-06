@@ -93,7 +93,7 @@ $cart->total; // The total price value for the cart
 $cart->subTotal; // The cart sub total, excluding tax
 $cart->subTotalDiscounted; // The cart sub total, minus the discount amount.
 $cart->shippingTotal; // The monetary value for the shipping total. (if applicable)
-$cart->taxAmount; // The monetary value for the amount of tax applied.
+$cart->taxTotal; // The monetary value for the amount of tax applied.
 $cart->taxBreakdown; // This is a collection of all taxes applied across all lines.
 $cart->discountTotal; // The monetary value for the discount total.
 $cart->discountBreakdown; // This is a collection of how discounts were calculated
