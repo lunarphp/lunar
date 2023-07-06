@@ -23,13 +23,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `PaymentAttemptedEvent`
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
+- Added `products` scope to the `Discount` model.
+- Added `usable` scope to the `Discount` model.
+
+### Changed
+
 - Added `orders` relationship to the `LunarUser` trait.
 - Added 'label' JSON field to `ProductOption` model.
 - Added pipelines to PricingManager.
 - Config to disable database migrations.
-
-### Changed
-
 - The `getThumbnail()` method on variants has been changed to allow for eager loading.
 - The logic in the `CreateOrder` action has been extracted into pipelines.
 - `order_id` has been deprecated on the `carts` table in favour of a `cart_id` column on the `orders` table.
