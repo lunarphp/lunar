@@ -23,7 +23,7 @@
       />
     </x-hub::input.group>
 
-    @if($this->transactionModel->amount->value > ($amount * 100))
+    @if($this->transactionModel->amount->decimal > $amount)
       <x-hub::alert level="danger">
         You're about to capture an amount less than the total transaction value.
       </x-hub::alert>

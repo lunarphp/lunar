@@ -19,25 +19,32 @@
         </x-hub::menu>
     </div>
 
+    
     @if (Auth::user()->can('settings'))
-        <div class="p-4 border-t border-gray-100 bottom-0">
-            <a href="{{ route('hub.settings') }}"
-               @class([
-                   'flex items-center gap-2 p-2 rounded w-full text-sm',
-                   'bg-sky-50 text-sky-700' => Str::contains(request()->url(), 'settings'),
-                   'text-gray-500 hover:text-gray-900' => !Str::contains(
-                       request()->url(),
-                       'settings'
-                   ),
-               ])>
-                <span x-cloak>
-                    {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
-                </span>
+        @php
+            $settings = Lunar\Hub\Facades\Menu::slot('settings');
+        @endphp
 
-                <span>
-                    {{ __('adminhub::global.settings') }}
-                </span>
-            </a>
-        </div>
+        @if($settings->hasLinks())
+            <div class="p-4 border-t border-gray-100 bottom-0">
+                <a href="{{ route('hub.settings') }}"
+                @class([
+                    'flex items-center gap-2 p-2 rounded w-full text-sm',
+                    'bg-sky-50 text-sky-700' => Str::contains(request()->url(), 'settings'),
+                    'text-gray-500 hover:text-gray-900' => !Str::contains(
+                        request()->url(),
+                        'settings'
+                    ),
+                ])>
+                    <span x-cloak>
+                        {!! Lunar\Hub\LunarHub::icon('cog', 'w-5 h-5') !!}
+                    </span>
+
+                    <span>
+                        {{ __('adminhub::global.settings') }}
+                    </span>
+                </a>
+            </div>
+        @endif
     @endif
 </div>

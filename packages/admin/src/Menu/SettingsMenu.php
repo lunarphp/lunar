@@ -122,7 +122,7 @@ final class SettingsMenu
             $item->name('Activity Log')
                 ->handle('hub.activity-log')
                 ->route('hub.activity-log.index')
-                ->gate('settings')
+                ->gate('settings:core')
                 ->icon('clipboard-list');
         });
 

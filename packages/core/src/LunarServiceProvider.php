@@ -46,6 +46,7 @@ use Lunar\Database\State\EnsureBrandsAreUpgraded;
 use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Database\State\MigrateCartOrderRelationship;
+use Lunar\Database\State\PopulateProductOptionLabelWithName;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
 use Lunar\Managers\DiscountManager;
@@ -79,15 +80,16 @@ use Lunar\Observers\UrlObserver;
 class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
+        'cart',
         'database',
         'media',
+        'orders',
+        'payments',
+        'pricing',
+        'search',
         'shipping',
         'taxes',
-        'cart',
-        'orders',
         'urls',
-        'search',
-        'payments',
     ];
 
     protected $root = __DIR__.'/..';
@@ -171,7 +173,9 @@ class LunarServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        if (! config('lunar.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
 
         $this->registerObservers();
         $this->registerBlueprintMacros();
@@ -240,6 +244,7 @@ class LunarServiceProvider extends ServiceProvider
             EnsureDefaultTaxClassExists::class,
             EnsureBrandsAreUpgraded::class,
             EnsureMediaCollectionsAreRenamed::class,
+            PopulateProductOptionLabelWithName::class,
             MigrateCartOrderRelationship::class,
         ];
 
