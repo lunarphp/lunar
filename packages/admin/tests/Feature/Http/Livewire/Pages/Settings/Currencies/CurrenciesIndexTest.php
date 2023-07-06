@@ -25,6 +25,8 @@ class CurrenciesIndexTest extends TestCase
     /** @test */
     public function cant_view_page_without_permission()
     {
+        $this->setupRolesPermissions();
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
@@ -38,18 +40,13 @@ class CurrenciesIndexTest extends TestCase
     /** @test */
     public function can_view_page_with_correct_permission()
     {
+        $this->setupRolesPermissions();
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
 
-        $staff->permissions()->createMany([
-            [
-                'handle' => 'settings',
-            ],
-            [
-                'handle' => 'settings:core',
-            ],
-        ]);
+        $staff->givePermissionTo('settings', 'settings:core');
 
         $this->actingAs($staff, 'staff');
 

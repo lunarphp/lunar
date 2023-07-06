@@ -73,21 +73,18 @@ abstract class AbstractStaff extends Component
      */
     protected function syncPermissions()
     {
-        // Current user permissions
-        $this->staff
-            ->permissions()
-            ->whereNotIn(
-                'handle',
-                $this->staffPermissions->toArray()
-            )->delete();
 
         DB::transaction(function () {
-            foreach ($this->staffPermissions as $permission) {
-                $this->staff->permissions()->updateOrCreate([
-                    'handle' => $permission,
-                ]);
-            }
+            $this->staff->syncPermissions($this->staffPermissions);
         });
+    }
+
+    /**
+     * Sync staff role
+     */
+    protected function syncRole()
+    {
+        $this->staff->syncRoles($this->staff->admin ? 'admin' : 'staff');
     }
 
     /**

@@ -28,6 +28,10 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ### High Impact
 
+#### Changed Lunar Hub authorization to use `spatie/laravel-permission`
+Existing assigned staff permissions are migrated, this should not impact your project.
+If you have custom authorization checking using `Staff->authorize('permission')`, change it to `Staff->hasPermissionTo('permission')`
+
 #### ShippingManifestInterface
 Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
 
@@ -100,7 +104,6 @@ Add the new fingerprint class reference to `config/lunar/carts.php` if you have 
 ```php
 'fingerprint_generator' => Lunar\Actions\Carts\GenerateFingerprint::class,
 ```
-
 
 ## 0.3
 
