@@ -351,4 +351,20 @@ class Order extends BaseModel
 
         return $data;
     }
+
+    /**
+     * Determines if this is a draft order.
+     */
+    public function isDraft(): bool
+    {
+        return ! $this->isPlaced();
+    }
+
+    /**
+     * Determines if this is a placed order.
+     */
+    public function isPlaced(): bool
+    {
+        return ! blank($this->placed_at);
+    }
 }

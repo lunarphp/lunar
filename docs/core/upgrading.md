@@ -29,9 +29,11 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 ### High Impact
 
 #### Changed Lunar Hub authorization to use `spatie/laravel-permission`
-
 Existing assigned staff permissions are migrated, this should not impact your project.
 If you have custom authorization checking using `Staff->authorize('permission')`, change it to `Staff->hasPermissionTo('permission')`
+
+#### ShippingManifestInterface
+Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
 
 #### MySQL 8.x Requirement
 With MySQL 5.7 EOL coming in October 2023 and Lunar's heavy use of JSON fields, Lunar now only supports MySQL 8.x.

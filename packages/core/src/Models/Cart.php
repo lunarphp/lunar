@@ -520,13 +520,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ShippingOption|null
     {
-        if (! $this->shippingAddress) {
-            return null;
-        }
-
-        return ShippingManifest::getOptions($this)->first(function ($option) {
-            return $option->getIdentifier() == $this->shippingAddress->shipping_option;
-        });
+        return ShippingManifest::getShippingOption($this);
     }
 
     /**

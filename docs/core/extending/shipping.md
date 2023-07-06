@@ -35,6 +35,24 @@ class CustomShippingModifier extends ShippingModifier
                 taxClass: $taxClass
             )
         );
+
+        // Or add multiple options, it's your responsibility to ensure the identifiers are unique
+        ShippingManifest::addOptions(collect([
+            new ShippingOption(
+                name: 'Basic Delivery',
+                description: 'A basic delivery option',
+                identifier: 'BASDEL',
+                price: new Price(500, $cart->currency, 1),
+                taxClass: $taxClass
+            ),
+            new ShippingOption(
+                name: 'Express Delivery',
+                description: 'Express delivery option',
+                identifier: 'EXDEL',
+                price: new Price(1000, $cart->currency, 1),
+                taxClass: $taxClass
+            )
+        ]));
     }
 }
 
