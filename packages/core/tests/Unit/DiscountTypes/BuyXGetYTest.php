@@ -149,7 +149,7 @@ class BuyXGetYTest extends TestCase
             ],
         ]);
 
-        $discount->purchasableConditions()->create([
+        $discount->purchasableLimitations()->create([
             'purchasable_type' => Product::class,
             'purchasable_id' => $productA->id,
         ]);
