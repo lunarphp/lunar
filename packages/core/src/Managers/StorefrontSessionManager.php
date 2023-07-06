@@ -148,7 +148,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             if ($this->authManager->check() && is_lunar_user($this->authManager->user())) {
                 $user = $this->authManager->user();
 
-                if ($customer = $user->customers()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first()) {
+                if ($customer = $user->latestCustomer()) {
                     $this->setCustomer($customer);
 
                     return $this->customer;
