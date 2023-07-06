@@ -375,6 +375,16 @@ for you as laid out above.
 
 And as always, if you have any questions you can reach out on our Discord!
 
+## Order Status
+
+The `placed_at` field determines whether an Order is considered draft or placed. The Order model has two helper methods
+to determine the status of an Order.
+
+```php
+$order->isDraft();
+$order->isPlaced();
+```
+
 ## Order Notifications
 
 Lunar allows you to specify what Laravel mailers/notifications should be available for sending when you update an

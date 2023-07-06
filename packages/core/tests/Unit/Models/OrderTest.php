@@ -225,6 +225,24 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function can_check_order_is_placed()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id' => null,
+        ]);
+
+        $this->assertTrue($order->isDraft());
+
+        $order->placed_at = now();
+
+        $this->assertTrue($order->isPlaced());
+    }
+
+    /** @test */
     public function can_cast_and_store_shipping_breakdown()
     {
         $order = Order::factory()->create();
