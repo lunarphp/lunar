@@ -28,6 +28,9 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ### High Impact
 
+#### ShippingManifestInterface
+Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
+
 #### Cart/Order Relationship
 
 The relationship between a cart and an order has been changed, previously the `carts` table had an `order_id` column,
