@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added 'label' JSON field to `ProductOption` model.
 - Added pipelines to PricingManager.
 - Config to disable database migrations.
+- Added `isDraft()` and `isPlaced()` methods to Order model.
 
 ### Changed
 
