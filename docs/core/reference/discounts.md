@@ -10,21 +10,21 @@
 Lunar\Models\Discount
 ```
 
-|Field|Description|Example|
-|:-|:-|:-|
-|`id`|||
-|`name`|The given name for the discount||
-|`handle`|The unique handle for the discount||
-|`type`|The type of discount|`Lunar\DiscountTypes\Coupon`|
-|`data`|JSON|Any data to be used by the type class
-|`starts_at`|The datetime the discount starts (required)|
-|`ends_at`|The datetime the discount expires, if `NULL` it won't expire|
-|`uses`|How many uses the discount has had|
-|`max_uses`|The maximum times this discount can be applied storewide|
-|`priority`|The order of priority|
-|`stop`|Whether this discount will stop others after propagating|
-|`created_at`|||
-|`updated_at`|||
+| Field        | Description                                                  | Example                               |
+|:-------------|:-------------------------------------------------------------|:--------------------------------------|
+| `id`         |                                                              |                                       |
+| `name`       | The given name for the discount                              |                                       |
+| `handle`     | The unique handle for the discount                           |                                       |
+| `type`       | The type of discount                                         | `Lunar\DiscountTypes\Coupon`          |
+| `data`       | JSON                                                         | Any data to be used by the type class 
+| `starts_at`  | The datetime the discount starts (required)                  |
+| `ends_at`    | The datetime the discount expires, if `NULL` it won't expire |
+| `uses`       | How many uses the discount has had                           |
+| `max_uses`   | The maximum times this discount can be applied storewide     |
+| `priority`   | The order of priority                                        |
+| `stop`       | Whether this discount will stop others after propagating     |
+| `created_at` |                                                              |                                       |
+| `updated_at` |                                                              |                                       |
 
 ### Creating a discount
 
@@ -45,6 +45,27 @@ Lunar\Models\Discount::create([
 ])
 ```
 
+### Fetching a discount
+
+The following scopes are available:
+
+```php
+/**
+* Query for discounts using the `start_at` and `end_at` dates.
+ */
+Discount::active()->get();
+
+/**
+* Query for discounts where the `uses` column is less than the `max_uses` column or `max_uses` is null.
+ */
+Discount::usable()->get();
+
+/**
+* Query for discounts where the associated products are of a certain type, based on given product ids.
+ */
+Discount::products($productIds, $type = 'condition');
+```
+
 ## Discount Purchasable
 
 You can relate a purchasable to a discount via this model. Each has a type for whether it's a `condition` or `reward`.
@@ -56,14 +77,14 @@ You can relate a purchasable to a discount via this model. Each has a type for w
 Lunar\Models\DiscountPurchasable
 ```
 
-|Field|Description|Example|
-|:-|:-|:-|
-|`id`|||
-|`discount_id`|||
-|`purchasable_type`||`Lunar\Models\ProductVariant`
-|`type`|`condition` or `reward`|
-|`created_at`|||
-|`updated_at`|||
+| Field              | Description             | Example                       |
+|:-------------------|:------------------------|:------------------------------|
+| `id`               |                         |                               |
+| `discount_id`      |                         |                               |
+| `purchasable_type` |                         | `Lunar\Models\ProductVariant` 
+| `type`             | `condition` or `reward` |
+| `created_at`       |                         |                               |
+| `updated_at`       |                         |                               |
 
 ### Relationships
 
@@ -71,7 +92,6 @@ Lunar\Models\DiscountPurchasable
 - Users - `customer_user`
 
 ### Adding your own Discount type
-
 
 ```php
 namespace App\Discounts;

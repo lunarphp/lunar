@@ -55,7 +55,7 @@ class ApplyShippingTest extends TestCase
             return $cart;
         });
 
-        $this->assertInstanceOf(PriceDataType::class, $cart->shippingTotal);
+        $this->assertInstanceOf(PriceDataType::class, $cart->shippingSubTotal);
     }
 
     /** @test */
@@ -137,7 +137,7 @@ class ApplyShippingTest extends TestCase
             return $cart;
         });
 
-        $this->assertInstanceOf(PriceDataType::class, $cart->shippingTotal);
-        $this->assertEquals(500, $cart->shippingTotal->value);
+        $this->assertInstanceOf(PriceDataType::class, $cart->shippingSubTotal);
+        $this->assertEquals(500, $cart->shippingSubTotal->value);
     }
 }

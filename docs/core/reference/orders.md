@@ -212,12 +212,14 @@ Lunar\Models\OrderLine
 | sub_total        | The sub total minus any discounts, excl. tax                                                
 | discount_total   | Any discount amount excl. tax                                                               
 | tax_breakdown    | A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]` 
+| shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
 | tax_total        | The total amount of tax applied                                                             
 | total            | The grand total with tax                                                                    
 | notes            | Any additional order notes                                                                  
 | meta             | Any additional meta info you wish to store                                                  
 | created_at       |                                                                                             |
 | updated_at       |                                                                                             |
+
 
 ### Create an order line
 
