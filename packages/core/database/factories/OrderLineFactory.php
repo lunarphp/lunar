@@ -17,7 +17,7 @@ class OrderLineFactory extends Factory
         return [
             'order_id' => Order::factory(),
             'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => 1,
+            'purchasable_id' => ProductVariant::factory(),
             'type' => 'physical',
             'description' => $this->faker->sentence,
             'option' => $this->faker->word,
