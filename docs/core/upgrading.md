@@ -22,20 +22,24 @@ php artisan lunar:hub:install
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.4`.
 
-## [Unreleased]
+## 0.4
 
 ### High Impact
 
 #### Changed Lunar Hub authorization to use `spatie/laravel-permission`
+
 Existing assigned staff permissions are migrated, this should not impact your project.
-If you have custom authorization checking using `Staff->authorize('permission')`, change it to `Staff->hasPermissionTo('permission')`
+If you have custom authorization checking using `Staff->authorize('permission')`, change it
+to `Staff->hasPermissionTo('permission')`
 
 #### ShippingManifestInterface
+
 Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
 
 #### MySQL 8.x Requirement
+
 With MySQL 5.7 EOL coming in October 2023 and Lunar's heavy use of JSON fields, Lunar now only supports MySQL 8.x.
 You may find your project continues to work fine in MySQL 5.7, but we advise upgrading.
 
@@ -44,7 +48,9 @@ You may find your project continues to work fine in MySQL 5.7, but we advise upg
 - The `shippingTotal` property now includes the tax in the amount, use `shippingSubTotal` instead.
 - A new `shippingBreakdown` property has been added which will include all shipping costs and be available to pipelines.
 
-If you are modifying the shipping cost outside of your own shipping options in the shipping manifest, you should create a custom cart pipeline and use the shipping breakdown property as this is where the shipping total will be calculated from.
+If you are modifying the shipping cost outside of your own shipping options in the shipping manifest, you should create
+a custom cart pipeline and use the shipping breakdown property as this is where the shipping total will be calculated
+from.
 
 ```php
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
