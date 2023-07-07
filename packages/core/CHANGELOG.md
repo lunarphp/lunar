@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.4.1
+
+### Added
+
+- Added `exclude_model_attributes` to `config/search.php` to exclude the model's searchable attributes.
+
+### Changed
+
+- Changed `getSearchableAttributes` from `protected` to `public` on `Lunar\Models\Order`
+- Changed each searchable model in `config/search.php` to exclude attributes based on the model in the config: `exclude_model_attributes`
+
 ## 0.4
 
 ### Fixed

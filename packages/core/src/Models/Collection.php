@@ -130,8 +130,9 @@ class Collection extends BaseModel implements SpatieHasMedia
     public function getSearchableAttributes()
     {
         $attributes = $this->getAttributes();
+        $keys = array_merge(['attribute_data'], config('lunar.search.exclude_model_attributes.collection', []));
 
-        $data = Arr::except($attributes, 'attribute_data');
+        $data = Arr::except($attributes, $keys);
 
         foreach ($this->attribute_data ?? [] as $field => $value) {
             if ($value instanceof TranslatedText) {

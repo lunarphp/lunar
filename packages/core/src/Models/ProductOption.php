@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
@@ -136,6 +137,6 @@ class ProductOption extends BaseModel implements SpatieHasMedia
             }
         }
 
-        return $data;
+        return Arr::except($data, config('lunar.search.exclude_model_attributes.product_option', []));
     }
 }

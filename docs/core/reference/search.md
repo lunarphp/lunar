@@ -38,6 +38,34 @@ php artisan lunar:search:index
 
 The command will import the records of the models listed in the `lunar/indexer.php` configuration file. Type `--help` to see the available options.
 
+## Exclude Attributes
+
+You can exclude any attribute on a Lunar model by adding the attribute to the respective model's array in the `config/search.php`
+
+```php
+'exclude_model_attributes' => [
+    'collection' => [],
+    'product' => [],
+    'product_option' => [],
+    'order' => [],
+    'customer' => [],
+    'brand' => [],
+],
+```
+
+Example: If you did not want to include the `id` and the `vat_no` on the Customer model, you would do this:
+
+```php
+'exclude_model_attributes' => [
+    ...
+    'customer' => ['id', 'vat_no'],
+    ...
+],
+```
+
+You will need to re-sync your indexes after any changes. You can refresh them by using `php artisan lunar:search:index --refresh`
+
+
 ## Engine Mapping
 
 By default, Scout will use the driver defined in your .env file as `SCOUT_DRIVER`. So if that's set to `meilisearch`, all your models will be indexed via the Meilisearch driver. This can present some issues, if you wanted to use a service like Algolia for Products, you wouldn't want all your Orders being indexed there since it will ramp up the record count and the cost.

@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\DiscountBreakdown;
 use Lunar\Base\Casts\Price;
@@ -298,7 +299,7 @@ class Order extends BaseModel
     /**
      * {@inheritDoc}
      */
-    protected function getSearchableAttributes()
+    public function getSearchableAttributes()
     {
         $data = [
             'id' => $this->id,
@@ -349,7 +350,7 @@ class Order extends BaseModel
 
         $data['tags'] = $this->tags->pluck('value')->toArray();
 
-        return $data;
+        return Arr::except($data, config('lunar.search.exclude_model_attributes.order', []));
     }
 
     /**

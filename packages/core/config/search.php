@@ -23,6 +23,22 @@ return [
     ],
     /*
     |--------------------------------------------------------------------------
+    | Attributes to exclude when indexing
+    |--------------------------------------------------------------------------
+    |
+    | Enter the attributes for each model you do not wish to not index.
+    |
+    */
+    'exclude_model_attributes' => [
+        'collection' => [],
+        'product' => [],
+        'product_option' => [],
+        'order' => [],
+        'customer' => [],
+        'brand' => [],
+    ],
+    /*
+    |--------------------------------------------------------------------------
     | Search engine mapping
     |--------------------------------------------------------------------------
     |

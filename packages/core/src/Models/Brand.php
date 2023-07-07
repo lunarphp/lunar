@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
@@ -72,10 +73,12 @@ class Brand extends BaseModel implements SpatieHasMedia
      */
     public function getSearchableAttributes()
     {
-        return [
+        $data = [
             'id' => $this->id,
             'name' => $this->name,
         ];
+
+        return Arr::except($data, config('lunar.search.exclude_model_attributes.brand', []));
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
@@ -121,7 +122,7 @@ class Customer extends BaseModel
 
         $data['user_emails'] = $this->users->pluck('email')->toArray();
 
-        return $data;
+        return Arr::except($data, config('lunar.search.exclude_model_attributes.customer', []));
     }
 
     /**
