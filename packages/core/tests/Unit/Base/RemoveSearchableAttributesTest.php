@@ -20,7 +20,7 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Tests\TestCase;
 
 /**
- * @group shipping-manifest
+ * @group models.base
  */
 class RemoveSearchableAttributesTest extends TestCase
 {
