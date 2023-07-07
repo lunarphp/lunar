@@ -4,9 +4,6 @@ namespace Lunar\Tests\Unit\Base;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Brand;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
@@ -27,10 +24,15 @@ class RemoveSearchableAttributesTest extends TestCase
     use RefreshDatabase;
 
     private ?Collection $collection;
+
     private ?Product $product;
+
     private ?ProductOption $product_option;
+
     private ?Order $order;
+
     private ?Customer $customer;
+
     private ?Brand $brand;
 
     public function setUp(): void
@@ -48,7 +50,6 @@ class RemoveSearchableAttributesTest extends TestCase
         $this->customer = Customer::factory()->create();
 
         $this->brand = Brand::factory()->create();
-
 
         $taxClass = TaxClass::factory()->create([
             'name' => 'Foobar',
@@ -76,21 +77,21 @@ class RemoveSearchableAttributesTest extends TestCase
 
         $modelTypes = ['collection', 'product', 'product_option', 'order', 'customer', 'brand'];
 
-        foreach($modelTypes as $type) {
+        foreach ($modelTypes as $type) {
 
             $model = $this->$type;
 
-            $this->assertNotEmpty( $model );
+            $this->assertNotEmpty($model);
 
             //get first array key from searchable array
-            $key = key( $model->getSearchableAttributes() );
+            $key = key($model->getSearchableAttributes());
 
             //set that key to be excluded
             Config::set('lunar.search.exclude_model_attributes.'.$type, [$key]);
 
             $attributes = $model->getSearchableAttributes();
 
-            $this->assertFalse( isset($attributes[$key]) );
+            $this->assertFalse(isset($attributes[$key]));
         }
     }
 }
