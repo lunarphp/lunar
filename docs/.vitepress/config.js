@@ -109,18 +109,14 @@ export default defineConfig({
           text: 'Extending',
           collapsed: true,
           items: [
-            { text: 'Activity Log', link: '/core/extending/activity-log' },
-            { text: 'Assets', link: '/core/extending/assets' },
             { text: 'Carts', link: '/core/extending/carts' },
             { text: 'Discounts', link: '/core/extending/discounts' },
-            { text: 'Field Types', link: '/core/extending/field-types' },
             { text: 'Models', link: '/core/extending/models' },
             { text: 'Orders', link: '/core/extending/orders' },
             { text: 'Payments', link: '/core/extending/payments' },
             { text: 'Search', link: '/core/extending/search' },
             { text: 'Shipping', link: '/core/extending/shipping' },
-            { text: 'Taxation', link: '/core/extending/taxation' },
-            { text: 'Validation', link: '/core/extending/validation' }
+            { text: 'Taxation', link: '/core/extending/taxation' }
           ]
         }
       ],
@@ -132,10 +128,16 @@ export default defineConfig({
           text: 'Developer Reference',
           items: [
             { text: 'Overview', link: '/admin-hub/overview' },
-            { text: 'Configuration', link: '/admin-hub/configuration' },
+            { text: 'Extending', link: '/admin-hub/extending' },
+            { text: 'Activity Log', link: '/admin-hub/activity-log' },
+            { text: 'Assets', link: '/admin-hub/assets' },
+            { text: 'Branding', link: '/admin-hub/branding' },
+            { text: 'Discounts', link: '/admin-hub/discounts' },
+            { text: 'Field Types', link: '/admin-hub/field-types' },
+            { text: 'Preview URLs', link: '/admin-hub/preview' },
             { text: 'Staff', link: '/admin-hub/staff' },
             { text: 'Tables', link: '/admin-hub/tables' },
-            { text: 'Extending', link: '/admin-hub/extending' }
+            { text: 'Validation', link: '/admin-hub/validation' }
           ]
         }
       ],
