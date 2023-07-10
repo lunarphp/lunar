@@ -15,7 +15,7 @@ class OfflinePayment extends AbstractPayment
     public function authorize(): PaymentAuthorize
     {
         if (! $this->order) {
-            if (! $this->order = $this->cart->order) {
+            if (! $this->order = $this->cart->draftOrder) {
                 $this->order = $this->cart->createOrder();
             }
         }
