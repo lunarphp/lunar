@@ -22,7 +22,7 @@ class ValidateCartForOrder
         Cart $cart
     ) {
         // Does this cart already have an order?
-        if ($cart->order) {
+        if ($cart->completedOrder()->first()) {
             throw new OrderExistsException(
                 _('lunar::exceptions.carts.order_exists')
             );
