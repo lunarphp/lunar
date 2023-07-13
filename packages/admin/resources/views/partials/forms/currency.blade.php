@@ -25,7 +25,7 @@
           :label="__('adminhub::inputs.default.label')"
           for="handle"
           :instructions="__('adminhub::inputs.default.instructions', [
-            'model' => 'channel',
+            'model' => 'currency',
           ])"
         >
           <x-hub::input.toggle wire:click="toggleDefault" :on="$currency->default" name="handle" id="handle" :disabled="$currency->id && $currency->getOriginal('default')" />
