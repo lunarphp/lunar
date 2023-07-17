@@ -6,17 +6,24 @@ When a registered customer looks to checkout it is helpful for them to be able t
 addresses. Lunar provides the `Address` Eloquent model which allows a developer to store addresses against a `Customer`
 record for this very purpose.
 
-It is worth noting that the `Address` model is **not** related to orders. It is simply a facility to save address
+It is worth noting that the `Address` model is **not** related to carts and orders. It is simply a facility to save address
 information for reuse.
+
+::: info
+Carts and Orders have their own address models [`\Lunar\Models\CartAddress`](carts.html) and 
+[`\Lunar\Models\OrderAddress`](orders.html) which you can learn more about in those sections.
+:::
 
 ## Eloquent Models
 
-The primary model for this facility is the `Lunar\Models\Address` model. We also have the `Lunar\Models\Country` and 
-`Lunar\Models\State` models which come pre-populated with data when installing Lunar.
+The primary model for this facility is the `Address` model. We also have the `Country` and 
+`State` models which come pre-populated with data when installing Lunar.
 
-- `Lunar\Models\Address` ([view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/Address.html))
-- `Lunar\Models\Country` ([view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/Country.html))
-- `Lunar\Models\State` ([view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/State.html))
+| Eloquent Model         | Description                            |                                                                                          |
+|:-----------------------|:---------------------------------------|:-----------------------------------------------------------------------------------------|
+| `Lunar\Models\Address` | Stores customer addresses.             |[view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/Address.html)|
+| `Lunar\Models\Country` | Lookup for all countries in the world. |[view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/Country.html)|
+| `Lunar\Models\State`   | Lookup for states per country.         |[view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/State.html)  |
 
 ## Address Data
 
@@ -77,5 +84,14 @@ $customer = Auth::user()->latestCustomer();
 foreach ($customer->addresses as $address) {
     // 
 }
+```
 
+### Listing Countries
+
+Lunar supplies country data, which includes ISO code, native country names and Emoji graphics.
+
+```php
+@foreach (Country::all() as $country)
+    <option value="{{ $country->id }}">{{ $country->emoji }} {{ $country->native }}</option>
+@endforeach
 ```
