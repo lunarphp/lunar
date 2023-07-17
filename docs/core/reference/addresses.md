@@ -88,7 +88,7 @@ foreach ($customer->addresses as $address) {
 
 ### Listing Countries
 
-Lunar supplies country data, which includes ISO code, native country names and Emoji graphics.
+Lunar supplies country data, which includes ISO code, native country names and Emoji graphics :uk:.
 
 ```php
 @foreach (Country::all() as $country)
