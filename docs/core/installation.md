@@ -18,7 +18,7 @@
 composer require lunarphp/lunar
 ```
 
-### Add the LunarUser Trait
+### Add The LunarUser Trait
 
 Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
 
@@ -33,13 +33,13 @@ class User extends Authenticatable
 }
 ```
 
-### Add Scout engine to ENV
+### Add Scout Engine To ENV
 Add the following line to your `.env` file.
 ```
 SCOUT_DRIVER=database_index
 ```
 
-### Run the Artisan Installer
+### Run The Artisan Installer
 
 ```sh
 php artisan lunar:install
