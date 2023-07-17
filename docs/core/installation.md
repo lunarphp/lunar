@@ -45,7 +45,6 @@ class User extends Authenticatable
 ### Publish Configuration
 Before you run the Lunar installer command, you may wish to customise some of the set-up.
 
-
 ```sh
 php artisan vendor:publish --tag=lunar
 ```
@@ -55,14 +54,16 @@ Lunar works best with [Laravel Scout](https://laravel.com/docs/master/scout) and
 
 ### If you do NOT have a search engine configured
 Add the following to your `.env` file.
+
 ```
 SCOUT_DRIVER=null
 ```
+
 And set the config value in `panel.php` as follows.
+
 ```php
     'scout_enabled' => false,
 ```
-
 
 ## Register the admin panel
 
