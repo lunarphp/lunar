@@ -37,7 +37,7 @@ php artisan lunar:import:address-data
 ```
 ## Example Usage
 
-### Creating an address
+### Creating An Address
 
 ```php
 use Lunar\Models\Address;
@@ -74,7 +74,7 @@ $address = Address::create([
 ]);
 ```
 
-### Getting a Customer's addresses
+### Getting A Customer's Addresses
 
 The example below assumes the authenticated user has been associated to a customer record.
 
