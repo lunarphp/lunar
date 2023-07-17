@@ -95,3 +95,11 @@ Lunar supplies country data, which includes ISO code, native country names and E
     <option value="{{ $country->id }}">{{ $country->emoji }} {{ $country->native }}</option>
 @endforeach
 ```
+
+### Listing States
+
+```php
+@foreach ($country->states as $state)
+    <option value="{{ $state->id }}">{{ $state->name }}</option>
+@endforeach
+```
