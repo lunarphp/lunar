@@ -36,6 +36,8 @@ export default defineConfig({
             dark: '/icon-dark.svg',
         },
 
+        'outline': [2, 3],
+
         nav: [
             {text: 'Core', link: '/core/overview', activeMatch: '/core/'},
             {text: 'Admin Panel', link: '/admin/overview', activeMatch: '/admin/'},
