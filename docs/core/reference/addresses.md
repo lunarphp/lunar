@@ -74,7 +74,7 @@ $address = Address::create([
 ]);
 ```
 
-### Getting A Customer's Addresses
+### Getting Customer Addresses
 
 The example below assumes the authenticated user has been associated to a customer record.
 
