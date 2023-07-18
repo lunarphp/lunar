@@ -70,9 +70,9 @@ class ChannelShowTest extends TestCase
         Livewire::test(ChannelShow::class, [
             'channel' => $channel,
         ])
-                ->set('channel.name', 'Some channel name')
-                ->call('update')
-                ->assertRedirect();
+            ->set('channel.name', 'Some channel name')
+            ->call('update')
+            ->assertRedirect();
     }
 
     /** @test */
@@ -184,7 +184,7 @@ class ChannelShowTest extends TestCase
         Livewire::test(ChannelShow::class, [
             'channel' => $channelTwo,
         ])->set('channel.name', $channelOne->name)
-                ->call('update');
+            ->call('update');
 
         $this->assertDatabaseHas((new Channel())->getTable(), [
             'name' => $channelOne->name,

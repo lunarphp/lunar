@@ -28,7 +28,8 @@
         "php": "^8.1",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
-        "spatie/laravel-medialibrary": "^9.0.0|^10.0.0"
+        "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
+        "spatie/laravel-permission": "^5.10"
     },
     "require-dev": {
         "laravel/pint": "^1.1",
@@ -50,6 +51,7 @@
             "Lunar\\Database\\State\\": "packages/core/database/state",
             "Lunar\\Hub\\": "packages/admin/src",
             "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
+            "Lunar\\Hub\\Database\\State\\": "packages/admin/database/state",
             "Lunar\\Licensing\\": "packages/licensing/src",
             "Lunar\\LivewireTables\\": "utils/livewire-tables/src/",
             "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"

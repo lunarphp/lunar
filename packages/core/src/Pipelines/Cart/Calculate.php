@@ -25,15 +25,13 @@ class Calculate
                 $line->subTotal->value;
         });
 
-        $total = $cart->lines->sum('total.value');
+        $total = $cart->lines->sum('total.value') + $cart->shippingTotal?->value;
 
-        // Get the shipping address
-        if ($shippingAddress = $cart->shippingAddress) {
-            if ($shippingAddress->shippingSubTotal) {
-                $subTotal += $shippingAddress->shippingSubTotal?->value;
-                $total += $shippingAddress->shippingTotal?->value;
-            }
-        }
+        $subTotalDiscounted = $cart->lines->sum(function ($line) {
+            return $line->subTotalDiscounted ?
+                $line->subTotalDiscounted->value :
+                $line->subTotal->value;
+        });
 
         $cart->subTotal = new Price($subTotal, $cart->currency, 1);
         $cart->subTotalDiscounted = new Price($subTotalDiscounted, $cart->currency, 1);

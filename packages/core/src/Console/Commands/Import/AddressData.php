@@ -3,8 +3,8 @@
 namespace Lunar\Console\Commands\Import;
 
 use Illuminate\Console\Command;
-use Lunar\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Lunar\Facades\DB;
 use Lunar\Models\Country;
 
 class AddressData extends Command
@@ -39,7 +39,7 @@ class AddressData extends Command
          * the latest CA Authorities installed, causing an SSL exception to be thrown.
          */
         $countries = Http::get('http://data.lunarphp.io/countries+states.json')
-                        ->object();
+            ->object();
 
         $newCountries = collect($countries)->filter(function ($country) use ($existing) {
             return ! $existing->contains($country->iso3);

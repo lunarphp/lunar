@@ -14,7 +14,8 @@
     "autoload": {
         "psr-4": {
             "Lunar\\Hub\\": "src",
-            "Lunar\\Hub\\Database\\Factories\\": "database/factories"
+            "Lunar\\Hub\\Database\\Factories\\": "database/factories",
+            "Lunar\\Hub\\Database\\State\\": "database/state"
         },
         "files": [
             "src/helpers.php"
@@ -38,7 +39,8 @@
         "lunarphp/core": "self.version",
         "livewire/livewire": "^2.0",
         "lunarphp/licensing": "self.version",
-        "barryvdh/laravel-dompdf": "^2.0"
+        "barryvdh/laravel-dompdf": "^2.0",
+        "spatie/laravel-permission": "^5.10"
     },
     "require-dev": {
         "orchestra/testbench": "^7.0|^8.0",

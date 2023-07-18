@@ -29,6 +29,8 @@ class StaffShowTest extends TestCase
     /** @test */
     public function cant_view_page_without_permission()
     {
+        $this->setupRolesPermissions();
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
@@ -42,19 +44,13 @@ class StaffShowTest extends TestCase
     /** @test */
     public function can_view_page_with_correct_permission()
     {
+        $this->setupRolesPermissions();
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
 
-        $staff->permissions()->createMany([
-            [
-                'handle' => 'settings',
-            ],
-            [
-                'handle' => 'settings:manage-staff',
-            ],
-        ]);
-
+        $staff->givePermissionTo('settings', 'settings:manage-staff');
         $this->actingAs($staff, 'staff');
 
         $this->get(route('hub.staff.show', $staff->id))

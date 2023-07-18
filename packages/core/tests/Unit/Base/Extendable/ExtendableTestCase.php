@@ -22,11 +22,11 @@ class ExtendableTestCase extends TestCase
         Product::factory()->count(20)->create();
 
         ProductOption::factory()
-                     ->has(ProductOptionValue::factory()->count(3), 'values')
-                     ->create([
-                         'name' => [
-                             'en' => 'Size',
-                         ],
-                     ]);
+            ->has(ProductOptionValue::factory()->count(3), 'values')
+            ->create([
+                'name' => [
+                    'en' => 'Size',
+                ],
+            ]);
     }
 }

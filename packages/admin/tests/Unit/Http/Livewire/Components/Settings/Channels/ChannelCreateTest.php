@@ -87,10 +87,10 @@ class ChannelCreateTest extends TestCase
         Livewire::test(ChannelCreate::class, [
             'channel' => new Channel(),
         ])->set('channel.default', true)
-        ->set('channel.name', $channel->name)
-        ->set('channel.handle', 'channel-two')
-        ->call('create')
-        ->assertRedirect();
+            ->set('channel.name', $channel->name)
+            ->set('channel.handle', 'channel-two')
+            ->call('create')
+            ->assertRedirect();
 
         $this->assertDatabaseHas((new Channel())->getTable(), [
             'name' => $channel->name,

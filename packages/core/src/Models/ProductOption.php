@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -14,7 +15,8 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
  * @property int $id
- * @property string $name
+ * @property \Illuminate\Support\Collection $name
+ * @property \Illuminate\Support\Collection $label
  * @property int $position
  * @property ?string $handle
  * @property ?\Illuminate\Support\Carbon $created_at
@@ -42,6 +44,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $sortable = [
         'name',
+        'label',
     ];
 
     /**
@@ -51,6 +54,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $casts = [
         'name' => AsCollection::class,
+        'label' => AsCollection::class,
     ];
 
     /**
@@ -81,6 +85,14 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         $this->attributes['name'] = json_encode($value);
     }
 
+    protected function label(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => json_decode($value),
+            set: fn ($value) => json_encode($value),
+        );
+    }
+
     /**
      * Define which attributes should be
      * protected from mass assignment.
@@ -109,6 +121,11 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         // Loop for add option name
         foreach ($this->name as $locale => $name) {
             $data['name_'.$locale] = $name;
+        }
+
+        // Loop for add option label
+        foreach ($this->name as $locale => $name) {
+            $data['label_'.$locale] = $name;
         }
 
         // Loop for add options

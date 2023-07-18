@@ -116,7 +116,7 @@ class DiscountManager implements DiscountManagerInterface
     /**
      * Returns the available discounts.
      */
-    public function getDiscounts(): Collection
+    public function getDiscounts(Cart $cart = null): Collection
     {
         if ($this->channels->isEmpty() && $defaultChannel = Channel::getDefault()) {
             $this->channel($defaultChannel);
@@ -126,33 +126,23 @@ class DiscountManager implements DiscountManagerInterface
             $this->customerGroup($defaultGroup);
         }
 
-        return Discount::active()->whereHas('channels', function ($query) {
-            $joinTable = (new Discount)->channels()->getTable();
-            $query->whereIn("{$joinTable}.channel_id", $this->channels->pluck('id'))
-                ->where("{$joinTable}.enabled", true)
-                ->where(function ($query) use ($joinTable) {
-                    $query->whereNull("{$joinTable}.starts_at")
-                        ->orWhere("{$joinTable}.starts_at", '<=', now());
-                })
-                ->where(function ($query) use ($joinTable) {
-                    $query->whereNull("{$joinTable}.ends_at")
-                        ->orWhere("{$joinTable}.ends_at", '>', now());
-                });
-        })->whereHas('customerGroups', function ($query) {
-            $joinTable = (new Discount)->customerGroups()->getTable();
-
-            $query->whereIn("{$joinTable}.customer_group_id", $this->customerGroups->pluck('id'))
-                ->where("{$joinTable}.enabled", true)
-                ->where(function ($query) use ($joinTable) {
-                    $query->whereNull("{$joinTable}.starts_at")
-                        ->orWhere("{$joinTable}.starts_at", '<=', now());
-                })
-                ->where(function ($query) use ($joinTable) {
-                    $query->whereNull("{$joinTable}.ends_at")
-                        ->orWhere("{$joinTable}.ends_at", '>', now());
-                });
-        })
-            ->orderBy('priority', 'desc')
+        return Discount::active()
+            ->usable()
+            ->channel($this->channels)
+            ->customerGroup($this->customerGroups)
+            ->with([
+                'purchasables',
+            ])
+            ->when(
+                $cart,
+                fn ($query, $value) => $query->products(
+                    $value->lines->pluck('purchasable.product_id')->filter()->values()
+                )
+            )->when(
+                $cart?->coupon_code,
+                fn ($query, $value) => $query->where('coupon', '=', $value)->orWhereNull('coupon'),
+                fn ($query, $value) => $query->whereNull('coupon')
+            )->orderBy('priority', 'desc')
             ->orderBy('id')
             ->get();
     }
@@ -194,7 +184,7 @@ class DiscountManager implements DiscountManagerInterface
     public function apply(Cart $cart): Cart
     {
         if (! $this->discounts) {
-            $this->discounts = $this->getDiscounts();
+            $this->discounts = $this->getDiscounts($cart);
         }
         
         $cart->lines->each(function ($line) {

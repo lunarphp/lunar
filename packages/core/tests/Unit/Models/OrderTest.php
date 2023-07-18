@@ -4,6 +4,10 @@ namespace Lunar\Tests\Unit\Models;
 
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\DataTypes\Price;
+use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\Language;
@@ -34,6 +38,22 @@ class OrderTest extends TestCase
             'default' => true,
             'decimal_places' => 2,
         ]);
+    }
+
+    /** @test */
+    public function can_fetch_cart_relationship()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+        $cart = Cart::factory()->create();
+
+        $order = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'user_id' => null,
+        ]);
+
+        $this->assertEquals($cart->id, $order->cart->id);
     }
 
     /** @test */
@@ -202,5 +222,62 @@ class OrderTest extends TestCase
 
         $this->assertEquals($customer->id, $order->customer->id);
         $this->assertEquals($user->getKey(), $order->user->getKey());
+    }
+
+    /** @test */
+    public function can_check_order_is_placed()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id' => null,
+        ]);
+
+        $this->assertTrue($order->isDraft());
+
+        $order->placed_at = now();
+
+        $this->assertTrue($order->isPlaced());
+    }
+
+    /** @test */
+    public function can_cast_and_store_shipping_breakdown()
+    {
+        $order = Order::factory()->create();
+
+        $breakdown = new ShippingBreakdown(
+            items: collect([
+                new ShippingBreakdownItem(
+                    name: 'Breakdown A',
+                    identifier: 'BA',
+                    price: new Price(123, Currency::getDefault(), 1)
+                ),
+            ])
+        );
+
+        $order->shipping_breakdown = $breakdown;
+
+        $order->save();
+
+        $this->assertDatabaseHas((new Order)->getTable(), [
+            'shipping_breakdown' => json_encode([[
+                'name' => 'Breakdown A',
+                'identifier' => 'BA',
+                'price' => 123,
+            ]]),
+        ]);
+
+        $breakdown = $order->refresh()->shipping_breakdown;
+
+        $this->assertCount(1, $breakdown);
+
+        $breakdownItem = $breakdown->first();
+
+        $this->assertEquals('Breakdown A', $breakdownItem->name);
+        $this->assertEquals('BA', $breakdownItem->identifier);
+        $this->assertInstanceOf(Price::class, $breakdownItem->price);
+        $this->assertEquals(123, $breakdownItem->price->value);
     }
 }

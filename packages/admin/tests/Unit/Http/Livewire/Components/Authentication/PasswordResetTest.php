@@ -49,13 +49,13 @@ class PasswordResetTest extends TestCase
         $token = Str::random();
 
         Cache::shouldReceive('get')
-                    ->once()
-                    ->with('hub.password.reset.'.$staff->id)
-                    ->andReturn($token);
+            ->once()
+            ->with('hub.password.reset.'.$staff->id)
+            ->andReturn($token);
 
         Cache::shouldReceive('forget')
-                    ->once()
-                    ->andReturn(true);
+            ->once()
+            ->andReturn(true);
 
         Livewire::test(PasswordReset::class)
             ->set('token', encrypt($staff->id.'|'.$token))

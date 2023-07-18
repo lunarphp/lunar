@@ -2,7 +2,6 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
-use Illuminate\Routing\Redirector;
 use Lunar\Facades\DB;
 use Lunar\Models\Discount;
 
