@@ -196,6 +196,11 @@ class DiscountManager implements DiscountManagerInterface
         if (! $this->discounts) {
             $this->discounts = $this->getDiscounts();
         }
+        
+        $cart->lines->each(function ($line) {
+            unset($line->subTotalDiscounted);
+            unset($line->discountTotal);
+        });
 
         foreach ($this->discounts as $discount) {
             $cart = $discount->getType()->apply($cart);
