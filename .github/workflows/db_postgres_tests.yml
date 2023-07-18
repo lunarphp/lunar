@@ -31,4 +31,4 @@ jobs:
         composer install --no-scripts
 
     - name: Run Testsuite
-      run: DB_CONNECTION=pgsql DB_HOST=postgres vendor/bin/phpunit
+      run: DB_CONNECTION=pgsql DB_HOST=postgres DB_DATABASE=test DB_USERNAME=root DB_PASSWORD=password vendor/bin/phpunit
