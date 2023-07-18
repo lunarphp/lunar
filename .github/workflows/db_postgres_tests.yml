@@ -1,9 +1,9 @@
-name: Scout DB Engine Postgres Tests
+name: Postgres Tests
 on:
   pull_request:
 defaults:
   run:
-    working-directory: ./utils/scout-database-engine
+    working-directory: ./
 jobs:
   phpunit:
     runs-on: ubuntu-latest
