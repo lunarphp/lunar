@@ -4,12 +4,70 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## 0.4
+
+### Fixed
+
+- The `channel` and `customerGroup` scope will now do additional checks in the event an empty collection or value is
+  passed.
+- `AmountOff` discount type will now use `discountTotal` when adding up the total discount for that line.
+- `getEligibleLines` method will now reject any lines where the `purchasableLimitations` doesn't exist.
+- `subTotalDiscounted` will now reset when calling the `CalculateLines` pipeline.
 
 ### Added
 
+- Pricing can now be stored inclusive of tax.
+- The `Lunar\Models\Price` model now provides two new methods to return the price exclusive and inclusive of tax.
+- Added base pipelines for order creation.
+- Added new `draftOrder` and `completedOrders` relationships to the `Cart` model
+- Added `PaymentAttemptedEvent`
 - Added `fingerprint` method to the `Cart` model.
 - Added `checkFingerprint` method to the `Cart` model.
+- Added `products` scope to the `Discount` model.
+- Added `usable` scope to the `Discount` model.
+- Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
+- Added `orders` relationship to the `LunarUser` trait.
+- Added 'label' JSON field to `ProductOption` model.
+- Added pipelines to PricingManager
+- Added `customer_id` to carts table
+- Added `customer` relationship to Cart model
+- Added `setCustomer` method to Cart model
+- Added `setCustomer` and `getCustomer` to StorefrontSessionManager
+- Added `latestCustomer` scope to `LunarUser` trait
+- Added pipelines to PricingManager.
+- Added `isDraft()` and `isPlaced()` methods to Order model.
+
+### Changed
+
+- Config to disable database migrations.
+- The `getThumbnail()` method on variants has been changed to allow for eager loading.
+- The logic in the `CreateOrder` action has been extracted into pipelines.
+- `order_id` has been deprecated on the `carts` table in favour of a `cart_id` column on the `orders` table.
+- The `CreateOrder` action will now ensure we are working with a draft order before proceeding.
+- The `CreateOrder` pipelines will now handle and update the order if it already exists.
+- PricingManager properties changed from `protected` to `public`
+- MySQL 5.7 is no longer supported, MySQL 8.0+ is required.
+
+## 0.3.2
+
+### Changed
+
+- Removed `Staff` type declaration on permissions as this was causing issues with external packages with
+  authenticated users..
+
+## 0.3.1
+
+### Fixed
+
+- The `getWeightAttribute` will now correctly convert from `kg`.
+
+### Changed
+
+- Remove `isset` from `addSearchableAttribute`
+
+### Added
+
+- Added `Blink` cache to parts of the cart to improve speed for duplicated queries.
 
 ## 0.3.0
 

@@ -2,36 +2,38 @@
 
 ## Overview
 
-As you'd expect, orders on an online system show what users have purchased. They are linked to a Cart and you can only have 1 order per cart in the database.
+As you'd expect, orders on an online system show what users have purchased. Orders are linked to Carts and although you
+would generally only have one Order per cart, the system will support multiple if your store requires it.
 
 ```php
 Lunar\Models\Order
 ```
 
-|Field|Description|
-|:-|:-|
-|id||
-|user_id|If this is not a guest order, this will have the users id|
-|customer_id|Can be `null`, stores customer|
-|channel_id|Which channel this was purchased through|
-|status|A status that makes sense to you as the store owner|
-|reference|Your stores own reference
-|customer_reference|If you want customers to add their own reference, it goes here.
-|sub_total|The sub total minus any discounts, excl. tax
-|discount_breakdown| A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]`
-|discount_total| Any discount amount excl. tax
-|shipping_total| The shipping total excl. tax
-|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`
-|tax_total| The total amount of tax applied
-|total|The grand total with tax
-|notes|Any additional order notes
-|currency_code|The code of the currency the order was placed in
-|compare_currency_code|The code of the default currency at the time
-|exchange_rate| The exchange rate between `currency_code` and `compare_currency_code`
-|placed_at|The datetime the order was considered placed.
-|meta|Any additional meta info you wish to store
-|created_at||
-|updated_at||
+| Field                 | Description                                                                                                        |
+|:----------------------|:-------------------------------------------------------------------------------------------------------------------|
+| id                    |                                                                                                                    |
+| user_id               | If this is not a guest order, this will have the users id                                                          |
+| customer_id           | Can be `null`, stores customer                                                                                     |
+| cart_id               | The related cart                                                                                                   |
+| channel_id            | Which channel this was purchased through                                                                           |
+| status                | A status that makes sense to you as the store owner                                                                |
+| reference             | Your stores own reference                                                                                          
+| customer_reference    | If you want customers to add their own reference, it goes here.                                                    
+| sub_total             | The sub total minus any discounts, excl. tax                                                                       
+| discount_breakdown    | A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]` 
+| discount_total        | Any discount amount excl. tax                                                                                      
+| shipping_total        | The shipping total excl. tax                                                                                       
+| tax_breakdown         | A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`                        
+| tax_total             | The total amount of tax applied                                                                                    
+| total                 | The grand total with tax                                                                                           
+| notes                 | Any additional order notes                                                                                         
+| currency_code         | The code of the currency the order was placed in                                                                   
+| compare_currency_code | The code of the default currency at the time                                                                       
+| exchange_rate         | The exchange rate between `currency_code` and `compare_currency_code`                                              
+| placed_at             | The datetime the order was considered placed.                                                                      
+| meta                  | Any additional meta info you wish to store                                                                         
+| created_at            |                                                                                                                    |
+| updated_at            |                                                                                                                    |
 
 ## Create an order
 
@@ -41,65 +43,97 @@ You can either create an order directly, or the recommended way is via a `Cart` 
 $order = \Lunar\Models\Order::create([/** .. */]);
 
 // Recommended way
-$order = Cart::first()->createOrder();
+$order = Cart::first()->createOrder(
+    allowMultiple: false,
+    draftOrderId: null,
+);
 ```
 
-If you are using the `CartSession` you can create a order via the facade, this will then handle removing the cart from the session if you want it to.
+- `allowMultiple` - Generally carts will only have one draft order associated, however if you want to allow carts to
+  have multiple, you can pass `true` here.
+- `draftOrderId` - If you want to be sure you're going to get the existing/correct order back, you can pass an ID of a
+  draft order here to use, note it does have to relate to this cart already.
+
+The underlying class for creating an order is `Lunar\Actions\Carts\CreateOrder`, you are free to override this in the
+config file `config/cart.php`
 
 ```php
-$order = CartSession::createOrder();
+return [
+    //  ...
+    'actions' => [
+        // ...
+        'order_create' => CustomCreateOrder::class
+    ]
+]
 ```
 
-By default, this will create the order and remove the cart id from the session. You can, however retain the cart id if you want by passing an option `boolean` parameter to the method:
+At minimum your class should look like the following:
 
 ```php
-$order = CartSession::createOrder(false);
-```
-
-Now when you create the order, you will still have the cart id in the session.
-
-So what's happening when we call `createOrder` on a cart, that's so different from just creating an order manually? Well there's a few steps Lunar takes to make sure data stays consistent and valid, it also means that a lot of the columns on an order will automatically be populated based on the cart.
-
-Here's the order things happen when you call `createOrder`:
-
-1. We check if the Cart has been calculated and it's totals are populated, if not we calculate
-2. Validation happens on the cart to ensure we have all the data we need for the order, things like billing info etc.
-3. Creation is about to happen, so before that we get any modifiers that have been set up and pass through the `Cart` so you can make any changes beforehand.
-4. We create the order from the `Cart` including `CartLine` models and copying `CartAddress` models across to the new order.
-5. We associate the newly created order to the `Cart`
-6. The new order is then run through a series of post creation modifiers so you can make any adjustments to the new order.
-
-Given that there is validation taking place and there could be exceptions thrown, it makes sense to wrap this function in a try/catch.
-
-```php
-try {
-    $order = $cart->createOrder();
-} catch (\Lunar\Exceptions\CartException $e) {
-    // Return back to checkout.
+final class CreateOrder extends Lunar\Actions\AbstractAction
+{
+    /**
+     * Execute the action.
+     */
+    public function execute(
+        Cart $cart,
+        bool $allowMultipleOrders = false,
+        int $orderIdToUpdate = null
+    ): self {
+        return $this;
+    }
 }
 ```
 
-If you want more fine grained control of what you do under the different exceptions, here they are:
+### Validating a cart before creation.
 
-```php
-\Lunar\Exceptions\Carts\BillingAddressIncompleteException;
-\Lunar\Exceptions\Carts\BillingAddressMissingException;
-\Lunar\Exceptions\Carts\OrderExistsException;
-```
-
-They each extend `CartException` so it depends on how much control you need.
-
-If you also want to check before you attempt this if the cart is ready to create an order, you can call the helper method:
+If you also want to check before you attempt this if the cart is ready to create an order, you can call the helper
+method:
 
 ```php
 $cart->canCreateOrder();
 ```
 
-This essentially does the same as above, except we already catch the exceptions for you and just return false if any are caught.
+Under the hood this will use the `ValidateCartForOrderCreation` class which lunar provides and throw any validation
+exceptions with helpful messages if the cart isn't ready to create an order.
+
+You can specific you're own class to handle this in `config/cart.php`.
+
+```php
+return [
+    // ...
+    'validators' => [
+        'order_create' => MyCustomValidator::class,
+    ]
+]
+```
+
+Which may look something like:
+
+```php
+<?php
+
+//...
+
+class MyCustomValidator extends \Lunar\Validation\BaseValidator
+{
+    public function validate(): bool
+    {
+        $cart = $this->parameters['cart'];
+        
+        if ($somethingWentWrong) {
+            return $this->fail('There was an issue');
+        }
+        
+        return $this->pass();
+    }
+}
+```
 
 ## Order Reference Generating
 
-By default Lunar will generate a new order reference for you when you create an order from a cart. The format for this is:
+By default Lunar will generate a new order reference for you when you create an order from a cart. The format for this
+is:
 
 ```
 {year}-{month}-{0..0}{orderId}
@@ -116,7 +150,8 @@ By default Lunar will generate a new order reference for you when you create an 
 
 ### Custom Generators
 
-If your store has a specific requirement for how references are generated, you can easily swap out the Lunar one for your own:
+If your store has a specific requirement for how references are generated, you can easily swap out the Lunar one for
+your own:
 
 `config/lunar/orders.php`
 
@@ -150,7 +185,8 @@ class MyCustomGenerator implements OrderReferenceGeneratorInterface
 
 ## Modifying Orders
 
-If you need to programmatically change the Order values or add in new behaviour, you will want to extend the Order system.
+If you need to programmatically change the Order values or add in new behaviour, you will want to extend the Order
+system.
 
 You can find out more in the Extending Lunar section for [Order Modifiers](/core/extending/orders).
 
@@ -160,28 +196,29 @@ You can find out more in the Extending Lunar section for [Order Modifiers](/core
 Lunar\Models\OrderLine
 ```
 
-|Field|Description|
-|:-|:-|
-|id||
-|order_id||
-|purchasable_type|Class reference for the purchasable item e.g. `Lunar\Models\ProductVariant`|
-|purchasable_id|
-|type|Whether `digital`,`physical` etc
-|description|A description of the line item
-|option|If this was a variant, the option info is here
-|identifier|Something to identify the purchasable item, usually an `sku`
-|unit_price|The unit price of the line
-|unit_quantity|The line unit quantity, usually this is 1
-|quantity|The amount of this item purchased
-|sub_total|The sub total minus any discounts, excl. tax
-|discount_total| Any discount amount excl. tax
-|tax_breakdown| A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`
-|tax_total| The total amount of tax applied
-|total|The grand total with tax
-|notes|Any additional order notes
-|meta|Any additional meta info you wish to store
-|created_at||
-|updated_at||
+| Field            | Description                                                                                 |
+|:-----------------|:--------------------------------------------------------------------------------------------|
+| id               |                                                                                             |
+| order_id         |                                                                                             |
+| purchasable_type | Class reference for the purchasable item e.g. `Lunar\Models\ProductVariant`                 |
+| purchasable_id   |
+| type             | Whether `digital`,`physical` etc                                                            
+| description      | A description of the line item                                                              
+| option           | If this was a variant, the option info is here                                              
+| identifier       | Something to identify the purchasable item, usually an `sku`                                
+| unit_price       | The unit price of the line                                                                  
+| unit_quantity    | The line unit quantity, usually this is 1                                                   
+| quantity         | The amount of this item purchased                                                           
+| sub_total        | The sub total minus any discounts, excl. tax                                                
+| discount_total   | Any discount amount excl. tax                                                               
+| tax_breakdown    | A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]` 
+| shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
+| tax_total        | The total amount of tax applied                                                             
+| total            | The grand total with tax                                                                    
+| notes            | Any additional order notes                                                                  
+| meta             | Any additional meta info you wish to store                                                  
+| created_at       |                                                                                             |
+| updated_at       |                                                                                             |
 
 
 ### Create an order line
@@ -246,7 +283,6 @@ $order->shippingAddress;
 $order->billingAddress;
 ```
 
-
 ## Shipping Options
 
 ::: tip
@@ -265,7 +301,8 @@ This will return a collection of `Lunar\DataTypes\ShippingOption` objects.
 
 ### Adding the shipping option to the cart
 
-Once the user has selected the shipping option they want, you will need to add this to the cart so it can calculate the new totals.
+Once the user has selected the shipping option they want, you will need to add this to the cart so it can calculate the
+new totals.
 
 ```php
 $cart->setShippingOption(\Lunar\DataTypes\ShippingOption $option);
@@ -277,29 +314,31 @@ $cart->setShippingOption(\Lunar\DataTypes\ShippingOption $option);
 Lunar\Models\Transaction
 ```
 
-|Field|Description|
-|:-|:-|
-|id||
-|success|Whether the transaction was successful|
-|refund|`true` if this was a refund|
-|driver|The payment driver used e.g. `stripe`|
-|amount|An integer amount|
-|reference|The reference returned from the payment Provider. Used to identify the transaction with them.
-|status|A string representation of the status, unlinked to Lunar e.g. `settled`|
-|notes|Any relevant notes for the transaction
-|card_type| e.g. `visa`
-|last_four| Last 4 digits of the card
-|meta|Any additional meta info you wish to store
-|created_at||
-|updated_at||
+| Field      | Description                                                                                   |
+|:-----------|:----------------------------------------------------------------------------------------------|
+| id         |                                                                                               |
+| success    | Whether the transaction was successful                                                        |
+| refund     | `true` if this was a refund                                                                   |
+| driver     | The payment driver used e.g. `stripe`                                                         |
+| amount     | An integer amount                                                                             |
+| reference  | The reference returned from the payment Provider. Used to identify the transaction with them. 
+| status     | A string representation of the status, unlinked to Lunar e.g. `settled`                       |
+| notes      | Any relevant notes for the transaction                                                        
+| card_type  | e.g. `visa`                                                                                   
+| last_four  | Last 4 digits of the card                                                                     
+| meta       | Any additional meta info you wish to store                                                    
+| created_at |                                                                                               |
+| updated_at |                                                                                               |
 
 ### Create a transaction
 
 ::: tip
-Just because an order has a transaction does not mean it has been placed. Lunar determines whether an order is considered placed when the `placed_at` column has a datetime, regardless if any transactions exist or not.
+Just because an order has a transaction does not mean it has been placed. Lunar determines whether an order is
+considered placed when the `placed_at` column has a datetime, regardless if any transactions exist or not.
 :::
 
-Most stores will likely want to store a transaction against the order, this helps determining how much has been paid, how it was paid and give a clue on the best way to issue a refund if needed.
+Most stores will likely want to store a transaction against the order, this helps determining how much has been paid,
+how it was paid and give a clue on the best way to issue a refund if needed.
 
 ```php
 \Lunar\Models\Transaction::create([
@@ -324,17 +363,32 @@ $order->refunds; // Get all transactions that are refunds.
 
 ## Payments
 
-We will be looking to add support for the most popular payment providers, so keep an eye out here as we will list them all out.
+We will be looking to add support for the most popular payment providers, so keep an eye out here as we will list them
+all out.
 
-In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind if you what payment provider you use or plan to use.
+In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind if
+you what payment provider you use or plan to use.
 
-In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table, the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier for you as laid out above.
+In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table,
+the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier
+for you as laid out above.
 
 And as always, if you have any questions you can reach out on our Discord!
 
+## Order Status
+
+The `placed_at` field determines whether an Order is considered draft or placed. The Order model has two helper methods
+to determine the status of an Order.
+
+```php
+$order->isDraft();
+$order->isPlaced();
+```
+
 ## Order Notifications
 
-Lunar allows you to specify what Laravel mailers/notifications should be available for sending when you update an order's status. These are configured in the `lunar/orders` config file and are defined like so:
+Lunar allows you to specify what Laravel mailers/notifications should be available for sending when you update an
+order's status. These are configured in the `lunar/orders` config file and are defined like so:
 
 ```php
 'statuses'     => [
@@ -351,9 +405,12 @@ Lunar allows you to specify what Laravel mailers/notifications should be availab
 ],
 ```
 
-Now when you update an order's status in the hub, you will have these mailers available if the new status is `awaiting-payment`. You can then choose the email addresses which the email should be sent to and also add an additional email address if required.
+Now when you update an order's status in the hub, you will have these mailers available if the new status
+is `awaiting-payment`. You can then choose the email addresses which the email should be sent to and also add an
+additional email address if required.
 
-Once updated, Lunar will keep a render of the email sent out in the activity log so you have a clear history of what's been sent out.
+Once updated, Lunar will keep a render of the email sent out in the activity log so you have a clear history of what's
+been sent out.
 
 :::tip
 These email notifications do not get sent out automatically if you update the status outside of the hub.
@@ -361,7 +418,8 @@ These email notifications do not get sent out automatically if you update the st
 
 ### Mailer template
 
-When building out the template for your mailer, you should assume you have access to the `$order` model. When the status is updated this is passed through to the view data for the mailer, along with any additional content entered.
+When building out the template for your mailer, you should assume you have access to the `$order` model. When the status
+is updated this is passed through to the view data for the mailer, along with any additional content entered.
 Since you may not always have additional content when sending out the mailer, you should check the existence first.
 
 Here's an example of what the template could look like:
@@ -374,21 +432,23 @@ Here's an example of what the template could look like:
 <p>{{ $order->total->formatted() }}</p>
 
 @if($content ?? null)
-    <h2>Additional notes</h2>
-    <p>{{ $content }}</p>
+<h2>Additional notes</h2>
+<p>{{ $content }}</p>
 @endif
 
 @foreach($order->lines as $line)
-    <!--  -->
+<!--  -->
 @endforeach
 ```
 
 ## Order Invoice PDF
 
-By default when you click "Download PDF" in the hub when viewing an order, you will get a basic PDF generated for you to download. You can publish the view that powers this to create your own PDF template.
+By default when you click "Download PDF" in the hub when viewing an order, you will get a basic PDF generated for you to
+download. You can publish the view that powers this to create your own PDF template.
 
 ```bash
 php artisan vendor:publish --tag=lunar.hub.views
 ```
 
-This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely customise the PDF you want displayed on download.
+This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely
+customise the PDF you want displayed on download.

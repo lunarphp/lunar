@@ -27,7 +27,7 @@ class OrderLineObserver
      */
     public function updating(OrderLine $orderLine)
     {
-        if (! $orderLine->purchasable instanceof Purchasable) {
+        if ($orderLine->type != 'shipping' && ! $orderLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($orderLine->purchasable_type);
         }
     }

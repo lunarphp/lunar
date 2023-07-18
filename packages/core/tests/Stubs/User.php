@@ -12,7 +12,6 @@ class User extends Authenticatable
     use LunarUser;
     use HasFactory;
     use Notifiable;
-    use LunarUser;
 
     /**
      * The attributes that are mass assignable.

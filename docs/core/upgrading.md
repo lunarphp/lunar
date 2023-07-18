@@ -22,9 +22,86 @@ php artisan lunar:hub:install
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.3`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.4`.
 
-## [Unreleased]
+## 0.4
+
+### High Impact
+
+#### Changed Lunar Hub authorization to use `spatie/laravel-permission`
+
+Existing assigned staff permissions are migrated, this should not impact your project.
+If you have custom authorization checking using `Staff->authorize('permission')`, change it
+to `Staff->hasPermissionTo('permission')`
+
+#### ShippingManifestInterface
+
+Added `addOptions`, `getOptionUsing`, `getOption`, `getShippingOption` to ShippingManifestInterface
+
+#### MySQL 8.x Requirement
+
+With MySQL 5.7 EOL coming in October 2023 and Lunar's heavy use of JSON fields, Lunar now only supports MySQL 8.x.
+You may find your project continues to work fine in MySQL 5.7, but we advise upgrading.
+
+#### Carts
+
+- The `shippingTotal` property now includes the tax in the amount, use `shippingSubTotal` instead.
+- A new `shippingBreakdown` property has been added which will include all shipping costs and be available to pipelines.
+
+If you are modifying the shipping cost outside of your own shipping options in the shipping manifest, you should create
+a custom cart pipeline and use the shipping breakdown property as this is where the shipping total will be calculated
+from.
+
+```php
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
+
+$shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
+
+$shippingBreakdown->items->put('ADDSHIP',
+    new ShippingBreakdownItem(
+        name: 'Additional Shipping Cost',
+        identifier: 'ADDSHIP',
+        price: new Price(123, $currency, 1),
+    )
+);
+```
+
+#### Cart/Order Relationship
+
+The relationship between a cart and an order has been changed, previously the `carts` table had an `order_id` column,
+this has been changed so the `cart_id` is now on the `orders` table.
+
+You should update any code that sets the `order_id` on a cart to `cart_id` on the order.
+
+We've also introduced the concept of `draft` and `complete` orders for carts, so you should update any code that
+references an order from a cart to the following methods:
+
+```php
+// Old
+$cart->order
+
+// New
+
+/* The order which doesn't have a `placed_at` value */
+$cart->draftOrder
+
+/* Any orders which have a `placed_at` value */
+$cart->completedOrder
+```
+
+### Changes to `CreateOrder` action
+
+The `Lunar\Actions\Cart/CreateOrder` action has been refactored to run through pipelines, much like how carts are
+currently calculated. If you are currently using your own `CreateOrder` action, you should refactor the logic into
+pipelines and ues the provided action.
+
+:::danger
+The `CreateAction` class is now final, so if you are extending this action you will need to refactor your
+implementation.
+:::
+
+See [Extending Orders](/core/extending/orders)
 
 ### Low impact
 

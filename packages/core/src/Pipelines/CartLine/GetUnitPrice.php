@@ -6,6 +6,7 @@ use Closure;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\Pricing;
 use Lunar\Models\CartLine;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class GetUnitPrice
 {
@@ -19,9 +20,17 @@ class GetUnitPrice
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
 
-        $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
+        if ($customer = $cart->customer) {
+            $customerGroups = $customer->customerGroups;
+        } else {
+            $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
+        }
 
-        $priceResponse = Pricing::currency($cart->currency)
+        $currency = Blink::once('currency_'.$cart->currency_id, function () use ($cart) {
+            return $cart->currency;
+        });
+
+        $priceResponse = Pricing::currency($currency)
             ->qty($cartLine->quantity)
             ->currency($cart->currency)
             ->customerGroups($customerGroups)

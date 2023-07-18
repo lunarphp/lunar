@@ -101,7 +101,7 @@ class CartSessionManagerTest extends TestCase
         $order = CartSession::createOrder();
 
         $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($cart->order_id, $order->id);
+        $this->assertEquals($order->cart_id, $cart->id);
 
         $this->assertNull(
             Session::get(config('lunar.cart.session_key'))
@@ -148,7 +148,7 @@ class CartSessionManagerTest extends TestCase
         );
 
         $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($cart->order_id, $order->id);
+        $this->assertEquals($order->cart_id, $cart->id);
 
         $this->assertEquals(
             $cart->id,

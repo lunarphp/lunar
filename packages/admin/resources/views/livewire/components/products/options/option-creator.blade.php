@@ -13,7 +13,13 @@
           </x-slot>
         @endforeach
       </x-hub::translatable>
-
+      @error('option_handle')
+          <div  class="mt-2">
+          <x-hub::alert level="danger">
+              {{ $message }}
+          </x-hub::alert>
+          </div>
+      @enderror
     </x-hub::input.group>
 
     <div class="mt-4 space-y-4">
