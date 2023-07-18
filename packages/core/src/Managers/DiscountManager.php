@@ -199,7 +199,6 @@ class DiscountManager implements DiscountManagerInterface
         
         $cart->lines->each(function ($line) {
             unset($line->subTotalDiscounted);
-            unset($line->discountTotal);
         });
 
         foreach ($this->discounts as $discount) {
