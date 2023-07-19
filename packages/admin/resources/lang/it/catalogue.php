@@ -18,7 +18,7 @@ return [
     'collections.groups.move.title' => 'Sposta collezione',
     'collections.groups.move.search_placeholder' => 'Cerca una collezione da usare come genitore',
     'collections.groups.move.alert' => 'Questo sposterà da :source a :target.',
-    'collections.groups.move.btn' => 'Move Collection',
+    'collections.groups.move.btn' => 'Sposta Collezione',
     'collections.groups.node.make_root' => 'Crea radice',
     'collections.groups.node.move' => 'Sposta collezione',
     'collections.groups.node.edit' => 'Modifica Collezione',
