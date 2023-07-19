@@ -50,14 +50,4 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         // perform environment setup
     }
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
 }

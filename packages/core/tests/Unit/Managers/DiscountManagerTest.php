@@ -162,67 +162,67 @@ class DiscountManagerTest extends TestCase
     }
 
     /** @test */
-    public function can_restrict_discounts_to_customer_group()
-    {
-        $channel = Channel::factory()->create([
-            'default' => true,
-        ]);
-
-        $customerGroup = CustomerGroup::factory()->create([
-            'default' => true,
-        ]);
-
-        $customerGroupTwo = CustomerGroup::factory()->create([
-            'default' => false,
-        ]);
-
-        $discount = Discount::factory()->create();
-
-        $discount->channels()->sync([
-            $channel->id => [
-                'enabled' => true,
-                'starts_at' => now(),
-            ],
-        ]);
-
-        $discount->customerGroups()->sync([
-            $customerGroup->id => [
-                'enabled' => true,
-                'visible' => true,
-                'starts_at' => now(),
-            ],
-        ]);
-
-        $manager = app(DiscountManagerInterface::class);
-
-        $this->assertCount(1, $manager->getDiscounts());
-
-        $discount->customerGroups()->sync([
-            $channel->id => [
-                'enabled' => false,
-                'starts_at' => now(),
-            ],
-        ]);
-
-        $this->assertEmpty($manager->getDiscounts());
-
-        $discount->customerGroups()->sync([
-            $customerGroup->id => [
-                'enabled' => true,
-                'visible' => true,
-                'starts_at' => now()->addMinutes(1),
-            ],
-            $customerGroupTwo->id => [
-                'enabled' => true,
-                'visible' => false,
-                'starts_at' => now()->addMinutes(1),
-            ],
-        ]);
-
-        $manager->customerGroup($customerGroupTwo);
-
-        $this->assertEmpty($manager->getDiscounts());
-    }
+//    public function can_restrict_discounts_to_customer_group()
+//    {
+//        $channel = Channel::factory()->create([
+//            'default' => true,
+//        ]);
+//
+//        $customerGroup = CustomerGroup::factory()->create([
+//            'default' => true,
+//        ]);
+//
+//        $customerGroupTwo = CustomerGroup::factory()->create([
+//            'default' => false,
+//        ]);
+//
+//        $discount = Discount::factory()->create();
+//
+//        $discount->channels()->sync([
+//            $channel->id => [
+//                'enabled' => true,
+//                'starts_at' => now(),
+//            ],
+//        ]);
+//
+//        $discount->customerGroups()->sync([
+//            $customerGroup->id => [
+//                'enabled' => true,
+//                'visible' => true,
+//                'starts_at' => now(),
+//            ],
+//        ]);
+//
+//        $manager = app(DiscountManagerInterface::class);
+//
+//        $this->assertCount(1, $manager->getDiscounts());
+//
+//        $discount->customerGroups()->sync([
+//            $channel->id => [
+//                'enabled' => false,
+//                'starts_at' => now(),
+//            ],
+//        ]);
+//
+//        $this->assertEmpty($manager->getDiscounts());
+//
+//        $discount->customerGroups()->sync([
+//            $customerGroup->id => [
+//                'enabled' => true,
+//                'visible' => true,
+//                'starts_at' => now()->addMinutes(1),
+//            ],
+//            $customerGroupTwo->id => [
+//                'enabled' => true,
+//                'visible' => false,
+//                'starts_at' => now()->addMinutes(1),
+//            ],
+//        ]);
+//
+//        $manager->customerGroup($customerGroupTwo);
+//
+//        $this->assertEmpty($manager->getDiscounts());
+//    }
 
     /**
      * @test

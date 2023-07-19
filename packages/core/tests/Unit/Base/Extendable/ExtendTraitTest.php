@@ -12,7 +12,7 @@ class ExtendTraitTest extends ExtendableTestCase
     /** @test */
     public function can_override_scout_should_be_searchable_method()
     {
-        $product = Product::find(1);
+        $product = Product::first();
         $this->assertFalse($product->shouldBeSearchable());
     }
 }

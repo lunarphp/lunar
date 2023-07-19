@@ -56,7 +56,7 @@ class UpdateCartLineTest extends TestCase
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'quantity' => 2,
             'id' => $line->id,
-            'meta' => json_encode(['foo' => 'bar']),
+            'meta' => cast_to_json(['foo' => 'bar']),
         ]);
 
         $action->execute($line->id, 2, ['baz' => 'bar']);
@@ -64,7 +64,7 @@ class UpdateCartLineTest extends TestCase
         $this->assertDatabaseHas((new CartLine)->getTable(), [
             'quantity' => 2,
             'id' => $line->id,
-            'meta' => json_encode(['baz' => 'bar']),
+            'meta' => cast_to_json(['baz' => 'bar']),
         ]);
     }
 }

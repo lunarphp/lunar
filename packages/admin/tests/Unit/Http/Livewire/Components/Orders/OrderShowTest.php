@@ -114,7 +114,7 @@ class OrderShowTest extends TestCase
             'subject_id' => $order->id,
             'subject_type' => Order::class,
             'causer_id' => $staff->id,
-            'properties' => json_encode([
+            'properties' => cast_to_json([
                 'new' => 'foo-bar',
                 'previous' => 'awaiting-payment',
             ]),

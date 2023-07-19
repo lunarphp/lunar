@@ -60,7 +60,7 @@ class CartTest extends TestCase
         $this->assertDatabaseHas((new Cart())->getTable(), [
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
-            'meta' => json_encode(['foo' => 'bar']),
+            'meta' => cast_to_json(['foo' => 'bar']),
         ]);
 
         $variant = ProductVariant::factory()->create();

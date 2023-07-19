@@ -40,8 +40,10 @@ class AddAddressTest extends TestCase
         $action->execute($cart, $address, 'billing');
 
         $attributes = $address->getAttributes();
+        unset($attributes['id']);
         unset($attributes['shipping_default']);
         unset($attributes['billing_default']);
+        unset($attributes['meta']);
 
         $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
             'cart_id' => $cart->id,
@@ -71,8 +73,10 @@ class AddAddressTest extends TestCase
         $action->execute($cart, $address->toArray(), 'billing');
 
         $attributes = $address->getAttributes();
+        unset($attributes['id']);
         unset($attributes['shipping_default']);
         unset($attributes['billing_default']);
+        unset($attributes['meta']);
 
         $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
             'cart_id' => $cart->id,
@@ -108,8 +112,10 @@ class AddAddressTest extends TestCase
         $action->execute($cart, $addressA, 'billing');
 
         $attributes = $addressA->getAttributes();
+        unset($attributes['id']);
         unset($attributes['shipping_default']);
         unset($attributes['billing_default']);
+        unset($attributes['meta']);
 
         $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
             'cart_id' => $cart->id,
@@ -119,8 +125,10 @@ class AddAddressTest extends TestCase
         $action->execute($cart, $addressB, 'billing');
 
         $attributes = $addressA->getAttributes();
+        unset($attributes['id']);
         unset($attributes['shipping_default']);
         unset($attributes['billing_default']);
+        unset($attributes['meta']);
 
         $this->assertDatabaseMissing((new CartAddress)->getTable(), array_merge([
             'cart_id' => $cart->id,
@@ -128,8 +136,10 @@ class AddAddressTest extends TestCase
         ], $attributes));
 
         $attributes = $addressB->getAttributes();
+        unset($attributes['id']);
         unset($attributes['shipping_default']);
         unset($attributes['billing_default']);
+        unset($attributes['meta']);
 
         $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
             'cart_id' => $cart->id,

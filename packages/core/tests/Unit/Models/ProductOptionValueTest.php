@@ -21,7 +21,7 @@ class ProductOptionValueTest extends TestCase
         $this->assertDatabaseHas((new ProductOptionValue)->getTable(), [
             'id' => $optionValue->id,
             'product_option_id' => $optionValue->option->id,
-            'name' => json_encode($optionValue->name),
+            'name' => cast_to_json($optionValue->name),
         ]);
 
         $this->assertDatabaseCount((new ProductOptionValue)->getTable(), 1);

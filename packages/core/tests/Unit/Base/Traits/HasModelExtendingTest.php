@@ -15,7 +15,7 @@ class HasModelExtendingTest extends ExtendableTestCase
     /** @test */
     public function can_get_new_instance_of_the_registered_model()
     {
-        $product = Product::find(1);
+        $product = Product::first();
 
         $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\Product::class, $product);
     }
@@ -24,12 +24,12 @@ class HasModelExtendingTest extends ExtendableTestCase
     public function can_forward_calls_to_extended_model()
     {
         // @phpstan-ignore-next-line
-        $sizeOption = ProductOption::with('sizes')->find(1);
+        $sizeOption = ProductOption::with('sizes')->first();
 
         $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\ProductOption::class, $sizeOption);
 
         $this->assertInstanceOf(Collection::class, $sizeOption->sizes);
-        $this->assertCount(1, $sizeOption->sizes);
+        $this->assertCount(3, $sizeOption->sizes);
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class HasModelExtendingTest extends ExtendableTestCase
     public function can_swap_registered_model_implementation()
     {
         /** @var Product $product */
-        $product = Product::find(1);
+        $product = Product::first();
 
         $newProductModel = $product->swap(
             \Lunar\Tests\Stubs\Models\ProductSwapModel::class

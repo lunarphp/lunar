@@ -44,7 +44,7 @@ class AttributeGroupEditTest extends TestCase
 
         $this->assertDatabaseHas('lunar_attribute_groups', [
             'attributable_type' => 'product_type',
-            'name' => json_encode([Language::getDefault()->code => 'Some attribute group name']),
+            'name' => cast_to_json([Language::getDefault()->code => 'Some attribute group name']),
         ]);
     }
 
@@ -69,7 +69,7 @@ class AttributeGroupEditTest extends TestCase
 
         $this->assertDatabaseHas('lunar_attribute_groups', [
             'attributable_type' => 'product_type',
-            'name' => json_encode([
+            'name' => cast_to_json([
                 Language::getDefault()->code => 'Some attribute group name',
                 $secondaryLanguage->code => 'Some attribute group name, but in French',
             ]),
@@ -97,7 +97,7 @@ class AttributeGroupEditTest extends TestCase
 
         $this->assertDatabaseMissing('lunar_attribute_groups', [
             'attributable_type' => 'product_type',
-            'name' => json_encode([
+            'name' => cast_to_json([
                 $secondaryLanguage->code => 'Some attribute group name, but in French',
             ]),
         ]);

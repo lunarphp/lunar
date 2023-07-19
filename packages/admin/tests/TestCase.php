@@ -45,16 +45,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ];
     }
 
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     protected function getEnvironmentSetUp($app)
     {
         // perform environment setup

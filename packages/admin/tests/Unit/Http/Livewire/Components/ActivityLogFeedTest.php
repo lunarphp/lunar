@@ -92,7 +92,7 @@ class ActivityLogFeedTest extends TestCase
             'subject_id' => $order->id,
             'subject_type' => Order::class,
             'causer_id' => $staff->id,
-            'properties' => json_encode([
+            'properties' => cast_to_json([
                 'content' => 'Testing 123',
             ]),
         ]);

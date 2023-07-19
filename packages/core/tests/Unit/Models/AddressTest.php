@@ -65,7 +65,7 @@ class AddressTest extends TestCase
 
         $address = Address::create($data);
 
-        $data['meta'] = json_encode($data['meta']);
+        $data['meta'] = cast_to_json($data['meta']);
 
         $this->assertDatabaseHas('lunar_addresses', $data);
 

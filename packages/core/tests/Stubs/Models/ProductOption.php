@@ -14,11 +14,11 @@ class ProductOption extends \Lunar\Models\ProductOption
      */
     public function sizes(): HasMany
     {
-        return $this->values()->where('id', 1);
+        return $this->values();
     }
 
     public static function getSizesStatic(): Collection
     {
-        return static::find(1)->values;
+        return static::first()->values;
     }
 }

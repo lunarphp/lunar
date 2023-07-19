@@ -228,7 +228,7 @@ class CreateOrderTest extends TestCase
             'total' => $cart->total->value,
             'discount_total' => $cart->discountTotal?->value,
             'shipping_total' => $cart->shippingTotal?->value ?: 0,
-            'tax_breakdown' => json_encode($breakdown),
+            'tax_breakdown' => cast_to_json($breakdown),
         ];
 
         $cart = $cart->refresh();
@@ -737,7 +737,7 @@ class CreateOrderTest extends TestCase
             'total' => $cart->total->value,
             'discount_total' => $cart->discountTotal?->value,
             'shipping_total' => $cart->shippingTotal?->value ?: 0,
-            'tax_breakdown' => json_encode($breakdown),
+            'tax_breakdown' => cast_to_json($breakdown),
         ];
 
         $cart = $cart->refresh();

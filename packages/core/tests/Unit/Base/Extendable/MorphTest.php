@@ -4,9 +4,13 @@ namespace Lunar\Tests\Unit\Base\Extendable;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Facades\ModelManifest;
+use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
 
+/**
+ * @group core.extendable.morph
+ */
 class MorphTest extends ExtendableTestCase
 {
     use RefreshDatabase;
@@ -29,10 +33,13 @@ class MorphTest extends ExtendableTestCase
     /** @test */
     public function can_get_url_morph_relation_when_using_extended_model()
     {
-        $productUrl = $this->product->urls()->create([
+        $product = Product::first();
+        $language = Language::factory()->create();
+
+        $productUrl = $product->urls()->create([
             'slug' => 'foo-product',
             'default' => true,
-            'language_id' => 1,
+            'language_id' => $language->id,
         ]);
 
         $this->assertDatabaseHas((new Url)->getTable(), [
@@ -40,8 +47,8 @@ class MorphTest extends ExtendableTestCase
             'element_id' => $productUrl->element_id,
         ]);
 
-        $this->assertEquals(Product::class, $this->product->getMorphClass());
-        $this->assertInstanceOf(Url::class, $this->product->defaultUrl);
+        $this->assertEquals(Product::class, $product->getMorphClass());
+        $this->assertInstanceOf(Url::class, $product->defaultUrl);
     }
 
     /** @test */

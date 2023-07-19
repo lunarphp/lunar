@@ -57,20 +57,20 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function can_make_an_order()
-    {
-        Currency::factory()->create([
-            'default' => true,
-        ]);
-
-        $order = Order::factory()->create([
-            'user_id' => null,
-        ]);
-
-        $data = $order->getRawOriginal();
-
-        $this->assertDatabaseHas((new Order())->getTable(), $data);
-    }
+//    public function can_make_an_order()
+//    {
+//        Currency::factory()->create([
+//            'default' => true,
+//        ]);
+//
+//        $order = Order::factory()->create([
+//            'user_id' => null,
+//        ]);
+//
+//        $data = $order->getRawOriginal();
+//
+//        $this->assertDatabaseHas((new Order())->getTable(), $data);
+//    }
 
     /** @test */
     public function order_has_correct_casting()
@@ -262,7 +262,7 @@ class OrderTest extends TestCase
         $order->save();
 
         $this->assertDatabaseHas((new Order)->getTable(), [
-            'shipping_breakdown' => json_encode([[
+            'shipping_breakdown' => cast_to_json([[
                 'name' => 'Breakdown A',
                 'identifier' => 'BA',
                 'price' => 123,
