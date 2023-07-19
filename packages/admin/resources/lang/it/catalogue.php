@@ -48,92 +48,92 @@ return [
     /**
      * Product show.
      */
-    'products.show.back_link_title' => 'Go back to product listing',
-    'products.show.save_btn' => 'Save Product',
-    'products.show.no_channel_availability' => 'This product has no availability across channels.',
-    'products.show.delete_title' => 'Delete product',
-    'products.show.delete_strapline' => 'This will send the product into the recycle bin, you will be able to restore it later',
-    'products.show.restore_strapline' => 'Restore this product so it becomes available on your store.',
-    'products.show.delete_btn' => 'Confirm delete',
-    'products.show.restore_title' => 'Restore product',
-    'products.show.restore_btn' => 'Confirm restore',
+    'products.show.back_link_title' => 'Ritorna alla lista dei prodotti',
+    'products.show.save_btn' => 'Salva prodotto',
+    'products.show.no_channel_availability' => 'Questo prodotto non è disponibile attraverso i canali',
+    'products.show.delete_title' => 'Elimina prodotto',
+    'products.show.delete_strapline' => 'Il prodotto verrà rimosso, ma potrai comunque recuperarlo successivamente',
+    'products.show.restore_strapline' => 'Ripristina questo prodotto, così sarà disponibile sul tuo negozio.',
+    'products.show.delete_btn' => 'Conferma cancellazione',
+    'products.show.restore_title' => 'Ripristina prodotto',
+    'products.show.restore_btn' => 'Conferma ripristina',
 
     /**
      * Product variant.
      */
-    'product-variants.delete_confirm.title' => 'Confirm variant deletion',
-    'product-variants.delete_confirm.strapline' => 'This action cannot be undone.',
-    'product-variants.delete_confirm.btn' => 'Delete product variant',
-    'product-variants.add_variant.btn' => 'Add variant',
-    'product-variants.add_variant.already_exists' => 'This variant already exists.',
-    'product-variants.add_variant.null_option' => 'Choose an option',
-    'product-variants.add_variant.title' => 'Add additional variant',
-    'product-variants.add_variant.add_new_option' => 'Add new option',
+    'product-variants.delete_confirm.title' => 'Conferma cancellazione della variante',
+    'product-variants.delete_confirm.strapline' => 'Questa azione è irreversibile.',
+    'product-variants.delete_confirm.btn' => 'Elimina variante del prodotto',
+    'product-variants.add_variant.btn' => 'Aggiungi variante',
+    'product-variants.add_variant.already_exists' => 'Questa variante esiste già.',
+    'product-variants.add_variant.null_option' => 'Scegli un opzione',
+    'product-variants.add_variant.title' => 'Aggiungi più varianti',
+    'product-variants.add_variant.add_new_option' => 'Aggiungi nuova opzione',
     /**
      * Product type listing.
      */
-    'product-types.index.title' => 'Product Types',
-    'product-types.index.create_btn' => 'Create Product Type',
+    'product-types.index.title' => 'Tipi di prodotto',
+    'product-types.index.create_btn' => 'Crea tipo di prodotto',
     /**
      * Product type editing.
      */
-    'product-types.show.updated_message' => 'Product Type updated',
-    'product-types.create.btn_text' => 'Create product type',
-    'product-types.show.btn_text' => 'Update product type',
-    'product-types.attribute.search.empty' => 'Looks like you have no more attributes to assign.',
-    'product-types.attribute.search.no_results' => 'Unable to find attributes matching ":search"',
-    'product-types.show.title' => 'Edit product type',
-    'product-types.show.delete.btn_text' => 'Delete Product Type',
-    'product-types.show.delete.message' => 'Are you sure you want to permanently delete this product type?',
-    'product-types.show.delete.disabled_message' => 'You cannot remove a product type that has products attached.',
-    'product-types.show.delete.delete_notification' => 'Product type removed',
-    'product-types.show.delete.confirm_text' => 'Confirm Deletion',
-    'product-types.show.delete.minimum_required' => 'You cannot delete the only product type.',
-    'product-types.attribute.no_attributes' => 'There are no attributes to select in this group',
+    'product-types.show.updated_message' => 'Il tipo del prodotto è stato aggiornato',
+    'product-types.create.btn_text' => 'Crea tipo di prodotto',
+    'product-types.show.btn_text' => 'Modifica tipo di prodotto',
+    'product-types.attribute.search.empty' => 'Sembra che tu non abbia nessun attributo da assegnare.',
+    'product-types.attribute.search.no_results' => 'Non è stato possibile trovare un corrispettivo ":search"',
+    'product-types.show.title' => 'Modifica tipo di prodotto',
+    'product-types.show.delete.btn_text' => 'Elimina tipo di prodotto',
+    'product-types.show.delete.message' => 'Sei sicuro di voler cancellare questo tipo di prodotto?',
+    'product-types.show.delete.disabled_message' => 'Non puoi rimuovere il tipo di prodotto che ha già dei prodotti collegati.',
+    'product-types.show.delete.delete_notification' => 'Tipo di prodotto rimosso',
+    'product-types.show.delete.confirm_text' => 'Conferma rimozione',
+    'product-types.show.delete.minimum_required' => 'Non puoi rimuovere il solo tipo di prodotto.',
+    'product-types.attribute.no_attributes' => 'Non ci sono attributi da selezionare in questo gruppo',
     /**
      * Brands.
      */
-    'brands.index.title' => 'Brands',
-    'brands.create.title' => 'Create Brand',
-    'brands.show.back_link_title' => 'Go back to brands',
+    'brands.index.title' => 'Marchi',
+    'brands.create.title' => 'Crea marchio',
+    'brands.show.back_link_title' => 'Ritorna ai marchi',
     /**
      * Customers.
      */
-    'customers.index.title' => 'Customers',
-    'customers.index.placeholder' => 'Search customers',
-    'customers.show.save_btn' => 'Save Customer',
-    'customers.show.customer_groups_updated' => 'Customer groups updated',
-    'customer.show.customer_groups' => 'Customer Groups',
-    'customer.dashboard.returning_customers' => 'Returning Customers',
-    'customer.dashboard.no_of_orders' => 'No. of Orders',
+    'customers.index.title' => 'Clienti',
+    'customers.index.placeholder' => 'Cerca clienti',
+    'customers.show.save_btn' => 'Salva cliente',
+    'customers.show.customer_groups_updated' => 'Gruppi di clienti aggiornato',
+    'customer.show.customer_groups' => 'Gruppi di clienti',
+    'customer.dashboard.returning_customers' => 'Clienti ricorrenti',
+    'customer.dashboard.no_of_orders' => 'No. di ordini',
     'customer.dashboard.turnover' => 'Turnover',
-    'customer.dashboard.sales_performance' => 'Sales Performance',
-    'customer.dashboard.customer_group_orders' => 'Customer Group Orders',
-    'customer.dashboard.top_selling_products' => 'Top Selling Products',
+    'customer.dashboard.sales_performance' => 'Andamento di vendite',
+    'customer.dashboard.customer_group_orders' => 'Ordini del gruppo di clienti',
+    'customer.dashboard.top_selling_products' => 'Prodotti più venduti',
     /**
      * Customer Groups Editing.
      */
-    'editing.customer-groups.select_groups' => 'Select which customer groups this product is available for.',
-    'editing.customer-groups.publish_on' => 'This product is scheduled to be published on',
-    'editing.customer-groups.schedule_availability' => 'Schedule availability',
+    'editing.customer-groups.select_groups' => 'Seleziona per quale gruppo di clienti questo è disponibile.',
+    'editing.customer-groups.publish_on' => 'Questo prodotto sarà disponibile il',
+    'editing.customer-groups.schedule_availability' => 'Disponibilità programmata',
     /**
      * Orders.
      */
-    'orders.show.customer_reference' => 'Customer Reference',
-    'orders.show.shipping_option' => 'Shipping Option',
-    'orders.show.shipping_address' => 'Shipping Address',
-    'orders.show.billing_address' => 'Billing Address',
-    'orders.show.order_lines' => 'Order Lines',
-    'orders.show.transactions' => 'Transactions',
-    'orders.dashboard.recent_orders' => 'Recent Orders',
+    'orders.show.customer_reference' => 'Riferimenti al cliente',
+    'orders.show.shipping_option' => 'Dettagli di consegna',
+    'orders.show.shipping_address' => 'Indirizzo di consegna',
+    'orders.show.billing_address' => 'Indirizzo di fatturazione',
+    'orders.show.order_lines' => 'Dettagli ordine',
+    'orders.show.transactions' => 'Transazioni',
+    'orders.dashboard.recent_orders' => 'Ordini recenti',
     /**
      * Stock.
      */
-    'stock' => 'Customer Reference',
+    'stock' => 'Riferimenti al cliente',
     /**
      * Addons.
      */
-    'addons.show.addon_details' => 'Addon Details',
-    'addons.show.developer' => 'Developer',
+    'addons.show.addon_details' => "Dettagli dell'addon",
+    'addons.show.developer' => 'Sviluppatore',
     'addons.show.marketplace' => 'Marketplace',
 ];
