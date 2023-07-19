@@ -50,6 +50,6 @@ return [
     'headings.ends_at' => 'Finisce il',
     'headings.type' => 'Tipo',
     'headings.tags' => 'Tag',
-    'headings.new_customer' => 'Nuovo cliente',
+    'headings.new_customer' => 'Cliente nuovo',
     'headings.new_returning' => 'Cliente nuovo/ricorrente',
 ];
