@@ -11,7 +11,7 @@ return [
     'headings.phone' => 'Telefono',
     'headings.total' => 'Totale',
     'headings.date' => 'Data',
-    'headings.handle' => '',
+    'headings.handle' => 'Handle', // TODO check where it's used.
     'headings.zone_type' => 'Tipo',
     'headings.url' => 'URL',
     'headings.price' => 'Prezzo',
