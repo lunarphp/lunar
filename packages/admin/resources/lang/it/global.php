@@ -4,7 +4,7 @@ return [
     'firstname' => 'Nome',
     'lastname' => 'Cognome',
     'name' => 'Nome',
-    'handle' => 'Handle',
+    'handle' => 'Handle', // TODO Check use
     'url' => 'URL',
     'version' => 'Versione',
     'verified' => 'Verificato',
@@ -121,7 +121,7 @@ return [
     'starts_at' => 'Inizia il',
     'ends_at' => 'Termina il',
     'priority' => 'Priorità',
-    'stop' => 'Stop',
+    'stop' => 'Stop', // TODO check where it's used.
     'preview' => 'Anteprima',
     'delivery_instructions' => 'Istruzioni di consegna',
     'not_provided' => 'Non fornito',
