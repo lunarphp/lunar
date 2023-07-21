@@ -4,7 +4,7 @@ return [
     'firstname' => 'Nome',
     'lastname' => 'Cognome',
     'name' => 'Nome',
-    'handle' => 'Handle', // TODO Check use
+    'handle' => 'Handle',
     'url' => 'URL',
     'version' => 'Versione',
     'verified' => 'Verificato',
@@ -103,6 +103,7 @@ return [
     'to' => 'a',
     'new_products' => 'Nuovi Prodotti',
     'new_product' => 'Nuovo Prodotto',
+    'new_discount' => 'Nuovo Sconto',
     'order_ref' => 'Referenza ordine',
     'customer' => 'Cliente',
     'no_items' => 'Num. Oggetti',
