@@ -41,14 +41,14 @@ return [
     /**
      * Staff form.
      */
-    'staff.form.create_btn' => 'Crea membro staff',
-    'staff.form.update_btn' => 'Aggiorna membro staff',
+    'staff.form.create_btn' => 'Crea membro dello staff',
+    'staff.form.update_btn' => 'Aggiorna membro dello staff',
     'staff.form.permissions_heading' => 'Permessi',
     'staff.form.permissions_description' => 'Gestisci i permessi individuali dei membri dello staff .',
     'staff.form.admin_message' => 'Un utente admin può accedere a tutti i permessi.',
     'staff.form.danger_zone.label' => 'Rimuovi membro dallo staff',
-    'staff.form.danger_zone.delete_strapline' => 'Rimuovere un membro dallo staff terminerà tutti gli accessi alla hub, ma potrai sempre ripristinarlo successivamente.',
-    'staff.form.danger_zone.restore_strapline' => 'Ripristina questo membro dello staff, così potrà accedere alla hub.',
+    'staff.form.danger_zone.delete_strapline' => "Rimuovere un membro dallo staff terminerà tutti gli accessi all'hub, ma potrai sempre ripristinarlo successivamente.",
+    'staff.form.danger_zone.restore_strapline' => "Ripristina questo membro dello staff, così potrà accedere all'hub.",
     'staff.form.danger_zone.own_account' => 'La rimozione del tuo account, terminerà la sessione.',
 
     /**
@@ -79,7 +79,7 @@ return [
      */
     'languages.form.create_btn' => 'Aggiungi Lingua',
     'languages.form.update_btn' => 'Modifica Lingua',
-    'languages.form.default_instructions' => 'Scegli se selezionare questa lingua come default, questa operazione soprascriverà quella corrente.',
+    'languages.form.default_instructions' => 'Scegli se selezionare questa lingua come default, questa operazione sovrascriverà quella corrente.',
     /**
      * Currencies table.
      */
@@ -147,7 +147,7 @@ return [
     'taxes.tax-zones.create_btn' => 'Crea zona fiscale',
     'taxes.tax-zones.delete_btn' => 'Cancella zona fiscale',
     'taxes.tax-zones.index.table_row_action_text' => 'Gestisci',
-    'taxes.tax-classes.index.title' => 'Categorie fiscali',
+    'taxes.tax-classes.index.title' => 'Categorie Fiscali',
     'taxes.tax-classes.index.create.title' => 'Crea una categoria fiscale',
     'taxes.tax-classes.index.update.title' => 'Modifica una categoria fiscale',
     'taxes.tax-classes.create_btn' => 'Crea una categoria fiscale',
@@ -157,7 +157,7 @@ return [
     'taxes.tax-zones.zone_type.countries' => 'Limita per nazione',
     'taxes.tax-zones.zone_type.states' => 'Limita per stato / provincia',
     'taxes.tax-zones.zone_type.postcodes' => 'Limita per codice postale',
-    'taxes.tax-zones.tax_rates.title' => 'Aliquote fiscali',
+    'taxes.tax-zones.tax_rates.title' => 'Aliquote Fiscali',
     'taxes.tax-zones.tax_rates.create_button' => 'Aggiungi aliquota fiscale',
     'taxes.tax-zones.save_btn' => 'Salva aliquota fiscale',
     'taxes.tax-classes.index.delete_message' => 'Sei sicuro? potresti perdere i dati salvati.',
@@ -166,16 +166,16 @@ return [
     /**
      * Customer Groups.
      */
-    'customer-groups.index.title' => 'Gruppo clienti',
-    'customer-groups.index.create_btn' => 'Aggiungi gruppo clienti',
+    'customer-groups.index.title' => 'Gruppo di clienti',
+    'customer-groups.index.create_btn' => 'Aggiungi gruppo di clienti',
     'customer-groups.index.table_row_action_text' => 'Modifica gruppo',
     /**
      * Customer Groups show page.
      */
-    'customer-groups.show.title' => 'Modifica gruppo clienti',
+    'customer-groups.show.title' => 'Modifica gruppo di clienti',
     /**
      * Customer Groups create page.
      */
-    'customer-groups.create.title' => 'Crea un gruppo clienti',
-    'customer-groups.form.default_instructions' => 'Scegli se questo gruppo di clienti è settato come default',
+    'customer-groups.create.title' => 'Crea un gruppo di clienti',
+    'customer-groups.form.default_instructions' => 'Scegli se questo gruppo di clienti è impostato come default',
 ];
