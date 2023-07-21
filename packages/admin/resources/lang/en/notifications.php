@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'products.saved' => 'Prodotto salvato',
     'products.deleted' => 'Product Deleted',
     'urls.deleted' => 'URL Deleted',
     'urls.updated' => 'URL Updated',

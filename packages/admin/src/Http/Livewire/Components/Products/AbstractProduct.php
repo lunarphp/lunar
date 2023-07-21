@@ -504,7 +504,7 @@ abstract class AbstractProduct extends Component
 
             $this->variant = $this->product->variants->first();
 
-            $this->notify('Product Saved');
+            $this->notify(__('adminhub::notifications.products.added'));
         });
 
         if ($isNew) {
