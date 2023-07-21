@@ -14,7 +14,7 @@ return [
     'email' => 'Indirizzo email',
     'active' => 'attivo',
     'code' => 'Codice',
-    'default' => 'Default',
+    'default' => 'Predefinito',
     'exchange_rate' => 'Tasso di cambio',
     'format' => 'Formato',
     'decimal_point' => 'Separatore decimale',

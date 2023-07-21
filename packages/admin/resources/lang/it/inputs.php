@@ -54,7 +54,7 @@ return [
     'brand.label' => 'Marchio',
     'product-type.label' => 'Tipo di Prodotto',
     'stock.label' => 'In magazzino',
-    'purchasable.label' => 'Acquistabilità',
+    'purchasable.label' => "Disponibilità d'acquisto",
     'backorder.label' => 'Ordine arretrato',
     'requires_shipping.label' => 'Richiede Spedizione',
     'length.label' => 'Lunghezza',
