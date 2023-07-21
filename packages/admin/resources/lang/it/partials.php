@@ -32,8 +32,8 @@ return [
     'availability.channels.scheduled_from' => 'Pianificato per :datetime',
     'availability.channels.scheduled_to' => 'Disponibile fino :datetime',
     'availability.channels.scheduled_range' => ':from fino a :to',
-    'availability.channels.scheduled_always' => 'Sempre disponibile',
-    'availability.channels.scheduled_never' => 'Mai disponibile',
+    'availability.channels.scheduled_always' => 'Disponibile',
+    'availability.channels.scheduled_never' => 'Non disponibile',
     'availability.channels.schedule_modal.title' => 'Pianifica disponibilità',
     'availability.channels.schedule_modal.starts_at.label' => 'Comincia il',
     'availability.channels.schedule_modal.starts_at.instructions' => 'Seleziona da quando questo gruppo di clienti sarà disponibile, nessuna data indica che è sempre disponibile.',
@@ -52,8 +52,8 @@ return [
     'availability.customer_groups.scheduled_from' => 'Pianificato dal :datetime',
     'availability.customer_groups.scheduled_to' => 'Disponibile fino al :datetime',
     'availability.customer_groups.scheduled_range' => ':from al :to',
-    'availability.customer_groups.scheduled_always' => 'Sempre disponibile',
-    'availability.customer_groups.scheduled_never' => 'Mai disponibile',
+    'availability.customer_groups.scheduled_always' => 'Disponibile',
+    'availability.customer_groups.scheduled_never' => 'Non disponibile',
     'availability.customer_groups.schedule_modal.title' => 'Pianifica disponibilità',
     'availability.customer_groups.schedule_modal.starts_at.label' => 'Inizia il',
     'availability.customer_groups.schedule_modal.starts_at.instructions' => 'Seleziona da quando questo gruppo di clienti sarà disponibile, nessuna data indica che è sempre disponibile.',
@@ -63,7 +63,7 @@ return [
     /**
      * Basic Information.
      */
-    'products.basic-information.heading' => 'Informazioni Basilari',
+    'products.basic-information.heading' => 'Informazioni generali',
     /**
      * Image Manager.
      */
@@ -192,10 +192,10 @@ return [
     'orders.details.customer_reference' => 'Referenze cliente',
     'orders.details.channel' => 'Canale',
     'orders.details.date_created' => 'Data creata',
-    'orders.details.date_placed' => 'Data fissata',
-    'orders.details.new_returning' => 'Nuovo / Ritornando',
+    'orders.details.date_placed' => 'Data effettua',
+    'orders.details.new_returning' => 'Nuovo/Ricorrente',
     'orders.details.new_customer' => 'Nuovo cliente',
-    'orders.details.returning_customer' => 'Ritornando a cliente',
+    'orders.details.returning_customer' => 'Cliente ricorrente',
     'orders.address.not_set' => 'Nessun indirizzo impostato',
     /**
      * Forms.

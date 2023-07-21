@@ -45,7 +45,7 @@ return [
     'headings.latest_version' => 'Ultima versione',
     'headings.author' => 'Autore',
     'headings.products_count' => 'Num. Prodotti',
-    'headings.empty' => 'Non ci sono entrate',
+    'headings.empty' => 'Nessun elemento disponibile',
     'headings.starts_at' => 'Inizia il',
     'headings.ends_at' => 'Finisce il',
     'headings.type' => 'Tipo',

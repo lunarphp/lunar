@@ -41,6 +41,6 @@ return [
      * Login.
      */
     'sign-in.btn' => 'Accedi',
-    'welcome' => 'Benvenuto a :name',
+    'welcome' => 'Benvenuto su :name',
     'prompt' => 'Accedi per amministrare il tuo negozio e-commerce.',
 ];

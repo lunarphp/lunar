@@ -4,7 +4,7 @@ return [
     'sidebar.index' => 'Dashboard',
     'sidebar.catalogue-manager' => 'Gestione Catalogo',
     'sidebar.products' => 'Prodotti',
-    'sidebar.product-types' => 'Tipi di prodotti',
+    'sidebar.product-types' => 'Tipi di prodotto',
     'sidebar.brands' => 'Marchi',
     'sidebar.collections' => 'Collezioni',
     'sidebar.order-processing' => 'Ordini in processo',
@@ -16,7 +16,7 @@ return [
     /**
      * Product side menu.
      */
-    'product.basic-information' => 'Informazioni Basilari',
+    'product.basic-information' => 'Informazioni generali',
     'product.choose-existing-btn' => 'Scegline da quelli esistenti',
     'product.attributes' => 'Attributi',
     'product.images' => 'Immagini',
@@ -38,10 +38,10 @@ return [
      * Generic menu items.
      */
     'attributes' => 'Attributi',
-    'basic-information' => 'Informazioni Basilari',
+    'basic-information' => 'Informazioni generali',
     'images' => 'Immagini',
     'availability' => 'Disponibilità',
-    'urls' => 'URLs',
+    'urls' => 'URL',
     'products' => 'Prodotti',
     'collections' => 'Collezioni figlie',
     'dropdown-options' => 'Apri opzioni',
