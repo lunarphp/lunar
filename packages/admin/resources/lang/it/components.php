@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'dashboard.top_timeframe' => 'Ultimi :period giorni',
+    'dashboard.top_timeframe' => 'Ultimo giorno|Ultimi :period giorni',
     'products.option-manager.add_btn' => 'Aggiungi nuova opzione',
     'products.option-manager.toggle_btn' => 'Alterna Tutte',
     'products.product-selector.select_btn' => 'Seleziona Opzioni',
@@ -15,7 +15,7 @@ return [
     'products.product-selector.use_selected_btn' => 'Usa opzioni selezionate',
     'products.option-creator.option_placeholder' => 'Es.: Colore',
     'products.option-creator.value_placeholder' => 'Es.: Blu',
-    'products.option-creator.min_values_notice' => 'Devi avere almeno :min valori',
+    'products.option-creator.min_values_notice' => 'Deve avere almeno un valore|Deve avere almeno :min valori',
     'products.option-creator.values_title' => 'Valori per le opzioni del prodotto',
     'products.option-creator.title' => 'Crea nuova opzione',
     'products.option-creator.add_value_btn' => 'Aggiungi valore',
@@ -230,7 +230,7 @@ return [
     'option.value.edit.create_title' => "Crea valore per l'opzione",
     'option.value.edit.update_title' => "Aggiorna valore per l'opzione",
     'option.value.edit.delete_locked' => "Questo valore per l'opzione non può essere rimosso in quanto obbligatorio per :count varianti di prodotti",
-    'option.value.edit.system_locked' => "Questo valore per l'opzione è richiesto dal sistema so some fields are disabled.",
+    'option.value.edit.system_locked' => "Questo valore per l'opzione è richiesto dal sistema, quindi alcuni campi saranno disabilitati.",
     'option.value.edit.name.placeholder' => 'es.: Nome',
     'option.value.edit.required.instructions' => "Questo valore per l'opzione è richiesto in modifica/creazione?",
     'option.value.edit.searchable.instructions' => 'Gli utenti dovrebbero essere capaci di cercare per questo option.value.',
