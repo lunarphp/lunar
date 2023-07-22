@@ -21,7 +21,7 @@
                                        :error="$errors->first('language.code')" />
                 </x-hub::input.group>
             </div>
-            <x-hub::input.group label="Default"
+            <x-hub::input.group :label="__('adminhub::global.default')"
                                 for="handle"
                                 :instructions="__('adminhub::settings.languages.form.default_instructions')">
                 <x-hub::input.toggle wire:click="toggleDefault"
