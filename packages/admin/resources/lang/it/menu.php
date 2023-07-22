@@ -35,6 +35,23 @@ return [
     'product.select-product-image' => "Seleziona un'immagine del prodotto già esistente",
     'product.choose-image' => 'Scegli Immagine',
     /**
+     * Settings side menu.
+     */
+    'settings.sections.store' => 'Negozio',
+    'settings.store.attributes' => 'Attributi',
+    'settings.store.channels' => 'Canali',
+    'settings.store.currencies' => 'Valute',
+    'settings.store.customer-groups' => 'Gruppi di clienti',
+    'settings.store.languages' => 'Lingue',
+    'settings.store.tags' => 'Tag',
+    'settings.store.taxes' => 'Tasse',
+    'settings.sections.product' => 'Prodotti',
+    'settings.product.options' => 'Opzioni',
+    'settings.sections.admin' => 'Amministrazione',
+    'settings.admin.activity-log' => 'Log delle attività',
+    'settings.admin.addons' => 'Addon',
+    'settings.admin.staff' => 'Staff',
+    /**
      * Generic menu items.
      */
     'attributes' => 'Attributi',
