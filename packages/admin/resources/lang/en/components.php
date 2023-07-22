@@ -33,6 +33,11 @@ return [
     'product-search.associate_self' => 'You cannot associate the same product',
     'product-search.commit_btn' => 'Select Products',
     /**
+     * Comment area
+     */
+    'comments.placeholder' => 'Add a comment',
+    'comments.add_btn' => 'Add Comment',
+    /**
      * Option Value Create Modal.
      */
     'ovcm.title' => 'Add new option to :name',
