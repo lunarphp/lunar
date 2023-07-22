@@ -504,7 +504,7 @@ abstract class AbstractProduct extends Component
 
             $this->variant = $this->product->variants->first();
 
-            $this->notify(__('adminhub::notifications.products.added'));
+            $this->notify(__('adminhub::notifications.products.saved'));
         });
 
         if ($isNew) {
@@ -762,7 +762,7 @@ abstract class AbstractProduct extends Component
     /**
      * The associated product ids.
      *
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     public function getAssociatedProductIdsProperty()
     {
