@@ -1,6 +1,6 @@
 <div class="flex-col space-y-4">
     <div class="flex-col px-4 py-5 space-y-4 bg-white shadow sm:rounded-md sm:p-6">
-        <x-hub::input.group label="Name"
+        <x-hub::input.group :label="__('adminhub::inputs.name')"
                             for="name"
                             :error="$errors->first('productType.name')"
                             required>
