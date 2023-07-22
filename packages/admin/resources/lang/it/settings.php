@@ -54,7 +54,7 @@ return [
     /**
      * Addons listing page.
      */
-    'addons.index.title' => 'Addons',
+    'addons.index.title' => 'Addon',
     'addons.index.table_row_action_text' => 'Mostra',
     /**
      * Addons show page.
