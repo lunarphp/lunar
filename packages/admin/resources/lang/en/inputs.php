@@ -87,6 +87,7 @@ return [
     'address_line_three.label' => 'Address Line 3',
     'city.label' => 'City',
     'state.label' => 'State / Province',
+    'state_selection.label' => 'Select a state',
     'postcode.label' => 'Postal Code',
     'country.label' => 'Country',
     'country.search_placeholder' => 'Search for country by name',

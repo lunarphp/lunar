@@ -87,6 +87,7 @@ return [
     'address_line_three.label' => 'Indirizzo - Linea 3',
     'city.label' => 'Città',
     'state.label' => 'Stato / Provincia',
+    'state_selection.label' => 'Seleziona uno stato o provincia',
     'postcode.label' => 'Codice Postale',
     'country.label' => 'Nazione',
     'country.search_placeholder' => 'Cerca per nome della nazione',
