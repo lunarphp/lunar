@@ -14,7 +14,7 @@
     <div x-data="{ view: 'products' }">
         @if (!$this->variantsDisabled)
             <nav class="flex space-x-4"
-                 aria-label="Tabs">
+                 aria-label="{{ __('adminhub::global.tabs') }}">
                 <button type="button"
                         wire:click="$set('view', 'products')"
                         @class([

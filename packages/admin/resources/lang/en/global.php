@@ -128,4 +128,5 @@ return [
     'not_provided' => 'Not Provided',
     'billing_email' => 'Billing Email',
     'add_new' => 'Add new',
+    'tabs' => 'Tabs'
 ];
