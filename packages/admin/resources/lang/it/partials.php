@@ -145,13 +145,13 @@ return [
      * Inventory.
      */
     'inventory.title' => 'Inventario',
-    'inventory.maintenance_notice' => ' Questa sezione è ancora sotto sviluppo, cambierà nei prossimi aggiornamenti.',
+    'inventory.maintenance_notice' => 'Questa sezione è ancora sotto sviluppo, cambierà nei prossimi aggiornamenti.',
     'inventory.options.in_stock' => 'In magazzino',
     'inventory.options.always' => 'Sempre',
-    'inventory.options.backorder' => 'Backorder', // TODO: translate backorder.
-    'inventory.purchasable.in_stock' => "Quest'articolo può essere acquistato quando sarà disponibile in magazzino.",
+    'inventory.options.backorder' => 'Arretrati',
+    'inventory.purchasable.in_stock' => "Quest'articolo può essere acquistato solo quando è disponibile in magazzino.",
     'inventory.purchasable.always' => "Quest'articolo è sempre disponibile.",
-    'inventory.purchasable.backorder' => "Quest'articolo può essere acquistato a partire dal pre ordine in magazzino.",
+    'inventory.purchasable.backorder' => "Quest'articolo può essere acquistato prima della disponibilità in magazzino.",
     /**
      * Shipping.
      */

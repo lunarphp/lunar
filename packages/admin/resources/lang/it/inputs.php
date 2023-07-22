@@ -55,7 +55,7 @@ return [
     'product-type.label' => 'Tipo di Prodotto',
     'stock.label' => 'In magazzino',
     'purchasable.label' => "Disponibilità d'acquisto",
-    'backorder.label' => 'Ordine arretrato',
+    'backorder.label' => 'Ordini arretrati',
     'requires_shipping.label' => 'Richiede Spedizione',
     'length.label' => 'Lunghezza',
     'width.label' => 'Larghezza',
