@@ -108,7 +108,7 @@ return [
     'customer.dashboard.no_of_orders' => 'Num. di ordini',
     'customer.dashboard.turnover' => 'Incassi',
     'customer.dashboard.sales_performance' => 'Andamento delle vendite',
-    'customer.dashboard.customer_group_orders' => 'Ordini del gruppo di clienti',
+    'customer.dashboard.customer_group_orders' => 'Ordini per gruppo di clienti',
     'customer.dashboard.top_selling_products' => 'Prodotti più venduti',
     /**
      * Customer Groups Editing.
