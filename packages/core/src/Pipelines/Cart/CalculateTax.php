@@ -105,12 +105,6 @@ class CalculateTax
 
     private function getShippingOption(Cart $cart)
     {
-        if (! $cart->shippingAddress) {
-            return null;
-        }
-
-        return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
-            return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
-        });
+        return ShippingManifest::getShippingOption($cart);
     }
 }
