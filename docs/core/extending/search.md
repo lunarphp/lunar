@@ -40,6 +40,9 @@ class OrderObserver
             'custom_field',
             $order->meta->custom_field
         );
+
+        // or to remove field
+        $order->removeSearchableAttribute('field_one');
     }
 
     /**
@@ -54,6 +57,15 @@ class OrderObserver
 
         $order->addSortableAttributes([
             'custom_field'
+        ]);
+
+        // or to remove fields
+        $order->removeFilterableAttributes([
+            'field_one',
+        ]);
+
+        $order->removeSortableAttributes([
+            'field_one',
         ]);
     }
 }
