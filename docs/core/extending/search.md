@@ -43,6 +43,12 @@ class OrderObserver
 
         // or to remove field
         $order->removeSearchableAttribute('field_one');
+
+        // or mutator
+         $order->mutateSearchableAttributesUsing(function ($fields) {
+            //
+            return $fields;
+        });
     }
 
     /**
@@ -67,6 +73,17 @@ class OrderObserver
         $order->removeSortableAttributes([
             'field_one',
         ]);
+
+        // or mutator
+        $order->mutateFilterableAttributesUsing(function ($fields) {
+            //
+            return $fields;
+        });
+
+        $order->mutateSortableAttributesUsing(function ($fields) {
+            // 
+            return $fields;
+        });
     }
 }
 ```
