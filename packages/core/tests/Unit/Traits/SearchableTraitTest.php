@@ -89,6 +89,30 @@ class SearchableTraitTest extends TestCase
     }
 
     /** @test */
+    public function can_remove_filterable_fields()
+    {
+        Event::fake();
+
+        $product = Product::factory()->create();
+
+        $product->addFilterableAttributes([
+            'filter_one',
+            'filter_two',
+        ]);
+
+        $product->removeFilterableAttributes([
+            'filter_two',
+        ]);
+
+        $data = $product->getFilterableAttributes();
+
+        $this->assertContains('filter_one', $data);
+        $this->assertNotContains('filter_two', $data);
+
+        Event::assertDispatched('eloquent.searchSetup: '.get_class($product));
+    }
+
+    /** @test */
     public function can_add_sortable_fields()
     {
         Event::fake();
@@ -103,6 +127,30 @@ class SearchableTraitTest extends TestCase
         $data = $product->getSortableAttributes();
 
         $this->assertContains('sort_one', $data);
+        $this->assertContains('sort_two', $data);
+
+        Event::assertDispatched('eloquent.searchSetup: '.get_class($product));
+    }
+
+    /** @test */
+    public function can_remove_sortable_fields()
+    {
+        Event::fake();
+
+        $product = Product::factory()->create();
+
+        $product->addSortableAttributes([
+            'sort_one',
+            'sort_two',
+        ]);
+
+        $product->removeSortableAttributes([
+            'sort_one',
+        ]);
+
+        $data = $product->getSortableAttributes();
+
+        $this->assertNotContains('sort_one', $data);
         $this->assertContains('sort_two', $data);
 
         Event::assertDispatched('eloquent.searchSetup: '.get_class($product));

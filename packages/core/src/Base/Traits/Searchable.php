@@ -72,6 +72,16 @@ trait Searchable
     }
 
     /**
+     * Remove additional fields to filter on.
+     *
+     * @return void
+     */
+    public function removeFilterableAttributes(array $removeAttributes)
+    {
+        $this->additionalFilterableFields = array_diff($this->additionalFilterableFields, $removeAttributes);
+    }
+
+    /**
      * Add additional sortable attributes.
      *
      * @return void
@@ -83,6 +93,16 @@ trait Searchable
         })->each(function ($att) {
             $this->additionalSortableFields[] = $att;
         });
+    }
+
+    /**
+     * Remove additional sortable attributes.
+     *
+     * @return void
+     */
+    public function removeSortableAttributes(array $removeAttributes)
+    {
+        $this->additionalSortableFields = array_diff($this->additionalSortableFields, $removeAttributes);
     }
 
     /**
