@@ -151,11 +151,7 @@ trait Searchable
      */
     public function removeSearchableAttribute($key)
     {
-        $baseAttributes = $this->getSearchableAttributes();
-
-        if (! isset($baseAttributes[$key])) {
-            unset($this->additionalSearchableFields[$key]);
-        }
+        unset($this->additionalSearchableFields[$key]);
     }
 
     /**
