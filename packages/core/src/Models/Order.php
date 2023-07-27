@@ -298,7 +298,7 @@ class Order extends BaseModel
     /**
      * {@inheritDoc}
      */
-    protected function getSearchableAttributes()
+    public function getSearchableAttributes()
     {
         $data = [
             'id' => $this->id,

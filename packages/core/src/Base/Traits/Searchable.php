@@ -14,7 +14,7 @@ trait Searchable
      *
      * @var array
      */
-    protected $additionalSearchFields = [];
+    protected $additionalSearchableFields = [];
 
     /**
      * Define the additional filterable fields.
@@ -120,7 +120,22 @@ trait Searchable
      */
     public function addSearchableAttribute($key, $value)
     {
-        $this->additionalSearchFields[$key] = $value;
+        $this->additionalSearchableFields[$key] = $value;
+    }
+
+    /**
+     * Remove an attribute from additional searchable fields.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    public function removeSearchableAttribute($key)
+    {
+        $baseAttributes = $this->getSearchableAttributes();
+
+        if (! isset($baseAttributes[$key])) {
+            unset($this->additionalSearchableFields[$key]);
+        }
     }
 
     /**
@@ -136,7 +151,7 @@ trait Searchable
 
         return array_merge(
             $this->getSearchableAttributes(),
-            $this->additionalSearchFields
+            $this->additionalSearchableFields
         );
     }
 
