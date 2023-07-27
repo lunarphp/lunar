@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Support\Arr;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Searchable as ScoutSearchable;
 
@@ -30,6 +31,12 @@ trait Searchable
      */
     protected $additionalSortableFields = [];
 
+    protected array $removeSearchableFields = [];
+
+    protected array $removeFilterableFields = [];
+
+    protected array $removeSortableFields = [];
+
     /**
      * Return our base (core) attributes we want searchable.
      *
@@ -51,10 +58,12 @@ trait Searchable
     {
         $this->fireModelEvent('searchSetup');
 
-        return array_merge(
+        $data = array_merge(
             $this->filterable ?? [],
             $this->additionalFilterableFields,
         );
+
+        return array_diff($data, $this->removeFilterableFields);
     }
 
     /**
@@ -78,7 +87,7 @@ trait Searchable
      */
     public function removeFilterableAttributes(array $removeAttributes)
     {
-        $this->additionalFilterableFields = array_diff($this->additionalFilterableFields, $removeAttributes);
+        $this->removeFilterableFields = array_merge($this->removeFilterableFields, $removeAttributes);
     }
 
     /**
@@ -102,7 +111,7 @@ trait Searchable
      */
     public function removeSortableAttributes(array $removeAttributes)
     {
-        $this->additionalSortableFields = array_diff($this->additionalSortableFields, $removeAttributes);
+        $this->removeSortableFields = array_merge($this->removeSortableFields, $removeAttributes);
     }
 
     /**
@@ -114,10 +123,12 @@ trait Searchable
     {
         $this->fireModelEvent('searchSetup');
 
-        return array_merge(
+        $data = array_merge(
             $this->sortable ?? [],
             $this->additionalSortableFields
         );
+
+        return array_diff($data, $this->removeSortableFields);
     }
 
     /**
@@ -149,9 +160,11 @@ trait Searchable
      * @param  string  $key
      * @return void
      */
-    public function removeSearchableAttribute($key)
+    public function removeSearchableAttribute(array|string $keys)
     {
-        unset($this->additionalSearchableFields[$key]);
+        $keys = Arr::wrap($keys);
+
+        $this->removeSearchableFields = array_merge($this->removeSearchableFields, $keys);
     }
 
     /**
@@ -165,10 +178,16 @@ trait Searchable
 
         $this->fireModelEvent('indexing');
 
-        return array_merge(
+        $data = array_merge(
             $this->getSearchableAttributes(),
             $this->additionalSearchableFields
         );
+
+        foreach ($this->removeSearchableFields as $key) {
+            unset($data[$key]);
+        }
+
+        return $data;
     }
 
     /**

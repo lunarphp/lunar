@@ -53,22 +53,6 @@ class SearchableTraitTest extends TestCase
     }
 
     /** @test */
-    public function cannot_remove_default_searchable_fields()
-    {
-        Event::fake();
-
-        $product = Product::factory()->create();
-
-        $product->removeSearchableAttribute('skus');
-
-        $data = $product->toSearchableArray();
-
-        $this->assertArrayHasKey('skus', $data);
-
-        Event::assertDispatched('eloquent.indexing: '.get_class($product));
-    }
-
-    /** @test */
     public function can_add_filterable_fields()
     {
         Event::fake();
