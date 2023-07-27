@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use Closure;
 use Illuminate\Support\Arr;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Searchable as ScoutSearchable;
@@ -37,6 +38,12 @@ trait Searchable
 
     protected array $removeSortableFields = [];
 
+    protected ?Closure $mutateAdditionalSearchableUsing = null;
+
+    protected ?Closure $mutateAdditionalFilterableUsing = null;
+
+    protected ?Closure $mutateAdditionalSortableUsing = null;
+
     /**
      * Return our base (core) attributes we want searchable.
      *
@@ -58,12 +65,12 @@ trait Searchable
     {
         $this->fireModelEvent('searchSetup');
 
-        $data = array_merge(
+        $data = array_diff(array_merge(
             $this->filterable ?? [],
             $this->additionalFilterableFields,
-        );
+        ), $this->removeFilterableFields);
 
-        return array_diff($data, $this->removeFilterableFields);
+        return filled($this->mutateAdditionalFilterableUsing) ? ($this->mutateAdditionalFilterableUsing)($data) : $data;
     }
 
     /**
@@ -91,6 +98,16 @@ trait Searchable
     }
 
     /**
+     * Mutate additional filterable fields.
+     *
+     * @return void
+     */
+    public function mutateFilterableAttributesUsing(Closure $closure)
+    {
+        $this->mutateAdditionalFilterableUsing = $closure;
+    }
+
+    /**
      * Add additional sortable attributes.
      *
      * @return void
@@ -115,6 +132,16 @@ trait Searchable
     }
 
     /**
+     * Mutate additional sortable fields.
+     *
+     * @return void
+     */
+    public function mutateSortableAttributesUsing(Closure $closure)
+    {
+        $this->mutateAdditionalSortableUsing = $closure;
+    }
+
+    /**
      * Return our base attributes we want sortable.
      *
      * @return array
@@ -123,12 +150,12 @@ trait Searchable
     {
         $this->fireModelEvent('searchSetup');
 
-        $data = array_merge(
+        $data = array_diff(array_merge(
             $this->sortable ?? [],
-            $this->additionalSortableFields
-        );
+            $this->additionalSortableFields,
+        ), $this->removeSortableFields);
 
-        return array_diff($data, $this->removeSortableFields);
+        return filled($this->mutateAdditionalSortableUsing) ? ($this->mutateAdditionalSortableUsing)($data) : $data;
     }
 
     /**
@@ -168,6 +195,16 @@ trait Searchable
     }
 
     /**
+     * Mutate additional searchable fields.
+     *
+     * @return void
+     */
+    public function mutateSearchableAttributesUsing(Closure $closure)
+    {
+        $this->mutateAdditionalSearchableUsing = $closure;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function toSearchableArray()
@@ -180,14 +217,14 @@ trait Searchable
 
         $data = array_merge(
             $this->getSearchableAttributes(),
-            $this->additionalSearchableFields
+            $this->additionalSearchableFields,
         );
 
         foreach ($this->removeSearchableFields as $key) {
             unset($data[$key]);
         }
 
-        return $data;
+        return filled($this->mutateAdditionalSearchableUsing) ? ($this->mutateAdditionalSearchableUsing)($data) : $data;
     }
 
     /**
