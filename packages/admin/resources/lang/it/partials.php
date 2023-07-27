@@ -86,13 +86,16 @@ return [
     /**
      * Discounts
      */
+    'discounts.availability.heading' => 'Disponibilità',
+    'discounts.basic-information.heading' => 'Informazioni Basilari',
+    'discounts.conditions.heading' => 'Condizioni',
+    'discounts.discount-type.heading' => 'Tipi di sconto',
     'discounts.limitations.heading' => 'Limitazioni',
     'discounts.limitations.by_collection' => 'Limita per collezione',
     'discounts.limitations.by_brand' => 'Limita per marchio',
     'discounts.limitations.by_product' => 'Limita per prodotto',
     'discounts.limitations.view_brand' => 'Mostra Marchio',
     'discounts.limitations.view_product' => 'Mostra Prodotto',
-
     /**
      * Product Collections.
      */

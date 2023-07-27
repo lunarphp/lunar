@@ -128,5 +128,6 @@ return [
     'not_provided' => 'Non fornito',
     'billing_email' => 'Indirizzo email di fatturazione',
     'add_new' => 'Aggiungi nuovo',
-    'tabs' => 'Schede'
+    'tabs' => 'Schede',
+    'sidebar' => 'Barra laterale'
 ];

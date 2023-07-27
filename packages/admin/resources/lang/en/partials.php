@@ -86,13 +86,16 @@ return [
     /**
      * Discounts
      */
+    'discounts.availability.heading' => 'Availability',
+    'discounts.basic-information.heading' => 'Basic Information',
+    'discounts.conditions.heading' => 'Conditions',
+    'discounts.discount-type.heading' => 'Discount Type',
     'discounts.limitations.heading' => 'Limitations',
     'discounts.limitations.by_collection' => 'Limit by collection',
     'discounts.limitations.by_brand' => 'Limit by brand',
     'discounts.limitations.by_product' => 'Limit by product',
     'discounts.limitations.view_brand' => 'View Brand',
     'discounts.limitations.view_product' => 'View Product',
-
     /**
      * Product Collections.
      */

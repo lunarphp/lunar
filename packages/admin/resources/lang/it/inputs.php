@@ -112,5 +112,6 @@ return [
     'postcodes.instructions' => 'Mostra ogni codice postale su una nuova linea. Supporta i caratteri jolly come 00*',
     'max_uses.label' => 'Utilizzi massimi',
     'max_uses_per_user.label' => 'Utilizzi massimi per utente',
+    'max_uses_per_user.instructions' => 'Lascialo vuoto per utilizzi illimitati.',
     'size.placeholder' => 'Dimensione',
 ];

@@ -286,6 +286,10 @@ return [
     'discounts.show.stop.label' => 'Proibisci ad altri sconti di essere applicati dopo questo',
     'discounts.show.danger_zone.label' => 'Elimina sconto',
     'discounts.show.danger_zone.instructions' => 'Inserisci il nome dello sconto per confermarne la rimozione.',
+    'discounts.show.coupon.label' => 'Coupon',
+    'discounts.show.coupon.instructions' => 'Inserisci il coupon richiesto per applicare lo sconto, se lasciato vuoto verrà applicato automaticamente.',
+    'discounts.show.min_cart_amount.label' => 'Ammonto minimo del carrello',
+    'discounts.show.min_cart_amount.instructions' => 'Il sotto-totale minimo del carrello richiesto per applicare questo sconto.',
     /**
      * Model URLs component
      */

@@ -286,6 +286,10 @@ return [
     'discounts.show.stop.label' => 'Stop other discounts applying after this one',
     'discounts.show.danger_zone.label' => 'Delete discount',
     'discounts.show.danger_zone.instructions' => 'Enter the name of the discount to confirm removal.',
+    'discounts.show.coupon.label' => 'Coupon',
+    'discounts.show.coupon.instructions' => 'Enter the coupon required for the discount to apply, if left blank it will apply automatically.',
+    'discounts.show.min_cart_amount.label' => 'Minimum cart amount',
+    'discounts.show.min_cart_amount.instructions' => 'The minimum cart sub total required for this discount to apply.',
     /**
      * Model URLs component
      */

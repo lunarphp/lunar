@@ -17,7 +17,7 @@
       }"
     >
       <div>
-        <nav class="flex space-x-4" aria-label="Tabs">
+        <nav class="flex space-x-4" aria-label="{{ __('adminhub:global.tabs') }}">
           <button
             x-on:click.prevent="tab = 'search'"
             class="px-3 py-2 text-sm font-medium rounded-md"
