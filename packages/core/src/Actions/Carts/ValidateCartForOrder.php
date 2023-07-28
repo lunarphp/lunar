@@ -18,6 +18,13 @@ class ValidateCartForOrder
      * Execute the action.
      *
      * @return void
+     *
+     * @throws BillingAddressMissingException
+     * @throws BillingAddressIncompleteException
+     * @throws OrderExistsException
+     * @throws ShippingAddressIncompleteException
+     * @throws ShippingAddressMissingException
+     * @throws ShippingOptionMissingException
      */
     public function execute(
         Cart $cart
