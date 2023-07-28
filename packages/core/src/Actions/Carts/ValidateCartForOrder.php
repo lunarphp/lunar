@@ -2,6 +2,7 @@
 
 namespace Lunar\Actions\Carts;
 
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Validator;
 use Lunar\Exceptions\Carts\BillingAddressIncompleteException;
 use Lunar\Exceptions\Carts\BillingAddressMissingException;
@@ -24,14 +25,14 @@ class ValidateCartForOrder
         // Does this cart already have an order?
         if ($cart->order) {
             throw new OrderExistsException(
-                _('lunar::exceptions.carts.order_exists')
+                (new MessageBag)->add('error', _('lunar::exceptions.carts.order_exists'))
             );
         }
 
         // Do we have a billing address?
         if (! $cart->billingAddress) {
             throw new BillingAddressMissingException(
-                __('lunar::exceptions.carts.billing_missing')
+                (new MessageBag)->add('error', _('lunar::exceptions.carts.billing_missing'))
             );
         }
 
@@ -48,7 +49,7 @@ class ValidateCartForOrder
         if ($cart->isShippable()) {
             if (! $cart->shippingAddress) {
                 throw new ShippingAddressMissingException(
-                    __('lunar::exceptions.carts.shipping_missing')
+                    (new MessageBag)->add('error', _('lunar::exceptions.carts.shipping_missing'))
                 );
             }
 

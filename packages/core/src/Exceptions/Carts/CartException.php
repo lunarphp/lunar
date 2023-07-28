@@ -21,11 +21,14 @@ class CartException extends Exception
     /**
      * Create an error message summary from the validation errors.
      *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
      * @return string
      */
-    protected static function summarize($messageBag)
+    protected static function summarize(MessageBag $messageBag)
     {
+        if (! blank($messageBag)) {
+            return 'The cart action was invalid';
+        }
+
         $messages = $messageBag->all();
 
         if (! count($messages) || ! is_string($messages[0])) {
