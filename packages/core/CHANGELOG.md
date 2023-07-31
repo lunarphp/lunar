@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Changed
+- All models with `meta` field are cast with `Illuminate\Database\Eloquent\Casts\AsArrayObject`
+
 ## 0.4
 
 ### Fixed

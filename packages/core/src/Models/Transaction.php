@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
@@ -45,7 +46,7 @@ class Transaction extends BaseModel
     protected $casts = [
         'refund' => 'bool',
         'amount' => Price::class,
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**

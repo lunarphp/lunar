@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\DiscountBreakdown;
@@ -76,7 +77,7 @@ class Order extends BaseModel
      */
     protected $casts = [
         'tax_breakdown' => TaxBreakdown::class,
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
         'placed_at' => 'datetime',
         'sub_total' => Price::class,
         'discount_total' => Price::class,

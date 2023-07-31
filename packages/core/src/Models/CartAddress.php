@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
@@ -123,7 +124,7 @@ class CartAddress extends BaseModel implements Addressable
      * @var array
      */
     protected $casts = [
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**
