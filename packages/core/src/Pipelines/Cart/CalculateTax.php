@@ -5,12 +5,13 @@ namespace Lunar\Pipelines\Cart;
 use Closure;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DataTypes\Price;
-use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
 
 class CalculateTax
 {
+    use Concerns\HasShippingOption;
+
     /**
      * Called just before cart totals are calculated.
      *
@@ -101,16 +102,5 @@ class CalculateTax
         });
 
         return $next($cart);
-    }
-
-    private function getShippingOption(Cart $cart)
-    {
-        if (! $cart->shippingAddress) {
-            return null;
-        }
-
-        return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
-            return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
-        });
     }
 }
