@@ -5,7 +5,6 @@ namespace Lunar\Tests\Feature\Drivers;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Actions\Taxes\GetTaxZone;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Drivers\SystemTaxDriver;
 use Lunar\Models\Address;
