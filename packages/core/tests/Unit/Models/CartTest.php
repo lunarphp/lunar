@@ -778,12 +778,12 @@ class CartTest extends TestCase
         $this->assertEquals(600, $cart->shippingTotal->value);
         $this->assertEquals(720, $cart->total->value);
 
-	    Config::set('lunar.pricing.stored_inclusive_of_tax', true);
+        Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
-	    $cart->calculate();
+        $cart->calculate();
 
-	    $this->assertEquals(500, $cart->shippingTotal->value);
-	    $this->assertEquals(600, $cart->total->value);
+        $this->assertEquals(500, $cart->shippingTotal->value);
+        $this->assertEquals(600, $cart->total->value);
     }
 
     /** @test */
