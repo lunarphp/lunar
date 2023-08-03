@@ -118,8 +118,8 @@ class Price extends BaseModel
             $taxZone = TaxZone::where('default', '=', 1)->first();
 
             if ($taxZone) {
-                if (! is_null($taxClass = $this->priceable?->getTaxClass())) {
-                    return $taxZone->taxAmounts->where('tax_class_id', $taxClass->id)->sum('percentage') / 100;
+                if (! is_null($taxClass = $this->priceable?->taxClass)) {
+                    return $taxClass->taxRateAmounts->sum('percentage') / 100;
                 } else {
                     return $taxZone->taxAmounts->sum('percentage') / 100;
                 }
