@@ -27,4 +27,3 @@ features:
   - title: API - Coming Soon
     details: Connect to your store via a JSON:API, ideal for PWA storefronts and mobile apps.
 ---
-
