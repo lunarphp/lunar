@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Added method `removeSearchableAttribute`, `removeSortableAttributes`, `removeFilterableAttributes``mutateSearchableAttributesUsing`, `mutateSortableAttributesUsing`, `mutateFilterableAttributesUsing` to Searchable
 
+### Fixed
+- set admin user `admin` role during hub install
+
 ## 0.4
 
 ### Added

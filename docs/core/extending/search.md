@@ -20,7 +20,7 @@ Each of these can be extended using Model Observers in Laravel. The following mo
 
 ## Creating and using an Observer
 
-As mentioned, you simply need to add a [Model Observer](https://laravel.com/docs/9.x/eloquent#observers) for what you want to extend.
+As mentioned, you simply need to add a [Model Observer](https://laravel.com/docs/eloquent#observers) for what you want to extend.
 
 ```php
 <?php
