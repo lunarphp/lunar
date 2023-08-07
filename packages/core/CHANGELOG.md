@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - All models with `meta` field are cast with `Illuminate\Database\Eloquent\Casts\AsArrayObject`
+- when `Product->scheduleCustomerGroup($customerGroups, $startDate = null)` when `$startDate` is `null` it will not set to `now()` and always available
 
 ## 0.4
 
