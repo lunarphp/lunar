@@ -4,4 +4,3 @@ Try to include the following in your Pull Request, where applicable...
 
 - Documentation updates
 - Automated tests
-- Changelog entries (core and hub)
