@@ -111,14 +111,14 @@ When a staff member is editing something such as a product, we need to be able t
 
 In this view we have access to the `$field` variable, which contains everything we need for data binding.
 
-```php
+```blade
 {{ $field['signature'] }} // Contains the signature for wire:model
 {{ $field['data'] }} // The current data taken from the `attribute_data` column
 ```
 
 Using the above we might have a view that looks like this:
 
-```html
+```blade
 <input type="text" wire:model="{{ $field['signature'] }}" />
 ```
 
