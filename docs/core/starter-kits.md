@@ -52,37 +52,37 @@ cp .env.example .env
 
 All the relevant configuration files should be present in the repo.
 
-### Migrate and seed.
+### Migrate and seed
 
 Run the migrations
 
-```
+```bash
 php artisan migrate
 ```
 
 Install Lunar
 
-```
+```bash
 php artisan lunar:install
 ```
 
 Seed the demo data.
 
-```
+```bash
 php artisan db:seed
 ```
 
 Link the storage directory
 
-```
+```bash
 php artisan storage:link
 ```
 
 ## Finished 🚀
 
-You are now installed! 
+You are now installed!
 
 - You can access the storefront at `http://<yoursite>`
 - You can access the admin hub at `http://<yoursite>/hub`
 
-You can review the source code at the GitHub Repository: [https://github.com/lunarphp/livewire-starter-kit](https://github.com/lunarphp/livewire-starter-kit)
+You can review the source code at the GitHub Repository: [https://github.com/lunarphp/livewire-starter-kit](https://github.com/lunarphp/livewire-starter-kit).
