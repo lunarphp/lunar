@@ -5,13 +5,12 @@ namespace Lunar\Pipelines\Cart;
 use Closure;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DataTypes\Price;
+use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
 
 class CalculateTax
 {
-    use Concerns\HasShippingOption;
-
     /**
      * Called just before cart totals are calculated.
      *
@@ -60,7 +59,7 @@ class CalculateTax
         $taxTotal = $cart->lines->sum('taxAmount.value');
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
-        if ($shippingOption = $this->getShippingOption($cart)) {
+        if ($shippingOption = ShippingManifest::getShippingOption($cart)) {
             $shippingSubTotal = $cart->shippingBreakdown->items->sum('price.value');
 
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)

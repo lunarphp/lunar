@@ -6,12 +6,11 @@ use Closure;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\DataTypes\Price;
+use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 
 final class ApplyShipping
 {
-    use Concerns\HasShippingOption;
-
     /**
      * Called just before cart totals are calculated.
      *
@@ -22,7 +21,7 @@ final class ApplyShipping
         $shippingSubTotal = 0;
         $shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
 
-        if ($shippingOption = $this->getShippingOption($cart)) {
+        if ($shippingOption = ShippingManifest::getShippingOption($cart)) {
             $shippingBreakdown->items->put(
                 $shippingOption->getIdentifier(),
                 new ShippingBreakdownItem(
