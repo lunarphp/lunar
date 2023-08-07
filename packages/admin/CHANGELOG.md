@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - fix Scout Meilisearch in table builder only return 20 result
+- set admin user `admin` role during hub install
 
 ## 0.4
 

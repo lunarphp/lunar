@@ -92,12 +92,12 @@ $cart->completedOrder
 
 ### Changes to `CreateOrder` action
 
-The `Lunar\Actions\Cart/CreateOrder` action has been refactored to run through pipelines, much like how carts are
+The `Lunar\Actions\Cart\CreateOrder` action has been refactored to run through pipelines, much like how carts are
 currently calculated. If you are currently using your own `CreateOrder` action, you should refactor the logic into
 pipelines and ues the provided action.
 
 :::danger
-The `CreateAction` class is now final, so if you are extending this action you will need to refactor your
+The `CreateOrder` class is now final, so if you are extending this action you will need to refactor your
 implementation.
 :::
 
