@@ -96,4 +96,3 @@ If you would like to contribute to the documentation you can do easily by follow
 7. Submit a pull request
 
 Lunar uses [VitePress](https://vitepress.dev/) for our documentation site which uses [Markdown](https://www.markdownguide.org/basic-syntax/) files to store the content. You'll find these Markdown files in the `/docs` directory.
-
