@@ -42,8 +42,6 @@ trait CanScheduleAvailability
             throw new SchedulingException($error);
         }
 
-        $starts = $starts ?: now();
-
         $relation->syncWithoutDetaching(
             $this->getScheduleMapping($models, array_merge([
                 'starts_at' => $starts,

@@ -36,7 +36,7 @@ class ActivityLogRenderer extends AbstractRender
 
 Then in our view we have access to the `ActivityLog` model, so for example this one for displaying a payment against an order:
 
-```html
+```blade
 {{ __('adminhub::components.activity-log.orders.capture', [
     'amount' => price($log->getExtraProperty('amount'), $log->subject->currency)->formatted,
     'last_four' => $log->getExtraProperty('last_four'),
