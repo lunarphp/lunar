@@ -30,7 +30,7 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 #### `meta` field cast with `Illuminate\Database\Eloquent\Casts\AsArrayObject`
 
-All models with `meta` attribute are now cast with `AsArrayObject::class`. Change your code to get the value
+All models with `meta` attribute are now cast with Laravel's [`AsArrayObject::class`](https://laravel.com/docs/10.x/eloquent-mutators#array-object-and-collection-casting). Change your code to get the value
 with `$model->meta['key'] ?? 'default'` instead of `$model->meta->key`, and without the need of
 `is_object/is_array` type checking.
 
