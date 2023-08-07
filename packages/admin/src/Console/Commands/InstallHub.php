@@ -50,13 +50,16 @@ class InstallHub extends Command
             $email = $this->ask('Whats your email address?');
             $password = $this->secret('Enter a password');
 
-            Staff::create([
+            /** @var Staff $staff */
+            $staff = Staff::create([
                 'firstname' => $firstname,
                 'lastname' => $lastname,
                 'email' => $email,
                 'password' => bcrypt($password),
                 'admin' => true,
             ]);
+
+            $staff->syncRoles('admin');
         }
     }
 }

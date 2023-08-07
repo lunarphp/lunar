@@ -12,9 +12,9 @@ If you find a security issue with Lunar, please reach out to us privately on Dis
 
 As a Laravel developer, we are sure you are well versed in their security practices and how to lock down your app. But, if you need a refresher here are some useful links:
 
-- [Deployment](https://laravel.com/docs/9.x/deployment)
-- [Encryption](https://laravel.com/docs/9.x/encryption)
-- [Hashing](https://laravel.com/docs/9.x/hashing)
+- [Deployment](https://laravel.com/docs/deployment)
+- [Encryption](https://laravel.com/docs/encryption)
+- [Hashing](https://laravel.com/docs/hashing)
 
 ## Securing search
 
