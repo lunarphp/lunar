@@ -90,7 +90,7 @@ class Price extends BaseModel
 
         $priceExTax = clone $this->price;
 
-        $priceExTax->value = (int) round($priceExTax->value / (1 + $this->getDefaultTaxRate()));
+        $priceExTax->value = (int) round($priceExTax->value / (1 + $this->getPriceableTaxRate()));
 
         return $priceExTax;
     }
@@ -107,22 +107,25 @@ class Price extends BaseModel
         }
 
         $priceIncTax = clone $this->price;
-        $priceIncTax->value = (int) round($priceIncTax->value * (1 + $this->getDefaultTaxRate()));
+        $priceIncTax->value = (int) round($priceIncTax->value * (1 + $this->getPriceableTaxRate()));
 
         return $priceIncTax;
     }
 
-    protected function getDefaultTaxRate()
+    /**
+     * Return the total tax rate amount within the predefined tax zone for the related priceable
+     *
+     * @return int|float
+     */
+    protected function getPriceableTaxRate()
     {
-        return Blink::once('price_default_tax_rate_'.$this->priceable_id, function () {
+        return Blink::once('price_tax_rate_'.$this->priceable->taxClass->id, function () {
             $taxZone = TaxZone::where('default', '=', 1)->first();
 
-            if ($taxZone) {
-                if (! is_null($taxClass = $this->priceable?->taxClass)) {
-                    return $taxClass->taxRateAmounts->sum('percentage') / 100;
-                } else {
-                    return $taxZone->taxAmounts->sum('percentage') / 100;
-                }
+            if ($taxZone && ! is_null($taxClass = $this->priceable->taxClass)) {
+                return $taxClass->taxRateAmounts
+                    ->whereIn('tax_rate_id', $taxZone->taxRates->pluck('id'))
+                    ->sum('percentage') / 100;
             }
 
             return 0;

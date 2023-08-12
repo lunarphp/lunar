@@ -162,7 +162,7 @@ class ProductVariantTest extends TestCase
             'name' => 'Food',
         ]);
 
-        $taxZone = TaxZone::factory()->create([
+        $taxZoneIt = TaxZone::factory()->create([
             'name' => 'IT',
             'zone_type' => 'country',
             'price_display' => 'tax_inclusive',
@@ -170,18 +170,36 @@ class ProductVariantTest extends TestCase
             'default' => true,
         ]);
 
-        $taxRate = TaxRate::factory()->create([
-            'tax_zone_id' => $taxZone->id,
+        $taxZoneFr = TaxZone::factory()->create([
+            'name' => 'FR',
+            'zone_type' => 'country',
+            'price_display' => 'tax_inclusive',
+            'active' => true,
+            'default' => false,
+        ]);
+
+        $taxRateIt = TaxRate::factory()->create([
+            'tax_zone_id' => $taxZoneIt->id,
+            'name' => 'VAT',
+        ]);
+
+        $taxRateFr = TaxRate::factory()->create([
+            'tax_zone_id' => $taxZoneFr->id,
             'name' => 'VAT',
         ]);
 
         TaxRateAmount::factory()->create([
-            'tax_rate_id' => $taxRate->id,
+            'tax_rate_id' => $taxRateIt->id,
             'tax_class_id' => $taxClassGeneric->id,
             'percentage' => 22,
         ]);
         TaxRateAmount::factory()->create([
-            'tax_rate_id' => $taxRate->id,
+            'tax_rate_id' => $taxRateFr->id,
+            'tax_class_id' => $taxClassGeneric->id,
+            'percentage' => 20,
+        ]);
+        TaxRateAmount::factory()->create([
+            'tax_rate_id' => $taxRateIt->id,
             'tax_class_id' => $taxClassFood->id,
             'percentage' => 4,
         ]);
