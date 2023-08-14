@@ -9,7 +9,7 @@ use Lunar\Hub\Http\Livewire\Pages\Authentication\PasswordReset;
 use Lunar\Hub\Http\Middleware\Authenticate;
 use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
 
-if (config('lunar-hub.system.enable', 'true')) {
+if (config('lunar-hub.system.enable', true)) {
     Route::group([
         'prefix' => config('lunar-hub.system.path', 'hub'),
         'middleware' => config('lunar-hub.system.middleware', ['web']),
