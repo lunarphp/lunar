@@ -140,6 +140,8 @@ class Dashboard extends Component
         $orderTable = (new Order())->getTable();
 
         return OrderLine::with(['purchasable'])->select([
+            'description',
+            'identifier',
             'purchasable_type',
             'purchasable_id',
             DB::RAW('COUNT(*) as count'),
@@ -152,7 +154,7 @@ class Dashboard extends Component
             now()->parse($this->from),
             now()->parse($this->to),
         ])->where('type', '!=', 'shipping')
-            ->groupBy('purchasable_type', 'purchasable_id')
+            ->groupBy('purchasable_type', 'purchasable_id', 'description', 'identifier')
             ->orderBy('count', 'desc')
             ->take(2)->get();
     }

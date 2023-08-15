@@ -201,7 +201,7 @@
                     @foreach ($this->topSellingProducts as $product)
                         <div class="relative flex items-center py-8 space-x-3 bg-white border-b border-slate-100">
                             <div class="flex-shrink-0">
-                                @if ($thumbnail = $product->purchasable->getThumbnail())
+                                @if ($thumbnail = $product->purchasable?->getThumbnail())
                                     <x-hub::thumbnail :src="$thumbnail->getUrl('small')" />
                                 @else
                                     <x-hub::icon ref="photograph"
@@ -216,9 +216,9 @@
                                           aria-hidden="true"></span>
 
                                     <p class="text-sm font-medium text-gray-900">
-                                        {{ $product->purchasable->getDescription() }}
+                                        {{ $product->purchasable?->getDescription() ?? $product->description }}
                                         <span class="block text-sm">
-                                            {{ $product->purchasable->getIdentifier() }}
+                                            {{ $product->purchasable?->getIdentifier() ?? $product->identifier }}
                                         </span>
                                     </p>
 
