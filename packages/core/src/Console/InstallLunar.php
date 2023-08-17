@@ -248,7 +248,7 @@ class InstallLunar extends Command
         $this->newLine();
 
         $this->line('Please show some love for Lunar by giving us a star on GitHub ⭐️');
-        $this->info('https://github.com/lunarphp/lunar️');
+        $this->info('https://github.com/lunarphp/lunar');
         $this->newLine(3);
     }
 

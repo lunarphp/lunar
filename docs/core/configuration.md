@@ -12,7 +12,6 @@ php artisan vendor:publish --tag=lunar
 
 `lunar/database.php`
 
-
 So that Lunar tables do not conflict with your existing application database tables, you can specify a prefix to use. If you change this after installation, you are on your own - happy renaming!
 
 ```php
@@ -26,14 +25,15 @@ So that Lunar tables do not conflict with your existing application database tab
  By default, the package uses the default database connection defined in Laravel. Here specify a custom database connection for Lunar.
 
 ```php
-    'connection' => 'some_custom_connection',
+'connection' => 'some_custom_connection',
 ```
 
 If you are using a custom database connection that is not the default connection in your Laravel configuration, you need to specify it in the .env file as well.
 
 ```
-    ACTIVITY_LOGGER_DB_CONNECTION=some_custom_connection
+ACTIVITY_LOGGER_DB_CONNECTION=some_custom_connection
 ```
+
 In our package, we utilize Spatie's [laravel-activitylog](https://spatie.be/docs/laravel-activitylog) for logging. The mentioned configuration allows the activity logger to use a different database connection instead of the default database connection.
 
 ### Orders
@@ -43,17 +43,17 @@ In our package, we utilize Spatie's [laravel-activitylog](https://spatie.be/docs
 Here you can set up the statuses you wish to use for your orders.
 
 ```php
-    'draft_status' => 'awaiting-payment',
-    'statuses' => [
-        'awaiting-payment' => [
-            'label' => 'Awaiting Payment',
-            'color' => '#848a8c',
-        ],
-        'payment-received' => [
-            'label' => 'Payment Received',
-            'color' => '#6a67ce',
-        ],
+'draft_status' => 'awaiting-payment',
+'statuses' => [
+    'awaiting-payment' => [
+        'label' => 'Awaiting Payment',
+        'color' => '#848a8c',
     ],
+    'payment-received' => [
+        'label' => 'Payment Received',
+        'color' => '#6a67ce',
+    ],
+],
 ```
 
 ### Media
@@ -110,7 +110,6 @@ Transformations for all uploaded images.
 
 If you want to store pricing inclusive of tax then set this config value to `true`.
 
+```php
+'stored_inclusive_of_tax' => false,
 ```
-    'stored_inclusive_of_tax' => false,
-```
-
