@@ -5,6 +5,7 @@ namespace Lunar\Generators;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Models\Language;
+use Lunar\Models\Url;
 
 class UrlGenerator
 {
@@ -61,6 +62,10 @@ class UrlGenerator
     protected function createUrl($value)
     {
         $slug = Str::slug($value);
+
+        while (Url::whereSlug($slug)->whereLanguageId($this->defaultLanguage->id)->exists()) {
+            $slug = Str::slug($value.'-'.Str::random(5));
+        }
 
         $this->model->urls()->create([
             'default' => true,

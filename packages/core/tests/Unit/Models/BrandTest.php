@@ -45,4 +45,27 @@ class BrandTest extends TestCase
             'element_id' => $brand->id,
         ]);
     }
+
+    /** @test */
+    public function generates_unique_urls()
+    {
+        Config::set('lunar.urls.generator', UrlGenerator::class);
+
+        Language::factory()->create([
+            'default' => true,
+        ]);
+
+        $brand1 = Brand::factory()->create([
+            'name' => 'Test Brand',
+        ]);
+
+        $brand2 = Brand::factory()->create([
+            'name' => 'Test Brand',
+        ]);
+
+        $this->assertNotEquals(
+            $brand1->urls->first()->slug,
+            $brand2->urls->first()->slug
+        );
+    }
 }
