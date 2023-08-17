@@ -152,6 +152,7 @@ class Dashboard extends Component
             now()->parse($this->from),
             now()->parse($this->to),
         ])->where('type', '!=', 'shipping')
+            ->whereHas('purchasable')
             ->groupBy('purchasable_type', 'purchasable_id')
             ->orderBy('count', 'desc')
             ->take(2)->get();
