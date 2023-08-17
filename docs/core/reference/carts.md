@@ -124,22 +124,22 @@ foreach ($cart->discountBreakdown as $discountBreakdown) {
 }
 
 foreach ($cart->discountBreakdown as $discountBreakdown) {
-$discountBreakdown->discount_id
-foreach ($discountBreakdown->lines as $discountLine) {
-$discountLine->quantity
-$discountLine->line
-}
-$discountBreakdown->total->value
+    $discountBreakdown->discount_id
+    foreach ($discountBreakdown->lines as $discountLine) {
+        $discountLine->quantity
+        $discountLine->line
+    }
+    $discountBreakdown->total->value
 }
 
 foreach ($cart->lines as $cartLine) {
-$cartLine->unitPrice; // The monetary value for a single item.
-$cartLine->total; // The total price value for the cart
-$cartLine->subTotal; // The sub total, excluding tax
-$cartLine->subTotalDiscounted; // The sub total, minus the discount amount.
-$cartLine->taxAmount; // The monetary value for the amount of tax applied.
-$cartLine->taxBreakdown; // This is a collection of all taxes applied across all lines.
-$cartLine->discountTotal; // The monetary value for the discount total.
+    $cartLine->unitPrice; // The monetary value for a single item.
+    $cartLine->total; // The total price value for the cart
+    $cartLine->subTotal; // The sub total, excluding tax
+    $cartLine->subTotalDiscounted; // The sub total, minus the discount amount.
+    $cartLine->taxAmount; // The monetary value for the amount of tax applied.
+    $cartLine->taxBreakdown; // This is a collection of all taxes applied across all lines.
+    $cartLine->discountTotal; // The monetary value for the discount total.
 }
 
 ```
@@ -165,7 +165,6 @@ shipping address on the cart, which will then be used when we calculate which
 tax breakdowns should be applied.
 
 ```php
-
 $shippingAddress = [
     'country_id' => null,
     'title' => null,

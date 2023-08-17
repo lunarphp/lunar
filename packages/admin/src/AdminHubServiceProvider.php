@@ -234,7 +234,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
-                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
+                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub/pdf'),
             ], 'lunar.hub.views');
 
             $this->publishes([
