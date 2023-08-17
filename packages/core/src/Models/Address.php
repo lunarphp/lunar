@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
@@ -58,32 +59,10 @@ class Address extends BaseModel implements Addressable
      * @var array
      */
     protected $casts = [
-        'shipping_default' => 'boolean',
         'billing_default' => 'boolean',
+        'meta' => AsArrayObject::class,
+        'shipping_default' => 'boolean',
     ];
-
-    /**
-     * Mutator for the meta attribute.
-     *
-     * @return void
-     */
-    public function setMetaAttribute(array $value = null)
-    {
-        if ($value) {
-            $this->attributes['meta'] = json_encode($value);
-        }
-    }
-
-    /**
-     * Accessor for the meta attribute.
-     *
-     * @param  string  $value
-     * @return array
-     */
-    public function getMetaAttribute($value)
-    {
-        return json_decode($value);
-    }
 
     /**
      * Return the country relationship.

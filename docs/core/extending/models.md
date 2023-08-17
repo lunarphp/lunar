@@ -159,6 +159,7 @@ trait SearchableTrait
 namespace App\Models;
 
 use App\Concerns\HasAddresses;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 
 /**
@@ -177,7 +178,7 @@ class Cart extends \Lunar\Models\Cart
      */
     protected $casts = [
         'completed_at' => 'datetime',
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
         'shipping_data' => AsCollection::class,
     ];
 }
