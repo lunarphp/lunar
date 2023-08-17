@@ -77,7 +77,6 @@ trait WithAttributes
                 $value = $value ?? [];
             }
 
-
             $reference = 'a_'.$attribute->id;
 
             return [
