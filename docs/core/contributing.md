@@ -75,7 +75,7 @@ A PR should be able to include the following:
 
 ## Code Styles
 
-Lunar currently uses [Laravel Pint](https://laravel.com/docs/9.x/pint) for code styling. This is not automatically triggered, so you will need to run `vendor/bin/pint` on your branch.
+Lunar currently uses [Laravel Pint](https://laravel.com/docs/pint) for code styling. This is not automatically triggered, so you will need to run `vendor/bin/pint` on your branch.
 
 ## Asset compiling
 

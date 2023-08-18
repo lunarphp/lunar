@@ -16,6 +16,13 @@ class GetTaxZone
             }
         }
 
+        if ($address && $address->state) {
+            $stateZone = app(GetTaxZoneState::class)->execute($address->state);
+            if ($stateZone) {
+                return $stateZone->taxZone;
+            }
+        }
+
         return TaxZone::getDefault();
     }
 }

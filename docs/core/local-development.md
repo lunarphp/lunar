@@ -6,7 +6,7 @@ This guide is here to help you set-up Lunar locally so you can contribute to the
 
 ## Before your start
 
-You will need a Laravel application to run Lunar in. You can either use a fresh install of [Laravel](https://laravel.com/docs/9.x/installation) or the [Lunar Livewire Starter Kit](https://github.com/lunarphp/livewire-starter-kit).
+You will need a Laravel application to run Lunar in. You can either use a fresh install of [Laravel](https://laravel.com/docs/installation) or the [Lunar Livewire Starter Kit](https://github.com/lunarphp/livewire-starter-kit).
 
 ## Set-Up
 
