@@ -33,7 +33,7 @@ class GetTaxZoneStateTest extends TestCase
         ]);
 
         $al = TaxZoneState::factory()->create([
-           'state_id' => $alabama->id,
+            'state_id' => $alabama->id,
         ]);
 
         $zone = app(GetTaxZoneState::class)->execute('Alabama');
@@ -59,7 +59,7 @@ class GetTaxZoneStateTest extends TestCase
         ]);
 
         $al = TaxZoneState::factory()->create([
-           'state_id' => $alabama->id,
+            'state_id' => $alabama->id,
         ]);
 
         $zone = app(GetTaxZoneState::class)->execute('AL');
@@ -87,7 +87,7 @@ class GetTaxZoneStateTest extends TestCase
         ]);
 
         $al = TaxZoneState::factory()->create([
-           'state_id' => $alabama->id,
+            'state_id' => $alabama->id,
         ]);
 
         $zone = app(GetTaxZoneState::class)->execute('Alaba');
