@@ -122,7 +122,7 @@ class Price extends BaseModel
         return Blink::once('price_tax_rate_'.$this->priceable->taxClass->id, function () {
             $taxZone = TaxZone::where('default', '=', 1)->first();
 
-            if ($taxZone && ! is_null($taxClass = $this->priceable->taxClass)) {
+            if ($taxZone && ! is_null($taxClass = $this->priceable->getTaxClass())) {
                 return $taxClass->taxRateAmounts
                     ->whereIn('tax_rate_id', $taxZone->taxRates->pluck('id'))
                     ->sum('percentage') / 100;
