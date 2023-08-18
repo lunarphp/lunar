@@ -15,7 +15,7 @@ class ValidateCartForOrderCreation extends BaseValidator
         $cart = $this->parameters['cart'];
 
         // Does this cart already have an order?
-        if ($cart->order) {
+        if ($cart->completedOrder) {
             return $this->fail('cart', __('lunar::exceptions.carts.order_exists'));
         }
 
