@@ -31,6 +31,8 @@ class CustomerTest extends TestCase
 
         Customer::create($customer);
 
+        $customer['meta'] = json_encode($customer['meta']);
+
         $this->assertDatabaseHas(
             'lunar_customers',
             $customer
@@ -50,6 +52,8 @@ class CustomerTest extends TestCase
         ];
 
         Customer::create($customer);
+
+        $customer['meta'] = json_encode($customer['meta']);
 
         $this->assertDatabaseHas(
             'lunar_customers',
@@ -73,7 +77,7 @@ class CustomerTest extends TestCase
 
         $customer = Customer::create($customer);
 
-        $this->assertEquals(123456, $customer->meta->account);
+        $this->assertEquals(123456, $customer->meta['account']);
     }
 
     /** @test */

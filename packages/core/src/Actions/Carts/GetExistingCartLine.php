@@ -17,7 +17,7 @@ class GetExistingCartLine extends AbstractAction
         Cart $cart,
         Purchasable $purchasable,
         array $meta = []
-    ): CartLine|null {
+    ): ?CartLine {
         // Get all possible cart lines
         $lines = $cart->lines()
             ->wherePurchasableType(

@@ -556,7 +556,7 @@ class Cart extends BaseModel
     /**
      * Get the shipping option for the cart
      */
-    public function getShippingOption(): ShippingOption|null
+    public function getShippingOption(): ?ShippingOption
     {
         return ShippingManifest::getShippingOption($this);
     }

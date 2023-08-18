@@ -50,7 +50,10 @@ class BrandsTable extends LunarTable
         return Brand::with(['thumbnail'])
             ->when($this->query, function ($query) {
                 $this->resetPage();
-                $query->whereIn('id', Brand::search($this->query)->keys());
+                $query->whereIn('id', Brand::search($this->query)
+                    ->query(fn ($query) => $query->select('id'))
+                    ->take(1000)
+                    ->keys());
             })
             ->withCount(['products'])
             ->orderBy('name')

@@ -22,7 +22,10 @@ class ProductsTableBuilder extends TableBuilder
             ->withTrashed();
 
         if ($this->searchTerm) {
-            $query->whereIn('id', Product::search($this->searchTerm)->keys());
+            $query->whereIn('id', Product::search($this->searchTerm)
+                ->query(fn ($query) => $query->select('id'))
+                ->take(500)
+                ->keys());
         }
 
         $filters = collect($this->queryStringFilters)->filter(function ($value) {

@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -67,7 +68,7 @@ class Customer extends BaseModel
      */
     protected $casts = [
         'attribute_data' => AsAttributeData::class,
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**
