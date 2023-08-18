@@ -37,6 +37,6 @@ class PopulateProductOptionLabelWithName
 
     protected function shouldRun()
     {
-        return ProductOption::where('label', '')->orWhereNull('label')->count() > 0;
+        return ProductOption::whereJsonLength('label', 0)->count() > 0;
     }
 }
