@@ -63,9 +63,32 @@ class BrandTest extends TestCase
             'name' => 'Test Brand',
         ]);
 
-        $this->assertNotEquals(
-            $brand1->urls->first()->slug,
+        $brand3 = Brand::factory()->create([
+            'name' => 'Test Brand',
+        ]);
+
+        $brand4 = Brand::factory()->create([
+            'name' => 'Brand Test',
+        ]);
+
+        $this->assertEquals(
+            'test-brand',
+            $brand1->urls->first()->slug
+        );
+
+        $this->assertEquals(
+            'test-brand-2',
             $brand2->urls->first()->slug
+        );
+
+        $this->assertEquals(
+            'test-brand-3',
+            $brand3->urls->first()->slug
+        );
+
+        $this->assertEquals(
+            'brand-test',
+            $brand4->urls->first()->slug
         );
     }
 }
