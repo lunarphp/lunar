@@ -340,6 +340,7 @@ class VariantShow extends Component
     {
         DB::transaction(function () {
             $this->variant->values()->detach();
+            $this->variant->prices()->delete();
             $this->variant->forceDelete();
         });
 

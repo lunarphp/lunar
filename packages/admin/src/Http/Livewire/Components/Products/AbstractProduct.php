@@ -412,6 +412,7 @@ abstract class AbstractProduct extends Component
                 DB::transaction(function () use ($variantsToRemove) {
                     foreach ($variantsToRemove as $variant) {
                         $variant->values()->detach();
+                        $variant->prices()->delete();
                         $variant->forceDelete();
                     }
                 });
@@ -542,6 +543,7 @@ abstract class AbstractProduct extends Component
         }
         $variant = ProductVariant::find($variantId);
         $variant->values()->detach();
+        $variant->prices()->delete();
         $variant->delete();
         $this->product->refresh();
     }
