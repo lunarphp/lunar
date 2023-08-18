@@ -1221,4 +1221,145 @@ class AmountOffTest extends TestCase
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(2000, $cart->subTotal->value);
     }
+
+    /**
+     * @test
+     */
+    public function fixed_amount_discount_distributes_across_cart_lines_with_different_values()
+    {
+        $currency = Currency::getDefault();
+
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'coupon_code' => 'DISCOUNTOFF',
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+        $purchasableB = ProductVariant::factory()->create();
+        $purchasableC = ProductVariant::factory()->create();
+        $purchasableD = ProductVariant::factory()->create();
+        $purchasableE = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 15, // £0.15
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 20, // £0.20
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id' => $purchasableB->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 40, // £0.40
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableC),
+            'priceable_id' => $purchasableC->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 40, // £0.40
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableD),
+            'priceable_id' => $purchasableD->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 40, // £0.40
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableE),
+            'priceable_id' => $purchasableE->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 10,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableB),
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 10,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableC),
+            'purchasable_id' => $purchasableC->id,
+            'quantity' => 10,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableD),
+            'purchasable_id' => $purchasableD->id,
+            'quantity' => 10,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableE),
+            'purchasable_id' => $purchasableE->id,
+            'quantity' => 9,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => 'DISCOUNTOFF',
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 15.00,
+                ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $cart = $cart->calculate();
+
+        $firstLine = $cart->lines->first();
+        $secondLine = $cart->lines->skip(1)->first();
+        $thirdLine = $cart->lines->skip(2)->first();
+        $fourthLine = $cart->lines->skip(3)->first();
+        $lastLine = $cart->lines->last();
+
+        $this->assertGreaterThanOrEqual(0, $firstLine->subTotalDiscounted->value);
+        $this->assertGreaterThanOrEqual(0, $secondLine->subTotalDiscounted->value);
+        $this->assertGreaterThanOrEqual(0, $thirdLine->subTotalDiscounted->value);
+        $this->assertGreaterThanOrEqual(0, $fourthLine->subTotalDiscounted->value);
+        $this->assertGreaterThanOrEqual(0, $lastLine->subTotalDiscounted->value);
+
+        $this->assertEquals(149, $firstLine->discountTotal->value);
+        $this->assertEquals(198, $secondLine->discountTotal->value);
+        $this->assertEquals(399, $thirdLine->discountTotal->value);
+        $this->assertEquals(397, $fourthLine->discountTotal->value);
+        $this->assertEquals(357, $lastLine->discountTotal->value);
+        $this->assertEquals(1500, $cart->discountTotal->value);
+    }
 }
