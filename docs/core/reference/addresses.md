@@ -74,7 +74,7 @@ Lunar\Models\State
 
 ## Address Data
 
-Data for Countries and States is provided by https://github.com/dr5hn/countries-states-cities-database
+Data for Countries and States is provided by https://github.com/dr5hn/countries-states-cities-database.
 
 You can use the following command to import countries and states.
 

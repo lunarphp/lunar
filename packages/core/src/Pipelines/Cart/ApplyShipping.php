@@ -21,8 +21,9 @@ final class ApplyShipping
         $shippingSubTotal = 0;
         $shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
 
-        if ($shippingOption = $this->getShippingOption($cart)) {
-            $shippingBreakdown->items->put($shippingOption->getIdentifier(),
+        if ($shippingOption = ShippingManifest::getShippingOption($cart)) {
+            $shippingBreakdown->items->put(
+                $shippingOption->getIdentifier(),
                 new ShippingBreakdownItem(
                     name: $shippingOption->getName(),
                     identifier: $shippingOption->getIdentifier(),
@@ -46,10 +47,5 @@ final class ApplyShipping
         );
 
         return $next($cart);
-    }
-
-    private function getShippingOption(Cart $cart)
-    {
-        return ShippingManifest::getShippingOption($cart);
     }
 }
