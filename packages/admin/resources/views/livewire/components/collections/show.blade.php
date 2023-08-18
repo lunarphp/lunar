@@ -97,14 +97,6 @@
                             </x-hub::input.group>
                         </div>
                     @endif
-                    @if(!$products->count() && $this->productCount >= 30)
-                        <div wire:loading.remove wire:target="loadProducts">
-                            <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
-                        </div>
-                        <div wire:loading wire:target="loadProducts">
-                            <x-hub::loading-indicator class="w-4" />
-                        </div>
-                    @else
                     <div wire:sort
                          sort.options='{ group: "products", method: "sortProducts" }'
                          class="space-y-2">
@@ -152,12 +144,20 @@
                                 </div>
                             </div>
                         @empty
-                            <x-hub::alert>
-                                {{ __('adminhub::catalogue.collections.show.no_products') }}
-                            </x-hub::alert>
+                            @if(!$products->count() && $this->productCount >= 30)
+                                <div wire:loading.remove wire:target="loadProducts">
+                                    <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
+                                </div>
+                                <div wire:loading wire:target="loadProducts">
+                                    <x-hub::loading-indicator class="w-4" />
+                                </div>
+                            @else
+                                <x-hub::alert>
+                                    {{ __('adminhub::catalogue.collections.show.no_products') }}
+                                </x-hub::alert>
+                            @endif
                         @endforelse
                     </div>
-                    @endif
                 </div>
             </div>
 
