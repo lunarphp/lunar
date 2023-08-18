@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
@@ -20,7 +21,7 @@ class OrderLineTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_make_an_order_line()
+    public function can_make_a_product_variant_order_line()
     {
         $order = Order::factory()->create();
 
@@ -36,6 +37,30 @@ class OrderLineTest extends TestCase
         ];
 
         OrderLine::factory()->create($data);
+
+        $this->assertDatabaseHas(
+            (new OrderLine())->getTable(),
+            $data
+        );
+    }
+
+    /** @test */
+    public function can_make_a_shipping_option_order_line()
+    {
+        $order = Order::factory()->create();
+
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $data = [
+            'order_id' => $order->id,
+            'quantity' => 1,
+            'purchasable_type' => ShippingOption::class,
+            'purchasable_id' => 1,
+        ];
+
+        $orderLine = OrderLine::factory()->create($data);
 
         $this->assertDatabaseHas(
             (new OrderLine())->getTable(),
