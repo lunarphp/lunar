@@ -50,7 +50,7 @@ return [
             ],
             'lbs' => [
                 'format' => '1,0.00 lbs',
-                'unit' => 0.453592,
+                'unit' => 2.20462,
             ],
         ],
         'volume' => [

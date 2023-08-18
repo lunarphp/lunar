@@ -200,7 +200,10 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        if (config('lunar-hub.system.enable', true)) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        }
+
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'adminhub');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
 
@@ -234,7 +237,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
-                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
+                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub/pdf'),
             ], 'lunar.hub.views');
 
             $this->publishes([
