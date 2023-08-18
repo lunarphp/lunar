@@ -73,7 +73,6 @@ abstract class AbstractStaff extends Component
      */
     protected function syncPermissions()
     {
-
         DB::transaction(function () {
             $this->staff->syncPermissions($this->staffPermissions);
         });

@@ -50,7 +50,6 @@ class EnsurePermissionsAreUpgraded
             $staffs = Staff::get();
 
             foreach ($staffs as $staff) {
-
                 $staffPermissions = isset($permissions[$staff->id]) ? $permissions[$staff->id] : [];
 
                 $role = $staff->admin ? 'admin' : 'staff';
