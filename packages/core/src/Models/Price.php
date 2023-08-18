@@ -119,7 +119,7 @@ class Price extends BaseModel
      */
     protected function getPriceableTaxRate()
     {
-        return Blink::once('price_tax_rate_'.$this->priceable->taxClass->id, function () {
+        return Blink::once('price_tax_rate_'.$this->priceable->getTaxClass()->id, function () {
             $taxZone = TaxZone::where('default', '=', 1)->first();
 
             if ($taxZone && ! is_null($taxClass = $this->priceable->getTaxClass())) {
