@@ -57,7 +57,7 @@ class UrlGenerator
     /**
      * Create default url from an attribute.
      *
-     * @param string $value
+     * @param  string  $value
      * @return void
      */
     protected function createUrl($value)
@@ -74,7 +74,6 @@ class UrlGenerator
     /**
      * Generates unique slug based on the given slug by adding suffix numbers.
      *
-     * @param $slug
      * @return string
      */
     private function getUniqueSlug($slug)
@@ -98,22 +97,21 @@ class UrlGenerator
 
         $suffix = $this->getSuffix($slug, $separator, $slugs);
 
-
-        return $slug . $separator . $suffix;
+        return $slug.$separator.$suffix;
     }
 
     /**
      * Get all urls similar to the given slug.
      *
-     * @param string $slug
-     * @param string $separator
+     * @param  string  $slug
+     * @param  string  $separator
      * @return \Illuminate\Database\Eloquent\Collection
      */
     private function getExistingSlugs($slug, $separator)
     {
         return Url::where(function ($query) use ($slug, $separator) {
             $query->where('slug', $slug)
-                ->orWhere('slug', 'like', $slug . $separator . '%');
+                ->orWhere('slug', 'like', $slug.$separator.'%');
         })->whereLanguageId($this->defaultLanguage->id)
             ->select(['element_id', 'slug'])
             ->get()
@@ -122,27 +120,28 @@ class UrlGenerator
     }
 
     /**
-     * @param string $slug
-     * @param string $separator
-     * @param Collection $slugs
+     * @param  string  $slug
+     * @param  string  $separator
+     * @param  Collection  $slugs
      * @return string
      */
     private function getSuffix($slug, $separator, $slugs)
     {
-        $len = strlen($slug . $separator);
+        $len = strlen($slug.$separator);
 
         if ($slugs->search($slug) === $this->model->getKey()) {
             $suffix = explode($separator, $slug);
+
             return end($suffix);
         }
 
         $slugs->transform(function ($value, $key) use ($len) {
-            return (int)substr($value, $len);
+            return (int) substr($value, $len);
         });
 
         $max = $slugs->max();
 
         // starts suffixing from 2, eg: test-product, test-product-2, test-product-3, etc
-        return (string)($max === 0 ? 2 : $max + 1);
+        return (string) ($max === 0 ? 2 : $max + 1);
     }
 }
