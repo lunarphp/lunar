@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasMedia;
 use Lunar\Database\Factories\ProductAssociationFactory;
 
 /**
@@ -20,7 +19,6 @@ use Lunar\Database\Factories\ProductAssociationFactory;
 class ProductAssociation extends BaseModel
 {
     use HasFactory;
-    use HasMedia;
     use HasMacros;
 
     /**
