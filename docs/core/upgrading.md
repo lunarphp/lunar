@@ -22,7 +22,7 @@ php artisan lunar:hub:install
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.4`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.5`.
 
 ## 0.5
 
