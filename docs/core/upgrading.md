@@ -24,7 +24,7 @@ php artisan lunar:hub:install
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.4`.
 
-## [Unreleased]
+## 0.5
 
 ### High Impact
 
