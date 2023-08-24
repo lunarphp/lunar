@@ -121,6 +121,23 @@ class PriceTest extends TestCase
     }
 
     /** @test */
+    function can_format_numbers_specifying_decimal_places_with_currency_suffix()
+    {
+        $currency = Currency::factory()->create([
+            'code' => 'SEK',
+            'decimal_places' => 2,
+        ]);
+
+        $dataType = new Price(15000, $currency, 1);
+        $this->assertEquals('150,00 kr', $dataType->formatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: true));
+        $this->assertEquals('150,000000 kr', $dataType->formatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: false));
+
+        $dataType = new Price(50050, $currency, 100);
+        $this->assertEquals('5,005 kr', $dataType->unitFormatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: true));
+        $this->assertEquals('5,005000 kr', $dataType->unitFormatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: false));
+    }
+
+    /** @test */
     public function can_handle_decimals_being_passed()
     {
         $currency = Currency::factory()->create([
