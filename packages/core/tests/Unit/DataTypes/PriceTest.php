@@ -112,11 +112,11 @@ class PriceTest extends TestCase
         ]);
 
         $dataType = new Price(1500, $currency, 1);
-        $this->assertEquals('$15.00', $dataType->formatted(decimalPlaces: 6));
+        $this->assertEquals('$15.00', $dataType->formatted(decimalPlaces: 6, trimTrailingZeros: true));
         $this->assertEquals('$15.000000', $dataType->formatted(decimalPlaces: 6, trimTrailingZeros: false));
 
         $dataType = new Price(507, $currency, 100);
-        $this->assertEquals('$0.0507', $dataType->unitFormatted(decimalPlaces: 6));
+        $this->assertEquals('$0.0507', $dataType->unitFormatted(decimalPlaces: 6, trimTrailingZeros: true));
         $this->assertEquals('$0.050700', $dataType->unitFormatted(decimalPlaces: 6, trimTrailingZeros: false));
     }
 
