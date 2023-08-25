@@ -30,7 +30,7 @@ trait Searchable
     {
         return $this->indexer()->searchableAs($this);
     }
-    
+
     /**
      * Return our base attributes we want sortable.
      *
@@ -82,12 +82,10 @@ trait Searchable
      */
     public function toSearchableArray()
     {
-        $data = $this->indexer()->getDocument(
+        return $this->indexer()->getDocument(
             $this,
             config('scout.driver')
         );
-
-        dd($data);
     }
 
     /**
