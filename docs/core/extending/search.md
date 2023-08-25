@@ -64,73 +64,68 @@ use Lunar\Search\EloquentIndexer;
 
 class CustomProductIndexer extends EloquentIndexer
 {
-    // ...
+    // Scout method to return the index name.
+    public function searchableAs(Model $model): string
+    {
+        return $model->getKey();
+    }
+    
+    // Scout method to return whether the model should be searchable.
+    public function shouldBeSearchable(Model $model): bool
+    {
+        return true;
+    }
+    
+    // Scout method to allow you to tap into eager loading.
+    public function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $query->with([
+            'thumbnail',
+            'variants',
+            'productType',
+            'brand',
+        ]);
+    }
+    
+    // Scout method to get the ID used for indexing
+    public function getScoutKey(Model $model): mixed
+    {
+        return $model->getKey();
+    }
+    
+    // Scout method to get the column used for the ID.
+    public function getScoutKeyName(Model $model): mixed
+    {
+        return $model->getKeyName();
+    }
+    
+    // Simple array of any sortable fields.
+    public function getSortableFields(): array 
+    {
+        return [
+            'created_at',
+            'updated_at',
+        ];
+    }
+    
+    // Simple array of any filterable fields.
+    public function getFilterableFields(): array 
+    {
+        return [
+            '__soft_deleted',
+        ];
+    }
+    
+    // Return an array representing what should be sent to the search service i.e. Algolia
+    public function toSearchableArray(Model $model, string $engine): array
+    {
+        return array_merge([], $this->mapSearchableAttributes($model));
+    }
 }
 ```
 
 The `EloquentIndexer` class implements the `Lunar\Search\Interfaces\ModelIndexerInterface` so if your class doesn't
 extend the Eloquent one, you must implement this interface.
-Let's take a look at the available methods, some will appear very familiar to what scout offers.
-
-```php
-// Scout method to return the index name.
-public function searchableAs(Model $model): string
-{
-    return $model->getKey();
-}
-
-// Scout method to return whether the model should be searchable.
-public function shouldBeSearchable(Model $model): bool
-{
-    return true;
-}
-
-// Scout method to allow you to tap into eager loading.
-public function makeAllSearchableUsing(Builder $query): Builder
-{
-    return $query->with([
-        'thumbnail',
-        'variants',
-        'productType',
-        'brand',
-    ]);
-}
-
-// Scout method to get the ID used for indexing
-public function getScoutKey(Model $model): mixed
-{
-    return $model->getKey();
-}
-
-// Scout method to get the column used for the ID.
-public function getScoutKeyName(Model $model): mixed
-{
-    return $model->getKeyName();
-}
-
-// Simple array of any sortable fields.
-public function getSortableFields(): array 
-{
-    return [
-        'created_at',
-        'updated_at',
-    ];
-}
-
-// Simple array of any filterable fields.
-public function getFilterableFields(): array 
-{
-    return [
-        '__soft_deleted',
-    ];
-}
-
-// Return an array representing what should be sent to the search service i.e. Algolia
-public function toSearchableArray(Model $model, string $engine): array
-{
-    return [];
-}
-```
 
 There are some methods which are available just on the `EloquentIndexer` but not defined on the interface are:
 
