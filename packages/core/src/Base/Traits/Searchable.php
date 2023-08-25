@@ -72,7 +72,7 @@ trait Searchable
 
     private function indexer()
     {
-        $config = config('lunar.search.document_indexers', []);
+        $config = config('lunar.search.indexers', []);
 
         return app($config[self::class] ?? EloquentIndexer::class);
     }
@@ -82,7 +82,7 @@ trait Searchable
      */
     public function toSearchableArray()
     {
-        return $this->indexer()->getDocument(
+        return $this->indexer()->toSearchableArray(
             $this,
             config('scout.driver')
         );

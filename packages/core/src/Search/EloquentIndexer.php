@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Facades\AttributeManifest;
 use Lunar\FieldTypes\TranslatedText;
-use Lunar\Search\Interfaces\DocumentIndexerInterface;
+use Lunar\Search\Interfaces\ModelIndexerInterface;
 
-class EloquentIndexer implements DocumentIndexerInterface
+class EloquentIndexer implements ModelIndexerInterface
 {
     public function searchableAs(Model $model): string
     {
@@ -49,12 +49,8 @@ class EloquentIndexer implements DocumentIndexerInterface
         ];
     }
 
-    public function getDocument(Model $model, string $engine): array
+    public function toSearchableArray(Model $model, string $engine): array
     {
-        if ($engine == 'mysql') {
-            return $model->only(array_keys($model->getAttributes()));
-        }
-
         if (!$model->attribute_data) {
             $data = $model->toArray();
         } else {

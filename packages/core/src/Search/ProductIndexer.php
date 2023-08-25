@@ -33,7 +33,7 @@ class ProductIndexer extends EloquentIndexer
             'brand',
         ]);
     }
-    public function getDocument(Model $model, string $engine): array
+    public function toSearchableArray(Model $model, string $engine): array
     {
         // Do this here so other additions to the data appear under the attributes,
         // more of a vanity thing than anything else.

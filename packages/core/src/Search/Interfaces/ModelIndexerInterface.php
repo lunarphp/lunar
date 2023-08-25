@@ -5,7 +5,7 @@ namespace Lunar\Search\Interfaces;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-interface DocumentIndexerInterface
+interface ModelIndexerInterface
 {
     public function searchableAs(Model $model): string;
 
@@ -21,5 +21,5 @@ interface DocumentIndexerInterface
 
     public function getFilterableFields(): array;
 
-    public function getDocument(Model $model, string $engine): array;
+    public function toSearchableArray(Model $model, string $engine): array;
 }
