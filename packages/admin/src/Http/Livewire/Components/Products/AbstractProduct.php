@@ -367,6 +367,8 @@ abstract class AbstractProduct extends Component
             $data = $this->prepareAttributeData();
             $variantData = $this->prepareAttributeData($this->variantAttributes);
 
+            $this->product->brand_id = $this->product->brand_id ?: null;
+
             if ($this->brand) {
                 $brand = Brand::create([
                     'name' => $this->brand,
