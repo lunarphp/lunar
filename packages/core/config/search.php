@@ -36,7 +36,7 @@ return [
         // \Lunar\Models\Collection::class => 'meilisearch',
     ],
 
-    'document_indexers' => [
+    'indexers' => [
         \Lunar\Models\Product::class => \Lunar\Search\ProductIndexer::class,
     ],
 ];
