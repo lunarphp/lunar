@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasChannels;
@@ -20,7 +19,6 @@ use Lunar\Base\Traits\HasUrls;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\ProductFactory;
-use Lunar\FieldTypes\TranslatedText;
 use Lunar\Jobs\Products\Associations\Associate;
 use Lunar\Jobs\Products\Associations\Dissociate;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
@@ -48,40 +46,6 @@ class Product extends BaseModel implements SpatieHasMedia
     use Searchable;
     use SoftDeletes;
     use HasMacros;
-
-    /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [
-        '__soft_deleted',
-        'skus',
-        'status',
-    ];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'name',
-        'created_at',
-        'updated_at',
-        'skus',
-        'status',
-    ];
-
-    /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return config('scout.prefix').'products';
-    }
 
     /**
      * Return a new factory instance for the model.
@@ -209,35 +173,7 @@ class Product extends BaseModel implements SpatieHasMedia
     {
         Dissociate::dispatch($this, $product, $type);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSearchableAttributes()
-    {
-        $attributes = $this->getAttributes();
-
-        $data = Arr::except($attributes, 'attribute_data');
-
-        foreach ($this->attribute_data ?? [] as $field => $value) {
-            if ($value instanceof TranslatedText) {
-                foreach ($value->getValue() as $locale => $text) {
-                    $data[$field.'_'.$locale] = $text?->getValue();
-                }
-            } else {
-                $data[$field] = $this->translateAttribute($field);
-            }
-        }
-
-        if ($this->thumbnail) {
-            $data['thumbnail'] = $this->thumbnail->getUrl('small');
-        }
-
-        $data['skus'] = $this->variants()->pluck('sku')->toArray();
-
-        return $data;
-    }
-
+    
     /**
      * Return the customer groups relationship.
      */

@@ -2,7 +2,8 @@
 
 ## Overview
 
-Good search is the backbone of any storefront so Lunar aims to make this as extensible as possible so you can index what you need for your front-end, without compromising on what we require our side in the hub.
+Good search is the backbone of any storefront so Lunar aims to make this as extensible as possible so you can index what
+you need for your front-end, without compromising on what we require our side in the hub.
 
 There are three things to consider when you want to extend the search:
 
@@ -10,57 +11,77 @@ There are three things to consider when you want to extend the search:
 - Sortable fields
 - Filterable fields
 
-Each of these can be extended using Model Observers in Laravel. The following models can be extended:
+### Default index values
 
-- `Lunar\Models\Collection`
-- `Lunar\Models\Customer`
-- `Lunar\Models\Order`
-- `Lunar\Models\Product`
-- `Lunar\Models\ProductOption`
+Eloquent models will use an indexer class to tell Scout how each model should be indexed. Lunar ships with
+an `EloquentIndexer` by default which will map the following:
 
-## Creating and using an Observer
+- The ID of the model
+- Any `searchable` attributes.
 
-As mentioned, you simply need to add a [Model Observer](https://laravel.com/docs/eloquent#observers) for what you want to extend.
+If you are using the `mysql` driver, then the model's `->toArray()` method will simply be called.
+
+Some models, such as products, require a bit more information to be indexed and by default we have created extra index
+classes as follows:
+
+#### Products
+
+The following additional fields are mapped for products:
+
+- `status`
+- `product_type`
+- `brand` (if applicable)
+- `created_at`
+
+### Document mapping
+
+All indexers are mapped in `config/search.php` under `document_indexers`, if a model isn't mapped here then it will
+simply use the default `ELoquentIndexer`. To change how each model is indexed, simply map it like so:
+
+```php
+return [
+    // ...
+    'document_indexers' => [
+        Lunar\Models\Product::class => App\Search\CustomProductIndexer::class,
+    ],
+],
+```
+
+### Creating a custom indexer
+
+To create your own indexer, simply create a custom class like so:
 
 ```php
 <?php
 
-namespace App\Observers;
+namespace App\Search;
 
-use Lunar\Models\Order;
+use Lunar\Search\EloquentIndexer;
 
-class OrderObserver
+class CustomProductIndexer extends EloquentIndexer
 {
-    /**
-     * Called when we're about to index the order
-     **/
-    public function indexing(Order $order)
-    {
-        $order->addSearchableAttribute(
-            'custom_field',
-            $order->meta->custom_field
-        );
-    }
-
-    /**
-     * Called when we are setting up the index via
-     * php artisan lunar:meilisearch:update
-     * */
-    public function searchSetup(Order $order)
-    {
-        $order->addFilterableAttributes([
-            'custom_field'
-        ]);
-
-        $order->addSortableAttributes([
-            'custom_field'
-        ]);
-    }
+    // ...
 }
 ```
 
-You can then use these fields in your search:
+The `EloquentIndexer` class implements the `Lunar\Search\Interfaces\DocumentIndexerInterface` so if your class doesn't
+extend the Eloquent one, you must implement this interface.
+Lets take a look at the available methods, some will appear very familiar to what scout offers.
 
 ```php
-Product::search('Foo')->where('custom_field', 'Bar');
+public function searchableAs(Model $model): string;
+
+public function shouldBeSearchable(Model $model): bool;
+
+public function makeAllSearchableUsing(Builder $query): Builder;
+
+public function getScoutKey(Model $model): mixed;
+
+public function getScoutKeyName(Model $model): mixed;
+
+public function getSortableFields(): array;
+
+public function getFilterableFields(): array;
+
+public function getDocument(Model $model, string $engine): array;
 ```
