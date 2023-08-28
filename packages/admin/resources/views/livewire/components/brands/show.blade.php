@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-4 pb-24">
     <header>
         <div class="flex items-center gap-4">
             <a href="{{ route('hub.brands.index') }}"
@@ -49,6 +49,10 @@
 
             <div id="urls">
                 @include('adminhub::partials.urls')
+            </div>
+
+            <div id="attributes">
+                @include('adminhub::partials.attributes')
             </div>
 
             @foreach ($this->getSlotsByPosition('bottom') as $slot)

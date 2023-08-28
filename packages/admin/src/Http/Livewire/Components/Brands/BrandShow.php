@@ -8,7 +8,9 @@ use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
 use Lunar\Models\Brand;
 
 class BrandShow extends Component
@@ -19,6 +21,7 @@ class BrandShow extends Component
     use WithFileUploads;
     use HasUrls;
     use WithLanguages;
+    use WithAttributes;
 
     /**
      * The current brand we're showing.
@@ -75,8 +78,29 @@ class BrandShow extends Component
             [
                 'brand.name' => 'required|string|max:255',
             ],
-            $this->hasUrlsValidationRules()
+            $this->hasUrlsValidationRules(),
+            $this->withAttributesValidationRules(),
         );
+    }
+
+    /**
+     * Get the collection attribute data.
+     *
+     * @return void
+     */
+    public function getAttributeDataProperty()
+    {
+        return $this->brand->attribute_data;
+    }
+
+    /**
+     * Returns all available attributes.
+     *
+     * @return void
+     */
+    public function getAvailableAttributesProperty()
+    {
+        return Attribute::whereAttributeType(Brand::class)->orderBy('position')->get();
     }
 
     /**
@@ -100,6 +124,8 @@ class BrandShow extends Component
     public function update()
     {
         $this->validate();
+
+        $this->brand->attribute_data = $this->prepareAttributeData();
         $this->brand->save();
 
         $this->updateImages();
