@@ -3,8 +3,13 @@
 namespace Lunar\Tests\Unit\Traits;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
+use Laravel\Scout\Engines\DatabaseEngine;
+use Laravel\Scout\Engines\NullEngine;
+use Lunar\Models\Collection;
 use Lunar\Models\Product;
+use Lunar\Search\EloquentIndexer;
+use Lunar\Search\ProductIndexer;
 use Lunar\Tests\TestCase;
 
 /**
@@ -15,58 +20,32 @@ class SearchableTraitTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_add_searchable_fields()
+    public function can_get_correct_engine_mapping()
     {
-        Event::fake();
-
         $product = Product::factory()->create();
 
-        $product->addSearchableAttribute('foo', 'bar');
+        $this->assertInstanceOf(NullEngine::class, $product->searchableUsing());
 
-        $data = $product->toSearchableArray();
+        Config::set('lunar.search.engine_map', [
+            Product::class => 'database',
+        ]);
 
-        $this->assertEquals($data['foo'], 'bar');
-
-        Event::assertDispatched('eloquent.indexing: '.get_class($product));
+        $this->assertInstanceOf(DatabaseEngine::class, $product->searchableUsing());
     }
 
     /** @test */
-    public function can_add_filterable_fields()
+    public function can_get_correct_indexer()
     {
-        Event::fake();
-
         $product = Product::factory()->create();
+        $collection = Collection::factory()->create();
 
-        $product->addFilterableAttributes([
-            'filter_one',
-            'filter_two',
+        $this->assertInstanceOf(ProductIndexer::class, $product->indexer());
+        $this->assertInstanceOf(EloquentIndexer::class, $collection->indexer());
+
+        Config::set('lunar.search.indexers', [
+            Product::class => EloquentIndexer::class,
         ]);
 
-        $data = $product->getFilterableAttributes();
-
-        $this->assertContains('filter_one', $data);
-        $this->assertContains('filter_two', $data);
-
-        Event::assertDispatched('eloquent.searchSetup: '.get_class($product));
-    }
-
-    /** @test */
-    public function can_add_sortable_fields()
-    {
-        Event::fake();
-
-        $product = Product::factory()->create();
-
-        $product->addSortableAttributes([
-            'sort_one',
-            'sort_two',
-        ]);
-
-        $data = $product->getSortableAttributes();
-
-        $this->assertContains('sort_one', $data);
-        $this->assertContains('sort_two', $data);
-
-        Event::assertDispatched('eloquent.searchSetup: '.get_class($product));
+        $this->assertSame(EloquentIndexer::class, get_class($product->indexer()));
     }
 }

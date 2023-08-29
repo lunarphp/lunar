@@ -70,7 +70,7 @@ trait Searchable
         return $this->indexer()->makeAllSearchableUsing($query);
     }
 
-    private function indexer()
+    public function indexer()
     {
         $config = config('lunar.search.indexers', []);
 
