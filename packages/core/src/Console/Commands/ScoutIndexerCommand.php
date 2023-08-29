@@ -4,7 +4,7 @@ namespace Lunar\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class ScoutIndexer extends Command
+class ScoutIndexerCommand extends Command
 {
     /**
      * The name and signature of the console command.
