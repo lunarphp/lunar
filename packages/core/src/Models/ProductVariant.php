@@ -205,7 +205,7 @@ class ProductVariant extends BaseModel implements Purchasable
     public function getThumbnail()
     {
         return $this->images->first(function ($media) {
-            return (bool) $media->getCustomProperty('primary', false);
+            return (bool) $media->pivot?->primary;
         }) ?: $this->product->thumbnail;
     }
 }

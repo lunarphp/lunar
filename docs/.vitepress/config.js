@@ -46,7 +46,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '0.4',
+        text: '0.5',
         items: [
           { text: 'Changelog', link: '/core/upgrading' },
           { text: 'Contributing', link: '/core/contributing' },

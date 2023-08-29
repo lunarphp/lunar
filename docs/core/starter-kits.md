@@ -13,13 +13,12 @@ If you would prefer to install Lunar into your own Laravel application, please f
 ## Requirements
 
 - PHP ^8.1
+- Laravel 9|10
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
+- intl PHP extension (on most systems it will be installed by default)
+- bcmath PHP extension (on most systems it will be installed by default)
 - GD PHP extension (used for image manipulation)
-
-::: tip
-This starter kit uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.lunarphp.io/installation.html#search-configuration)
-:::
 
 ## Installation
 
