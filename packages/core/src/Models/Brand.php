@@ -29,22 +29,6 @@ class Brand extends BaseModel implements SpatieHasMedia
         HasMacros;
 
     /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'name',
-    ];
-
-    /**
      * {@inheritDoc}
      */
     protected $guarded = [];
@@ -55,27 +39,6 @@ class Brand extends BaseModel implements SpatieHasMedia
     protected static function newFactory(): BrandFactory
     {
         return BrandFactory::new();
-    }
-
-    /**
-     * Get the name of the index associated with the model.
-     */
-    public function searchableAs(): string
-    {
-        return config('scout.prefix').'brands';
-    }
-
-    /**
-     * Return our base (core) attributes we want searchable.
-     *
-     * @return array
-     */
-    public function getSearchableAttributes()
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-        ];
     }
 
     /**
