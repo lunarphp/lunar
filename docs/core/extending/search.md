@@ -67,7 +67,7 @@ class CustomProductIndexer extends EloquentIndexer
     // Scout method to return the index name.
     public function searchableAs(Model $model): string
     {
-        return $model->getKey();
+        return 'custom_index_name';
     }
     
     // Scout method to return whether the model should be searchable.
