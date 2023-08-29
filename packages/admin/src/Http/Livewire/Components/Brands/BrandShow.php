@@ -2,6 +2,7 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
+use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
@@ -44,6 +45,19 @@ class BrandShow extends Component
             [],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners(),
+        );
+    }
+
+    /**
+     * Returns any custom validation messages.
+     *
+     * @return array
+     */
+    protected function getValidationMessages()
+    {
+        return array_merge(
+            [],
+            $this->withAttributesValidationMessages(),
         );
     }
 
@@ -123,7 +137,16 @@ class BrandShow extends Component
      */
     public function update()
     {
-        $this->validate();
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                if ($validator->errors()->count()) {
+                    $this->notify(
+                        __('adminhub::validation.generic'),
+                        level: 'error'
+                    );
+                }
+            });
+        })->validate(null, $this->getValidationMessages());
 
         $this->brand->attribute_data = $this->prepareAttributeData();
         $this->brand->save();
