@@ -12,7 +12,6 @@ use Lunar\Base\Traits\HasPersonalDetails;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CustomerFactory;
-use Lunar\FieldTypes\TranslatedText;
 
 /**
  * @property int $id
@@ -37,26 +36,6 @@ class Customer extends BaseModel
     use HasMacros;
 
     /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [
-        'name',
-        'company_name',
-    ];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'name',
-        'company_name',
-    ];
-
-    /**
      * Define the guarded attributes.
      *
      * @var array
@@ -77,52 +56,6 @@ class Customer extends BaseModel
     protected static function newFactory(): CustomerFactory
     {
         return CustomerFactory::new();
-    }
-
-    /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return config('scout.prefix').'customers';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSearchableAttributes()
-    {
-        $metaFields = (array) $this->meta;
-
-        $data = [
-            'id' => $this->id,
-            'name' => $this->fullName,
-            'company_name' => $this->company_name,
-            'vat_no' => $this->vat_no,
-            'account_ref' => $this->account_ref,
-        ];
-
-        foreach ($metaFields as $key => $value) {
-            $data[$key] = $value;
-        }
-
-        foreach ($this->attribute_data ?? [] as $field => $value) {
-            if ($value instanceof TranslatedText) {
-                foreach ($value->getValue() as $locale => $text) {
-                    $data[$field.'_'.$locale] = $text?->getValue();
-                }
-            } else {
-                $data[$field] = $this->translateAttribute($field);
-            }
-        }
-
-        $data['addresses'] = $this->addresses->toArray();
-
-        $data['user_emails'] = $this->users->pluck('email')->toArray();
-
-        return $data;
     }
 
     /**
