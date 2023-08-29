@@ -10,7 +10,7 @@ use Lunar\Models\Attribute;
 use Lunar\Models\Collection;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
-use Lunar\Search\EloquentIndexer;
+use Lunar\Search\ScoutIndexer;
 use Lunar\Tests\TestCase;
 
 /**
@@ -28,8 +28,8 @@ class EloquentIndexerTest extends TestCase
         $product = Product::factory()->create();
         $collection = Collection::factory()->create();
 
-        $productIndex = app(EloquentIndexer::class)->searchableAs($product);
-        $collectionIndex = app(EloquentIndexer::class)->searchableAs($collection);
+        $productIndex = app(ScoutIndexer::class)->searchableAs($product);
+        $collectionIndex = app(ScoutIndexer::class)->searchableAs($collection);
 
         $this->assertEquals('lt_products', $productIndex);
         $this->assertEquals('lt_collections', $collectionIndex);
@@ -42,10 +42,10 @@ class EloquentIndexerTest extends TestCase
         $collection = Collection::factory()->create();
 
         $this->assertTrue(
-            app(EloquentIndexer::class)->shouldBeSearchable($product)
+            app(ScoutIndexer::class)->shouldBeSearchable($product)
         );
         $this->assertTrue(
-            app(EloquentIndexer::class)->shouldBeSearchable($collection)
+            app(ScoutIndexer::class)->shouldBeSearchable($collection)
         );
     }
 
@@ -54,7 +54,7 @@ class EloquentIndexerTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $data = app(EloquentIndexer::class)->toSearchableArray($product);
+        $data = app(ScoutIndexer::class)->toSearchableArray($product);
 
         $this->assertSame([
             'id' => $product->id,
@@ -104,7 +104,7 @@ class EloquentIndexerTest extends TestCase
             ]),
         ]);
 
-        $data = app(EloquentIndexer::class)->toSearchableArray($product);
+        $data = app(ScoutIndexer::class)->toSearchableArray($product);
 
         $this->assertArrayHasKey('id', $data);
         $this->assertArrayHasKey($attributeA->handle, $data);

@@ -5,9 +5,10 @@ namespace Lunar\Search;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductIndexer extends EloquentIndexer
+class ProductIndexer extends ScoutIndexer
 {
-    public function getSortableFields(): array {
+    public function getSortableFields(): array
+    {
         return [
             'created_at',
             'updated_at',
@@ -16,7 +17,8 @@ class ProductIndexer extends EloquentIndexer
         ];
     }
 
-    public function getFilterableFields(): array {
+    public function getFilterableFields(): array
+    {
         return [
             '__soft_deleted',
             'skus',
@@ -33,6 +35,7 @@ class ProductIndexer extends EloquentIndexer
             'brand',
         ]);
     }
+
     public function toSearchableArray(Model $model): array
     {
         // Do this here so other additions to the data appear under the attributes,

@@ -8,8 +8,8 @@ use Laravel\Scout\Engines\DatabaseEngine;
 use Laravel\Scout\Engines\NullEngine;
 use Lunar\Models\Collection;
 use Lunar\Models\Product;
-use Lunar\Search\EloquentIndexer;
 use Lunar\Search\ProductIndexer;
+use Lunar\Search\ScoutIndexer;
 use Lunar\Tests\TestCase;
 
 /**
@@ -40,12 +40,12 @@ class SearchableTraitTest extends TestCase
         $collection = Collection::factory()->create();
 
         $this->assertInstanceOf(ProductIndexer::class, $product->indexer());
-        $this->assertInstanceOf(EloquentIndexer::class, $collection->indexer());
+        $this->assertInstanceOf(ScoutIndexer::class, $collection->indexer());
 
         Config::set('lunar.search.indexers', [
-            Product::class => EloquentIndexer::class,
+            Product::class => ScoutIndexer::class,
         ]);
 
-        $this->assertSame(EloquentIndexer::class, get_class($product->indexer()));
+        $this->assertSame(ScoutIndexer::class, get_class($product->indexer()));
     }
 }

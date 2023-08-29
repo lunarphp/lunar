@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Facades\AttributeManifest;
 use Lunar\FieldTypes\TranslatedText;
-use Lunar\Search\Interfaces\ModelIndexerInterface;
+use Lunar\Search\Interfaces\ScoutIndexerInterface;
 
-class EloquentIndexer implements ModelIndexerInterface
+class ScoutIndexer implements ScoutIndexerInterface
 {
     public function searchableAs(Model $model): string
     {
         $name = str_replace('lunar_', '', $model->getTable());
+
         return config('scout.prefix').$name;
     }
 
@@ -53,7 +54,7 @@ class EloquentIndexer implements ModelIndexerInterface
 
     public function toSearchableArray(Model $model): array
     {
-        if (!$model->attribute_data) {
+        if (! $model->attribute_data) {
             $data = $model->toArray();
         } else {
             $data = $this->mapSearchableAttributes($model);
@@ -64,10 +65,6 @@ class EloquentIndexer implements ModelIndexerInterface
         ], $data);
     }
 
-    /**
-     * @param Model $model
-     * @return array
-     */
     protected function mapSearchableAttributes(Model $model): array
     {
         $attributes = AttributeManifest::getSearchableAttributes(
@@ -85,6 +82,7 @@ class EloquentIndexer implements ModelIndexerInterface
                 foreach ($attributeValue->getValue() as $locale => $text) {
                     $data[$attribute->handle.'_'.$locale] = $text?->getValue();
                 }
+
                 continue;
             }
 

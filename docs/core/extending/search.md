@@ -60,9 +60,9 @@ To create your own indexer, simply create a custom class like so:
 
 namespace App\Search;
 
-use Lunar\Search\EloquentIndexer;
+use Lunar\Search\ScoutIndexer;
 
-class CustomProductIndexer extends EloquentIndexer
+class CustomProductIndexer extends ScoutIndexer
 {
     // Scout method to return the index name.
     public function searchableAs(Model $model): string

@@ -5,7 +5,7 @@ namespace Lunar\Search\Interfaces;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-interface ModelIndexerInterface
+interface ScoutIndexerInterface
 {
     public function searchableAs(Model $model): string;
 

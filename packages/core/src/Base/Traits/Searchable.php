@@ -5,7 +5,7 @@ namespace Lunar\Base\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Searchable as ScoutSearchable;
-use Lunar\Search\EloquentIndexer;
+use Lunar\Search\ScoutIndexer;
 
 trait Searchable
 {
@@ -74,7 +74,7 @@ trait Searchable
     {
         $config = config('lunar.search.indexers', []);
 
-        return app($config[self::class] ?? EloquentIndexer::class);
+        return app($config[self::class] ?? ScoutIndexer::class);
     }
 
     /**
