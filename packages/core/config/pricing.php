@@ -11,6 +11,8 @@ return [
     */
     'stored_inclusive_of_tax' => false,
 
+    'formatter' => \Lunar\Pricing\DefaultPriceFormatter::class,
+
     /*
     |--------------------------------------------------------------------------
     | Pricing Pipelines
