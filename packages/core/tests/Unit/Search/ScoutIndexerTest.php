@@ -16,7 +16,7 @@ use Lunar\Tests\TestCase;
 /**
  * @group lunar.search
  */
-class EloquentIndexerTest extends TestCase
+class ScoutIndexerTest extends TestCase
 {
     use RefreshDatabase;
 
