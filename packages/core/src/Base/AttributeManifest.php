@@ -4,6 +4,7 @@ namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
@@ -22,6 +23,7 @@ class AttributeManifest
         ProductVariant::class,
         ModelsCollection::class,
         Customer::class,
+        Brand::class,
         // Order::class,
     ];
 
