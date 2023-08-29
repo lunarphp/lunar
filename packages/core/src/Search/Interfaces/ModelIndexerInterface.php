@@ -21,5 +21,5 @@ interface ModelIndexerInterface
 
     public function getFilterableFields(): array;
 
-    public function toSearchableArray(Model $model, string $engine): array;
+    public function toSearchableArray(Model $model): array;
 }

@@ -36,20 +36,22 @@ class EloquentIndexer implements ModelIndexerInterface
         return $model->getKeyName();
     }
 
-    public function getSortableFields(): array {
+    public function getSortableFields(): array
+    {
         return [
             'created_at',
             'updated_at',
         ];
     }
 
-    public function getFilterableFields(): array {
+    public function getFilterableFields(): array
+    {
         return [
             '__soft_deleted',
         ];
     }
 
-    public function toSearchableArray(Model $model, string $engine): array
+    public function toSearchableArray(Model $model): array
     {
         if (!$model->attribute_data) {
             $data = $model->toArray();
