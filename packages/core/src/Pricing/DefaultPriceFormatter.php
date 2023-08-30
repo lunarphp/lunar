@@ -42,7 +42,7 @@ class DefaultPriceFormatter implements PriceFormatterInterface
         return $this->formatValue($this->unitDecimal(false), $locale, $formatterStyle, $decimalPlaces, $trimTrailingZeros);
     }
 
-    public function formatValue(int|float $value, string $locale = null, string $formatterStyle = NumberFormatter::CURRENCY, int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
+    protected function formatValue(int|float $value, string $locale = null, string $formatterStyle = NumberFormatter::CURRENCY, int $decimalPlaces = null, bool $trimTrailingZeros = true): mixed
     {
         if (! $locale) {
             $locale = App::currentLocale();

@@ -5,7 +5,6 @@ namespace Lunar\DataTypes;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
 use Lunar\Pricing\DefaultPriceFormatter;
-use NumberFormatter;
 
 class Price
 {
@@ -24,9 +23,6 @@ class Price
                 'Value was "'.(gettype($value)).'" expected "int"'
             );
         }
-        $this->value = $value;
-        $this->currency = $currency;
-        $this->unitQty = $unitQty;
     }
 
     /**
@@ -66,22 +62,18 @@ class Price
 
     /**
      * Get the decimal value.
-     *
-     * @return float
      */
-    public function decimal($rounding = true)
+    public function decimal(...$arguments): float
     {
-        return $this->formatter()->decimal($rounding);
+        return $this->formatter()->decimal(...$arguments);
     }
 
     /**
      * Get the decimal unit value.
-     *
-     * @return float
      */
-    public function unitDecimal($rounding = true)
+    public function unitDecimal(...$arguments): float
     {
-        return $this->formatter()->unitDecimal($rounding);
+        return $this->formatter()->unitDecimal(...$arguments);
     }
 
     /**
@@ -89,14 +81,9 @@ class Price
      *
      * @return string
      */
-    public function formatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null, $trimTrailingZeros = true)
+    public function formatted(...$arguments): mixed
     {
-        return $this->formatter()->formatted(
-            locale: $locale,
-            formatterStyle: $formatterStyle,
-            decimalPlaces: $decimalPlaces,
-            trimTrailingZeros: $trimTrailingZeros,
-        );
+        return $this->formatter()->formatted(...$arguments);
     }
 
     /**
@@ -104,24 +91,13 @@ class Price
      *
      * @return string
      */
-    public function unitFormatted($locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null, $trimTrailingZeros = true)
+    public function unitFormatted(...$arguments): mixed
     {
-        return $this->formatter()->unitFormatted(
-            locale: $locale,
-            formatterStyle: $formatterStyle,
-            decimalPlaces: $decimalPlaces,
-            trimTrailingZeros: $trimTrailingZeros
-        );
+        return $this->formatter()->unitFormatted(...$arguments);
     }
 
-    protected function formatValue($value, $locale = null, $formatterStyle = NumberFormatter::CURRENCY, $decimalPlaces = null, $trimTrailingZeros = true)
+    protected function formatValue(int|float $value, ...$arguments): mixed
     {
-        return $this->formatter()->formatValue(
-            value: $value,
-            locale: $locale,
-            formatterStyle: $formatterStyle,
-            decimalPlaces: $decimalPlaces,
-            trimLeadingZeros: $trimTrailingZeros
-        );
+        return $this->formatter()->formatValue($value, ...$arguments);
     }
 }
