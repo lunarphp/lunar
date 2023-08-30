@@ -55,27 +55,29 @@ class AmountOff extends AbstractDiscountType
         $value = (int) bcmul($values[$currency->code] ?? 0, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
-        $linesSubtotal = $lines->sum('subTotal.value');
+        $linesSubtotal = $lines->sum(function ($line) {
+            return ($line->subTotalDiscounted ?? $line->subTotal)->value;
+        });
 
         if (! $value || $linesSubtotal < $value) {
             return $cart;
         }
 
-        $divisionalAmount = $value / $lines->count();
-        $roundedChunk = (int) (round($divisionalAmount, 2));
+        $divisionalAmount = $value / $linesSubtotal;
 
         $remaining = $value;
 
         $affectedLines = collect();
 
         foreach ($lines as $line) {
-            if ($line->subTotal->value < $roundedChunk) {
-                $amount = $roundedChunk - ($roundedChunk % $line->subTotal->value);
-            } else {
-                $amount = $roundedChunk;
+            $subTotal = ($line->subTotalDiscounted ?? $line->subTotal)->value;
+            $amount = (int) floor($subTotal * $divisionalAmount);
+
+            if ($amount > $subTotal) {
+                $amount = $subTotal;
             }
 
-            // If this discount already has a greater discount value
+            // If this line already has a greater discount value
             // don't add this one as they already have a better deal.
             if ($line->discountTotal->value > $amount) {
                 continue;
@@ -104,23 +106,35 @@ class AmountOff extends AbstractDiscountType
         // Do we have an amount left over? if so, grab the first line that has
         // enough left to apply the remaining too.
         if ($remaining) {
-            $line = $cart->lines->first(function ($line) use ($remaining) {
-                return (bool) (($line->subTotal->value - $line->discountTotal->value) - $remaining);
+            // prioritise sharing the remaining over eligible lines
+            $line = $lines->first(function ($line) use ($remaining) {
+                return $line->subTotalDiscounted->value - $remaining > 0;
             });
 
-            $newDiscountTotal = $line->discountTotal->value + $remaining;
+            if ($line) {
+                $newDiscountTotal = $line->discountTotal->value + $remaining;
 
-            $line->discountTotal = new Price(
-                $newDiscountTotal,
-                $cart->currency,
-                1
-            );
+                $line->discountTotal = new Price(
+                    $newDiscountTotal,
+                    $cart->currency,
+                    1
+                );
 
-            $line->subTotalDiscounted = new Price(
-                $line->subTotal->value - $newDiscountTotal,
-                $cart->currency,
-                1
-            );
+                $line->subTotalDiscounted = new Price(
+                    $line->subTotal->value - $newDiscountTotal,
+                    $cart->currency,
+                    1
+                );
+
+                if (! $affectedLines->first(function ($breakdownLine) use ($line) {
+                return $breakdownLine->line == $line;
+                })) {
+                    $affectedLines->push(new DiscountBreakdownLine(
+                        line: $line,
+                        quantity: $line->quantity
+                    ));
+                }
+            }
         }
 
         if (! $cart->discounts) {
@@ -198,10 +212,16 @@ class AmountOff extends AbstractDiscountType
 
             $amount = (int) round($subTotal * ($value / 100));
 
+            // If this line already has a greater discount value
+            // don't add this one as they already have a better deal.
+            if ($line->discountTotal->value > $amount) {
+                continue;
+            }
+
             $totalDiscount += $amount;
 
             $line->discountTotal = new Price(
-                $line->discountTotal?->value + $amount,
+                $amount,
                 $cart->currency,
                 1
             );
