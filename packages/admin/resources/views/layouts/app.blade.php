@@ -3,19 +3,19 @@
       class="h-full">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+          content="width=device-width, initial-scale=1.0"/>
 
     <title>{{ $title ?? 'Hub' }} | {{ config('app.name') }}</title>
 
-    <x-hub::branding.favicon />
+    <x-hub::branding.favicon/>
 
     <script defer
-          src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js"></script>
+            src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet"/>
 
     @livewireTableStyles
 
@@ -36,13 +36,13 @@
     </style>
 
     <script defer
-        src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+            src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
 
     <script defer
-        src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+            src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
 
     <script defer
-        src="https://cdn.jsdelivr.net/npm/alpinejs@3.8.1/dist/cdn.min.js"></script>
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.8.1/dist/cdn.min.js"></script>
 
     @livewireStyles
 </head>
@@ -56,58 +56,56 @@
             this.showMobileMenu = !this.showMobileMenu
           }
       }"
-    >
-    {!! \Lunar\Hub\LunarHub::paymentIcons() !!}
+>
+{!! \Lunar\Hub\LunarHub::paymentIcons() !!}
 
+<div>
     <div>
-        <div>
-            @include('adminhub::partials.navigation.header')
+        @include('adminhub::partials.navigation.header')
 
-            <div
+        <div
                 :class="{
                     'bg-gray-800 fixed inset-0 z-50 top-[48px] w-64 transition-all ease-in-out': true,
                     '-ml-64 md:ml-0': !showMobileMenu,
                     'md:-ml-64': menuCollapsed
                 }"
                 x-cloak
-            >
-                <x-hub::menus.app-side />
-            </div>
+        >
+            <x-hub::menus.app-side/>
+        </div>
 
-            <div class="transition-all ease-in-out" :class="{
+        <div class="transition-all ease-in-out" :class="{
                 'md:pl-64': !menuCollapsed
             }" x-cloak>
 
-                <main class="flex flex-1 mt-12">
-                    <section class="flex-1 h-full min-w-0 lg:order-last">
-                        <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-6">
-                            @yield('main', $slot)
-                        </div>
-                    </section>
+            <main class="flex flex-1 mt-12">
+                <section class="flex-1 h-full min-w-0 lg:order-last">
+                    <div class="px-4 py-8 mx-auto max-w-screen-2xl sm:px-6 lg:px-6">
+                        @yield('main', $slot)
+                    </div>
+                </section>
 
-                    @yield('menu')
+                @yield('menu')
 
-                    @if ($menu ?? false)
-                        @include('adminhub::partials.navigation.side-menu-nested')
-                    @endif
-                </main>
-            </div>
+                @if ($menu ?? false)
+                    @include('adminhub::partials.navigation.side-menu-nested')
+                @endif
+            </main>
         </div>
     </div>
+</div>
 
-    <x-hub::notification />
+<x-hub::notification/>
 
-    @livewire('hub-license')
+@livewireScripts
 
-    @livewireScripts
+@if ($scripts = \Lunar\Hub\LunarHub::scripts())
+    @foreach ($scripts as $asset)
+        <script src="{!! $asset->url() !!}"></script>
+    @endforeach
+@endif
 
-    @if ($scripts = \Lunar\Hub\LunarHub::scripts())
-        @foreach ($scripts as $asset)
-            <script src="{!! $asset->url() !!}"></script>
-        @endforeach
-    @endif
-
-    <script src="{{ asset('vendor/lunar/admin-hub/app.js') }}"></script>
+<script src="{{ asset('vendor/lunar/admin-hub/app.js') }}"></script>
 </body>
 
 </html>

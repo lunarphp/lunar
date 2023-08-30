@@ -45,6 +45,14 @@ If you still wish to use these methods you will need to re-implement them yourse
 See the [`Search Extending`](/core/extending/search) guide for more information about what indexer classes are and how
 to use them.
 
+#### Licensing Manager has been removed
+
+You will need ro re-run the addons discover command to update the manifest. No additional steps are required for addons.
+
+```shell
+$ php artisan lunar:addons:discover
+````
+
 ## 0.5
 
 ### High Impact
