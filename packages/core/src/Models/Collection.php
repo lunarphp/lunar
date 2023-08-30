@@ -5,7 +5,6 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Arr;
 use Kalnoy\Nestedset\NodeTrait;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -17,7 +16,6 @@ use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\HasUrls;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CollectionFactory;
-use Lunar\FieldTypes\TranslatedText;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -112,38 +110,6 @@ class Collection extends BaseModel implements SpatieHasMedia
         )->withPivot([
             'position',
         ])->withTimestamps()->orderByPivot('position');
-    }
-
-    /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return config('scout.prefix').'collections';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSearchableAttributes()
-    {
-        $attributes = $this->getAttributes();
-
-        $data = Arr::except($attributes, 'attribute_data');
-
-        foreach ($this->attribute_data ?? [] as $field => $value) {
-            if ($value instanceof TranslatedText) {
-                foreach ($value->getValue() as $locale => $text) {
-                    $data[$field.'_'.$locale] = $text?->getValue();
-                }
-            } else {
-                $data[$field] = $this->translateAttribute($field);
-            }
-        }
-
-        return $data;
     }
 
     /**

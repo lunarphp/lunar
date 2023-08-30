@@ -35,4 +35,10 @@ return [
         // \Lunar\Models\Order::class => 'meilisearch',
         // \Lunar\Models\Collection::class => 'meilisearch',
     ],
+
+    'indexers' => [
+        \Lunar\Models\Brand::class => \Lunar\Search\BrandIndexer::class,
+        \Lunar\Models\Customer::class => \Lunar\Search\CustomerIndexer::class,
+        \Lunar\Models\Product::class => \Lunar\Search\ProductIndexer::class,
+    ],
 ];

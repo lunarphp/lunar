@@ -36,22 +36,6 @@ class Brand extends BaseModel implements SpatieHasMedia
         HasTranslations;
 
     /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'name',
-    ];
-
-    /**
      * {@inheritDoc}
      */
     protected $guarded = [];
@@ -72,14 +56,6 @@ class Brand extends BaseModel implements SpatieHasMedia
     }
 
     /**
-     * Get the name of the index associated with the model.
-     */
-    public function searchableAs(): string
-    {
-        return config('scout.prefix').'brands';
-    }
-
-    /**
      * Get the mapped attributes relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -93,31 +69,6 @@ class Brand extends BaseModel implements SpatieHasMedia
             'attributable',
             "{$prefix}attributables"
         )->withTimestamps();
-    }
-
-    /**
-     * Return our base (core) attributes we want searchable.
-     *
-     * @return array
-     */
-    public function getSearchableAttributes()
-    {
-        $data = [
-            'id' => $this->id,
-            'name' => $this->name,
-        ];
-
-        foreach ($this->attribute_data ?? [] as $field => $value) {
-            if ($value instanceof TranslatedText) {
-                foreach ($value->getValue() as $locale => $text) {
-                    $data[$field.'_'.$locale] = $text?->getValue();
-                }
-            } else {
-                $data[$field] = $this->translateAttribute($field);
-            }
-        }
-
-        return $data;
     }
 
     /**

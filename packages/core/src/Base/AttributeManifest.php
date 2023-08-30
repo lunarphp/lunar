@@ -4,10 +4,10 @@ namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Lunar\Models\Attribute;
 use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Customer;
-use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
@@ -17,6 +17,8 @@ class AttributeManifest
      * A collection of available attribute types.
      */
     protected Collection $types;
+
+    protected Collection $searchableAttributes;
 
     protected $baseTypes = [
         Product::class,
@@ -33,6 +35,7 @@ class AttributeManifest
     public function __construct()
     {
         $this->types = collect();
+        $this->searchableAttributes = collect();
 
         foreach ($this->baseTypes as $type) {
             $this->addType($type);
@@ -57,5 +60,25 @@ class AttributeManifest
     public function getType($key)
     {
         return $this->types[$key] ?? null;
+    }
+
+    public function getSearchableAttributes(string $attributeType)
+    {
+        $attributes = $this->searchableAttributes->get($attributeType, null);
+
+        if ($attributes) {
+            return $attributes;
+        }
+
+        $attributes = Attribute::whereAttributeType($attributeType)
+            ->whereSearchable(true)
+            ->get();
+
+        $this->searchableAttributes->put(
+            $attributeType,
+            $attributes
+        );
+
+        return $attributes;
     }
 }

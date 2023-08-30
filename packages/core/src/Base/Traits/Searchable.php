@@ -2,45 +2,14 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Searchable as ScoutSearchable;
+use Lunar\Search\ScoutIndexer;
 
 trait Searchable
 {
     use ScoutSearchable;
-
-    /**
-     * Define the additional fields we want to index.
-     *
-     * @var array
-     */
-    protected $additionalSearchFields = [];
-
-    /**
-     * Define the additional filterable fields.
-     *
-     * @var array
-     */
-    protected $additionalFilterableFields = [];
-
-    /**
-     * Define the additional sortable fields.
-     *
-     * @var array
-     */
-    protected $additionalSortableFields = [];
-
-    /**
-     * Return our base (core) attributes we want searchable.
-     *
-     * @return array
-     */
-    public function getSearchableAttributes()
-    {
-        return [
-            'id' => $this->id,
-        ];
-    }
 
     /**
      * Return our base attributes we want filterable.
@@ -49,40 +18,17 @@ trait Searchable
      */
     public function getFilterableAttributes()
     {
-        $this->fireModelEvent('searchSetup');
-
-        return array_merge(
-            $this->filterable ?? [],
-            $this->additionalFilterableFields,
-        );
+        return $this->indexer()->getFilterableAttributes();
     }
 
     /**
-     * Add additional fields to filter on.
+     * Get the index name for the model.
      *
-     * @return void
+     * @return string
      */
-    public function addFilterableAttributes(array $attributes)
+    public function searchableAs()
     {
-        collect($attributes)->filter(function ($att) {
-            return ! in_array($att, $this->filterable) && ! in_array($att, $this->additionalFilterableFields);
-        })->each(function ($att) {
-            $this->additionalFilterableFields[] = $att;
-        });
-    }
-
-    /**
-     * Add additional sortable attributes.
-     *
-     * @return void
-     */
-    public function addSortableAttributes(array $attributes)
-    {
-        collect($attributes)->filter(function ($att) {
-            return ! in_array($att, $this->sortable) && ! in_array($att, $this->additionalSortableFields);
-        })->each(function ($att) {
-            $this->additionalSortableFields[] = $att;
-        });
+        return $this->indexer()->searchableAs($this);
     }
 
     /**
@@ -92,35 +38,43 @@ trait Searchable
      */
     public function getSortableAttributes()
     {
-        $this->fireModelEvent('searchSetup');
-
-        return array_merge(
-            $this->sortable ?? [],
-            $this->additionalSortableFields
-        );
+        return $this->indexer()->getSortableFields();
     }
 
     /**
-     * {@inheritDoc}
+     * Get the value used to index the model.
      */
-    public function getObservableEvents()
+    public function getScoutKey(): mixed
     {
-        return array_merge(parent::getObservableEvents(), [
-            'indexing',
-            'searchSetup',
-        ]);
+        return $this->indexer()->getScoutKey($this);
     }
 
     /**
-     * Add an attribute into the additional searchable fields.
-     *
-     * @param  string  $key
-     * @param  string|mixed  $value
-     * @return void
+     * Get the key name used to index the model.
      */
-    public function addSearchableAttribute($key, $value)
+    public function getScoutKeyName(): mixed
     {
-        $this->additionalSearchFields[$key] = $value;
+        return $this->indexer()->getScoutKeyName($this);
+    }
+
+    public function shouldBeSearchable()
+    {
+        return $this->indexer()->shouldBeSearchable($this);
+    }
+
+    /**
+     * Modify the query used to retrieve models when making all of the models searchable.
+     */
+    protected function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $this->indexer()->makeAllSearchableUsing($query);
+    }
+
+    public function indexer()
+    {
+        $config = config('lunar.search.indexers', []);
+
+        return app($config[self::class] ?? ScoutIndexer::class);
     }
 
     /**
@@ -128,15 +82,9 @@ trait Searchable
      */
     public function toSearchableArray()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
-
-        $this->fireModelEvent('indexing');
-
-        return array_merge(
-            $this->getSearchableAttributes(),
-            $this->additionalSearchFields
+        return $this->indexer()->toSearchableArray(
+            $this,
+            config('scout.driver')
         );
     }
 
