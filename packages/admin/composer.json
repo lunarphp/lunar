@@ -1,49 +1,57 @@
 {
-    "name": "lunarphp/admin",
-    "description": "Admin Hub for Lunar. A modern headless e-commerce solution for Laravel PHP framework.",
-    "keywords": ["lunar", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
-    "type": "library",
-    "license": "MIT",
-    "minimum-stability": "beta",
-    "authors": [
-        {
-          "name": "Lunar",
-          "homepage": "https://lunarphp.io/"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Lunar\\Hub\\": "src",
-            "Lunar\\Hub\\Database\\Factories\\": "database/factories",
-            "Lunar\\Hub\\Database\\State\\": "database/state"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Lunar\\Hub\\Tests\\": "tests"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Lunar\\Hub\\AdminHubServiceProvider"
-            ]
-        }
-    },
-    "require": {
-        "php": "^8.1",
-        "lunarphp/livewire-tables": "self.version",
-        "lunarphp/core": "self.version",
-        "livewire/livewire": "^2.0",
-        "lunarphp/licensing": "self.version",
-        "barryvdh/laravel-dompdf": "^2.0",
-        "spatie/laravel-permission": "^5.10"
-    },
-    "require-dev": {
-        "orchestra/testbench": "^7.0|^8.0",
-        "phpunit/phpunit": "^9.5"
+  "name": "lunarphp/admin",
+  "description": "Admin Hub for Lunar. A modern headless e-commerce solution for Laravel PHP framework.",
+  "keywords": [
+    "lunar",
+    "laravel",
+    "ecommerce",
+    "e-commerce",
+    "headless",
+    "store",
+    "shop",
+    "cart"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "minimum-stability": "beta",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Lunar\\Hub\\": "src",
+      "Lunar\\Hub\\Database\\Factories\\": "database/factories",
+      "Lunar\\Hub\\Database\\State\\": "database/state"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Lunar\\Hub\\Tests\\": "tests"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Lunar\\Hub\\AdminHubServiceProvider"
+      ]
+    }
+  },
+  "require": {
+    "php": "^8.1",
+    "lunarphp/livewire-tables": "self.version",
+    "lunarphp/core": "self.version",
+    "livewire/livewire": "^2.0",
+    "barryvdh/laravel-dompdf": "^2.0",
+    "spatie/laravel-permission": "^5.10"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^7.0|^8.0",
+    "phpunit/phpunit": "^9.5"
+  }
 }
