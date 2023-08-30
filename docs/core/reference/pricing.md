@@ -46,16 +46,6 @@ dealing with prices, other examples include:
 
 - `amount`
 
-```php
-$productVariant = \Lunar\Models\ProductVariant::first();
-
-// Lunar\Models\Price
-$priceModel = $productVariant->basePrices->first();
-
-// Lunar\DataTypes\Price
-$priceDataType = $priceModel->price;
-```
-
 ### `DefaultPriceFormatter`
 
 The default price formatter ships with Lunar and will handle most use cases for formatting a price, lets go through
