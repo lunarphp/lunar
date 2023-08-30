@@ -199,6 +199,7 @@ class DiscountManagerTest extends TestCase
 
         $discount->customerGroups()->sync([
             $channel->id => [
+                'visible' => false,
                 'enabled' => false,
                 'starts_at' => now(),
             ],
@@ -213,7 +214,7 @@ class DiscountManagerTest extends TestCase
                 'starts_at' => now()->addMinutes(1),
             ],
             $customerGroupTwo->id => [
-                'enabled' => true,
+                'enabled' => false,
                 'visible' => false,
                 'starts_at' => now()->addMinutes(1),
             ],
