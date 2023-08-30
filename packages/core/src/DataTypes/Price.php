@@ -110,7 +110,9 @@ class Price
         $formattedPrice = $formatter->format($value);
 
         if ($trimTrailingZeros) {
-            $formattedPrice = preg_replace('/(\.\d{'.$this->currency->decimal_places.'}\d*?)0+$/', '$1', $formattedPrice);
+            $decimalSeparator = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+
+            $formattedPrice = preg_replace('/(\\'.$decimalSeparator.'\d{'.$this->currency->decimal_places.'}\d*?)0+(\s*\D*)$/', '$1$2', $formattedPrice);
         }
 
         return $formattedPrice;
