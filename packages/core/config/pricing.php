@@ -11,6 +11,14 @@ return [
     */
     'stored_inclusive_of_tax' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Price formatter
+    |--------------------------------------------------------------------------
+    |
+    | Specify which class to use when formatting price data types
+    |
+    */
     'formatter' => \Lunar\Pricing\DefaultPriceFormatter::class,
 
     /*
