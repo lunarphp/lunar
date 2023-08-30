@@ -182,6 +182,9 @@ class CustomPriceFormatter implements PriceFormatterInterface
 }
 ```
 
+The methods you implement can accept any number of arguments you want to support, you are not bound to what
+the `DefaultPriceFormatter` accepts.
+
 Once you have implemented the required methods, simply swap it out in `config/lunar/pricing.php`:
 
 ```php
