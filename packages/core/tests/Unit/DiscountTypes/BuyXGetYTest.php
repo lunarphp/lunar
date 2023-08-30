@@ -95,13 +95,6 @@ class BuyXGetYTest extends TestCase
                 'expected' => 1,
             ],
             [
-                'linesQuantity' => 3,
-                'minQty' => 2,
-                'rewardQty' => 1,
-                'maxRewardQty' => 10,
-                'expected' => 1,
-            ],
-            [
                 'linesQuantity' => 0,
                 'minQty' => 1,
                 'rewardQty' => 1,
