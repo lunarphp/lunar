@@ -219,6 +219,7 @@ class HasCustomerGroupsTest extends TestCase
         $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
             'starts_at' => now(),
             'enabled' => false,
+            'visible' => false,
             'ends_at' => now()->addDay(),
         ]);
 
