@@ -9,7 +9,7 @@ Every storefront is different. We understand as a developer you might want to do
 requirements, so we have made price formatting easy to swap out with your own implementation, but also we provide a
 suitable default that will suit most use cases.
 
-### Price formatting
+## Price formatting
 
 The class which handles price formatting is referenced in the `config/pricing.php` file:
 
@@ -21,7 +21,30 @@ return [
 ```
 
 When you retrieve a `Lunar\Models\Price` model, you will have access to the `->price` attribute which will return
-a `DataType` of `Price`, this is what we will use to get our formatted pricing.
+a `Lunar\DataTypes\Price` object. This is what we will use to get our formatted values.
+
+The `Lunar\DataTypes\Price` class is not limited to database columns and can be found throughout the Lunar core when
+dealing with prices, other examples include:
+
+### `Lunar\Models\Order`
+
+- `subTotal`
+- `total`
+- `taxTotal`
+- `discount_total`
+- `shipping_total`
+
+### `Lunar\Models\OrderLine`
+
+- `unit_price`
+- `sub_total`
+- `tax_total`
+- `discount_total`
+- `total`
+
+### `Lunar\Models\Transaction`
+
+- `amount`
 
 ```php
 $productVariant = \Lunar\Models\ProductVariant::first();
@@ -33,7 +56,7 @@ $priceModel = $productVariant->basePrices->first();
 $priceDataType = $priceModel->price;
 ```
 
-#### `DefaultPriceFormatter`
+### `DefaultPriceFormatter`
 
 The default price formatter ships with Lunar and will handle most use cases for formatting a price, lets go through
 them, first we'll create a standard price model.
@@ -108,7 +131,7 @@ $priceDataType->price->formatted('en-gb', \NumberFormatter::SPELLOUT) // ten poi
 $priceDataType->price->formattedUnit('en-gb') // £10.00
 ```
 
-### Full reference for `DefaultPriceFormatter`
+## Full reference for `DefaultPriceFormatter`
 
 ```php
 $priceDataType->decimal(
@@ -134,7 +157,7 @@ $priceDataType->unitFormatted(
 );
 ```
 
-### Creating a custom formatter
+## Creating a custom formatter
 
 Your formatter should implement the `PriceFormatterInterface` and have a constructor was accepts and sets
 the `$value`, `$currency` and `$unitQty` properties.
@@ -194,7 +217,7 @@ return [
 ];
 ```
 
-### Model Casting
+## Model Casting
 
 If you have your own models which you want to use price formatting for, Lunar has a cast class you can use. The only
 requirement is the column returns an `integer`.
