@@ -73,7 +73,6 @@
       "providers": [
         "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
         "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
-        "Lunar\\Licensing\\LicensingServiceProvider",
         "Lunar\\Hub\\AdminHubServiceProvider",
         "Lunar\\LunarServiceProvider"
       ]
