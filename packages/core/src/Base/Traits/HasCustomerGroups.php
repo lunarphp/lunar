@@ -82,7 +82,10 @@ trait HasCustomerGroups
             })->where(function ($query) use ($endsAt) {
                 $query->whereNull('ends_at')
                     ->orWhere('ends_at', '>=', $endsAt);
-            })->whereEnabled(true)->whereVisible(true);
+            })->where(function ($query) {
+                $query->where('enabled', '=', true)
+                    ->orWhere('visible', '=', true);
+            });
         });
     }
 
