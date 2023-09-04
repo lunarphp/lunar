@@ -51,8 +51,12 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (! is_a($value, \Lunar\Base\ValueObjects\Cart\ShippingBreakdown::class)) {
+        if ($value && ! is_a($value, \Lunar\Base\ValueObjects\Cart\ShippingBreakdown::class)) {
             throw new \Exception('Shipping breakdown must be instance of Lunar\Base\ValueObjects\Cart\ShippingBreakdown');
+        }
+
+        if (! $value) {
+            return [];
         }
 
         return [
