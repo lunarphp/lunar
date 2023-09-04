@@ -4,7 +4,7 @@ namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
-use Illuminate\Support\Collection;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
 
@@ -17,19 +17,27 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \Illuminate\Support\Collection
+     * @return \Lunar\Base\ValueObjects\Cart\ShippingBreakdown
      */
     public function get($model, $key, $value, $attributes)
     {
-        $currency = $model->currency ?: Currency::getDefault();
+        $breakdown = new \Lunar\Base\ValueObjects\Cart\ShippingBreakdown();
 
-        return collect(
+        $breakdown->items = collect(
             json_decode($value, false)
-        )->map(function ($shipping) use ($currency) {
-            $shipping->price = new Price($shipping->price, $currency, 1);
+        )->mapWithKeys(function ($shipping, $key) {
+            $currency = Currency::whereCode($shipping->currency->code)->first();
 
-            return $shipping;
+            return [
+                $key => new ShippingBreakdownItem(
+                    name: $shipping->name,
+                    identifier: $shipping->identifier,
+                    price: new Price($shipping->value, $currency, 1),
+                ),
+            ];
         });
+
+        return $breakdown;
     }
 
     /**
@@ -37,31 +45,27 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  \Lunar\DataTypes\Price  $value
+     * @param  \Lunar\Base\ValueObjects\Cart\ShippingBreakdown  $value
      * @param  array  $attributes
      * @return array
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (! $value instanceof Collection) {
-            $value = $value->items;
+        if (! is_a($value, \Lunar\Base\ValueObjects\Cart\ShippingBreakdown::class)) {
+            throw new \Exception('Shipping breakdown must be instance of Lunar\Base\ValueObjects\Cart\ShippingBreakdown');
         }
 
-        return $value->map(function ($rate) {
-            $data = [
-                'name' => $rate->name,
-                'identifier' => $rate->identifier,
-                'price' => $rate->price,
-            ];
-
-            if (! is_array($rate)) {
-                if ($rate->price instanceof Price) {
-                    $data['price'] = $rate->price->value;
-                }
-            }
-
-            return $data;
-        })->values();
+        return [
+            $key => $value->items->map(function ($item) {
+                return [
+                    'name' => $item->name,
+                    'identifier' => $item->identifier,
+                    'value' => $item->price->value,
+                    'formatted' => $item->price->formatted,
+                    'currency' => $item->price->currency->toArray(),
+                ];
+            })->toJson(),
+        ];
     }
 
     /**
@@ -74,16 +78,8 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function serialize($model, $key, $value, $attributes)
     {
-        return $value->map(function ($rate) {
-            if ($rate->price instanceof Price) {
-                $rate->total = (object) [
-                    'name' => $rate->name,
-                    'identifier' => $rate->identifier,
-                    'total' => $rate->total->value,
-                ];
-            }
-
-            return $rate;
-        })->toJson();
+        return json_encode(
+            $this->set($model, $key, $value, $attributes)
+        );
     }
 }
