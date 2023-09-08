@@ -81,7 +81,7 @@ class Manifest extends PackageManifest
             'namespace' => $namespace,
             'autoload' => $autoload,
             'provider' => $provider,
-            'name' => $statamic['name'] ?? Arr::last($providerParts),
+            'name' => $lunar['name'] ?? Arr::last($providerParts),
             'author' => $author['name'] ?? null,
             'email' => $package['support']['email'] ?? null,
         ];
