@@ -18,7 +18,7 @@ trait Searchable
      */
     public function getFilterableAttributes()
     {
-        return $this->indexer()->getFilterableAttributes();
+        return $this->indexer()->getFilterableFields();
     }
 
     /**
