@@ -4,6 +4,7 @@ namespace Lunar\Tests\Unit\DiscountTypes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\AmountOff;
+use Lunar\Facades\CartSession;
 use Lunar\Models\Brand;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
@@ -1220,5 +1221,79 @@ class AmountOffTest extends TestCase
         $this->assertEquals(0, $cart->discountTotal->value);
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(2000, $cart->subTotal->value);
+    }
+
+    /**
+     * @test
+     */
+    public function can_apply_discount_dynamically()
+    {
+        $currency = Currency::getDefault();
+
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 2,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10.5,
+                ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        // Calculate method called for the first time
+        CartSession::use($cart);
+
+        // Calculate method called for the second time
+        $cart = CartSession::current();
+
+        // Calculate method called for the third time
+        $cart = $cart->calculate();
+
+        $this->assertEquals(1050, $cart->discountTotal->value);
+        $this->assertEquals(1140, $cart->total->value);
+        $this->assertEquals(190, $cart->taxTotal->value);
+        $this->assertCount(1, $cart->discounts);
     }
 }
