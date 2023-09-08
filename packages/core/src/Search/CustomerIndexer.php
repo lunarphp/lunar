@@ -12,8 +12,8 @@ class CustomerIndexer extends ScoutIndexer
         return [
             'created_at',
             'updated_at',
-            'first_name',
-            'last_name',
+            'name',
+            'company_name',
         ];
     }
 
@@ -21,9 +21,8 @@ class CustomerIndexer extends ScoutIndexer
     {
         return [
             '__soft_deleted',
+            'name',
             'company_name',
-            'first_name',
-            'last_name',
         ];
     }
 
