@@ -13,6 +13,7 @@ use Lunar\Tests\TestCase;
 
 /**
  * @group lunar.search
+ * @group lunar.search.brand
  */
 class BrandIndexerTest extends TestCase
 {

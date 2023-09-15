@@ -14,6 +14,7 @@ use Lunar\Tests\TestCase;
 
 /**
  * @group lunar.search
+ * @group lunar.search.product
  */
 class ProductIndexerTest extends TestCase
 {
