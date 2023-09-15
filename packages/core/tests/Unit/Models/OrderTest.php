@@ -94,7 +94,7 @@ class OrderTest extends TestCase
 
         $data = $order->toArray();
 
-        $this->assertIsInt($order->total);
+        $this->assertIsInt($data['total']['value']);
     }
 
     /** @test */

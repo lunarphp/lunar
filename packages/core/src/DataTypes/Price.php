@@ -2,11 +2,12 @@
 
 namespace Lunar\DataTypes;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
 use Lunar\Pricing\DefaultPriceFormatter;
 
-class Price
+class Price implements Arrayable
 {
     /**
      * Initialise the Price datatype.
@@ -99,5 +100,20 @@ class Price
     protected function formatValue(int|float $value, ...$arguments): mixed
     {
         return $this->formatter()->formatValue($value, ...$arguments);
+    }
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array<TKey, TValue>
+     */
+    public function toArray()
+    {
+        return [
+            'value' => $this->value,
+            'decimal' => $this->decimal,
+            'formatted' => $this->formatted,
+            'currency' => $this->currency->code,
+        ];
     }
 }

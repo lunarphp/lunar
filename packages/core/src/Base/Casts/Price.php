@@ -3,11 +3,12 @@
 namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Support\Facades\Validator;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\Models\Currency;
 
-class Price implements CastsAttributes
+class Price implements CastsAttributes, SerializesCastableAttributes
 {
     /**
      * Cast the given value.
@@ -54,5 +55,18 @@ class Price implements CastsAttributes
         return [
             $key => $value,
         ];
+    }
+
+    /**
+     * Get the serialized representation of the value.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  string  $key
+     * @param  \Illuminate\Support\Collection  $value
+     * @param  array<string, mixed>  $attributes
+     */
+    public function serialize($model, $key, $value, $attributes)
+    {
+        return $value->toArray();
     }
 }
