@@ -1237,7 +1237,6 @@ class AmountOffTest extends TestCase
         $cart = Cart::factory()->create([
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
-            'coupon_code' => '10OFF',
         ]);
 
         $purchasableA = ProductVariant::factory()->create();
@@ -1283,9 +1282,14 @@ class AmountOffTest extends TestCase
         ]);
 
         // Calculate method called for the first time
-        CartSession::use($cart);
+        CartSession::use($cart)->calculate();
 
-        // Calculate method called for the second time
+        // Update cart with coupon code
+        $cart->update([
+            'coupon_code' => '10OFF',
+        ]);
+
+        // Get current cart which runs the calculate method for the second time
         $cart = CartSession::current();
 
         // Calculate method called for the third time
