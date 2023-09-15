@@ -705,7 +705,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(0, $cart->discountTotal->value);
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(400, $cart->taxTotal->value);
-        $this->assertNull($cart->discounts);
+        $this->assertTrue($cart->discounts->isEmpty());
     }
 
     /**
@@ -983,7 +983,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(2000, $cart->subTotal->value);
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(400, $cart->taxTotal->value);
-        $this->assertNull($cart->discounts);
+        $this->assertTrue($cart->discounts->isEmpty());
     }
 
     /**
