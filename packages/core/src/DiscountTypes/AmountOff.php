@@ -127,9 +127,7 @@ class AmountOff extends AbstractDiscountType
             $cart->discounts = collect();
         }
 
-        if (! $cart->discounts->contains($this)) {
-            $cart->discounts->push($this);
-        }
+        $cart->discounts->push($this);
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
             discount: $this->discount,
