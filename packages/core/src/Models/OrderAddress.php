@@ -37,9 +37,9 @@ use Lunar\Database\Factories\OrderAddressFactory;
 class OrderAddress extends BaseModel implements Addressable
 {
     use HasFactory;
-    use LogsActivity;
-    use HasPersonalDetails;
     use HasMacros;
+    use HasPersonalDetails;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.

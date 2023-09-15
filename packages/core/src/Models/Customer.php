@@ -30,10 +30,10 @@ class Customer extends BaseModel
 {
     use HasAttributes;
     use HasFactory;
+    use HasMacros;
     use HasPersonalDetails;
     use HasTranslations;
     use Searchable;
-    use HasMacros;
 
     /**
      * Define the guarded attributes.

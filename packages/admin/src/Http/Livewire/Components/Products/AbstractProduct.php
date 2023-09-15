@@ -32,19 +32,19 @@ use Lunar\Models\ProductVariant;
 
 abstract class AbstractProduct extends Component
 {
-    use Notifies;
-    use WithFileUploads;
-    use HasImages;
+    use CanExtendValidation;
     use HasAvailability;
+    use HasDimensions;
+    use HasImages;
+    use HasPrices;
+    use HasSlots;
+    use HasTags;
+    use HasUrls;
+    use Notifies;
     use SearchesProducts;
     use WithAttributes;
+    use WithFileUploads;
     use WithLanguages;
-    use HasPrices;
-    use HasDimensions;
-    use HasUrls;
-    use HasTags;
-    use HasSlots;
-    use CanExtendValidation;
 
     /**
      * The current product we are editing.

@@ -17,8 +17,8 @@ use Throwable;
 class PasswordReset extends Component
 {
     use AuthorizesRequests;
-    use PerformsRedirects;
     use Notifies;
+    use PerformsRedirects;
 
     /**
      * The staff members email address.

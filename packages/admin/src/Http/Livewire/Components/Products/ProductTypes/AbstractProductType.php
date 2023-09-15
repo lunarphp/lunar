@@ -16,8 +16,8 @@ use Lunar\Models\ProductVariant;
 abstract class AbstractProductType extends Component
 {
     use Notifies;
-    use WithPagination;
     use WithLanguages;
+    use WithPagination;
 
     /**
      * The current view of attributes we're assigning.

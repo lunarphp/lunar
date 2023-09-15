@@ -27,7 +27,6 @@ class MenuRegistry
      * then a new one will be added to the slots property and returned.
      *
      * @param  string  $handle
-     * @return \Lunar\Hub\Menu\MenuSlot
      */
     public function slot($handle): MenuSlot
     {

@@ -27,15 +27,15 @@ use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 
 class VariantShow extends Component
 {
-    use WithFileUploads;
-    use Notifies;
-    use HasPrices;
-    use WithLanguages;
-    use WithAttributes;
-    use HasDimensions;
-    use HasSlots;
-    use HasImages;
     use CanExtendValidation;
+    use HasDimensions;
+    use HasImages;
+    use HasPrices;
+    use HasSlots;
+    use Notifies;
+    use WithAttributes;
+    use WithFileUploads;
+    use WithLanguages;
 
     /**
      * Instance of the parent product.

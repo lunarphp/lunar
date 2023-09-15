@@ -34,7 +34,7 @@
     "spatie/laravel-permission": "^5.10"
   },
   "require-dev": {
-    "laravel/pint": "^1.1",
+    "laravel/pint": "1.13.1",
     "mockery/mockery": "^1.4.4",
     "orchestra/testbench": "^7.0|^8.0",
     "phpunit/phpunit": "^9.5",

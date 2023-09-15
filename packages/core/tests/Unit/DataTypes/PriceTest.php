@@ -121,7 +121,7 @@ class PriceTest extends TestCase
     }
 
     /** @test */
-    function can_format_numbers_specifying_decimal_places_with_currency_suffix()
+    public function can_format_numbers_specifying_decimal_places_with_currency_suffix()
     {
         $currency = Currency::factory()->create([
             'code' => 'SEK',

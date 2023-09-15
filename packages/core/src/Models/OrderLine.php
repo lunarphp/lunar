@@ -35,9 +35,9 @@ use Lunar\Database\Factories\OrderLineFactory;
  */
 class OrderLine extends BaseModel
 {
-    use LogsActivity;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.

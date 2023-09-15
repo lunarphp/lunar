@@ -32,8 +32,8 @@ use Lunar\Facades\Payments;
 class Transaction extends BaseModel
 {
     use HasFactory;
-    use LogsActivity;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * {@inheritDoc}

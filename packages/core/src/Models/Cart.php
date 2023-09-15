@@ -53,10 +53,10 @@ use Lunar\Validation\Cart\ValidateCartForOrderCreation;
  */
 class Cart extends BaseModel
 {
-    use HasFactory;
-    use LogsActivity;
-    use HasMacros;
     use CachesProperties;
+    use HasFactory;
+    use HasMacros;
+    use LogsActivity;
 
     /**
      * Array of cachable class properties.

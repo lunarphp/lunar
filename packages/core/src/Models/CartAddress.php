@@ -39,10 +39,10 @@ use Lunar\DataTypes\ShippingOption;
  */
 class CartAddress extends BaseModel implements Addressable
 {
-    use HasFactory;
-    use LogsActivity;
-    use HasMacros;
     use CachesProperties;
+    use HasFactory;
+    use HasMacros;
+    use LogsActivity;
 
     /**
      * Array of cachable class properties.

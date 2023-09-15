@@ -10,8 +10,8 @@ use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 
 abstract class BaseFilter extends Component implements Htmlable
 {
-    use HasViewProperties,
-        HasTranslations;
+    use HasTranslations,
+        HasViewProperties;
 
     public $view = 'l-tables::filters.base';
 

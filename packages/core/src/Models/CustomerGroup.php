@@ -18,8 +18,8 @@ use Lunar\Database\Factories\CustomerGroupFactory;
  */
 class CustomerGroup extends BaseModel
 {
-    use HasFactory;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
 
     /**

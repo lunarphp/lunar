@@ -29,10 +29,10 @@ use Lunar\Database\Factories\DiscountFactory;
  */
 class Discount extends BaseModel
 {
-    use HasFactory,
-        HasTranslations,
-        HasChannels,
-        HasCustomerGroups;
+    use HasChannels,
+        HasCustomerGroups,
+        HasFactory,
+        HasTranslations;
 
     protected $guarded = [];
 
