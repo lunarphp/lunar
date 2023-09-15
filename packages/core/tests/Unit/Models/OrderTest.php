@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Base\OrderReferenceGenerator;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
@@ -17,6 +18,7 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase;
+use Ramsey\Uuid\Type\Integer;
 
 /**
  * @group lunar.orders
@@ -70,6 +72,29 @@ class OrderTest extends TestCase
         $data = $order->getRawOriginal();
 
         $this->assertDatabaseHas((new Order())->getTable(), $data);
+    }
+
+    /** @test */
+    public function can_serialize_an_order()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id' => null,
+            'tax_breakdown' => [
+                [
+                    'description' => 'VAT',
+                    'total' => 99,
+                    'percentage' => 20,
+                ],
+            ],
+        ]);
+
+        $data = $order->toArray();
+
+        $this->assertIsInt($order->total);
     }
 
     /** @test */
