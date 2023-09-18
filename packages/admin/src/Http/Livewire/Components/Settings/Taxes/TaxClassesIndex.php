@@ -10,7 +10,7 @@ use Lunar\Models\TaxClass;
 
 class TaxClassesIndex extends Component
 {
-    use WithPagination, Notifies;
+    use Notifies, WithPagination;
 
     /**
      * The TaxClass to edit.

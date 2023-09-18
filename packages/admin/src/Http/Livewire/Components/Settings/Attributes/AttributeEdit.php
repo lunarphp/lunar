@@ -13,8 +13,8 @@ use Lunar\Models\AttributeGroup;
 
 class AttributeEdit extends Component
 {
-    use WithLanguages;
     use Notifies;
+    use WithLanguages;
 
     /**
      * The attribute group.

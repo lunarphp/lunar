@@ -19,8 +19,8 @@ use Lunar\Database\Factories\LanguageFactory;
  */
 class Language extends BaseModel
 {
-    use HasFactory;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
 
     /**

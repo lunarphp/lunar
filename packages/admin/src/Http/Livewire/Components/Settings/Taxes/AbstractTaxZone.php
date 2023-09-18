@@ -16,7 +16,7 @@ use Lunar\Models\TaxZone;
 
 abstract class AbstractTaxZone extends Component
 {
-    use WithPagination, Notifies;
+    use Notifies, WithPagination;
 
     /**
      * The instance of the Tax Zone.

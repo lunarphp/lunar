@@ -10,8 +10,6 @@ interface TaxDriver
 {
     /**
      * Set the shipping address.
-     *
-     * @param  \Lunar\Base\Addressable|null  $address
      */
     public function setShippingAddress(Addressable $address = null): self;
 
@@ -22,15 +20,11 @@ interface TaxDriver
 
     /**
      * Set the billing address.
-     *
-     * @param  \Lunar\Base\Addressable|null  $address
      */
     public function setBillingAddress(Addressable $address = null): self;
 
     /**
      * Set the purchasable item.
-     *
-     * @param  \Lunar\Base\Purchasable  $purchasable
      */
     public function setPurchasable(Purchasable $purchasable): self;
 

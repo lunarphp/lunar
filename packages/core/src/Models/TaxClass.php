@@ -17,8 +17,8 @@ use Lunar\Database\Factories\TaxClassFactory;
  */
 class TaxClass extends BaseModel
 {
-    use HasFactory;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
 
     public static function booted()

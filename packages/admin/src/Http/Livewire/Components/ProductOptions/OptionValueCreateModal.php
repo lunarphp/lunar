@@ -9,8 +9,8 @@ use Lunar\Models\ProductOption;
 
 class OptionValueCreateModal extends Component
 {
-    use WithLanguages;
     use Notifies;
+    use WithLanguages;
 
     /**
      * The parent product option for this new value.

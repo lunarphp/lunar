@@ -17,11 +17,11 @@ class Arr
     {
         $countTuples = count($setTuples);
 
-        if (1 === $countTuples) {
+        if ($countTuples === 1) {
             return reset($setTuples);
         }
 
-        if (0 === $countTuples) {
+        if ($countTuples === 0) {
             return [];
         }
 

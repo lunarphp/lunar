@@ -68,7 +68,7 @@ class TranslatedText implements FieldType, JsonSerializable
                 $item = new Text($item);
                 $value[$key] = $item;
             }
-            if ($item && (Text::class !== get_class($item))) {
+            if ($item && (get_class($item) !== Text::class)) {
                 throw new FieldTypeException(self::class.' only supports '.Text::class.' field types.');
             }
         }

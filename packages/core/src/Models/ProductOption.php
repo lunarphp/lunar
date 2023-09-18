@@ -25,10 +25,10 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 class ProductOption extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
+    use HasMacros;
     use HasMedia;
     use HasTranslations;
     use Searchable;
-    use HasMacros;
 
     /**
      * Define our base filterable attributes.

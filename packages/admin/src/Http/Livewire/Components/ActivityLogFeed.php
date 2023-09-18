@@ -11,7 +11,7 @@ use Lunar\Hub\Http\Livewire\Traits\Notifies;
 
 class ActivityLogFeed extends Component
 {
-    use WithPagination, Notifies;
+    use Notifies, WithPagination;
 
     /**
      * The log subject to get activity for.

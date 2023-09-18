@@ -35,17 +35,17 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Product extends BaseModel implements SpatieHasMedia
 {
-    use HasFactory;
-    use HasMedia;
-    use LogsActivity;
     use HasChannels;
-    use HasTranslations;
-    use HasTags;
     use HasCustomerGroups;
+    use HasFactory;
+    use HasMacros;
+    use HasMedia;
+    use HasTags;
+    use HasTranslations;
     use HasUrls;
+    use LogsActivity;
     use Searchable;
     use SoftDeletes;
-    use HasMacros;
 
     /**
      * Return a new factory instance for the model.
@@ -173,7 +173,7 @@ class Product extends BaseModel implements SpatieHasMedia
     {
         Dissociate::dispatch($this, $product, $type);
     }
-    
+
     /**
      * Return the customer groups relationship.
      */

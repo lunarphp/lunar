@@ -16,13 +16,13 @@ use Lunar\Models\Brand;
 
 class BrandShow extends Component
 {
-    use HasSlots;
-    use Notifies;
     use HasImages;
-    use WithFileUploads;
+    use HasSlots;
     use HasUrls;
-    use WithLanguages;
+    use Notifies;
     use WithAttributes;
+    use WithFileUploads;
+    use WithLanguages;
 
     /**
      * The current brand we're showing.

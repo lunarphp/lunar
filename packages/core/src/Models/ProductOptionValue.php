@@ -22,9 +22,9 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 class ProductOptionValue extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
+    use HasMacros;
     use HasMedia;
     use HasTranslations;
-    use HasMacros;
 
     /**
      * Define which attributes should be cast.

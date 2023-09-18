@@ -23,11 +23,11 @@ use Lunar\Database\Factories\ChannelFactory;
  */
 class Channel extends BaseModel
 {
-    use HasFactory;
-    use SoftDeletes;
-    use LogsActivity;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
+    use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Return a new factory instance for the model.

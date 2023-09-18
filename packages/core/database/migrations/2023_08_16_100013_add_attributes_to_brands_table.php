@@ -3,7 +3,6 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
-use Lunar\Facades\DB;
 
 class AddAttributesToBrandsTable extends Migration
 {

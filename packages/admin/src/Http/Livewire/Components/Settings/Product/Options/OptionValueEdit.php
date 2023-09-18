@@ -10,8 +10,8 @@ use Lunar\Models\ProductOptionValue;
 
 class OptionValueEdit extends Component
 {
-    use WithLanguages;
     use Notifies;
+    use WithLanguages;
 
     /**
      * The option instance.

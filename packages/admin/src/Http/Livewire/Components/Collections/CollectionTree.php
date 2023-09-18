@@ -10,7 +10,7 @@ use Lunar\Models\Collection;
 
 class CollectionTree extends Component
 {
-    use Notifies, MapsCollectionTree;
+    use MapsCollectionTree, Notifies;
 
     /**
      * The nodes for the tree.
