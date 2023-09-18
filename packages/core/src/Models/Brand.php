@@ -14,7 +14,6 @@ use Lunar\Base\Traits\HasUrls;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\BrandFactory;
-use Lunar\FieldTypes\TranslatedText;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -26,14 +25,14 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Brand extends BaseModel implements SpatieHasMedia
 {
-    use HasFactory,
-        HasMedia,
-        HasUrls,
-        Searchable,
-        LogsActivity,
+    use HasAttributes,
+        HasFactory,
         HasMacros,
-        HasAttributes,
-        HasTranslations;
+        HasMedia,
+        HasTranslations,
+        HasUrls,
+        LogsActivity,
+        Searchable;
 
     /**
      * {@inheritDoc}

@@ -16,7 +16,7 @@ use Lunar\Models\Language;
 
 class CollectionGroupShow extends Component
 {
-    use Notifies, MapsCollectionTree;
+    use MapsCollectionTree, Notifies;
 
     /**
      * The current collection group.

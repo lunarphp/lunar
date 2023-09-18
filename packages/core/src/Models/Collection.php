@@ -33,14 +33,14 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Collection extends BaseModel implements SpatieHasMedia
 {
-    use HasFactory,
-        HasMedia,
-        NodeTrait,
-        HasTranslations,
-        HasChannels,
-        HasUrls,
+    use HasChannels,
         HasCustomerGroups,
+        HasFactory,
         HasMacros,
+        HasMedia,
+        HasTranslations,
+        HasUrls,
+        NodeTrait,
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
         }

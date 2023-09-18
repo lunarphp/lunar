@@ -12,9 +12,9 @@ use Spatie\Permission\Traits\HasRoles;
 class Staff extends Authenticatable
 {
     use HasFactory;
+    use HasRoles;
     use Notifiable;
     use SoftDeletes;
-    use HasRoles;
 
     /**
      * Return a new factory instance for the model.

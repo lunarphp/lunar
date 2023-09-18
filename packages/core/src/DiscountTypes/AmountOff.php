@@ -127,7 +127,7 @@ class AmountOff extends AbstractDiscountType
                 );
 
                 if (! $affectedLines->first(function ($breakdownLine) use ($line) {
-                return $breakdownLine->line == $line;
+                    return $breakdownLine->line == $line;
                 })) {
                     $affectedLines->push(new DiscountBreakdownLine(
                         line: $line,

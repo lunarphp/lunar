@@ -14,7 +14,7 @@ use Lunar\Models\State;
 
 class OrderShow extends Component
 {
-    use Notifies, WithCountries, HasSlots;
+    use HasSlots, Notifies, WithCountries;
 
     /**
      * The current order in view.

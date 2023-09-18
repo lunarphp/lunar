@@ -25,6 +25,7 @@ class BuyXGetYTest extends TestCase
 
     /**
      * @dataProvider provideRewardChecks
+     *
      * @test
      */
     public function can_determine_correct_reward_qty($linesQuantity, $minQty, $rewardQty, $maxRewardQty, $expected)
@@ -49,35 +50,35 @@ class BuyXGetYTest extends TestCase
                 'linesQuantity' => 1,
                 'minQty' => 1,
                 'rewardQty' => 1,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 1,
             ],
             [
                 'linesQuantity' => 2,
                 'minQty' => 1,
                 'rewardQty' => 1,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 2,
             ],
             [
                 'linesQuantity' => 2,
                 'minQty' => 2,
                 'rewardQty' => 1,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 1,
             ],
             [
                 'linesQuantity' => 10,
                 'minQty' => 10,
                 'rewardQty' => 1,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 1,
             ],
             [
                 'linesQuantity' => 10,
                 'minQty' => 1,
                 'rewardQty' => 1,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 10,
             ],
             [
@@ -98,28 +99,28 @@ class BuyXGetYTest extends TestCase
                 'linesQuantity' => 0,
                 'minQty' => 1,
                 'rewardQty' => 1,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 0,
             ],
             [
                 'linesQuantity' => 4,
                 'minQty' => 5,
                 'rewardQty' => 3,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 0,
             ],
             [
                 'linesQuantity' => 5,
                 'minQty' => 5,
                 'rewardQty' => 3,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 3,
             ],
             [
                 'linesQuantity' => 10,
                 'minQty' => 5,
                 'rewardQty' => 3,
-                'maxRewardQty' =>  null,
+                'maxRewardQty' => null,
                 'expected' => 6,
             ],
             [
@@ -131,7 +132,6 @@ class BuyXGetYTest extends TestCase
             ],
         ];
     }
-
 
     /** @test */
     public function can_discount_eligible_product()

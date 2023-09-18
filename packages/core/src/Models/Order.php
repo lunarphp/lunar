@@ -43,10 +43,10 @@ use Lunar\Database\Factories\OrderFactory;
 class Order extends BaseModel
 {
     use HasFactory,
-        Searchable,
+        HasMacros,
         HasTags,
         LogsActivity,
-        HasMacros;
+        Searchable;
 
     /**
      * Define our base filterable attributes.

@@ -23,12 +23,12 @@ use Lunar\Models\Tag;
 
 class CollectionShow extends Component
 {
-    use Notifies;
     use HasAvailability;
-    use WithAttributes;
     use HasImages;
-    use WithFileUploads;
     use HasUrls;
+    use Notifies;
+    use WithAttributes;
+    use WithFileUploads;
     use WithLanguages;
 
     /**

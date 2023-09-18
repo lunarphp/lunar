@@ -156,7 +156,7 @@ class Dashboard extends Component
             now()->parse($this->to),
         ])->join($variantsTable, function ($join) use ($variantsTable, $orderLineTable) {
             $join->on("{$variantsTable}.id", '=', "{$orderLineTable}.purchasable_id")
-            ->where('purchasable_type', '=', ProductVariant::class);
+                ->where('purchasable_type', '=', ProductVariant::class);
         })->groupBy('purchasable_type', 'purchasable_id')
             ->orderBy('count', 'desc')
             ->take(2)->get();

@@ -10,8 +10,8 @@ use Lunar\Models\AttributeGroup;
 
 class AttributeGroupEdit extends Component
 {
-    use WithLanguages;
     use Notifies;
+    use WithLanguages;
 
     /**
      * The type of attributable this is.
