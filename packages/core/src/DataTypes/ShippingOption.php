@@ -134,4 +134,9 @@ class ShippingOption implements Purchasable
     {
         return null;
     }
+
+    public function deductStock(int $amount): void
+    {
+        // Do nothing as we do not have a stock on this purchasable
+    }
 }
