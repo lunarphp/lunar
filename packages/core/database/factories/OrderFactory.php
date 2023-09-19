@@ -2,9 +2,11 @@
 
 namespace Lunar\Database\Factories;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Channel;
 use Lunar\Models\Order;
+use Lunar\Models\OrderLine;
 
 class OrderFactory extends Factory
 {
@@ -39,5 +41,16 @@ class OrderFactory extends Factory
             'exchange_rate' => 1,
             'meta' => ['foo' => 'bar'],
         ];
+    }
+
+    /**
+     * @param Collection<OrderLine> $lines
+     * @return self
+     */
+    public function withLines(Collection $lines): self
+    {
+        return $this->afterCreating(function (Order $order) use ($lines) {
+            $order->lines()->saveMany($lines);
+        });
     }
 }

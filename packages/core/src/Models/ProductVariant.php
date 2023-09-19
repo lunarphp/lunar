@@ -206,4 +206,10 @@ class ProductVariant extends BaseModel implements Purchasable
             return (bool) $media->pivot?->primary;
         }) ?: $this->product->thumbnail;
     }
+
+    public function deductStock(int $amount): void
+    {
+        $this->stock -= $amount;
+        $this->save();
+    }
 }

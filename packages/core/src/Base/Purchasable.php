@@ -72,4 +72,12 @@ interface Purchasable
      * @return string
      */
     public function getThumbnail();
+
+    /**
+     * Deducts the stock for the purchasable item.
+     *
+     * @param int $amount
+     * @return void
+     */
+    public function deductStock(int $amount): void;
 }
