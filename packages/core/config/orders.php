@@ -66,10 +66,10 @@ return [
             Lunar\Pipelines\Order\Creation\FillOrderFromCart::class,
             Lunar\Pipelines\Order\Creation\CreateOrderLines::class,
             Lunar\Pipelines\Order\Creation\CreateOrderAddresses::class,
+            Lunar\Pipelines\Order\Creation\DeductStockFromInventory::class,
             Lunar\Pipelines\Order\Creation\CreateShippingLine::class,
             Lunar\Pipelines\Order\Creation\CleanUpOrderLines::class,
             Lunar\Pipelines\Order\Creation\MapDiscountBreakdown::class,
-            // \Lunar\Pipelines\Order\Creation\DeductStockFromInventory::class
         ],
     ],
 ];
