@@ -248,4 +248,6 @@ class ProductVariantTest extends TestCase
         $this->assertEquals(416, $foodProductVariant->pricing()->currency($currency)->get()->matched->priceIncTax()->value);
         $this->assertEquals(9760, $genericProductVariant->pricing()->qty(20)->currency($currency)->get()->matched->priceIncTax()->value);
     }
+
+
 }

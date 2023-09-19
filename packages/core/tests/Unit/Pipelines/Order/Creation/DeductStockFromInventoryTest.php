@@ -34,13 +34,14 @@ class DeductStockFromInventoryTest extends TestCase
     }
 
     /** @test */
-    public function it_deducts_stock_from_inventory_when_available()
+    public function it_should_deduct_stock_from_inventory_when_available()
     {
         // Given
         $product = Product::factory()->create();
 
         $productVariant = ProductVariant::factory()->create([
             'product_id' => $product->id,
+            'purchasable' => 'in_stock',
             'stock' => 10
         ]);
 
@@ -64,13 +65,14 @@ class DeductStockFromInventoryTest extends TestCase
     }
 
     /** @test */
-    public function it_should_throw_exception_when_amount_is_unavailable()
+    public function it_should_throw_exception_when_amount_is_unavailable_and_purchasability_is_in_stock()
     {
         // Given
         $product = Product::factory()->create();
 
         $productVariant = ProductVariant::factory()->create([
             'product_id' => $product->id,
+            'purchasable' => 'in_stock',
             'stock' => 0
         ]);
 
@@ -84,6 +86,7 @@ class DeductStockFromInventoryTest extends TestCase
 
         // Then
         $this->expectException(InsufficientStockException::class);
+        $this->expectExceptionMessage('Insufficient stock for product variant with EAN ' . $productVariant->ean);
 
         // When
         app(DeductStockFromInventory::class)->handle($order, function ($order) {
@@ -91,5 +94,69 @@ class DeductStockFromInventoryTest extends TestCase
         });
 
         $productVariant->refresh();
+    }
+
+    /** @test */
+    public function it_should_not_throw_exception_when_purchasable_is_always()
+    {
+        // Given
+        $product = Product::factory()->create();
+
+        $productVariant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+            'purchasable' => 'always',
+            'stock' => 0
+        ]);
+
+        $orderLines = OrderLine::factory(1)->make([
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => $productVariant->id,
+            'quantity' => 1,
+        ]);
+
+        $order = Order::factory()->withLines($orderLines)->create();
+
+        // When
+        app(DeductStockFromInventory::class)->handle($order, function ($order) {
+            return $order;
+        });
+
+        $productVariant->refresh();
+
+        // Then
+        $this->assertEquals(-1, $productVariant->stock);
+    }
+
+    /** @test */
+    public function it_should_deduct_from_stock_when_purchasability_is_backorder_and_backorder_is_placed()
+    {
+        // Given
+        $product = Product::factory()->create();
+
+        $productVariant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+            'purchasable' => 'backorders',
+            'stock' => 0,
+            'backorder' => 1
+        ]);
+
+        $orderLines = OrderLine::factory(1)->make([
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => $productVariant->id,
+            'quantity' => 1,
+        ]);
+
+        $order = Order::factory()->withLines($orderLines)->create();
+
+        // When
+        app(DeductStockFromInventory::class)->handle($order, function ($order) {
+            return $order;
+        });
+
+        $productVariant->refresh();
+
+        // Then
+        $this->assertEquals(-1, $productVariant->stock);
+        $this->assertEquals(1, $productVariant->backorder);
     }
 }

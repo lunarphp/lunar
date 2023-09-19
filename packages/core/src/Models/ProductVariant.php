@@ -213,8 +213,8 @@ class ProductVariant extends BaseModel implements Purchasable
      */
     public function deductStock(int $amount): void
     {
-        if ($this->stock - $amount < 0) {
-            throw new InsufficientStockException($this->product->translateAttribute('name'));
+        if ($this->stock - $amount < 0 && $this->purchasable === 'in_stock') {
+            throw new InsufficientStockException('Insufficient stock for product variant with EAN ' . $this->ean);
         }
 
         $this->stock -= $amount;
