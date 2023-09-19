@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Unit\Pipelines\Order\Creation;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Exceptions\InsufficientStockException;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\Product;
@@ -60,5 +61,35 @@ class DeductStockFromInventoryTest extends TestCase
 
         // Then
         $this->assertEquals(5, $productVariant->stock);
+    }
+
+    /** @test */
+    public function it_should_throw_exception_when_amount_is_unavailable()
+    {
+        // Given
+        $product = Product::factory()->create();
+
+        $productVariant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+            'stock' => 0
+        ]);
+
+        $orderLines = OrderLine::factory(1)->make([
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => $productVariant->id,
+            'quantity' => 1,
+        ]);
+
+        $order = Order::factory()->withLines($orderLines)->create();
+
+        // Then
+        $this->expectException(InsufficientStockException::class);
+
+        // When
+        app(DeductStockFromInventory::class)->handle($order, function ($order) {
+            return $order;
+        });
+
+        $productVariant->refresh();
     }
 }

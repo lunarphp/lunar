@@ -13,6 +13,7 @@ use Lunar\Base\Traits\HasPrices;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ProductVariantFactory;
+use Lunar\Exceptions\InsufficientStockException;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -207,8 +208,15 @@ class ProductVariant extends BaseModel implements Purchasable
         }) ?: $this->product->thumbnail;
     }
 
+    /**
+     * @throws InsufficientStockException
+     */
     public function deductStock(int $amount): void
     {
+        if ($this->stock - $amount < 0) {
+            throw new InsufficientStockException($this->product->translateAttribute('name'));
+        }
+
         $this->stock -= $amount;
         $this->save();
     }
