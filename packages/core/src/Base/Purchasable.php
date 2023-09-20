@@ -55,7 +55,7 @@ interface Purchasable
     /**
      * Return a unique string which identifies the purchasable item.
      *
-     * @return string
+     * @return ?string
      */
     public function getIdentifier();
 

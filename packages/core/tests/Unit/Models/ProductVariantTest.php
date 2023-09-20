@@ -248,4 +248,84 @@ class ProductVariantTest extends TestCase
         $this->assertEquals(416, $foodProductVariant->pricing()->currency($currency)->get()->matched->priceIncTax()->value);
         $this->assertEquals(9760, $genericProductVariant->pricing()->qty(20)->currency($currency)->get()->matched->priceIncTax()->value);
     }
+
+    /** @test */
+    public function it_should_use_gtin_when_sku_is_null()
+    {
+        // Given
+        $product = Product::factory()->create();
+        $gtin = '123';
+        $productVariant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+            'sku' => null,
+            'gtin' => $gtin
+        ]);
+
+        // When
+        $identifier = $productVariant->getIdentifier();
+
+        // Then
+        $this->assertEquals($gtin, $identifier);
+    }
+
+    /** @test */
+    public function it_should_use_mpn_when_sku_and_gtin_are_null()
+    {
+        // Given
+        $product = Product::factory()->create();
+        $mpn = '123';
+        $productVariant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+            'sku' => null,
+            'gtin' => null,
+            'mpn' => $mpn
+        ]);
+
+        // When
+        $identifier = $productVariant->getIdentifier();
+
+        // Then
+        $this->assertEquals($mpn, $identifier);
+    }
+
+    /** @test */
+    public function it_should_use_ean_when_sku_gtin_and_mpn_are_null()
+    {
+        // Given
+        $product = Product::factory()->create();
+        $ean = '123';
+        $productVariant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+            'sku' => null,
+            'gtin' => null,
+            'mpn' => null,
+            'ean' => $ean
+        ]);
+
+        // When
+        $identifier = $productVariant->getIdentifier();
+
+        // Then
+        $this->assertEquals($ean, $identifier);
+    }
+
+    /** @test */
+    public function it_should_return_null_when_all_identifiers_are_null()
+    {
+        // Given
+        $product = Product::factory()->create();
+        $productVariant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+            'sku' => null,
+            'gtin' => null,
+            'mpn' => null,
+            'ean' => null
+        ]);
+
+        // When
+        $identifier = $productVariant->getIdentifier();
+
+        // Then
+        $this->assertEquals(null, $identifier);
+    }
 }

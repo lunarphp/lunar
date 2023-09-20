@@ -189,7 +189,10 @@ class ProductVariant extends BaseModel implements Purchasable
      */
     public function getIdentifier()
     {
-        return $this->sku;
+        // TODO: It is better if this is coupled somehow to the config from the admin package
+        // There product identifiers are set and we cen return the one specified there
+        // Which will be more fool proof than this workaround
+        return $this->sku ?? $this->gtin ?? $this->mpn ?? $this->ean ?? null;
     }
 
     public function images()
