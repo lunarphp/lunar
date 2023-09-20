@@ -20,7 +20,6 @@ class LunarHubTest extends TestCase
     /** @test */
     public function can_register_scripts_by_providing_name_and_path()
     {
-
         $name = 'local-script';
         $path = 'js/local-script.js';
 

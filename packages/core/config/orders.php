@@ -71,7 +71,4 @@ return [
             Lunar\Pipelines\Order\Creation\MapDiscountBreakdown::class,
         ],
     ],
-    'order_lines' => [
-        'identifier' => 'sku'
-    ]
 ];
