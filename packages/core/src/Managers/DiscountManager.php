@@ -183,7 +183,7 @@ class DiscountManager implements DiscountManagerInterface
 
     public function apply(Cart $cart): Cart
     {
-        if (! $this->discounts) {
+        if (! $this->discounts || $this->discounts?->isEmpty()) {
             $this->discounts = $this->getDiscounts($cart);
         }
 
