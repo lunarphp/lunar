@@ -23,6 +23,13 @@ class GetTaxZone
             }
         }
 
+        if ($address && $address->country_id) {
+            $countryZone = app(GetTaxZoneCountry::class)->execute($address->country_id);
+            if ($countryZone) {
+                return $countryZone->taxZone;
+            }
+        }
+
         return TaxZone::getDefault();
     }
 }
