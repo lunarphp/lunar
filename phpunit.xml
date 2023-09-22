@@ -20,11 +20,17 @@
   </coverage>
   <testsuites>
     <testsuite name="Unit">
-      <directory suffix="Test.php">packages/**/tests</directory>
+      <directory suffix="Test.php">./packages/**/tests/Unit</directory>
+    </testsuite>
+    <testsuite name="Feature">
+      <directory suffix="Test.php">./packages/**/tests/Feature</directory>
+    </testsuite>
+    <testsuite name="Database">
+      <directory suffix="Test.php">./packages/**/tests/Database</directory>
     </testsuite>
     <testsuite name="Utils">
-      <directory suffix="Test.php">utils/**/tests</directory>
-      <exclude>utils/scout-database-engine/**</exclude>
+      <directory suffix="Test.php">packages/**/tests/Utils</directory>
+      <directory suffix="Test.php">utils/livewire-tables/tests</directory>
     </testsuite>
   </testsuites>
   <php>
