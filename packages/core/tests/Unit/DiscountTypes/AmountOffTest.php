@@ -4,6 +4,7 @@ namespace Lunar\Tests\Unit\DiscountTypes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\AmountOff;
+use Lunar\Facades\CartSession;
 use Lunar\Models\Brand;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
@@ -704,7 +705,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(0, $cart->discountTotal->value);
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(400, $cart->taxTotal->value);
-        $this->assertNull($cart->discounts);
+        $this->assertTrue($cart->discounts->isEmpty());
     }
 
     /**
@@ -982,7 +983,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(2000, $cart->subTotal->value);
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(400, $cart->taxTotal->value);
-        $this->assertNull($cart->discounts);
+        $this->assertTrue($cart->discounts->isEmpty());
     }
 
     /**
@@ -1221,7 +1222,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(2000, $cart->subTotal->value);
     }
-
+    
     /**
      * @test
      */
@@ -1361,5 +1362,83 @@ class AmountOffTest extends TestCase
         $this->assertEquals(397, $fourthLine->discountTotal->value);
         $this->assertEquals(357, $lastLine->discountTotal->value);
         $this->assertEquals(1500, $cart->discountTotal->value);
+    }
+
+    /**
+     * @test
+     */
+    public function can_apply_discount_dynamically()
+    {
+        $currency = Currency::getDefault();
+
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 2,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10.5,
+                ],
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        // Calculate method called for the first time
+        CartSession::use($cart)->calculate();
+
+        // Update cart with coupon code
+        $cart->update([
+            'coupon_code' => '10OFF',
+        ]);
+
+        // Get current cart which runs the calculate method for the second time
+        $cart = CartSession::current();
+
+        // Calculate method called for the third time
+        $cart = $cart->calculate();
+
+        $this->assertEquals(1050, $cart->discountTotal->value);
+        $this->assertEquals(1140, $cart->total->value);
+        $this->assertEquals(190, $cart->taxTotal->value);
+        $this->assertCount(1, $cart->discounts);
     }
 }

@@ -14,7 +14,7 @@ use Lunar\Tests\TestCase;
 /**
  * @group lunar.actions
  */
-class SortProductsByPriceTest extends TestCase
+class GenerateOrderReferenceTest extends TestCase
 {
     use RefreshDatabase;
 

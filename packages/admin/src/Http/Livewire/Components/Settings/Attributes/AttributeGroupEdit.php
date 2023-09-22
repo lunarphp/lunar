@@ -76,9 +76,15 @@ class AttributeGroupEdit extends Component
         $handle = Str::handle("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
         $this->attributeGroup->handle = $handle;
 
+        $uniquenessConstraint = 'unique:' . get_class($this->attributeGroup) . ',handle';
+        if ($this->attributeGroup->id) {
+            $uniquenessConstraint .= ',' . $this->attributeGroup->id;
+        }
+
         $this->validate([
-            'attributeGroup.handle' => 'unique:'.get_class($this->attributeGroup).',handle,'.$this->attributeGroup->id,
+            'attributeGroup.handle' => $uniquenessConstraint,
         ]);
+
 
         if ($this->attributeGroup->id) {
             $this->attributeGroup->save();
