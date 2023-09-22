@@ -1,16 +1,19 @@
 # Payments
 
 :::tip
-If you're looking for a guide on how to create your own Payment Driver, or for a more in-depth look at how they work, head over to the [extending section](/core/extending/payments).
+If you're looking for a guide on how to create your own Payment Driver, or for a more in-depth look at how they work,
+head over to the [extending section](/core/extending/payments).
 :::
 
 ## Overview
 
-Lunar takes a driver based approach with Payments, meaning you are free to use either add ons to support the provider you wish to use, or you can create your own to meet your exact needs.
+Lunar takes a driver based approach with Payments, meaning you are free to use either add ons to support the provider
+you wish to use, or you can create your own to meet your exact needs.
 
 ## Configuration
 
-All configuration for payments is located in `config/lunar/payments.php`. Here you can specify different types of payments and the driver each one should use.
+All configuration for payments is located in `config/lunar/payments.php`. Here you can specify different types of
+payments and the driver each one should use.
 
 ```php
 <?php
@@ -33,7 +36,8 @@ return [
 
 ## Usage
 
-To use a payment driver, you need to pass the type of payment you wish to use, this will then return an instance of the driver.
+To use a payment driver, you need to pass the type of payment you wish to use, this will then return an instance of the
+driver.
 
 ```php
 $driver = \Lunar\Facades\Payments::driver('card');
@@ -48,7 +52,7 @@ $driver->cart(\Lunar\Models\Cart $cart);
 Set any additional data that the driver may need.
 
 ```php
-$driver->setData([
+$driver->withData([
     'payment_token' => $token,
 ]);
 ```
@@ -58,7 +62,6 @@ Finally, we can authorize the payment.
 ```php
 $driver->authorize();
 ```
-
 
 <!-- As you'd expect, orders on an online system show what users have purchased. They are linked to a Cart and you can only have 1 order per cart in the database.
 
