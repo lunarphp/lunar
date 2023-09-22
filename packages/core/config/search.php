@@ -38,6 +38,7 @@ return [
 
     'indexers' => [
         \Lunar\Models\Brand::class => \Lunar\Search\BrandIndexer::class,
+        \Lunar\Models\Collection::class => \Lunar\Search\CollectionIndexer::class,
         \Lunar\Models\Customer::class => \Lunar\Search\CustomerIndexer::class,
         \Lunar\Models\Order::class => \Lunar\Search\OrderIndexer::class,
         \Lunar\Models\Product::class => \Lunar\Search\ProductIndexer::class,
