@@ -49,30 +49,6 @@ class Order extends BaseModel
         Searchable;
 
     /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [
-        '__soft_deleted',
-        'status',
-        'created_at',
-        'placed_at',
-        'tags',
-    ];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'created_at',
-        'placed_at',
-        'total',
-    ];
-
-    /**
      * {@inheritDoc}
      */
     protected $casts = [
@@ -100,16 +76,6 @@ class Order extends BaseModel
     protected static function newFactory(): OrderFactory
     {
         return OrderFactory::new();
-    }
-
-    /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return config('scout.prefix').'orders';
     }
 
     /**
@@ -294,63 +260,6 @@ class Order extends BaseModel
         return $this->belongsTo(
             config('auth.providers.users.model')
         );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function getSearchableAttributes()
-    {
-        $data = [
-            'id' => $this->id,
-            'channel' => $this->channel->name,
-            'reference' => $this->reference,
-            'customer_reference' => $this->customer_reference,
-            'status' => $this->status,
-            'placed_at' => optional($this->placed_at)->timestamp,
-            'created_at' => $this->created_at->timestamp,
-            'sub_total' => $this->sub_total->value,
-            'total' => $this->total->value,
-            'currency_code' => $this->currency_code,
-            'charges' => $this->transactions->map(function ($transaction) {
-                return [
-                    'reference' => $transaction->reference,
-                ];
-            }),
-            'currency' => $this->currency_code,
-            'lines' => $this->productLines->map(function ($line) {
-                return [
-                    'description' => $line->description,
-                    'identifier' => $line->identifier,
-                ];
-            })->toArray(),
-        ];
-
-        foreach ($this->addresses as $address) {
-            $fields = [
-                'first_name',
-                'last_name',
-                'company_name',
-                'line_one',
-                'line_two',
-                'line_three',
-                'city',
-                'state',
-                'postcode',
-                'contact_email',
-                'contact_phone',
-            ];
-
-            foreach ($fields as $field) {
-                $data["{$address->type}_{$field}"] = $address->getAttribute($field);
-            }
-
-            $data["{$address->type}_country"] = optional($address->country)->name;
-        }
-
-        $data['tags'] = $this->tags->pluck('value')->toArray();
-
-        return $data;
     }
 
     /**
