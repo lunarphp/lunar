@@ -31,23 +31,6 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     use Searchable;
 
     /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'name',
-        'label',
-    ];
-
-    /**
      * Define which attributes should be cast.
      *
      * @var array
@@ -56,16 +39,6 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         'name' => AsCollection::class,
         'label' => AsCollection::class,
     ];
-
-    /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return config('scout.prefix').'product_options';
-    }
 
     /**
      * Return a new factory instance for the model.
@@ -109,33 +82,5 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     public function values()
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('position');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSearchableAttributes()
-    {
-        $data['id'] = $this->id;
-
-        // Loop for add option name
-        foreach ($this->name as $locale => $name) {
-            $data['name_'.$locale] = $name;
-        }
-
-        // Loop for add option label
-        foreach ($this->name as $locale => $name) {
-            $data['label_'.$locale] = $name;
-        }
-
-        // Loop for add options
-        foreach ($this->values as $option) {
-            foreach ($option->name as $locale => $name) {
-                $key = 'option_'.$option->id.'_'.$locale;
-                $data[$key] = $name;
-            }
-        }
-
-        return $data;
     }
 }
