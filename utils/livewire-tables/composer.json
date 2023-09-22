@@ -18,7 +18,8 @@
       "phpunit/phpunit": "^9.5",
       "mockery/mockery": "^1.4.4",
       "orchestra/testbench": "^7.0|^8.0",
-      "laravel/pint": "^1.1"
+      "laravel/pint": "^1.1",
+      "brianium/paratest": "^6.10"
   },
   "autoload": {
       "psr-4": {

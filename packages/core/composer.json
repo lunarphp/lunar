@@ -51,6 +51,7 @@
     },
     "require-dev": {
         "orchestra/testbench": "^7.0|^8.0",
-        "phpunit/phpunit": "1.13.1"
+        "phpunit/phpunit": "^9.5",
+        "brianium/paratest": "^6.10"
     }
 }
