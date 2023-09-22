@@ -30,4 +30,4 @@ jobs:
         composer install --no-scripts
 
     - name: Run Testsuite
-      run: vendor/bin/paratest
+      run: vendor/bin/phpunit
