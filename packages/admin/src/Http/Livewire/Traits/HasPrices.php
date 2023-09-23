@@ -197,7 +197,7 @@ trait HasPrices
      */
     public function getCurrenciesProperty()
     {
-        return Currency::get();
+        return Currency::whereEnabled(true)->get();
     }
 
     /**
