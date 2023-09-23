@@ -57,7 +57,7 @@ class CartSessionAuthListener
      */
     public function logout(Logout $event)
     {
-        if (! is_lunar_user($event->user)) {
+        if (is_null($event->user) || ! is_lunar_user($event->user)) {
             return;
         }
 
