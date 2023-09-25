@@ -113,6 +113,7 @@ class AmountOff extends AbstractDiscountType
 
             if ($line) {
                 $newDiscountTotal = $line->discountTotal->value + $remaining;
+                $remaining = 0;
 
                 $line->discountTotal = new Price(
                     $newDiscountTotal,
@@ -146,7 +147,7 @@ class AmountOff extends AbstractDiscountType
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
-            price: new Price($value, $cart->currency, 1)
+            price: new Price($value - $remaining, $cart->currency, 1)
         ));
 
         return $cart;
