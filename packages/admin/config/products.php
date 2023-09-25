@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Disable product variants
@@ -38,16 +39,20 @@ return [
         'required' => true,
         'unique' => true,
     ],
+
     'gtin' => [
         'required' => false,
         'unique' => false,
     ],
+
     'mpn' => [
         'required' => false,
         'unique' => false,
     ],
+
     'ean' => [
         'required' => false,
         'unique' => false,
     ],
+
 ];
