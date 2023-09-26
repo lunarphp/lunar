@@ -107,7 +107,7 @@ class AmountOff extends AbstractDiscountType
         // enough left to apply the remaining too.
         if ($remaining) {
             // prioritise sharing the remaining over eligible lines
-            $lines->filter(function ($line) use ($remaining) {
+            $lines->filter(function ($line) {
                 return $line->subTotalDiscounted->value > 0;
             })
                 ->each(function($line) use ($affectedLines, $cart, &$remaining) {
