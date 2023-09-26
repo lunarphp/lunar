@@ -91,6 +91,7 @@ return [
     */
     'actions' => [
         'add_to_cart' => \Lunar\Actions\Carts\AddOrUpdatePurchasable::class,
+        'get_existing_cart_line' => \Lunar\Actions\Carts\GetExistingCartLine::class,
         'update_cart_line' => \Lunar\Actions\Carts\UpdateCartLine::class,
         'remove_from_cart' => \Lunar\Actions\Carts\RemovePurchasable::class,
         'add_address' => \Lunar\Actions\Carts\AddAddress::class,
