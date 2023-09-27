@@ -1,4 +1,9 @@
 name: Split Packages
+env:
+  SPLIT_PACKAGES: ${{ vars.SPLIT_PACKAGES || '["admin", "core", "licensing"]' }}
+  SPLIT_PACKAGES_REPOSITORIES: ${{ vars.SPLIT_PACKAGES_REPOSITORIES || false }}
+  SPLIT_UTILS: ${{ vars.SPLIT_UTILS || '["livewire-tables", "scout-database-engine"]' }}
+  SPLIT_UTILS_REPOSITORIES: ${{ vars.SPLIT_UTILS_REPOSITORIES || false }}
 on:
   push:
     branches:
@@ -11,7 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: ["admin", "core", "licensing"]
+        package: ${{ fromJSON(env.SPLIT_PACKAGES) }}
+        repository: ${{ fromJSON(env.SPLIT_PACKAGES_REPOSITORIES || env.SPLIT_PACKAGES) }}
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
@@ -26,8 +32,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "packages/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ matrix.repository }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_REF#refs/heads/}
@@ -43,8 +49,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "packages/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ matrix.repository }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
@@ -57,8 +63,8 @@ jobs:
         with:
           tag: ${GITHUB_REF#refs/tags/}
           package_directory: "packages/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ matrix.repository }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
@@ -67,7 +73,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: ["livewire-tables", "scout-database-engine"]
+        package: ${{ fromJSON(env.SPLIT_UTILS) }}
+        repository: ${{ fromJSON(env.SPLIT_UTILS_REPOSITORIES || env.SPLIT_UTILS) }}
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
@@ -82,8 +89,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "utils/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ matrix.repository }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_REF#refs/heads/}
@@ -99,8 +106,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "utils/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ matrix.repository }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
@@ -113,8 +120,8 @@ jobs:
         with:
           tag: ${GITHUB_REF#refs/tags/}
           package_directory: "utils/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ matrix.repository }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
