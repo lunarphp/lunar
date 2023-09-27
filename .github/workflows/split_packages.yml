@@ -1,4 +1,9 @@
 name: Split Packages
+env:
+  SPLIT_PACKAGES: ${{ vars.SPLIT_PACKAGES || '["admin","core","licensing"]' }}
+  SPLIT_PACKAGES_REPOSITORIES: ${{ vars.SPLIT_PACKAGES_REPOSITORIES || '{}' }}
+  SPLIT_UTILS: ${{ vars.SPLIT_UTILS || '["livewire-tables", "scout-database-engine"]' }}
+  SPLIT_UTILS_REPOSITORIES: ${{ vars.SPLIT_UTILS_REPOSITORIES || '{}' }}
 on:
   push:
     branches:
@@ -9,9 +14,10 @@ on:
 jobs:
   tag_split_packages:
     runs-on: ubuntu-latest
+    if: ${{ fromJSON(vars.SPLIT_PACKAGES)[0] != null }}
     strategy:
       matrix:
-        package: ["admin", "core", "licensing"]
+        package: ${{ fromJSON(vars.SPLIT_PACKAGES) }}
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
@@ -26,8 +32,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "packages/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ fromJSON(vars.SPLIT_PACKAGES_REPOSITORIES)[matrix.package] || matrix.package }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_REF#refs/heads/}
@@ -43,8 +49,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "packages/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ fromJSON(vars.SPLIT_PACKAGES_REPOSITORIES)[matrix.package] || matrix.package }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
@@ -57,17 +63,18 @@ jobs:
         with:
           tag: ${GITHUB_REF#refs/tags/}
           package_directory: "packages/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ fromJSON(vars.SPLIT_PACKAGES_REPOSITORIES)[matrix.package] || matrix.package }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
 
   split_utils:
     runs-on: ubuntu-latest
+    if: ${{ fromJSON(vars.SPLIT_UTILS)[0] != null }}
     strategy:
       matrix:
-        package: ["livewire-tables", "scout-database-engine"]
+        package: ${{ fromJSON(vars.SPLIT_UTILS) }}
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
@@ -82,8 +89,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "utils/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ fromJSON(vars.SPLIT_UTILS_REPOSITORIES)[matrix.package] || matrix.package }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_REF#refs/heads/}
@@ -99,8 +106,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "utils/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ fromJSON(vars.SPLIT_UTILS_REPOSITORIES)[matrix.package] || matrix.package }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
@@ -113,8 +120,8 @@ jobs:
         with:
           tag: ${GITHUB_REF#refs/tags/}
           package_directory: "utils/${{ matrix.package }}"
-          repository_organization: "lunarphp"
-          repository_name: "${{ matrix.package }}"
+          repository_organization: "${GITHUB_REPOSITORY_OWNER}"
+          repository_name: "${{ fromJSON(vars.SPLIT_UTILS_REPOSITORIES)[matrix.package] || matrix.package }}"
           user_name: "GitHub Action"
           user_email: "action@github.com"
           branch: ${GITHUB_TAG%.*}
