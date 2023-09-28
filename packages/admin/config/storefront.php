@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Define your model routes for viewing/previewing here.
@@ -13,6 +14,7 @@ return [
     |
     */
     'model_routes' => [
-        \Lunar\Models\Product::class => null,
+        Lunar\Models\Product::class => null,
     ],
+
 ];
