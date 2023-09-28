@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     'connection' => '',
 
     'table_prefix' => 'lunar_',
@@ -26,4 +27,5 @@ return [
     |
     */
     'disable_migrations' => false,
+
 ];
