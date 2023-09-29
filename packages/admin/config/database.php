@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Disable migrations
@@ -11,4 +12,5 @@ return [
     |
     */
     'disable_migrations' => false,
+
 ];
