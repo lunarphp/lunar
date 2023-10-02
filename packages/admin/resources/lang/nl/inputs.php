@@ -103,7 +103,7 @@ return [
     'richtext' => 'Opgemaakte tekst',
     'transaction.label' => 'Transactie',
     'starts_at.label' => 'Start op',
-    'ends_at.label' => 'Eindigt op',
+    'ends_at.label' => 'Eindigt om',
     'tag.label' => 'Label',
     'active.label' => 'Actief',
     'priority.label' => 'Prioriteit',
