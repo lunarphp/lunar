@@ -15,7 +15,7 @@ Lunar\Models\Discount
 | `id`         |                                                              |                                       |
 | `name`       | The given name for the discount                              |                                       |
 | `handle`     | The unique handle for the discount                           |                                       |
-| `type`       | The type of discount                                         | `Lunar\DiscountTypes\Coupon`          |
+| `type`       | The type of discount                                         | `Lunar\DiscountTypes\BuyXGetY`          |
 | `data`       | JSON                                                         | Any data to be used by the type class 
 | `starts_at`  | The datetime the discount starts (required)                  |
 | `ends_at`    | The datetime the discount expires, if `NULL` it won't expire |
