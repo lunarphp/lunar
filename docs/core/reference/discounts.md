@@ -94,31 +94,15 @@ Lunar\Models\DiscountPurchasable
 ### Adding your own Discount type
 
 ```php
-namespace App\Discounts;
+<?php
 
-use Lunar\Base\DataTransferObjects\CartDiscount;
-use Lunar\DataTypes\Price;
-use Lunar\Facades\Discounts;
-use Lunar\Models\CartLine;
-use Lunar\Models\Discount;
+namespace App\DiscountTypes;
 
-class CustomDiscount
+use Lunar\Models\Cart;
+use Lunar\DiscountTypes\AbstractDiscountType;
+
+class MyCustomDiscountType extends AbstractDiscountType
 {
-    protected Discount $discount;
-
-    /**
-     * Set the data for the discount to user.
-     *
-     * @param  array  $data
-     * @return self
-     */
-    public function with(Discount $discount): self
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-
     /**
      * Return the name of the discount.
      *
@@ -126,7 +110,7 @@ class CustomDiscount
      */
     public function getName(): string
     {
-        return 'Custom Discount';
+        return 'Custom Discount Type';
     }
 
     /**
@@ -134,38 +118,17 @@ class CustomDiscount
      *
      * @return CartLine
      */
-    public function execute(CartLine $cartLine): CartLine
+    public function apply(Cart $cart): Cart
     {
-        $data = $this->discount->data;
-
-        // Return the unaltered cart line back
-        if (! $conditionIsMet) {
-            return $cartLine;
-        }
-
-        $cartLine->discount = $this->discount;
-        
-        $discountTotal = $cartLine->unitPrice->value * $discountQuantity;
-
-        $cartLine->discountTotal = new Price(
-            $discountTotal,
-            $cartLine->cart->currency,
-            1
-        );
-
-        $cartLine->subTotalDiscounted = new Price(
-            $line->subTotal->value - $discountTotal,
-            $cart->currency,
-            1
-        );
+        // ...
+        return $cart;
     }
 }
-
 ```
 
 ```php
-Discounts::addType(
-    CustomDiscount::class
-);
+use Lunar\Facades\Discounts;
+
+Discounts::addType(MyCustomDiscountType::class);
 ```
 
