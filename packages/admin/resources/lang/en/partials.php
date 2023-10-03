@@ -76,7 +76,7 @@ return [
     'image-manager.edit_row_btn' => 'Edit',
     'image-manager.delete_row_btn' => 'Delete',
     'image-manager.delete_primary' => 'You cannot delete the primary image.',
-    'image-manager.delete_message' => 'This image will be deleted on save,',
+    'image-manager.delete_message' => 'This image will be deleted on save.',
     'image-manager.undo_btn' => 'undo',
     'image-manager.no_results' => 'No images exist for this product, add your first image above.',
     'image-manager.upload_file' => 'Upload a file or drag and drop',
