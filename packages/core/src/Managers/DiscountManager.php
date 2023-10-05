@@ -136,9 +136,11 @@ class DiscountManager implements DiscountManagerInterface
             ->when(
                 $cart,
                 fn ($query, $value) => $query->products(
-                    $value->lines->pluck('purchasable.product_id')->filter()->values()
+                    $value->lines->pluck('purchasable.product_id')->filter()->values(),
+                    'limitation'
                 )->productVariants(
-                    $value->lines->pluck('purchasable.id')->filter()->values()
+                    $value->lines->pluck('purchasable.id')->filter()->values(),
+                    'limitation'
                 )
             )->when(
                 $cart?->coupon_code,
