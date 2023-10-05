@@ -187,7 +187,7 @@ class AmountOff extends AbstractDiscountType
 
         if ($productIds->count()) {
             $lines = $lines->reject(function ($line) use ($productIds) {
-                return ! $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
+                return ! $productIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id) || $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
             });
         }
 
