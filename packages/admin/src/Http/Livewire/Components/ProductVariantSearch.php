@@ -37,7 +37,7 @@ class ProductVariantSearch extends Component
 
     public function getSelectedModelsProperty()
     {
-        return ProductVariant::whereIn('id', $this->selected)->withTrashed()->get();
+        return ProductVariant::whereIn('id', $this->selected)->get();
     }
 
     public function getExistingIdsProperty()

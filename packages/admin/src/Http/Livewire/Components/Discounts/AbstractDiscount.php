@@ -556,6 +556,7 @@ abstract class AbstractDiscount extends Component
         return [
             'id' => $variant->id,
             'name' => $variant->sku,
+            'product' => $variant->product->id,
             'thumbnail' => optional($variant->getThumbnail())->getUrl('small'),
         ];
     }

@@ -212,6 +212,7 @@
                                         <x-slot name="options">
                                             <x-hub::dropdown.link class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50"
                                                                   :href="route('hub.products.variants.show', [
+                                                                      'product' => $variant['product'],
                                                                       'variant' => $variant['id'],
                                                                   ])">
                                                 {{ __('adminhub::partials.discounts.limitations.view_product_variant') }}
