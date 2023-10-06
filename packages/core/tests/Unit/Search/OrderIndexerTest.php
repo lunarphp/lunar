@@ -29,10 +29,7 @@ class OrderIndexerTest extends TestCase
             'placed_at' => now(),
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['name' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
+            ]
         ]);
 
         $data = app(OrderIndexer::class)->toSearchableArray($order);

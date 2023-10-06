@@ -29,14 +29,7 @@ class FillOrderFromCart
             'discount_breakdown' => [],
             'shipping_total' => $cart->shippingTotal?->value ?: 0,
             'shipping_breakdown' => $cart->shippingBreakdown,
-            'tax_breakdown' => $cart->taxBreakdown->map(function ($tax) {
-                return [
-                    'description' => $tax['description'],
-                    'identifier' => $tax['identifier'],
-                    'percentage' => $tax['amounts']->min('percentage'),
-                    'total' => $tax['total']->value,
-                ];
-            })->values(),
+            'tax_breakdown' => $cart->taxBreakdown,
             'tax_total' => $cart->taxTotal->value,
             'currency_code' => $cart->currency->code,
             'exchange_rate' => $cart->currency->exchange_rate,
