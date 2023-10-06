@@ -107,34 +107,40 @@ class AmountOff extends AbstractDiscountType
         // enough left to apply the remaining too.
         if ($remaining) {
             // prioritise sharing the remaining over eligible lines
-            $line = $lines->first(function ($line) use ($remaining) {
-                return $line->subTotalDiscounted->value - $remaining > 0;
-            });
+            $lines->filter(function ($line) {
+                return $line->subTotalDiscounted->value > 0;
+            })
+                ->each(function($line) use ($affectedLines, $cart, &$remaining) {
+                    if ($remaining <= 0) {
+                        return;
+                    }
+                    
+                    $amountAvailable = min($line->subTotalDiscounted->value, $remaining);
+                    $remaining -= $amountAvailable;
 
-            if ($line) {
-                $newDiscountTotal = $line->discountTotal->value + $remaining;
-
-                $line->discountTotal = new Price(
-                    $newDiscountTotal,
-                    $cart->currency,
-                    1
-                );
-
-                $line->subTotalDiscounted = new Price(
-                    $line->subTotal->value - $newDiscountTotal,
-                    $cart->currency,
-                    1
-                );
-
-                if (! $affectedLines->first(function ($breakdownLine) use ($line) {
-                    return $breakdownLine->line == $line;
-                })) {
-                    $affectedLines->push(new DiscountBreakdownLine(
-                        line: $line,
-                        quantity: $line->quantity
-                    ));
-                }
-            }
+                    $newDiscountTotal = $line->discountTotal->value + $amountAvailable;
+    
+                    $line->discountTotal = new Price(
+                        $newDiscountTotal,
+                        $cart->currency,
+                        1
+                    );
+    
+                    $line->subTotalDiscounted = new Price(
+                        $line->subTotal->value - $newDiscountTotal,
+                        $cart->currency,
+                        1
+                    );
+    
+                    if (! $affectedLines->first(function ($breakdownLine) use ($line) {
+                        return $breakdownLine->line == $line;
+                    })) {
+                        $affectedLines->push(new DiscountBreakdownLine(
+                            line: $line,
+                            quantity: $line->quantity
+                        ));
+                    }
+                });
         }
 
         if (! $cart->discounts) {
@@ -146,7 +152,7 @@ class AmountOff extends AbstractDiscountType
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
-            price: new Price($value, $cart->currency, 1)
+            price: new Price($value - $remaining, $cart->currency, 1)
         ));
 
         return $cart;

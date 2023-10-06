@@ -22,6 +22,16 @@ class SearchTest extends TestCase
     }
 
     /** @test */
+    public function can_do_an_empty_search()
+    {
+        $this->seedPosts();
+
+        $posts = Post::search('')->get();
+
+        $this->assertCount(Post::count(), $posts);
+    }
+
+    /** @test */
     public function can_raw_search_a_post()
     {
         $this->seedPosts();

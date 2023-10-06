@@ -1356,9 +1356,9 @@ class AmountOffTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $fourthLine->subTotalDiscounted->value);
         $this->assertGreaterThanOrEqual(0, $lastLine->subTotalDiscounted->value);
 
-        $this->assertEquals(149, $firstLine->discountTotal->value);
-        $this->assertEquals(198, $secondLine->discountTotal->value);
-        $this->assertEquals(399, $thirdLine->discountTotal->value);
+        $this->assertEquals(150, $firstLine->discountTotal->value);
+        $this->assertEquals(199, $secondLine->discountTotal->value);
+        $this->assertEquals(397, $thirdLine->discountTotal->value);
         $this->assertEquals(397, $fourthLine->discountTotal->value);
         $this->assertEquals(357, $lastLine->discountTotal->value);
         $this->assertEquals(1500, $cart->discountTotal->value);

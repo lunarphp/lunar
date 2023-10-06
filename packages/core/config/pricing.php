@@ -1,6 +1,9 @@
 <?php
 
+use Lunar\Pricing\DefaultPriceFormatter;
+
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Pricing Stored Inclusive of Tax
@@ -19,7 +22,7 @@ return [
     | Specify which class to use when formatting price data types
     |
     */
-    'formatter' => \Lunar\Pricing\DefaultPriceFormatter::class,
+    'formatter' => DefaultPriceFormatter::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -32,6 +35,7 @@ return [
     |
     */
     'pipelines' => [
-        //
+        // App\Pipelines\Pricing\Example::class,
     ],
+
 ];
