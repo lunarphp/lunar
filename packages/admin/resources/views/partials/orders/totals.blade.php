@@ -59,7 +59,7 @@
           <dd>{{ $order->shipping_total->formatted }}</dd>
         </div>
 
-        @foreach ($order->tax_breakdown as $tax)
+        @foreach ($order->tax_breakdown->amounts as $tax)
           <div class="flex justify-between">
             <dt>{{ $tax->description }}</dt>
             <dd>{{ $tax->total->formatted }}</dd>

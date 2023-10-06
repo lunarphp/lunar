@@ -4,6 +4,7 @@ namespace Lunar\Pipelines\Cart;
 
 use Closure;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
@@ -94,15 +95,16 @@ class CalculateTax
         $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
 
         // Need to include shipping tax breakdown...
-        $cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) use ($cart) {
-            return [
-                'percentage' => $amounts->first()->percentage,
-                'description' => $amounts->first()->description,
-                'identifier' => $amounts->first()->identifier,
-                'amounts' => $amounts,
-                'total' => new Price($amounts->sum('price.value'), $cart->currency, 1),
-            ];
-        });
+        $cart->taxBreakdown = new TaxBreakdown(
+            $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) use ($cart) {
+                return new TaxBreakdownAmount(
+                    price: new Price($amounts->sum('price.value'), $cart->currency, 1),
+                    percentage: $amounts->first()->percentage,
+                    description: $amounts->first()->description,
+                    identifier: $amounts->first()->identifier
+                );
+            })
+        );
 
         return $next($cart);
     }

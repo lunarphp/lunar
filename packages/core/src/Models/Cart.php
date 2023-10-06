@@ -133,7 +133,7 @@ class Cart extends BaseModel
      *
      * @var null|Collection<TaxBreakdown>
      */
-    public ?Collection $taxBreakdown = null;
+    public ?TaxBreakdown $taxBreakdown = null;
 
     /**
      * The cart-level promotions.
