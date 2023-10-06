@@ -147,6 +147,110 @@ class AmountOffTest extends TestCase
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2280, $cart->total->value);
     }
+    
+    /** @test */
+    public function will_not_apply_to_lines_with_excluded_brand()
+    {
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $currency = Currency::getDefault();
+
+        $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
+            'currency_id' => $currency->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $brandA = Brand::factory()->create([
+            'name' => 'Brand A',
+        ]);
+
+        $brandB = Brand::factory()->create([
+            'name' => 'Brand B',
+        ]);
+
+        $productA = Product::factory()->create([
+            'brand_id' => $brandA->id,
+        ]);
+
+        $productB = Product::factory()->create([
+            'brand_id' => $brandB->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create([
+            'product_id' => $productA->id,
+        ]);
+        $purchasableB = ProductVariant::factory()->create([
+            'product_id' => $productB->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => 2000, // £20
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id' => $purchasableB->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableB),
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 1,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $discount->brands()->sync([$brandA->id => ['type' => 'exclusion']]);
+
+        $cart = $cart->calculate();
+
+        /**
+         * Cart has two lines.
+         * 1 x $10 / 10% off $9 / 20% tax = $1.8 / Total = 10.80
+         * 1 x $10 / 0% off $10 / 20% tax = $2 / Total = 12
+         * Cart total = $22.80
+         */
+        $this->assertEquals(200, $cart->discountTotal->value);
+        $this->assertEquals(3360, $cart->total->value);
+    }
 
     /** @test */
     public function will_only_apply_to_lines_with_correct_product()
@@ -344,6 +448,204 @@ class AmountOffTest extends TestCase
 
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2280, $cart->total->value);
+    }
+    
+    /** @test */
+    public function will_not_apply_to_lines_with_excluded_product()
+    {
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $currency = Currency::getDefault();
+
+        $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
+            'currency_id' => $currency->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $brandA = Brand::factory()->create([
+            'name' => 'Brand A',
+        ]);
+
+        $productA = Product::factory()->create([
+            'brand_id' => $brandA->id,
+        ]);
+
+        $productB = Product::factory()->create([
+            'brand_id' => $brandA->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create([
+            'product_id' => $productA->id,
+        ]);
+        $purchasableB = ProductVariant::factory()->create([
+            'product_id' => $productB->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => 2000, // £20
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id' => $purchasableB->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableB),
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 1,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $discount->purchasableExclusions()->create([
+            'discount_id' => $discount->id,
+            'type' => 'exclusion',
+            'purchasable_type' => Product::class,
+            'purchasable_id' => $productA->id,
+        ]);
+
+        $cart = $cart->calculate();
+        
+        $this->assertEquals(200, $cart->discountTotal->value);
+        $this->assertEquals(3360, $cart->total->value);
+    }
+    
+    /** @test */
+    public function will_not_apply_to_lines_with_excluded_product_variant()
+    {
+        $customerGroup = CustomerGroup::getDefault();
+
+        $channel = Channel::getDefault();
+
+        $currency = Currency::getDefault();
+
+        $cart = Cart::factory()->create([
+            'channel_id' => $channel->id,
+            'currency_id' => $currency->id,
+            'coupon_code' => '10OFF',
+        ]);
+
+        $brandA = Brand::factory()->create([
+            'name' => 'Brand A',
+        ]);
+
+        $productA = Product::factory()->create([
+            'brand_id' => $brandA->id,
+        ]);
+
+        $productB = Product::factory()->create([
+            'brand_id' => $brandA->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create([
+            'product_id' => $productA->id,
+        ]);
+        $purchasableB = ProductVariant::factory()->create([
+            'product_id' => $productB->id,
+        ]);
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 1,
+        ]);
+
+        Price::factory()->create([
+            'price' => 2000, // £20
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id' => $purchasableB->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableB),
+            'purchasable_id' => $purchasableB->id,
+            'quantity' => 1,
+        ]);
+
+        $discount = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Coupon',
+            'coupon' => '10OFF',
+            'data' => [
+                'fixed_value' => false,
+                'percentage' => 10,
+            ],
+        ]);
+
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+
+        $discount->purchasableExclusions()->create([
+            'discount_id' => $discount->id,
+            'type' => 'exclusion',
+            'purchasable_type' => ProductVariant::class,
+            'purchasable_id' => $purchasableA->id,
+        ]);
+
+        $cart = $cart->calculate();
+        
+        $this->assertEquals(200, $cart->discountTotal->value);
+        $this->assertEquals(3360, $cart->total->value);
     }
 
     /**
