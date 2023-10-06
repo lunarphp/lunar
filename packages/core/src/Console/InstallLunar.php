@@ -27,7 +27,7 @@ class InstallLunar extends Command
      *
      * @var string
      */
-    protected $signature = 'lunar:install';
+    protected $signature = 'lunar:install {--retainConfig : Retain existing configuration if exists } {--migrate : Run Database Migrations}';
 
     /**
      * The console command description.
@@ -50,15 +50,15 @@ class InstallLunar extends Command
         if (! $this->configExists('lunar')) {
             $this->publishConfiguration();
         } else {
-            if ($this->shouldOverwriteConfig()) {
+            if ($this->option('retainConfig') || !$this->shouldOverwriteConfig()) {
+                $this->line('Existing configuration was not overwritten');
+            } else {
                 $this->line('Overwriting configuration file...');
                 $this->publishConfiguration($force = true);
-            } else {
-                $this->line('Existing configuration was not overwritten');
             }
         }
 
-        if ($this->confirm('Run database migrations?', true)) {
+        if ($this->option('migrate') || $this->confirm('Run database migrations?', true)) {
             $this->call('migrate');
         }
 
