@@ -189,8 +189,8 @@ class AmountOff extends AbstractDiscountType
         
         if ($collectionExclusionIds->count()) {
             $lines = $lines->reject(function ($line) use ($collectionExclusionIds) {
-                return $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
-                    $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
+                return $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionExclusionIds) {
+                    $query->whereIn((new Collection)->getTable().'.id', $collectionExclusionIds);
                 })->exists();
             });
         }
