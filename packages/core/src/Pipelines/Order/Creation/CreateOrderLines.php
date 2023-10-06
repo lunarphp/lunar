@@ -40,14 +40,7 @@ class CreateOrderLines
                 'quantity' => $cartLine->quantity,
                 'sub_total' => $cartLine->subTotal->value,
                 'discount_total' => $cartLine->discountTotal?->value,
-                'tax_breakdown' => $cartLine->taxBreakdown->amounts->map(function ($amount) {
-                    return [
-                        'description' => $amount->description,
-                        'identifier' => $amount->identifier,
-                        'percentage' => $amount->percentage,
-                        'total' => $amount->price->value,
-                    ];
-                })->values(),
+                'tax_breakdown' => $cartLine->taxBreakdown,
                 'tax_total' => $cartLine->taxAmount->value,
                 'total' => $cartLine->total->value,
                 'notes' => null,

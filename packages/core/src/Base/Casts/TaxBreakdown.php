@@ -4,8 +4,10 @@ namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
+use Spatie\LaravelBlink\BlinkFacade;
 
 class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
 {
@@ -22,13 +24,27 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
     {
         $currency = $model->currency ?: Currency::getDefault();
 
-        return collect(
-            json_decode($value, false)
-        )->map(function ($rate) use ($currency) {
-            $rate->total = new Price($rate->total, $currency, 1);
+        $breakdown = new \Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 
-            return $rate;
+        $breakdown->amounts = collect(
+            json_decode($value, false)
+        )->mapWithKeys(function ($amount, $key) {
+
+            $currency = BlinkFacade::once("currency_{$amount->currency_code}", function () use ($amount) {
+              return Currency::whereCode($amount->currency_code)->first();
+            });
+
+            return [
+                $key => new TaxBreakdownAmount(
+                    price: new Price($amount->value, $currency),
+                    description: $amount->description,
+                    identifier: $amount->identifier,
+                    percentage: $amount->percentage,
+                ),
+            ];
         });
+
+        return $breakdown;
     }
 
     /**
@@ -42,16 +58,25 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        return [
-            $key => json_encode(collect($value)->map(function ($rate) {
-                if (! is_array($rate)) {
-                    if ($rate->total instanceof Price) {
-                        $rate->total = $rate->total->value;
-                    }
-                }
+        if ($value && ! is_a($value, \Lunar\Base\ValueObjects\Cart\TaxBreakdown::class)) {
+            throw new \Exception('Tax breakdown must be instance of Lunar\Base\ValueObjects\Cart\TaxBreakdown');
+        }
 
-                return $rate;
-            })->values()),
+        if (! $value) {
+            return [];
+        }
+
+        return [
+            $key => $value->amounts->map(function ($item) {
+                return [
+                    'description' => $item->description,
+                    'identifier' => $item->identifier,
+                    'percentage' => $item->percentage,
+                    'value' => $item->price->value,
+                    'formatted' => $item->price->formatted,
+                    'currency_code' => $item->price->currency->code,
+                ];
+            })->toJson(),
         ];
     }
 
@@ -65,18 +90,8 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function serialize($model, $key, $value, $attributes)
     {
-        return $value->map(function ($rate) {
-            $rate = is_array($rate) ? (object) $rate : $rate;
-
-            if ($rate->total instanceof Price) {
-                $rate->total = (object) [
-                    'value' => $rate->total->value,
-                    'formatted' => $rate->total->formatted,
-                    'currency' => $rate->total->currency->toArray(),
-                ];
-            }
-
-            return $rate;
-        })->toJson();
+        return json_encode(
+            $this->set($model, $key, $value, $attributes)
+        );
     }
 }
