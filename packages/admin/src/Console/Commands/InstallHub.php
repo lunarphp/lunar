@@ -19,7 +19,7 @@ class InstallHub extends Command
      *
      * @var string
      */
-    protected $signature = 'lunar:hub:install';
+    protected $signature = 'lunar:hub:install {--firstName : Admin User First Name} {--lastName : Admin User Last Name} {--email : Admin User Email} {--password : Admin User Password}';
 
     /**
      * The console command description.
@@ -45,10 +45,10 @@ class InstallHub extends Command
         if (! Staff::whereAdmin(true)->exists()) {
             $this->info('Create an admin user');
 
-            $firstname = $this->ask('Whats your first name?');
-            $lastname = $this->ask('Whats your last name?');
-            $email = $this->ask('Whats your email address?');
-            $password = $this->secret('Enter a password');
+            $firstname = $this->option('firstName') ?? $this->ask('Whats your first name?');
+            $lastname = $this->option('lastName') ?? $this->ask('Whats your last name?');
+            $email = $this->option('email') ?? $this->ask('Whats your email address?');
+            $password = $this->option('password') ?? $this->secret('Enter a password');
 
             /** @var Staff $staff */
             $staff = Staff::create([

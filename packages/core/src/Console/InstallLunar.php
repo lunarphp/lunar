@@ -27,7 +27,7 @@ class InstallLunar extends Command
      *
      * @var string
      */
-    protected $signature = 'lunar:install {--retainConfig : Retain existing configuration if exists } {--migrate : Run Database Migrations}';
+    protected $signature = 'lunar:install {--retainConfig : Retain existing configuration if exists } {--migrate : Run Database Migrations}  {--firstName : Admin User First Name} {--lastName : Admin User Last Name} {--email : Admin User Email} {--password : Admin User Password}';
 
     /**
      * The console command description.
@@ -47,7 +47,7 @@ class InstallLunar extends Command
         $this->newLine();
         $this->info('Publishing configuration...');
 
-        if (! $this->configExists('lunar')) {
+        if (!$this->configExists('lunar')) {
             $this->publishConfiguration();
         } else {
             if ($this->option('retainConfig') || !$this->shouldOverwriteConfig()) {
@@ -63,12 +63,12 @@ class InstallLunar extends Command
         }
 
         DB::transaction(function () {
-            if (! Country::count()) {
+            if (!Country::count()) {
                 $this->info('Importing countries');
                 $this->call('lunar:import:address-data');
             }
 
-            if (! Channel::whereDefault(true)->exists()) {
+            if (!Channel::whereDefault(true)->exists()) {
                 $this->info('Setting up default channel');
 
                 Channel::create([
@@ -79,7 +79,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (! Language::count()) {
+            if (!Language::count()) {
                 $this->info('Adding default language');
 
                 Language::create([
@@ -89,7 +89,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (! Currency::whereDefault(true)->exists()) {
+            if (!Currency::whereDefault(true)->exists()) {
                 $this->info('Adding a default currency (USD)');
 
                 Currency::create([
@@ -102,7 +102,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (! CustomerGroup::whereDefault(true)->exists()) {
+            if (!CustomerGroup::whereDefault(true)->exists()) {
                 $this->info('Adding a default customer group.');
 
                 CustomerGroup::create([
@@ -112,7 +112,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (! CollectionGroup::count()) {
+            if (!CollectionGroup::count()) {
                 $this->info('Adding an initial collection group');
 
                 CollectionGroup::create([
@@ -121,7 +121,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (! TaxClass::count()) {
+            if (!TaxClass::count()) {
                 $this->info('Adding a default tax class.');
 
                 TaxClass::create([
@@ -130,7 +130,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (! Attribute::count()) {
+            if (!Attribute::count()) {
                 $this->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
@@ -224,7 +224,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (! ProductType::count()) {
+            if (!ProductType::count()) {
                 $this->info('Adding a product type.');
 
                 $type = ProductType::create([
@@ -240,7 +240,13 @@ class InstallLunar extends Command
         if ($this->isHubInstalled()) {
             $this->newLine();
             $this->line('Installing Admin Hub.');
-            $this->call('lunar:hub:install');
+            $this->call('lunar:hub:install', [
+                '--firstName' => $this->option('firstName'),
+                '--lastName' => $this->option('lastName'),
+                '--email' => $this->option('email'),
+                '--password' => $this->option('password'),
+            ]);
+
         }
 
         $this->newLine();
@@ -255,15 +261,15 @@ class InstallLunar extends Command
     /**
      * Checks if config exists given a filename.
      *
-     * @param  string  $fileName
+     * @param string $fileName
      */
     private function configExists($fileName): bool
     {
-        if (! File::isDirectory(config_path($fileName))) {
+        if (!File::isDirectory(config_path($fileName))) {
             return false;
         }
 
-        return ! empty(File::allFiles(config_path($fileName)));
+        return !empty(File::allFiles(config_path($fileName)));
     }
 
     /**
@@ -280,7 +286,7 @@ class InstallLunar extends Command
     /**
      * Publishes configuration for the Service Provider.
      *
-     * @param  bool  $forcePublish
+     * @param bool $forcePublish
      */
     private function publishConfiguration($forcePublish = false): void
     {
