@@ -49,7 +49,7 @@ $order = Cart::first()->createOrder(
 );
 ```
 
-- `allowMultiple` - Generally carts will only have one draft order associated, however if you want to allow carts to
+- `allowMultipleOrders` - Generally carts will only have one draft order associated, however if you want to allow carts to
   have multiple, you can pass `true` here.
 - `orderIdToUpdate` - You can optionally pass the ID of an order to update instead of attempting to create a new order, this must be a draft order i.e. a null `placed_at` and related to the cart.
 
