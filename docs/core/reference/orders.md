@@ -44,15 +44,14 @@ $order = \Lunar\Models\Order::create([/** .. */]);
 
 // Recommended way
 $order = Cart::first()->createOrder(
-    allowMultiple: false,
-    draftOrderId: null,
+    allowMultipleOrders: false,
+    orderIdToUpdate: null,
 );
 ```
 
 - `allowMultiple` - Generally carts will only have one draft order associated, however if you want to allow carts to
   have multiple, you can pass `true` here.
-- `draftOrderId` - If you want to be sure you're going to get the existing/correct order back, you can pass an ID of a
-  draft order here to use, note it does have to relate to this cart already.
+- `orderIdToUpdate` - You can optionally pass the ID of an order to update instead of attempting to create a new order, this must be a draft order i.e. a null `placed_at` and related to the cart.
 
 The underlying class for creating an order is `Lunar\Actions\Carts\CreateOrder`, you are free to override this in the
 config file `config/cart.php`
