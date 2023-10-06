@@ -119,7 +119,6 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
 use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use Lunar\Hub\Http\Livewire\Components\Tags;
 use Lunar\Hub\Http\Livewire\Dashboard;
-use Lunar\Hub\Http\Livewire\HubLicense;
 use Lunar\Hub\Http\Middleware\Authenticate;
 use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Lunar\Hub\Listeners\SetStaffAuthMiddlewareListener;
@@ -200,7 +199,10 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        if (config('lunar-hub.system.enable', true)) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        }
+
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'adminhub');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
 
@@ -234,7 +236,7 @@ class AdminHubServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
-                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
+                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub/pdf'),
             ], 'lunar.hub.views');
 
             $this->publishes([
@@ -295,7 +297,6 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerGlobalComponents()
     {
         Livewire::component('dashboard', Dashboard::class);
-        Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
         Livewire::component('hub.components.collection-search', CollectionSearch::class);

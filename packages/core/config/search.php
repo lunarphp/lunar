@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Models for indexing
@@ -12,15 +13,22 @@ return [
     |
     */
     'models' => [
-        // These models are required by the system, do not change them.
-        \Lunar\Models\Collection::class,
-        \Lunar\Models\Product::class,
-        \Lunar\Models\ProductOption::class,
-        \Lunar\Models\Order::class,
-        \Lunar\Models\Customer::class,
-        \Lunar\Models\Brand::class,
-        // Below you can add your own models for indexing
+        /*
+         * These models are required by the system, do not change them.
+         */
+        Lunar\Models\Brand::class,
+        Lunar\Models\Collection::class,
+        Lunar\Models\Customer::class,
+        Lunar\Models\Order::class,
+        Lunar\Models\Product::class,
+        Lunar\Models\ProductOption::class,
+
+        /*
+         * Below you can add your own models for indexing...
+         */
+        // App\Models\Example::class,
     ],
+
     /*
     |--------------------------------------------------------------------------
     | Search engine mapping
@@ -31,8 +39,18 @@ return [
     |
     */
     'engine_map' => [
-        // \Lunar\Models\Product::class => 'algolia',
-        // \Lunar\Models\Order::class => 'meilisearch',
-        // \Lunar\Models\Collection::class => 'meilisearch',
+        // Lunar\Models\Product::class => 'algolia',
+        // Lunar\Models\Order::class => 'meilisearch',
+        // Lunar\Models\Collection::class => 'meilisearch',
     ],
+
+    'indexers' => [
+        Lunar\Models\Brand::class => Lunar\Search\BrandIndexer::class,
+        Lunar\Models\Collection::class => Lunar\Search\CollectionIndexer::class,
+        Lunar\Models\Customer::class => Lunar\Search\CustomerIndexer::class,
+        Lunar\Models\Order::class => Lunar\Search\OrderIndexer::class,
+        Lunar\Models\Product::class => Lunar\Search\ProductIndexer::class,
+        Lunar\Models\ProductOption::class => Lunar\Search\ProductOptionIndexer::class,
+    ],
+
 ];

@@ -59,7 +59,7 @@ class CalculateTax
         $taxTotal = $cart->lines->sum('taxAmount.value');
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
-        if ($shippingOption = $this->getShippingOption($cart)) {
+        if ($shippingOption = ShippingManifest::getShippingOption($cart)) {
             $shippingSubTotal = $cart->shippingBreakdown->items->sum('price.value');
 
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
@@ -80,8 +80,12 @@ class CalculateTax
                 $shippingTax->amounts
             );
 
+            $shippingTotal = $shippingSubTotal;
+            if (! prices_inc_tax()) {
+                $shippingTotal += $shippingTaxTotal?->value;
+            }
             $cart->shippingTotal = new Price(
-                $shippingSubTotal + $shippingTaxTotal?->value,
+                $shippingTotal,
                 $cart->currency,
                 1
             );
@@ -101,16 +105,5 @@ class CalculateTax
         });
 
         return $next($cart);
-    }
-
-    private function getShippingOption(Cart $cart)
-    {
-        if (! $cart->shippingAddress) {
-            return null;
-        }
-
-        return ShippingManifest::getOptions($cart)->first(function ($option) use ($cart) {
-            return $option->getIdentifier() == $cart->shippingAddress->shipping_option;
-        });
     }
 }

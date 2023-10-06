@@ -12,8 +12,8 @@ use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 
 class Action extends Component implements Htmlable
 {
-    use HasLivewireComponent,
-        HasClosure,
+    use HasClosure,
+        HasLivewireComponent,
         HasViewComponent,
         HasViewProperties;
 

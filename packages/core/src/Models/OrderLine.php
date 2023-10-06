@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
@@ -34,9 +35,9 @@ use Lunar\Database\Factories\OrderLineFactory;
  */
 class OrderLine extends BaseModel
 {
-    use LogsActivity;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.
@@ -62,7 +63,7 @@ class OrderLine extends BaseModel
     protected $casts = [
         'unit_quantity' => 'integer',
         'quantity' => 'integer',
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
         'tax_breakdown' => TaxBreakdown::class,
         'unit_price' => Price::class,
         'sub_total' => Price::class,

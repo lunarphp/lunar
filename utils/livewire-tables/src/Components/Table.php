@@ -11,9 +11,9 @@ use Lunar\LivewireTables\Support\TableBuilderInterface;
 
 class Table extends Component
 {
-    use WithPagination,
-        HasSavedSearches,
-        HasSortableColumns;
+    use HasSavedSearches,
+        HasSortableColumns,
+        WithPagination;
 
     /**
      * The binding to use when building out the table.

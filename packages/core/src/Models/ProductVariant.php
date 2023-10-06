@@ -47,12 +47,12 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class ProductVariant extends BaseModel implements Purchasable
 {
-    use HasFactory;
-    use HasPrices;
-    use LogsActivity;
     use HasDimensions;
-    use HasTranslations;
+    use HasFactory;
     use HasMacros;
+    use HasPrices;
+    use HasTranslations;
+    use LogsActivity;
 
     /**
      * Define the guarded attributes.
@@ -129,8 +129,6 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * Return the tax class.
-     *
-     * @return \Lunar\Models\TaxClass
      */
     public function getTaxClass(): TaxClass
     {
@@ -205,7 +203,7 @@ class ProductVariant extends BaseModel implements Purchasable
     public function getThumbnail()
     {
         return $this->images->first(function ($media) {
-            return (bool) $media->getCustomProperty('primary', false);
+            return (bool) $media->pivot?->primary;
         }) ?: $this->product->thumbnail;
     }
 }

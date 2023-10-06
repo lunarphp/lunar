@@ -37,6 +37,28 @@ class HasCustomerGroupsTest extends TestCase
     }
 
     /** @test */
+    public function can_schedule_always_available()
+    {
+        $product = Product::factory()->create();
+
+        $customerGroup = CustomerGroup::factory()->create();
+
+        $product->scheduleCustomerGroup($customerGroup);
+
+        $this->assertDatabaseHas(
+            'lunar_customer_group_product',
+            [
+                'customer_group_id' => $customerGroup->id,
+                'enabled' => 1,
+                'visible' => 1,
+                'purchasable' => 1,
+                'starts_at' => null,
+                'ends_at' => null,
+            ],
+        );
+    }
+
+    /** @test */
     public function can_schedule_using_array_of_models()
     {
         $product = Product::factory()->create();
@@ -197,6 +219,7 @@ class HasCustomerGroupsTest extends TestCase
         $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
             'starts_at' => now(),
             'enabled' => false,
+            'visible' => false,
             'ends_at' => now()->addDay(),
         ]);
 

@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-4 pb-24">
     <header>
         <div class="flex items-center gap-4">
             <a href="{{ route('hub.brands.index') }}"
@@ -6,7 +6,7 @@
                title="{{ __('adminhub::catalogue.brands.show.back_link_title') }}">
                 <x-hub::icon ref="chevron-left"
                              style="solid"
-                             class="w-8 h-8" />
+                             class="w-8 h-8"/>
             </a>
             <h1 class="text-xl font-bold md:text-xl">
                 {{ $brand->name }}
@@ -39,6 +39,10 @@
                 @include('adminhub::partials.forms.brand')
             </div>
 
+            <div id="attributes">
+                @include('adminhub::partials.attributes')
+            </div>
+
             <div id="images">
                 @include('adminhub::partials.image-manager', [
                     'existing' => $images,
@@ -50,6 +54,7 @@
             <div id="urls">
                 @include('adminhub::partials.urls')
             </div>
+
 
             @foreach ($this->getSlotsByPosition('bottom') as $slot)
                 <div id="{{ $slot->handle }}">
@@ -83,7 +88,7 @@
                         </div>
                     @else
                         <div class="col-span-9 lg:col-span-4">
-                            <x-hub::input.text wire:model="deleteConfirm" />
+                            <x-hub::input.text wire:model="deleteConfirm"/>
                         </div>
 
                         <div class="col-span-3 text-right lg:col-span-2">

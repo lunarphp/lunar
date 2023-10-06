@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
@@ -38,10 +39,10 @@ use Lunar\DataTypes\ShippingOption;
  */
 class CartAddress extends BaseModel implements Addressable
 {
-    use HasFactory;
-    use LogsActivity;
-    use HasMacros;
     use CachesProperties;
+    use HasFactory;
+    use HasMacros;
+    use LogsActivity;
 
     /**
      * Array of cachable class properties.
@@ -123,7 +124,7 @@ class CartAddress extends BaseModel implements Addressable
      * @var array
      */
     protected $casts = [
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**

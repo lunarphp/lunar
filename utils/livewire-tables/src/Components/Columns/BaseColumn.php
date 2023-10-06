@@ -13,11 +13,11 @@ use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 
 abstract class BaseColumn extends Component
 {
-    use HasLivewireComponent,
-        HasClosure,
-        HasViewComponent,
+    use HasClosure,
         HasEloquentRelationships,
+        HasLivewireComponent,
         HasTranslations,
+        HasViewComponent,
         HasViewProperties;
 
     /**

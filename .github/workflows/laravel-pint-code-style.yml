@@ -4,13 +4,13 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress
-
-      - name: Check code style
-        run: ./vendor/bin/pint --test --preset laravel
+      - uses: actions/checkout@v1
+      - name: "laravel-pint"
+        uses: aglipanci/laravel-pint-action@2.3.0
+        with:
+          preset: laravel
+          verboseMode: true
+          testMode: true
+          pintVersion: 1.13.1
+          onlyDirty: true

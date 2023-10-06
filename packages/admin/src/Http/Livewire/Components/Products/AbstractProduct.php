@@ -32,19 +32,19 @@ use Lunar\Models\ProductVariant;
 
 abstract class AbstractProduct extends Component
 {
-    use Notifies;
-    use WithFileUploads;
-    use HasImages;
+    use CanExtendValidation;
     use HasAvailability;
+    use HasDimensions;
+    use HasImages;
+    use HasPrices;
+    use HasSlots;
+    use HasTags;
+    use HasUrls;
+    use Notifies;
     use SearchesProducts;
     use WithAttributes;
+    use WithFileUploads;
     use WithLanguages;
-    use HasPrices;
-    use HasDimensions;
-    use HasUrls;
-    use HasTags;
-    use HasSlots;
-    use CanExtendValidation;
 
     /**
      * The current product we are editing.
@@ -367,6 +367,8 @@ abstract class AbstractProduct extends Component
             $data = $this->prepareAttributeData();
             $variantData = $this->prepareAttributeData($this->variantAttributes);
 
+            $this->product->brand_id = $this->product->brand_id ?: null;
+
             if ($this->brand) {
                 $brand = Brand::create([
                     'name' => $this->brand,
@@ -412,6 +414,7 @@ abstract class AbstractProduct extends Component
                 DB::transaction(function () use ($variantsToRemove) {
                     foreach ($variantsToRemove as $variant) {
                         $variant->values()->detach();
+                        $variant->prices()->delete();
                         $variant->forceDelete();
                     }
                 });
@@ -542,6 +545,7 @@ abstract class AbstractProduct extends Component
         }
         $variant = ProductVariant::find($variantId);
         $variant->values()->detach();
+        $variant->prices()->delete();
         $variant->delete();
         $this->product->refresh();
     }

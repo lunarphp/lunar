@@ -252,7 +252,7 @@ class OrderTest extends TestCase
                 new ShippingBreakdownItem(
                     name: 'Breakdown A',
                     identifier: 'BA',
-                    price: new Price(123, Currency::getDefault(), 1)
+                    price: $shippingPrice = new Price(123, $currency = Currency::getDefault(), 1)
                 ),
             ])
         );
@@ -265,15 +265,17 @@ class OrderTest extends TestCase
             'shipping_breakdown' => json_encode([[
                 'name' => 'Breakdown A',
                 'identifier' => 'BA',
-                'price' => 123,
+                'value' => 123,
+                'formatted' => $shippingPrice->formatted,
+                'currency' => $currency->toArray(),
             ]]),
         ]);
 
         $breakdown = $order->refresh()->shipping_breakdown;
 
-        $this->assertCount(1, $breakdown);
+        $this->assertCount(1, $breakdown->items);
 
-        $breakdownItem = $breakdown->first();
+        $breakdownItem = $breakdown->items->first();
 
         $this->assertEquals('Breakdown A', $breakdownItem->name);
         $this->assertEquals('BA', $breakdownItem->identifier);

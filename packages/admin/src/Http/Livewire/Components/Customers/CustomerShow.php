@@ -29,9 +29,9 @@ class CustomerShow extends Component
     use HasSlots;
     use Notifies;
     use WithAttributes;
-    use WithPagination;
     use WithCountries;
     use WithLanguages;
+    use WithPagination;
 
     /**
      * The current customer in view.

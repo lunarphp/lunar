@@ -21,9 +21,9 @@ use Lunar\Models\Product;
 
 abstract class AbstractDiscount extends Component
 {
-    use WithLanguages;
-    use Notifies;
     use HasAvailability;
+    use Notifies;
+    use WithLanguages;
 
     /**
      * The instance of the discount.

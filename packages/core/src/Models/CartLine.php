@@ -24,10 +24,10 @@ use Lunar\DataTypes\Price;
  */
 class CartLine extends BaseModel
 {
-    use HasFactory;
-    use LogsActivity;
-    use HasMacros;
     use CachesProperties;
+    use HasFactory;
+    use HasMacros;
+    use LogsActivity;
 
     /**
      * Array of cachable class properties.

@@ -21,8 +21,8 @@ use Lunar\Database\Factories\AttributeGroupFactory;
 class AttributeGroup extends BaseModel
 {
     use HasFactory;
-    use HasTranslations;
     use HasMacros;
+    use HasTranslations;
 
     /**
      * Return a new factory instance for the model.

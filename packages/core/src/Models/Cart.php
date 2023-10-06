@@ -53,10 +53,10 @@ use Lunar\Validation\Cart\ValidateCartForOrderCreation;
  */
 class Cart extends BaseModel
 {
-    use HasFactory;
-    use LogsActivity;
-    use HasMacros;
     use CachesProperties;
+    use HasFactory;
+    use HasMacros;
+    use LogsActivity;
 
     /**
      * Array of cachable class properties.
@@ -556,7 +556,7 @@ class Cart extends BaseModel
     /**
      * Get the shipping option for the cart
      */
-    public function getShippingOption(): ShippingOption|null
+    public function getShippingOption(): ?ShippingOption
     {
         return ShippingManifest::getShippingOption($this);
     }

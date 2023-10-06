@@ -13,13 +13,12 @@ If you would prefer to install Lunar into your own Laravel application, please f
 ## Requirements
 
 - PHP ^8.1
+- Laravel 9|10
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
+- intl PHP extension (on most systems it will be installed by default)
+- bcmath PHP extension (on most systems it will be installed by default)
 - GD PHP extension (used for image manipulation)
-
-::: tip
-This starter kit uses Meilisearch, for the best experience it is recommended you use this as well. If you want to use MySQL for search then you need to make sure you follow the configuration steps: [Search Configuration](https://docs.lunarphp.io/installation.html#search-configuration)
-:::
 
 ## Installation
 
@@ -52,37 +51,37 @@ cp .env.example .env
 
 All the relevant configuration files should be present in the repo.
 
-### Migrate and seed.
+### Migrate and seed
 
 Run the migrations
 
-```
+```bash
 php artisan migrate
 ```
 
 Install Lunar
 
-```
+```bash
 php artisan lunar:install
 ```
 
 Seed the demo data.
 
-```
+```bash
 php artisan db:seed
 ```
 
 Link the storage directory
 
-```
+```bash
 php artisan storage:link
 ```
 
 ## Finished 🚀
 
-You are now installed! 
+You are now installed!
 
 - You can access the storefront at `http://<yoursite>`
 - You can access the admin hub at `http://<yoursite>/hub`
 
-You can review the source code at the GitHub Repository: [https://github.com/lunarphp/livewire-starter-kit](https://github.com/lunarphp/livewire-starter-kit)
+You can review the source code at the GitHub Repository: [https://github.com/lunarphp/livewire-starter-kit](https://github.com/lunarphp/livewire-starter-kit).

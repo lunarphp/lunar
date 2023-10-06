@@ -20,8 +20,8 @@ use Lunar\Database\Factories\TaxZoneFactory;
  */
 class TaxZone extends BaseModel
 {
-    use HasFactory;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
 
     /**

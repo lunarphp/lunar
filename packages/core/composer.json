@@ -35,6 +35,9 @@
     },
     "require": {
         "php": "^8.1",
+        "ext-bcmath": "*",
+        "ext-exif": "*",
+        "ext-intl": "*",
         "laravel/framework": "^9.0|^10.0",
         "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
         "spatie/laravel-activitylog": "^4.4",
@@ -48,6 +51,6 @@
     },
     "require-dev": {
         "orchestra/testbench": "^7.0|^8.0",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "1.13.1"
     }
 }

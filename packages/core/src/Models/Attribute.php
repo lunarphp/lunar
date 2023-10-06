@@ -36,8 +36,8 @@ use Lunar\Facades\DB;
 class Attribute extends BaseModel
 {
     use HasFactory;
-    use HasTranslations;
     use HasMacros;
+    use HasTranslations;
 
     public static function boot()
     {

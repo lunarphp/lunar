@@ -12,7 +12,7 @@ Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) approa
 
 ## Repository Branching
 
-**Bug Fixes** should target the latest compatible branch version i.e `0.3`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
+**Bug Fixes** should target the latest compatible branch version i.e `0.6`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
 
 **Features** that bring new (or enhance current) functionality to Lunar should always target the `main` branch.
 
@@ -71,11 +71,10 @@ A PR should be able to include the following:
 - Label as either a `bug`, `enhancement`, `feature` or `documentation`
 - Any relevant documentation updates
 - Unit tests with adequate code coverage
-- Changelog entry
 
 ## Code Styles
 
-Lunar currently uses [Laravel Pint](https://laravel.com/docs/9.x/pint) for code styling. This is not automatically triggered, so you will need to run `vendor/bin/pint` on your branch.
+Lunar currently uses [Laravel Pint](https://laravel.com/docs/pint) for code styling. This is not automatically triggered, so you will need to run `vendor/bin/pint` on your branch.
 
 ## Asset compiling
 
@@ -96,4 +95,3 @@ If you would like to contribute to the documentation you can do easily by follow
 7. Submit a pull request
 
 Lunar uses [VitePress](https://vitepress.dev/) for our documentation site which uses [Markdown](https://www.markdownguide.org/basic-syntax/) files to store the content. You'll find these Markdown files in the `/docs` directory.
-

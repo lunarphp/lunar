@@ -122,7 +122,7 @@ class CreateOrderTest extends TestCase
         $this->assertTrue($orderA->updated_at->eq($updatedAt));
     }
 
-    /** @test  */
+    /** @test */
     public function can_create_order()
     {
         CustomerGroup::factory()->create([
@@ -146,8 +146,6 @@ class CreateOrderTest extends TestCase
             'city' => 'Lapland',
             'postcode' => 'SHIPP',
         ]);
-
-        $taxClass = TaxClass::factory()->create();
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
