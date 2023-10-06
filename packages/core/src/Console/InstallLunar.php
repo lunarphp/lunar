@@ -27,7 +27,7 @@ class InstallLunar extends Command
      *
      * @var string
      */
-    protected $signature = 'lunar:install {--retainConfig : Retain existing configuration if exists } {--migrate : Run Database Migrations}  {--firstName : Admin User First Name} {--lastName : Admin User Last Name} {--email : Admin User Email} {--password : Admin User Password}';
+    protected $signature = 'lunar:install {--retainConfig : Retain existing configuration if exists } {--migrate : Run Database Migrations}  {--firstName= : Admin User First Name} {--lastName= : Admin User Last Name} {--email= : Admin User Email} {--password= : Admin User Password}';
 
     /**
      * The console command description.

@@ -19,7 +19,7 @@ class InstallHub extends Command
      *
      * @var string
      */
-    protected $signature = 'lunar:hub:install {--firstName : Admin User First Name} {--lastName : Admin User Last Name} {--email : Admin User Email} {--password : Admin User Password}';
+    protected $signature = 'lunar:hub:install {--firstName= : Admin User First Name} {--lastName= : Admin User Last Name} {--email= : Admin User Email} {--password= : Admin User Password}';
 
     /**
      * The console command description.
