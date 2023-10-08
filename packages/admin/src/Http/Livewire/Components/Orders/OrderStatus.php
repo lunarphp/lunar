@@ -142,7 +142,7 @@ class OrderStatus extends Component
 
     public function buildMailer($class)
     {
-        $mailer = new $class;
+        $mailer = new $class($this->order);
 
         return $mailer
             ->with('order', $this->order)

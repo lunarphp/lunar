@@ -189,7 +189,7 @@
                                     </td>
 
                                     <td class="p-2 text-gray-700 whitespace-nowrap">
-                                        {{ $tax->total->formatted }}
+                                        {{ $tax->price->formatted }}
                                     </td>
                                 </tr>
                             @endforeach
