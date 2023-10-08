@@ -62,7 +62,7 @@
         @foreach ($order->tax_breakdown->amounts as $tax)
           <div class="flex justify-between">
             <dt>{{ $tax->description }}</dt>
-            <dd>{{ $tax->total->formatted }}</dd>
+            <dd>{{ $tax->price->formatted }}</dd>
           </div>
         @endforeach
 

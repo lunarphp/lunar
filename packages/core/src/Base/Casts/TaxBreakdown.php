@@ -28,8 +28,7 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
 
         $breakdown->amounts = collect(
             json_decode($value, false)
-        )->mapWithKeys(function ($amount, $key) {
-
+        )->mapWithKeys(function ($amount, $key) use ($model) {
             $currency = BlinkFacade::once("currency_{$amount->currency_code}", function () use ($amount) {
               return Currency::whereCode($amount->currency_code)->first();
             });
