@@ -176,6 +176,30 @@ class Discount extends BaseModel
                 )
         );
     }
+    
+    /**
+     * Return the product variants scope.
+     *
+     * @return Builder
+     */
+    public function scopeProductVariants(Builder $query, iterable $variantIds = [], string $type = null)
+    {
+        if (is_array($variantIds)) {
+            $variantIds = collect($variantIds);
+        }
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+                ->orWhereHas('purchasables',
+                    fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
+                        ->wherePurchasableType(ProductVariant::class)
+                        ->when(
+                            $type,
+                            fn ($query) => $query->whereType($type)
+                        )
+                )
+        );
+    }
 
     public function scopeUsable(Builder $query)
     {

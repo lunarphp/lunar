@@ -182,6 +182,54 @@
                     </div>
                 @endforeach
             </div>
+            
+            <header class="flex items-center justify-between border-t pt-4">
+                <h4 class="text-md font-medium text-gray-700">
+                    {{ __('adminhub::partials.discounts.limitations.by_product_variant') }}
+                </h4>
+
+                @livewire('hub.components.product-variant-search', [
+                    'existing' => $selectedProductVariants->map(fn ($variant) => ['id' => $variant['id']]),
+                    'ref' => 'discount-limitations',
+                ])
+            </header>
+
+            <div class="space-y-2">
+                @foreach ($selectedProductVariants as $index => $variant)
+                    <div wire:key="variant_{{ $index }}">
+                        <div class="flex items-center px-4 py-2 text-sm border rounded">
+
+                            <div class="flex grow">
+                                <div class="grow flex gap-1.5 flex-wrap items-center">
+                                    <strong class="text-gray-700 truncate max-w-[40ch]"
+                                            title="{{ $variant['name'] }}">
+                                        {{ $variant['name'] }}
+                                    </strong>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <x-hub::dropdown minimal>
+                                        <x-slot name="options">
+                                            <x-hub::dropdown.link class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 border-b hover:bg-gray-50"
+                                                                  :href="route('hub.products.variants.show', [
+                                                                      'product' => $variant['product'],
+                                                                      'variant' => $variant['id'],
+                                                                  ])">
+                                                {{ __('adminhub::partials.discounts.limitations.view_product_variant') }}
+                                            </x-hub::dropdown.link>
+
+                                            <x-hub::dropdown.button wire:click.prevent="removeProductVariant({{ $index }})"
+                                                                    class="flex items-center justify-between px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+                                                {{ __('adminhub::global.remove') }}
+                                            </x-hub::dropdown.button>
+                                        </x-slot>
+                                    </x-hub::dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
 
         </div>
     </div>
