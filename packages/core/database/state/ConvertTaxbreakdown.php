@@ -25,7 +25,6 @@ class ConvertTaxbreakdown
                // Get the raw tax_breakdown
                $breakdown = json_decode($order->getRawOriginal('tax_breakdown'), true);
 
-
                $amounts = collect($breakdown)->map(function ($row) use ($order) {
                   return new TaxBreakdownAmount(
                       price: new Price($row['total'], $order->currency),
@@ -43,6 +42,10 @@ class ConvertTaxbreakdown
 
         OrderLine::chunk(500, function ($orderLines) {
             foreach ($orderLines as $orderLine) {
+                if (is_a($orderLine->tax_breakdown, TaxBreakdown::class)) {
+                    continue;
+                }
+
                 // Get the raw tax_breakdown
                 $breakdown = json_decode($orderLine->getRawOriginal('tax_breakdown'), true);
                 

@@ -18,12 +18,10 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \Illuminate\Support\Collection
+     * @return \Lunar\Base\ValueObjects\Cart\TaxBreakdown
      */
     public function get($model, $key, $value, $attributes)
     {
-        $currency = $model->currency ?: Currency::getDefault();
-
         $breakdown = new \Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 
         $breakdown->amounts = collect(
@@ -36,8 +34,8 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
             return [
                 $key => new TaxBreakdownAmount(
                     price: new Price($amount->value, $currency),
-                    description: $amount->description,
                     identifier: $amount->identifier,
+                    description: $amount->description,
                     percentage: $amount->percentage,
                 ),
             ];
@@ -51,8 +49,9 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  \Lunar\DataTypes\Price  $value
+     * @param  Price  $value
      * @param  array  $attributes
+     * @throws \Exception
      * @return array
      */
     public function set($model, $key, $value, $attributes)
@@ -72,7 +71,6 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
                     'identifier' => $item->identifier,
                     'percentage' => $item->percentage,
                     'value' => $item->price->value,
-                    'formatted' => $item->price->formatted,
                     'currency_code' => $item->price->currency->code,
                 ];
             })->toJson(),
@@ -84,7 +82,7 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  \Illuminate\Support\Collection  $value
+     * @param  mixed $value
      * @param  array<string, mixed>  $attributes
      */
     public function serialize($model, $key, $value, $attributes)
