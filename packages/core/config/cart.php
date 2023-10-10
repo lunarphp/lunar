@@ -89,7 +89,7 @@ return [
     | The default actions should be fine for most cases.
     |
     */
-    'actions' => [        
+    'actions' => [
         'add_to_cart' => Lunar\Actions\Carts\AddOrUpdatePurchasable::class,
         'get_existing_cart_line' => Lunar\Actions\Carts\GetExistingCartLine::class,
         'update_cart_line' => Lunar\Actions\Carts\UpdateCartLine::class,
