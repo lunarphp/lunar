@@ -5,6 +5,7 @@ namespace Lunar;
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -39,6 +40,7 @@ use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
 use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
+use Lunar\Console\Commands\PruneCarts;
 use Lunar\Console\Commands\ScoutIndexerCommand;
 use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
@@ -203,7 +205,14 @@ class LunarServiceProvider extends ServiceProvider
                 ScoutIndexerCommand::class,
                 MigrateGetCandy::class,
                 SyncNewCustomerOrders::class,
+                PruneCarts::class,
             ]);
+            
+            if (config('lunar.cart.prune_tables.enabled', false)) {
+                $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+                    $schedule->command('lunar:prune:carts')->daily();
+                });
+            }
         }
 
         Arr::macro('permutate', [\Lunar\Utils\Arr::class, 'permutate']);

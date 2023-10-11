@@ -150,4 +150,26 @@ return [
         'lines.purchasable.product',
         'lines.cart.currency',
     ],
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Prune carts
+    |--------------------------------------------------------------------------
+    |
+    | Should the cart models be pruned to prevent data build up and 
+    | some settings controlling how pruning should be determined
+    |
+    */
+    'prune_tables' => [
+        
+        'enabled' => true,
+        
+        'pipelines' => [
+            Lunar\Pipelines\CartPrune\PruneAfter::class,
+            Lunar\Pipelines\CartPrune\WithoutOrders::class,
+        ],
+        
+        'prune_interval' => 90, // days
+        
+    ],
 ];
