@@ -2,6 +2,7 @@
 
 namespace Lunar\Database\State;
 
+use Illuminate\Support\Facades\Schema;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
@@ -17,6 +18,10 @@ class ConvertTaxbreakdown
 
     public function run()
     {
+        if (! $this->canRun()) {
+            return;
+        }
+
         Order::chunk(500, function ($orders) {
            foreach ($orders as $order) {
                if (is_a($order->tax_breakdown, TaxBreakdown::class)) {
@@ -67,6 +72,8 @@ class ConvertTaxbreakdown
 
     protected function canRun()
     {
-        return true;
+        $prefix = config('lunar.database.table_prefix');
+
+        return Schema::hasTable("{$prefix}orders") && Schema::hasTable("{$prefix}order_lines");
     }
 }
