@@ -214,7 +214,6 @@ class CreateOrderTest extends TestCase
                 'identifier' => $tax->identifier,
                 'percentage' => $tax->percentage,
                 'value' => $tax->price->value,
-                'formatted' => $tax->price->formatted,
                 'currency_code' => $tax->price->currency->code,
             ]];
         });
@@ -724,7 +723,6 @@ class CreateOrderTest extends TestCase
                 'identifier' => $tax->identifier,
                 'percentage' => $tax->percentage,
                 'value' => $tax->price->value,
-                'formatted' => $tax->price->formatted,
                 'currency_code' => $tax->price->currency->code,
             ]];
         });
