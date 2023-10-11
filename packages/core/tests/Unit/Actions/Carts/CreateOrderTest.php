@@ -58,10 +58,7 @@ class CreateOrderTest extends TestCase
         (new CreateOrder)->execute($cart);
     }
 
-    /**
-     * @test
-     * @group thisone
-     */
+    /** @test */
     public function can_create_order_if_multiple_enabled()
     {
         TaxClass::factory()->create([
@@ -125,10 +122,7 @@ class CreateOrderTest extends TestCase
         $this->assertTrue($orderA->updated_at->eq($updatedAt));
     }
 
-    /**
-     * @test
-     *  @group noonoo
-     */
+    /** @test */
     public function can_create_order()
     {
         CustomerGroup::factory()->create([
