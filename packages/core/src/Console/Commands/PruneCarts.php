@@ -38,12 +38,14 @@ class PruneCarts extends Command
             ->through(
                 config('lunar.cart.prune_tables.pipelines', [])
             )->then(function ($query) {
-                $query->chunk(200, function ($cart) {
-                    Cart::where('merged_id', $cart->id)->update(['merged_id' => null]);
-                    
-                    $cart->lines()->delete();
-                    $cart->addresses()->delete();
-                    $cart->delete();
+                $query->chunk(200, function ($carts) {
+                    $carts->each(function ($cart) {
+                        Cart::where('merged_id', $cart->id)->update(['merged_id' => null]);
+                        
+                        $cart->lines()->delete();
+                        $cart->addresses()->delete();
+                        $cart->delete();
+                    });
                 });
             });
                 
