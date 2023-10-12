@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
@@ -85,13 +86,10 @@ class OrderTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['name' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $this->assertIsObject($order->meta);
-        $this->assertIsIterable($order->tax_breakdown);
+        $this->assertInstanceOf(TaxBreakdown::class, $order->tax_breakdown);
         $this->assertInstanceOf(DateTime::class, $order->placed_at);
     }
 
@@ -107,10 +105,7 @@ class OrderTest extends TestCase
             'placed_at' => now(),
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
+            ]
         ]);
 
         $this->assertCount(0, $order->lines);

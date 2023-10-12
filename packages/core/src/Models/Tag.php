@@ -34,8 +34,9 @@ class Tag extends BaseModel
      */
     protected $guarded = [];
 
-    public function taggables()
+    public function taggable()
     {
         return $this->morphTo();
     }
+    
 }
