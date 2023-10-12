@@ -241,7 +241,6 @@ class PricingManager implements PricingManagerInterface
     private function reset()
     {
         $this->qty = 1;
-        $this->user = null;
         $this->customerGroups = null;
     }
 }
