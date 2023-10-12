@@ -187,7 +187,7 @@
                         {{ $line->discount_total->formatted }}
                       </td>
                       <td>
-                        {{ $line->tax_breakdown->sum('percentage') }}%
+                        {{ $line->tax_breakdown->amounts->sum('percentage') }}%
                       </td>
                       <td>
                         {{ $line->tax_total->formatted }}
