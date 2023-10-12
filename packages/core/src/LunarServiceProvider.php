@@ -42,6 +42,7 @@ use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\ScoutIndexerCommand;
 use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
+use Lunar\Database\State\ConvertTaxbreakdown;
 use Lunar\Database\State\EnsureBrandsAreUpgraded;
 use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
@@ -246,6 +247,7 @@ class LunarServiceProvider extends ServiceProvider
             EnsureMediaCollectionsAreRenamed::class,
             PopulateProductOptionLabelWithName::class,
             MigrateCartOrderRelationship::class,
+            ConvertTaxbreakdown::class,
         ];
 
         foreach ($states as $state) {
