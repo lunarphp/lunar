@@ -162,7 +162,7 @@ return [
     */
     'prune_tables' => [
         
-        'enabled' => true,
+        'enabled' => false,
         
         'pipelines' => [
             Lunar\Pipelines\CartPrune\PruneAfter::class,
