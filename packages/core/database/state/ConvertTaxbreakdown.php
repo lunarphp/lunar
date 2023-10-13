@@ -3,7 +3,6 @@
 namespace Lunar\Database\State;
 
 use Illuminate\Support\Facades\Schema;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Order;
@@ -24,12 +23,8 @@ class ConvertTaxbreakdown
 
         Order::chunk(500, function ($orders) {
            foreach ($orders as $order) {
-               if (is_a($order->tax_breakdown, TaxBreakdown::class)) {
-                   continue;
-               }
                // Get the raw tax_breakdown
                $breakdown = json_decode($order->getRawOriginal('tax_breakdown'), true);
-
                $amounts = collect($breakdown)->map(function ($row) use ($order) {
                   return new TaxBreakdownAmount(
                       price: new Price($row['total'], $order->currency),
@@ -47,10 +42,6 @@ class ConvertTaxbreakdown
 
         OrderLine::chunk(500, function ($orderLines) {
             foreach ($orderLines as $orderLine) {
-                if (is_a($orderLine->tax_breakdown, TaxBreakdown::class)) {
-                    continue;
-                }
-
                 // Get the raw tax_breakdown
                 $breakdown = json_decode($orderLine->getRawOriginal('tax_breakdown'), true);
                 
@@ -74,6 +65,26 @@ class ConvertTaxbreakdown
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return Schema::hasTable("{$prefix}orders") && Schema::hasTable("{$prefix}order_lines");
+        $hasSchema = Schema::hasTable("{$prefix}orders") && Schema::hasTable("{$prefix}order_lines");
+
+        if (!$hasSchema) {
+            return false;
+        }
+
+        // Grab an order and determine whether the tax breakdown has already been converted.
+        // This will save us having to run the command and check each order.
+        $order = Order::first();
+
+        if (!$order) {
+            return false;
+        }
+
+        $breakdownItem = json_decode($order->getRawOriginal('tax_breakdown'), true)[0] ?? null;
+
+        if (!$breakdownItem) {
+            return false;
+        }
+
+        return $breakdownItem['total'] ?? false;
     }
 }
