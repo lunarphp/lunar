@@ -1242,11 +1242,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(2000, $cart->subTotal->value);
     }
 
-    /**
-     * @test
-     *
-     * @group thisone
-     */
+    /** @test */
     public function can_apply_discount_with_min_spend()
     {
         $currency = Currency::getDefault();

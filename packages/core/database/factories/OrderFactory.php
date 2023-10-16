@@ -3,6 +3,7 @@
 namespace Lunar\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Models\Channel;
 use Lunar\Models\Order;
 
@@ -24,13 +25,7 @@ class OrderFactory extends Factory
             'sub_total' => $total - $taxTotal,
             'discount_total' => 0,
             'shipping_total' => 0,
-            'tax_breakdown' => [
-                [
-                    'description' => 'VAT',
-                    'total' => 200,
-                    'percentage' => 20,
-                ],
-            ],
+            'tax_breakdown' => new TaxBreakdown(),
             'tax_total' => $taxTotal,
             'total' => $total,
             'notes' => null,
