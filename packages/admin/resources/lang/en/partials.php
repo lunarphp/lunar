@@ -90,8 +90,10 @@ return [
     'discounts.limitations.by_collection' => 'Limit by collection',
     'discounts.limitations.by_brand' => 'Limit by brand',
     'discounts.limitations.by_product' => 'Limit by product',
+    'discounts.limitations.by_product_variant' => 'Limit by product variant',
     'discounts.limitations.view_brand' => 'View Brand',
     'discounts.limitations.view_product' => 'View Product',
+    'discounts.limitations.view_product_variant' => 'View Product Variant',
 
     /**
      * Product Collections.

@@ -58,7 +58,7 @@ class CreateOrderTest extends TestCase
         (new CreateOrder)->execute($cart);
     }
 
-    /** @test  */
+    /** @test */
     public function can_create_order_if_multiple_enabled()
     {
         TaxClass::factory()->create([
@@ -208,14 +208,15 @@ class CreateOrderTest extends TestCase
 
         $order = $cart->createOrder();
 
-        $breakdown = $cart->taxBreakdown->map(function ($tax) {
-            return [
-                'description' => $tax['description'],
-                'identifier' => $tax['identifier'],
-                'percentage' => $tax['amounts']->min('percentage'),
-                'total' => $tax['total']->value,
-            ];
-        })->values();
+        $breakdown = $cart->taxBreakdown->amounts->mapWithKeys(function ($tax, $key) {
+            return [$key => [
+                'description' => $tax->description,
+                'identifier' => $tax->identifier,
+                'percentage' => $tax->percentage,
+                'value' => $tax->price->value,
+                'currency_code' => $tax->price->currency->code,
+            ]];
+        });
 
         $datacheck = [
             'user_id' => $cart->user_id,
@@ -716,14 +717,15 @@ class CreateOrderTest extends TestCase
 
         $order = $cart->createOrder();
 
-        $breakdown = $cart->taxBreakdown->map(function ($tax) {
-            return [
-                'description' => $tax['description'],
-                'identifier' => $tax['identifier'],
-                'percentage' => $tax['amounts']->min('percentage'),
-                'total' => $tax['total']->value,
-            ];
-        })->values();
+        $breakdown = $cart->taxBreakdown->amounts->mapWithKeys(function ($tax, $key) {
+            return [$key => [
+                'description' => $tax->description,
+                'identifier' => $tax->identifier,
+                'percentage' => $tax->percentage,
+                'value' => $tax->price->value,
+                'currency_code' => $tax->price->currency->code,
+            ]];
+        });
 
         $datacheck = [
             'user_id' => $cart->user_id,

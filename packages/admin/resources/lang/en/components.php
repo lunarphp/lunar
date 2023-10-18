@@ -32,6 +32,17 @@ return [
     'product-search.title' => 'Search for products',
     'product-search.associate_self' => 'You cannot associate the same product',
     'product-search.commit_btn' => 'Select Products',
+    'product-variant-search.btn' => 'Add Variants',
+    'product-variant-search.first_tab' => 'Search variants',
+    'product-variant-search.second_tab' => 'Selected variants',
+    'product-variant-search.max_results_exceeded' => 'Showing the first :max of :total variants. Try being more specific in your search.',
+    'product-variant-search.exists_in_collection' => 'Already associated',
+    'product-variant-search.no_results' => 'No results found.',
+    'product-variant-search.pre_search_message' => 'Search for variants by SKU.',
+    'product-variant-search.select_empty' => 'When you select variants, they will appear here.',
+    'product-variant-search.title' => 'Search for variants',
+    'product-variant-search.associate_self' => 'You cannot associate the same variants',
+    'product-variant-search.commit_btn' => 'Select Variants',
     /**
      * Option Value Create Modal.
      */

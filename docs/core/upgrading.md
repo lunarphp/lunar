@@ -24,6 +24,27 @@ php artisan lunar:hub:install
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.6`.
 
+## [Unreleased]
+
+### High Impact
+
+#### TaxBreakdown casting has been refactored
+
+Database columns which have `tax_breakdown` casting will now actually cast back into the `TaxBreakdown` object. This means you will need to update any storefront views or API transformers to accomodate this.
+
+Before:
+
+```php
+@foreach ($order->tax_breakdown as $tax)
+    {{ $tax->total->formatted }}
+@endforeach
+```
+
+```php
+@foreach ($order->tax_breakdown->amounts as $tax)
+    {{ $tax->price->formatted }}
+@endforeach
+```
 ## 0.6
 
 ### High Impact

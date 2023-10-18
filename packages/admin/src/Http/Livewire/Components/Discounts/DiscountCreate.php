@@ -32,6 +32,7 @@ class DiscountCreate extends AbstractDiscount
         $this->selectedBrands = collect();
         $this->selectedCollections = collect();
         $this->selectedProducts = collect();
+        $this->selectedProductVariants = collect();
     }
 
     /**
@@ -53,6 +54,8 @@ class DiscountCreate extends AbstractDiscount
             'discount.data' => 'array',
             'selectedCollections' => 'array',
             'selectedBrands' => 'array',
+            'selectedProducts' => 'array',
+            'selectedProductVariants' => 'array',
         ], $this->getDiscountComponent()->rules());
 
         foreach ($this->currencies as $currency) {

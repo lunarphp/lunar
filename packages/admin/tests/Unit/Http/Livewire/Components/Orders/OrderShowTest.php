@@ -51,10 +51,7 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
+            ]
         ]);
 
         $this->assertCount(0, $order->lines);
@@ -85,9 +82,6 @@ class OrderShowTest extends TestCase
             'status' => 'awaiting-payment',
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 
@@ -136,9 +130,6 @@ class OrderShowTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $shipping = OrderAddress::factory()->create([
@@ -181,9 +172,6 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 
@@ -230,9 +218,6 @@ class OrderShowTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         LiveWire::actingAs($staff, 'staff')
@@ -250,9 +235,6 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 
@@ -288,9 +270,6 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'placed_at' => null,
             'status' => 'awaiting-payment',
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         LiveWire::actingAs($staff, 'staff')
