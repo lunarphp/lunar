@@ -3,91 +3,144 @@
 namespace Lunar\Base\Traits;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait HasDimensions
 {
     /**
-     * Method when trait is booted.
+     * Initialize the trait
      *
      * @return void
      */
-    public static function bootHasDimensions()
+    public function initializeHasDimensions()
     {
-        self::retrieved(function ($model) {
-            $model->mergeCasts([
-                'length_value' => 'float',
-                'width_value' => 'float',
-                'height_value' => 'float',
-                'volume_value' => 'float',
-                'weight_value' => 'float',
-            ]);
-        });
+        $this->mergeCasts([
+            'length_value' => 'float',
+            'width_value' => 'float',
+            'height_value' => 'float',
+            'volume_value' => 'float',
+            'weight_value' => 'float',
+        ]);
     }
 
     /**
-     * Getter for the length attribute.
-     *
-     * @return \Cartalyst\Converter\Converter
+     * Get the length unit
      */
-    public function getLengthAttribute()
+    protected function lengthUnit(): Attribute
     {
-        $unit = $this->length_unit ?: 'mm';
-
-        return Converter::from("length.{$unit}")->value($this->length_value ?: 0);
+        return Attribute::make(
+            get: fn (?string $value) => $value
+                ?? collect(config('lunar.shipping.measurements.length'))->where('default')->keys()->first()
+                ?? 'mm'
+        );
     }
 
     /**
-     * Getter for the width attribute.
-     *
-     * @return \Cartalyst\Converter\Converter
+     * Get the width unit
      */
-    public function getWidthAttribute()
+    protected function widthUnit(): Attribute
     {
-        $unit = $this->width_unit ?: 'mm';
-
-        return Converter::from("length.{$unit}")->value($this->width_value ?: 0);
+        return Attribute::make(
+            get: fn(?string $value) => $value
+                ?? collect(config('lunar.shipping.measurements.length'))->where('default')->keys()->first()
+                ?? 'mm'
+        );
     }
 
     /**
-     * Getter for height attribute.
-     *
-     * @return \Cartalyst\Converter\Converter
+     * Get the height unit
      */
-    public function getHeightAttribute()
+    protected function heightUnit(): Attribute
     {
-        $unit = $this->height_unit ?: 'mm';
-
-        return Converter::from("length.{$unit}")->value($this->height_value ?: 0);
+        return Attribute::make(
+            get: fn(?string $value) => $value
+                ?? collect(config('lunar.shipping.measurements.length'))->where('default')->keys()->first()
+                ?? 'mm'
+        );
     }
 
     /**
-     * Getter for weight attribute.
-     *
-     * @return \Cartalyst\Converter\Converter
+     * Get the weight unit
      */
-    public function getWeightAttribute()
+    protected function weightUnit(): Attribute
     {
-        $unit = $this->weight_unit ?: 'kg';
-
-        return Converter::from("weight.{$unit}")->value($this->weight_value ?: 0);
+        return Attribute::make(
+            get: fn(?string $value) => $value
+                ?? collect(config('lunar.shipping.measurements.weight'))->where('default')->keys()->first()
+                ?? 'kg'
+        );
     }
 
     /**
-     * Getter for the volume attribute.
-     *
-     * @return \Cartalyst\Converter\Converter
+     * Get the volume unit
      */
-    public function getVolumeAttribute()
+    protected function volumeUnit(): Attribute
     {
-        if ($this->volume_value && $this->volume_unit) {
-            return Converter::from("volume.{$this->volume_unit}")
-                ->to("volume.{$this->volume_unit}")->value($this->volume_value);
-        }
+        return Attribute::make(
+            get: fn(?string $value) => $value
+                ?? collect(config('lunar.shipping.measurements.volume'))->where('default')->keys()->first()
+                ?? 'l'
+        );
+    }
 
-        $length = $this->length->to('length.cm')->convert()->getValue();
-        $width = $this->width->to('length.cm')->convert()->getValue();
-        $height = $this->height->to('length.cm')->convert()->getValue();
+    /**
+     * Get the length
+     */
+    protected function length(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Converter::from("length.{$this->length_unit}")->value($this->length_value ?? 0)
+        );
+    }
 
-        return Converter::from('volume.ml')->to('volume.l')->value($length * $width * $height)->convert();
+    /**
+     * Get the width
+     */
+    protected function width(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Converter::from("length.{$this->width_unit}")->value($this->width_value ?? 0)
+        );
+    }
+
+    /**
+     * Get the height
+     */
+    protected function height(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Converter::from("length.{$this->height_unit}")->value($this->height_value ?? 0)
+        );
+    }
+
+    /**
+     * Get the weight
+     */
+    protected function weight(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Converter::from("weight.{$this->weight_unit}")->value($this->weight_value ?? 0)
+        );
+    }
+
+    /**
+     * Get the volume
+     */
+    protected function volume(): Attribute
+    {
+        return Attribute::make(
+            get: function() {
+                if ($this->volume_value && $this->volume_unit) {
+                    return Converter::from("volume.{$this->volume_unit}")
+                        ->to("volume.{$this->volume_unit}")->value($this->volume_value);
+                }
+
+                $length = $this->length->to('length.cm')->convert()->getValue();
+                $width = $this->width->to('length.cm')->convert()->getValue();
+                $height = $this->height->to('length.cm')->convert()->getValue();
+
+                return Converter::from('volume.ml')->to('volume.l')->value($length * $width * $height)->convert();
+            }
+        );
     }
 }

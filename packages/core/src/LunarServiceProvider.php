@@ -299,8 +299,8 @@ class LunarServiceProvider extends ServiceProvider
             /** @var Blueprint $this */
             $columns = ['length', 'width', 'height', 'weight', 'volume'];
             foreach ($columns as $column) {
-                $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
-                $this->string("{$column}_unit")->default('mm')->nullable();
+                $this->decimal("{$column}_value", 10, 4)->nullable()->index();
+                $this->string("{$column}_unit")->nullable();
             }
         });
 
