@@ -218,8 +218,12 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerPublishables();
         $this->registerStateListeners();
 
-        Route::bind('product', function ($id) {
-            return Product::withTrashed()->findOrFail($id);
+        Route::bind('product', function (mixed $value, \Illuminate\Routing\Route $route) {
+            if ($route->getPrefix() === config('lunar-hub.system.path', 'hub')) {
+                return Product::withTrashed()->findOrFail($value);
+            }
+
+            return $value;
         });
 
         // Commands
