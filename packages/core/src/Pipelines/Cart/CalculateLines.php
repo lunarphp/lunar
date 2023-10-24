@@ -26,19 +26,16 @@ class CalculateLines
 
                     return $cartLine;
                 });
-
-            $purchasable = $cartLine->purchasable;
-            $unitQuantity = $purchasable->getUnitQuantity();
-
+            
             $unitPrice = $cartLine->unitPrice->unitDecimal(false) * $cart->currency->factor;
 
             $subTotal = (int) round($unitPrice * $cartLine->quantity, $cart->currency->decimal_places);
 
-            $cartLine->subTotal = new Price($subTotal, $cart->currency, $unitQuantity);
-            $cartLine->taxAmount = new Price(0, $cart->currency, $unitQuantity);
-            $cartLine->total = new Price($subTotal, $cart->currency, $unitQuantity);
-            $cartLine->subTotalDiscounted = new Price($subTotal, $cart->currency, $unitQuantity);
-            $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
+            $cartLine->subTotal = new Price($subTotal, $cart->currency, 1);
+            $cartLine->taxAmount = new Price(0, $cart->currency, 1);
+            $cartLine->total = new Price($subTotal, $cart->currency, 1);
+            $cartLine->subTotalDiscounted = new Price($subTotal, $cart->currency, 1);
+            $cartLine->discountTotal = new Price(0, $cart->currency, 1);
         }
 
         return $next($cart);
