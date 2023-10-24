@@ -244,7 +244,17 @@ class Cart extends BaseModel
      */
     public function shippingAddress()
     {
-        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('shipping');
+        return $this->hasOne(CartAddress::class, 'cart_id')->type('shipping')->real();
+    }
+
+    /**
+     * Return the dummy shipping address relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function dummyShippingAddress()
+    {
+        return $this->hasOne(CartAddress::class, 'cart_id')->type('shipping')->dummy();
     }
 
     /**
@@ -254,7 +264,17 @@ class Cart extends BaseModel
      */
     public function billingAddress()
     {
-        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('billing');
+        return $this->hasOne(CartAddress::class, 'cart_id')->type('billing')->real();
+    }
+
+    /**
+     * Return the dummy billing address relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function dummyBillingAddress()
+    {
+        return $this->hasOne(CartAddress::class, 'cart_id')->type('billing')->dummy();
     }
 
     /**

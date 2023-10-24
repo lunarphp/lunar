@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\Addressable;
@@ -79,8 +80,6 @@ class CartAddress extends BaseModel implements Addressable
 
     /**
      * The tax breakdown.
-     *
-     * @var TaxBreakdown
      */
     public ?TaxBreakdown $taxBreakdown = null;
 
@@ -124,6 +123,7 @@ class CartAddress extends BaseModel implements Addressable
      * @var array
      */
     protected $casts = [
+        'dummy' => 'boolean',
         'meta' => AsArrayObject::class,
     ];
 
@@ -145,5 +145,20 @@ class CartAddress extends BaseModel implements Addressable
     public function country()
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function scopeDummy(Builder $builder)
+    {
+        return $builder->whereDummy(true);
+    }
+
+    public function scopeReal(Builder $builder)
+    {
+        return $builder->whereDummy(false);
+    }
+
+    public function scopeType(Builder $builder, $type)
+    {
+        return $builder->whereType($type);
     }
 }
