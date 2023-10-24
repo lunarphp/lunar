@@ -15,6 +15,7 @@ use Lunar\Actions\Carts\AssociateUser;
 use Lunar\Actions\Carts\CreateOrder;
 use Lunar\Actions\Carts\GenerateFingerprint;
 use Lunar\Actions\Carts\RemovePurchasable;
+use Lunar\Actions\Carts\SetCheapestShippingOption;
 use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
@@ -519,7 +520,7 @@ class Cart extends BaseModel
     /**
      * Add an address to the Cart.
      */
-    public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
+    public function addAddress(array|Addressable $address, string $type, bool $dummy = false, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.add_address', []) as $action) {
             app($action)->using(
@@ -531,7 +532,7 @@ class Cart extends BaseModel
 
         return app(
             config('lunar.cart.actions.add_address', AddAddress::class)
-        )->execute($this, $address, $type)
+        )->execute($this, $address, $type, $dummy)
             ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
     }
 
@@ -591,6 +592,12 @@ class Cart extends BaseModel
         return (bool) $this->lines->filter(function ($line) {
             return $line->purchasable->isShippable();
         })->count();
+    }
+
+    public function setCheapestShippingOption()
+    {
+        $action = config('lunar.cart.actions.set_cheapest_shipping_option', SetCheapestShippingOption::class);
+        return app($action)->execute($this);
     }
 
     /**

@@ -109,10 +109,12 @@ class ShippingManifest implements ShippingManifestInterface
      */
     public function getShippingOption(Cart $cart): ?ShippingOption
     {
-        if (! $cart->shippingAddress?->shipping_option) {
+        $address = $cart->shippingAddress ?: $cart->dummyShippingAddress;
+        
+        if (! $shippingOption = $address?->shipping_option) {
             return null;
         }
 
-        return ShippingManifest::getOption($cart, $cart->shippingAddress->shipping_option);
+        return ShippingManifest::getOption($cart, $shippingOption);
     }
 }

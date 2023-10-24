@@ -73,9 +73,11 @@ class CalculateTax
 
             $taxTotal += $shippingTaxTotal?->value;
 
-            $cart->shippingAddress->taxBreakdown = $shippingTax;
+            $address = $cart->shippingAddress ?: $cart->dummyShippingAddress;
 
-            $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+            $address->taxBreakdown = $shippingTax;
+
+            $address->shippingTaxTotal = $shippingTaxTotal;
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts

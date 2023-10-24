@@ -97,6 +97,7 @@ return [
         'add_address' => Lunar\Actions\Carts\AddAddress::class,
         'set_shipping_option' => Lunar\Actions\Carts\SetShippingOption::class,
         'order_create' => Lunar\Actions\Carts\CreateOrder::class,
+        'set_cheapest_shipping_option' => Lunar\Actions\Carts\SetCheapestShippingOption::class,
     ],
 
     /*

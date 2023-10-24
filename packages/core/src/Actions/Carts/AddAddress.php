@@ -41,7 +41,7 @@ class AddAddress extends AbstractAction
         bool $dummy = false
     ): self {
         // Do we already have an address for this type?
-        $cart->addresses()->whereType($type)->delete();
+        $cart->addresses()->whereType($type)->whereDummy($dummy)->delete();
 
         if (is_array($address)) {
             $cartAddress = new CartAddress($address);
@@ -52,7 +52,7 @@ class AddAddress extends AbstractAction
                 $address->only($this->fillableAttributes)
             );
         }
-
+        
         // Force the type.
         $cartAddress->type = $type;
         $cartAddress->dummy = $dummy;

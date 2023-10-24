@@ -115,6 +115,7 @@ class CartAddress extends BaseModel implements Addressable
         'meta',
         'type',
         'shipping_option',
+        'dummy',
     ];
 
     /**

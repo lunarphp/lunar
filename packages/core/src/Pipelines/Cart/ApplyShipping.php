@@ -34,8 +34,10 @@ final class ApplyShipping
             $shippingSubTotal = $shippingOption->price->value;
             $shippingTotal = $shippingSubTotal;
 
-            $cart->shippingAddress->shippingTotal = new Price($shippingTotal, $cart->currency, 1);
-            $cart->shippingAddress->shippingSubTotal = new Price($shippingOption->price->value, $cart->currency, 1);
+            $address = $cart->shippingAddress ?: $cart->dummyShippingAddress;
+
+            $address->shippingTotal = new Price($shippingTotal, $cart->currency, 1);
+            $address->shippingSubTotal = new Price($shippingOption->price->value, $cart->currency, 1);
         }
 
         $cart->shippingBreakdown = $shippingBreakdown;
