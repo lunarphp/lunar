@@ -52,6 +52,30 @@ class AddAddressTest extends TestCase
     /**
      * @test
      */
+    public function can_add_dummy_address()
+    {
+        $address = Address::factory()->create();
+
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $action = new AddAddress;
+
+        $this->assertDatabaseMissing((new CartAddress)->getTable(), [
+            'cart_id' => $cart->id,
+        ]);
+
+        $action->execute($cart, $address, 'shipping', true);
+
+        $this->assertInstanceOf(CartAddress::class, $cart->refresh()->dummyShippingAddress);
+    }
+
+    /**
+     * @test
+     */
     public function can_add_address_from_array()
     {
         $address = Address::factory()->create();

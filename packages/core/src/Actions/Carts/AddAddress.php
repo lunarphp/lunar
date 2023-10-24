@@ -37,7 +37,8 @@ class AddAddress extends AbstractAction
     public function execute(
         Cart $cart,
         array|Addressable $address,
-        string $type
+        string $type,
+        bool $dummy = false
     ): self {
         // Do we already have an address for this type?
         $cart->addresses()->whereType($type)->delete();
@@ -54,6 +55,7 @@ class AddAddress extends AbstractAction
 
         // Force the type.
         $cartAddress->type = $type;
+        $cartAddress->dummy = $dummy;
         $cartAddress->cart_id = $cart->id;
         $cartAddress->save();
 
