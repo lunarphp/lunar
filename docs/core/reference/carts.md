@@ -376,6 +376,16 @@ $cart->shippingAddress;
 $cart->billingAddress;
 ```
 
+In addition to this, you can also set dummy addresses for either shipping or billing. These can be useful if you need an address for things like calculating shipping costs, before the user has got to the checkout. Dummy addresses won't have any effect on the users checkout address and also won't be copied across when an order is created. They are completely optional.
+
+```php
+$cart->setBillingAddress([/* ... */], dummy: true);
+$cart->setShippingAddress([/* ... */], dummy: true);
+
+$cart->dummyBillingAddress;
+$cart->dummyShippingAddress;
+```
+
 ## Handling User Login
 
 When a user logs in, you will likely want to check if they have a cart

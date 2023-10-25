@@ -519,7 +519,7 @@ class Cart extends BaseModel
     /**
      * Add an address to the Cart.
      */
-    public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
+    public function addAddress(array|Addressable $address, string $type, bool $dummy = false, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.add_address', []) as $action) {
             app($action)->using(
@@ -531,7 +531,7 @@ class Cart extends BaseModel
 
         return app(
             config('lunar.cart.actions.add_address', AddAddress::class)
-        )->execute($this, $address, $type)
+        )->execute($this, $address, $type, $dummy)
             ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
     }
 
@@ -540,9 +540,9 @@ class Cart extends BaseModel
      *
      * @return \Lunar\Models\Cart
      */
-    public function setShippingAddress(array|Addressable $address)
+    public function setShippingAddress(array|Addressable $address, bool $dummy = false)
     {
-        return $this->addAddress($address, 'shipping');
+        return $this->addAddress($address, 'shipping', $dummy);
     }
 
     /**
@@ -550,9 +550,9 @@ class Cart extends BaseModel
      *
      * @return self
      */
-    public function setBillingAddress(array|Addressable $address)
+    public function setBillingAddress(array|Addressable $address, bool $dummy = false)
     {
-        return $this->addAddress($address, 'billing');
+        return $this->addAddress($address, 'billing', $dummy);
     }
 
     /**

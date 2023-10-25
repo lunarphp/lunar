@@ -45,6 +45,22 @@ Before:
     {{ $tax->price->formatted }}
 @endforeach
 ```
+
+### Medium Impact
+
+The `setBillingAddress` or `setShippingAddress` methods on a cart have been changed, if you have used `$refresh` parameter you will need to update as follows:
+
+```php
+// Old
+$cart->setBillingAddress([/* .. */], true);
+// New
+$cart->setBillingAddress([/* .. */], false, true);
+// Or use named parameters
+$cart->setBillingAddress([/* .. */], refresh: true);
+```
+
+The same applies to the `setShippingAddress` and `addAddress` method.
+
 ## 0.6
 
 ### High Impact
