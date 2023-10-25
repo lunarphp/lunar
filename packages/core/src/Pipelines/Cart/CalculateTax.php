@@ -31,7 +31,7 @@ class CalculateTax
             }
 
             $taxBreakDownResult = Taxes::setShippingAddress($cart->shippingAddress)
-                ->setBillingAddress($cart->billingAddress)
+                ->setBillingAddress($cart->billingAddress ?: $cart->dummyBillingAddress)
                 ->setCurrency($cart->currency)
                 ->setPurchasable($cartLine->purchasable)
                 ->setCartLine($cartLine)
