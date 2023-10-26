@@ -3,10 +3,7 @@
 namespace Lunar\Database\State;
 
 use Illuminate\Support\Facades\Schema;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Order;
-use Lunar\Models\OrderLine;
+use Lunar\Facades\DB;
 
 class ConvertTaxbreakdown
 {
@@ -17,74 +14,80 @@ class ConvertTaxbreakdown
 
     public function run()
     {
-        if (! $this->canRun()) {
-            return;
+        $prefix = config('lunar.database.table_prefix');
+        $updateTime = now();
+
+        if ($this->canRunOnOrders()) {
+            DB::table("{$prefix}orders")
+                ->whereJsonLength("${prefix}orders.tax_breakdown->[0]->total", 1)
+                ->orderBy('id')
+                ->chunk(500, function ($rows) use ($prefix, $updateTime) {
+                    foreach ($rows as $row) {
+                        $originalBreakdown = json_decode($row->tax_breakdown, true);
+
+                        DB::table("{$prefix}orders")->where('id', '=', $row->id)->update([
+                            'tax_breakdown' => collect($originalBreakdown)->map(function ($breakdown) use ($row, $updateTime) {
+                                return [
+                                    'value' => $breakdown['total'],
+                                    'identifier' => $breakdown['identifier'] ?? $breakdown['description'],
+                                    'description' => $breakdown['description'],
+                                    'percentage' => $breakdown['percentage'],
+                                    'currency_code' => $row->currency_code,
+                                ];
+                            })->toJson(),
+                            'updated_at' => $updateTime,
+                        ]);
+                    }
+                });
         }
 
-        Order::chunk(500, function ($orders) {
-           foreach ($orders as $order) {
-               // Get the raw tax_breakdown
-               $breakdown = json_decode($order->getRawOriginal('tax_breakdown'), true);
-               $amounts = collect($breakdown)->map(function ($row) use ($order) {
-                  return new TaxBreakdownAmount(
-                      price: new Price($row['total'], $order->currency),
-                      identifier: $row['identifier'] ?? $row['description'],
-                      description: $row['description'],
-                      percentage: $row['percentage'],
-                  );
-               });
+        if ($this->canRunOnOrderLines()) {
+            DB::table("{$prefix}order_lines")
+                ->whereJsonLength("${prefix}order_lines.tax_breakdown->[0]->total", 1)
+                ->orderBy("${prefix}order_lines.id")
+                ->select(
+                    "${prefix}order_lines.id",
+                    "${prefix}order_lines.tax_breakdown",
+                    "${prefix}orders.currency_code",
+                )
+                ->join("${prefix}orders", "${prefix}order_lines.order_id", '=', "${prefix}orders.id")
+                ->chunk(500, function ($rows) use ($prefix, $updateTime) {
+                    DB::transaction(function () use ($prefix, $updateTime, $rows) {
+                        foreach ($rows as $row) {
+                            $originalBreakdown = json_decode($row->tax_breakdown, true);
 
-               $order->updateQuietly([
-                   'tax_breakdown' => new \Lunar\Base\ValueObjects\Cart\TaxBreakdown($amounts),
-               ]);
-           }
-        });
-
-        OrderLine::chunk(500, function ($orderLines) {
-            foreach ($orderLines as $orderLine) {
-                // Get the raw tax_breakdown
-                $breakdown = json_decode($orderLine->getRawOriginal('tax_breakdown'), true);
-                
-                $amounts = collect($breakdown)->map(function ($row) use ($orderLine) {
-                    return new TaxBreakdownAmount(
-                        price: new Price($row['total'], $orderLine->order->currency),
-                        identifier: $row['identifier'] ?? $row['description'],
-                        description: $row['description'],
-                        percentage: $row['percentage'],
-                    );
+                            DB::table("{$prefix}order_lines")->where('id', '=', $row->id)->update([
+                                'tax_breakdown' => collect($originalBreakdown)->map(function ($breakdown) use ($row, $updateTime) {
+                                    return [
+                                        'value' => $breakdown['total'],
+                                        'identifier' => $breakdown['identifier'] ?? $breakdown['description'],
+                                        'description' => $breakdown['description'],
+                                        'percentage' => $breakdown['percentage'],
+                                        'currency_code' => $row->currency_code,
+                                    ];
+                                })->toJson(),
+                                'updated_at' => $updateTime,
+                            ]);
+                        }
+                    });
                 });
-
-                $orderLine->updateQuietly([
-                    'tax_breakdown' => new \Lunar\Base\ValueObjects\Cart\TaxBreakdown($amounts),
-                ]);
-            }
-        });
+        }
     }
 
-    protected function canRun()
+    protected function canRunOnOrders()
+    {
+        return $this->canRunOnTable('orders');
+    }
+
+    protected function canRunOnOrderLines()
+    {
+        return $this->canRunOnTable('order_lines');
+    }
+
+    protected function canRunOnTable(string $table)
     {
         $prefix = config('lunar.database.table_prefix');
 
-        $hasSchema = Schema::hasTable("{$prefix}orders") && Schema::hasTable("{$prefix}order_lines");
-
-        if (!$hasSchema) {
-            return false;
-        }
-
-        // Grab an order and determine whether the tax breakdown has already been converted.
-        // This will save us having to run the command and check each order.
-        $order = Order::first();
-
-        if (!$order) {
-            return false;
-        }
-
-        $breakdownItem = json_decode($order->getRawOriginal('tax_breakdown'), true)[0] ?? null;
-
-        if (!$breakdownItem) {
-            return false;
-        }
-
-        return $breakdownItem['total'] ?? false;
+        return Schema::hasTable("{$prefix}{$table}");
     }
 }
