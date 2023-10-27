@@ -75,11 +75,11 @@ class CalculateTax
 
             $taxTotal += $shippingTaxTotal?->value;
 
-            if ($cart->shippingAddress) {
+            if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
                 $cart->shippingAddress->taxBreakdown = $shippingTax;
                 $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
             }
-            
+
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts
             );
