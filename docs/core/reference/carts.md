@@ -339,7 +339,7 @@ CartSession::setCustomer($customer);
 ```
 
 
-### Adding shipping/billing address
+## Adding shipping/billing address
 
 As outlined above, you can add shipping / billing addresses to the cart using
 the following methods:
