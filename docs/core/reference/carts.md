@@ -376,6 +376,50 @@ $cart->shippingAddress;
 $cart->billingAddress;
 ```
 
+### ShippingOption override
+
+In some cases you might want to present an estimated shipping cost without users having to fill out a full shipping address, this is where the `ShippingOptionOverride` comes in, if set on the cart it can be used to calculate shipping for a single request.
+
+```php
+$shippingOption = $cart->getEstimatedShipping([
+    'postcode' => '123456',
+    'state' => 'Essex',
+    'country' => Country::first(),
+]);
+````
+
+This will return an estimated (cheapest) shipping option for the cart, based on it's current totals. By default this will not be taken into account when calculating shipping in the cart pipelines, in order to enable that we need to pass an extra parameter.
+
+```php
+$shippingOption = $cart->getEstimatedShipping([
+    'postcode' => '123456',
+    'state' => 'Essex',
+    'country' => Country::first(),
+], setOverride: true);
+````
+
+Now when the pipelines are run, the option which was returned by `getEstimatedShipping` will be used when calculating shipping totals, bypassing any other logic, note this will only happen for that one request.
+
+If you are using the `CartSession` manager, you can easily set the parameters you want to estimate shipping so you don't need to pass them each time:
+
+```php
+CartSession::estimateShippingUsing([
+    'postcode' => '123456',
+    'state' => 'Essex',
+    'country' => Country::first(),
+]);
+```
+
+Calling `CartSession::current()` by itself won't trigger the shipping override, but you can pass the `estimateShipping` parameter to enable it:
+
+```php
+// Will not use the shipping override, default behaviour.
+CartSession::current();
+
+// Will use the shipping override, based on what is set using `estimateShippingUsing`
+CartSession::current(estimateShipping: true);
+```
+
 ## Handling User Login
 
 When a user logs in, you will likely want to check if they have a cart
