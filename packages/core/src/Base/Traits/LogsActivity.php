@@ -17,7 +17,8 @@ trait LogsActivity
         return LogOptions::defaults()
             ->useLogName('lunar')
             ->logAll()
-            ->dontSubmitEmptyLogs()
-            ->logExcept(['updated_at']);
+            ->logExcept(array_merge(['updated_at'], static::$logExcept ?? []))
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }
