@@ -410,6 +410,12 @@ CartSession::estimateShippingUsing([
 ]);
 ```
 
+You can also manually set the shipping method override directly on the cart.
+
+```php
+$cart->shippingOptionOverride = new \Lunar\DataTypes\ShippingOption(/* .. */);
+```
+
 Calling `CartSession::current()` by itself won't trigger the shipping override, but you can pass the `estimateShipping` parameter to enable it:
 
 ```php
