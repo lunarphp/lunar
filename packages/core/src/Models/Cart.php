@@ -666,7 +666,7 @@ class Cart extends BaseModel
     /**
      * Return the estimated shipping cost for a cart.
      */
-    public function getEstimatedShipping(array $params, bool $setOverride = false): ShippingOption
+    public function getEstimatedShipping(array $params, bool $setOverride = false): ?ShippingOption
     {
         $this->shippingEstimateMeta = $params;
         $option = ShippingManifest::getOptions($this)
@@ -674,7 +674,7 @@ class Cart extends BaseModel
                 fn ($option) => ! $option->collect
             )->sortBy('price.value')->first();
 
-        if ($setOverride) {
+        if ($setOverride && $option) {
             $this->shippingOptionOverride = $option;
         }
 
