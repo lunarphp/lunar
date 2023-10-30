@@ -19,19 +19,19 @@ class ConvertTaxbreakdown
 
         if ($this->canRunOnOrders()) {
             DB::table("{$prefix}orders")
-                ->whereJsonLength("${prefix}orders.tax_breakdown->[0]->total", 1)
+                ->whereJsonContainsKey("${prefix}orders.tax_breakdown->[0]->total")
                 ->orderBy('id')
                 ->chunk(500, function ($rows) use ($prefix, $updateTime) {
                     foreach ($rows as $row) {
                         $originalBreakdown = json_decode($row->tax_breakdown, true);
 
                         DB::table("{$prefix}orders")->where('id', '=', $row->id)->update([
-                            'tax_breakdown' => collect($originalBreakdown)->map(function ($breakdown) use ($row, $updateTime) {
+                            'tax_breakdown' => collect($originalBreakdown)->map(function ($breakdown) use ($row) {
                                 return [
-                                    'value' => $breakdown['total'],
-                                    'identifier' => $breakdown['identifier'] ?? $breakdown['description'],
                                     'description' => $breakdown['description'],
+                                    'identifier' => $breakdown['identifier'] ?? $breakdown['description'],
                                     'percentage' => $breakdown['percentage'],
+                                    'value' => $breakdown['total'],
                                     'currency_code' => $row->currency_code,
                                 ];
                             })->toJson(),
@@ -43,7 +43,7 @@ class ConvertTaxbreakdown
 
         if ($this->canRunOnOrderLines()) {
             DB::table("{$prefix}order_lines")
-                ->whereJsonLength("${prefix}order_lines.tax_breakdown->[0]->total", 1)
+                ->whereJsonContainsKey("${prefix}order_lines.tax_breakdown->[0]->total")
                 ->orderBy("${prefix}order_lines.id")
                 ->select(
                     "${prefix}order_lines.id",
@@ -57,12 +57,12 @@ class ConvertTaxbreakdown
                             $originalBreakdown = json_decode($row->tax_breakdown, true);
 
                             DB::table("{$prefix}order_lines")->where('id', '=', $row->id)->update([
-                                'tax_breakdown' => collect($originalBreakdown)->map(function ($breakdown) use ($row, $updateTime) {
+                                'tax_breakdown' => collect($originalBreakdown)->map(function ($breakdown) use ($row) {
                                     return [
-                                        'value' => $breakdown['total'],
-                                        'identifier' => $breakdown['identifier'] ?? $breakdown['description'],
                                         'description' => $breakdown['description'],
+                                        'identifier' => $breakdown['identifier'] ?? $breakdown['description'],
                                         'percentage' => $breakdown['percentage'],
+                                        'value' => $breakdown['total'],
                                         'currency_code' => $row->currency_code,
                                     ];
                                 })->toJson(),
@@ -88,6 +88,6 @@ class ConvertTaxbreakdown
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return Schema::hasTable("{$prefix}{$table}");
+        return Schema::hasTable("{$prefix}{$table}") && DB::table("{$prefix}{$table}")->count();
     }
 }
