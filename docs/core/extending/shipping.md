@@ -44,7 +44,7 @@ class CustomShippingModifier extends ShippingModifier
                 price: new Price(0, $cart->currency, 1),
                 taxClass: $taxClass,
                 // This is for your reference, so you can check if a collection option has been selected.
-                collection: true
+                collect: true
             )
         );
 

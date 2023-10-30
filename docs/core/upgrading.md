@@ -48,9 +48,9 @@ Before:
 
 ### Low Impact
 
-#### Collection parameter added to `ShippingOption`
+#### Click & Collect parameter added to `ShippingOption`
 
-The `Lunar\DataTypes\ShippingOption` class now has an additional `collection` parameter. This can be used to determine whether the shipping option is considered "collect in store". This defaults to `false` so there are no additional steps if your store doesn't offer click and collect.
+The `Lunar\DataTypes\ShippingOption` class now has an additional `collect` parameter. This can be used to determine whether the shipping option is considered "collect in store". This defaults to `false` so there are no additional steps if your store doesn't offer click and collect.
 
 ```php
 ShippingManifest::addOption(
@@ -60,7 +60,7 @@ ShippingManifest::addOption(
         identifier: 'PICKUP',
         price: new Price(/** .. */),
         taxClass: $taxClass,
-        collection: true
+        collect: true
     )
 );
 ```
