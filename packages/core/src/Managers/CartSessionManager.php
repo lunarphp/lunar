@@ -26,11 +26,34 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function current()
+    public function current($estimateShipping = false)
     {
         return $this->fetchOrCreate(
-            config('lunar.cart.auto_create', false)
+            config('lunar.cart.auto_create', false),
+            estimateShipping: $estimateShipping
         );
+    }
+
+    /**
+     * Set the criteria to use when estimating shipping costs.
+     *
+     * @param array $meta
+     * @return $this
+     */
+    public function estimateShippingUsing(array $meta): self
+    {
+        $this->sessionManager->put('shipping_estimate_meta', $meta);
+        return $this;
+    }
+
+    /**
+     * Return the shipping estimate meta.
+     * 
+     * @return array
+     */
+    public function getShippingEstimateMeta(): array
+    {
+        return $this->sessionManager->get('shipping_estimate_meta', []);
     }
 
     /**
@@ -38,6 +61,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function forget()
     {
+        $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
             $this->getSessionKey()
         );
@@ -86,7 +110,7 @@ class CartSessionManager implements CartSessionInterface
      * @param  bool  $create
      * @return \Lunar\Models\Cart|null
      */
-    private function fetchOrCreate($create = false)
+    private function fetchOrCreate($create = false, bool $estimateShipping = false)
     {
         $cartId = $this->sessionManager->get(
             $this->getSessionKey()
@@ -106,6 +130,13 @@ class CartSessionManager implements CartSessionInterface
             }
 
             return $this->createNewCart();
+        }
+
+        if ($estimateShipping) {
+            $this->cart->getEstimatedShipping(
+                $this->getShippingEstimateMeta(),
+                setOverride: true
+            );
         }
 
         return $this->cart->calculate();

@@ -155,4 +155,18 @@ class CartSessionManagerTest extends TestCase
             Session::get(config('lunar.cart.session_key'))
         );
     }
+
+    /**
+     * @test
+     */
+    public function canSetShippingEstimateMeta()
+    {
+        CartSession::estimateShippingUsing([
+            'postcode' => 'NP1 1TX',
+        ]);
+
+        $meta = CartSession::getShippingEstimateMeta();
+        $this->assertIsArray($meta);
+        $this->assertEquals('NP1 1TX', $meta['postcode']);
+    }
 }

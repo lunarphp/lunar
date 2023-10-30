@@ -16,6 +16,7 @@ class ShippingOption implements Purchasable
         public TaxClass $taxClass,
         public $taxReference = null,
         public $option = null,
+        public bool $collect = false,
         public $meta = null
     ) {
         //  ..
