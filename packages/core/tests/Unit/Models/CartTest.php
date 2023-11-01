@@ -898,4 +898,141 @@ class CartTest extends TestCase
 
         $cart->checkFingerprint($fingerprint);
     }
+
+    /**
+     * @test
+     */
+    public function can_override_shipping_calculation()
+    {
+        $country = Country::factory()->create();
+
+        $taxClass = TaxClass::factory()->create();
+
+        $taxZone = TaxZone::factory()->create();
+
+        TaxZonePostcode::factory()->create([
+            'country_id' => $country->id,
+            'tax_zone_id' => $taxZone->id,
+            'postcode' => 'SHIPP',
+        ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_zone_id' => $taxZone->id,
+        ]);
+
+        TaxRateAmount::factory()->create([
+            'tax_rate_id' => $taxRate->id,
+            'tax_class_id' => $taxClass->id,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new DataTypesPrice(500, $cart->currency, 1),
+            taxClass: $taxClass
+        );
+
+        ShippingManifest::addOption($shippingOption);
+
+        $cart->calculate();
+
+        $this->assertNull($cart->shippingTotal);
+
+        $cart->shippingOptionOverride = $shippingOption;
+
+        $cart->calculate();
+
+        $this->assertEquals(500, $cart->shippingSubTotal->value);
+    }
+
+    /**
+     * @test
+     * @group foofoo
+     */
+    public function can_get_estimated_shipping()
+    {
+        $country = Country::factory()->create();
+
+        $taxClass = TaxClass::factory()->create();
+
+        $taxZone = TaxZone::factory()->create();
+
+        TaxZonePostcode::factory()->create([
+            'country_id' => $country->id,
+            'tax_zone_id' => $taxZone->id,
+            'postcode' => 'SHIPP',
+        ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_zone_id' => $taxZone->id,
+        ]);
+
+        TaxRateAmount::factory()->create([
+            'tax_rate_id' => $taxRate->id,
+            'tax_class_id' => $taxClass->id,
+        ]);
+
+        $currency = Currency::factory()->create([
+            'decimal_places' => 2,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasable = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 100,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasable),
+            'priceable_id' => $purchasable->id,
+        ]);
+
+        $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new DataTypesPrice(500, $cart->currency, 1),
+            taxClass: $taxClass
+        );
+
+        ShippingManifest::addOption($shippingOption);
+
+        $option = $cart->getEstimatedShipping([
+            'postcode' => '123',
+        ]);
+
+        $this->assertInstanceOf(ShippingOption::class, $option);
+        $this->assertEquals($shippingOption->identifier, $option->identifier);
+
+        $this->assertNull($cart->shippingOptionOverride);
+
+        $option = $cart->getEstimatedShipping([
+            'postcode' => '123',
+        ], setOverride: true);
+
+        $this->assertInstanceOf(ShippingOption::class, $cart->shippingOptionOverride);
+        $this->assertEquals($cart->shippingOptionOverride->identifier, $shippingOption->identifier);
+    }
 }
