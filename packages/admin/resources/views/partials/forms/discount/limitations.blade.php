@@ -30,7 +30,15 @@
                             @endif
 
                             <div class="flex grow">
+                                <div class="flex gap-1.5 flex-wrap items-center mr-4">
+                                    <x-hub::input.select wire:model="selectedCollections.{{ $index }}.type">
+                                        <option value="limitation">{{ __('adminhub::partials.discounts.limitations.limitation') }}</option>
+                                        <option value="exclusion">{{ __('adminhub::partials.discounts.limitations.exclusion') }}</option>
+                                    </x-hub::input.select>
+                                </div>
+                                
                                 <div class="grow flex gap-1.5 flex-wrap items-center">
+
                                     <strong class="rounded px-1.5 py-0.5 bg-sky-50 text-xs text-sky-500">
                                         {{ $collection['group_name'] }}
                                     </strong>
@@ -106,6 +114,13 @@
                         <div class="flex items-center px-4 py-2 text-sm border rounded">
 
                             <div class="flex grow">
+                                <div class="flex gap-1.5 flex-wrap items-center mr-4">
+                                    <x-hub::input.select wire:model="selectedBrands.{{ $index }}.type">
+                                        <option value="limitation">{{ __('adminhub::partials.discounts.limitations.limitation') }}</option>
+                                        <option value="exclusion">{{ __('adminhub::partials.discounts.limitations.exclusion') }}</option>
+                                    </x-hub::input.select>
+                                </div>
+                                
                                 <div class="grow flex gap-1.5 flex-wrap items-center">
                                     <strong class="text-gray-700 truncate max-w-[40ch]"
                                             title="{{ $brand['name'] }}">
@@ -153,13 +168,20 @@
                         <div class="flex items-center px-4 py-2 text-sm border rounded">
 
                             <div class="flex grow">
+                                <div class="flex gap-1.5 flex-wrap items-center mr-4">
+                                    <x-hub::input.select wire:model="selectedProducts.{{ $index }}.type">
+                                        <option value="limitation">{{ __('adminhub::partials.discounts.limitations.limitation') }}</option>
+                                        <option value="exclusion">{{ __('adminhub::partials.discounts.limitations.exclusion') }}</option>
+                                    </x-hub::input.select>
+                                </div>
+                                
                                 <div class="grow flex gap-1.5 flex-wrap items-center">
                                     <strong class="text-gray-700 truncate max-w-[40ch]"
                                             title="{{ $product['name'] }}">
                                         {{ $product['name'] }}
                                     </strong>
                                 </div>
-
+                                
                                 <div class="flex items-center">
                                     <x-hub::dropdown minimal>
                                         <x-slot name="options">
@@ -200,13 +222,20 @@
                         <div class="flex items-center px-4 py-2 text-sm border rounded">
 
                             <div class="flex grow">
+                                <div class="flex gap-1.5 flex-wrap items-center mr-4">
+                                    <x-hub::input.select wire:model="selectedProductVariants.{{ $index }}.type">
+                                        <option value="limitation">{{ __('adminhub::partials.discounts.limitations.limitation') }}</option>
+                                        <option value="exclusion">{{ __('adminhub::partials.discounts.limitations.exclusion') }}</option>
+                                    </x-hub::input.select>
+                                </div>
+                                
                                 <div class="grow flex gap-1.5 flex-wrap items-center">
                                     <strong class="text-gray-700 truncate max-w-[40ch]"
                                             title="{{ $variant['name'] }}">
                                         {{ $variant['name'] }}
                                     </strong>
                                 </div>
-
+                                                                
                                 <div class="flex items-center">
                                     <x-hub::dropdown minimal>
                                         <x-slot name="options">
