@@ -37,19 +37,17 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Set the criteria to use when estimating shipping costs.
      *
-     * @param array $meta
      * @return $this
      */
     public function estimateShippingUsing(array $meta): self
     {
         $this->sessionManager->put('shipping_estimate_meta', $meta);
+
         return $this;
     }
 
     /**
      * Return the shipping estimate meta.
-     * 
-     * @return array
      */
     public function getShippingEstimateMeta(): array
     {
@@ -133,6 +131,10 @@ class CartSessionManager implements CartSessionInterface
         }
 
         if ($estimateShipping) {
+            // Some shipping drivers might require sub totals to be present
+            // before they can estimate a shipping cost, doing this in the driver
+            // itself can lead to infinite loops, so we calculate before.
+            $this->cart->calculate();
             $this->cart->getEstimatedShipping(
                 $this->getShippingEstimateMeta(),
                 setOverride: true
