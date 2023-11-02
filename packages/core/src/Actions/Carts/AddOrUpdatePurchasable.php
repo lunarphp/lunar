@@ -24,7 +24,9 @@ class AddOrUpdatePurchasable extends AbstractAction
     ): self {
         throw_if(! $quantity, InvalidCartLineQuantityException::class);
 
-        $existing = app(GetExistingCartLine::class)->execute(
+        $existing = app(
+            config('lunar.cart.actions.get_existing_cart_line', GetExistingCartLine::class)
+        )->execute(
             cart: $cart,
             purchasable: $purchasable,
             meta: $meta

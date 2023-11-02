@@ -182,14 +182,14 @@
                                 </td>
                             </tr>
 
-                            @foreach ($line->tax_breakdown as $tax)
+                            @foreach ($line->tax_breakdown->amounts as $tax)
                                 <tr class="divide-x divide-gray-200">
                                     <td class="p-2 font-medium text-gray-900 whitespace-nowrap">
                                         {{ $tax->description }}
                                     </td>
 
                                     <td class="p-2 text-gray-700 whitespace-nowrap">
-                                        {{ $tax->total->formatted }}
+                                        {{ $tax->price->formatted }}
                                     </td>
                                 </tr>
                             @endforeach

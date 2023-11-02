@@ -4,6 +4,7 @@ namespace Lunar\Pipelines\Cart;
 
 use Closure;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
@@ -59,7 +60,9 @@ class CalculateTax
         $taxTotal = $cart->lines->sum('taxAmount.value');
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
-        if ($shippingOption = ShippingManifest::getShippingOption($cart)) {
+        $shippingOption = $cart->shippingOptionOverride ?: ShippingManifest::getShippingOption($cart);
+
+        if ($shippingOption) {
             $shippingSubTotal = $cart->shippingBreakdown->items->sum('price.value');
 
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
@@ -72,9 +75,10 @@ class CalculateTax
 
             $taxTotal += $shippingTaxTotal?->value;
 
-            $cart->shippingAddress->taxBreakdown = $shippingTax;
-
-            $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+            if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
+                $cart->shippingAddress->taxBreakdown = $shippingTax;
+                $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+            }
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts
@@ -94,15 +98,16 @@ class CalculateTax
         $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
 
         // Need to include shipping tax breakdown...
-        $cart->taxBreakdown = $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) use ($cart) {
-            return [
-                'percentage' => $amounts->first()->percentage,
-                'description' => $amounts->first()->description,
-                'identifier' => $amounts->first()->identifier,
-                'amounts' => $amounts,
-                'total' => new Price($amounts->sum('price.value'), $cart->currency, 1),
-            ];
-        });
+        $cart->taxBreakdown = new TaxBreakdown(
+            $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) use ($cart) {
+                return new TaxBreakdownAmount(
+                    price: new Price($amounts->sum('price.value'), $cart->currency, 1),
+                    percentage: $amounts->first()->percentage,
+                    description: $amounts->first()->description,
+                    identifier: $amounts->first()->identifier
+                );
+            })
+        );
 
         return $next($cart);
     }

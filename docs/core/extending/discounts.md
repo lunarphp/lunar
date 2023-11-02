@@ -36,7 +36,7 @@ class MyCustomDiscountType extends AbstractDiscountType
     /**
      * Called just before cart totals are calculated.
      *
-     * @return CartLine
+     * @return Cart
      */
     public function apply(Cart $cart): Cart
     {

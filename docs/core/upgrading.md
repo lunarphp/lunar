@@ -24,6 +24,48 @@ php artisan lunar:hub:install
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.6`.
 
+## [Unreleased]
+
+### High Impact
+
+#### TaxBreakdown casting has been refactored
+
+Database columns which have `tax_breakdown` casting will now actually cast back into the `TaxBreakdown` object. This means you will need to update any storefront views or API transformers to accomodate this.
+
+Before:
+
+```php
+@foreach ($order->tax_breakdown as $tax)
+    {{ $tax->total->formatted }}
+@endforeach
+```
+
+```php
+@foreach ($order->tax_breakdown->amounts as $tax)
+    {{ $tax->price->formatted }}
+@endforeach
+```
+
+### Low Impact
+
+#### Click & Collect parameter added to `ShippingOption`
+
+The `Lunar\DataTypes\ShippingOption` class now has an additional `collect` parameter. This can be used to determine whether the shipping option is considered "collect in store". This defaults to `false` so there are no additional steps if your store doesn't offer click and collect.
+
+```php
+ShippingManifest::addOption(
+    new ShippingOption(
+        name: 'Pick up in store',
+        description: 'Pick your order up in store',
+        identifier: 'PICKUP',
+        price: new Price(/** .. */),
+        taxClass: $taxClass,
+        collect: true
+    )
+);
+```
+
+
 ## 0.6
 
 ### High Impact

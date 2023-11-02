@@ -118,6 +118,16 @@ class Cart extends BaseModel
     public ?Collection $discountBreakdown = null;
 
     /**
+     * The shipping override to use for the cart.
+     */
+    public ?ShippingOption $shippingOptionOverride = null;
+
+    /**
+     * Additional shipping estimate meta data.
+     */
+    public array $shippingEstimateMeta = [];
+
+    /**
      * All the shipping breakdowns for the cart.
      */
     public ?ShippingBreakdown $shippingBreakdown = null;
@@ -133,7 +143,7 @@ class Cart extends BaseModel
      *
      * @var null|Collection<TaxBreakdown>
      */
-    public ?Collection $taxBreakdown = null;
+    public ?TaxBreakdown $taxBreakdown = null;
 
     /**
      * The cart-level promotions.
@@ -651,5 +661,23 @@ class Cart extends BaseModel
                 FingerprintMismatchException::class
             );
         });
+    }
+
+    /**
+     * Return the estimated shipping cost for a cart.
+     */
+    public function getEstimatedShipping(array $params, bool $setOverride = false): ?ShippingOption
+    {
+        $this->shippingEstimateMeta = $params;
+        $option = ShippingManifest::getOptions($this)
+            ->filter(
+                fn ($option) => ! $option->collect
+            )->sortBy('price.value')->first();
+
+        if ($setOverride && $option) {
+            $this->shippingOptionOverride = $option;
+        }
+
+        return $option;
     }
 }
