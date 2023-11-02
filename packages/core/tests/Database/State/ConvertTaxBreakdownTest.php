@@ -57,7 +57,7 @@ class ConvertTaxBreakdownTest extends TestCase
         (new ConvertTaxbreakdown)->run();
 
         $this->assertDatabaseHas('lunar_orders', [
-            'tax_breakdown' => '[{"description":"VAT","identifier":"tax_rate_1","percentage":20,"value":333,"currency_code":"GBP"}]'
+            'tax_breakdown' => '[{"description":"VAT","identifier":"tax_rate_1","percentage":20,"value":333,"currency_code":"GBP"}]',
         ]);
 
     }
