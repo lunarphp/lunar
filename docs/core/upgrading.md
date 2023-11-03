@@ -24,13 +24,13 @@ php artisan lunar:hub:install
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.6`.
 
-## [Unreleased]
+## 0.7
 
 ### High Impact
 
 #### TaxBreakdown casting has been refactored
 
-Database columns which have `tax_breakdown` casting will now actually cast back into the `TaxBreakdown` object. This means you will need to update any storefront views or API transformers to accomodate this.
+Database columns which have `tax_breakdown` casting will now actually cast back into the `TaxBreakdown` object. This means you will need to update any storefront views or API transformers to accommodate this.
 
 Before:
 
@@ -45,6 +45,18 @@ Before:
     {{ $tax->price->formatted }}
 @endforeach
 ```
+
+When migrations are run, a state update routine will trigger to convert all existing `tax_breakdown` column. Please ensure you take a backup of your database beforehand and avoid running in production until you are satisfied the data is correct.
+
+### Medium Impact
+
+#### Discount updates
+
+Limitations and exclusions on discounts have had a revamp, please double-check all discounts you have in Lunar to ensure they are all correct. Generally speaking the integrity should be unaffected, but it's better to be sure.
+
+#### Calculate lines pipeline update
+
+If you are using unit quantities greater than `1`, there was an issue in the calculate lines pipeline which resulted in the unit quantity being applied twice, so if the price was `10` with a unit quantity of `100` it would show the unit price as `0.001` instead of `0.01`. This should be resolved going forward to show correctly.
 
 ### Low Impact
 
