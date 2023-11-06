@@ -48,7 +48,7 @@ class Order extends BaseModel
         LogsActivity,
         Searchable;
 
-    public static array $logExcept = ['status'];
+    public static array $defaultLogExcept = ['status'];
 
     /**
      * {@inheritDoc}
