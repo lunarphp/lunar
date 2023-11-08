@@ -19,7 +19,7 @@ class ConvertTaxbreakdown
 
         if ($this->canRunOnOrders()) {
             DB::table("{$prefix}orders")
-                ->whereJsonContainsKey("${prefix}orders.tax_breakdown->[0]->total")
+                ->whereJsonContainsKey("{$prefix}orders.tax_breakdown->[0]->total")
                 ->orderBy('id')
                 ->chunk(500, function ($rows) use ($prefix, $updateTime) {
                     foreach ($rows as $row) {
@@ -43,14 +43,14 @@ class ConvertTaxbreakdown
 
         if ($this->canRunOnOrderLines()) {
             DB::table("{$prefix}order_lines")
-                ->whereJsonContainsKey("${prefix}order_lines.tax_breakdown->[0]->total")
-                ->orderBy("${prefix}order_lines.id")
+                ->whereJsonContainsKey("{$prefix}order_lines.tax_breakdown->[0]->total")
+                ->orderBy("{$prefix}order_lines.id")
                 ->select(
-                    "${prefix}order_lines.id",
-                    "${prefix}order_lines.tax_breakdown",
-                    "${prefix}orders.currency_code",
+                    "{$prefix}order_lines.id",
+                    "{$prefix}order_lines.tax_breakdown",
+                    "{$prefix}orders.currency_code",
                 )
-                ->join("${prefix}orders", "${prefix}order_lines.order_id", '=', "${prefix}orders.id")
+                ->join("{$prefix}orders", "{$prefix}order_lines.order_id", '=', "{$prefix}orders.id")
                 ->chunk(500, function ($rows) use ($prefix, $updateTime) {
                     DB::transaction(function () use ($prefix, $updateTime, $rows) {
                         foreach ($rows as $row) {
