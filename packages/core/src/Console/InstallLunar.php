@@ -118,6 +118,7 @@ class InstallLunar extends Command
                 CollectionGroup::create([
                     'name' => 'Main',
                     'handle' => 'main',
+                    'default' => true
                 ]);
             }
 

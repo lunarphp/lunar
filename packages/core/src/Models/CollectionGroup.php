@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\CollectionGroupFactory;
 
@@ -18,6 +19,7 @@ class CollectionGroup extends BaseModel
 {
     use HasFactory;
     use HasMacros;
+    use HasDefaultRecord;
 
     protected $guarded = [];
 
