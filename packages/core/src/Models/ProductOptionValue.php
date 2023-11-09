@@ -2,8 +2,8 @@
 
 namespace Lunar\Models;
 
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lunar\Base\Casts\AsTranslated;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
@@ -32,7 +32,8 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
+        'name' => AsTranslated::class,
+        'label' => AsTranslated::class,
     ];
 
     /**
@@ -50,16 +51,6 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
      * @var array
      */
     protected $guarded = [];
-
-    protected function setNameAttribute($value)
-    {
-        $this->attributes['name'] = json_encode($value);
-    }
-
-    public function getNameAttribute($value)
-    {
-        return json_decode($value);
-    }
 
     public function option()
     {

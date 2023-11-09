@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Casts\AsTranslated;
 use Lunar\Database\Factories\AttributeGroupFactory;
 
 /**
@@ -46,7 +47,7 @@ class AttributeGroup extends BaseModel
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
+        'name' => AsTranslated::class,
     ];
 
     /**
