@@ -134,13 +134,6 @@ abstract class AbstractDiscount extends Component
             ->map(function ($limitation) {
                 return array_merge($this->mapProductVariantToArray($limitation->purchasable), ['type' => $limitation->type]);
             });
-            
-        $this->selectedProductVariants = $this->discount->purchasableLimitations()
-            ->wherePurchasableType(ProductVariant::class)
-            ->get()
-            ->map(function ($limitation) {
-                return $this->mapProductVariantToArray($limitation->purchasable);
-            });
 
         $this->selectedConditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
@@ -453,20 +446,6 @@ abstract class AbstractDiscount extends Component
                         'type' => $variant['type'],
                     ])
                     ->save();
-            }
-            
-            $this->discount->purchasableLimitations()
-                ->where('purchasable_type', ProductVariant::class)
-                ->whereNotIn('purchasable_id', $this->selectedProductVariants->pluck('id'))
-                ->delete();
-
-            foreach ($this->selectedProductVariants as $variant) {
-                $this->discount->purchasableLimitations()->firstOrCreate([
-                    'discount_id' => $this->discount->id,
-                    'type' => 'limitation',
-                    'purchasable_type' => ProductVariant::class,
-                    'purchasable_id' => $variant['id'],
-                ]);
             }
         });
 
