@@ -3,6 +3,8 @@
 namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Lunar\Models\Url;
 
 trait HasUrls
@@ -31,7 +33,7 @@ trait HasUrls
     /**
      * Get all of the models urls.
      */
-    public function urls()
+    public function urls(): MorphMany
     {
         return $this->morphMany(
             Url::class,
@@ -39,7 +41,7 @@ trait HasUrls
         );
     }
 
-    public function defaultUrl()
+    public function defaultUrl(): MorphOne
     {
         return $this->morphOne(
             Url::class,
