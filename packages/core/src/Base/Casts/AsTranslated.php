@@ -4,7 +4,6 @@ namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Support\Collection;
 use Lunar\Models\Language;
 
@@ -26,7 +25,7 @@ class AsTranslated implements Castable
 
             public function get($model, $key, $value, $attributes)
             {
-                $value = Json::decode($value);
+                $value = json_decode($value, true);
 
                 if (is_array($value)) {
                     return collect($value);
@@ -45,7 +44,7 @@ class AsTranslated implements Castable
                     $value = $this->fromLocale($value);
                 }
 
-                return [$key => Json::encode($value)];
+                return [$key => json_encode($value)];
             }
 
             /**
