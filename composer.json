@@ -39,7 +39,8 @@
     "orchestra/testbench": "^7.0|^8.0",
     "phpunit/phpunit": "^9.5",
     "symplify/monorepo-builder": "^10.0",
-    "nunomaduro/larastan": "^2.0"
+    "nunomaduro/larastan": "^2.0",
+    "brianium/paratest": "^6.11"
   },
   "autoload": {
     "files": [
