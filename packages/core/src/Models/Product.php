@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -83,7 +84,7 @@ class Product extends BaseModel implements SpatieHasMedia
     /**
      * Returns the attributes to be stored against this model.
      */
-    public function mappedAttributes(): array
+    public function mappedAttributes(): Collection
     {
         return $this->productType->mappedAttributes;
     }
