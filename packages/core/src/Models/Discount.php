@@ -79,6 +79,11 @@ class Discount extends BaseModel
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('condition');
     }
+    
+    public function purchasableExclusions()
+    {
+        return $this->hasMany(DiscountPurchasable::class)->whereType('exclusion');
+    }
 
     public function purchasableLimitations()
     {
@@ -107,7 +112,7 @@ class Discount extends BaseModel
         return $this->belongsToMany(
             Collection::class,
             "{$prefix}collection_discount"
-        )->withTimestamps();
+        )->withPivot(['type'])->withTimestamps();
     }
 
     /**
@@ -135,7 +140,7 @@ class Discount extends BaseModel
         return $this->belongsToMany(
             Brand::class,
             "{$prefix}brand_discount"
-        )->withTimestamps();
+        )->withPivot(['type'])->withTimestamps();
     }
 
     /**
