@@ -131,6 +131,7 @@ abstract class AbstractDiscount extends Component
         $this->selectedProductVariants = $this->discount->purchasables()
             ->whereIn('type', ['limitation', 'exclusion'])
             ->wherePurchasableType(ProductVariant::class)
+            ->whereHas('purchasable')
             ->get()
             ->map(function ($limitation) {
                 return array_merge($this->mapProductVariantToArray($limitation->purchasable), ['type' => $limitation->type]);
@@ -138,10 +139,12 @@ abstract class AbstractDiscount extends Component
 
         $this->selectedConditions = $this->discount->purchasableConditions()
             ->wherePurchasableType(Product::class)
+            ->whereHas('purchasable')
             ->pluck('purchasable_id')->values()->toArray();
 
         $this->selectedRewards = $this->discount->purchasableRewards()
             ->wherePurchasableType(Product::class)
+            ->whereHas('purchasable')
             ->pluck('purchasable_id')->values()->toArray();
 
         $this->syncAvailability();
