@@ -56,7 +56,7 @@ class DiscountPurchasable extends BaseModel
      */
     public function purchasable(): MorphTo
     {
-        return $this->morphTo()->withTrashed();
+        return $this->morphTo();
     }
 
     /**

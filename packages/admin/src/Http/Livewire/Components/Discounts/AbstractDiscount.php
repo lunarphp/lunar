@@ -122,7 +122,7 @@ abstract class AbstractDiscount extends Component
         $this->selectedProducts = $this->discount->purchasables()
             ->whereIn('type', ['limitation', 'exclusion'])
             ->wherePurchasableType(Product::class)
-            ->whereHas('purchasable', fn ($query) => $query->withTrashed())
+            ->whereHas('purchasable')
             ->get()
             ->map(function ($limitation) {
                 return array_merge($this->mapProductToArray($limitation->purchasable), ['type' => $limitation->type]);
