@@ -51,7 +51,7 @@ abstract class AbstractDiscount extends Component
      * @var array
      */
     public Collection $selectedProducts;
-    
+
     /**
      * The product variants to restrict the coupon for.
      *
@@ -122,11 +122,12 @@ abstract class AbstractDiscount extends Component
         $this->selectedProducts = $this->discount->purchasables()
             ->whereIn('type', ['limitation', 'exclusion'])
             ->wherePurchasableType(Product::class)
+            ->whereHas('purchasable', fn ($query) => $query->withTrashed())
             ->get()
             ->map(function ($limitation) {
                 return array_merge($this->mapProductToArray($limitation->purchasable), ['type' => $limitation->type]);
             });
-            
+
         $this->selectedProductVariants = $this->discount->purchasables()
             ->whereIn('type', ['limitation', 'exclusion'])
             ->wherePurchasableType(ProductVariant::class)
@@ -251,7 +252,7 @@ abstract class AbstractDiscount extends Component
             ? $this->selectedProducts->merge($selectedProducts)
             : $selectedProducts;
     }
-    
+
     /**
      * Select product variants given an array of IDs
      *
@@ -338,7 +339,7 @@ abstract class AbstractDiscount extends Component
     {
         $this->selectedProducts->forget($index);
     }
-    
+
     /**
      * Remove the product variant by it's index.
      *
@@ -407,7 +408,7 @@ abstract class AbstractDiscount extends Component
             $this->discount->collections()->sync(
                 $this->selectedCollections->mapWithKeys(fn ($collection) => [$collection['id'] => ['type' => $collection['type']]])
             );
-            
+
             $this->discount->purchasables()
                 ->whereIn('type', ['exclusion', 'limitation'])
                 ->where('purchasable_type', Product::class)
@@ -427,7 +428,7 @@ abstract class AbstractDiscount extends Component
                     ])
                     ->save();
             }
-                        
+
             $this->discount->purchasables()
                 ->whereIn('type', ['exclusion', 'limitation'])
                 ->where('purchasable_type', ProductVariant::class)
@@ -558,7 +559,7 @@ abstract class AbstractDiscount extends Component
             'thumbnail' => optional($product->thumbnail)->getUrl('small'),
         ];
     }
-    
+
     /**
      * Return the data we need from a product variant
      *
