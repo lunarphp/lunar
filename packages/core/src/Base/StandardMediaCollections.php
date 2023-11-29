@@ -24,10 +24,10 @@ class StandardMediaCollections
             $collection = $collection->useFallbackPath($fallbackPath);
         }
 
-        $this->registerConversions($collection);
+        $this->registerConversions($collection, $model);
     }
 
-    protected function registerConversions(MediaCollection $collection): void
+    protected function registerConversions(MediaCollection $collection, HasMedia $model): void
     {
         $conversions = [
             'zoom' => [
@@ -44,9 +44,9 @@ class StandardMediaCollections
             ],
         ];
 
-        $collection->registerMediaConversions(function (Media $media) use ($conversions) {
+        $collection->registerMediaConversions(function (Media $media) use ($conversions, $model) {
             foreach ($conversions as $key => $conversion) {
-                $this->addMediaConversion($key)
+                $model->addMediaConversion($key)
                     ->fit(
                         Manipulations::FIT_FILL,
                         $conversion['width'],

@@ -23,7 +23,10 @@ trait HasMedia
 
     public function registerMediaCollections(): void
     {
-        $conversionClass = config('lunar.media.collections', StandardMediaCollections::class);
+        $conversionClasses = config('lunar.media.collections', []);
+
+        $conversionClass = $conversionClasses[static::class] ?? StandardMediaCollections::class;
+
         app($conversionClass)->apply($this);
     }
 
