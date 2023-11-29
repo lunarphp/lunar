@@ -126,27 +126,6 @@ export default defineConfig({
                 }
             ],
 
-            // This sidebar gets displayed when a user
-            // is on `config` directory.
-            '/admin-hub/': [
-                {
-                    text: 'Developer Reference',
-                    items: [
-                        {text: 'Overview', link: '/admin-hub/overview'},
-                        {text: 'Extending', link: '/admin-hub/extending'},
-                        {text: 'Activity Log', link: '/admin-hub/activity-log'},
-                        {text: 'Assets', link: '/admin-hub/assets'},
-                        {text: 'Branding', link: '/admin-hub/branding'},
-                        {text: 'Discounts', link: '/admin-hub/discounts'},
-                        {text: 'Field Types', link: '/admin-hub/field-types'},
-                        {text: 'Preview URLs', link: '/admin-hub/preview'},
-                        {text: 'Staff', link: '/admin-hub/staff'},
-                        {text: 'Tables', link: '/admin-hub/tables'},
-                        {text: 'Validation', link: '/admin-hub/validation'}
-                    ]
-                }
-            ],
-
         },
 
         socialLinks: [
