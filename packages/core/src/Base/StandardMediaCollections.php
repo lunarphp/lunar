@@ -14,6 +14,9 @@ class StandardMediaCollections
         $fallbackUrl = config('lunar.media.fallback.url');
         $fallbackPath = config('lunar.media.fallback.path');
 
+        // Reset
+        $model->mediaCollections = [];
+
         $collection = $model->addMediaCollection('images');
 
         if ($fallbackUrl) {
