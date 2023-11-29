@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Lunar\Base\BaseModel;
@@ -64,7 +65,10 @@ class Channel extends BaseModel
         return $this->morphTo();
     }
 
-    public function products()
+    /**
+     * Return the products relationship
+     */
+    public function products(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
