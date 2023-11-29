@@ -45,31 +45,84 @@ If your model does not contain any images, calling getFirstMediaUrl or getFirstM
 ]
 ```
 
-## Conversions
+## Media Collections
 
-Lunar provides some useful conversions which come ready out the box. This is provided in the config `lunar/media`.
+Media Collections provide a way to define separate types of media on a model. Lunar provides a way to customise the media
+collections for each model that implements the `HasMedia` trait.
+
+You will find the default settings in the config `lunar/media`. Here you can switch out the class that handles the 
+registration of the media collections. 
+
+When registering media collections you can define not only the name but many other options. 
+See [Spatie Media Library](https://spatie.be/docs/laravel-medialibrary/v10/working-with-media-collections/defining-media-collections) for more information.
+
+### Custom Media Collections
+
+To create custom media collections you will want to create your own implementation along the lines of the code below.
 
 ```php
-'conversions' => [
-    \Lunar\Base\StandardMediaConversions::class,
-],
-```
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-You are free to use your own class to define your own conversions, just remember we will still apply our own `small` conversion as we need it in the hub.
-
-Your own class could look something like:
-
-```
-namespace App\Media\Conversions;
-
-class StorefrontConversions
+class CustomMediaCollections
 {
-    public function apply($model)
+    public function apply(HasMedia $model)
     {
-        // .. Register media conversions here...
+        $fallbackUrl = config('lunar.media.fallback.url');
+        $fallbackPath = config('lunar.media.fallback.path');
+
+        $collection = $model->addMediaCollection('images');
+
+        if ($fallbackUrl) {
+            $collection = $collection->useFallbackUrl($fallbackUrl);
+        }
+
+        if ($fallbackPath) {
+            $collection = $collection->useFallbackPath($fallbackPath);
+        }
+
+        $this->registerConversions($collection, $model);
+    }
+
+    protected function registerConversions(MediaCollection $collection, HasMedia $model): void
+    {
+        $conversions = [
+            'zoom' => [
+                'width' => 1500,
+                'height' => 1500,
+            ],
+            'large' => [
+                'width' => 800,
+                'height' => 800,
+            ],
+            'medium' => [
+                'width' => 500,
+                'height' => 500,
+            ],
+        ];
+
+        $collection->registerMediaConversions(function (Media $media) use ($conversions, $model) {
+            foreach ($conversions as $key => $conversion) {
+                $model->addMediaConversion($key)
+                    ->fit(
+                        Manipulations::FIT_FILL,
+                        $conversion['width'],
+                        $conversion['height']
+                    )->keepOriginalImageFormat();
+            }
+        });
     }
 }
 ```
+
+
+### Media Conversions
+
+Lunar provides some useful conversions which come ready out the box.
+
+You are free to define your own conversions, just remember we will still apply our own `small` conversion as we need it in the hub.
 
 For the full reference on what's possible, see [Defining Conversions](https://spatie.be/docs/laravel-medialibrary/v10/converting-images/defining-conversions).
 
