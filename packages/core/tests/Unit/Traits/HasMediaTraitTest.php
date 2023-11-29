@@ -20,9 +20,9 @@ class HasMediaTraitTest extends TestCase
     {
         $conversions = config('lunar.media.collections');
 
-        $this->assertCount(1, $conversions);
+        $this->assertCount(6, $conversions);
 
-        $this->assertEquals(StandardMediaCollections::class, $conversions[0]);
+        $this->assertEquals(StandardMediaCollections::class, array_pop($conversions));
 
         $file = UploadedFile::fake()->image('avatar.jpg');
 
