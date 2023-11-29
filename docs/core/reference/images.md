@@ -133,7 +133,7 @@ return [
 
 Lunar provides some useful conversions which come ready out the box.
 
-You are free to define your own conversions, just remember we will still apply our own `small` conversion as we need it in the hub.
+You are free to define your own conversions, just remember we will still apply our own `small` conversion for the admin panel.
 
 For the full reference on what's possible, see [Defining Conversions](https://spatie.be/docs/laravel-medialibrary/v10/converting-images/defining-conversions).
 
