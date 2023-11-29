@@ -4,7 +4,7 @@ namespace Lunar\Tests\Unit\Traits;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Lunar\Base\StandardMediaConversions;
+use Lunar\Base\StandardMediaCollections;
 use Lunar\Models\Product;
 use Lunar\Tests\TestCase;
 
@@ -18,11 +18,11 @@ class HasMediaTraitTest extends TestCase
     /** @test */
     public function conversions_are_loaded()
     {
-        $conversions = config('lunar.media.conversions');
+        $conversions = config('lunar.media.collections');
 
         $this->assertCount(1, $conversions);
 
-        $this->assertEquals(StandardMediaConversions::class, $conversions[0]);
+        $this->assertEquals(StandardMediaCollections::class, $conversions[0]);
 
         $file = UploadedFile::fake()->image('avatar.jpg');
 
