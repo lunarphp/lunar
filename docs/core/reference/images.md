@@ -116,6 +116,18 @@ class CustomMediaCollections
     }
 }
 ```
+Then register your new class against the model(s) you wish to use it.
+
+```php
+return [
+
+    'collections' => [
+        Lunar\Models\Product::class => CustomMediaCollections::class,
+        //..
+    ],
+
+    //..
+```
 
 
 ### Media Conversions
@@ -125,19 +137,6 @@ Lunar provides some useful conversions which come ready out the box.
 You are free to define your own conversions, just remember we will still apply our own `small` conversion as we need it in the hub.
 
 For the full reference on what's possible, see [Defining Conversions](https://spatie.be/docs/laravel-medialibrary/v10/converting-images/defining-conversions).
-
-Afterwards, simply add your conversion class to the `conversions` array, if you have no use for the standard ones we provide, simply remove the `StandardMediaConversions` reference.
-
-```php
-<?php
-
-return [
-    'conversions' => [
-        \Lunar\Base\StandardMediaConversions::class,
-        \App\Media\Conversions\StorefrontConversions::class
-    ],
-];
-```
 
 To regenerate conversions, e.g. if you have changed the configuration, you can run the following command.
 
