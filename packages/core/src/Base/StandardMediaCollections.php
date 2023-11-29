@@ -28,6 +28,8 @@ class StandardMediaCollections
         }
 
         $this->registerConversions($collection, $model);
+
+        $model->addMediaCollection('banners');
     }
 
     protected function registerConversions(MediaCollection $collection, HasMedia $model): void
