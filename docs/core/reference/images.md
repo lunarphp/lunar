@@ -53,12 +53,12 @@ collections for each model that implements the `HasMedia` trait.
 You will find the default settings in the config `lunar/media`. Here you can switch out the class that handles the 
 registration of the media collections. 
 
-When registering media collections you can define not only the name but many other options. 
-See [Spatie Media Library](https://spatie.be/docs/laravel-medialibrary/v10/working-with-media-collections/defining-media-collections) for more information.
-
 ### Custom Media Collections
 
 To create custom media collections you will want to create your own implementation along the lines of the code below.
+
+When registering media collections you can define not only the name but many other options.
+See [Spatie Media Library](https://spatie.be/docs/laravel-medialibrary/v10/working-with-media-collections/defining-media-collections) for more information.
 
 ```php
 use Spatie\Image\Manipulations;
