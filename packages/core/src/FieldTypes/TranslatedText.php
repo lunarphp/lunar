@@ -79,30 +79,6 @@ class TranslatedText implements FieldType, JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function getLabel(): string
-    {
-        return __('adminhub::fieldtypes.translated-text.label');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSettingsView(): string
-    {
-        return 'adminhub::field-types.text.settings';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getView(): string
-    {
-        return 'adminhub::field-types.translated-text.view';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getConfig(): array
     {
         return [

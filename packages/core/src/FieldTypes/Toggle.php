@@ -70,30 +70,6 @@ class Toggle implements FieldType, JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function getLabel(): string
-    {
-        return __('adminhub::fieldtypes.toggle.label');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSettingsView(): string
-    {
-        return 'adminhub::field-types.toggle.settings';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getView(): string
-    {
-        return 'adminhub::field-types.toggle.view';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getConfig(): array
     {
         return [

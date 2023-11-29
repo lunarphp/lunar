@@ -70,34 +70,8 @@ class YouTube implements FieldType, JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function getLabel(): string
-    {
-        return __('adminhub::fieldtypes.youtube.label');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSettingsView(): string
-    {
-        return 'adminhub::field-types.youtube.settings';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getView(): string
-    {
-        return 'adminhub::field-types.youtube.view';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getConfig(): array
     {
-        return [
-            'view' => 'adminhub::field-types.youtube',
-        ];
+        return [];
     }
 }

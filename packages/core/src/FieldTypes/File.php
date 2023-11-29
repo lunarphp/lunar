@@ -3,7 +3,6 @@
 namespace Lunar\FieldTypes;
 
 use JsonSerializable;
-use Livewire\TemporaryUploadedFile;
 use Lunar\Base\FieldType;
 
 class File implements FieldType, JsonSerializable
@@ -65,49 +64,7 @@ class File implements FieldType, JsonSerializable
      */
     public function setValue($value)
     {
-        if ($value instanceof TemporaryUploadedFile) {
-            $disk = $this->config['disk'] ?? config('filesystems.default');
-
-            $this->value = [
-                'disk' => $disk,
-                'path' => $value->store($this->config['path'] ?? null, $disk),
-                'filename' => $value->getClientOriginalName(),
-                'mime_type' => $value->getMimeType(),
-            ];
-        } else {
-            $this->value = $value;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLabel(): string
-    {
-        return __('adminhub::fieldtypes.file.label');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSettingsView(): string
-    {
-        return 'adminhub::field-types.file.settings';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getView(): string
-    {
-        return 'adminhub::field-types.file.view';
-    }
-
-    public function withConfig($config = []): self
-    {
-        $this->config = $config;
-
-        return $this;
+        $this->value = $value;
     }
 
     /**
@@ -116,7 +73,6 @@ class File implements FieldType, JsonSerializable
     public function getConfig(): array
     {
         return [
-            'view' => 'adminhub::field-types.file',
             'options' => [
                 'max_files' => 'numeric',
             ],
