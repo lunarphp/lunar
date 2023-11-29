@@ -38,7 +38,7 @@ export default defineConfig({
 
         nav: [
             {text: 'Core', link: '/core/overview', activeMatch: '/core/'},
-            {text: 'Admin Hub', link: '/admin-hub/overview', activeMatch: '/admin-hub/'},
+            {text: 'Admin Panel', link: '/admin-panel]/overview', activeMatch: '/admin-panel/'},
             {
                 text: 'Resources',
                 items: [
@@ -91,8 +91,8 @@ export default defineConfig({
                         {text: 'Currencies', link: '/core/reference/currencies'},
                         {text: 'Customers', link: '/core/reference/customers'},
                         {text: 'Discounts', link: '/core/reference/discounts'},
-                        {text: 'Images', link: '/core/reference/images'},
                         {text: 'Languages', link: '/core/reference/languages'},
+                        {text: 'Media', link: '/core/reference/media'},
                         {text: 'Orders', link: '/core/reference/orders'},
                         {text: 'Payments', link: '/core/reference/payments'},
                         {text: 'Pricing', link: '/core/reference/pricing'},

@@ -1,4 +1,4 @@
-# Images
+# Media
 
 ## Overview
 
