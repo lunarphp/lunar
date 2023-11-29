@@ -63,4 +63,15 @@ class Channel extends BaseModel
     {
         return $this->morphTo();
     }
+
+    public function products()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->morphedByMany(
+            Product::class,
+            'channelable',
+            "{$prefix}channelables"
+        );
+    }
 }

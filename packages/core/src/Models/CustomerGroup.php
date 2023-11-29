@@ -49,4 +49,19 @@ class CustomerGroup extends BaseModel
             "{$prefix}customer_customer_group"
         )->withTimestamps();
     }
+
+    /**
+     * Return the customer's relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function products()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Product::class,
+            "{$prefix}customer_group_product"
+        )->withTimestamps();
+    }
 }
