@@ -28,13 +28,13 @@ class File implements FieldType, JsonSerializable
     }
 
     /**
-     * Create a new instance of Text field type.
+     * Create a new instance of File field type.
      *
      * @param  string  $value
      */
-    public function __construct($value = '', array $config = [])
+    public function __construct($value = '')
     {
-        $this->withConfig($config)->setValue($value);
+        $this->setValue($value);
     }
 
     /**
