@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Lunar\Base\BaseModel;
@@ -62,5 +63,19 @@ class Channel extends BaseModel
     public function channelable()
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Return the products relationship
+     */
+    public function products(): MorphToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->morphedByMany(
+            Product::class,
+            'channelable',
+            "{$prefix}channelables"
+        );
     }
 }
