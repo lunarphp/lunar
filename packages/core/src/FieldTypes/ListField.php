@@ -60,30 +60,6 @@ class ListField implements FieldType, JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function getLabel(): string
-    {
-        return __('adminhub::fieldtypes.list.label');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSettingsView(): string
-    {
-        return 'adminhub::field-types.list.settings';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getView(): string
-    {
-        return 'adminhub::field-types.list.view';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getConfig(): array
     {
         return [

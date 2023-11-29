@@ -30,7 +30,6 @@
     </testsuite>
     <testsuite name="Utils">
       <directory suffix="Test.php">packages/**/tests/Utils</directory>
-      <directory suffix="Test.php">utils/livewire-tables/tests</directory>
     </testsuite>
   </testsuites>
   <php>

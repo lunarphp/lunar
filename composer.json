@@ -4,10 +4,6 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "LunarPHP",
-      "homepage": "https://lunarphp.io/"
-    },
-    {
       "name": "Lunar",
       "homepage": "https://lunarphp.io/"
     }
@@ -25,9 +21,7 @@
     "kalnoy/nestedset": "^6.0",
     "laravel/framework": "^9.0|^10.0",
     "laravel/scout": "^9.4|^10.0",
-    "livewire/livewire": "^2.0",
     "lukascivil/treewalker": "0.9.1",
-    "lunarphp/livewire-tables": "self.version",
     "spatie/laravel-activitylog": "^4.4",
     "spatie/laravel-blink": "^1.6",
     "spatie/laravel-medialibrary": "^9.0.0|^10.0.0",
@@ -43,7 +37,6 @@
   },
   "autoload": {
     "files": [
-      "packages/admin/src/helpers.php",
       "packages/core/src/helpers.php"
     ],
     "psr-4": {
@@ -51,19 +44,11 @@
       "Lunar\\Database\\Factories\\": "packages/core/database/factories",
       "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
       "Lunar\\Database\\State\\": "packages/core/database/state",
-      "Lunar\\Hub\\": "packages/admin/src",
-      "Lunar\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
-      "Lunar\\Hub\\Database\\State\\": "packages/admin/database/state",
-      "Lunar\\Licensing\\": "packages/licensing/src",
-      "Lunar\\LivewireTables\\": "utils/livewire-tables/src/",
       "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Lunar\\Hub\\Tests\\": "packages/admin/tests",
-      "Lunar\\Licensing\\Tests\\": "packages/licensing/tests",
-      "Lunar\\LivewireTables\\Tests\\": "utils/livewire-tables/tests/",
       "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
       "Lunar\\Tests\\": "packages/core/tests"
     }
@@ -71,17 +56,13 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Lunar\\LivewireTables\\LivewireTablesServiceProvider",
         "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
-        "Lunar\\Hub\\AdminHubServiceProvider",
         "Lunar\\LunarServiceProvider"
       ]
     }
   },
   "replace": {
-    "lunarphp/admin": "self.version",
     "lunarphp/core": "self.version",
-    "lunarphp/livewire-tables": "self.version",
     "lunarphp/scout-database-engine": "self.version"
   },
   "minimum-stability": "dev",
