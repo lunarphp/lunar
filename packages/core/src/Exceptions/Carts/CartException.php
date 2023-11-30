@@ -29,7 +29,7 @@ class CartException extends LunarException
         $messages = $messageBag->all();
 
         if (! count($messages) || ! is_string($messages[0])) {
-            return 'The cart action was invalid';
+            return __('lunar::exceptions.carts.invalid_action');
         }
 
         $message = array_shift($messages);
