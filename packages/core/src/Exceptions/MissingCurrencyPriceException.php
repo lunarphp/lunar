@@ -2,8 +2,6 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class MissingCurrencyPriceException extends Exception
+class MissingCurrencyPriceException extends LunarException
 {
 }

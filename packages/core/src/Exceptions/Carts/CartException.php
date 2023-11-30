@@ -2,10 +2,10 @@
 
 namespace Lunar\Exceptions\Carts;
 
-use Exception;
 use Illuminate\Contracts\Support\MessageBag;
+use Lunar\Exceptions\LunarException;
 
-class CartException extends Exception
+class CartException extends LunarException
 {
     /**
      * The cart exception message bag

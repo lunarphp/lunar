@@ -2,8 +2,6 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class CartLineIdMismatchException extends Exception
+class CartLineIdMismatchException extends LunarException
 {
 }

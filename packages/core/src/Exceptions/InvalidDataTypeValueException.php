@@ -2,8 +2,6 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class InvalidDataTypeValueException extends Exception
+class InvalidDataTypeValueException extends LunarException
 {
 }

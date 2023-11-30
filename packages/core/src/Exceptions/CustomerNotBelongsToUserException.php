@@ -2,8 +2,6 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class CustomerNotBelongsToUserException extends Exception
+class CustomerNotBelongsToUserException extends LunarException
 {
 }

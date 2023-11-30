@@ -2,9 +2,9 @@
 
 namespace Lunar\Exceptions\FieldTypes;
 
-use Exception;
+use Lunar\Exceptions\LunarException;
 
-class InvalidFieldTypeException extends Exception
+class InvalidFieldTypeException extends LunarException
 {
     public function __construct($classname)
     {

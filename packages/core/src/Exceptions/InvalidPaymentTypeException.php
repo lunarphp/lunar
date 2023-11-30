@@ -2,8 +2,6 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class InvalidPaymentTypeException extends Exception
+class InvalidPaymentTypeException extends LunarException
 {
 }
