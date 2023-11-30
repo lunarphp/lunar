@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasMacros;
@@ -39,6 +39,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Product extends BaseModel implements SpatieHasMedia
 {
+    use HasAttributes;
     use HasChannels;
     use HasCustomerGroups;
     use HasFactory;
@@ -73,20 +74,12 @@ class Product extends BaseModel implements SpatieHasMedia
     ];
 
     /**
-     * Define which attributes should be cast.
-     *
-     * @var array
+     * Returns the attributes to be stored against this model
+     * restricted by the assigned `ProductType`.
      */
-    protected $casts = [
-        'attribute_data' => AsAttributeData::class,
-    ];
-
-    /**
-     * Returns the attributes to be stored against this model.
-     */
-    public function mappedAttributes(): Collection
+    public function attributables(): Collection
     {
-        return $this->productType->mappedAttributes;
+        return $this->productType->attributables;
     }
 
     /**

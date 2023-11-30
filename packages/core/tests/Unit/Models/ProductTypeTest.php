@@ -18,7 +18,7 @@ class ProductTypeTest extends TestCase
         $productType = ProductType::factory()
             ->has(
                 Attribute::factory()->for(AttributeGroup::factory())->count(1),
-                'mappedAttributes',
+                'attributables',
             )
             ->create([
                 'name' => 'Bob',

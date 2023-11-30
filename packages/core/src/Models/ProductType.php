@@ -39,9 +39,9 @@ class ProductType extends BaseModel
     protected $guarded = [];
 
     /**
-     * Get the mapped attributes relation.
+     * Get the attributables relation.
      */
-    public function mappedAttributes(): MorphToMany
+    public function attributables(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -57,7 +57,7 @@ class ProductType extends BaseModel
      */
     public function productAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(Product::class);
+        return $this->attributables()->whereAttributeType(Product::class);
     }
 
     /**
@@ -65,7 +65,7 @@ class ProductType extends BaseModel
      */
     public function variantAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(ProductVariant::class);
+        return $this->attributables()->whereAttributeType(ProductVariant::class);
     }
 
     /**

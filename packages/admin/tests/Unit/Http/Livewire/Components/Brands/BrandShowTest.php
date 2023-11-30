@@ -79,7 +79,7 @@ class BrandShowTest extends TestCase
 
         $brand = Brand::factory()->create();
 
-        $brand->mappedAttributes()->attach(Attribute::get());
+        $brand->mappedAttributes()->saveMany(Attribute::get());
 
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(BrandShow::class, [

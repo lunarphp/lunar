@@ -206,7 +206,7 @@ class ProductCreateTest extends TestCase
 
         $productType = ProductType::first();
 
-        $productType->mappedAttributes()->attach($attribute);
+        $productType->attributables()->attach($attribute);
 
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductCreate::class)
@@ -237,7 +237,7 @@ class ProductCreateTest extends TestCase
 
         $productType = ProductType::first();
 
-        $productType->mappedAttributes()->attach($attribute);
+        $productType->attributables()->attach($attribute);
 
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductCreate::class)
@@ -265,7 +265,7 @@ class ProductCreateTest extends TestCase
 
         $productType = ProductType::first();
 
-        $productType->mappedAttributes()->attach($attribute);
+        $productType->attributables()->attach($attribute);
 
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductCreate::class)
@@ -299,7 +299,7 @@ class ProductCreateTest extends TestCase
 
         $productType = ProductType::first();
 
-        $productType->mappedAttributes()->attach($attribute);
+        $productType->attributables()->attach($attribute);
 
         // it is not required for realsies
         LiveWire::actingAs($staff, 'staff')
@@ -343,7 +343,7 @@ class ProductCreateTest extends TestCase
 
         $productType = ProductType::first();
 
-        $productType->mappedAttributes()->attach($attribute);
+        $productType->attributables()->attach($attribute);
 
         // fail the required rule
         LiveWire::actingAs($staff, 'staff')
@@ -378,7 +378,7 @@ class ProductCreateTest extends TestCase
 
         $productType = ProductType::first();
 
-        $productType->mappedAttributes()->attach($attribute);
+        $productType->attributables()->attach($attribute);
 
         // fail the configuration rules
         LiveWire::actingAs($staff, 'staff')

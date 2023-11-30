@@ -16,11 +16,11 @@ class ProductTypeShow extends AbstractProductType
     {
         $systemProductAttributes = Attribute::system(Product::class)->get();
         $systemVariantAttribues = Attribute::system(ProductVariant::class)->get();
-        $this->selectedProductAttributes = $this->productType->mappedAttributes
+        $this->selectedProductAttributes = $this->productType->attributables
             ->filter(fn ($att) => $att->attribute_type == Product::class)
             ->merge($systemProductAttributes);
 
-        $this->selectedVariantAttributes = $this->productType->mappedAttributes
+        $this->selectedVariantAttributes = $this->productType->attributables
             ->filter(fn ($att) => $att->attribute_type == ProductVariant::class)
             ->merge($systemVariantAttribues);
     }
@@ -52,7 +52,7 @@ class ProductTypeShow extends AbstractProductType
 
         $this->productType->save();
 
-        $this->productType->mappedAttributes()->sync(
+        $this->productType->attributables()->sync(
             array_merge(
                 $this->selectedProductAttributes->pluck('id')->toArray(),
                 $this->selectedVariantAttributes->pluck('id')->toArray()

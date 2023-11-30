@@ -304,6 +304,11 @@ class LunarServiceProvider extends ServiceProvider
             }
         });
 
+        Blueprint::macro('attributeData', function () {
+            /** @var Blueprint $this */
+            return $this->json('attribute_data');
+        });
+
         Blueprint::macro('userForeignKey', function ($field_name = 'user_id', $nullable = false) {
             /** @var Blueprint $this */
             $userModel = config('auth.providers.users.model');

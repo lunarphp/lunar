@@ -4,7 +4,6 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
@@ -53,20 +52,6 @@ class Brand extends BaseModel implements SpatieHasMedia
     protected static function newFactory(): BrandFactory
     {
         return BrandFactory::new();
-    }
-
-    /**
-     * Get the mapped attributes relation.
-     */
-    public function mappedAttributes(): MorphToMany
-    {
-        $prefix = config('lunar.database.table_prefix');
-
-        return $this->morphToMany(
-            Attribute::class,
-            'attributable',
-            "{$prefix}attributables"
-        )->withTimestamps();
     }
 
     /**
