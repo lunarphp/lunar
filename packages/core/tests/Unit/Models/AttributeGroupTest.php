@@ -52,11 +52,17 @@ class AttributeGroupTest extends TestCase
     /** @test */
     public function can_handle_emtpy_position()
     {
-        AttributeGroup::factory()
-            ->count(3)
-            ->create([
-                'position' => null,
-            ]);
+        AttributeGroup::factory()->create([
+            'position' => null,
+        ]);
+
+        AttributeGroup::factory()->create([
+            'position' => '',
+        ]);
+
+        AttributeGroup::factory()->create([
+            'position' => 0,
+        ]);
 
         $this->assertEquals(range(1,3), AttributeGroup::pluck('position')->all());
     }
@@ -67,8 +73,9 @@ class AttributeGroupTest extends TestCase
         AttributeGroup::factory()
             ->count(3)
             ->create([
-                'position' => -1,
+                'position' => 1,
             ]);
-        $this->assertEquals(range(-1,1), AttributeGroup::pluck('position')->all());
+            
+        $this->assertEquals(range(1,3), AttributeGroup::pluck('position')->all());
     }
 }
