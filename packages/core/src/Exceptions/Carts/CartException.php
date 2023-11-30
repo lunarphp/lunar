@@ -15,6 +15,7 @@ class CartException extends LunarException
     public function __construct(MessageBag $messageBag)
     {
         parent::__construct(static::summarize($messageBag));
+
         $this->messageBag = $messageBag;
     }
 

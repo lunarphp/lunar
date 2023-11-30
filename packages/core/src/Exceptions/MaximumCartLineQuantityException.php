@@ -4,4 +4,5 @@ namespace Lunar\Exceptions;
 
 class MaximumCartLineQuantityException extends LunarException
 {
+    //
 }
