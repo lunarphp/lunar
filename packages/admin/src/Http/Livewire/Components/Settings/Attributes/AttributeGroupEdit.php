@@ -22,13 +22,6 @@ class AttributeGroupEdit extends Component
     public $attributableType;
 
     /**
-     * The handle for the attributable type.
-     *
-     * @var string
-     */
-    public $typeHandle;
-
-    /**
      * The new attribute group.
      *
      * @var AttributeGroup
@@ -74,8 +67,7 @@ class AttributeGroupEdit extends Component
     {
         $this->validate();
 
-        $handle = Str::handle("{$this->typeHandle}" ?: "{$this->attributeGroup->translate('name')}");
-        $this->attributeGroup->handle = $handle;
+        $this->attributeGroup->handle = Str::handle("{$this->attributeGroup->translate('name')}");
 
         $this->validate([
             'attributeGroup.handle' => [
@@ -101,7 +93,6 @@ class AttributeGroupEdit extends Component
             $this->attributableType
         )->count() + 1;
 
-        $this->attributeGroup->handle = $handle;
         $this->attributeGroup->save();
 
         $this->emit('attribute-group-edit.created', $this->attributeGroup->id);

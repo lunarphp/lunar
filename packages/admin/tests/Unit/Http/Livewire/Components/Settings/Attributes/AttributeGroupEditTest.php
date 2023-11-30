@@ -117,7 +117,6 @@ class AttributeGroupEditTest extends TestCase
             Livewire::test(AttributeGroupEdit::class)
                 ->set('attributeGroup.name.' . Language::getDefault()->code, 'Details')
                 ->set('attributableType', $attributableType)
-                ->set('typeHandle', 'details')
                 ->call('create');
         }
 
