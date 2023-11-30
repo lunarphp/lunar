@@ -12,7 +12,7 @@ class CartException extends LunarException
      */
     protected MessageBag $messageBag;
 
-    public function __construct(MessageBag $messageBag = null)
+    public function __construct(MessageBag $messageBag)
     {
         parent::__construct(static::summarize($messageBag));
         $this->messageBag = $messageBag;
@@ -24,7 +24,7 @@ class CartException extends LunarException
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
      * @return string
      */
-    protected static function summarize($messageBag)
+    protected static function summarize(MessageBag $messageBag): string
     {
         $messages = $messageBag->all();
 
@@ -43,7 +43,7 @@ class CartException extends LunarException
         return $message;
     }
 
-    public function errors()
+    public function errors(): MessageBag
     {
         return $this->messageBag;
     }
