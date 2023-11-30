@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -73,18 +74,17 @@ class AttributeGroupEdit extends Component
     {
         $this->validate();
 
-        $handle = Str::handle("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
+        $handle = Str::handle("{$this->typeHandle}" ?: "{$this->attributeGroup->translate('name')}");
         $this->attributeGroup->handle = $handle;
 
-        $uniquenessConstraint = 'unique:' . get_class($this->attributeGroup) . ',handle';
-        if ($this->attributeGroup->id) {
-            $uniquenessConstraint .= ',' . $this->attributeGroup->id;
-        }
-
         $this->validate([
-            'attributeGroup.handle' => $uniquenessConstraint,
+            'attributeGroup.handle' => [
+                'required', 
+                Rule::unique(AttributeGroup::class, 'handle')
+                    ->ignore(AttributeGroup::class)
+                    ->where(fn ($query) => $query->where('attributable_type', $this->attributableType))
+            ]
         ]);
-
 
         if ($this->attributeGroup->id) {
             $this->attributeGroup->save();

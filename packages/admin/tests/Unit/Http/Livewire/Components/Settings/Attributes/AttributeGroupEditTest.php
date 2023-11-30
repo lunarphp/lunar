@@ -8,7 +8,9 @@ use Livewire\Livewire;
 use Lunar\Hub\Http\Livewire\Components\Settings\Attributes\AttributeGroupEdit;
 use Lunar\Hub\Tests\Stubs\User;
 use Lunar\Hub\Tests\TestCase;
+use Lunar\Models\Collection;
 use Lunar\Models\Language;
+use Lunar\Models\ProductType;
 
 class AttributeGroupEditTest extends TestCase
 {
@@ -101,5 +103,30 @@ class AttributeGroupEditTest extends TestCase
                 $secondaryLanguage->code => 'Some attribute group name, but in French',
             ]),
         ]);
+    }
+
+    /** @test */
+    public function can_create_attribute_groups_with_same_handle_and_different_attributable_types()
+    {
+        Language::factory()->create([
+            'default' => true,
+            'code' => 'en',
+        ]);
+
+        foreach ([ProductType::class, Collection::class] as $attributableType) {
+            Livewire::test(AttributeGroupEdit::class)
+                ->set('attributeGroup.name.' . Language::getDefault()->code, 'Details')
+                ->set('attributableType', $attributableType)
+                ->set('typeHandle', 'details')
+                ->call('create');
+        }
+
+        foreach ([ProductType::class, Collection::class] as $attributableType) {
+            $this->assertDatabaseHas('lunar_attribute_groups', [
+                'attributable_type' => $attributableType,
+                'handle' => 'details',
+                'name' => json_encode([Language::getDefault()->code => 'Details']),
+            ]);
+        }
     }
 }
