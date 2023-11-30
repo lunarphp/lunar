@@ -15,15 +15,49 @@ class ProductTypeTest extends TestCase
     /** @test */
     public function can_make_a_product_type()
     {
-        $productType = ProductType::factory()
-            ->has(
-                Attribute::factory()->for(AttributeGroup::factory())->count(1),
-                'attributables',
-            )
-            ->create([
-                'name' => 'Bob',
-            ]);
+        
+        $productType = ProductType::factory()->create([
+            'name' => 'Bob',
+        ]);
 
         $this->assertEquals('Bob', $productType->name);
+    }
+
+    /** @test */
+    public function product_type_can_have_mapped_attributes()
+    {   
+        $attributes = Attribute::factory()
+            ->has(AttributeGroup::factory()->state([
+                'attributable_type' => ProductType::class
+            ]), 'attributeGroup')
+            ->count(1)
+            ->create([
+                'attribute_type' => ProductType::class
+            ]);
+
+        $productType = ProductType::factory()->create();
+        $productType->mappedAttributes()->saveMany($attributes);
+
+        $this->assertEquals(
+            $productType->mappedAttributes->pluck('id'), 
+            $attributes->pluck('id')
+        );
+    }
+
+    /** @test */
+    public function product_type_can_have_attributables()
+    {   
+        $attributes = Attribute::factory()
+            ->has(AttributeGroup::factory(), 'attributeGroup')
+            ->count(1)
+            ->create();
+
+        $productType = ProductType::factory()->create();
+        $productType->attributables()->sync($attributes);
+
+        $this->assertEquals(
+            $productType->attributables->pluck('id'), 
+            $attributes->pluck('id')
+        );
     }
 }
