@@ -56,6 +56,16 @@ class Attribute extends BaseModel
         'name' => AsCollection::class,
         'configuration' => AsCollection::class,
     ];
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'system' => 0,
+        'required' => 0,
+    ];
     
     /**
      * The "booted" method of the model.
