@@ -39,24 +39,6 @@ class Attribute extends BaseModel
     use HasMacros;
     use HasTranslations;
 
-    public static function boot()
-    {
-        static::deleting(function (Model $model) {
-            DB::table(
-                config('lunar.database.table_prefix').'attributables'
-            )->where('attribute_id', '=', $model->id)->delete();
-        });
-        parent::boot();
-    }
-
-    /**
-     * Return a new factory instance for the model.
-     */
-    protected static function newFactory(): AttributeFactory
-    {
-        return AttributeFactory::new();
-    }
-
     /**
      * Define which attributes should be
      * protected from mass assignment.
@@ -74,6 +56,51 @@ class Attribute extends BaseModel
         'name' => AsCollection::class,
         'configuration' => AsCollection::class,
     ];
+    
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        /**
+         * Handle the model's "saving" event.
+         */
+        static::saving(function (Attribute $attribute) {
+            /**
+             * If position is invalid set position to max value + 1
+             */
+            if (!($attribute->position > 0) || Attribute::where([
+                ['id', '!=', $attribute->id],
+                ['attribute_type', '=', $attribute->attribute_type],
+                ['attribute_group_id', '=', $attribute->attribute_group_id],
+                ['position', '=', $attribute->position],
+            ])->exists()) {
+                $attribute->position = Attribute::where([
+                    ['attribute_type', '=', $attribute->attribute_type],
+                    ['attribute_group_id', '=', $attribute->attribute_group_id],
+                ])->max('position') + 1;
+            }
+        });
+        /**
+         * Handle the model's "deleting" event.
+         */
+        static::deleting(function (Attribute $attribute) {
+            /**
+             * Delete attributables
+             */
+            DB::table(
+                config('lunar.database.table_prefix').'attributables'
+            )->where('attribute_id', '=', $attribute->id)->delete();
+        });
+    }
+
+    /**
+     * Return a new factory instance for the model.
+     */
+    protected static function newFactory(): AttributeFactory
+    {
+        return AttributeFactory::new();
+    }
 
     /**
      * Return the attribuable relation.

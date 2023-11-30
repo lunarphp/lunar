@@ -26,6 +26,30 @@ class AttributeGroup extends BaseModel
     use HasTranslations;
 
     /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        /**
+         * Handle the AttributeGroup "saving" event.
+         */
+        static::saving(function (AttributeGroup $attributeGroup) {
+            /**
+             * If position is invalid set position to max value + 1
+             */
+            if (!($attributeGroup->position > 0) || AttributeGroup::where([
+                ['id', '!=', $attributeGroup->id],
+                ['attributable_type', '=', $attributeGroup->attributable_type],
+                ['position', '=', $attributeGroup->position],
+            ])->exists()) {
+                $attributeGroup->position = AttributeGroup::where([
+                    ['attributable_type', '=', $attributeGroup->attributable_type],
+                ])->max('position') + 1;
+            }
+        });
+    }
+
+    /**
      * Return a new factory instance for the model.
      */
     protected static function newFactory(): AttributeGroupFactory
