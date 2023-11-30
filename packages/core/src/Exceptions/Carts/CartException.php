@@ -8,7 +8,7 @@ use Lunar\Exceptions\LunarException;
 class CartException extends LunarException
 {
     /**
-     * The cart exception message bag
+     * The cart exception message bag.
      */
     protected MessageBag $messageBag;
 
@@ -19,10 +19,7 @@ class CartException extends LunarException
     }
 
     /**
-     * Create an error message summary from the validation errors.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return string
+     * Create a summary from the error messages.
      */
     protected static function summarize(MessageBag $messageBag): string
     {
@@ -43,6 +40,9 @@ class CartException extends LunarException
         return $message;
     }
 
+    /**
+     * Get the error message bag.
+     */
     public function errors(): MessageBag
     {
         return $this->messageBag;
