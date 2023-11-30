@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\FieldTypes\Text;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\ProductType;
@@ -15,12 +16,10 @@ class ProductTypeTest extends TestCase
     /** @test */
     public function can_make_a_product_type()
     {
-        
-        $productType = ProductType::factory()->create([
-            'name' => 'Bob',
-        ]);
+        $productType = ProductType::factory()->create();
 
-        $this->assertEquals('Bob', $productType->name);
+        $this->assertModelExists($productType);
+        $this->assertInstanceOf(Text::class, $productType->attribute_data['description']);
     }
 
     /** @test */
