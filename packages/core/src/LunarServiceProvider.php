@@ -306,7 +306,7 @@ class LunarServiceProvider extends ServiceProvider
 
         Blueprint::macro('attributeData', function () {
             /** @var Blueprint $this */
-            return $this->json('attribute_data');
+            return $this->json('attribute_data')->nullable();
         });
 
         Blueprint::macro('userForeignKey', function ($field_name = 'user_id', $nullable = false) {
