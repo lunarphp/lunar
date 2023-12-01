@@ -64,10 +64,6 @@ class OptionValueEdit extends Component
         $this->validate();
 
         if (! $this->optionValue->id) {
-            $this->optionValue->position = ProductOptionValue::whereProductOptionId(
-                $this->option->id
-            )->count() + 1;
-
             $this->optionValue->option()->associate($this->option);
             $this->optionValue->save();
             $this->notify(

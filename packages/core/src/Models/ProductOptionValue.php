@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasPosition;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\ProductOptionValueFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
@@ -26,6 +27,7 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasPosition;
     use HasTranslations;
 
     /**
@@ -53,7 +55,17 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
-    public function getNameAttribute(string $value): mixed
+    /**
+     * Define which attributes should be used 
+     * to define the unique position constraint.
+     *
+     * @var array
+     */
+    protected $positionUniqueConstraints = [
+        'product_option_id',
+    ];
+
+    public function getNameAttribute(?string $value): mixed
     {
         return json_decode($value);
     }

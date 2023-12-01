@@ -327,5 +327,23 @@ class LunarServiceProvider extends ServiceProvider
                     );
             }
         });
+
+        Blueprint::macro('position', function (string|array $uniqueConstraints = []) {
+            /** @var Blueprint $this */
+            if (is_string($uniqueConstraints)) {
+                $uniqueConstraints = app($uniqueConstraints)->positionUniqueConstraints();
+            }
+            $this->unsignedBigInteger('position')->index();
+            $this->unique(
+                array_merge($uniqueConstraints, ['position']),
+                $this->prefix . $this->table . '_unique_position'
+            );
+        });
+
+        Blueprint::macro('dropPosition', function () {
+            /** @var Blueprint $this */
+            $this->dropUnique($this->prefix . $this->table . '_unique_position');
+            $this->dropColumn('position');
+        });
     }
 }
