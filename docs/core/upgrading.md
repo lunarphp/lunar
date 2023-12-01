@@ -24,6 +24,15 @@ php artisan lunar:hub:install
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+## [UNRELEASED]
+
+### High Impact
+
+#### Media Conversions
+The `lunar.media.conversions` configuration has been removed, in favour of registering custom media collections instead.
+Media collections allow you to register conversions and much more. See [Media Collections](/core/reference/media.html#media-collections)
+for further information.
+
 ## 0.7
 
 ### High Impact
