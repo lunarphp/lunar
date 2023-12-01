@@ -97,10 +97,6 @@ class AttributeGroupEdit extends Component
         }
 
         $this->attributeGroup->attributable_type = $this->attributableType;
-        $this->attributeGroup->position = AttributeGroup::whereAttributableType(
-            $this->attributableType
-        )->count() + 1;
-
         $this->attributeGroup->handle = $handle;
         $this->attributeGroup->save();
 
