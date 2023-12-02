@@ -4,6 +4,7 @@ namespace Lunar\Base\Traits;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Arr;
 
 trait HasDimensions
 {
@@ -24,13 +25,25 @@ trait HasDimensions
     }
 
     /**
+     * Get default units from model's property or global config
+     */
+    public function defaultUnits(): array
+    {
+        return !property_exists($this, 'defaultUnits')
+            ? collect(config('lunar.shipping.measurements', []))
+                ->map(fn($measurement) => collect($measurement)->where('default')->keys()->first())
+                ->all()
+            : $this->defaultUnits;
+    }
+
+    /**
      * Get the length unit
      */
     protected function lengthUnit(): Attribute
     {
         return Attribute::make(
             get: fn (?string $value) => $value
-                ?? collect(config('lunar.shipping.measurements.length'))->where('default')->keys()->first()
+                ?? Arr::get($this->defaultUnits(), 'length')
                 ?? 'mm'
         );
     }
@@ -42,7 +55,7 @@ trait HasDimensions
     {
         return Attribute::make(
             get: fn(?string $value) => $value
-                ?? collect(config('lunar.shipping.measurements.length'))->where('default')->keys()->first()
+                ?? Arr::get($this->defaultUnits(), 'length')
                 ?? 'mm'
         );
     }
@@ -54,7 +67,7 @@ trait HasDimensions
     {
         return Attribute::make(
             get: fn(?string $value) => $value
-                ?? collect(config('lunar.shipping.measurements.length'))->where('default')->keys()->first()
+                ?? Arr::get($this->defaultUnits(), 'length')
                 ?? 'mm'
         );
     }
@@ -66,7 +79,7 @@ trait HasDimensions
     {
         return Attribute::make(
             get: fn(?string $value) => $value
-                ?? collect(config('lunar.shipping.measurements.weight'))->where('default')->keys()->first()
+                ?? Arr::get($this->defaultUnits(), 'weight')
                 ?? 'kg'
         );
     }
@@ -78,7 +91,7 @@ trait HasDimensions
     {
         return Attribute::make(
             get: fn(?string $value) => $value
-                ?? collect(config('lunar.shipping.measurements.volume'))->where('default')->keys()->first()
+                ?? Arr::get($this->defaultUnits(), 'volume')
                 ?? 'l'
         );
     }
