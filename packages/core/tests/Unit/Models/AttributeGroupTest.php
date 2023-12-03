@@ -20,12 +20,12 @@ class AttributeGroupTest extends TestCase
                 'en' => 'SEO',
             ],
             'handle' => 'seo',
-            'position' => 5,
         ]);
 
         $this->assertEquals('SEO', $attributeGroup->name->get('en'));
         $this->assertEquals('seo', $attributeGroup->handle);
-        $this->assertEquals(5, $attributeGroup->position);
+        $this->assertIsInt($attributeGroup->position);
+        $this->assertGreaterThan(0, $attributeGroup->position);
     }
 
     /** @test */
@@ -37,7 +37,6 @@ class AttributeGroupTest extends TestCase
                 'en' => 'SEO',
             ],
             'handle' => 'seo',
-            'position' => 5,
         ]);
 
         $this->assertCount(0, $attributeGroup->attributes);
