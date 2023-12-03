@@ -8,8 +8,6 @@ use Lunar\Models\ProductOption;
 
 class ProductOptionFactory extends Factory
 {
-    private static $position = 1;
-
     protected $model = ProductOption::class;
 
     public function definition(): array
@@ -24,7 +22,6 @@ class ProductOptionFactory extends Factory
             'label' => [
                 'en' => $name,
             ],
-            'position' => self::$position++,
         ];
     }
 }

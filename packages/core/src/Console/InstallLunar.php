@@ -139,7 +139,6 @@ class InstallLunar extends Command
                         'en' => 'Details',
                     ]),
                     'handle' => 'details',
-                    'position' => 1,
                 ]);
 
                 $collectionGroup = AttributeGroup::create([
@@ -148,13 +147,11 @@ class InstallLunar extends Command
                         'en' => 'Details',
                     ]),
                     'handle' => 'collection_details',
-                    'position' => 1,
                 ]);
 
                 Attribute::create([
                     'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
-                    'position' => 1,
                     'name' => [
                         'en' => 'Name',
                     ],
@@ -172,7 +169,6 @@ class InstallLunar extends Command
                 Attribute::create([
                     'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position' => 1,
                     'name' => [
                         'en' => 'Name',
                     ],
@@ -190,7 +186,6 @@ class InstallLunar extends Command
                 Attribute::create([
                     'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
-                    'position' => 2,
                     'name' => [
                         'en' => 'Description',
                     ],
@@ -208,7 +203,6 @@ class InstallLunar extends Command
                 Attribute::create([
                     'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
-                    'position' => 2,
                     'name' => [
                         'en' => 'Description',
                     ],
