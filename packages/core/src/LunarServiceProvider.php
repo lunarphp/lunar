@@ -12,6 +12,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
@@ -29,6 +30,8 @@ use Lunar\Base\OrderModifiers;
 use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Base\OrderReferenceGeneratorInterface;
 use Lunar\Base\PaymentManagerInterface;
+use Lunar\Base\PositionManifest;
+use Lunar\Base\PositionManifestInterface;
 use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
@@ -166,6 +169,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
+        });
+
+        $this->app->singleton(PositionManifestInterface::class, function ($app) {
+            return $app->make(PositionManifest::class);
         });
     }
 
@@ -328,22 +335,6 @@ class LunarServiceProvider extends ServiceProvider
             }
         });
 
-        Blueprint::macro('position', function (string|array $uniqueConstraints = []) {
-            /** @var Blueprint $this */
-            if (is_string($uniqueConstraints)) {
-                $uniqueConstraints = app($uniqueConstraints)->positionUniqueConstraints();
-            }
-            $this->unsignedBigInteger('position')->index();
-            $this->unique(
-                array_merge($uniqueConstraints, ['position']),
-                $this->prefix . $this->table . '_unique_position'
-            );
-        });
-
-        Blueprint::macro('dropPosition', function () {
-            /** @var Blueprint $this */
-            $this->dropUnique($this->prefix . $this->table . '_unique_position');
-            $this->dropColumn('position');
-        });
+        PositionManifest::registerBlueprintMacros();
     }
 }

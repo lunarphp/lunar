@@ -3,6 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
+use Lunar\Facades\PositionManifest;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\ProductOption;
@@ -15,7 +16,7 @@ return new class extends Migration {
     public function up(): void
     {
         /**
-         * Model's with position 
+         * Model's with `HasPosition` trait 
          */
         $models = [
             Attribute::class,
@@ -29,18 +30,17 @@ return new class extends Migration {
         foreach ($models as $model) {
             $model = app($model);
             Schema::table($model->getTable(), function (Blueprint $table) use ($model) {
-                DB::table($model->getTable())
+                DB::table($table->getTable())
                     ->select(array_merge(
                         [$model->getKeyName()], 
-                        $model->positionUniqueConstraints()
+                        PositionManifest::constraints($model)
                     ))
                     ->orderBy('position')
                     ->orderBy('id')
                     ->get()
                     ->groupBy(fn (stdClass $row, int $key) =>
                         collect($row)
-                            ->only($model->positionUniqueConstraints())
-                            ->except('position')
+                            ->except([$model->getKeyName(), 'position'])
                             ->join('-')
                     )->each
                         ->each(fn(stdClass $row, int $key) => $row->position = $key + 1);
@@ -56,12 +56,19 @@ return new class extends Migration {
                 $schema = Schema::getConnection()
                     ->getDoctrineSchemaManager()
                     ->introspectTable($model->getTable());
-                $uniqueIndex = $this->prefix . $table->getTable() . '_unique_position';
-                $uniqueConstraints = array_merge($model->positionUniqueConstraints(), ['position']);
-                $table->unsignedBigInteger('position')->default(null)->index()->change();
-                if (!$schema->hasIndex($uniqueIndex)) {
-                    $table->unique($uniqueConstraints, $uniqueIndex);
+                $table->unsignedBigInteger('position')
+                    ->nullable(false)
+                    ->default(null)
+                    ->change();
+                $index = $model->getTable() . '_position_index';
+                if ($schema->hasIndex($index)) {
+                    $table->dropIndex($index);
                 }
+                $index = $model->getTable() . '_position_unique';
+                if ($schema->hasIndex($index)) {
+                    $table->dropIndex($index);
+                }
+                $table->unique(PositionManifest::constraints($model), $index);
             });
         }
     }
