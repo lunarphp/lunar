@@ -28,9 +28,6 @@
     <testsuite name="Database">
       <directory suffix="Test.php">./packages/**/tests/Database</directory>
     </testsuite>
-    <testsuite name="Utils">
-      <directory suffix="Test.php">packages/**/tests/Utils</directory>
-    </testsuite>
   </testsuites>
   <php>
     <env name="DB_CONNECTION" value="testing"/>

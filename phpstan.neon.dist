@@ -4,7 +4,6 @@ parameters:
     level: 0
     paths:
         - packages
-        - utils
     checkOctaneCompatibility: true
     ignoreErrors:
         -

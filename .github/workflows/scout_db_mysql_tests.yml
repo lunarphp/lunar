@@ -3,7 +3,7 @@ on:
   pull_request:
 defaults:
   run:
-    working-directory: ./utils/scout-database-engine
+    working-directory: ./packages/scout-database-engine
 jobs:
   phpunit:
     runs-on: ubuntu-latest
