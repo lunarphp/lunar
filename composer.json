@@ -49,7 +49,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
+      "Lunar\\ScoutDatabaseEngine\\Tests\\": "packages/scout-database-engine/tests",
       "Lunar\\Tests\\": "packages/core/tests"
     }
   },
