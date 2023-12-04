@@ -126,14 +126,8 @@ return [
         'delivery_instructions' => [
             'label' => 'Delivery Instructions',
         ],
-        'sub_total' => [
-            'label' => 'Sub Total',
-        ],
         'shipping_total' => [
             'label' => 'Shipping Total',
-        ],
-        'total' => [
-            'label' => 'Total',
         ],
         'paid' => [
             'label' => 'Paid',
@@ -141,10 +135,6 @@ return [
         'refund' => [
             'label' => 'Refund',
         ],
-        'discount_total' => [
-            'label' => 'Discount Total',
-        ],
-
         'unit_price' => [
             'label' => 'Unit Price',
         ],
@@ -160,14 +150,12 @@ return [
         'total' => [
             'label' => 'Total',
         ],
-
         'current_stock_level' => [
             'message' => 'Current Stock Level: :count',
         ],
         'purchase_stock_level' => [
             'message' => 'at time of ordering: :count',
         ],
-
         'status' => [
             'label' => 'Status',
         ],
@@ -219,12 +207,10 @@ return [
         'timeline' => [
             'label' => 'Timeline',
         ],
-
         'transactions' => [
             'label' => 'Transactions',
             'placeholder' => 'No transactions',
         ],
-
         'alert' => [
             'requires_capture' => 'This order still requires payment to be captured.',
             'partially_refunded' => 'This order has been partially refunded.',

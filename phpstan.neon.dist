@@ -4,6 +4,10 @@ parameters:
     level: 0
     paths:
         - packages
+    excludePaths:
+        - packages/*/tests/*
+        - packages/vendor/*
+        - packages/*/vendor/*
     checkOctaneCompatibility: true
     ignoreErrors:
         -

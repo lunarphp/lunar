@@ -1,41 +1,29 @@
 <?php
 
-namespace Lunar\Tests\Unit\Search;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Search\OrderIndexer;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.search
- * @group lunar.search.order
- */
-class OrderIndexerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_return_correct_searchable_data()
-    {
-        Currency::factory()->create([
-            'code' => 'GBP',
-            'default' => true,
-        ]);
+test('can return correct searchable data', function () {
+    Currency::factory()->create([
+        'code' => 'GBP',
+        'default' => true,
+    ]);
 
-        $order = Order::factory()->create([
-            'user_id' => null,
-            'placed_at' => now(),
-            'meta' => [
-                'foo' => 'bar',
-            ]
-        ]);
+    $order = Order::factory()->create([
+        'user_id' => null,
+        'placed_at' => now(),
+        'meta' => [
+            'foo' => 'bar',
+        ]
+    ]);
 
-        $data = app(OrderIndexer::class)->toSearchableArray($order);
+    $data = app(OrderIndexer::class)->toSearchableArray($order);
 
-        $this->assertEquals('GBP', $data['currency_code']);
-        $this->assertEquals($order->channel->name, $data['channel']);
-        $this->assertEquals($order->total->value, $data['total']);
-    }
-}
+    expect($data['currency_code'])->toEqual('GBP');
+    expect($data['channel'])->toEqual($order->channel->name);
+    expect($data['total'])->toEqual($order->total->value);
+});

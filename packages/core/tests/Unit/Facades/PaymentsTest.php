@@ -1,38 +1,25 @@
 <?php
 
-namespace Lunar\Tests\Unit\Facades;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Facades\Payments;
 use Lunar\Tests\Stubs\TestPaymentDriver;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.payments
- */
-class PaymentsTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function accessor_is_correct()
-    {
-        $this->assertEquals(PaymentManagerInterface::class, Payments::getFacadeAccessor());
-    }
+test('accessor is correct', function () {
+    expect(Payments::getFacadeAccessor())->toEqual(PaymentManagerInterface::class);
+});
 
-    /** @test */
-    public function can_extend_payments()
-    {
-        Payments::extend('testing', function ($app) {
-            return $app->make(TestPaymentDriver::class);
-        });
+test('can extend payments', function () {
+    Payments::extend('testing', function ($app) {
+        return $app->make(TestPaymentDriver::class);
+    });
 
-        $this->assertInstanceOf(TestPaymentDriver::class, Payments::driver('testing'));
+    expect(Payments::driver('testing'))->toBeInstanceOf(TestPaymentDriver::class);
 
-        $result = Payments::driver('testing')->authorize();
+    $result = Payments::driver('testing')->authorize();
 
-        $this->assertInstanceOf(PaymentAuthorize::class, $result);
-    }
-}
+    expect($result)->toBeInstanceOf(PaymentAuthorize::class);
+});

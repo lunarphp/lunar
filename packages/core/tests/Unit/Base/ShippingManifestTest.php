@@ -1,8 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\ShippingManifest;
@@ -14,267 +12,241 @@ use Lunar\Models\Price as PriceModel;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
-use Lunar\Tests\TestCase;
 
-/**
- * @group shipping-manifest
- */
-class ShippingManifestTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    private Cart $cart;
+beforeEach(function () {
+    $currency = Currency::factory()->create([
+        'decimal_places' => 2,
+    ]);
 
-    public function setUp(): void
-    {
-        parent::setUp();
+    $this->cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
 
-        $currency = Currency::factory()->create([
-            'decimal_places' => 2,
-        ]);
+    $taxClass = TaxClass::factory()->create([
+        'name' => 'Foobar',
+    ]);
 
-        $this->cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $taxClass = TaxClass::factory()->create([
-            'name' => 'Foobar',
-        ]);
-
-        $taxClass->taxRateAmounts()->create(
-            TaxRateAmount::factory()->make([
-                'percentage' => 20,
-                'tax_class_id' => $taxClass->id,
-            ])->toArray()
-        );
-
-        $purchasable = ProductVariant::factory()->create([
+    $taxClass->taxRateAmounts()->create(
+        TaxRateAmount::factory()->make([
+            'percentage' => 20,
             'tax_class_id' => $taxClass->id,
-            'unit_quantity' => 1,
-        ]);
+        ])->toArray()
+    );
 
-        PriceModel::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
+    $purchasable = ProductVariant::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'unit_quantity' => 1,
+    ]);
 
-        $this->cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 1,
-        ]);
+    PriceModel::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $this->cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+});
+
+test('can add option', function () {
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(0);
+
+    $taxClass = TaxClass::factory()->create();
+
+    ShippingManifest::addOption(
+        new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
+
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
+});
+
+test('can add multiple options', function () {
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(0);
+
+    $taxClass = TaxClass::factory()->create();
+
+    ShippingManifest::addOption(
+        $basicOption = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
+
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
+
+    $options = collect();
+
+    for ($i = 1; $i <= 5; $i++) {
+        $options->push(new ShippingOption(
+            name: 'Basic Delivery #'.$i,
+            description: 'Basic Delivery',
+            identifier: 'BASDEL'.$i,
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        ));
     }
 
-    /** @test */
-    public function can_add_option()
-    {
-        $this->assertCount(0, ShippingManifest::getOptions($this->cart));
+    ShippingManifest::addOptions($options);
 
-        $taxClass = TaxClass::factory()->create();
+    $manifestOptions = ShippingManifest::getOptions($this->cart);
+    expect($manifestOptions)->toHaveCount(6);
 
-        ShippingManifest::addOption(
-            new ShippingOption(
-                name: 'Basic Delivery',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
+    expect($manifestOptions->first())->toBe($basicOption);
+    expect($manifestOptions->last())->toBe($options->last());
+});
 
-        $this->assertCount(1, ShippingManifest::getOptions($this->cart));
-    }
+test('cannot add the same option identifier more than once', function () {
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(0);
 
-    /** @test */
-    public function can_add_multiple_options()
-    {
-        $this->assertCount(0, ShippingManifest::getOptions($this->cart));
+    $taxClass = TaxClass::factory()->create();
 
-        $taxClass = TaxClass::factory()->create();
+    ShippingManifest::addOption(
+        new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
 
-        ShippingManifest::addOption(
-            $basicOption = new ShippingOption(
-                name: 'Basic Delivery',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
+    ShippingManifest::addOption(
+        new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
 
-        $this->assertCount(1, ShippingManifest::getOptions($this->cart));
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
+});
 
-        $options = collect();
+test('can clear options', function () {
+    $taxClass = TaxClass::factory()->create();
 
-        for ($i = 1; $i <= 5; $i++) {
-            $options->push(new ShippingOption(
-                name: 'Basic Delivery #'.$i,
-                description: 'Basic Delivery',
-                identifier: 'BASDEL'.$i,
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            ));
-        }
+    ShippingManifest::addOption(
+        new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
 
-        ShippingManifest::addOptions($options);
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(1);
 
-        $manifestOptions = ShippingManifest::getOptions($this->cart);
-        $this->assertCount(6, $manifestOptions);
+    ShippingManifest::clearOptions();
 
-        $this->assertSame($basicOption, $manifestOptions->first());
-        $this->assertSame($options->last(), $manifestOptions->last());
-    }
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(0);
+});
 
-    /** @test */
-    public function cannot_add_the_same_option_identifier_more_than_once()
-    {
-        $this->assertCount(0, ShippingManifest::getOptions($this->cart));
+test('can retrieve option', function () {
+    $taxClass = TaxClass::factory()->create();
 
-        $taxClass = TaxClass::factory()->create();
+    ShippingManifest::addOption(
+        $option1 = new ShippingOption(
+            name: 'Basic Delivery',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
 
-        ShippingManifest::addOption(
-            new ShippingOption(
-                name: 'Basic Delivery',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
+    ShippingManifest::addOption(
+        $option2 = new ShippingOption(
+            name: 'Basic Delivery 2',
+            description: 'Basic Delivery',
+            identifier: 'BASDEL2',
+            price: new Price(500, $this->cart->currency, 1),
+            taxClass: $taxClass
+        )
+    );
 
-        ShippingManifest::addOption(
-            new ShippingOption(
-                name: 'Basic Delivery',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(2);
 
-        $this->assertCount(1, ShippingManifest::getOptions($this->cart));
-    }
+    expect(ShippingManifest::getOption($this->cart, $option1->getIdentifier()))->toBe($option1);
+});
 
-    /** @test */
-    public function can_clear_options()
-    {
-        $taxClass = TaxClass::factory()->create();
+test('can retrieve cart shipping option', function () {
+    $taxClass = TaxClass::factory()->create();
 
-        ShippingManifest::addOption(
-            new ShippingOption(
-                name: 'Basic Delivery',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
-
-        $this->assertCount(1, ShippingManifest::getOptions($this->cart));
-
-        ShippingManifest::clearOptions();
-
-        $this->assertCount(0, ShippingManifest::getOptions($this->cart));
-    }
-
-    /** @test */
-    public function can_retrieve_option()
-    {
-        $taxClass = TaxClass::factory()->create();
-
-        ShippingManifest::addOption(
-            $option1 = new ShippingOption(
-                name: 'Basic Delivery',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
-
-        ShippingManifest::addOption(
-            $option2 = new ShippingOption(
-                name: 'Basic Delivery 2',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL2',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
-
-        $this->assertCount(2, ShippingManifest::getOptions($this->cart));
-
-        $this->assertSame($option1, ShippingManifest::getOption($this->cart, $option1->getIdentifier()));
-    }
-
-    /** @test */
-    public function can_retrieve_cart_shipping_option()
-    {
-        $taxClass = TaxClass::factory()->create();
-
-        ShippingManifest::addOption(
-            $option = new ShippingOption(
-                name: 'Basic Delivery',
-                description: 'Basic Delivery',
-                identifier: 'BASDEL',
-                price: new Price(500, $this->cart->currency, 1),
-                taxClass: $taxClass
-            )
-        );
-
-        $shipping = CartAddress::factory()->make([
-            'type' => 'shipping',
-            'country_id' => Country::factory(),
-            'first_name' => 'Santa',
-            'line_one' => '123 Elf Road',
-            'city' => 'Lapland',
-            'postcode' => 'SHIPP',
-        ]);
-
-        $this->cart->setShippingAddress($shipping);
-
-        $this->assertNull(ShippingManifest::getShippingOption($this->cart));
-
-        $this->cart->setShippingOption($option);
-
-        $this->assertSame($option, ShippingManifest::getShippingOption($this->cart));
-    }
-
-    /** @test */
-    public function can_retrieve_cart_shipping_option_using()
-    {
-        $taxClass = TaxClass::factory()->create();
-
+    ShippingManifest::addOption(
         $option = new ShippingOption(
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
             price: new Price(500, $this->cart->currency, 1),
             taxClass: $taxClass
-        );
+        )
+    );
 
-        $this->assertCount(0, ShippingManifest::getOptions($this->cart));
+    $shipping = CartAddress::factory()->make([
+        'type' => 'shipping',
+        'country_id' => Country::factory(),
+        'first_name' => 'Santa',
+        'line_one' => '123 Elf Road',
+        'city' => 'Lapland',
+        'postcode' => 'SHIPP',
+    ]);
 
-        $shipping = CartAddress::factory()->make([
-            'type' => 'shipping',
-            'country_id' => Country::factory(),
-            'first_name' => 'Santa',
-            'line_one' => '123 Elf Road',
-            'city' => 'Lapland',
-            'postcode' => 'SHIPP',
-        ]);
+    $this->cart->setShippingAddress($shipping);
 
-        $this->cart->setShippingAddress($shipping);
+    expect(ShippingManifest::getShippingOption($this->cart))->toBeNull();
 
-        $this->cart->setShippingOption($option);
+    $this->cart->setShippingOption($option);
 
-        $this->assertNull(ShippingManifest::getShippingOption($this->cart));
+    expect(ShippingManifest::getShippingOption($this->cart))->toBe($option);
+});
 
-        ShippingManifest::getOptionUsing(fn (Cart $cart, $identifier): ShippingOption => $option->getIdentifier() == $identifier ? $option : null);
+test('can retrieve cart shipping option using', function () {
+    $taxClass = TaxClass::factory()->create();
 
-        $this->assertSame($option, ShippingManifest::getShippingOption($this->cart));
-    }
-}
+    $option = new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new Price(500, $this->cart->currency, 1),
+        taxClass: $taxClass
+    );
+
+    expect(ShippingManifest::getOptions($this->cart))->toHaveCount(0);
+
+    $shipping = CartAddress::factory()->make([
+        'type' => 'shipping',
+        'country_id' => Country::factory(),
+        'first_name' => 'Santa',
+        'line_one' => '123 Elf Road',
+        'city' => 'Lapland',
+        'postcode' => 'SHIPP',
+    ]);
+
+    $this->cart->setShippingAddress($shipping);
+
+    $this->cart->setShippingOption($option);
+
+    expect(ShippingManifest::getShippingOption($this->cart))->toBeNull();
+
+    ShippingManifest::getOptionUsing(fn (Cart $cart, $identifier): ShippingOption => $option->getIdentifier() == $identifier ? $option : null);
+
+    expect(ShippingManifest::getShippingOption($this->cart))->toBe($option);
+});

@@ -1,142 +1,123 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;
 use Lunar\Models\TaxZone;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.models
- */
-class TaxZoneTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_tax_zone_class()
-    {
-        $data = [
-            'name' => 'UK Mainland',
-            'zone_type' => 'state',
-            'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
-        ];
+test('can make a tax zone class', function () {
+    $data = [
+        'name' => 'UK Mainland',
+        'zone_type' => 'state',
+        'price_display' => 'tax_inclusive',
+        'active' => true,
+        'default' => true,
+    ];
 
-        TaxZone::factory()->create($data);
+    TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
-    }
+    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+});
 
-    /** @test */
-    public function tax_zone_can_have_countries()
-    {
-        $data = [
-            'name' => 'UK Mainland',
-            'zone_type' => 'state',
-            'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
-        ];
+test('tax zone can have countries', function () {
+    $data = [
+        'name' => 'UK Mainland',
+        'zone_type' => 'state',
+        'price_display' => 'tax_inclusive',
+        'active' => true,
+        'default' => true,
+    ];
 
-        $zone = TaxZone::factory()->create($data);
+    $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
-        $country = Country::factory()->create();
+    $country = Country::factory()->create();
 
-        $this->assertCount(0, $zone->refresh()->countries);
+    expect($zone->refresh()->countries)->toHaveCount(0);
 
-        $zone->countries()->create([
-            'country_id' => $country->id,
-        ]);
+    $zone->countries()->create([
+        'country_id' => $country->id,
+    ]);
 
-        $this->assertCount(1, $zone->refresh()->countries);
-    }
+    expect($zone->refresh()->countries)->toHaveCount(1);
+});
 
-    /** @test */
-    public function tax_zone_can_have_states()
-    {
-        $data = [
-            'name' => 'L.A.',
-            'zone_type' => 'state',
-            'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
-        ];
+test('tax zone can have states', function () {
+    $data = [
+        'name' => 'L.A.',
+        'zone_type' => 'state',
+        'price_display' => 'tax_inclusive',
+        'active' => true,
+        'default' => true,
+    ];
 
-        $zone = TaxZone::factory()->create($data);
+    $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
-        $country = Country::factory()->create();
-        $state = State::factory()->create([
-            'country_id' => $country->id,
-        ]);
+    $country = Country::factory()->create();
+    $state = State::factory()->create([
+        'country_id' => $country->id,
+    ]);
 
-        $this->assertCount(0, $zone->refresh()->states);
+    expect($zone->refresh()->states)->toHaveCount(0);
 
-        $zone->states()->create([
-            'state_id' => $state->id,
-        ]);
+    $zone->states()->create([
+        'state_id' => $state->id,
+    ]);
 
-        $this->assertCount(1, $zone->refresh()->states);
-    }
+    expect($zone->refresh()->states)->toHaveCount(1);
+});
 
-    /** @test */
-    public function tax_zone_can_have_postcodes()
-    {
-        $data = [
-            'name' => 'L.A.',
-            'zone_type' => 'state',
-            'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
-        ];
+test('tax zone can have postcodes', function () {
+    $data = [
+        'name' => 'L.A.',
+        'zone_type' => 'state',
+        'price_display' => 'tax_inclusive',
+        'active' => true,
+        'default' => true,
+    ];
 
-        $zone = TaxZone::factory()->create($data);
+    $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
-        $country = Country::factory()->create();
+    $country = Country::factory()->create();
 
-        $this->assertCount(0, $zone->refresh()->postcodes);
+    expect($zone->refresh()->postcodes)->toHaveCount(0);
 
-        $zone->postcodes()->create([
-            'country_id' => $country->id,
-            'postcode' => 12345,
-        ]);
+    $zone->postcodes()->create([
+        'country_id' => $country->id,
+        'postcode' => 12345,
+    ]);
 
-        $this->assertCount(1, $zone->refresh()->postcodes);
-    }
+    expect($zone->refresh()->postcodes)->toHaveCount(1);
+});
 
-    /** @test */
-    public function tax_zone_can_have_customer_groups()
-    {
-        $data = [
-            'name' => 'L.A.',
-            'zone_type' => 'state',
-            'price_display' => 'tax_inclusive',
-            'active' => true,
-            'default' => true,
-        ];
+test('tax zone can have customer groups', function () {
+    $data = [
+        'name' => 'L.A.',
+        'zone_type' => 'state',
+        'price_display' => 'tax_inclusive',
+        'active' => true,
+        'default' => true,
+    ];
 
-        $zone = TaxZone::factory()->create($data);
+    $zone = TaxZone::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
 
-        $country = Country::factory()->create();
+    $country = Country::factory()->create();
 
-        $this->assertCount(0, $zone->refresh()->customerGroups);
+    expect($zone->refresh()->customerGroups)->toHaveCount(0);
 
-        $zone->customerGroups()->create([
-            'customer_group_id' => CustomerGroup::factory()->create()->id,
-        ]);
+    $zone->customerGroups()->create([
+        'customer_group_id' => CustomerGroup::factory()->create()->id,
+    ]);
 
-        $this->assertCount(1, $zone->refresh()->customerGroups);
-    }
-}
+    expect($zone->refresh()->customerGroups)->toHaveCount(1);
+});

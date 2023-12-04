@@ -1,51 +1,38 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.models
- */
-class TaxRateTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_tax_rate()
-    {
-        $data = [
-            'name' => 'VAT',
-            'tax_zone_id' => TaxZone::factory()->create()->id,
-        ];
+test('can make a tax rate', function () {
+    $data = [
+        'name' => 'VAT',
+        'tax_zone_id' => TaxZone::factory()->create()->id,
+    ];
 
-        $rate = TaxRate::factory()->create($data);
+    $rate = TaxRate::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
 
-        $this->assertInstanceOf(TaxZone::class, $rate->taxZone);
-    }
+    expect($rate->taxZone)->toBeInstanceOf(TaxZone::class);
+});
 
-    /** @test */
-    public function tax_rate_can_have_amounts()
-    {
-        $data = [
-            'name' => 'VAT',
-            'tax_zone_id' => TaxZone::factory()->create()->id,
-        ];
+test('tax rate can have amounts', function () {
+    $data = [
+        'name' => 'VAT',
+        'tax_zone_id' => TaxZone::factory()->create()->id,
+    ];
 
-        $rate = TaxRate::factory()->create($data);
+    $rate = TaxRate::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
 
-        $this->assertCount(0, $rate->taxRateAmounts);
+    expect($rate->taxRateAmounts)->toHaveCount(0);
 
-        $rate->taxRateAmounts()->create(TaxRateAmount::factory()->make()->toArray());
+    $rate->taxRateAmounts()->create(TaxRateAmount::factory()->make()->toArray());
 
-        $this->assertCount(1, $rate->refresh()->taxRateAmounts);
-    }
-}
+    expect($rate->refresh()->taxRateAmounts)->toHaveCount(1);
+});

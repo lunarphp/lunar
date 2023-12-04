@@ -1,30 +1,16 @@
 <?php
 
-namespace Lunar\Tests\Unit\Utils;
-
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Str;
-use Lunar\Tests\TestCase;
 
-/**
- * @group core.utils
- */
-class StrTest extends TestCase
-{
-    /** @test */
-    public function passing_kebab_case_string()
-    {
-        $this->assertEquals('foo_bar', Str::handle('foo-bar'));
-    }
+test('passing kebab case string', function () {
+    expect(Str::handle('foo-bar'))->toEqual('foo_bar');
+});
 
-    /** @test */
-    public function passing_sentence_string()
-    {
-        $this->assertEquals('foo_bar', Str::handle('foo bar'));
-    }
+test('passing sentence string', function () {
+    expect(Str::handle('foo bar'))->toEqual('foo_bar');
+});
 
-    /** @test */
-    public function passing_mixed_sentence_and_kebab_case()
-    {
-        $this->assertEquals('foo_bar_foo_bar', Str::handle('foo-bar foo bar'));
-    }
-}
+test('passing mixed sentence and kebab case', function () {
+    expect(Str::handle('foo-bar foo bar'))->toEqual('foo_bar_foo_bar');
+});

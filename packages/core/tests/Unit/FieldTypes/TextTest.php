@@ -1,57 +1,41 @@
 <?php
 
-namespace Lunar\Tests\Unit\FieldTypes;
-
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Text;
-use Lunar\Tests\TestCase;
 
-/**
- * @group fieldtypes
- */
-class TextTest extends TestCase
-{
-    /** @test */
-    public function can_set_value()
-    {
-        $field = new Text();
-        $field->setValue('I like cake');
+test('can set value', function () {
+    $field = new Text();
+    $field->setValue('I like cake');
 
-        $this->assertEquals('I like cake', $field->getValue());
+    expect($field->getValue())->toEqual('I like cake');
 
-        $field = new Text();
-        $field->setValue(12345);
+    $field = new Text();
+    $field->setValue(12345);
 
-        $this->assertEquals(12345, $field->getValue());
+    expect($field->getValue())->toEqual(12345);
 
-        $field = new Text();
-        $field->setValue(true);
+    $field = new Text();
+    $field->setValue(true);
 
-        $this->assertEquals(true, $field->getValue());
-    }
+    expect($field->getValue())->toEqual(true);
+});
 
-    /** @test */
-    public function can_set_null_value()
-    {
-        $field = new Text();
-        $field->setValue(null);
+test('can set null value', function () {
+    $field = new Text();
+    $field->setValue(null);
 
-        $this->assertEquals(null, $field->getValue());
-    }
+    expect($field->getValue())->toEqual(null);
+});
 
-    /** @test */
-    public function can_set_value_in_constructor()
-    {
-        $field = new Text('I like cake');
+test('can set value in constructor', function () {
+    $field = new Text('I like cake');
 
-        $this->assertEquals('I like cake', $field->getValue());
-    }
+    expect($field->getValue())->toEqual('I like cake');
+});
 
-    /** @test */
-    public function check_does_not_allow_non_strings()
-    {
-        $this->expectException(FieldTypeException::class);
+test('check does not allow non strings', function () {
+    $this->expectException(FieldTypeException::class);
 
-        $field = new Text(new \stdClass());
-    }
-}
+    $field = new Text(new \stdClass());
+});

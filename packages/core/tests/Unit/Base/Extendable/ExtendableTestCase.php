@@ -10,7 +10,7 @@ use Lunar\Tests\TestCase;
 
 class ExtendableTestCase extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

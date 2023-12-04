@@ -1,9 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Exception;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
@@ -30,1009 +27,939 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Stubs\User as StubUser;
-use Lunar\Tests\TestCase;
-use NumberFormatter;
 
-/**
- * @group lunar.carts
- */
-class CartTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    private function setAuthUserConfig()
-    {
-        Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
-    }
+//function setAuthUserConfig()
+//{
+//    Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
+//}
 
-    /** @test */
-    public function can_make_a_cart()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
+test('can make a cart', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
 
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => ['foo' => 'bar'],
-        ]);
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'meta' => ['foo' => 'bar'],
+    ]);
 
-        $this->assertDatabaseHas((new Cart())->getTable(), [
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => json_encode(['foo' => 'bar']),
-        ]);
+    $this->assertDatabaseHas((new Cart())->getTable(), [
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'meta' => json_encode(['foo' => 'bar']),
+    ]);
 
-        $variant = ProductVariant::factory()->create();
+    $variant = ProductVariant::factory()->create();
 
-        $cart->lines()->create([
-            'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => $variant->id,
-            'quantity' => 1,
-        ]);
+    $cart->lines()->create([
+        'purchasable_type' => ProductVariant::class,
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
 
-        $this->assertCount(1, $cart->lines()->get());
-    }
+    expect($cart->lines()->get())->toHaveCount(1);
+});
 
-    /** @test */
-    public function can_save_coupon_code()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
+test('can save coupon code', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
 
-        $customerGroup = CustomerGroup::factory()->create([
-            'default' => true,
-        ]);
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
-        $discount = Discount::factory()->create([
-            'type' => AmountOff::class,
-            'name' => 'Test Coupon',
-            'coupon' => 'valid-coupon',
-            'data' => [
-                'fixed_value' => false,
-                'percentage' => 10,
-            ],
-        ]);
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'coupon' => 'valid-coupon',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
 
-        $discount->channels()->sync([
-            $channel->id => [
-                'enabled' => true,
-                'starts_at' => now(),
-            ],
-        ]);
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
 
-        $discount->customerGroups()->sync([
-            $customerGroup->id => [
-                'enabled' => true,
-                'visible' => true,
-                'starts_at' => now(),
-            ],
-        ]);
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'visible' => true,
+            'starts_at' => now(),
+        ],
+    ]);
 
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => ['foo' => 'bar'],
-        ]);
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'meta' => ['foo' => 'bar'],
+    ]);
 
-        $this->assertNull($cart->coupon_code);
+    expect($cart->coupon_code)->toBeNull();
 
-        $cart->coupon_code = 'valid-coupon';
+    $cart->coupon_code = 'valid-coupon';
 
-        Discounts::apply($cart);
+    Discounts::apply($cart);
 
-        $cart->saveQuietly();
+    $cart->saveQuietly();
 
-        $this->assertEquals('valid-coupon', $cart->refresh()->coupon_code);
-    }
+    expect($cart->refresh()->coupon_code)->toEqual('valid-coupon');
+});
 
-    /** @test */
-    public function can_associate_cart_with_user_with_no_customer_attached()
-    {
-        $this->setAuthUserConfig();
+test('can associate cart with user with no customer attached', function () {
+    setAuthUserConfig();
 
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $user = StubUser::factory()->create();
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
 
-        Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'user_id' => $user->getKey(),
-        ]);
+    Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'user_id' => $user->getKey(),
+    ]);
 
-        $this->assertDatabaseHas((new Cart())->getTable(), [
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'user_id' => $user->getKey(),
-        ]);
-    }
+    $this->assertDatabaseHas((new Cart())->getTable(), [
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'user_id' => $user->getKey(),
+    ]);
+});
 
-    /** @test */
-    public function can_associate_cart_with_customer()
-    {
-        $this->setAuthUserConfig();
+test('can associate cart with customer', function () {
+    setAuthUserConfig();
 
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $customer = Customer::factory()->create();
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $customer = Customer::factory()->create();
 
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-        ]);
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
 
-        $cart->setCustomer($customer);
+    $cart->setCustomer($customer);
 
-        $this->assertDatabaseHas((new Cart)->getTable(), [
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'customer_id' => $customer->id,
-        ]);
-    }
+    $this->assertDatabaseHas((new Cart)->getTable(), [
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'customer_id' => $customer->id,
+    ]);
+});
 
-    /** @test */
-    public function ensure_associate_user_belongs_to_customer()
-    {
-        $this->setAuthUserConfig();
+test('ensure associate user belongs to customer', function () {
+    setAuthUserConfig();
 
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $customer = Customer::factory()->create();
-        $users = StubUser::factory(5)->create();
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $customer = Customer::factory()->create();
+    $users = StubUser::factory(5)->create();
 
-        $user = $users->first();
+    $user = $users->first();
 
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-        ]);
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
 
-        $cartData = [
-            'id' => $cart->id,
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'customer_id' => $customer->id,
-            'user_id' => $user->id,
-        ];
+    $cartData = [
+        'id' => $cart->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'customer_id' => $customer->id,
+        'user_id' => $user->id,
+    ];
 
-        $cart->setCustomer($customer);
+    $cart->setCustomer($customer);
 
-        $checked = false;
+    $checked = false;
 
-        try {
-            $cart->associate($user);
-        } catch (Exception $e) {
-            $checked = true;
-        }
-
-        $this->assertTrue($checked);
-
-        $this->assertDatabaseMissing((new Cart)->getTable(), $cartData);
-
-        $user->customers()->attach($customer);
-
+    try {
         $cart->associate($user);
-
-        $this->assertDatabaseHas((new Cart)->getTable(), $cartData);
+    } catch (Exception $e) {
+        $checked = true;
     }
 
-    /** @test */
-    public function ensure_associate_customer_belongs_to_user()
-    {
-        $this->setAuthUserConfig();
+    expect($checked)->toBeTrue();
 
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $customer = Customer::factory()->create();
-        $users = StubUser::factory(5)->create();
+    $this->assertDatabaseMissing((new Cart)->getTable(), $cartData);
 
-        $user = $users->first();
+    $user->customers()->attach($customer);
 
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-        ]);
+    $cart->associate($user);
 
-        $cartData = [
-            'id' => $cart->id,
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'customer_id' => $customer->id,
-            'user_id' => $user->id,
-        ];
+    $this->assertDatabaseHas((new Cart)->getTable(), $cartData);
+});
 
-        $cart->associate($user);
+test('ensure associate customer belongs to user', function () {
+    setAuthUserConfig();
 
-        $checked = false;
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $customer = Customer::factory()->create();
+    $users = StubUser::factory(5)->create();
 
-        try {
-            $cart->setCustomer($customer);
-        } catch (Exception $e) {
-            $checked = true;
-        }
+    $user = $users->first();
 
-        $this->assertTrue($checked);
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
 
-        $this->assertDatabaseMissing((new Cart)->getTable(), $cartData);
+    $cartData = [
+        'id' => $cart->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'customer_id' => $customer->id,
+        'user_id' => $user->id,
+    ];
 
-        $user->customers()->attach($customer);
+    $cart->associate($user);
 
+    $checked = false;
+
+    try {
         $cart->setCustomer($customer);
-
-        $this->assertDatabaseHas((new Cart)->getTable(), $cartData);
+    } catch (Exception $e) {
+        $checked = true;
     }
 
-    /** @test */
-    public function will_not_retrieve_user_cart_if_order_is_placed()
-    {
-        $this->setAuthUserConfig();
-
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $user = StubUser::factory()->create();
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'user_id' => $user->getKey(),
-        ]);
-
-        Order::factory()->create([
-            'cart_id' => $cart->id,
-            'placed_at' => now(),
-        ]);
-
-        $this->assertNull(
-            Cart::whereUserId($user->getKey())->active()->first()
-        );
-    }
-
-    /** @test */
-    public function can_get_cart_draft_order()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $user = StubUser::factory()->create();
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-        ]);
-
-        Order::factory()->create([
-            'cart_id' => $cart->id,
-            'placed_at' => now(),
-        ]);
-
-        $draftOrder = Order::factory()->create([
-            'cart_id' => $cart->id,
-            'placed_at' => null,
-        ]);
-
-        $this->assertEquals($draftOrder->id, $cart->draftOrder->id);
-
-        $draftOrder->delete();
-
-        $this->assertNull($cart->draftOrder()->first());
-    }
-
-    /** @test */
-    public function can_get_cart_draft_order_by_id()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $user = StubUser::factory()->create();
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-        ]);
-
-        Order::factory()->create([
-            'cart_id' => $cart->id,
-            'placed_at' => now(),
-        ]);
-
-        $draftOrder = Order::factory()->create([
-            'cart_id' => $cart->id,
-            'placed_at' => null,
-        ]);
-
-        $draftOrderTwo = Order::factory()->create([
-            'cart_id' => $cart->id,
-            'placed_at' => null,
-        ]);
-
-        $this->assertEquals($draftOrder->id, $cart->draftOrder->id);
-        $this->assertEquals($draftOrderTwo->id, $cart->draftOrder($draftOrderTwo->id)->first()->id);
-    }
-
-    /** @test */
-    public function can_check_for_completed_order()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $user = StubUser::factory()->create();
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-        ]);
-
-        $order = Order::factory()->create([
-            'cart_id' => $cart->id,
-            'placed_at' => null,
-        ]);
-
-        $this->assertFalse($cart->hasCompletedOrders());
-
-        $order->update([
-            'placed_at' => now(),
-        ]);
-
-        $this->assertTrue($cart->hasCompletedOrders());
-    }
-
-    /** @test */
-    public function can_retrieve_active_cart()
-    {
-        $this->setAuthUserConfig();
-
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $user = StubUser::factory()->create();
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'user_id' => $user->getKey(),
-        ]);
-
-        $this->assertEquals(
-            $cart->id,
-            Cart::whereUserId($user->getKey())->active()->first()->id
-        );
-    }
-
-    /** @test */
-    public function can_associate_cart_with_user_with_customer_attached()
-    {
-        $this->setAuthUserConfig();
-
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-        $user = StubUser::factory()->create();
-        $customer = Customer::factory()->create();
-
-        $customer->users()->attach($user);
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'user_id' => $user->getKey(),
-        ]);
-
-        $this->assertDatabaseHas((new Cart())->getTable(), [
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'user_id' => $user->getKey(),
-        ]);
-    }
-
-    /** @test */
-    public function can_calculate_the_cart()
-    {
-        $currency = Currency::factory()
-            ->state([
-                'code' => 'USD',
-            ])
-            ->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        // Add product
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 1,
-        ]);
-
-        // Add product with unit qty
-        $purchasable = ProductVariant::factory()
-            ->state([
-                'unit_quantity' => 100,
-            ])
-            ->create();
-
-        Price::factory()->create([
-            'price' => 158,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 2,
-        ]);
-
-        // Set user
-        $this->actingAs(
-            StubUser::factory()->create()
-        );
-
-        $cart->calculate();
-
-        $this->assertEquals(100, $cart->lines[0]->unitPrice->value);
-        $this->assertEquals('$1.00', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
-        $this->assertEquals('$1.000000', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
-        $this->assertEquals(158, $cart->lines[1]->unitPrice->value);
-        $this->assertEquals(0.0158, $cart->lines[1]->unitPrice->unitDecimal(false));
-        $this->assertEquals('$0.0158', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
-        $this->assertEquals('$0.015800', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
-        $this->assertEquals(103, $cart->subTotal->value);
-        $this->assertEquals(124, $cart->total->value);
-        $this->assertCount(2, $cart->taxBreakdown->amounts);
-    }
-
-    /** @test */
-    public function can_calculate_the_cart_inc_vat()
-    {
-        Config::set('lunar.pricing.stored_inclusive_of_tax', true);
-
-        $currency = Currency::factory()
-            ->state([
-                'code' => 'USD',
-            ])
-            ->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        // Add product
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 1,
-        ]);
-
-        // Add product with unit qty
-        $purchasable = ProductVariant::factory()
-            ->state([
-                'unit_quantity' => 100,
-            ])
-            ->create();
-
-        Price::factory()->create([
-            'price' => 158,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 2,
-        ]);
-
-        // Set user
-        $this->actingAs(
-            StubUser::factory()->create()
-        );
-
-        $cart->calculate();
-
-        $this->assertEquals(100, $cart->lines[0]->unitPrice->value);
-        $this->assertEquals('$1.00', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
-        $this->assertEquals('$1.000000', $cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
-        $this->assertEquals(158, $cart->lines[1]->unitPrice->value);
-        $this->assertEquals(0.0158, $cart->lines[1]->unitPrice->unitDecimal(false));
-        $this->assertEquals('$0.0158', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6));
-        $this->assertEquals('$0.015800', $cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false));
-        $this->assertEquals(103, $cart->subTotal->value);
-        $this->assertEquals(103, $cart->total->value);
-        $this->assertCount(2, $cart->taxBreakdown->amounts);
-    }
-
-    /**
-     * @test
-     */
-    public function can_add_cart_lines()
-    {
-        $currency = Currency::factory()->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $this->assertCount(0, $cart->lines);
-
-        $cart->add($purchasable, 1);
-
-        $this->assertCount(1, $cart->lines);
-    }
-
-    /**
-     * @test
-     */
-    public function can_remove_cart_lines()
-    {
-        $currency = Currency::factory()->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $this->assertCount(0, $cart->lines);
-
-        $cart->add($purchasable, 1);
-
-        $this->assertCount(1, $cart->lines);
-
-        $cart->remove($cart->lines->first()->id);
-
-        $this->assertCount(0, $cart->lines);
-    }
-
-    /** @test */
-    public function cannot_add_zero_quantity_line()
-    {
-        $currency = Currency::factory()->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $this->assertCount(0, $cart->lines);
-
-        $this->expectException(CartException::class);
-
-        $cart->add($purchasable, 0);
-    }
-
-    /** @test */
-    public function can_update_existing_cart_line()
-    {
-        $currency = Currency::factory()->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $this->assertCount(0, $cart->lines);
-
-        $cart->add($purchasable, 1);
-
-        $cartLine = $cart->refresh()->lines->first();
-
-        $this->assertDatabaseHas((new CartLine())->getTable(), [
-            'quantity' => 1,
-            'id' => $cartLine->id,
-        ]);
-
-        $cart->updateLine($cartLine->id, 2);
-
-        $this->assertDatabaseHas((new CartLine())->getTable(), [
-            'quantity' => 2,
-            'id' => $cartLine->id,
-        ]);
-    }
-
-    /** @test */
-    public function can_calculate_shipping()
-    {
-        $country = Country::factory()->create();
-
-        $billing = CartAddress::factory()->make([
-            'type' => 'billing',
-            'country_id' => $country->id,
-            'first_name' => 'Santa',
-            'line_one' => '123 Elf Road',
-            'city' => 'Lapland',
-            'postcode' => 'BILL',
-        ]);
-
-        $shipping = CartAddress::factory()->make([
-            'type' => 'shipping',
-            'country_id' => $country->id,
-            'first_name' => 'Santa',
-            'line_one' => '123 Elf Road',
-            'city' => 'Lapland',
-            'postcode' => 'SHIPP',
-        ]);
-
-        $taxClass = TaxClass::factory()->create();
-
-        $taxZone = TaxZone::factory()->create();
-
-        TaxZonePostcode::factory()->create([
-            'country_id' => $country->id,
-            'tax_zone_id' => $taxZone->id,
-            'postcode' => 'SHIPP',
-        ]);
-
-        $taxRate = TaxRate::factory()->create([
-            'tax_zone_id' => $taxZone->id,
-        ]);
-
-        TaxRateAmount::factory()->create([
-            'tax_rate_id' => $taxRate->id,
-            'tax_class_id' => $taxClass->id,
-        ]);
-
-        $currency = Currency::factory()->create([
-            'decimal_places' => 2,
-        ]);
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $cart->addresses()->createMany([
-            $billing->toArray(),
-            $shipping->toArray(),
-        ]);
-
-        $shippingOption = new ShippingOption(
-            name: 'Basic Delivery',
-            description: 'Basic Delivery',
-            identifier: 'BASDEL',
-            price: new DataTypesPrice(500, $cart->currency, 1),
-            taxClass: $taxClass
-        );
-
-        ShippingManifest::addOption($shippingOption);
-
-        $cart->shippingAddress->update([
-            'shipping_option' => $shippingOption->getIdentifier(),
-        ]);
-
-        $cart->shippingAddress->shippingOption = $shippingOption;
-
-        $this->assertCount(0, $cart->lines);
-
-        $cart->add($purchasable, 1);
-
-        $cart->calculate();
-
-        $this->assertEquals(100, $cart->subTotal->value);
-        $this->assertEquals(500, $cart->shippingSubTotal->value);
-        $this->assertEquals(600, $cart->shippingTotal->value);
-        $this->assertEquals(720, $cart->total->value);
-
-        Config::set('lunar.pricing.stored_inclusive_of_tax', true);
-
-        $cart->calculate();
-
-        $this->assertEquals(500, $cart->shippingTotal->value);
-        $this->assertEquals(600, $cart->total->value);
-    }
-
-    /** @test */
-    public function can_create_a_discount_breakdown()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-
-        $customerGroup = CustomerGroup::factory()->create([
-            'default' => true,
-        ]);
-
-        $discount = Discount::factory()->create([
-            'type' => AmountOff::class,
-            'name' => 'Test Coupon',
-            'coupon' => 'valid-coupon',
-            'data' => [
-                'fixed_value' => false,
-                'percentage' => 10,
-            ],
-        ]);
-
-        $discount->channels()->sync([
-            $channel->id => [
-                'enabled' => true,
-                'starts_at' => now(),
-            ],
-        ]);
-
-        $discount->customerGroups()->sync([
-            $customerGroup->id => [
-                'enabled' => true,
-                'visible' => true,
-                'starts_at' => now(),
-            ],
-        ]);
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => ['foo' => 'bar'],
-        ]);
-
-        $variant = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($variant),
-            'priceable_id' => $variant->id,
-        ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => $variant->id,
-            'quantity' => 1,
-        ]);
-
-        $this->assertNull($cart->coupon_code);
-
-        $cart->coupon_code = 'valid-coupon';
-
-        $cart->calculate();
-
-        $this->assertCount(1, $cart->discountBreakdown);
-        $this->assertSame(10, $cart->discountBreakdown->first()->price->value);
-    }
-
-    /** @test */
-    public function can_validate_fingerprint()
-    {
-        $currency = Currency::factory()->create();
-        $channel = Channel::factory()->create();
-
-        $cart = Cart::create([
-            'currency_id' => $currency->id,
-            'channel_id' => $channel->id,
-            'meta' => [
-                'A' => 'B',
-                'C' => 'D',
-            ],
-        ]);
-
-        $variant = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($variant),
-            'priceable_id' => $variant->id,
-        ]);
-
-        $cart->lines()->create([
-            'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => $variant->id,
-            'quantity' => 1,
-        ]);
-
-        $fingerprint = $cart->fingerprint();
-
-        $this->assertTrue(
-            $cart->checkFingerprint($fingerprint)
-        );
-
-        $cart->update([
-            'coupon_code' => 'FOOBAR',
-        ]);
-
-        $this->expectException(FingerprintMismatchException::class);
-
-        $cart->checkFingerprint($fingerprint);
-    }
-
-    /**
-     * @test
-     */
-    public function can_override_shipping_calculation()
-    {
-        $country = Country::factory()->create();
-
-        $taxClass = TaxClass::factory()->create();
-
-        $taxZone = TaxZone::factory()->create();
-
-        TaxZonePostcode::factory()->create([
-            'country_id' => $country->id,
-            'tax_zone_id' => $taxZone->id,
-            'postcode' => 'SHIPP',
-        ]);
-
-        $taxRate = TaxRate::factory()->create([
-            'tax_zone_id' => $taxZone->id,
-        ]);
-
-        TaxRateAmount::factory()->create([
-            'tax_rate_id' => $taxRate->id,
-            'tax_class_id' => $taxClass->id,
-        ]);
-
-        $currency = Currency::factory()->create([
-            'decimal_places' => 2,
-        ]);
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $shippingOption = new ShippingOption(
-            name: 'Basic Delivery',
-            description: 'Basic Delivery',
-            identifier: 'BASDEL',
-            price: new DataTypesPrice(500, $cart->currency, 1),
-            taxClass: $taxClass
-        );
-
-        ShippingManifest::addOption($shippingOption);
-
-        $cart->calculate();
-
-        $this->assertNull($cart->shippingTotal);
-
-        $cart->shippingOptionOverride = $shippingOption;
-
-        $cart->calculate();
-
-        $this->assertEquals(500, $cart->shippingSubTotal->value);
-    }
-
-    /**
-     * @test
-     * @group foofoo
-     */
-    public function can_get_estimated_shipping()
-    {
-        $country = Country::factory()->create();
-
-        $taxClass = TaxClass::factory()->create();
-
-        $taxZone = TaxZone::factory()->create();
-
-        TaxZonePostcode::factory()->create([
-            'country_id' => $country->id,
-            'tax_zone_id' => $taxZone->id,
-            'postcode' => 'SHIPP',
-        ]);
-
-        $taxRate = TaxRate::factory()->create([
-            'tax_zone_id' => $taxZone->id,
-        ]);
-
-        TaxRateAmount::factory()->create([
-            'tax_rate_id' => $taxRate->id,
-            'tax_class_id' => $taxClass->id,
-        ]);
-
-        $currency = Currency::factory()->create([
-            'decimal_places' => 2,
-        ]);
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $purchasable = ProductVariant::factory()->create();
-
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
-
-        $shippingOption = new ShippingOption(
-            name: 'Basic Delivery',
-            description: 'Basic Delivery',
-            identifier: 'BASDEL',
-            price: new DataTypesPrice(500, $cart->currency, 1),
-            taxClass: $taxClass
-        );
-
-        ShippingManifest::addOption($shippingOption);
-
-        $option = $cart->getEstimatedShipping([
-            'postcode' => '123',
-        ]);
-
-        $this->assertInstanceOf(ShippingOption::class, $option);
-        $this->assertEquals($shippingOption->identifier, $option->identifier);
-
-        $this->assertNull($cart->shippingOptionOverride);
-
-        $option = $cart->getEstimatedShipping([
-            'postcode' => '123',
-        ], setOverride: true);
-
-        $this->assertInstanceOf(ShippingOption::class, $cart->shippingOptionOverride);
-        $this->assertEquals($cart->shippingOptionOverride->identifier, $shippingOption->identifier);
-    }
-}
+    expect($checked)->toBeTrue();
+
+    $this->assertDatabaseMissing((new Cart)->getTable(), $cartData);
+
+    $user->customers()->attach($customer);
+
+    $cart->setCustomer($customer);
+
+    $this->assertDatabaseHas((new Cart)->getTable(), $cartData);
+});
+
+test('will not retrieve user cart if order is placed', function () {
+    setAuthUserConfig();
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'user_id' => $user->getKey(),
+    ]);
+
+    Order::factory()->create([
+        'cart_id' => $cart->id,
+        'placed_at' => now(),
+    ]);
+
+    expect(Cart::whereUserId($user->getKey())->active()->first())->toBeNull();
+});
+
+test('can get cart draft order', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    Order::factory()->create([
+        'cart_id' => $cart->id,
+        'placed_at' => now(),
+    ]);
+
+    $draftOrder = Order::factory()->create([
+        'cart_id' => $cart->id,
+        'placed_at' => null,
+    ]);
+
+    expect($cart->draftOrder->id)->toEqual($draftOrder->id);
+
+    $draftOrder->delete();
+
+    expect($cart->draftOrder()->first())->toBeNull();
+});
+
+test('can get cart draft order by id', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    Order::factory()->create([
+        'cart_id' => $cart->id,
+        'placed_at' => now(),
+    ]);
+
+    $draftOrder = Order::factory()->create([
+        'cart_id' => $cart->id,
+        'placed_at' => null,
+    ]);
+
+    $draftOrderTwo = Order::factory()->create([
+        'cart_id' => $cart->id,
+        'placed_at' => null,
+    ]);
+
+    expect($cart->draftOrder->id)->toEqual($draftOrder->id);
+    expect($cart->draftOrder($draftOrderTwo->id)->first()->id)->toEqual($draftOrderTwo->id);
+});
+
+test('can check for completed order', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $order = Order::factory()->create([
+        'cart_id' => $cart->id,
+        'placed_at' => null,
+    ]);
+
+    expect($cart->hasCompletedOrders())->toBeFalse();
+
+    $order->update([
+        'placed_at' => now(),
+    ]);
+
+    expect($cart->hasCompletedOrders())->toBeTrue();
+});
+
+test('can retrieve active cart', function () {
+    setAuthUserConfig();
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'user_id' => $user->getKey(),
+    ]);
+
+    expect(Cart::whereUserId($user->getKey())->active()->first()->id)->toEqual($cart->id);
+});
+
+test('can associate cart with user with customer attached', function () {
+    setAuthUserConfig();
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+    $customer = Customer::factory()->create();
+
+    $customer->users()->attach($user);
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'user_id' => $user->getKey(),
+    ]);
+
+    $this->assertDatabaseHas((new Cart())->getTable(), [
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'user_id' => $user->getKey(),
+    ]);
+});
+
+test('can calculate the cart', function () {
+    $currency = Currency::factory()
+        ->state([
+            'code' => 'USD',
+        ])
+        ->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    // Add product
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    // Add product with unit qty
+    $purchasable = ProductVariant::factory()
+        ->state([
+            'unit_quantity' => 100,
+        ])
+        ->create();
+
+    Price::factory()->create([
+        'price' => 158,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 2,
+    ]);
+
+    // Set user
+    $this->actingAs(
+        StubUser::factory()->create()
+    );
+
+    $cart->calculate();
+
+    expect($cart->lines[0]->unitPrice->value)->toEqual(100);
+    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$1.00');
+    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$1.000000');
+    expect($cart->lines[1]->unitPrice->value)->toEqual(158);
+    expect($cart->lines[1]->unitPrice->unitDecimal(false))->toEqual(0.0158);
+    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$0.0158');
+    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$0.015800');
+    expect($cart->subTotal->value)->toEqual(103);
+    expect($cart->total->value)->toEqual(124);
+    expect($cart->taxBreakdown->amounts)->toHaveCount(2);
+});
+
+test('can calculate the cart inc vat', function () {
+    Config::set('lunar.pricing.stored_inclusive_of_tax', true);
+
+    $currency = Currency::factory()
+        ->state([
+            'code' => 'USD',
+        ])
+        ->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    // Add product
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    // Add product with unit qty
+    $purchasable = ProductVariant::factory()
+        ->state([
+            'unit_quantity' => 100,
+        ])
+        ->create();
+
+    Price::factory()->create([
+        'price' => 158,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 2,
+    ]);
+
+    // Set user
+    $this->actingAs(
+        StubUser::factory()->create()
+    );
+
+    $cart->calculate();
+
+    expect($cart->lines[0]->unitPrice->value)->toEqual(100);
+    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$1.00');
+    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$1.000000');
+    expect($cart->lines[1]->unitPrice->value)->toEqual(158);
+    expect($cart->lines[1]->unitPrice->unitDecimal(false))->toEqual(0.0158);
+    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$0.0158');
+    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$0.015800');
+    expect($cart->subTotal->value)->toEqual(103);
+    expect($cart->total->value)->toEqual(103);
+    expect($cart->taxBreakdown->amounts)->toHaveCount(2);
+});
+
+test('can add cart lines', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    expect($cart->lines)->toHaveCount(0);
+
+    $cart->add($purchasable, 1);
+
+    expect($cart->lines)->toHaveCount(1);
+});
+
+test('can remove cart lines', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    expect($cart->lines)->toHaveCount(0);
+
+    $cart->add($purchasable, 1);
+
+    expect($cart->lines)->toHaveCount(1);
+
+    $cart->remove($cart->lines->first()->id);
+
+    expect($cart->lines)->toHaveCount(0);
+});
+
+test('cannot add zero quantity line', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    expect($cart->lines)->toHaveCount(0);
+
+    $this->expectException(CartException::class);
+
+    $cart->add($purchasable, 0);
+});
+
+test('can update existing cart line', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    expect($cart->lines)->toHaveCount(0);
+
+    $cart->add($purchasable, 1);
+
+    $cartLine = $cart->refresh()->lines->first();
+
+    $this->assertDatabaseHas((new CartLine())->getTable(), [
+        'quantity' => 1,
+        'id' => $cartLine->id,
+    ]);
+
+    $cart->updateLine($cartLine->id, 2);
+
+    $this->assertDatabaseHas((new CartLine())->getTable(), [
+        'quantity' => 2,
+        'id' => $cartLine->id,
+    ]);
+});
+
+test('can calculate shipping', function () {
+    $country = Country::factory()->create();
+
+    $billing = CartAddress::factory()->make([
+        'type' => 'billing',
+        'country_id' => $country->id,
+        'first_name' => 'Santa',
+        'line_one' => '123 Elf Road',
+        'city' => 'Lapland',
+        'postcode' => 'BILL',
+    ]);
+
+    $shipping = CartAddress::factory()->make([
+        'type' => 'shipping',
+        'country_id' => $country->id,
+        'first_name' => 'Santa',
+        'line_one' => '123 Elf Road',
+        'city' => 'Lapland',
+        'postcode' => 'SHIPP',
+    ]);
+
+    $taxClass = TaxClass::factory()->create();
+
+    $taxZone = TaxZone::factory()->create();
+
+    TaxZonePostcode::factory()->create([
+        'country_id' => $country->id,
+        'tax_zone_id' => $taxZone->id,
+        'postcode' => 'SHIPP',
+    ]);
+
+    $taxRate = TaxRate::factory()->create([
+        'tax_zone_id' => $taxZone->id,
+    ]);
+
+    TaxRateAmount::factory()->create([
+        'tax_rate_id' => $taxRate->id,
+        'tax_class_id' => $taxClass->id,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'decimal_places' => 2,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->addresses()->createMany([
+        $billing->toArray(),
+        $shipping->toArray(),
+    ]);
+
+    $shippingOption = new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new DataTypesPrice(500, $cart->currency, 1),
+        taxClass: $taxClass
+    );
+
+    ShippingManifest::addOption($shippingOption);
+
+    $cart->shippingAddress->update([
+        'shipping_option' => $shippingOption->getIdentifier(),
+    ]);
+
+    $cart->shippingAddress->shippingOption = $shippingOption;
+
+    expect($cart->lines)->toHaveCount(0);
+
+    $cart->add($purchasable, 1);
+
+    $cart->calculate();
+
+    expect($cart->subTotal->value)->toEqual(100);
+    expect($cart->shippingSubTotal->value)->toEqual(500);
+    expect($cart->shippingTotal->value)->toEqual(600);
+    expect($cart->total->value)->toEqual(720);
+
+    Config::set('lunar.pricing.stored_inclusive_of_tax', true);
+
+    $cart->calculate();
+
+    expect($cart->shippingTotal->value)->toEqual(500);
+    expect($cart->total->value)->toEqual(600);
+});
+
+test('can create a discount breakdown', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'coupon' => 'valid-coupon',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'visible' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'meta' => ['foo' => 'bar'],
+    ]);
+
+    $variant = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($variant),
+        'priceable_id' => $variant->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => ProductVariant::class,
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
+
+    expect($cart->coupon_code)->toBeNull();
+
+    $cart->coupon_code = 'valid-coupon';
+
+    $cart->calculate();
+
+    expect($cart->discountBreakdown)->toHaveCount(1);
+    expect($cart->discountBreakdown->first()->price->value)->toBe(10);
+});
+
+test('can validate fingerprint', function () {
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+
+    $cart = Cart::create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'meta' => [
+            'A' => 'B',
+            'C' => 'D',
+        ],
+    ]);
+
+    $variant = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($variant),
+        'priceable_id' => $variant->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => ProductVariant::class,
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
+
+    $fingerprint = $cart->fingerprint();
+
+    expect($cart->checkFingerprint($fingerprint))->toBeTrue();
+
+    $cart->update([
+        'coupon_code' => 'FOOBAR',
+    ]);
+
+    $this->expectException(FingerprintMismatchException::class);
+
+    $cart->checkFingerprint($fingerprint);
+});
+
+test('can override shipping calculation', function () {
+    $country = Country::factory()->create();
+
+    $taxClass = TaxClass::factory()->create();
+
+    $taxZone = TaxZone::factory()->create();
+
+    TaxZonePostcode::factory()->create([
+        'country_id' => $country->id,
+        'tax_zone_id' => $taxZone->id,
+        'postcode' => 'SHIPP',
+    ]);
+
+    $taxRate = TaxRate::factory()->create([
+        'tax_zone_id' => $taxZone->id,
+    ]);
+
+    TaxRateAmount::factory()->create([
+        'tax_rate_id' => $taxRate->id,
+        'tax_class_id' => $taxClass->id,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'decimal_places' => 2,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $shippingOption = new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new DataTypesPrice(500, $cart->currency, 1),
+        taxClass: $taxClass
+    );
+
+    ShippingManifest::addOption($shippingOption);
+
+    $cart->calculate();
+
+    expect($cart->shippingTotal)->toBeNull();
+
+    $cart->shippingOptionOverride = $shippingOption;
+
+    $cart->calculate();
+
+    expect($cart->shippingSubTotal->value)->toEqual(500);
+});
+
+test('can get estimated shipping', function () {
+    $country = Country::factory()->create();
+
+    $taxClass = TaxClass::factory()->create();
+
+    $taxZone = TaxZone::factory()->create();
+
+    TaxZonePostcode::factory()->create([
+        'country_id' => $country->id,
+        'tax_zone_id' => $taxZone->id,
+        'postcode' => 'SHIPP',
+    ]);
+
+    $taxRate = TaxRate::factory()->create([
+        'tax_zone_id' => $taxZone->id,
+    ]);
+
+    TaxRateAmount::factory()->create([
+        'tax_rate_id' => $taxRate->id,
+        'tax_class_id' => $taxClass->id,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'decimal_places' => 2,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $shippingOption = new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new DataTypesPrice(500, $cart->currency, 1),
+        taxClass: $taxClass
+    );
+
+    ShippingManifest::addOption($shippingOption);
+
+    $option = $cart->getEstimatedShipping([
+        'postcode' => '123',
+    ]);
+
+    expect($option)->toBeInstanceOf(ShippingOption::class);
+    expect($option->identifier)->toEqual($shippingOption->identifier);
+
+    expect($cart->shippingOptionOverride)->toBeNull();
+
+    $option = $cart->getEstimatedShipping([
+        'postcode' => '123',
+    ], setOverride: true);
+
+    expect($cart->shippingOptionOverride)->toBeInstanceOf(ShippingOption::class);
+    expect($shippingOption->identifier)->toEqual($cart->shippingOptionOverride->identifier);
+})->group('foofoo');

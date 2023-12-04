@@ -1,9 +1,7 @@
 <?php
 
-namespace Lunar\Tests\Feature\Drivers;
-
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Drivers\SystemTaxDriver;
@@ -15,175 +13,150 @@ use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.taxdriver
- */
-class SystemTaxDriverTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_set_shipping_address()
-    {
-        $address = Address::factory()->create();
+test('can set shipping address', function () {
+    $address = Address::factory()->create();
 
-        $driver = (new SystemTaxDriver)
-            ->setShippingAddress($address);
+    $driver = (new SystemTaxDriver)
+        ->setShippingAddress($address);
 
-        $this->assertInstanceOf(SystemTaxDriver::class, $driver);
-    }
+    expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
+});
 
-    /** @test */
-    public function can_set_billing_address()
-    {
-        $address = Address::factory()->create();
+test('can set billing address', function () {
+    $address = Address::factory()->create();
 
-        $driver = (new SystemTaxDriver)
-            ->setBillingAddress($address);
+    $driver = (new SystemTaxDriver)
+        ->setBillingAddress($address);
 
-        $this->assertInstanceOf(SystemTaxDriver::class, $driver);
-    }
+    expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
+});
 
-    /** @test */
-    public function must_set_valid_address()
-    {
-        $this->expectException(\TypeError::class);
+test('must set valid address', function () {
+    $this->expectException(\TypeError::class);
 
-        $driver = (new SystemTaxDriver)
-            ->setShippingAddress('ddd');
+    $driver = (new SystemTaxDriver)
+        ->setShippingAddress('ddd');
 
-        $driver = (new SystemTaxDriver)
-            ->setBillingAddress('ddd');
-    }
+    $driver = (new SystemTaxDriver)
+        ->setBillingAddress('ddd');
+});
 
-    /** @test */
-    public function can_set_currency()
-    {
-        $currency = Currency::factory()->create();
+test('can set currency', function () {
+    $currency = Currency::factory()->create();
 
-        $driver = (new SystemTaxDriver)
-            ->setCurrency($currency);
+    $driver = (new SystemTaxDriver)
+        ->setCurrency($currency);
 
-        $this->assertInstanceOf(SystemTaxDriver::class, $driver);
-    }
+    expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
+});
 
-    /** @test */
-    public function must_set_valid_currency()
-    {
-        $this->expectException(\TypeError::class);
+test('must set valid currency', function () {
+    $this->expectException(\TypeError::class);
 
-        $driver = (new SystemTaxDriver)
-            ->setCurrency('ddd');
-    }
+    $driver = (new SystemTaxDriver)
+        ->setCurrency('ddd');
+});
 
-    /** @test */
-    public function can_set_purchasable()
-    {
-        $variant = ProductVariant::factory()->create();
+test('can set purchasable', function () {
+    $variant = ProductVariant::factory()->create();
 
-        $driver = (new SystemTaxDriver)
-            ->setPurchasable($variant);
+    $driver = (new SystemTaxDriver)
+        ->setPurchasable($variant);
 
-        $this->assertInstanceOf(SystemTaxDriver::class, $driver);
-    }
+    expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
+});
 
-    /** @test */
-    public function can_set_cart_line()
-    {
-        CartLine::unsetEventDispatcher();
+test('can set cart line', function () {
+    CartLine::unsetEventDispatcher();
 
-        $line = CartLine::factory()->create();
+    $line = CartLine::factory()->create();
 
-        $driver = (new SystemTaxDriver)
-            ->setCartLine($line);
+    $driver = (new SystemTaxDriver)
+        ->setCartLine($line);
 
-        $this->assertInstanceOf(SystemTaxDriver::class, $driver);
-    }
+    expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
+});
 
-    /** @test */
-    public function can_get_breakdown()
-    {
-        $address = Address::factory()->create();
-        $currency = Currency::factory()->create();
-        $variant = ProductVariant::factory()->create();
-        $line = CartLine::factory()->create();
-        $subTotal = 833; // 8.33 in decimal
+test('can get breakdown', function () {
+    $address = Address::factory()->create();
+    $currency = Currency::factory()->create();
+    $variant = ProductVariant::factory()->create();
+    $line = CartLine::factory()->create();
+    $subTotal = 833;
 
-        $breakdown = (new SystemTaxDriver)
-            ->setShippingAddress($address)
-            ->setBillingAddress($address)
-            ->setCurrency($currency)
-            ->setPurchasable($variant)
-            ->setCartLine($line)
-            ->getBreakdown($subTotal);
+    // 8.33 in decimal
+    $breakdown = (new SystemTaxDriver)
+        ->setShippingAddress($address)
+        ->setBillingAddress($address)
+        ->setCurrency($currency)
+        ->setPurchasable($variant)
+        ->setCartLine($line)
+        ->getBreakdown($subTotal);
 
-        $this->assertInstanceOf(TaxBreakdown::class, $breakdown);
-        $this->assertEquals(167, $breakdown->amounts[0]->price->value);
-    }
+    expect($breakdown)->toBeInstanceOf(TaxBreakdown::class);
+    expect($breakdown->amounts[0]->price->value)->toEqual(167);
+});
 
-    /** @test */
-    public function can_get_breakdown_price_inc()
-    {
-        Config::set('lunar.pricing.stored_inclusive_of_tax', true);
+test('can get breakdown price inc', function () {
+    Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
-        $address = Address::factory()->create();
-        $currency = Currency::factory()->create();
-        $line = CartLine::factory()->create();
-        $subTotal = 999;
+    $address = Address::factory()->create();
+    $currency = Currency::factory()->create();
+    $line = CartLine::factory()->create();
+    $subTotal = 999;
 
-        $breakdown = (new SystemTaxDriver)
-            ->setShippingAddress($address)
-            ->setBillingAddress($address)
-            ->setCurrency($currency)
-            ->setPurchasable($line->purchasable)
-            ->setCartLine($line)
-            ->getBreakdown($subTotal);
+    $breakdown = (new SystemTaxDriver)
+        ->setShippingAddress($address)
+        ->setBillingAddress($address)
+        ->setCurrency($currency)
+        ->setPurchasable($line->purchasable)
+        ->setCartLine($line)
+        ->getBreakdown($subTotal);
 
-        $this->assertInstanceOf(TaxBreakdown::class, $breakdown);
-        $this->assertEquals(166, $breakdown->amounts[0]->price->value);
-    }
+    expect($breakdown)->toBeInstanceOf(TaxBreakdown::class);
+    expect($breakdown->amounts[0]->price->value)->toEqual(166);
+});
 
-    /** @test */
-    public function can_get_breakdown_with_correct_tax_zone()
-    {
-        $address = Address::factory()->create();
-        $currency = Currency::factory()->create();
+test('can get breakdown with correct tax zone', function () {
+    $address = Address::factory()->create();
+    $currency = Currency::factory()->create();
 
-        $defaultTaxZone = TaxZone::factory()->state(['default' => true])->create();
-        $nonDefaultTaxZone1 = TaxZone::factory()->state(['default' => false])->create();
-        $nonDefaultTaxZone2 = TaxZone::factory()->state(['default' => false])->create();
+    $defaultTaxZone = TaxZone::factory()->state(['default' => true])->create();
+    $nonDefaultTaxZone1 = TaxZone::factory()->state(['default' => false])->create();
+    $nonDefaultTaxZone2 = TaxZone::factory()->state(['default' => false])->create();
 
-        $taxClass = TaxClass::factory()->has(
-            TaxRateAmount::factory()
-                ->count(4)
-                ->state(new Sequence(
-                    ['percentage' => 10, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])],
-                    ['percentage' => 15, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])],
-                    ['percentage' => 20, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $nonDefaultTaxZone1])],
-                    ['percentage' => 25, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $nonDefaultTaxZone2])],
-                ))
-        )->create();
+    $taxClass = TaxClass::factory()->has(
+        TaxRateAmount::factory()
+            ->count(4)
+            ->state(new Sequence(
+                ['percentage' => 10, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])],
+                ['percentage' => 15, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])],
+                ['percentage' => 20, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $nonDefaultTaxZone1])],
+                ['percentage' => 25, 'tax_rate_id' => TaxRate::factory()->state(['tax_zone_id' => $nonDefaultTaxZone2])],
+            ))
+    )->create();
 
-        $variant = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
-        $line = CartLine::factory(['purchasable_id' => $variant->id])->create();
-        $subTotal = 1000; // 10.00 in decimal
+    $variant = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
+    $line = CartLine::factory(['purchasable_id' => $variant->id])->create();
+    $subTotal = 1000;
 
-        $breakdown = (new SystemTaxDriver)
-            ->setShippingAddress($address)
-            ->setBillingAddress($address)
-            ->setCurrency($currency)
-            ->setPurchasable($variant)
-            ->setCartLine($line)
-            ->getBreakdown($subTotal);
+    // 10.00 in decimal
+    $breakdown = (new SystemTaxDriver)
+        ->setShippingAddress($address)
+        ->setBillingAddress($address)
+        ->setCurrency($currency)
+        ->setPurchasable($variant)
+        ->setCartLine($line)
+        ->getBreakdown($subTotal);
 
-        $this->assertInstanceOf(TaxBreakdown::class, $breakdown);
+    expect($breakdown)->toBeInstanceOf(TaxBreakdown::class);
 
-        //Only the 2 tax rates from the default tax zone should have been applied
-        $this->assertEquals(2, $breakdown->amounts->count());
+    //Only the 2 tax rates from the default tax zone should have been applied
+    expect($breakdown->amounts->count())->toEqual(2);
 
-        $this->assertEquals(100, $breakdown->amounts[0]->price->value);
-        $this->assertEquals(150, $breakdown->amounts[1]->price->value);
-    }
-}
+    expect($breakdown->amounts[0]->price->value)->toEqual(100);
+    expect($breakdown->amounts[1]->price->value)->toEqual(150);
+});

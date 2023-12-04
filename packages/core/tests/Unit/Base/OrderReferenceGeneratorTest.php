@@ -1,72 +1,58 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
-use Lunar\Tests\TestCase;
 
-/**
- * @group reference
- */
-class OrderReferenceGeneratorTest extends TestCase
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+
+beforeEach(function () {
+    Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+        'decimal_places' => 2,
+    ]);
+});
+
+test('can generate reference', function () {
+    $order = Order::factory()->create([
+        'reference' => null,
+        'placed_at' => now(),
+    ]);
+
+    expect($order->reference)->toBeNull();
+
+    $result = app(OrderReferenceGenerator::class)->generate($order);
+
+    expect($result)->toEqual($order->created_at->format('Y-m').'-0001');
+});
+
+/** @test  */
+function can_increment_order_reference_by_default()
 {
-    use RefreshDatabase;
+    $orderA = Order::factory()->create([
+        'reference' => null,
+        'placed_at' => now(),
+    ]);
 
-    public function setUp(): void
-    {
-        parent::setUp();
+    $orderA->update([
+        'reference' => app(OrderReferenceGenerator::class)->generate($orderA),
+    ]);
 
-        Language::factory()->create([
-            'default' => true,
-            'code' => 'en',
-        ]);
+    expect($orderA->reference)->toEqual($orderA->created_at->format('Y-m').'-0001');
 
-        Currency::factory()->create([
-            'default' => true,
-            'decimal_places' => 2,
-        ]);
-    }
+    $order = Order::factory()->create([
+        'reference' => null,
+        'placed_at' => now(),
+    ]);
 
-    /** @test */
-    public function can_generate_reference()
-    {
-        $order = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
+    $result = app(OrderReferenceGenerator::class)->generate($order);
 
-        $this->assertNull($order->reference);
-
-        $result = app(OrderReferenceGenerator::class)->generate($order);
-
-        $this->assertEquals($order->created_at->format('Y-m').'-0001', $result);
-    }
-
-    /** @test  */
-    public function can_increment_order_reference_by_default()
-    {
-        $orderA = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
-
-        $orderA->update([
-            'reference' => app(OrderReferenceGenerator::class)->generate($orderA),
-        ]);
-
-        $this->assertEquals($orderA->created_at->format('Y-m').'-0001', $orderA->reference);
-
-        $order = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
-
-        $result = app(OrderReferenceGenerator::class)->generate($order);
-
-        $this->assertEquals($order->created_at->format('Y-m').'-0002', $result);
-    }
+    expect($result)->toEqual($order->created_at->format('Y-m').'-0002');
 }

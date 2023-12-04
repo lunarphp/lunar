@@ -1,44 +1,31 @@
 <?php
 
-namespace Lunar\Tests\Unit\Facades;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\TestTaxDriver;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.taxes
- */
-class TaxesTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function accessor_is_correct()
-    {
-        $this->assertEquals(TaxManagerInterface::class, Taxes::getFacadeAccessor());
-    }
+test('accessor is correct', function () {
+    expect(Taxes::getFacadeAccessor())->toEqual(TaxManagerInterface::class);
+});
 
-    /** @test */
-    public function can_extend_taxes()
-    {
-        Taxes::extend('testing', function ($app) {
-            return $app->make(TestTaxDriver::class);
-        });
+test('can extend taxes', function () {
+    Taxes::extend('testing', function ($app) {
+        return $app->make(TestTaxDriver::class);
+    });
 
-        $this->assertInstanceOf(TestTaxDriver::class, Taxes::driver('testing'));
+    expect(Taxes::driver('testing'))->toBeInstanceOf(TestTaxDriver::class);
 
-        $result = Taxes::driver('testing')->setPurchasable(
-            ProductVariant::factory()->create()
-        )->setCurrency(
-            Currency::factory()->create()
-        )->getBreakdown(123);
+    $result = Taxes::driver('testing')->setPurchasable(
+        ProductVariant::factory()->create()
+    )->setCurrency(
+        Currency::factory()->create()
+    )->getBreakdown(123);
 
-        $this->assertInstanceOf(TaxBreakdown::class, $result);
-    }
-}
+    expect($result)->toBeInstanceOf(TaxBreakdown::class);
+});

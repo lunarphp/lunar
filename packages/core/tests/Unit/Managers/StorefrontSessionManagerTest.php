@@ -1,8 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Unit\Managers;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Lunar\Base\StorefrontSessionInterface;
@@ -13,243 +11,192 @@ use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Tests\Stubs\User as StubUser;
-use Lunar\Tests\TestCase;
-
-/**
- * @group lunar.storefront-session-manager
- */
-class StorefrontSessionManagerTest extends TestCase
-{
-    use RefreshDatabase;
 
-    private function setAuthUserConfig()
-    {
-        Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
-    }
-
-    /**
-     * @test
-     */
-    public function can_instantiate_manager()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
-
-        CustomerGroup::factory()->create([
-            'default' => true,
-        ]);
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-        $manager = app(StorefrontSessionInterface::class);
-        $this->assertInstanceOf(StorefrontSessionManager::class, $manager);
-    }
+//function setAuthUserConfig()
+//{
+//    Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
+//}
 
-    /**
-     * @test
-     */
-    public function can_initialise_customer_groups()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
-
-        CustomerGroup::factory()->create([
-            'default' => true,
-        ]);
-
-        $manager = app(StorefrontSessionInterface::class);
-
-        $this->assertCount(1, $manager->getCustomerGroups());
-    }
+test('can instantiate manager', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-    /**
-     * @test
-     */
-    public function can_initialise_the_channel()
-    {
-        $channel = Channel::factory()->create([
-            'default' => true,
-        ]);
-
-        $manager = app(StorefrontSessionInterface::class);
-
-        $this->assertEquals($channel->id, $manager->getChannel()->id);
-    }
-
-    /**
-     * @test
-     */
-    public function can_initialise_the_currency()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
-
-        $currency = Currency::factory()->create();
-
-        $manager = app(StorefrontSessionInterface::class);
+    CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
-        $this->assertEquals($currency->id, $manager->getCurrency()->id);
-    }
+    $manager = app(StorefrontSessionInterface::class);
+    expect($manager)->toBeInstanceOf(StorefrontSessionManager::class);
+});
 
-    /**
-     * @test
-     */
-    public function can_initialise_the_customer()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+test('can initialise customer groups', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        $this->setAuthUserConfig();
-
-        $user = StubUser::factory()->create();
-
-        $customers = Customer::factory(5)->create();
-
-        $user->customers()->sync($customers->pluck('id'));
-
-        $this->assertCount(5, $user->customers()->get());
-
-        $this->assertDatabaseCount((new Customer)->getTable(), 5);
+    CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
-        $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSessionInterface::class);
 
-        $this->assertNull($manager->getCustomer());
+    expect($manager->getCustomerGroups())->toHaveCount(1);
+});
 
-        $this->actingAs($user);
+test('can initialise the channel', function () {
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        $this->assertEquals($customers->last()->id, $manager->getCustomer()->id);
-    }
+    $manager = app(StorefrontSessionInterface::class);
 
-    /**
-     * @test
-     */
-    public function can_set_channel()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+    expect($manager->getChannel()->id)->toEqual($channel->id);
+});
 
-        $channelB = Channel::factory()->create([
-            'default' => false,
-        ]);
+test('can initialise the currency', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        $manager = app(StorefrontSessionInterface::class);
+    $currency = Currency::factory()->create();
 
-        $manager->setChannel($channelB);
+    $manager = app(StorefrontSessionInterface::class);
 
-        $this->assertEquals($channelB->id, $manager->getChannel()->id);
-    }
+    expect($manager->getCurrency()->id)->toEqual($currency->id);
+});
 
-    /**
-     * @test
-     */
-    public function can_set_currency()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+test('can initialise the customer', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        Currency::factory()->create([
-            'default' => true,
-        ]);
+    setAuthUserConfig();
 
-        $currencyB = Currency::factory()->create([
-            'default' => true,
-        ]);
+    $user = StubUser::factory()->create();
 
-        $manager = app(StorefrontSessionInterface::class);
+    $customers = Customer::factory(5)->create();
 
-        $manager->setCurrency($currencyB);
+    $user->customers()->sync($customers->pluck('id'));
 
-        $this->assertEquals($currencyB->id, $manager->getCurrency()->id);
-    }
+    expect($user->customers()->get())->toHaveCount(5);
 
-    /**
-     * @test
-     */
-    public function can_set_customer_groups()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+    $this->assertDatabaseCount((new Customer)->getTable(), 5);
 
-        CustomerGroup::factory()->create([
-            'default' => true,
-        ]);
+    $manager = app(StorefrontSessionInterface::class);
 
-        $groupB = CustomerGroup::factory()->create([
-            'default' => true,
-        ]);
+    expect($manager->getCustomer())->toBeNull();
 
-        $manager = app(StorefrontSessionInterface::class);
+    $this->actingAs($user);
 
-        $manager->setCustomerGroup($groupB);
+    expect($manager->getCustomer()->id)->toEqual($customers->last()->id);
+});
 
-        $this->assertEquals($groupB->id, $manager->getCustomerGroups()->first()->id);
+test('can set channel', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        $this->assertEquals(
-            [$groupB->handle],
-            Session::get(
-                $manager->getSessionKey().'_customer_groups'
-            )
-        );
+    $channelB = Channel::factory()->create([
+        'default' => false,
+    ]);
 
-        $this->assertCount(1, $manager->getCustomerGroups());
-    }
+    $manager = app(StorefrontSessionInterface::class);
 
-    /**
-     * @test
-     */
-    public function can_set_customer()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+    $manager->setChannel($channelB);
 
-        $this->setAuthUserConfig();
+    expect($manager->getChannel()->id)->toEqual($channelB->id);
+});
 
-        $user = StubUser::factory()->create();
+test('can set currency', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        // $this->actingAs($user);
+    Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        $customers = Customer::factory(5)->create();
+    $currencyB = Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        $user->customers()->sync($customers->pluck('id'));
+    $manager = app(StorefrontSessionInterface::class);
 
-        $manager = app(StorefrontSessionInterface::class);
+    $manager->setCurrency($currencyB);
 
-        $customer = $customers->first();
+    expect($manager->getCurrency()->id)->toEqual($currencyB->id);
+});
 
-        $manager->setCustomer($customer);
+test('can set customer groups', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        $this->assertEquals($customer->id, $manager->getCustomer()->id);
-    }
+    CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
-    /**
-     * @test
-     */
-    public function ensure_customer_belongs_to_user()
-    {
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+    $groupB = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
-        $this->setAuthUserConfig();
+    $manager = app(StorefrontSessionInterface::class);
 
-        $user = StubUser::factory()->create();
+    $manager->setCustomerGroup($groupB);
 
-        $this->actingAs($user);
+    expect($manager->getCustomerGroups()->first()->id)->toEqual($groupB->id);
 
-        $customers = Customer::factory(5)->create();
+    expect(Session::get(
+        $manager->getSessionKey().'_customer_groups'
+    ))->toEqual([$groupB->handle]);
 
-        $manager = app(StorefrontSessionInterface::class);
+    expect($manager->getCustomerGroups())->toHaveCount(1);
+});
 
-        $customer = $customers->first();
+test('can set customer', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        $this->expectException(CustomerNotBelongsToUserException::class);
+    setAuthUserConfig();
 
-        $manager->setCustomer($customer);
-    }
-}
+    $user = StubUser::factory()->create();
+
+    // $this->actingAs($user);
+    $customers = Customer::factory(5)->create();
+
+    $user->customers()->sync($customers->pluck('id'));
+
+    $manager = app(StorefrontSessionInterface::class);
+
+    $customer = $customers->first();
+
+    $manager->setCustomer($customer);
+
+    expect($manager->getCustomer()->id)->toEqual($customer->id);
+});
+
+test('ensure customer belongs to user', function () {
+    Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    setAuthUserConfig();
+
+    $user = StubUser::factory()->create();
+
+    $this->actingAs($user);
+
+    $customers = Customer::factory(5)->create();
+
+    $manager = app(StorefrontSessionInterface::class);
+
+    $customer = $customers->first();
+
+    $this->expectException(CustomerNotBelongsToUserException::class);
+
+    $manager->setCustomer($customer);
+});

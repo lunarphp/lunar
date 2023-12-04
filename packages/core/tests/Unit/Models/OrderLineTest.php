@@ -1,8 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
@@ -10,85 +8,72 @@ use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.orderlines
- */
-class OrderLineTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_an_order_line()
-    {
-        $order = Order::factory()->create();
+test('can make an order line', function () {
+    $order = Order::factory()->create();
 
-        Currency::factory()->create([
-            'default' => true,
-        ]);
+    Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        $data = [
-            'order_id' => $order->id,
-            'quantity' => 1,
-            'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => ProductVariant::factory()->create()->id,
-        ];
+    $data = [
+        'order_id' => $order->id,
+        'quantity' => 1,
+        'purchasable_type' => ProductVariant::class,
+        'purchasable_id' => ProductVariant::factory()->create()->id,
+    ];
 
-        OrderLine::factory()->create($data);
+    OrderLine::factory()->create($data);
 
-        $this->assertDatabaseHas(
-            (new OrderLine())->getTable(),
-            $data
-        );
-    }
+    $this->assertDatabaseHas(
+        (new OrderLine())->getTable(),
+        $data
+    );
+});
 
-    /** @test */
-    public function check_unit_price_casts_correctly()
-    {
-        $order = Order::factory()->create();
+test('check unit price casts correctly', function () {
+    $order = Order::factory()->create();
 
-        Currency::factory()->create([
-            'default' => true,
-        ]);
+    Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        $data = [
-            'order_id' => $order->id,
-            'quantity' => 1,
-            'purchasable_type' => ProductVariant::class,
-            'purchasable_id' => ProductVariant::factory()->create()->id,
-            'unit_price' => 507,
-            'unit_quantity' => 100,
-        ];
+    $data = [
+        'order_id' => $order->id,
+        'quantity' => 1,
+        'purchasable_type' => ProductVariant::class,
+        'purchasable_id' => ProductVariant::factory()->create()->id,
+        'unit_price' => 507,
+        'unit_quantity' => 100,
+    ];
 
-        $orderLine = OrderLine::factory()->create($data);
+    $orderLine = OrderLine::factory()->create($data);
 
-        $this->assertDatabaseHas(
-            (new OrderLine())->getTable(),
-            $data
-        );
+    $this->assertDatabaseHas(
+        (new OrderLine())->getTable(),
+        $data
+    );
 
-        $this->assertEquals(5.07, $orderLine->unit_price->decimal);
-        $this->assertEquals(0.05, $orderLine->unit_price->unitDecimal);
-        $this->assertEquals(0.0507, $orderLine->unit_price->unitDecimal(false));
-    }
+    expect($orderLine->unit_price->decimal)->toEqual(5.07);
+    expect($orderLine->unit_price->unitDecimal)->toEqual(0.05);
+    expect($orderLine->unit_price->unitDecimal(false))->toEqual(0.0507);
+});
 
-    /** @test */
-    public function only_purchasables_can_be_added_to_an_order()
-    {
-        $order = Order::factory()->create();
+test('only purchasables can be added to an order', function () {
+    $order = Order::factory()->create();
 
-        $this->expectException(NonPurchasableItemException::class);
+    $this->expectException(NonPurchasableItemException::class);
 
-        $data = [
-            'order_id' => $order->id,
-            'quantity' => 1,
-            'purchasable_type' => Channel::class,
-            'purchasable_id' => Channel::factory()->create()->id,
-        ];
+    $data = [
+        'order_id' => $order->id,
+        'quantity' => 1,
+        'purchasable_type' => Channel::class,
+        'purchasable_id' => Channel::factory()->create()->id,
+    ];
 
-        OrderLine::factory()->create($data);
+    OrderLine::factory()->create($data);
 
-        $this->assertDatabaseMissing((new CartLine())->getTable(), $data);
-    }
-}
+    $this->assertDatabaseMissing((new CartLine())->getTable(), $data);
+});

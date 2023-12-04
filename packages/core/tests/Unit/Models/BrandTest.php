@@ -1,94 +1,67 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\Config;
 use Lunar\Generators\UrlGenerator;
 use Lunar\Models\Brand;
 use Lunar\Models\Language;
 use Lunar\Models\Url;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.brands
- */
-class BrandTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_brand()
-    {
-        $brand = Brand::factory()->create([
-            'name' => 'Test Brand',
-        ]);
-        $this->assertEquals('Test Brand', $brand->name);
-    }
+test('can make a brand', function () {
+    $brand = Brand::factory()->create([
+        'name' => 'Test Brand',
+    ]);
+    expect($brand->name)->toEqual('Test Brand');
+});
 
-    /** @test */
-    public function can_generate_url()
-    {
-        Config::set('lunar.urls.generator', UrlGenerator::class);
+test('can generate url', function () {
+    Config::set('lunar.urls.generator', UrlGenerator::class);
 
-        Language::factory()->create([
-            'default' => true,
-        ]);
+    Language::factory()->create([
+        'default' => true,
+    ]);
 
-        $brand = Brand::factory()->create([
-            'name' => 'Test Brand',
-        ]);
+    $brand = Brand::factory()->create([
+        'name' => 'Test Brand',
+    ]);
 
-        $this->assertDatabaseHas((new Url)->getTable(), [
-            'slug' => 'test-brand',
-            'element_type' => Brand::class,
-            'element_id' => $brand->id,
-        ]);
-    }
+    $this->assertDatabaseHas((new Url)->getTable(), [
+        'slug' => 'test-brand',
+        'element_type' => Brand::class,
+        'element_id' => $brand->id,
+    ]);
+});
 
-    /** @test */
-    public function generates_unique_urls()
-    {
-        Config::set('lunar.urls.generator', UrlGenerator::class);
+test('generates unique urls', function () {
+    Config::set('lunar.urls.generator', UrlGenerator::class);
 
-        Language::factory()->create([
-            'default' => true,
-        ]);
+    Language::factory()->create([
+        'default' => true,
+    ]);
 
-        $brand1 = Brand::factory()->create([
-            'name' => 'Test Brand',
-        ]);
+    $brand1 = Brand::factory()->create([
+        'name' => 'Test Brand',
+    ]);
 
-        $brand2 = Brand::factory()->create([
-            'name' => 'Test Brand',
-        ]);
+    $brand2 = Brand::factory()->create([
+        'name' => 'Test Brand',
+    ]);
 
-        $brand3 = Brand::factory()->create([
-            'name' => 'Test Brand',
-        ]);
+    $brand3 = Brand::factory()->create([
+        'name' => 'Test Brand',
+    ]);
 
-        $brand4 = Brand::factory()->create([
-            'name' => 'Brand Test',
-        ]);
+    $brand4 = Brand::factory()->create([
+        'name' => 'Brand Test',
+    ]);
 
-        $this->assertEquals(
-            'test-brand',
-            $brand1->urls->first()->slug
-        );
+    expect($brand1->urls->first()->slug)->toEqual('test-brand');
 
-        $this->assertEquals(
-            'test-brand-2',
-            $brand2->urls->first()->slug
-        );
+    expect($brand2->urls->first()->slug)->toEqual('test-brand-2');
 
-        $this->assertEquals(
-            'test-brand-3',
-            $brand3->urls->first()->slug
-        );
+    expect($brand3->urls->first()->slug)->toEqual('test-brand-3');
 
-        $this->assertEquals(
-            'brand-test',
-            $brand4->urls->first()->slug
-        );
-    }
-}
+    expect($brand4->urls->first()->slug)->toEqual('brand-test');
+});

@@ -1,64 +1,47 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Collection;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
 use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
 use Lunar\Models\Channel;
-use Lunar\Tests\TestCase;
 
-/**
- * @group core.fieldtype-manifest
- */
-class FieldTypeManifestTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_instantiate_class()
-    {
-        $manifest = app(FieldTypeManifestInterface::class);
+test('can instantiate class', function () {
+    $manifest = app(FieldTypeManifestInterface::class);
 
-        $this->assertInstanceOf(FieldTypeManifest::class, $manifest);
-    }
+    expect($manifest)->toBeInstanceOf(FieldTypeManifest::class);
+});
 
-    /** @test */
-    public function can_return_types()
-    {
-        $manifest = app(FieldTypeManifestInterface::class);
+test('can return types', function () {
+    $manifest = app(FieldTypeManifestInterface::class);
 
-        $this->assertInstanceOf(Collection::class, $manifest->getTypes());
-    }
+    expect($manifest->getTypes())->toBeInstanceOf(Collection::class);
+});
 
-    /** @test */
-    public function has_base_types_set()
-    {
-        $manifest = app(FieldTypeManifestInterface::class);
+test('has base types set', function () {
+    $manifest = app(FieldTypeManifestInterface::class);
 
-        $this->assertInstanceOf(Collection::class, $manifest->getTypes());
+    expect($manifest->getTypes())->toBeInstanceOf(Collection::class);
 
-        $this->assertNotEmpty($manifest->getTypes());
-    }
+    expect($manifest->getTypes())->not->toBeEmpty();
+});
 
-    /** @test */
-    public function cannot_add_non_fieldtype()
-    {
-        $manifest = app(FieldTypeManifestInterface::class);
+test('cannot add non fieldtype', function () {
+    $manifest = app(FieldTypeManifestInterface::class);
 
-        $this->expectException(
-            InvalidFieldTypeException::class
-        );
+    $this->expectException(
+        InvalidFieldTypeException::class
+    );
 
-        $manifest->add(Channel::class);
+    $manifest->add(Channel::class);
 
-        $this->expectException(
-            FieldTypeMissingException::class
-        );
+    $this->expectException(
+        FieldTypeMissingException::class
+    );
 
-        $manifest->add(\Lunar\Models\Cart::class);
-    }
-}
+    $manifest->add(\Lunar\Models\Cart::class);
+});

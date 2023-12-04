@@ -1,30 +1,19 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Country;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZoneCountry;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.models
- */
-class TaxZoneCountryTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_tax_zone_country()
-    {
-        $data = [
-            'tax_zone_id' => TaxZone::factory()->create()->id,
-            'country_id' => Country::factory()->create()->id,
-        ];
+test('can make tax zone country', function () {
+    $data = [
+        'tax_zone_id' => TaxZone::factory()->create()->id,
+        'country_id' => Country::factory()->create()->id,
+    ];
 
-        TaxZoneCountry::factory()->create($data);
+    TaxZoneCountry::factory()->create($data);
 
-        $this->assertDatabaseHas((new TaxZoneCountry())->getTable(), $data);
-    }
-}
+    $this->assertDatabaseHas((new TaxZoneCountry())->getTable(), $data);
+});

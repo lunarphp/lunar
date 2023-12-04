@@ -1,80 +1,58 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Base\ModelManifestInterface;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
-use Lunar\Tests\TestCase;
 
-/**
- * @group model-manifest
- */
-class ModelManifestTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_instantiate_class()
-    {
-        $manifest = app(ModelManifestInterface::class);
+test('can instantiate class', function () {
+    $manifest = app(ModelManifestInterface::class);
 
-        $this->assertInstanceOf(\Lunar\Base\ModelManifest::class, $manifest);
-    }
+    expect($manifest)->toBeInstanceOf(\Lunar\Base\ModelManifest::class);
+});
 
-    /** @test */
-    public function can_register_models()
-    {
-        $this->assertCount(0, ModelManifest::getRegisteredModels());
+test('can register models', function () {
+    expect(ModelManifest::getRegisteredModels())->toHaveCount(0);
 
-        ModelManifest::register(collect([
-            Product::class => \Lunar\Tests\Stubs\Models\Product::class,
-            ProductOption::class => \Lunar\Tests\Stubs\Models\ProductOption::class,
-        ]));
+    ModelManifest::register(collect([
+        Product::class => \Lunar\Tests\Stubs\Models\Product::class,
+        ProductOption::class => \Lunar\Tests\Stubs\Models\ProductOption::class,
+    ]));
 
-        $this->assertCount(2, ModelManifest::getRegisteredModels());
-    }
+    expect(ModelManifest::getRegisteredModels())->toHaveCount(2);
+});
 
-    /** @test */
-    public function can_get_registered_model_from_base_model()
-    {
-        ModelManifest::register(collect([
-            Product::class => \Lunar\Tests\Stubs\Models\Product::class,
-        ]));
+test('can get registered model from base model', function () {
+    ModelManifest::register(collect([
+        Product::class => \Lunar\Tests\Stubs\Models\Product::class,
+    ]));
 
-        $model = ModelManifest::getRegisteredModel(Product::class);
+    $model = ModelManifest::getRegisteredModel(Product::class);
 
-        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\Product::class, $model);
-    }
+    expect($model)->toBeInstanceOf(\Lunar\Tests\Stubs\Models\Product::class);
+});
 
-    /** @test */
-    public function can_get_morph_class_base_model()
-    {
-        ModelManifest::register(collect([
-            Product::class => \Lunar\Tests\Stubs\Models\Product::class,
-        ]));
+test('can get morph class base model', function () {
+    ModelManifest::register(collect([
+        Product::class => \Lunar\Tests\Stubs\Models\Product::class,
+    ]));
 
-        $customModels = ModelManifest::getRegisteredModels()->flip();
+    $customModels = ModelManifest::getRegisteredModels()->flip();
 
-        $this->assertEquals(
-            expected: Product::class,
-            actual: $customModels->get(\Lunar\Tests\Stubs\Models\Product::class),
-        );
-    }
+    expect(value: $customModels->get(\Lunar\Tests\Stubs\Models\Product::class))->toEqual(expected: Product::class);
+});
 
-    /** @test */
-    public function can_get_list_of_registered_base_models()
-    {
-        ModelManifest::register(collect([
-            Product::class => \Lunar\Tests\Stubs\Models\Product::class,
-            ProductOption::class => \Lunar\Tests\Stubs\Models\ProductOption::class,
-        ]));
+test('can get list of registered base models', function () {
+    ModelManifest::register(collect([
+        Product::class => \Lunar\Tests\Stubs\Models\Product::class,
+        ProductOption::class => \Lunar\Tests\Stubs\Models\ProductOption::class,
+    ]));
 
-        $this->assertEquals(collect([
-            Product::class,
-            ProductOption::class,
-        ]), ModelManifest::getBaseModelClasses());
-    }
-}
+    expect(ModelManifest::getBaseModelClasses())->toEqual(collect([
+        Product::class,
+        ProductOption::class,
+    ]));
+});

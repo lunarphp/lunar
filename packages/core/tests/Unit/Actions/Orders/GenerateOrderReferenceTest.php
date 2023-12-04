@@ -1,84 +1,66 @@
 <?php
 
-namespace Lunar\Tests\Unit\Actions\Orders;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\Config;
 use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Tests\Stubs\TestOrderReferenceGenerator;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.actions
- */
-class GenerateOrderReferenceTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    public function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
 
-        Language::factory()->create([
-            'default' => true,
-            'code' => 'en',
-        ]);
+    Currency::factory()->create([
+        'default' => true,
+        'decimal_places' => 2,
+    ]);
+});
 
-        Currency::factory()->create([
-            'default' => true,
-            'decimal_places' => 2,
-        ]);
-    }
+test('can generate reference', function () {
+    $order = Order::factory()->create([
+        'reference' => null,
+        'placed_at' => now(),
+    ]);
 
-    /** @test */
-    public function can_generate_reference()
-    {
-        $order = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
+    expect($order->reference)->toBeNull();
 
-        $this->assertNull($order->reference);
+    $result = app(GenerateOrderReference::class)->execute($order);
 
-        $result = app(GenerateOrderReference::class)->execute($order);
+    expect($result)->toEqual($order->created_at->format('Y-m').'-0001');
+});
 
-        $this->assertEquals($order->created_at->format('Y-m').'-0001', $result);
-    }
+test('can override generator via config', function () {
+    $order = Order::factory()->create([
+        'reference' => null,
+        'placed_at' => now(),
+    ]);
 
-    /** @test */
-    public function can_override_generator_via_config()
-    {
-        $order = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
+    Config::set('lunar.orders.reference_generator', TestOrderReferenceGenerator::class);
 
-        Config::set('lunar.orders.reference_generator', TestOrderReferenceGenerator::class);
+    expect($order->reference)->toBeNull();
 
-        $this->assertNull($order->reference);
+    $result = app(GenerateOrderReference::class)->execute($order);
 
-        $result = app(GenerateOrderReference::class)->execute($order);
+    expect($result)->toEqual('reference-'.$order->id);
+});
 
-        $this->assertEquals('reference-'.$order->id, $result);
-    }
+test('can set generator to null', function () {
+    $order = Order::factory()->create([
+        'reference' => null,
+        'placed_at' => now(),
+    ]);
 
-    /** @test */
-    public function can_set_generator_to_null()
-    {
-        $order = Order::factory()->create([
-            'reference' => null,
-            'placed_at' => now(),
-        ]);
+    Config::set('lunar.orders.reference_generator', null);
 
-        Config::set('lunar.orders.reference_generator', null);
+    expect($order->reference)->toBeNull();
 
-        $this->assertNull($order->reference);
+    $result = app(GenerateOrderReference::class)->execute($order);
 
-        $result = app(GenerateOrderReference::class)->execute($order);
-
-        $this->assertNull($result);
-    }
-}
+    expect($result)->toBeNull();
+});

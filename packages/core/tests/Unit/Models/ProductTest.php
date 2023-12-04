@@ -1,9 +1,7 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Facades\DB;
 use Lunar\Models\Brand;
 use Lunar\Models\Channel;
@@ -14,523 +12,462 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.products
- */
-class ProductTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_product()
-    {
-        $attribute_data = collect([
-            'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
-            'pack_qty' => new \Lunar\FieldTypes\Number(12345),
-            'description' => new \Lunar\FieldTypes\TranslatedText(collect([
-                'en' => new \Lunar\FieldTypes\Text('Blue'),
-                'fr' => new \Lunar\FieldTypes\Text('Bleu'),
-            ])),
+test('can make a product', function () {
+    $attribute_data = collect([
+        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
+        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
+        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+            'en' => new \Lunar\FieldTypes\Text('Blue'),
+            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        ])),
+    ]);
+
+    $product = Product::factory()
+        ->for(ProductType::factory())
+        ->create([
+            'attribute_data' => $attribute_data,
         ]);
 
-        $product = Product::factory()
-            ->for(ProductType::factory())
-            ->create([
-                'attribute_data' => $attribute_data,
-            ]);
+    expect($product->attribute_data)->toEqual($attribute_data);
+});
 
-        $this->assertEquals($attribute_data, $product->attribute_data);
-    }
+test('can fetch using status scope', function () {
+    $attribute_data = collect([
+        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
+        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
+        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+            'en' => new \Lunar\FieldTypes\Text('Blue'),
+            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        ])),
+    ]);
 
-    /** @test */
-    public function can_fetch_using_status_scope()
-    {
-        $attribute_data = collect([
-            'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
-            'pack_qty' => new \Lunar\FieldTypes\Number(12345),
-            'description' => new \Lunar\FieldTypes\TranslatedText(collect([
-                'en' => new \Lunar\FieldTypes\Text('Blue'),
-                'fr' => new \Lunar\FieldTypes\Text('Bleu'),
-            ])),
+    Product::factory()
+        ->for(ProductType::factory())
+        ->create([
+            'attribute_data' => $attribute_data,
+            'status' => 'draft',
         ]);
 
-        Product::factory()
-            ->for(ProductType::factory())
-            ->create([
-                'attribute_data' => $attribute_data,
-                'status' => 'draft',
-            ]);
+    expect(Product::status('published')->get())->toHaveCount(0);
 
-        $this->assertCount(0, Product::status('published')->get());
+    expect(Product::status('draft')->get())->toHaveCount(1);
+});
 
-        $this->assertCount(1, Product::status('draft')->get());
-    }
+test('takes scout prefix into account', function () {
+    $expected = config('scout.prefix').'products';
 
-    /**
-     * @test
-     * */
-    public function takes_scout_prefix_into_account()
-    {
-        $expected = config('scout.prefix').'products';
+    expect((new Product)->searchableAs())->toEqual($expected);
+});
 
-        $this->assertEquals($expected, (new Product)->searchableAs());
-    }
+test('new product has channel associations', function () {
+    Channel::factory(4)->create();
 
-    /** @test */
-    public function new_product_has_channel_associations()
-    {
-        Channel::factory(4)->create();
+    $product = Product::factory()->create();
 
-        $product = Product::factory()->create();
+    expect($product->channels)->not->toBeEmpty();
 
-        $this->assertNotEmpty($product->channels);
+    // Make sure nothing is enabled by default
+    expect($product->channels->filter(fn ($channel) => $channel->enabled || $channel->published_at))->toBeEmpty();
+});
 
-        // Make sure nothing is enabled by default
-        $this->assertEmpty($product->channels->filter(fn ($channel) => $channel->enabled || $channel->published_at));
-    }
+test('product can be scheduled', function () {
+    $channel = Channel::factory()->create();
 
-    /**
-     * @test
-     *
-     * @group products
-     * */
-    public function product_can_be_scheduled()
-    {
-        $channel = Channel::factory()->create();
+    $brand = Brand::factory()->create();
 
-        $brand = Brand::factory()->create();
+    $product = Product::factory()->create([
+        'brand_id' => $brand->id,
+    ]);
 
-        $product = Product::factory()->create([
-            'brand_id' => $brand->id,
-        ]);
+    $publishDate = now()->addDays(1);
 
-        $publishDate = now()->addDays(1);
+    $product->scheduleChannel($channel, $publishDate);
 
-        $product->scheduleChannel($channel, $publishDate);
+    $this->assertDatabaseHas(
+        'lunar_channelables',
+        [
+            'channel_id' => $channel->id,
+            'channelable_type' => Product::class,
+            'channelable_id' => $product->id,
+            'enabled' => '1',
+            'starts_at' => $publishDate->toDateTimeString(),
+        ],
+    );
 
-        $this->assertDatabaseHas(
-            'lunar_channelables',
-            [
-                'channel_id' => $channel->id,
-                'channelable_type' => Product::class,
-                'channelable_id' => $product->id,
-                'enabled' => '1',
-                'starts_at' => $publishDate->toDateTimeString(),
-            ],
-        );
+    expect(DB::table('lunar_channelables')->get())->toHaveCount(1);
+})->group('products');
 
-        $this->assertCount(1, DB::table('lunar_channelables')->get());
-    }
+test('customer groups can be enabled', function () {
+    $product = Product::factory()->create();
 
-    /** @test */
-    public function customer_groups_can_be_enabled()
-    {
-        $product = Product::factory()->create();
+    expect($product->customerGroups)->toHaveCount(0);
 
-        $this->assertCount(0, $product->customerGroups);
+    $customerGroup = CustomerGroup::factory()->create();
 
-        $customerGroup = CustomerGroup::factory()->create();
+    $product->scheduleCustomerGroup($customerGroup);
 
-        $product->scheduleCustomerGroup($customerGroup);
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'purchasable' => '1',
+            'ends_at' => null,
+        ],
+    );
+});
 
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => '1',
-                'ends_at' => null,
-            ],
-        );
-    }
+test('customer groups can be scheduled always available', function () {
+    $product = Product::factory()->create();
 
-    /** @test */
-    public function customer_groups_can_be_scheduled_always_available()
-    {
-        $product = Product::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create();
 
-        $customerGroup = CustomerGroup::factory()->create();
+    $product->scheduleCustomerGroup($customerGroup);
 
-        $product->scheduleCustomerGroup($customerGroup);
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'purchasable' => 1,
+            'visible' => 1,
+            'starts_at' => null,
+            'ends_at' => null,
+        ],
+    );
+});
 
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 1,
-                'visible' => 1,
-                'starts_at' => null,
-                'ends_at' => null,
-            ],
-        );
-    }
+test('customer groups can be scheduled with start and end', function () {
+    $product = Product::factory()->create();
 
-    /** @test */
-    public function customer_groups_can_be_scheduled_with_start_and_end()
-    {
-        $product = Product::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create();
 
-        $customerGroup = CustomerGroup::factory()->create();
+    $start = now();
+    $end = now();
 
-        $start = now();
-        $end = now();
+    $product->scheduleCustomerGroup($customerGroup, $start);
 
-        $product->scheduleCustomerGroup($customerGroup, $start);
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'purchasable' => 1,
+            'starts_at' => $start,
+            'ends_at' => null,
+        ],
+    );
 
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 1,
-                'starts_at' => $start,
-                'ends_at' => null,
-            ],
-        );
+    $product = Product::factory()->create();
 
-        $product = Product::factory()->create();
+    $product->scheduleCustomerGroup($customerGroup, $start, $end);
 
-        $product->scheduleCustomerGroup($customerGroup, $start, $end);
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'purchasable' => 1,
+            'starts_at' => $start,
+            'ends_at' => $end,
+        ],
+    );
+});
 
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 1,
-                'starts_at' => $start,
-                'ends_at' => $end,
-            ],
-        );
-    }
+test('customer groups can be scheduled with pivot data', function () {
+    $product = Product::factory()->create();
 
-    /** @test */
-    public function customer_groups_can_be_scheduled_with_pivot_data()
-    {
-        $product = Product::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create();
 
-        $customerGroup = CustomerGroup::factory()->create();
+    $start = now();
+    $end = now();
 
-        $start = now();
-        $end = now();
+    $product->scheduleCustomerGroup($customerGroup, null, null, [
+        'visible' => 0,
+        'purchasable' => 0,
+    ]);
 
-        $product->scheduleCustomerGroup($customerGroup, null, null, [
-            'visible' => 0,
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
             'purchasable' => 0,
-        ]);
-
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 0,
-                'visible' => 0,
-                'ends_at' => null,
-            ],
-        );
-
-        $product = Product::factory()->create();
-
-        $product->scheduleCustomerGroup($customerGroup, $start, $end);
-
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'purchasable' => 1,
-                'starts_at' => $start,
-                'ends_at' => $end,
-            ],
-        );
-    }
-
-    /**
-     * @test
-     *
-     * @group mosh
-     * */
-    public function customer_groups_can_be_unscheduled()
-    {
-        $product = Product::factory()->create();
-
-        $customerGroup = CustomerGroup::factory()->create();
-
-        $start = now();
-        $end = now();
-
-        $product->scheduleCustomerGroup($customerGroup, $start, $end);
-
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'visible' => 1,
-                'purchasable' => 1,
-                'ends_at' => $end,
-                'starts_at' => $start,
-            ],
-        );
-
-        $product->unscheduleCustomerGroup($customerGroup, [
             'visible' => 0,
+            'ends_at' => null,
+        ],
+    );
+
+    $product = Product::factory()->create();
+
+    $product->scheduleCustomerGroup($customerGroup, $start, $end);
+
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'purchasable' => 1,
+            'starts_at' => $start,
+            'ends_at' => $end,
+        ],
+    );
+});
+
+test('customer groups can be unscheduled', function () {
+    $product = Product::factory()->create();
+
+    $customerGroup = CustomerGroup::factory()->create();
+
+    $start = now();
+    $end = now();
+
+    $product->scheduleCustomerGroup($customerGroup, $start, $end);
+
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'visible' => 1,
+            'purchasable' => 1,
+            'ends_at' => $end,
+            'starts_at' => $start,
+        ],
+    );
+
+    $product->unscheduleCustomerGroup($customerGroup, [
+        'visible' => 0,
+        'purchasable' => 0,
+    ]);
+
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 0,
+            'starts_at' => null,
+            'ends_at' => null,
             'purchasable' => 0,
+            'visible' => 0,
+        ],
+    );
+})->group('mosh');
+
+test('product can sync tags', function () {
+    $channel = Channel::factory()->create();
+
+    $product = Product::factory()->create();
+
+    expect($product->tags)->toHaveCount(0);
+
+    $tags = collect(['foo', 'bar', 'char']);
+
+    $product->syncTags($tags);
+
+    expect($product->load('tags')->tags)->toHaveCount(3);
+});
+
+test('product can have associations', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'cross-sell',
+    ]);
+
+    expect($parent->refresh()->associations)->toHaveCount(1);
+});
+
+test('product can get core associations with helpers', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'cross-sell',
+    ]);
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'up-sell',
+    ]);
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'alternate',
+    ]);
+
+    $crossSell = $parent->associations()->crossSell()->get();
+
+    expect($crossSell)->toHaveCount(1);
+    expect($crossSell->first()->type)->toEqual(ProductAssociation::CROSS_SELL);
+
+    $upsell = $parent->associations()->upSell()->get();
+
+    expect($upsell)->toHaveCount(1);
+    expect($upsell->first()->type)->toEqual(ProductAssociation::UP_SELL);
+
+    $alternate = $parent->associations()->alternate()->get();
+
+    expect($alternate)->toHaveCount(1);
+    expect($alternate->first()->type)->toEqual(ProductAssociation::ALTERNATE);
+});
+
+test('product can get all associations', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    ProductAssociation::factory(5)->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'cross-sell',
+    ]);
+
+    expect($parent->refresh()->associations)->toHaveCount(5);
+});
+
+test('product can have custom association types', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'custom-type',
+    ]);
+
+    $assoc = $parent->associations()->type('custom-type')->get();
+
+    expect($assoc)->toHaveCount(1);
+    expect($assoc->first()->type)->toEqual('custom-type');
+});
+
+test('can associate products via relation', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    $parent->associations()->create([
+        'product_parent_id' => $parent->id,
+        'product_target_id' => $target->id,
+        'type' => 'custom-type',
+    ]);
+
+    $assoc = $parent->associations()->type('custom-type')->get();
+
+    expect($assoc)->toHaveCount(1);
+    expect($assoc->first()->type)->toEqual('custom-type');
+});
+
+test('can associate multiple products', function () {
+    $parent = Product::factory()->create();
+    $targetA = Product::factory()->create();
+    $targetB = Product::factory()->create();
+
+    $parent->associate([$targetA, $targetB], ProductAssociation::UP_SELL);
+
+    $assoc = $parent->associations()->type(ProductAssociation::UP_SELL)->get();
+
+    expect($assoc)->toHaveCount(2);
+});
+
+test('can associate products via helper', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    $parent->associate($target, 'custom-type');
+
+    $assoc = $parent->associations()->type('custom-type')->get();
+
+    expect($assoc)->toHaveCount(1);
+    expect($assoc->first()->type)->toEqual('custom-type');
+});
+
+test('can remove all associations', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'cross-sell',
+    ]);
+
+    expect($parent->refresh()->associations)->toHaveCount(1);
+
+    $parent->dissociate($target);
+
+    expect($parent->refresh()->associations)->toHaveCount(0);
+});
+
+test('can only remove associations of a certain type', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'cross-sell',
+    ]);
+
+    ProductAssociation::factory()->create([
+        'product_parent_id' => $parent,
+        'product_target_id' => $target,
+        'type' => 'up-sell',
+    ]);
+
+    expect($parent->refresh()->associations)->toHaveCount(2);
+
+    $parent->dissociate($target, 'cross-sell');
+
+    expect($parent->refresh()->associations)->toHaveCount(1);
+    expect($parent->refresh()->associations->first()->type)->toEqual('up-sell');
+});
+
+test('can have collections relationship', function () {
+    $collection = Collection::factory()->create();
+    $product = Product::factory()->create();
+    $product->collections()->sync($collection);
+
+    expect($product->collections)->toBeInstanceOf(EloquentCollection::class);
+    expect($product->collections)->toHaveCount(1);
+    expect($product->collections->first())->toBeInstanceOf(Collection::class);
+    expect($product->collections->first()->pivot)->not->toBeNull();
+    expect($product->collections->first()->pivot->position)->not->toBeNull();
+});
+
+test('can retrieve prices', function () {
+    $attribute_data = collect([
+        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
+        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
+        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+            'en' => new \Lunar\FieldTypes\Text('Blue'),
+            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        ])),
+    ]);
+
+    $product = Product::factory()
+        ->for(ProductType::factory())
+        ->create([
+            'attribute_data' => $attribute_data,
         ]);
 
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 0,
-                'starts_at' => null,
-                'ends_at' => null,
-                'purchasable' => 0,
-                'visible' => 0,
-            ],
-        );
-    }
+    $variant = ProductVariant::factory()->create([
+        'product_id' => $product->id,
+    ]);
 
-    /** @test */
-    public function product_can_sync_tags()
-    {
-        $channel = Channel::factory()->create();
+    Price::factory()->create([
+        'priceable_id' => $variant->id,
+        'priceable_type' => ProductVariant::class,
+    ]);
 
-        $product = Product::factory()->create();
-
-        $this->assertCount(0, $product->tags);
-
-        $tags = collect(['foo', 'bar', 'char']);
-
-        $product->syncTags($tags);
-
-        $this->assertCount(3, $product->load('tags')->tags);
-    }
-
-    /** @test */
-    public function product_can_have_associations()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'cross-sell',
-        ]);
-
-        $this->assertCount(1, $parent->refresh()->associations);
-    }
-
-    /** @test */
-    public function product_can_get_core_associations_with_helpers()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'cross-sell',
-        ]);
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'up-sell',
-        ]);
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'alternate',
-        ]);
-
-        $crossSell = $parent->associations()->crossSell()->get();
-
-        $this->assertCount(1, $crossSell);
-        $this->assertEquals(ProductAssociation::CROSS_SELL, $crossSell->first()->type);
-
-        $upsell = $parent->associations()->upSell()->get();
-
-        $this->assertCount(1, $upsell);
-        $this->assertEquals(ProductAssociation::UP_SELL, $upsell->first()->type);
-
-        $alternate = $parent->associations()->alternate()->get();
-
-        $this->assertCount(1, $alternate);
-        $this->assertEquals(ProductAssociation::ALTERNATE, $alternate->first()->type);
-    }
-
-    /** @test */
-    public function product_can_get_all_associations()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        ProductAssociation::factory(5)->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'cross-sell',
-        ]);
-
-        $this->assertCount(5, $parent->refresh()->associations);
-    }
-
-    /** @test */
-    public function product_can_have_custom_association_types()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'custom-type',
-        ]);
-
-        $assoc = $parent->associations()->type('custom-type')->get();
-
-        $this->assertCount(1, $assoc);
-        $this->assertEquals('custom-type', $assoc->first()->type);
-    }
-
-    /** @test */
-    public function can_associate_products_via_relation()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        $parent->associations()->create([
-            'product_parent_id' => $parent->id,
-            'product_target_id' => $target->id,
-            'type' => 'custom-type',
-        ]);
-
-        $assoc = $parent->associations()->type('custom-type')->get();
-
-        $this->assertCount(1, $assoc);
-        $this->assertEquals('custom-type', $assoc->first()->type);
-    }
-
-    /** @test */
-    public function can_associate_multiple_products()
-    {
-        $parent = Product::factory()->create();
-        $targetA = Product::factory()->create();
-        $targetB = Product::factory()->create();
-
-        $parent->associate([$targetA, $targetB], ProductAssociation::UP_SELL);
-
-        $assoc = $parent->associations()->type(ProductAssociation::UP_SELL)->get();
-
-        $this->assertCount(2, $assoc);
-    }
-
-    /** @test */
-    public function can_associate_products_via_helper()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        $parent->associate($target, 'custom-type');
-
-        $assoc = $parent->associations()->type('custom-type')->get();
-
-        $this->assertCount(1, $assoc);
-        $this->assertEquals('custom-type', $assoc->first()->type);
-    }
-
-    /** @test */
-    public function can_remove_all_associations()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'cross-sell',
-        ]);
-
-        $this->assertCount(1, $parent->refresh()->associations);
-
-        $parent->dissociate($target);
-
-        $this->assertCount(0, $parent->refresh()->associations);
-    }
-
-    /** @test */
-    public function can_only_remove_associations_of_a_certain_type()
-    {
-        $parent = Product::factory()->create();
-        $target = Product::factory()->create();
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'cross-sell',
-        ]);
-
-        ProductAssociation::factory()->create([
-            'product_parent_id' => $parent,
-            'product_target_id' => $target,
-            'type' => 'up-sell',
-        ]);
-
-        $this->assertCount(2, $parent->refresh()->associations);
-
-        $parent->dissociate($target, 'cross-sell');
-
-        $this->assertCount(1, $parent->refresh()->associations);
-        $this->assertEquals('up-sell', $parent->refresh()->associations->first()->type);
-    }
-
-    /** @test */
-    public function can_have_collections_relationship()
-    {
-        $collection = Collection::factory()->create();
-        $product = Product::factory()->create();
-        $product->collections()->sync($collection);
-
-        $this->assertInstanceOf(EloquentCollection::class, $product->collections);
-        $this->assertCount(1, $product->collections);
-        $this->assertInstanceOf(Collection::class, $product->collections->first());
-        $this->assertNotNull($product->collections->first()->pivot);
-        $this->assertNotNull($product->collections->first()->pivot->position);
-    }
-
-    /** @test */
-    public function can_retrieve_prices()
-    {
-        $attribute_data = collect([
-            'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
-            'pack_qty' => new \Lunar\FieldTypes\Number(12345),
-            'description' => new \Lunar\FieldTypes\TranslatedText(collect([
-                'en' => new \Lunar\FieldTypes\Text('Blue'),
-                'fr' => new \Lunar\FieldTypes\Text('Bleu'),
-            ])),
-        ]);
-
-        $product = Product::factory()
-            ->for(ProductType::factory())
-            ->create([
-                'attribute_data' => $attribute_data,
-            ]);
-
-        $variant = ProductVariant::factory()->create([
-            'product_id' => $product->id,
-        ]);
-
-        Price::factory()->create([
-            'priceable_id' => $variant->id,
-            'priceable_type' => ProductVariant::class,
-        ]);
-
-        $this->assertCount(1, $product->refresh()->prices);
-    }
-}
+    expect($product->refresh()->prices)->toHaveCount(1);
+});

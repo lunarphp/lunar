@@ -1,29 +1,21 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\ProductType;
-use Lunar\Tests\TestCase;
 
-class ProductTypeTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_product_type()
-    {
-        $productType = ProductType::factory()
-            ->has(
-                Attribute::factory()->for(AttributeGroup::factory())->count(1),
-                'mappedAttributes',
-            )
-            ->create([
-                'name' => 'Bob',
-            ]);
+test('can make a product type', function () {
+    $productType = ProductType::factory()
+        ->has(
+            Attribute::factory()->for(AttributeGroup::factory())->count(1),
+            'mappedAttributes',
+        )
+        ->create([
+            'name' => 'Bob',
+        ]);
 
-        $this->assertEquals('Bob', $productType->name);
-    }
-}
+    expect($productType->name)->toEqual('Bob');
+});

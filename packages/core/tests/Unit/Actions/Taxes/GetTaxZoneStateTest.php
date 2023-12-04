@@ -1,99 +1,84 @@
 <?php
 
-namespace Lunar\Tests\Unit\Actions\Taxes;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Actions\Taxes\GetTaxZoneState;
 use Lunar\Models\State;
 use Lunar\Models\TaxZoneState;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.actions
- */
-class GetTaxZoneStateTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_match_exact_state_name()
-    {
-        $california = State::factory()->create([
-            'code' => 'CA',
-            'name' => 'California',
-        ]);
+test('can match exact state name', function () {
+    $california = State::factory()->create([
+        'code' => 'CA',
+        'name' => 'California',
+    ]);
 
-        $alabama = State::factory()->create([
-            'code' => 'AL',
-            'name' => 'Alabama',
-        ]);
+    $alabama = State::factory()->create([
+        'code' => 'AL',
+        'name' => 'Alabama',
+    ]);
 
-        TaxZoneState::factory()->create([
-            'state_id' => $california->id,
-        ]);
+    TaxZoneState::factory()->create([
+        'state_id' => $california->id,
+    ]);
 
-        $al = TaxZoneState::factory()->create([
-            'state_id' => $alabama->id,
-        ]);
+    $al = TaxZoneState::factory()->create([
+        'state_id' => $alabama->id,
+    ]);
 
-        $zone = app(GetTaxZoneState::class)->execute('Alabama');
+    $zone = app(GetTaxZoneState::class)->execute('Alabama');
 
-        $this->assertEquals($al->id, $zone->id);
-    }
+    expect($zone->id)->toEqual($al->id);
+});
 
-    /** @test */
-    public function can_match_exact_state_code()
-    {
-        $california = State::factory()->create([
-            'code' => 'CA',
-            'name' => 'California',
-        ]);
+test('can match exact state code', function () {
+    $california = State::factory()->create([
+        'code' => 'CA',
+        'name' => 'California',
+    ]);
 
-        $alabama = State::factory()->create([
-            'code' => 'AL',
-            'name' => 'Alabama',
-        ]);
+    $alabama = State::factory()->create([
+        'code' => 'AL',
+        'name' => 'Alabama',
+    ]);
 
-        TaxZoneState::factory()->create([
-            'state_id' => $california->id,
-        ]);
+    TaxZoneState::factory()->create([
+        'state_id' => $california->id,
+    ]);
 
-        $al = TaxZoneState::factory()->create([
-            'state_id' => $alabama->id,
-        ]);
+    $al = TaxZoneState::factory()->create([
+        'state_id' => $alabama->id,
+    ]);
 
-        $zone = app(GetTaxZoneState::class)->execute('AL');
+    $zone = app(GetTaxZoneState::class)->execute('AL');
 
-        $this->assertNotNull($zone);
+    expect($zone)->not->toBeNull();
 
-        $this->assertEquals($al->id, $zone?->id);
-    }
+    expect($zone?->id)->toEqual($al->id);
+});
 
-    /** @test */
-    public function can_mismatch_exact_state_name()
-    {
-        $california = State::factory()->create([
-            'code' => 'CA',
-            'name' => 'California',
-        ]);
+test('can mismatch exact state name', function () {
+    $california = State::factory()->create([
+        'code' => 'CA',
+        'name' => 'California',
+    ]);
 
-        $alabama = State::factory()->create([
-            'code' => 'AL',
-            'name' => 'Alabama',
-        ]);
+    $alabama = State::factory()->create([
+        'code' => 'AL',
+        'name' => 'Alabama',
+    ]);
 
-        TaxZoneState::factory()->create([
-            'state_id' => $california->id,
-        ]);
+    TaxZoneState::factory()->create([
+        'state_id' => $california->id,
+    ]);
 
-        $al = TaxZoneState::factory()->create([
-            'state_id' => $alabama->id,
-        ]);
+    $al = TaxZoneState::factory()->create([
+        'state_id' => $alabama->id,
+    ]);
 
-        $zone = app(GetTaxZoneState::class)->execute('Alaba');
+    $zone = app(GetTaxZoneState::class)->execute('Alaba');
 
-        $this->assertNull($zone);
+    expect($zone)->toBeNull();
 
-        $this->assertNotEquals($al->id, $zone?->id);
-    }
-}
+    $this->assertNotEquals($al->id, $zone?->id);
+});

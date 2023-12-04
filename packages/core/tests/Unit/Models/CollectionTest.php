@@ -1,26 +1,18 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\FieldTypes\Text;
 use Lunar\Models\Collection;
-use Lunar\Tests\TestCase;
 
-class CollectionTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_collection()
-    {
-        $collection = Collection::factory()
-            ->create([
-                'attribute_data' => collect([
-                    'name' => new Text('Red Products'),
-                ]),
-            ]);
+test('can make a collection', function () {
+    $collection = Collection::factory()
+        ->create([
+            'attribute_data' => collect([
+                'name' => new Text('Red Products'),
+            ]),
+        ]);
 
-        $this->assertEquals($collection->translateAttribute('name'), 'Red Products');
-    }
-}
+    expect('Red Products')->toEqual($collection->translateAttribute('name'));
+});

@@ -1,25 +1,15 @@
 <?php
 
-namespace Lunar\Tests\Unit\Console;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\Http;
 use Lunar\Models\Country;
-use Lunar\Tests\TestCase;
 
-/**
- * @group commands
- */
-class AddressDataTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_import_address_data()
-    {
-        Http::fake(function ($request) {
-            return Http::response([
-                json_decode('{
+test('can import address data', function () {
+    Http::fake(function ($request) {
+        return Http::response([
+            json_decode('{
                     "name": "United Kingdom",
                     "iso3": "GBR",
                     "iso2": "GB",
@@ -70,25 +60,24 @@ class AddressDataTest extends TestCase
                         }
                     ]
                 }'),
-            ], 200);
-        });
+        ], 200);
+    });
 
-        $this->artisan('lunar:import:address-data');
+    $this->artisan('lunar:import:address-data');
 
-        $this->assertDatabaseHas('lunar_countries', [
-            'name' => 'United Kingdom',
-            'iso3' => 'GBR',
-            'iso2' => 'GB',
-            'phonecode' => '44',
-            'capital' => 'London',
-            'currency' => 'GBP',
-            'native' => 'United Kingdom',
-            'emoji' => '🇬🇧',
-            'emoji_u' => 'U+1F1EC U+1F1E7',
-        ]);
+    $this->assertDatabaseHas('lunar_countries', [
+        'name' => 'United Kingdom',
+        'iso3' => 'GBR',
+        'iso2' => 'GB',
+        'phonecode' => '44',
+        'capital' => 'London',
+        'currency' => 'GBP',
+        'native' => 'United Kingdom',
+        'emoji' => '🇬🇧',
+        'emoji_u' => 'U+1F1EC U+1F1E7',
+    ]);
 
-        $country = Country::first();
+    $country = Country::first();
 
-        $this->assertCount(1, $country->states);
-    }
-}
+    expect($country->states)->toHaveCount(1);
+});

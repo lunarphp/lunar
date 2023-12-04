@@ -1,146 +1,119 @@
 <?php
 
-namespace Lunar\Tests\Unit\Actions\Carts;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Currency;
-use Lunar\Tests\TestCase;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
-/**
- * @group lunar.actions
- * @group lunar.validation.cart
- */
-class ValidateCartForOrderCreationTest extends TestCase
-{
-    use RefreshDatabase;
 
-    /**
-     * @test
-     */
-    public function can_validate_missing_billing_address()
-    {
-        $currency = Currency::factory()->create();
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
+test('can validate missing billing address', function () {
+    $currency = Currency::factory()->create();
 
-        $validator = (new ValidateCartForOrderCreation)->using(
-            cart: $cart
-        );
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
 
-        $this->expectException(CartException::class);
-        $this->expectExceptionMessage(__('lunar::exceptions.carts.billing_missing'));
+    $validator = (new ValidateCartForOrderCreation)->using(
+        cart: $cart
+    );
 
+    $this->expectException(CartException::class);
+    $this->expectExceptionMessage(__('lunar::exceptions.carts.billing_missing'));
+
+    $validator->validate();
+});
+
+test('can validate populated billing address', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $validator = (new ValidateCartForOrderCreation)->using(
+        cart: $cart
+    );
+
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+    ]);
+
+    expect($validator->validate())->toBeTrue();
+});
+
+test('can validate partial billing address', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $validator = (new ValidateCartForOrderCreation)->using(
+        cart: $cart
+    );
+
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+        'first_name' => null,
+        'line_one' => null,
+        'city' => null,
+        'postcode' => null,
+        'country_id' => null,
+    ]);
+
+    try {
         $validator->validate();
+    } catch (CartException $e) {
+        $errors = $e->errors();
+
+        expect($errors->has([
+            'country_id',
+            'first_name',
+            'line_one',
+            'city',
+            'postcode',
+        ]))->toBeTrue();
     }
+});
 
-    /**
-     * @test
-     */
-    public function can_validate_populated_billing_address()
-    {
-        $currency = Currency::factory()->create();
+test('can validate shippable cart', function () {
+    $currency = Currency::factory()->create();
 
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
 
-        $validator = (new ValidateCartForOrderCreation)->using(
-            cart: $cart
-        );
+    $validator = (new ValidateCartForOrderCreation)->using(
+        cart: $cart
+    );
 
-        CartAddress::factory()->create([
-            'type' => 'billing',
-            'cart_id' => $cart->id,
-        ]);
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+        'first_name' => null,
+        'line_one' => null,
+        'city' => null,
+        'postcode' => null,
+        'country_id' => null,
+    ]);
 
-        $this->assertTrue(
-            $validator->validate()
-        );
+    try {
+        $validator->validate();
+    } catch (CartException $e) {
+        $errors = $e->errors();
+
+        expect($errors->has([
+            'country_id',
+            'first_name',
+            'line_one',
+            'city',
+            'postcode',
+        ]))->toBeTrue();
     }
-
-    /** @test */
-    public function can_validate_partial_billing_address()
-    {
-        $currency = Currency::factory()->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $validator = (new ValidateCartForOrderCreation)->using(
-            cart: $cart
-        );
-
-        CartAddress::factory()->create([
-            'type' => 'billing',
-            'cart_id' => $cart->id,
-            'first_name' => null,
-            'line_one' => null,
-            'city' => null,
-            'postcode' => null,
-            'country_id' => null,
-        ]);
-
-        try {
-            $validator->validate();
-        } catch (CartException $e) {
-            $errors = $e->errors();
-
-            $this->assertTrue(
-                $errors->has([
-                    'country_id',
-                    'first_name',
-                    'line_one',
-                    'city',
-                    'postcode',
-                ])
-            );
-        }
-    }
-
-    /** @test */
-    public function can_validate_shippable_cart()
-    {
-        $currency = Currency::factory()->create();
-
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $validator = (new ValidateCartForOrderCreation)->using(
-            cart: $cart
-        );
-
-        CartAddress::factory()->create([
-            'type' => 'billing',
-            'cart_id' => $cart->id,
-            'first_name' => null,
-            'line_one' => null,
-            'city' => null,
-            'postcode' => null,
-            'country_id' => null,
-        ]);
-
-        try {
-            $validator->validate();
-        } catch (CartException $e) {
-            $errors = $e->errors();
-
-            $this->assertTrue(
-                $errors->has([
-                    'country_id',
-                    'first_name',
-                    'line_one',
-                    'city',
-                    'postcode',
-                ])
-            );
-        }
-    }
-}
+});

@@ -1,68 +1,52 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base\Traits;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\Unit\Base\Extendable\ExtendableTestCase::class);
 use Illuminate\Support\Collection;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
-use Lunar\Tests\Unit\Base\Extendable\ExtendableTestCase;
 
-class HasModelExtendingTest extends ExtendableTestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_get_new_instance_of_the_registered_model()
-    {
-        $product = Product::find(1);
+test('can get new instance of the registered model', function () {
+    $product = Product::find(1);
 
-        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\Product::class, $product);
-    }
+    expect($product)->toBeInstanceOf(\Lunar\Tests\Stubs\Models\Product::class);
+});
 
-    /** @test */
-    public function can_forward_calls_to_extended_model()
-    {
-        // @phpstan-ignore-next-line
-        $sizeOption = ProductOption::with('sizes')->find(1);
+test('can forward calls to extended model', function () {
+    // @phpstan-ignore-next-line
+    $sizeOption = ProductOption::with('sizes')->find(1);
 
-        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\ProductOption::class, $sizeOption);
+    expect($sizeOption)->toBeInstanceOf(\Lunar\Tests\Stubs\Models\ProductOption::class);
 
-        $this->assertInstanceOf(Collection::class, $sizeOption->sizes);
-        $this->assertCount(1, $sizeOption->sizes);
-    }
+    expect($sizeOption->sizes)->toBeInstanceOf(Collection::class);
+    expect($sizeOption->sizes)->toHaveCount(1);
+});
 
-    /** @test */
-    public function can_forward_static_method_calls_to_extended_model()
-    {
-        /** @see \Lunar\Tests\Stubs\Models\ProductOption::getSizesStatic() */
-        $newStaticMethod = ProductOption::getSizesStatic();
+test('can forward static method calls to extended model', function () {
+    /** @see \Lunar\Tests\Stubs\Models\ProductOption::getSizesStatic() */
+    $newStaticMethod = ProductOption::getSizesStatic();
 
-        $this->assertInstanceOf(Collection::class, $newStaticMethod);
-        $this->assertCount(3, $newStaticMethod);
-    }
+    expect($newStaticMethod)->toBeInstanceOf(Collection::class);
+    expect($newStaticMethod)->toHaveCount(3);
+});
 
-    /** @test */
-    public function can_swap_registered_model_implementation()
-    {
-        /** @var Product $product */
-        $product = Product::find(1);
+test('can swap registered model implementation', function () {
+    /** @var Product $product */
+    $product = Product::find(1);
 
-        $newProductModel = $product->swap(
-            \Lunar\Tests\Stubs\Models\ProductSwapModel::class
-        );
+    $newProductModel = $product->swap(
+        \Lunar\Tests\Stubs\Models\ProductSwapModel::class
+    );
 
-        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\Product::class, $product);
-        $this->assertInstanceOf(\Lunar\Tests\Stubs\Models\ProductSwapModel::class, $newProductModel);
-    }
+    expect($product)->toBeInstanceOf(\Lunar\Tests\Stubs\Models\Product::class);
+    expect($newProductModel)->toBeInstanceOf(\Lunar\Tests\Stubs\Models\ProductSwapModel::class);
+});
 
-    /** @test */
-    public function can_get_base_model_morph_class_name()
-    {
-        $product = \Lunar\Tests\Stubs\Models\Product::query()->create(
-            Product::factory()->raw()
-        );
+test('can get base model morph class name', function () {
+    $product = \Lunar\Tests\Stubs\Models\Product::query()->create(
+        Product::factory()->raw()
+    );
 
-        $this->assertEquals(Product::class, $product->getMorphClass());
-    }
-}
+    expect($product->getMorphClass())->toEqual(Product::class);
+});

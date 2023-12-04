@@ -1,64 +1,53 @@
 <?php
 
-namespace Lunar\Tests\Unit\Console;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.traits.cache
- */
-class CachesPropertiesTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_cache_model_properties()
-    {
-        $currency = Currency::factory()->create();
+test('can cache model properties', function () {
+    $currency = Currency::factory()->create();
 
-        $cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
 
-        $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create();
 
-        Price::factory()->create([
-            'price' => 100,
-            'tier' => 1,
-            'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
-            'priceable_id' => $purchasable->id,
-        ]);
+    Price::factory()->create([
+        'price' => 100,
+        'tier' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
 
-        $cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'quantity' => 1,
-        ]);
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
 
-        $cart = $cart->calculate();
+    $cart = $cart->calculate();
 
-        $this->assertInstanceOf(DataTypesPrice::class, $cart->subTotal);
-        $this->assertEquals(100, $cart->subTotal->value);
-        $this->assertInstanceOf(DataTypesPrice::class, $cart->total);
-        $this->assertEquals(120, $cart->total->value);
-        $this->assertInstanceOf(DataTypesPrice::class, $cart->taxTotal);
-        $this->assertEquals(20, $cart->taxTotal->value);
+    expect($cart->subTotal)->toBeInstanceOf(DataTypesPrice::class);
+    expect($cart->subTotal->value)->toEqual(100);
+    expect($cart->total)->toBeInstanceOf(DataTypesPrice::class);
+    expect($cart->total->value)->toEqual(120);
+    expect($cart->taxTotal)->toBeInstanceOf(DataTypesPrice::class);
+    expect($cart->taxTotal->value)->toEqual(20);
 
-        // When now fetching from the database it should automatically be hydrated...
-        $cart = Cart::find($cart->id);
+    // When now fetching from the database it should automatically be hydrated...
+    $cart = Cart::find($cart->id);
 
-        $this->assertInstanceOf(DataTypesPrice::class, $cart->subTotal);
-        $this->assertEquals(100, $cart->subTotal->value);
-        $this->assertInstanceOf(DataTypesPrice::class, $cart->total);
-        $this->assertEquals(120, $cart->total->value);
-        $this->assertInstanceOf(DataTypesPrice::class, $cart->taxTotal);
-        $this->assertEquals(20, $cart->taxTotal->value);
-    }
-}
+    expect($cart->subTotal)->toBeInstanceOf(DataTypesPrice::class);
+    expect($cart->subTotal->value)->toEqual(100);
+    expect($cart->total)->toBeInstanceOf(DataTypesPrice::class);
+    expect($cart->total->value)->toEqual(120);
+    expect($cart->taxTotal)->toBeInstanceOf(DataTypesPrice::class);
+    expect($cart->taxTotal->value)->toEqual(20);
+});

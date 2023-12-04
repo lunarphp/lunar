@@ -1,59 +1,44 @@
 <?php
 
-namespace Lunar\Tests\Unit\FieldTypes;
-
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Number;
-use Lunar\Tests\TestCase;
 
-class NumberTest extends TestCase
-{
-    /** @test */
-    public function can_set_value()
-    {
-        $field = new Number();
-        $field->setValue(12345);
+test('can set value', function () {
+    $field = new Number();
+    $field->setValue(12345);
 
-        $this->assertEquals(12345, $field->getValue());
-    }
+    expect($field->getValue())->toEqual(12345);
+});
 
-    /** @test */
-    public function can_set_value_in_constructor()
-    {
-        $field = new Number(12345);
+test('can set value in constructor', function () {
+    $field = new Number(12345);
 
-        $this->assertEquals(12345, $field->getValue());
-    }
+    expect($field->getValue())->toEqual(12345);
+});
 
-    /** @test */
-    public function can_set_as_empty_string()
-    {
-        $field = new Number('');
+test('can set as empty string', function () {
+    $field = new Number('');
 
-        $this->assertEquals('', $field->getValue());
+    expect($field->getValue())->toEqual('');
 
-        $field->setValue('');
+    $field->setValue('');
 
-        $this->assertEquals('', $field->getValue());
-    }
+    expect($field->getValue())->toEqual('');
+});
 
-    /** @test */
-    public function can_set_as_null_value()
-    {
-        $field = new Number(null);
+test('can set as null value', function () {
+    $field = new Number(null);
 
-        $this->assertEquals(null, $field->getValue());
+    expect($field->getValue())->toEqual(null);
 
-        $field->setValue(null);
+    $field->setValue(null);
 
-        $this->assertEquals(null, $field->getValue());
-    }
+    expect($field->getValue())->toEqual(null);
+});
 
-    /** @test */
-    public function check_does_not_allow_non_numerics()
-    {
-        $this->expectException(FieldTypeException::class);
+test('check does not allow non numerics', function () {
+    $this->expectException(FieldTypeException::class);
 
-        $field = new Number('bad string value');
-    }
-}
+    $field = new Number('bad string value');
+});

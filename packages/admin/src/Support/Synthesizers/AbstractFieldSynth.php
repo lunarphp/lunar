@@ -3,12 +3,13 @@
 namespace Lunar\Admin\Support\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
+use Lunar\Base\FieldType;
 
 abstract class AbstractFieldSynth extends Synth
 {
     public static $key = 'lunar_field';
 
-    protected static $targetClass = Lunar\Base\FieldType::class;
+    protected static $targetClass = FieldType::class;
 
     public static function match($target)
     {

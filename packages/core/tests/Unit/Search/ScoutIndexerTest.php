@@ -1,8 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Unit\Search;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\Config;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
@@ -11,106 +9,87 @@ use Lunar\Models\Collection;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Search\ScoutIndexer;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.search
- */
-class ScoutIndexerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_get_correct_index_name()
-    {
-        Config::set('scout.prefix', 'lt_');
+test('can get correct index name', function () {
+    Config::set('scout.prefix', 'lt_');
 
-        $product = Product::factory()->create();
-        $collection = Collection::factory()->create();
+    $product = Product::factory()->create();
+    $collection = Collection::factory()->create();
 
-        $productIndex = app(ScoutIndexer::class)->searchableAs($product);
-        $collectionIndex = app(ScoutIndexer::class)->searchableAs($collection);
+    $productIndex = app(ScoutIndexer::class)->searchableAs($product);
+    $collectionIndex = app(ScoutIndexer::class)->searchableAs($collection);
 
-        $this->assertEquals('lt_products', $productIndex);
-        $this->assertEquals('lt_collections', $collectionIndex);
-    }
+    expect($productIndex)->toEqual('lt_products');
+    expect($collectionIndex)->toEqual('lt_collections');
+});
 
-    /** @test */
-    public function searchable_is_enabled_by_default()
-    {
-        $product = Product::factory()->create();
-        $collection = Collection::factory()->create();
+test('searchable is enabled by default', function () {
+    $product = Product::factory()->create();
+    $collection = Collection::factory()->create();
 
-        $this->assertTrue(
-            app(ScoutIndexer::class)->shouldBeSearchable($product)
-        );
-        $this->assertTrue(
-            app(ScoutIndexer::class)->shouldBeSearchable($collection)
-        );
-    }
+    expect(app(ScoutIndexer::class)->shouldBeSearchable($product))->toBeTrue();
+    expect(app(ScoutIndexer::class)->shouldBeSearchable($collection))->toBeTrue();
+});
 
-    /** @test */
-    public function can_return_searchable_array()
-    {
-        $product = Product::factory()->create();
+test('can return searchable array', function () {
+    $product = Product::factory()->create();
 
-        $data = app(ScoutIndexer::class)->toSearchableArray($product);
+    $data = app(ScoutIndexer::class)->toSearchableArray($product);
 
-        $this->assertSame([
-            'id' => $product->id,
-        ], $data);
-    }
+    expect($data)->toBe([
+        'id' => $product->id,
+    ]);
+});
 
-    /** @test */
-    public function includes_searchable_attributes_in_searchable_array()
-    {
-        Language::factory()->create([
-            'code' => 'en',
-            'default' => true,
-        ]);
+test('includes searchable attributes in searchable array', function () {
+    Language::factory()->create([
+        'code' => 'en',
+        'default' => true,
+    ]);
 
-        Language::factory()->create([
-            'code' => 'dk',
-            'default' => false,
-        ]);
+    Language::factory()->create([
+        'code' => 'dk',
+        'default' => false,
+    ]);
 
-        $attributeA = Attribute::factory()->create([
-            'attribute_type' => Product::class,
-            'searchable' => true,
-        ]);
-        $attributeB = Attribute::factory()->create([
-            'attribute_type' => Product::class,
-            'searchable' => true,
-        ]);
-        $attributeC = Attribute::factory()->create([
-            'attribute_type' => Product::class,
-            'searchable' => false,
-        ]);
-        $attributeD = Attribute::factory()->create([
-            'attribute_type' => Product::class,
-            'type' => TranslatedText::class,
-            'searchable' => true,
-        ]);
+    $attributeA = Attribute::factory()->create([
+        'attribute_type' => Product::class,
+        'searchable' => true,
+    ]);
+    $attributeB = Attribute::factory()->create([
+        'attribute_type' => Product::class,
+        'searchable' => true,
+    ]);
+    $attributeC = Attribute::factory()->create([
+        'attribute_type' => Product::class,
+        'searchable' => false,
+    ]);
+    $attributeD = Attribute::factory()->create([
+        'attribute_type' => Product::class,
+        'type' => TranslatedText::class,
+        'searchable' => true,
+    ]);
 
-        $product = Product::factory()->create([
-            'attribute_data' => collect([
-                $attributeA->handle => new Text('Attribute A'),
-                $attributeB->handle => new Text('Attribute B'),
-                $attributeC->handle => new Text('Attribute C'),
-                $attributeD->handle => new TranslatedText([
-                    'en' => 'Attribute D EN',
-                    'dk' => 'Attribute D DK',
-                ]),
+    $product = Product::factory()->create([
+        'attribute_data' => collect([
+            $attributeA->handle => new Text('Attribute A'),
+            $attributeB->handle => new Text('Attribute B'),
+            $attributeC->handle => new Text('Attribute C'),
+            $attributeD->handle => new TranslatedText([
+                'en' => 'Attribute D EN',
+                'dk' => 'Attribute D DK',
             ]),
-        ]);
+        ]),
+    ]);
 
-        $data = app(ScoutIndexer::class)->toSearchableArray($product);
+    $data = app(ScoutIndexer::class)->toSearchableArray($product);
 
-        $this->assertArrayHasKey('id', $data);
-        $this->assertArrayHasKey($attributeA->handle, $data);
-        $this->assertArrayHasKey($attributeB->handle, $data);
-        $this->assertArrayNotHasKey($attributeC->handle, $data);
-        $this->assertArrayHasKey($attributeD->handle.'_en', $data);
-        $this->assertArrayHasKey($attributeD->handle.'_dk', $data);
-    }
-}
+    expect($data)->toHaveKey('id');
+    expect($data)->toHaveKey($attributeA->handle);
+    expect($data)->toHaveKey($attributeB->handle);
+    $this->assertArrayNotHasKey($attributeC->handle, $data);
+    expect($data)->toHaveKey($attributeD->handle.'_en');
+    expect($data)->toHaveKey($attributeD->handle.'_dk');
+});

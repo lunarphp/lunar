@@ -1,46 +1,36 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Channel;
-use Lunar\Tests\TestCase;
 
-class ChannelTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_channel()
-    {
-        $channel = Channel::factory()->create([
-            'name' => 'Webstore',
-            'handle' => 'webstore',
-            'default' => true,
-            'url' => 'http://mystore.test',
-        ]);
+test('can make a channel', function () {
+    $channel = Channel::factory()->create([
+        'name' => 'Webstore',
+        'handle' => 'webstore',
+        'default' => true,
+        'url' => 'http://mystore.test',
+    ]);
 
-        $this->assertEquals('Webstore', $channel->name);
-        $this->assertEquals('webstore', $channel->handle);
-        $this->assertTrue($channel->default);
-        $this->assertEquals('http://mystore.test', $channel->url);
-    }
+    expect($channel->name)->toEqual('Webstore');
+    expect($channel->handle)->toEqual('webstore');
+    expect($channel->default)->toBeTrue();
+    expect($channel->url)->toEqual('http://mystore.test');
+});
 
-    /** @test */
-    public function changes_are_recorded_in_activity_log()
-    {
-        activity()->enableLogging();
+test('changes are recorded in activity log', function () {
+    activity()->enableLogging();
 
-        $channel = Channel::factory()->create([
-            'name' => 'Webstore',
-        ]);
+    $channel = Channel::factory()->create([
+        'name' => 'Webstore',
+    ]);
 
-        $channel->update([
-            'name' => 'Foobar',
-        ]);
+    $channel->update([
+        'name' => 'Foobar',
+    ]);
 
-        $log = $channel->activities()->whereEvent('updated')->first();
+    $log = $channel->activities()->whereEvent('updated')->first();
 
-        $this->assertNotNull($log);
-    }
-}
+    expect($log)->not->toBeNull();
+});

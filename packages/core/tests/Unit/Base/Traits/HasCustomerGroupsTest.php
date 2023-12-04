@@ -1,268 +1,239 @@
 <?php
 
-namespace Lunar\Tests\Unit\Console;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Exceptions\SchedulingException;
 use Lunar\Models\Channel;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.traits
- */
-class HasCustomerGroupsTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_schedule_using_single_model()
-    {
-        $product = Product::factory()->create();
+test('can schedule using single model', function () {
+    $product = Product::factory()->create();
 
-        $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create();
 
-        $product->scheduleCustomerGroup($customerGroup);
+    $product->scheduleCustomerGroup($customerGroup);
 
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'visible' => 1,
-                'purchasable' => 1,
-            ],
-        );
-    }
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'visible' => 1,
+            'purchasable' => 1,
+        ],
+    );
+});
 
-    /** @test */
-    public function can_schedule_always_available()
-    {
-        $product = Product::factory()->create();
+test('can schedule always available', function () {
+    $product = Product::factory()->create();
 
-        $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create();
 
-        $product->scheduleCustomerGroup($customerGroup);
+    $product->scheduleCustomerGroup($customerGroup);
 
-        $this->assertDatabaseHas(
-            'lunar_customer_group_product',
-            [
-                'customer_group_id' => $customerGroup->id,
-                'enabled' => 1,
-                'visible' => 1,
-                'purchasable' => 1,
-                'starts_at' => null,
-                'ends_at' => null,
-            ],
-        );
-    }
-
-    /** @test */
-    public function can_schedule_using_array_of_models()
-    {
-        $product = Product::factory()->create();
-
-        $groups = CustomerGroup::factory(2)->create();
-
-        $product->scheduleCustomerGroup([$groups->first(), $groups->last()]);
-
-        foreach ($groups as $group) {
-            $this->assertDatabaseHas(
-                'lunar_customer_group_product',
-                [
-                    'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
-                ]
-            );
-        }
-    }
-
-    /** @test */
-    public function can_schedule_using_collection_of_models()
-    {
-        $product = Product::factory()->create();
-
-        $groups = CustomerGroup::factory(2)->create();
-
-        $product->scheduleCustomerGroup($groups);
-
-        foreach ($groups as $group) {
-            $this->assertDatabaseHas(
-                'lunar_customer_group_product',
-                [
-                    'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
-                ]
-            );
-        }
-    }
-
-    /**
-     * @test
-     *
-     * @group testerr
-     * */
-    public function throws_exception_if_non_customer_group_provided()
-    {
-        $product = Product::factory()->create();
-
-        CustomerGroup::factory(2)->create();
-
-        Channel::factory(2)->create();
-
-        $this->expectException(SchedulingException::class);
-
-        $product->scheduleCustomerGroup(Channel::get());
-    }
-
-    /** @test */
-    public function can_schedule_using_array_of_ids()
-    {
-        $product = Product::factory()->create();
-
-        $groups = CustomerGroup::factory(2)->create();
-
-        $product->scheduleCustomerGroup($groups->pluck('id')->toArray());
-
-        foreach ($groups as $group) {
-            $this->assertDatabaseHas(
-                'lunar_customer_group_product',
-                [
-                    'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
-                ]
-            );
-        }
-    }
-
-    /** @test */
-    public function can_schedule_using_collection_of_ids()
-    {
-        $product = Product::factory()->create();
-
-        $groups = CustomerGroup::factory(2)->create();
-
-        $product->scheduleCustomerGroup($groups->pluck('id')->toArray());
-
-        foreach ($groups as $group) {
-            $this->assertDatabaseHas(
-                'lunar_customer_group_product',
-                [
-                    'customer_group_id' => $group->id,
-                    'enabled' => 1,
-                    'visible' => 1,
-                    'purchasable' => 1,
-                ]
-            );
-        }
-    }
-
-    /** @test */
-    public function can_scope_results_to_a_customer_group()
-    {
-        $groupA = CustomerGroup::factory()->create([
-            'handle' => 'group-a',
-        ]);
-
-        $groupB = CustomerGroup::factory()->create([
-            'handle' => 'group-b',
-        ]);
-
-        $productA = Product::factory()->create();
-        $productB = Product::factory()->create();
-
-        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
-            'starts_at' => now(),
-            'enabled' => true,
-            'visible' => true,
-            'ends_at' => now()->addDay(),
-        ]);
-
-        $productB->customerGroups()->syncWithPivotValues([$groupB->id], [
-            'starts_at' => now(),
-            'enabled' => true,
-            'visible' => true,
-            'ends_at' => now()->addDay(),
-        ]);
-
-        $this->assertDatabaseHas($productA->customerGroups()->getTable(), [
-            'product_id' => $productA->id,
-            'starts_at' => now(),
-            'ends_at' => now()->addDay(),
-            'enabled' => true,
-        ]);
-
-        $resultA = Product::customerGroup($groupA)->get();
-        $resultB = Product::customerGroup($groupB)->get();
-        $resultC = Product::customerGroup([$groupA, $groupB])->get();
-        $resultD = Product::customerGroup()->get();
-        $resultE = Product::customerGroup([])->get();
-        $resultF = Product::customerGroup(collect())->get();
-
-        $this->assertCount(1, $resultA);
-        $this->assertCount(1, $resultB);
-        $this->assertCount(2, $resultC);
-        $this->assertCount(2, $resultD);
-        $this->assertCount(2, $resultE);
-        $this->assertCount(2, $resultF);
-
-        $this->assertEquals($productA->id, $resultA->first()->id);
-        $this->assertEquals($productB->id, $resultB->first()->id);
-
-        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
-            'starts_at' => now(),
-            'enabled' => false,
-            'visible' => false,
-            'ends_at' => now()->addDay(),
-        ]);
-
-        $this->assertCount(0, Product::customerGroup($groupA)->get());
-
-        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'visible' => 1,
+            'purchasable' => 1,
             'starts_at' => null,
-            'enabled' => true,
-            'visible' => true,
-            'ends_at' => now()->addDay(),
-        ]);
+            'ends_at' => null,
+        ],
+    );
+});
 
-        $this->assertCount(1, Product::customerGroup($groupA)->get());
+test('can schedule using array of models', function () {
+    $product = Product::factory()->create();
 
-        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
-            'starts_at' => now()->subDay(),
-            'enabled' => true,
-            'visible' => true,
-            'ends_at' => now()->subHour(),
-        ]);
+    $groups = CustomerGroup::factory(2)->create();
 
-        $this->assertCount(0, Product::customerGroup($groupA)->get());
+    $product->scheduleCustomerGroup([$groups->first(), $groups->last()]);
 
-        $startsAt = now()->addDay();
-        $endsAt = now()->addDays(2);
-
-        $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
-            'starts_at' => $startsAt,
-            'enabled' => true,
-            'visible' => true,
-            'ends_at' => $endsAt,
-        ]);
-
-        $this->assertDatabaseHas($productA->customerGroups()->getTable(), [
-            'product_id' => $productA->id,
-            'starts_at' => $startsAt,
-            'ends_at' => $endsAt,
-            'enabled' => true,
-            'visible' => true,
-        ]);
-
-        $this->assertCount(0, Product::customerGroup($groupA)->get());
-
-        $this->assertCount(1, Product::customerGroup($groupA, $startsAt, $endsAt)->get());
+    foreach ($groups as $group) {
+        $this->assertDatabaseHas(
+            'lunar_customer_group_product',
+            [
+                'customer_group_id' => $group->id,
+                'enabled' => 1,
+                'visible' => 1,
+                'purchasable' => 1,
+            ]
+        );
     }
-}
+});
+
+test('can schedule using collection of models', function () {
+    $product = Product::factory()->create();
+
+    $groups = CustomerGroup::factory(2)->create();
+
+    $product->scheduleCustomerGroup($groups);
+
+    foreach ($groups as $group) {
+        $this->assertDatabaseHas(
+            'lunar_customer_group_product',
+            [
+                'customer_group_id' => $group->id,
+                'enabled' => 1,
+                'visible' => 1,
+                'purchasable' => 1,
+            ]
+        );
+    }
+});
+
+test('throws exception if non customer group provided', function () {
+    $product = Product::factory()->create();
+
+    CustomerGroup::factory(2)->create();
+
+    Channel::factory(2)->create();
+
+    $this->expectException(SchedulingException::class);
+
+    $product->scheduleCustomerGroup(Channel::get());
+})->group('testerr');
+
+test('can schedule using array of ids', function () {
+    $product = Product::factory()->create();
+
+    $groups = CustomerGroup::factory(2)->create();
+
+    $product->scheduleCustomerGroup($groups->pluck('id')->toArray());
+
+    foreach ($groups as $group) {
+        $this->assertDatabaseHas(
+            'lunar_customer_group_product',
+            [
+                'customer_group_id' => $group->id,
+                'enabled' => 1,
+                'visible' => 1,
+                'purchasable' => 1,
+            ]
+        );
+    }
+});
+
+test('can schedule using collection of ids', function () {
+    $product = Product::factory()->create();
+
+    $groups = CustomerGroup::factory(2)->create();
+
+    $product->scheduleCustomerGroup($groups->pluck('id')->toArray());
+
+    foreach ($groups as $group) {
+        $this->assertDatabaseHas(
+            'lunar_customer_group_product',
+            [
+                'customer_group_id' => $group->id,
+                'enabled' => 1,
+                'visible' => 1,
+                'purchasable' => 1,
+            ]
+        );
+    }
+});
+
+test('can scope results to a customer group', function () {
+    $groupA = CustomerGroup::factory()->create([
+        'handle' => 'group-a',
+    ]);
+
+    $groupB = CustomerGroup::factory()->create([
+        'handle' => 'group-b',
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+        'starts_at' => now(),
+        'enabled' => true,
+        'visible' => true,
+        'ends_at' => now()->addDay(),
+    ]);
+
+    $productB->customerGroups()->syncWithPivotValues([$groupB->id], [
+        'starts_at' => now(),
+        'enabled' => true,
+        'visible' => true,
+        'ends_at' => now()->addDay(),
+    ]);
+
+    $this->assertDatabaseHas($productA->customerGroups()->getTable(), [
+        'product_id' => $productA->id,
+        'starts_at' => now(),
+        'ends_at' => now()->addDay(),
+        'enabled' => true,
+    ]);
+
+    $resultA = Product::customerGroup($groupA)->get();
+    $resultB = Product::customerGroup($groupB)->get();
+    $resultC = Product::customerGroup([$groupA, $groupB])->get();
+    $resultD = Product::customerGroup()->get();
+    $resultE = Product::customerGroup([])->get();
+    $resultF = Product::customerGroup(collect())->get();
+
+    expect($resultA)->toHaveCount(1);
+    expect($resultB)->toHaveCount(1);
+    expect($resultC)->toHaveCount(2);
+    expect($resultD)->toHaveCount(2);
+    expect($resultE)->toHaveCount(2);
+    expect($resultF)->toHaveCount(2);
+
+    expect($resultA->first()->id)->toEqual($productA->id);
+    expect($resultB->first()->id)->toEqual($productB->id);
+
+    $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+        'starts_at' => now(),
+        'enabled' => false,
+        'visible' => false,
+        'ends_at' => now()->addDay(),
+    ]);
+
+    expect(Product::customerGroup($groupA)->get())->toHaveCount(0);
+
+    $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+        'starts_at' => null,
+        'enabled' => true,
+        'visible' => true,
+        'ends_at' => now()->addDay(),
+    ]);
+
+    expect(Product::customerGroup($groupA)->get())->toHaveCount(1);
+
+    $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+        'starts_at' => now()->subDay(),
+        'enabled' => true,
+        'visible' => true,
+        'ends_at' => now()->subHour(),
+    ]);
+
+    expect(Product::customerGroup($groupA)->get())->toHaveCount(0);
+
+    $startsAt = now()->addDay();
+    $endsAt = now()->addDays(2);
+
+    $productA->customerGroups()->syncWithPivotValues([$groupA->id], [
+        'starts_at' => $startsAt,
+        'enabled' => true,
+        'visible' => true,
+        'ends_at' => $endsAt,
+    ]);
+
+    $this->assertDatabaseHas($productA->customerGroups()->getTable(), [
+        'product_id' => $productA->id,
+        'starts_at' => $startsAt,
+        'ends_at' => $endsAt,
+        'enabled' => true,
+        'visible' => true,
+    ]);
+
+    expect(Product::customerGroup($groupA)->get())->toHaveCount(0);
+
+    expect(Product::customerGroup($groupA, $startsAt, $endsAt)->get())->toHaveCount(1);
+});

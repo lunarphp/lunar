@@ -1,8 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Unit\Managers;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Lunar\Facades\CartSession;
@@ -12,161 +10,129 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.cart-session-manager
- */
-class CartSessionManagerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /**
-     * @test
-     */
-    public function can_instantiate_manager()
-    {
-        $manager = app(CartSessionManager::class);
-        $this->assertInstanceOf(CartSessionManager::class, $manager);
-    }
+test('can instantiate manager', function () {
+    $manager = app(CartSessionManager::class);
+    expect($manager)->toBeInstanceOf(CartSessionManager::class);
+});
 
-    /**
-     * @test
-     */
-    public function can_fetch_current_cart()
-    {
-        $manager = app(CartSessionManager::class);
+test('can fetch current cart', function () {
+    $manager = app(CartSessionManager::class);
 
-        Currency::factory()->create([
-            'default' => true,
-        ]);
+    Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        Config::set('lunar.cart.auto_create', false);
+    Config::set('lunar.cart.auto_create', false);
 
-        $cart = $manager->current();
+    $cart = $manager->current();
 
-        $this->assertNull($cart);
+    expect($cart)->toBeNull();
 
-        Config::set('lunar.cart.auto_create', true);
+    Config::set('lunar.cart.auto_create', true);
 
-        $cart = $manager->current();
+    $cart = $manager->current();
 
-        $this->assertInstanceOf(Cart::class, $cart);
+    expect($cart)->toBeInstanceOf(Cart::class);
 
-        $sessionCart = Session::get(config('lunar.cart.session_key'));
+    $sessionCart = Session::get(config('lunar.cart.session_key'));
 
-        $this->assertNotNull($sessionCart);
-        $this->assertEquals($cart->id, $sessionCart);
-    }
+    expect($sessionCart)->not->toBeNull();
+    expect($sessionCart)->toEqual($cart->id);
+});
 
-    /**
-     * @test
-     */
-    public function can_create_order_from_session_cart_and_cleanup()
-    {
-        Currency::factory()->create([
-            'default' => true,
-        ]);
+test('can create order from session cart and cleanup', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        Config::set('lunar.cart.auto_create', true);
+    Config::set('lunar.cart.auto_create', true);
 
-        $cart = CartSession::current();
+    $cart = CartSession::current();
 
-        $shipping = CartAddress::factory()->create([
-            'cart_id' => $cart->id,
-            'type' => 'shipping',
-        ]);
+    $shipping = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'shipping',
+    ]);
 
-        $billing = CartAddress::factory()->create([
-            'cart_id' => $cart->id,
-            'type' => 'billing',
-        ]);
+    $billing = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'billing',
+    ]);
 
-        $cart->setShippingAddress($shipping);
-        $cart->setBillingAddress($billing);
+    $cart->setShippingAddress($shipping);
+    $cart->setBillingAddress($billing);
 
-        $sessionCart = Session::get(config('lunar.cart.session_key'));
+    $sessionCart = Session::get(config('lunar.cart.session_key'));
 
-        $this->assertNotNull($sessionCart);
-        $this->assertEquals($cart->id, $sessionCart);
+    expect($sessionCart)->not->toBeNull();
+    expect($sessionCart)->toEqual($cart->id);
 
-        $order = CartSession::createOrder();
+    $order = CartSession::createOrder();
 
-        $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($order->cart_id, $cart->id);
+    expect($order)->toBeInstanceOf(Order::class);
+    expect($cart->id)->toEqual($order->cart_id);
 
-        $this->assertNull(
-            Session::get(config('lunar.cart.session_key'))
-        );
-    }
+    expect(Session::get(config('lunar.cart.session_key')))->toBeNull();
+});
 
-    /**
-     * @test
-     */
-    public function can_create_order_from_session_cart_and_retain_cart()
-    {
-        Currency::factory()->create([
-            'default' => true,
-        ]);
+test('can create order from session cart and retain cart', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        Channel::factory()->create([
-            'default' => true,
-        ]);
+    Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        Config::set('lunar.cart.auto_create', true);
+    Config::set('lunar.cart.auto_create', true);
 
-        $cart = CartSession::current();
+    $cart = CartSession::current();
 
-        $shipping = CartAddress::factory()->create([
-            'cart_id' => $cart->id,
-            'type' => 'shipping',
-        ]);
+    $shipping = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'shipping',
+    ]);
 
-        $billing = CartAddress::factory()->create([
-            'cart_id' => $cart->id,
-            'type' => 'billing',
-        ]);
+    $billing = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'billing',
+    ]);
 
-        $cart->setShippingAddress($shipping);
-        $cart->setBillingAddress($billing);
+    $cart->setShippingAddress($shipping);
+    $cart->setBillingAddress($billing);
 
-        $sessionCart = Session::get(config('lunar.cart.session_key'));
+    $sessionCart = Session::get(config('lunar.cart.session_key'));
 
-        $this->assertNotNull($sessionCart);
-        $this->assertEquals($cart->id, $sessionCart);
+    expect($sessionCart)->not->toBeNull();
+    expect($sessionCart)->toEqual($cart->id);
 
-        $order = CartSession::createOrder(
-            forget: false
-        );
+    $order = CartSession::createOrder(
+        forget: false
+    );
 
-        $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($order->cart_id, $cart->id);
+    expect($order)->toBeInstanceOf(Order::class);
+    expect($cart->id)->toEqual($order->cart_id);
 
-        $this->assertEquals(
-            $cart->id,
-            Session::get(config('lunar.cart.session_key'))
-        );
-    }
+    expect(Session::get(config('lunar.cart.session_key')))->toEqual($cart->id);
+});
 
-    /**
-     * @test
-     */
-    public function canSetShippingEstimateMeta()
-    {
-        CartSession::estimateShippingUsing([
-            'postcode' => 'NP1 1TX',
-        ]);
+test('can set shipping estimate meta', function () {
+    CartSession::estimateShippingUsing([
+        'postcode' => 'NP1 1TX',
+    ]);
 
-        $meta = CartSession::getShippingEstimateMeta();
-        $this->assertIsArray($meta);
-        $this->assertEquals('NP1 1TX', $meta['postcode']);
-    }
-}
+    $meta = CartSession::getShippingEstimateMeta();
+    expect($meta)->toBeArray();
+    expect($meta['postcode'])->toEqual('NP1 1TX');
+});

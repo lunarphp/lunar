@@ -1,47 +1,30 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base;
-
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Product;
-use Lunar\Tests\TestCase;
 
-/**
- * @group reference
- */
-class MacroableModelTest extends TestCase
-{
-    protected $model;
+beforeEach(function () {
+    $this->model = new Product();
+});
 
-    public function setUp(): void
+test('can register a new macro', function () {
+    $this->model::macro('newMethod', function () {
+        return 'newValue';
+    });
+
+    expect($this->model->newMethod())->toEqual('newValue');
+    expect($this->model::newMethod())->toEqual('newValue');
+});
+
+test('can register a new macro and be invoked', function () {
+    $this->model::macro('newMethod', new class()
     {
-        parent::setUp();
-
-        $this->model = new Product();
-    }
-
-    /** @test */
-    public function can_register_a_new_macro()
-    {
-        $this->model::macro('newMethod', function () {
-            return 'newValue';
-        });
-
-        $this->assertEquals('newValue', $this->model->newMethod());
-        $this->assertEquals('newValue', $this->model::newMethod());
-    }
-
-    /** @test */
-    public function can_register_a_new_macro_and_be_invoked()
-    {
-        $this->model::macro('newMethod', new class()
+        function __invoke()
         {
-            public function __invoke()
-            {
-                return 'newValue';
-            }
-        });
+            return 'newValue';
+        }
+    });
 
-        $this->assertEquals('newValue', $this->model->newMethod());
-        $this->assertEquals('newValue', $this->model::newMethod());
-    }
-}
+    expect($this->model->newMethod())->toEqual('newValue');
+    expect($this->model::newMethod())->toEqual('newValue');
+});

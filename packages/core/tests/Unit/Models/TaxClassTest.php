@@ -1,44 +1,31 @@
 <?php
 
-namespace Lunar\Tests\Unit\Models;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\TaxClass;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.models
- */
-class TaxClassTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_make_a_tax_class()
-    {
-        TaxClass::factory()->create([
-            'name' => 'Clothing',
-        ]);
+test('can make a tax class', function () {
+    TaxClass::factory()->create([
+        'name' => 'Clothing',
+    ]);
 
-        $this->assertDatabaseHas((new TaxClass())->getTable(), [
-            'name' => 'Clothing',
-            'default' => false,
-        ]);
-    }
+    $this->assertDatabaseHas((new TaxClass())->getTable(), [
+        'name' => 'Clothing',
+        'default' => false,
+    ]);
+});
 
-    /** @test */
-    public function can_get_default_tax_class()
-    {
-        $taxClassA = TaxClass::factory()->create([
-            'name' => 'Tax Class A',
-            'default' => false,
-        ]);
+test('can get default tax class', function () {
+    $taxClassA = TaxClass::factory()->create([
+        'name' => 'Tax Class A',
+        'default' => false,
+    ]);
 
-        $taxClassB = TaxClass::factory()->create([
-            'name' => 'Tax Class B',
-            'default' => true,
-        ]);
+    $taxClassB = TaxClass::factory()->create([
+        'name' => 'Tax Class B',
+        'default' => true,
+    ]);
 
-        $this->assertEquals($taxClassB->id, TaxClass::getDefault()->id);
-    }
-}
+    expect(TaxClass::getDefault()->id)->toEqual($taxClassB->id);
+});

@@ -1,56 +1,45 @@
 <?php
 
-namespace Lunar\Tests\Unit\Jobs\Collections;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.jobs.orders
- */
-class MarkAsNewCustomerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_correctly_mark_order_for_new_customer()
-    {
-        Currency::factory()->create([
-            'default' => true,
-        ]);
+test('can correctly mark order for new customer', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
 
-        $order = Order::factory()->create([
-            'new_customer' => false,
-            'placed_at' => now()->subYear(),
-        ]);
+    $order = Order::factory()->create([
+        'new_customer' => false,
+        'placed_at' => now()->subYear(),
+    ]);
 
-        OrderAddress::factory()->create([
-            'order_id' => $order->id,
-            'contact_email' => 'customer@site.com',
-            'type' => 'billing',
-        ]);
+    OrderAddress::factory()->create([
+        'order_id' => $order->id,
+        'contact_email' => 'customer@site.com',
+        'type' => 'billing',
+    ]);
 
-        MarkAsNewCustomer::dispatch($order->id);
+    MarkAsNewCustomer::dispatch($order->id);
 
-        $this->assertTrue($order->refresh()->new_customer);
+    expect($order->refresh()->new_customer)->toBeTrue();
 
-        $order = Order::factory()->create([
-            'new_customer' => false,
-            'placed_at' => now(),
-        ]);
+    $order = Order::factory()->create([
+        'new_customer' => false,
+        'placed_at' => now(),
+    ]);
 
-        OrderAddress::factory()->create([
-            'order_id' => $order->id,
-            'contact_email' => 'customer@site.com',
-            'type' => 'billing',
-        ]);
+    OrderAddress::factory()->create([
+        'order_id' => $order->id,
+        'contact_email' => 'customer@site.com',
+        'type' => 'billing',
+    ]);
 
-        MarkAsNewCustomer::dispatch($order->id);
+    MarkAsNewCustomer::dispatch($order->id);
 
-        $this->assertFalse($order->refresh()->new_customer);
-    }
-}
+    expect($order->refresh()->new_customer)->toBeFalse();
+});

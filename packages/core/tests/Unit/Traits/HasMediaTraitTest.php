@@ -1,62 +1,47 @@
 <?php
 
-namespace Lunar\Tests\Unit\Traits;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Http\UploadedFile;
 use Lunar\Base\StandardMediaConversions;
 use Lunar\Models\Product;
-use Lunar\Tests\TestCase;
 
-/**
- * @group traits
- */
-class HasMediaTraitTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function conversions_are_loaded()
-    {
-        $conversions = config('lunar.media.conversions');
+test('conversions are loaded', function () {
+    $conversions = config('lunar.media.conversions');
 
-        $this->assertCount(1, $conversions);
+    expect($conversions)->toHaveCount(1);
 
-        $this->assertEquals(StandardMediaConversions::class, $conversions[0]);
+    expect($conversions[0])->toEqual(StandardMediaConversions::class);
 
-        $file = UploadedFile::fake()->image('avatar.jpg');
+    $file = UploadedFile::fake()->image('avatar.jpg');
 
-        $product = Product::factory()->create();
+    $product = Product::factory()->create();
 
-        $product->addMedia($file)->toMediaCollection('images');
+    $product->addMedia($file)->toMediaCollection('images');
 
-        $image = $product->images->first();
+    $image = $product->images->first();
 
-        $this->assertTrue($image->hasGeneratedConversion('small'));
-        $this->assertTrue($image->hasGeneratedConversion('medium'));
-        $this->assertTrue($image->hasGeneratedConversion('large'));
-        $this->assertTrue($image->hasGeneratedConversion('zoom'));
-    }
+    expect($image->hasGeneratedConversion('small'))->toBeTrue();
+    expect($image->hasGeneratedConversion('medium'))->toBeTrue();
+    expect($image->hasGeneratedConversion('large'))->toBeTrue();
+    expect($image->hasGeneratedConversion('zoom'))->toBeTrue();
+});
 
-    /** @test */
-    public function images_can_have_fallback_url()
-    {
-        $testImageUrl = 'https://picsum.photos/200';
-        config()->set('lunar.media.fallback.url', $testImageUrl);
+test('images can have fallback url', function () {
+    $testImageUrl = 'https://picsum.photos/200';
+    config()->set('lunar.media.fallback.url', $testImageUrl);
 
-        $product = Product::factory()->create();
+    $product = Product::factory()->create();
 
-        $this->assertEquals($product->getFirstMediaUrl('images'), $testImageUrl);
-    }
+    expect($testImageUrl)->toEqual($product->getFirstMediaUrl('images'));
+});
 
-    /** @test */
-    public function images_can_have_fallback_path()
-    {
-        $testImagePath = public_path('test.jpg');
-        config()->set('lunar.media.fallback.path', $testImagePath);
+test('images can have fallback path', function () {
+    $testImagePath = public_path('test.jpg');
+    config()->set('lunar.media.fallback.path', $testImagePath);
 
-        $product = Product::factory()->create();
+    $product = Product::factory()->create();
 
-        $this->assertEquals($product->getFirstMediaPath('images'), $testImagePath);
-    }
-}
+    expect($testImagePath)->toEqual($product->getFirstMediaPath('images'));
+});

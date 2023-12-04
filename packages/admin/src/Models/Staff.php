@@ -127,14 +127,4 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     {
         return $this->fullName;
     }
-
-    /**
-     * Return the saved searches relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function savedSearches()
-    {
-        return $this->hasMany(SavedSearch::class);
-    }
 }

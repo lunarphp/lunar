@@ -1,60 +1,48 @@
 <?php
 
-namespace Lunar\Tests\Unit;
-
+uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Support\Facades\File;
-use Lunar\Tests\TestCase;
 
-/**
- * @group migrations
- */
-class MigrationTest extends TestCase
-{
-    /** @test */
-    public function all_migrations_can_run_rollback()
-    {
-        $this->artisan('migrate');
+test('all migrations can run rollback', function () {
+    $this->artisan('migrate');
 
-        $migrationsList = collect(File::allFiles(
-            __DIR__.'/../../database/migrations'
-        ))->map(fn ($file) => pathinfo($file->getFilename(), PATHINFO_FILENAME));
+    $migrationsList = collect(File::allFiles(
+        __DIR__.'/../../database/migrations'
+    ))->map(fn ($file) => pathinfo($file->getFilename(), PATHINFO_FILENAME));
 
-        foreach ($migrationsList as $migration) {
-            $this->assertDatabaseHas('migrations', [
-                'migration' => $migration,
-            ]);
-        }
-
-        $this->artisan('migrate:rollback');
+    foreach ($migrationsList as $migration) {
+        $this->assertDatabaseHas('migrations', [
+            'migration' => $migration,
+        ]);
     }
 
-    /** @test */
-    public function each_migration_can_run_and_rollback()
-    {
-        $migrationsList = collect(File::allFiles(
-            __DIR__.'/../../database/migrations'
-        ));
+    $this->artisan('migrate:rollback');
+});
 
-        foreach ($migrationsList as $migration) {
-            $this->artisan('migrate', [
-                '--realpath' => $migration->getRealpath(),
-            ]);
+test('each migration can run and rollback', function () {
+    $migrationsList = collect(File::allFiles(
+        __DIR__.'/../../database/migrations'
+    ));
 
-            $this->assertDatabaseHas('migrations', [
-                'migration' => pathinfo($migration->getFilename(), PATHINFO_FILENAME),
-            ]);
+    foreach ($migrationsList as $migration) {
+        $this->artisan('migrate', [
+            '--realpath' => $migration->getRealpath(),
+        ]);
 
-            $this->artisan('migrate:rollback', [
-                '--realpath' => $migration->getRealpath(),
-            ]);
+        $this->assertDatabaseHas('migrations', [
+            'migration' => pathinfo($migration->getFilename(), PATHINFO_FILENAME),
+        ]);
 
-            $this->assertDatabaseMissing('migrations', [
-                'migration' => pathinfo($migration->getFilename(), PATHINFO_FILENAME),
-            ]);
+        $this->artisan('migrate:rollback', [
+            '--realpath' => $migration->getRealpath(),
+        ]);
 
-            $this->artisan('migrate', [
-                '--realpath' => $migration->getRealpath(),
-            ]);
-        }
+        $this->assertDatabaseMissing('migrations', [
+            'migration' => pathinfo($migration->getFilename(), PATHINFO_FILENAME),
+        ]);
+
+        $this->artisan('migrate', [
+            '--realpath' => $migration->getRealpath(),
+        ]);
     }
-}
+});

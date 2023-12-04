@@ -1,77 +1,64 @@
 <?php
 
-namespace Lunar\Tests\Unit\Observers;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Language;
 use Lunar\Models\Url;
-use Lunar\Tests\TestCase;
 
-/**
- * @group observers
- */
-class UrlObserverTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_only_have_one_default_per_language()
-    {
-        $langA = Language::factory()->create();
-        $langB = Language::factory()->create();
+test('can only have one default per language', function () {
+    $langA = Language::factory()->create();
+    $langB = Language::factory()->create();
 
-        $default = Url::factory()->create([
-            'slug' => 'foo-bar',
-            'language_id' => $langA->id,
-            'default' => true,
-        ]);
+    $default = Url::factory()->create([
+        'slug' => 'foo-bar',
+        'language_id' => $langA->id,
+        'default' => true,
+    ]);
 
-        $this->assertTrue($default->default);
+    expect($default->default)->toBeTrue();
 
-        $newDefault = Url::factory()->create([
-            'slug' => 'foo-bar-new',
-            'language_id' => $langA->id,
-            'default' => true,
-        ]);
+    $newDefault = Url::factory()->create([
+        'slug' => 'foo-bar-new',
+        'language_id' => $langA->id,
+        'default' => true,
+    ]);
 
-        $diffLang = Url::factory()->create([
-            'slug' => 'foo-bar-lang-ex',
-            'language_id' => $langB->id,
-            'default' => true,
-        ]);
+    $diffLang = Url::factory()->create([
+        'slug' => 'foo-bar-lang-ex',
+        'language_id' => $langB->id,
+        'default' => true,
+    ]);
 
-        $this->assertFalse($default->refresh()->default);
-        $this->assertTrue($newDefault->refresh()->default);
-        $this->assertTrue($diffLang->refresh()->default);
-    }
+    expect($default->refresh()->default)->toBeFalse();
+    expect($newDefault->refresh()->default)->toBeTrue();
+    expect($diffLang->refresh()->default)->toBeTrue();
+});
 
-    /** @test */
-    public function new_default_is_selected_when_current_is_deleted()
-    {
-        $langA = Language::factory()->create();
-        $langB = Language::factory()->create();
+test('new default is selected when current is deleted', function () {
+    $langA = Language::factory()->create();
+    $langB = Language::factory()->create();
 
-        $default = Url::factory()->create([
-            'slug' => 'foo-bar',
-            'language_id' => $langA->id,
-            'default' => true,
-        ]);
+    $default = Url::factory()->create([
+        'slug' => 'foo-bar',
+        'language_id' => $langA->id,
+        'default' => true,
+    ]);
 
-        $newDefault = Url::factory()->create([
-            'slug' => 'foo-bar-new',
-            'language_id' => $langA->id,
-            'default' => false,
-        ]);
+    $newDefault = Url::factory()->create([
+        'slug' => 'foo-bar-new',
+        'language_id' => $langA->id,
+        'default' => false,
+    ]);
 
-        $diffLang = Url::factory()->create([
-            'slug' => 'foo-bar-lang-ex',
-            'language_id' => $langB->id,
-            'default' => false,
-        ]);
+    $diffLang = Url::factory()->create([
+        'slug' => 'foo-bar-lang-ex',
+        'language_id' => $langB->id,
+        'default' => false,
+    ]);
 
-        $default->delete();
+    $default->delete();
 
-        $this->assertTrue($newDefault->refresh()->default);
-        $this->assertFalse($diffLang->refresh()->default);
-    }
-}
+    expect($newDefault->refresh()->default)->toBeTrue();
+    expect($diffLang->refresh()->default)->toBeFalse();
+});

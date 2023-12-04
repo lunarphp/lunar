@@ -1,129 +1,94 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base\Validation;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Base\Validation\CouponValidator;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Discount;
-use Lunar\Tests\TestCase;
 
-/**
- * @group lunar.discounts.validators
- */
-class CouponValidatorTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_validate_coupons()
-    {
-        $validator = app(CouponValidator::class);
+test('can validate coupons', function () {
+    $validator = app(CouponValidator::class);
 
-        Discount::factory()->create([
-            'type' => AmountOff::class,
-            'name' => 'Test Coupon',
-            'coupon' => '10OFF',
-            'data' => [
-                'fixed_value' => false,
-                'percentage' => 10,
-            ],
-        ]);
+    Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'coupon' => '10OFF',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
 
-        $this->assertTrue(
-            $validator->validate('10OFF')
-        );
+    expect($validator->validate('10OFF'))->toBeTrue();
 
-        $this->assertTrue(
-            $validator->validate('10off')
-        );
+    expect($validator->validate('10off'))->toBeTrue();
 
-        $this->assertTrue(
-            $validator->validate('10oFf')
-        );
+    expect($validator->validate('10oFf'))->toBeTrue();
 
-        $this->assertFalse(
-            $validator->validate('20OFF')
-        );
-    }
+    expect($validator->validate('20OFF'))->toBeFalse();
+});
 
-    /** @test **/
-    public function can_validate_based_on_uses()
-    {
-        $validator = app(CouponValidator::class);
+test('can validate based on uses', function () {
+    $validator = app(CouponValidator::class);
 
-        $discount = Discount::factory()->create([
-            'type' => AmountOff::class,
-            'name' => 'Test Coupon',
-            'uses' => 10,
-            'max_uses' => 20,
-            'coupon' => '10OFF',
-            'data' => [
-                'fixed_value' => false,
-                'percentage' => 10,
-            ],
-        ]);
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'uses' => 10,
+        'max_uses' => 20,
+        'coupon' => '10OFF',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
 
-        $this->assertTrue(
-            $validator->validate('10OFF')
-        );
+    expect($validator->validate('10OFF'))->toBeTrue();
 
-        $discount->update([
-            'uses' => 20,
-        ]);
+    $discount->update([
+        'uses' => 20,
+    ]);
 
-        $this->assertFalse(
-            $validator->validate('10OFF')
-        );
+    expect($validator->validate('10OFF'))->toBeFalse();
 
-        $discount->update([
-            'max_uses' => null,
-        ]);
+    $discount->update([
+        'max_uses' => null,
+    ]);
 
-        $this->assertTrue(
-            $validator->validate('10OFF')
-        );
-    }
+    expect($validator->validate('10OFF'))->toBeTrue();
+});
 
-    /** @test */
-    public function can_validate_based_on_start_and_end_dates()
-    {
-        $validator = app(CouponValidator::class);
+test('can validate based on start and end dates', function () {
+    $validator = app(CouponValidator::class);
 
-        $discount = Discount::factory()->create([
-            'type' => AmountOff::class,
-            'name' => 'Test Coupon',
-            'uses' => 0,
-            'max_uses' => null,
-            'starts_at' => now()->startOfDay(),
-            'ends_at' => now()->endOfWeek(),
-            'coupon' => '10OFF',
-            'data' => [
-                'fixed_value' => false,
-                'percentage' => 10,
-            ],
-        ]);
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'uses' => 0,
+        'max_uses' => null,
+        'starts_at' => now()->startOfDay(),
+        'ends_at' => now()->endOfWeek(),
+        'coupon' => '10OFF',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
 
-        $this->assertTrue(
-            $validator->validate('10OFF')
-        );
+    expect($validator->validate('10OFF'))->toBeTrue();
 
-        $discount->update([
-            'starts_at' => now()->subWeek(),
-            'ends_at' => now()->subWeek()->endOfWeek(),
-        ]);
+    $discount->update([
+        'starts_at' => now()->subWeek(),
+        'ends_at' => now()->subWeek()->endOfWeek(),
+    ]);
 
-        $this->assertFalse(
-            $validator->validate('10OFF')
-        );
+    expect($validator->validate('10OFF'))->toBeFalse();
 
-        $discount->update([
-            'starts_at' => now()->subWeek(),
-            'ends_at' => now()->subWeek()->endOfWeek(),
-        ]);
+    $discount->update([
+        'starts_at' => now()->subWeek(),
+        'ends_at' => now()->subWeek()->endOfWeek(),
+    ]);
 
-        $this->assertFalse(
-            $validator->validate('10OFF')
-        );
-    }
-}
+    expect($validator->validate('10OFF'))->toBeFalse();
+});

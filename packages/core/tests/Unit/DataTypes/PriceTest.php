@@ -1,152 +1,126 @@
 <?php
 
-namespace Lunar\Tests\Unit\DataTypes;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\DataTypes\Price;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
-use Lunar\Tests\TestCase;
-use NumberFormatter;
 
-/**
- * @group lunar.datatypes
- */
-class PriceTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_initiate_the_datatype()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'GBP',
-            'decimal_places' => 2,
-        ]);
+test('can initiate the datatype', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+    ]);
 
-        $dataType = new Price(1500, $currency, 1);
+    $dataType = new Price(1500, $currency, 1);
 
-        $this->assertInstanceOf(Price::class, $dataType);
+    expect($dataType)->toBeInstanceOf(Price::class);
 
-        $this->assertEquals(1500, $dataType->value);
-        $this->assertEquals(15.00, $dataType->decimal);
-        $this->assertEquals('£15.00', $dataType->formatted);
-    }
+    expect($dataType->value)->toEqual(1500);
+    expect($dataType->decimal)->toEqual(15.00);
+    expect($dataType->formatted)->toEqual('£15.00');
+});
 
-    /** @test */
-    public function can_handle_multiple_decimal_places()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'GBP',
-            'decimal_places' => 3,
-        ]);
+test('can handle multiple decimal places', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 3,
+    ]);
 
-        $dataType = new Price(1500, $currency, 1);
+    $dataType = new Price(1500, $currency, 1);
 
-        $this->assertEquals(1500, $dataType->value);
-        $this->assertEquals(1.500, $dataType->decimal);
-        $this->assertEquals('£1.500', $dataType->formatted);
+    expect($dataType->value)->toEqual(1500);
+    expect($dataType->decimal)->toEqual(1.500);
+    expect($dataType->formatted)->toEqual('£1.500');
 
-        $dataType = new Price(1155, $currency, 1);
+    $dataType = new Price(1155, $currency, 1);
 
-        $this->assertEquals(1155, $dataType->value);
-        $this->assertEquals(1.155, $dataType->decimal);
-        $this->assertEquals('£1.155', $dataType->formatted);
-    }
+    expect($dataType->value)->toEqual(1155);
+    expect($dataType->decimal)->toEqual(1.155);
+    expect($dataType->formatted)->toEqual('£1.155');
+});
 
-    /** @test */
-    public function can_handle_unit_qty()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'GBP',
-            'decimal_places' => 3,
-        ]);
+test('can handle unit qty', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 3,
+    ]);
 
-        $dataType = new Price(1155, $currency, 10);
+    $dataType = new Price(1155, $currency, 10);
 
-        $this->assertEquals(1155, $dataType->value);
-        $this->assertEquals(1.155, $dataType->decimal);
-        $this->assertEquals(0.116, $dataType->unitDecimal);
-        $this->assertEquals(0.1155, $dataType->unitDecimal(false));
-        $this->assertEquals('£1.155', $dataType->formatted);
-        $this->assertEquals('£0.116', $dataType->unitFormatted);
-        $this->assertEquals('£0.1155', $dataType->unitFormatted(null, NumberFormatter::CURRENCY, 4));
-    }
+    expect($dataType->value)->toEqual(1155);
+    expect($dataType->decimal)->toEqual(1.155);
+    expect($dataType->unitDecimal)->toEqual(0.116);
+    expect($dataType->unitDecimal(false))->toEqual(0.1155);
+    expect($dataType->formatted)->toEqual('£1.155');
+    expect($dataType->unitFormatted)->toEqual('£0.116');
+    expect($dataType->unitFormatted(null, NumberFormatter::CURRENCY, 4))->toEqual('£0.1155');
+});
 
-    /** @test */
-    public function can_handle_no_decimal_places()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'VND',
-            'decimal_places' => 0,
-        ]);
+test('can handle no decimal places', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'VND',
+        'decimal_places' => 0,
+    ]);
 
-        $dataType = new Price(100, $currency, 1);
+    $dataType = new Price(100, $currency, 1);
 
-        $this->assertEquals(100, $dataType->value);
-        $this->assertEquals(100, $dataType->decimal);
-        $this->assertEquals('₫100', $dataType->formatted);
-    }
+    expect($dataType->value)->toEqual(100);
+    expect($dataType->decimal)->toEqual(100);
+    expect($dataType->formatted)->toEqual('₫100');
+});
 
-    /** @test */
-    public function can_format_numbers()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'EUR',
-            'decimal_places' => 2,
-        ]);
+test('can format numbers', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'EUR',
+        'decimal_places' => 2,
+    ]);
 
-        $dataType = new Price(1500, $currency, 1);
+    $dataType = new Price(1500, $currency, 1);
 
-        $this->assertEquals('15,00 €', $dataType->formatted('fr'));
-        $this->assertEquals('€15.00', $dataType->formatted('en-gb'));
-        $this->assertEquals('fifteen', $dataType->formatted('en-gb', \NumberFormatter::SPELLOUT));
-    }
+    expect($dataType->formatted('fr'))->toEqual('15,00 €');
+    expect($dataType->formatted('en-gb'))->toEqual('€15.00');
+    expect($dataType->formatted('en-gb', \NumberFormatter::SPELLOUT))->toEqual('fifteen');
+});
 
-    /** @test */
-    public function can_format_numbers_specifying_decimal_places()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'USD',
-            'decimal_places' => 2,
-        ]);
+test('can format numbers specifying decimal places', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'USD',
+        'decimal_places' => 2,
+    ]);
 
-        $dataType = new Price(1500, $currency, 1);
-        $this->assertEquals('$15.00', $dataType->formatted(decimalPlaces: 6, trimTrailingZeros: true));
-        $this->assertEquals('$15.000000', $dataType->formatted(decimalPlaces: 6, trimTrailingZeros: false));
+    $dataType = new Price(1500, $currency, 1);
+    expect($dataType->formatted(decimalPlaces: 6, trimTrailingZeros: true))->toEqual('$15.00');
+    expect($dataType->formatted(decimalPlaces: 6, trimTrailingZeros: false))->toEqual('$15.000000');
 
-        $dataType = new Price(507, $currency, 100);
-        $this->assertEquals('$0.0507', $dataType->unitFormatted(decimalPlaces: 6, trimTrailingZeros: true));
-        $this->assertEquals('$0.050700', $dataType->unitFormatted(decimalPlaces: 6, trimTrailingZeros: false));
-    }
+    $dataType = new Price(507, $currency, 100);
+    expect($dataType->unitFormatted(decimalPlaces: 6, trimTrailingZeros: true))->toEqual('$0.0507');
+    expect($dataType->unitFormatted(decimalPlaces: 6, trimTrailingZeros: false))->toEqual('$0.050700');
+});
 
-    /** @test */
-    public function can_format_numbers_specifying_decimal_places_with_currency_suffix()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'SEK',
-            'decimal_places' => 2,
-        ]);
+test('can format numbers specifying decimal places with currency suffix', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'SEK',
+        'decimal_places' => 2,
+    ]);
 
-        $dataType = new Price(15000, $currency, 1);
-        $this->assertEquals('150,00 kr', $dataType->formatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: true));
-        $this->assertEquals('150,000000 kr', $dataType->formatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: false));
+    $dataType = new Price(15000, $currency, 1);
+    expect($dataType->formatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: true))->toEqual('150,00 kr');
+    expect($dataType->formatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: false))->toEqual('150,000000 kr');
 
-        $dataType = new Price(50050, $currency, 100);
-        $this->assertEquals('5,005 kr', $dataType->unitFormatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: true));
-        $this->assertEquals('5,005000 kr', $dataType->unitFormatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: false));
-    }
+    $dataType = new Price(50050, $currency, 100);
+    expect($dataType->unitFormatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: true))->toEqual('5,005 kr');
+    expect($dataType->unitFormatted(locale: 'sv', decimalPlaces: 6, trimTrailingZeros: false))->toEqual('5,005000 kr');
+});
 
-    /** @test */
-    public function can_handle_decimals_being_passed()
-    {
-        $currency = Currency::factory()->create([
-            'code' => 'GBP',
-            'decimal_places' => 2,
-        ]);
+test('can handle decimals being passed', function () {
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+    ]);
 
-        $this->expectException(InvalidDataTypeValueException::class);
+    $this->expectException(InvalidDataTypeValueException::class);
 
-        new Price(15.99, $currency, 1);
-    }
-}
+    new Price(15.99, $currency, 1);
+});

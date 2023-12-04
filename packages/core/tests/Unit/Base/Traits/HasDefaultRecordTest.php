@@ -1,43 +1,30 @@
 <?php
 
-namespace Lunar\Tests\Unit\Console;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\Models\Channel;
-use Lunar\Tests\TestCase;
 
-/**
- * @group defaultrec
- */
-class HasDefaultRecordTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_get_default_record_with_scope()
-    {
-        $defaultChannel = Channel::factory()->create([
-            'default' => true,
-        ]);
+test('can get default record with scope', function () {
+    $defaultChannel = Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        Channel::factory(10)->create([
-            'default' => false,
-        ]);
+    Channel::factory(10)->create([
+        'default' => false,
+    ]);
 
-        $this->assertEquals($defaultChannel->id, Channel::default()->first()->id);
-    }
+    expect(Channel::default()->first()->id)->toEqual($defaultChannel->id);
+});
 
-    /** @test */
-    public function can_get_default_record_with_static_helper()
-    {
-        $defaultChannel = Channel::factory()->create([
-            'default' => true,
-        ]);
+test('can get default record with static helper', function () {
+    $defaultChannel = Channel::factory()->create([
+        'default' => true,
+    ]);
 
-        Channel::factory(10)->create([
-            'default' => false,
-        ]);
+    Channel::factory(10)->create([
+        'default' => false,
+    ]);
 
-        $this->assertEquals($defaultChannel->id, Channel::getDefault()->id);
-    }
-}
+    expect(Channel::getDefault()->id)->toEqual($defaultChannel->id);
+});

@@ -1,8 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Unit\Console;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Tests\TestCase::class);
 use Lunar\FieldTypes\Dropdown;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Text;
@@ -10,315 +8,286 @@ use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
-use Lunar\Tests\TestCase;
 
-/**
- * @group traits
- */
-class HasTranslationsTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_translate_attributes()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('can translate attributes', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $productOption = ProductOption::factory()->create([
-            'name' => [
-                'en' => 'English Option',
-                'fr' => 'French Option',
-            ],
-        ]);
+    $productOption = ProductOption::factory()->create([
+        'name' => [
+            'en' => 'English Option',
+            'fr' => 'French Option',
+        ],
+    ]);
 
-        $this->assertEquals('English', $attributeGroup->translate('name', 'en'));
-        $this->assertEquals('French', $attributeGroup->translate('name', 'fr'));
+    expect($attributeGroup->translate('name', 'en'))->toEqual('English');
+    expect($attributeGroup->translate('name', 'fr'))->toEqual('French');
 
-        $this->assertEquals('English Option', $productOption->translate('name', 'en'));
-        $this->assertEquals('French Option', $productOption->translate('name', 'fr'));
+    expect($productOption->translate('name', 'en'))->toEqual('English Option');
+    expect($productOption->translate('name', 'fr'))->toEqual('French Option');
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new TranslatedText(collect([
-                    'en' => new Text('English Name'),
-                    'fr' => new Text('French Name'),
-                ])),
-                'description' => new TranslatedText(collect([
-                    'en' => new Text('English Description'),
-                    'fr' => new Text('French Description'),
-                ])),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new TranslatedText(collect([
+                'en' => new Text('English Name'),
+                'fr' => new Text('French Name'),
+            ])),
+            'description' => new TranslatedText(collect([
+                'en' => new Text('English Description'),
+                'fr' => new Text('French Description'),
+            ])),
+        ],
+    ]);
 
-        $this->assertEquals('English Name', $product->translateAttribute('name'));
-        $this->assertEquals('French Name', $product->translateAttribute('name', 'fr'));
+    expect($product->translateAttribute('name'))->toEqual('English Name');
+    expect($product->translateAttribute('name', 'fr'))->toEqual('French Name');
 
-        $this->assertEquals('English Description', $product->translateAttribute('description'));
-        $this->assertEquals('French Description', $product->translateAttribute('description', 'fr'));
-    }
+    expect($product->translateAttribute('description'))->toEqual('English Description');
+    expect($product->translateAttribute('description', 'fr'))->toEqual('French Description');
+});
 
-    /** @test */
-    public function can_fallback_when_translation_not_present()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('can fallback when translation not present', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $this->assertEquals('English', $attributeGroup->translate('name', 'dk'));
+    expect($attributeGroup->translate('name', 'dk'))->toEqual('English');
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new TranslatedText(collect([
-                    'en' => new Text('English Name'),
-                    'fr' => new Text('French Name'),
-                ])),
-                'description' => new TranslatedText(collect([
-                    'en' => new Text('English Description'),
-                    'fr' => new Text('French Description'),
-                ])),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new TranslatedText(collect([
+                'en' => new Text('English Name'),
+                'fr' => new Text('French Name'),
+            ])),
+            'description' => new TranslatedText(collect([
+                'en' => new Text('English Description'),
+                'fr' => new Text('French Description'),
+            ])),
+        ],
+    ]);
 
-        $this->assertEquals('English Name', $product->translateAttribute('name', 'dk'));
-    }
+    expect($product->translateAttribute('name', 'dk'))->toEqual('English Name');
+});
 
-    /** @test */
-    public function can_handle_null_values()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('can handle null values', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $this->assertEquals('English', $attributeGroup->translate('name', 'dk'));
+    expect($attributeGroup->translate('name', 'dk'))->toEqual('English');
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new TranslatedText(collect([
-                    'en' => null,
-                ])),
-                'description' => new TranslatedText(collect([
-                    'en' => null,
-                ])),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new TranslatedText(collect([
+                'en' => null,
+            ])),
+            'description' => new TranslatedText(collect([
+                'en' => null,
+            ])),
+        ],
+    ]);
 
-        $this->assertNull($product->translateAttribute('name'));
-        $this->assertNull($product->translateAttribute('description'));
-    }
+    expect($product->translateAttribute('name'))->toBeNull();
+    expect($product->translateAttribute('description'))->toBeNull();
+});
 
-    /** @test */
-    public function will_translate_based_on_locale_by_default()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('will translate based on locale by default', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $productOption = ProductOption::factory()->create([
-            'name' => [
-                'en' => 'English Option',
-                'fr' => 'French Option',
-            ],
-        ]);
+    $productOption = ProductOption::factory()->create([
+        'name' => [
+            'en' => 'English Option',
+            'fr' => 'French Option',
+        ],
+    ]);
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new TranslatedText(collect([
-                    'en' => new Text('English Name'),
-                    'fr' => new Text('French Name'),
-                ])),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new TranslatedText(collect([
+                'en' => new Text('English Name'),
+                'fr' => new Text('French Name'),
+            ])),
+        ],
+    ]);
 
-        app()->setLocale('fr');
+    app()->setLocale('fr');
 
-        $this->assertEquals('French', $attributeGroup->translate('name'));
-        $this->assertEquals('French Name', $product->translateAttribute('name'));
-        $this->assertEquals('French Option', $productOption->translate('name'));
+    expect($attributeGroup->translate('name'))->toEqual('French');
+    expect($product->translateAttribute('name'))->toEqual('French Name');
+    expect($productOption->translate('name'))->toEqual('French Option');
 
-        app()->setLocale('en');
+    app()->setLocale('en');
 
-        $this->assertEquals('English', $attributeGroup->translate('name'));
-        $this->assertEquals('English Name', $product->translateAttribute('name'));
-        $this->assertEquals('English Option', $productOption->translate('name'));
-    }
+    expect($attributeGroup->translate('name'))->toEqual('English');
+    expect($product->translateAttribute('name'))->toEqual('English Name');
+    expect($productOption->translate('name'))->toEqual('English Option');
+});
 
-    /** @test */
-    public function will_fallback_to_first_translation_if_nothing_exists()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('will fallback to first translation if nothing exists', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $productOption = ProductOption::factory()->create([
-            'name' => [
-                'en' => 'English Option',
-                'fr' => 'French Option',
-            ],
-        ]);
+    $productOption = ProductOption::factory()->create([
+        'name' => [
+            'en' => 'English Option',
+            'fr' => 'French Option',
+        ],
+    ]);
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new TranslatedText(collect([
-                    'en' => new Text('English Name'),
-                    'fr' => new Text('French Name'),
-                ])),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new TranslatedText(collect([
+                'en' => new Text('English Name'),
+                'fr' => new Text('French Name'),
+            ])),
+        ],
+    ]);
 
-        app()->setLocale('dk');
+    app()->setLocale('dk');
 
-        $this->assertEquals('English', $attributeGroup->translate('name'));
-        $this->assertEquals('English Option', $productOption->translate('name'));
-        $this->assertEquals('English Name', $product->translateAttribute('name'));
-    }
+    expect($attributeGroup->translate('name'))->toEqual('English');
+    expect($productOption->translate('name'))->toEqual('English Option');
+    expect($product->translateAttribute('name'))->toEqual('English Name');
+});
 
-    /** @test */
-    public function will_use_fieldtype_value_if_it_doesnt_have_translations()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-            'handle' => 'some-handle',
-        ]);
+test('will use fieldtype value if it doesnt have translations', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+        'handle' => 'some-handle',
+    ]);
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new Text('English Name'),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new Text('English Name'),
+        ],
+    ]);
 
-        $this->assertEquals('some-handle', $attributeGroup->translate('handle'));
-        $this->assertEquals('English Name', $product->translateAttribute('name'));
-    }
+    expect($attributeGroup->translate('handle'))->toEqual('some-handle');
+    expect($product->translateAttribute('name'))->toEqual('English Name');
+});
 
-    /** @test */
-    public function will_return_null_if_attribute_doesnt_exist()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('will return null if attribute doesnt exist', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new Text('English Name'),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new Text('English Name'),
+        ],
+    ]);
 
-        $this->assertNull($attributeGroup->translate('foobar'));
-        $this->assertNull($product->translateAttribute('foobar'));
-    }
+    expect($attributeGroup->translate('foobar'))->toBeNull();
+    expect($product->translateAttribute('foobar'))->toBeNull();
+});
 
-    /** @test */
-    public function will_return_null_if_attribute_value_is_null()
-    {
-        AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('will return null if attribute value is null', function () {
+    AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new Text('English Name'),
-                'description' => new Text(null),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new Text('English Name'),
+            'description' => new Text(null),
+        ],
+    ]);
 
-        $this->assertNull($product->translateAttribute('description'));
-    }
+    expect($product->translateAttribute('description'))->toBeNull();
+});
 
-    /**
-     * @test
-     * */
-    public function handle_if_we_try_and_translate_a_non_translatable_attribute()
-    {
-        AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('handle if we try and translate a non translatable attribute', function () {
+    AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new Text('Test Name'),
-                'list' => new ListField([
-                    'One',
-                    'Two',
-                    'Three',
-                ]),
-                'dropdown' => new Dropdown('Foobar'),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new Text('Test Name'),
+            'list' => new ListField([
+                'One',
+                'Two',
+                'Three',
+            ]),
+            'dropdown' => new Dropdown('Foobar'),
+        ],
+    ]);
 
-        $this->assertEquals('Test Name', $product->translateAttribute('name'));
-        $this->assertEquals('Foobar', $product->translateAttribute('dropdown'));
-        $this->assertEquals(['One', 'Two', 'Three'], $product->translateAttribute('list'));
-    }
+    expect($product->translateAttribute('name'))->toEqual('Test Name');
+    expect($product->translateAttribute('dropdown'))->toEqual('Foobar');
+    expect($product->translateAttribute('list'))->toEqual(['One', 'Two', 'Three']);
+});
 
-    /** @test */
-    public function can_use_shorthand_function_to_translate_attributes()
-    {
-        $attributeGroup = AttributeGroup::factory()->create([
-            'name' => [
-                'en' => 'English',
-                'fr' => 'French',
-            ],
-        ]);
+test('can use shorthand function to translate attributes', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => 'French',
+        ],
+    ]);
 
-        $productOption = ProductOption::factory()->create([
-            'name' => [
-                'en' => 'English Option',
-                'fr' => 'French Option',
-            ],
-        ]);
+    $productOption = ProductOption::factory()->create([
+        'name' => [
+            'en' => 'English Option',
+            'fr' => 'French Option',
+        ],
+    ]);
 
-        $this->assertEquals('English', $attributeGroup->translate('name', 'en'));
-        $this->assertEquals('French', $attributeGroup->translate('name', 'fr'));
+    expect($attributeGroup->translate('name', 'en'))->toEqual('English');
+    expect($attributeGroup->translate('name', 'fr'))->toEqual('French');
 
-        $this->assertEquals('English Option', $productOption->translate('name', 'en'));
-        $this->assertEquals('French Option', $productOption->translate('name', 'fr'));
+    expect($productOption->translate('name', 'en'))->toEqual('English Option');
+    expect($productOption->translate('name', 'fr'))->toEqual('French Option');
 
-        $product = Product::factory()->create([
-            'attribute_data' => [
-                'name' => new TranslatedText(collect([
-                    'en' => new Text('English Name'),
-                    'fr' => new Text('French Name'),
-                ])),
-                'description' => new TranslatedText(collect([
-                    'en' => new Text('English Description'),
-                    'fr' => new Text('French Description'),
-                ])),
-            ],
-        ]);
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new TranslatedText(collect([
+                'en' => new Text('English Name'),
+                'fr' => new Text('French Name'),
+            ])),
+            'description' => new TranslatedText(collect([
+                'en' => new Text('English Description'),
+                'fr' => new Text('French Description'),
+            ])),
+        ],
+    ]);
 
-        $this->assertEquals('English Name', $product->attr('name'));
-        $this->assertEquals('French Name', $product->attr('name', 'fr'));
+    expect($product->attr('name'))->toEqual('English Name');
+    expect($product->attr('name', 'fr'))->toEqual('French Name');
 
-        $this->assertEquals('English Description', $product->attr('description'));
-        $this->assertEquals('French Description', $product->attr('description', 'fr'));
-    }
-}
+    expect($product->attr('description'))->toEqual('English Description');
+    expect($product->attr('description', 'fr'))->toEqual('French Description');
+});
