@@ -57,7 +57,7 @@ class CalculateLinesTest extends TestCase
         $this->assertEquals($cartLine->subTotal->unitDecimal, $expectedUnitPrice);
     }
 
-    public function providePurchasableData()
+    public static function providePurchasableData()
     {
         return [
             'purchasable with 1 unit quantity' => [

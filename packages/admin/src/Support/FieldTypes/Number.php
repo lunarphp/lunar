@@ -1,0 +1,46 @@
+<?php
+
+namespace Lunar\Admin\Support\FieldTypes;
+
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Grid;
+use Lunar\Admin\Support\Synthesizers\NumberSynth;
+use Lunar\Models\Attribute;
+
+class Number extends BaseFieldType
+{
+    protected static string $synthesizer = NumberSynth::class;
+
+    public static function getFilamentComponent(Attribute $attribute): Component
+    {
+        $min = (int) $attribute->configuration->get('min');
+        $max = (int) $attribute->configuration->get('min');
+
+        $input = TextField::getFilamentComponent($attribute)->numeric();
+
+        if ($min) {
+            $input->min($min);
+        }
+
+        if ($max) {
+            $input->max($max);
+        }
+
+        return $input;
+    }
+
+    public static function getConfigurationFields(): array
+    {
+        return [
+            Grid::make(2)->schema([
+                \Filament\Forms\Components\TextInput::make('min')
+                    ->label(
+                        __('lunarpanel::fieldtypes.number.form.min.label')
+                    )->nullable()->numeric(),
+                \Filament\Forms\Components\TextInput::make('max')->label(
+                    __('lunarpanel::fieldtypes.number.form.max.label')
+                )->nullable()->numeric(),
+            ]),
+        ];
+    }
+}

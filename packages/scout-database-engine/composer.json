@@ -29,12 +29,11 @@
     },
     "require": {
         "php": "^8.1",
-        "laravel/framework": "^9.0|^10.0",
-        "laravel/scout": "^9.4|^10.0",
+        "laravel/framework": "^10.0",
+        "laravel/scout": "^10.0",
         "spatie/laravel-blink": "^1.6"
     },
     "require-dev": {
-        "orchestra/testbench": "^7.0|^8.0",
-        "phpunit/phpunit": "^9.5"
+        "orchestra/testbench": "^8.0"
     }
 }

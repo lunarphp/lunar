@@ -43,7 +43,7 @@ class BuyXGetYTest extends TestCase
         );
     }
 
-    public function provideRewardChecks()
+    public static function provideRewardChecks()
     {
         return [
             [
