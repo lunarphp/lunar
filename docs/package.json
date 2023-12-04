@@ -1,10 +1,11 @@
 {
-  "devDependencies": {
-    "vitepress": "^1.0.0-beta.7"
-  },
-  "scripts": {
-    "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
-  }
+    "devDependencies": {
+        "vitepress": "^1.0.0-rc.31"
+    },
+    "scripts": {
+        "docs:dev": "vitepress dev",
+        "docs:build": "vitepress build",
+        "docs:preview": "vitepress preview"
+    },
+    "type": "module"
 }

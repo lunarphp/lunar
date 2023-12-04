@@ -38,18 +38,17 @@ export default defineConfig({
 
         nav: [
             {text: 'Core', link: '/core/overview', activeMatch: '/core/'},
-            {text: 'Admin Hub', link: '/admin-hub/overview', activeMatch: '/admin-hub/'},
+            {text: 'Admin Panel', link: '/admin/overview', activeMatch: '/admin/'},
             {
                 text: 'Resources',
                 items: [
-                    {text: 'Livewire Starter Kit', link: 'https://github.com/lunarphp/livewire-starter-kit'},
                     {text: 'Add-ons', link: 'https://github.com/lunarphp/awesome'},
                     {text: 'Discord', link: 'https://discord.gg/v6qVWaf'},
                     {text: 'Discussions', link: 'https://github.com/lunarphp/lunar/discussions'}
                 ]
             },
             {
-                text: '0.7',
+                text: '0.x',
                 items: [
                     {text: 'Changelog', link: '/core/upgrading'},
                     {text: 'Contributing', link: '/core/contributing'},
@@ -122,6 +121,30 @@ export default defineConfig({
                         {text: 'Search', link: '/core/extending/search'},
                         {text: 'Shipping', link: '/core/extending/shipping'},
                         {text: 'Taxation', link: '/core/extending/taxation'}
+                    ]
+                }
+            ],
+
+            '/admin/': [
+                {
+                    text: 'Getting Started',
+                    collapsed: false,
+                    items: [
+                        {text: 'Overview', link: '/admin/overview'},
+                        {text: 'Installation', link: '/admin/installation'},
+                        {text: 'Upgrading', link: '/admin/upgrading'}
+                    ]
+                },
+                {
+                    text: 'Extending',
+                    collapsed: true,
+                    items: [
+                        {text: 'Access Control', link: '/admin/extending/access-control'},
+                        {text: 'Attributes', link: '/admin/extending/attributes'},
+                        {text: 'Pages', link: '/admin/extending/pages'},
+                        {text: 'Panel', link: '/admin/extending/panel'},
+                        {text: 'Plugin', link: '/admin/extending/plugin'},
+                        {text: 'Resources', link: '/admin/extending/resources'}
                     ]
                 }
             ],
