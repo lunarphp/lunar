@@ -44,12 +44,12 @@
       "Lunar\\Database\\Factories\\": "packages/core/database/factories",
       "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
       "Lunar\\Database\\State\\": "packages/core/database/state",
-      "Lunar\\ScoutDatabaseEngine\\": "utils/scout-database-engine/src"
+      "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Lunar\\ScoutDatabaseEngine\\Tests\\": "utils/scout-database-engine/tests",
+      "Lunar\\ScoutDatabaseEngine\\Tests\\": "packages/scout-database-engine/tests",
       "Lunar\\Tests\\": "packages/core/tests"
     }
   },
