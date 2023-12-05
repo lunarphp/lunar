@@ -13,6 +13,8 @@ class EditProduct extends BaseEditRecord
 
     protected static ?string $title = 'Basic Information';
 
+    public static bool $formActionsAreSticky = true;
+
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::basic-information');
