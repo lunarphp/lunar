@@ -80,16 +80,6 @@ class ProductResource extends BaseResource
                 static::getAttributeDataFormComponent(),
                 Forms\Components\Section::make()
                     ->schema([
-                        Forms\Components\Placeholder::make('pricing')
-                            ->content('Tax, customer and tiered pricing.'),
-                    ]),
-                Forms\Components\Section::make()
-                    ->schema([
-                        Forms\Components\Placeholder::make('availability')
-                            ->content('Availability'),
-                    ]),
-                Forms\Components\Section::make()
-                    ->schema([
                         Forms\Components\Placeholder::make('identifiers')
                             ->content('GTIN, MPN, etc'),
                     ]),
