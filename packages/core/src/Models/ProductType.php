@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasAttributes;
+use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\ProductTypeFactory;
 
@@ -19,6 +20,7 @@ class ProductType extends BaseModel
     use HasAttributes;
     use HasFactory;
     use HasMacros;
+    use HasDefaultRecord;
 
     /**
      * Return a new factory instance for the model.

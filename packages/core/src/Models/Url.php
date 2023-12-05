@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\UrlFactory;
 
@@ -21,6 +22,7 @@ class Url extends BaseModel
 {
     use HasFactory;
     use HasMacros;
+    use HasDefaultRecord;
 
     /**
      * Return a new factory instance for the model.
@@ -37,15 +39,6 @@ class Url extends BaseModel
      * @var array
      */
     protected $guarded = [];
-
-    /**
-     * Define attribute casting.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'default' => 'boolean',
-    ];
 
     /**
      * Return the element relationship.
@@ -65,16 +58,5 @@ class Url extends BaseModel
     public function language()
     {
         return $this->belongsTo(Language::class);
-    }
-
-    /**
-     * Return the query scope for default.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function scopeDefault($query)
-    {
-        return $query->whereDefault(true);
     }
 }
