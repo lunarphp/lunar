@@ -15,6 +15,7 @@ use Lunar\Database\Factories\TaxZoneFactory;
  * @property string $price_display
  * @property bool $active
  * @property bool $default
+ * @property bool $tax_on_shipping
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
@@ -48,6 +49,7 @@ class TaxZone extends BaseModel
     protected $casts = [
         'active' => 'boolean',
         'default' => 'boolean',
+        'tax_on_shipping' => 'boolean',
     ];
 
     /**

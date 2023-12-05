@@ -16,6 +16,7 @@ class TaxZoneFactory extends Factory
             'zone_type' => $this->faker->randomElement(['country', 'postcode', 'state']),
             'price_display' => $this->faker->randomElement(['tax_inclusive', 'tax_exclusive']),
             'active' => $this->faker->boolean,
+            'tax_on_shipping' => false,
             'default' => true,
         ];
     }

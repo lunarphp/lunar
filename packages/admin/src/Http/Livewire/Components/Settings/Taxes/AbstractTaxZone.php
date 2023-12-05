@@ -87,6 +87,7 @@ abstract class AbstractTaxZone extends Component
             'taxZone.price_display' => 'required',
             'taxZone.active' => 'boolean|nullable',
             'taxZone.default' => 'boolean|nullable',
+            'taxZone.tax_on_shipping' => 'boolean|nullable',
             'postcodes' => 'nullable|string|required_if:taxZone.zone_type,postcodes',
             'country' => 'nullable|string|required_if:taxZone.zone_type,postcodes,taxZone.zone_type,states',
             'selectedCountries' => 'array|required_if:taxZone.zone_type,country',

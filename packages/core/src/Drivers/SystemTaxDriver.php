@@ -9,6 +9,7 @@ use Lunar\Base\TaxDriver;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
 use Lunar\Models\TaxZone;
@@ -139,6 +140,11 @@ class SystemTaxDriver implements TaxDriver
 
             // Set subTotal to ex. tax price
             $subTotal = $priceExTax;
+        }
+
+        // If the purchasable is a shipping option and the tax zone doesn't have tax on shipping, return an empty breakdown
+        if ($this->purchasable instanceof ShippingOption && !$taxZone->tax_on_shipping) {
+            return new TaxBreakdown;
         }
 
         $breakdown = new TaxBreakdown;
