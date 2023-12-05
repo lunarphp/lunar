@@ -148,6 +148,7 @@ class LunarPlugin implements Plugin
             'lunar::orders' => 'lucide-inbox',
             'lunar::product-pricing' => 'lucide-wallet',
             'lunar::product-associations' => 'lucide-cable',
+            'lunar::product-inventory' => 'lucide-combine',
             'lunar::product-options' => 'lucide-list',
             'lunar::product-variants' => 'lucide-shapes',
             'lunar::products' => 'lucide-tag',

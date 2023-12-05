@@ -75,6 +75,25 @@ return [
                 ],
             ],
         ],
+        'inventory' => [
+            'label' => 'Inventory',
+            'form' => [
+                'stock' => [
+                    'label' => 'In Stock',
+                ],
+                'backorder' => [
+                    'label' => 'On Backorder',
+                ],
+                'purchasable' => [
+                    'label' => 'Purchasability',
+                    'options' => [
+                        'always' => 'Always',
+                        'in_stock' => 'In Stock',
+                        'backorder' => 'Backorder Only',
+                    ],
+                ],
+            ],
+        ],
     ],
 
 ];

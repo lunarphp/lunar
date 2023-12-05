@@ -63,6 +63,7 @@ class ProductResource extends BaseResource
             Pages\ManageProductMedia::class,
             Pages\ManageProductPricing::class,
             Pages\ManageProductIdentifiers::class,
+            Pages\ManageProductInventory::class,
             Pages\ManageProductVariants::class,
             Pages\ManageProductUrls::class,
             Pages\ManageProductCollections::class,
@@ -79,11 +80,6 @@ class ProductResource extends BaseResource
                         static::getMainFormComponents(),
                     ),
                 static::getAttributeDataFormComponent(),
-                Forms\Components\Section::make()
-                    ->schema([
-                        Forms\Components\Placeholder::make('inventory')
-                            ->content('Has stock? Stock and backorder and purchasability.'),
-                    ]),
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\Placeholder::make('shipping')
@@ -290,6 +286,7 @@ class ProductResource extends BaseResource
             'media' => Pages\ManageProductMedia::route('/{record}/media'),
             'pricing' => Pages\ManageProductPricing::route('/{record}/pricing'),
             'variants' => Pages\ManageProductVariants::route('/{record}/variants'),
+            'inventory' => Pages\ManageProductInventory::route('/{record}/inventory'),
             'urls' => Pages\ManageProductUrls::route('/{record}/urls'),
             'collections' => Pages\ManageProductCollections::route('/{record}/collections'),
             'associations' => Pages\ManageProductAssociations::route('/{record}/associations'),
