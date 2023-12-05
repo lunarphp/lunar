@@ -155,6 +155,7 @@ class LunarPlugin implements Plugin
             'lunar::tags' => 'lucide-tags',
             'lunar::tax' => 'lucide-landmark',
             'lunar::urls' => 'lucide-globe',
+            'lunar::product-identifiers' => 'lucide-package-search',
         ]);
     }
 

@@ -58,6 +58,23 @@ return [
         'media' => [
             'label' => 'Media',
         ],
+        'identifiers' => [
+            'label' => 'Product Identifiers',
+            'form' => [
+                'sku' => [
+                    'label' => 'SKU',
+                ],
+                'gtin' => [
+                    'label' => 'Global Trade Item Number (GTIN)',
+                ],
+                'mpn' => [
+                    'label' => 'Manufacturer Part Number (MPN)',
+                ],
+                'ean' => [
+                    'label' => 'UPC/EAN',
+                ],
+            ],
+        ],
     ],
 
 ];

@@ -62,6 +62,7 @@ class ProductResource extends BaseResource
             Pages\ManageProductAvailability::class,
             Pages\ManageProductMedia::class,
             Pages\ManageProductPricing::class,
+            Pages\ManageProductIdentifiers::class,
             Pages\ManageProductVariants::class,
             Pages\ManageProductUrls::class,
             Pages\ManageProductCollections::class,
@@ -78,11 +79,6 @@ class ProductResource extends BaseResource
                         static::getMainFormComponents(),
                     ),
                 static::getAttributeDataFormComponent(),
-                Forms\Components\Section::make()
-                    ->schema([
-                        Forms\Components\Placeholder::make('identifiers')
-                            ->content('GTIN, MPN, etc'),
-                    ]),
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\Placeholder::make('inventory')
@@ -290,6 +286,7 @@ class ProductResource extends BaseResource
             'index' => Pages\ListProducts::route('/'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
             'availability' => Pages\ManageProductAvailability::route('/{record}/availability'),
+            'identifiers' => Pages\ManageProductIdentifiers::route('/{record}/identifiers'),
             'media' => Pages\ManageProductMedia::route('/{record}/media'),
             'pricing' => Pages\ManageProductPricing::route('/{record}/pricing'),
             'variants' => Pages\ManageProductVariants::route('/{record}/variants'),
