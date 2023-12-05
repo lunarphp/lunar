@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Lunar\Base\FieldType;
 
@@ -80,10 +81,27 @@ trait HasTranslations
     /**
      * Shorthand to translate an attribute.
      *
-     * @return void
+     * @return string
      */
     public function attr(...$params)
     {
         return $this->translateAttribute(...$params);
+    }
+
+    public function scopeTranslation(Builder $query, $name, $value, $locale = null) 
+    {
+        $query->whereJsonContains(Arr::join([$name, $locale ?? app()->getLocale()], '->'), $value);
+    }
+
+    public function scopeAttributeTranslation(Builder $query, $name, $value, $locale = null)
+    {
+        $query->where(fn(Builder $query) => collect([
+            '$.%s.value.%s',
+            '$.%s.value[*].%s',
+            '$.%s.value.*[*].%s',
+        ])->each(fn($json) => $query->orWhereRaw(
+            "json_search(attribute_data, 'one', ?, null, ?)",
+            [$value, sprintf($json, $name, $locale ?? app()->getLocale())]
+        )));
     }
 }

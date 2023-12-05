@@ -9,8 +9,8 @@
       <div class="space-y-4">
 
         @foreach($variant->values as $value)
-          <x-hub::input.group :label="$value->option->name->en" for="sku">
-            {{ $value->name->en }}
+          <x-hub::input.group :label="$value->option->translate('name')" for="sku">
+            {{ $value->translate('name') }}
           </x-hub::input.group>
         @endforeach
       </div>

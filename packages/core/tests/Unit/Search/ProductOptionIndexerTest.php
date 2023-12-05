@@ -21,8 +21,8 @@ class ProductOptionIndexerTest extends TestCase
         $productOption = ProductOption::factory()->create();
 
         $data = app(ProductOptionIndexer::class)->toSearchableArray($productOption);
-
-        $this->assertEquals($productOption->name->en, $data['name_en']);
-        $this->assertEquals($productOption->label->en, $data['label_en']);
+        
+        $this->assertEquals($productOption->translate('name', 'en'), $data['name_en']);
+        $this->assertEquals($productOption->translate('label', 'en'), $data['label_en']);
     }
 }

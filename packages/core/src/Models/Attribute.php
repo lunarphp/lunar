@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Casts\AsTranslated;
 use Lunar\Database\Factories\AttributeFactory;
 use Lunar\Facades\DB;
 
@@ -71,7 +72,7 @@ class Attribute extends BaseModel
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
+        'name' => AsTranslated::class,
         'configuration' => AsCollection::class,
     ];
 
