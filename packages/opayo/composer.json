@@ -1,0 +1,44 @@
+{
+  "name": "lunarphp/opayo",
+  "type": "project",
+  "description": "Opayo payment driver for Lunar.",
+  "keywords": ["lunarphp", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart", "opayo"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "require": {
+      "php": "^8.1",
+      "lunarphp/core": "self.version"
+  },
+  "require-dev": {
+      "phpunit/phpunit": "^9.5",
+      "mockery/mockery": "^1.4.4",
+      "orchestra/testbench": "^6.0|^7.0"
+  },
+  "autoload": {
+      "psr-4": {
+          "Lunar\\Opayo\\": "src/"
+      }
+  },
+  "autoload-dev": {
+      "psr-4": {
+          "Lunar\\Opayo\\Tests\\": "tests/"
+      }
+  },
+  "extra": {
+    "lunar": {
+        "name": "Opayo Payments"
+    },
+    "laravel": {
+        "providers": [
+            "Lunar\\Opayo\\OpayoServiceProvider"
+        ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

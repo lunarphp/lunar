@@ -52,14 +52,20 @@
             "Lunar\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Database\\State\\": "packages/core/database/state",
-            "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src"
+            "Lunar\\Opayo\\": "packages/opayo/src",
+            "Lunar\\Paypal\\": "packages/paypal/src",
+            "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src",
+            "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
+            "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Lunar\\Admin\\Tests\\": "packages/admin/tests",
             "Lunar\\Tests\\": "packages/core/tests",
-            "Lunar\\ScoutDatabaseEngine\\Tests\\": "packages/scout-database-engine/tests"
+            "Lunar\\Opayo\\Tests\\": "packages/core/opayo/tests",
+            "Lunar\\ScoutDatabaseEngine\\Tests\\": "packages/scout-database-engine/tests",
+            "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests"
         }
     },
     "extra": {
@@ -67,13 +73,18 @@
             "providers": [
                 "Lunar\\LunarServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
-                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider"
+                "Lunar\\Opayo\\OpayoServiceProvider",
+                "Lunar\\Paypal\\PaypalServiceProvider",
+                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
+                "Lunar\\Shipping\\ShippingServiceProvider"
             ]
         }
     },
     "replace": {
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
+        "lunarphp/opayo": "self.version",
+        "lunarphp/paypal": "self.version",
         "lunarphp/scout-database-engine": "self.version"
     },
     "minimum-stability": "dev",

@@ -215,6 +215,10 @@ class PricingManager implements PricingManagerInterface
 
         $matched = $tieredPricing->first() ?: $matched;
 
+        if (! $matched) {
+            throw new \ErrorException('No price set.');
+        }
+
         $this->pricing = new PricingResponse(
             matched: $matched,
             base: $prices->first(fn ($price) => $price->tier == 1),
