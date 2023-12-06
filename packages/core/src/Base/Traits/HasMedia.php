@@ -3,7 +3,7 @@
 namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Spatie\Image\Manipulations;
+use Lunar\Base\StandardMediaDefinitions;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -22,32 +22,18 @@ trait HasMedia
 
     public function registerMediaCollections(): void
     {
-        $fallbackUrl = config('lunar.media.fallback.url');
-        $fallbackPath = config('lunar.media.fallback.path');
-
-        $collection = $this->addMediaCollection('images');
-
-        if ($fallbackUrl) {
-            $collection = $collection->useFallbackUrl($fallbackUrl);
-        }
-
-        if ($fallbackPath) {
-            $collection = $collection->useFallbackPath($fallbackPath);
-        }
+        app($this->getDefinitionClass())->registerMediaCollections($this);
     }
 
     public function registerMediaConversions(Media $media = null): void
     {
-        $conversionClasses = config('lunar.media.conversions', []);
+        app($this->getDefinitionClass())->registerMediaConversions($this, $media);
+    }
 
-        foreach ($conversionClasses as $classname) {
-            app($classname)->apply($this);
-        }
+    protected function getDefinitionClass()
+    {
+        $conversionClasses = config('lunar.media.definitions', []);
 
-        // Add a conversion that the hub uses...
-        $this->addMediaConversion('small')
-            ->fit(Manipulations::FIT_FILL, 300, 300)
-            ->sharpen(10)
-            ->keepOriginalImageFormat();
+        return $conversionClasses[static::class] ?? StandardMediaDefinitions::class;
     }
 }

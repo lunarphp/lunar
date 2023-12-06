@@ -2,17 +2,17 @@
 
 uses(\Lunar\Tests\TestCase::class);
 use Illuminate\Http\UploadedFile;
-use Lunar\Base\StandardMediaConversions;
+use Lunar\Base\StandardMediaDefinitions;
 use Lunar\Models\Product;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('conversions are loaded', function () {
-    $conversions = config('lunar.media.conversions');
+    $definitions = config('lunar.media.definitions');
 
-    expect($conversions)->toHaveCount(1);
+    expect($definitions)->toHaveCount(6);
 
-    expect($conversions[0])->toEqual(StandardMediaConversions::class);
+    expect($definitions[Product::class])->toEqual(StandardMediaDefinitions::class);
 
     $file = UploadedFile::fake()->image('avatar.jpg');
 
