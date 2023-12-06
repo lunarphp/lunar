@@ -146,7 +146,7 @@ class LunarPlugin implements Plugin
             'lunar::languages' => 'lucide-languages',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',
-            'lunar::product-pricing' => 'lucide-wallet',
+            'lunar::product-pricing' => 'lucide-coins',
             'lunar::product-associations' => 'lucide-cable',
             'lunar::product-inventory' => 'lucide-combine',
             'lunar::product-options' => 'lucide-list',

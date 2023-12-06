@@ -81,6 +81,13 @@ class ManageProductIdentifiers extends BaseEditRecord
         return $this->getRecord()->variants()->first();
     }
 
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getSaveFormAction(),
+        ];
+    }
+
     public function form(Form $form): Form
     {
         $variant = $this->getVariant();
