@@ -64,6 +64,7 @@ class ProductResource extends BaseResource
             Pages\ManageProductPricing::class,
             Pages\ManageProductIdentifiers::class,
             Pages\ManageProductInventory::class,
+            Pages\ManageProductShipping::class,
             Pages\ManageProductVariants::class,
             Pages\ManageProductUrls::class,
             Pages\ManageProductCollections::class,
@@ -80,11 +81,6 @@ class ProductResource extends BaseResource
                         static::getMainFormComponents(),
                     ),
                 static::getAttributeDataFormComponent(),
-                Forms\Components\Section::make()
-                    ->schema([
-                        Forms\Components\Placeholder::make('shipping')
-                            ->content('Requires shipping and dimensions.'),
-                    ]),
             ])
             ->columns(1);
     }
@@ -285,8 +281,9 @@ class ProductResource extends BaseResource
             'identifiers' => Pages\ManageProductIdentifiers::route('/{record}/identifiers'),
             'media' => Pages\ManageProductMedia::route('/{record}/media'),
             'pricing' => Pages\ManageProductPricing::route('/{record}/pricing'),
-            'variants' => Pages\ManageProductVariants::route('/{record}/variants'),
             'inventory' => Pages\ManageProductInventory::route('/{record}/inventory'),
+            'shipping' => Pages\ManageProductShipping::route('/{record}/shipping'),
+            'variants' => Pages\ManageProductVariants::route('/{record}/variants'),
             'urls' => Pages\ManageProductUrls::route('/{record}/urls'),
             'collections' => Pages\ManageProductCollections::route('/{record}/collections'),
             'associations' => Pages\ManageProductAssociations::route('/{record}/associations'),

@@ -94,6 +94,38 @@ return [
                 ],
             ],
         ],
+        'shipping' => [
+            'label' => 'Shipping',
+            'form' => [
+                'shippable' => [
+                    'label' => 'Shippable',
+                ],
+                'length_value' => [
+                    'label' => 'Length',
+                ],
+                'length_unit' => [
+                    'label' => 'Length Unit',
+                ],
+                'width_value' => [
+                    'label' => 'Width',
+                ],
+                'width_unit' => [
+                    'label' => 'Width Unit',
+                ],
+                'height_value' => [
+                    'label' => 'Height',
+                ],
+                'height_unit' => [
+                    'label' => 'Height Unit',
+                ],
+                'weight_value' => [
+                    'label' => 'Weight',
+                ],
+                'weight_unit' => [
+                    'label' => 'Weight Unit',
+                ],
+            ],
+        ],
     ],
 
 ];

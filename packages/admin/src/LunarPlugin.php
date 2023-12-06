@@ -150,6 +150,7 @@ class LunarPlugin implements Plugin
             'lunar::product-associations' => 'lucide-cable',
             'lunar::product-inventory' => 'lucide-combine',
             'lunar::product-options' => 'lucide-list',
+            'lunar::product-shipping' => 'lucide-truck',
             'lunar::product-variants' => 'lucide-shapes',
             'lunar::products' => 'lucide-tag',
             'lunar::staff' => 'lucide-shield',
