@@ -4,7 +4,6 @@ uses(\Lunar\Tests\Unit\Base\Extendable\ExtendableTestCase::class);
 use Lunar\Models\Product;
 use Lunar\Tests\Stubs\Models\ProductSwapModel;
 
-
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('core model made aware of swapping instances', function () {

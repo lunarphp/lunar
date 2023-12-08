@@ -38,5 +38,4 @@ class Tag extends BaseModel
     {
         return $this->morphTo();
     }
-    
 }

@@ -7,7 +7,6 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\Currency;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
-
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('can validate missing billing address', function () {

@@ -2,7 +2,6 @@
 
 namespace Lunar\Paypal;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Facades\Payments;
 

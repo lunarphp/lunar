@@ -6,7 +6,6 @@ use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Spatie\Activitylog\Models\Activity;
 
-
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {

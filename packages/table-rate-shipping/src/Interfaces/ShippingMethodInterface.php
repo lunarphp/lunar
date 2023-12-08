@@ -28,5 +28,5 @@ interface ShippingMethodInterface
      *
      * @return ShippingOption
      */
-    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null;
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption;
 }

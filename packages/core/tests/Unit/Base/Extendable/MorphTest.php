@@ -5,7 +5,6 @@ use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
 
-
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {

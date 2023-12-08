@@ -47,8 +47,6 @@ class PaymentForm extends Component
 
     /**
      * Information regarding the browser.
-     *
-     * @var array
      */
     public array $browser = [];
 
@@ -68,22 +66,16 @@ class PaymentForm extends Component
 
     /**
      * Whether we are processing the payment.
-     *
-     * @var bool
      */
     public bool $processing = false;
 
     /**
      * Whether to show the ThreeDSecure challenge.
-     *
-     * @var bool
      */
     public bool $showChallenge = false;
 
     /**
      * The payment processing error.
-     *
-     * @var string|null
      */
     public ?string $error = null;
 

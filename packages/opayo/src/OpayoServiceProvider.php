@@ -45,12 +45,13 @@ class OpayoServiceProvider extends ServiceProvider
 
             $jsUrl = asset('/vendor/lunar'.$manifest['/opayo.js']);
 
-            if (!$incVendor) {
-                return  <<<EOT
+            if (! $incVendor) {
+                return <<<EOT
                 <script src="{$url}"></script>
             EOT;
             }
-            return  <<<EOT
+
+            return <<<EOT
                 <script src="{$jsUrl}" async></script>
                 <script src="{$url}" async></script>
             EOT;

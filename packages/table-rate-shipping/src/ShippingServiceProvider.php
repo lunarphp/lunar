@@ -14,7 +14,8 @@ use Lunar\Shipping\Models\ShippingZone;
 
 class ShippingServiceProvider extends ServiceProvider
 {
-    public function boot(ShippingModifiers $shippingModifiers) {
+    public function boot(ShippingModifiers $shippingModifiers)
+    {
         $this->mergeConfigFrom(__DIR__.'/../config/shipping-tables.php', 'lunar.shipping-tables');
 
         if (! config('lunar.shipping-tables.enabled')) {

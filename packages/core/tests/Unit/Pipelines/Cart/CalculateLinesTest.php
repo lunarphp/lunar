@@ -64,6 +64,6 @@ dataset('providePurchasableData', function () {
             '0.55',
             '5503',
             '100',
-        ]
+        ],
     ];
 });

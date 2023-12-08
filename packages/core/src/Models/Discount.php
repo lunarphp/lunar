@@ -79,7 +79,7 @@ class Discount extends BaseModel
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('condition');
     }
-    
+
     public function purchasableExclusions()
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('exclusion');
@@ -181,7 +181,7 @@ class Discount extends BaseModel
                 )
         );
     }
-    
+
     /**
      * Return the product variants scope.
      *

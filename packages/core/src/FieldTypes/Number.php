@@ -56,6 +56,7 @@ class Number implements FieldType, JsonSerializable
 
         $this->value = $value;
     }
+
     /**
      * {@inheritDoc}
      */

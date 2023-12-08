@@ -40,7 +40,7 @@ class ShippingMethodResolver
     /**
      * Whether all cart items are in stock
      *
-     * @var boolean
+     * @var bool
      */
     protected ?bool $allCartItemsAreInStock = null;
 
@@ -63,11 +63,11 @@ class ShippingMethodResolver
 
         $shippingMeta = $cart->shippingEstimateMeta;
 
-        $this->allCartItemsAreInStock = !$this->cart->lines->first(function ($line) {
+        $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
             return $line->purchasable->stock < $line->quantity;
         });
 
-        if (!empty($shippingMeta)) {
+        if (! empty($shippingMeta)) {
             $this->postcode(
                 $shippingMeta['postcode'] ?? null
             );
@@ -151,9 +151,9 @@ class ShippingMethodResolver
                     if (! $method->cutoff) {
                         return false;
                     }
-    
+
                     [$h, $m, $s] = explode(':', $method->cutoff);
-    
+
                     return now()->set('hour', $h)
                         ->set('minute', $m)
                         ->set('second', $s)
@@ -163,7 +163,7 @@ class ShippingMethodResolver
                     if ($this->allCartItemsAreInStock || ! ($method->stock_available ?? false)) {
                         return false;
                     }
-    
+
                     return true;
                 });
 

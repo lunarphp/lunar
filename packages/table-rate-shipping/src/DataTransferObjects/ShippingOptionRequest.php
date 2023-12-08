@@ -9,9 +9,6 @@ class ShippingOptionRequest
 {
     /**
      * Initialise the shipping option request class.
-     *
-     * @param  ShippingMethod  $shippingMethod
-     * @param  Cart  $cart
      */
     public function __construct(
         public ShippingMethod $shippingMethod,

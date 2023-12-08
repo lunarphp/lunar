@@ -2,8 +2,8 @@
 
 namespace Lunar\Base;
 
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 interface MediaDefinitionsInterface
 {

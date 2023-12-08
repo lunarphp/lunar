@@ -2,14 +2,12 @@
 
 namespace Lunar\Paypal;
 
-use Illuminate\Support\Str;
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
-use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Paypal\Facades\Paypal;
-use Lunar\Models\Currency;
 
 class PaypalPaymentType extends AbstractPayment
 {
@@ -30,8 +28,6 @@ class PaypalPaymentType extends AbstractPayment
 
     /**
      * Authorize the payment for processing.
-     *
-     * @return \Lunar\Base\DataTransferObjects\PaymentAuthorize
      */
     public function authorize(): PaymentAuthorize
     {
@@ -111,9 +107,7 @@ class PaypalPaymentType extends AbstractPayment
     /**
      * Capture a payment for a transaction.
      *
-     * @param  \Lunar\Models\Transaction  $transaction
      * @param  int  $amount
-     * @return \Lunar\Base\DataTransferObjects\PaymentCapture
      */
     public function capture(Transaction $transaction, $amount = 0): PaymentCapture
     {
@@ -123,10 +117,7 @@ class PaypalPaymentType extends AbstractPayment
     /**
      * Refund a captured transaction
      *
-     * @param  \Lunar\Models\Transaction  $transaction
-     * @param  int  $amount
      * @param  string|null  $notes
-     * @return \Lunar\Base\DataTransferObjects\PaymentRefund
      */
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {

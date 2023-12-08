@@ -4,10 +4,8 @@ namespace Lunar\Shipping\Drivers\ShippingMethods;
 
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\Pricing;
-use Lunar\Models\Cart;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Http\Livewire\Components\ShippingMethods\ShipBy as ShippingMethodsShipBy;
 use Lunar\Shipping\Interfaces\ShippingMethodInterface;
 use Lunar\Shipping\Models\ShippingMethod;
 
@@ -34,7 +32,7 @@ class ShipBy implements ShippingMethodInterface
         return 'Offer a set price to ship per order total or per line total.';
     }
 
-    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption
     {
         $data = $shippingOptionRequest->shippingMethod->data;
         $cart = $shippingOptionRequest->cart;
@@ -62,7 +60,7 @@ class ShipBy implements ShippingMethodInterface
 
         $chargeBy = $data->charge_by ?? null;
 
-        if (!$chargeBy) {
+        if (! $chargeBy) {
             $chargeBy = 'cart_total';
         }
 
@@ -80,7 +78,7 @@ class ShipBy implements ShippingMethodInterface
         $prices = $pricing->tiered;
 
         // If there are customer group prices, they need to take priority.
-        if (!$pricing->customerGroupPrices->isEmpty()) {
+        if (! $pricing->customerGroupPrices->isEmpty()) {
             $prices = $pricing->customerGroupPrices;
         }
 

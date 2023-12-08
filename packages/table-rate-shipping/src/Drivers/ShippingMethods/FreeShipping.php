@@ -4,10 +4,9 @@ namespace Lunar\Shipping\Drivers\ShippingMethods;
 
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\TaxClass;
 use Lunar\Models\Product;
+use Lunar\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping as FreeShippingComponent;
 use Lunar\Shipping\Interfaces\ShippingMethodInterface;
 use Lunar\Shipping\Models\ShippingMethod;
 
@@ -15,8 +14,6 @@ class FreeShipping implements ShippingMethodInterface
 {
     /**
      * The shipping method for context.
-     *
-     * @var ShippingMethod
      */
     public ShippingMethod $shippingMethod;
 
@@ -36,7 +33,7 @@ class FreeShipping implements ShippingMethodInterface
         return 'Offer free shipping for your customers';
     }
 
-    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption
     {
         $shippingMethod = $shippingOptionRequest->shippingMethod;
         $data = $shippingMethod->data;

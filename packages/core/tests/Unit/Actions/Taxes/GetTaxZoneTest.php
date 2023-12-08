@@ -2,7 +2,6 @@
 
 uses(\Lunar\Tests\TestCase::class);
 use Lunar\Actions\Taxes\GetTaxZone;
-use Lunar\Actions\Taxes\GetTaxZoneCountry;
 use Lunar\Models\Address;
 use Lunar\Models\Country;
 use Lunar\Models\State;

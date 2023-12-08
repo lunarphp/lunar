@@ -6,7 +6,6 @@ use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\Pricing;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate as ShippingMethodsFlatRate;
 use Lunar\Shipping\Interfaces\ShippingMethodInterface;
 use Lunar\Shipping\Models\ShippingMethod;
 
@@ -14,8 +13,6 @@ class FlatRate implements ShippingMethodInterface
 {
     /**
      * The shipping method for context.
-     *
-     * @var ShippingMethod
      */
     public ShippingMethod $shippingMethod;
 
@@ -35,7 +32,7 @@ class FlatRate implements ShippingMethodInterface
         return 'Offer a set price to ship per order total or per line total.';
     }
 
-    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption
     {
         $data = $shippingOptionRequest->shippingMethod->data;
         $cart = $shippingOptionRequest->cart;

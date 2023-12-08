@@ -240,7 +240,7 @@ class ShippingMethodResolverTest extends TestCase
         $this->assertCount(1, $shippingMethods);
         $this->assertEquals($shippingMethod->id, $shippingMethods->first()->id);
     }
-    
+
     /** @test */
     public function can_reject_shipping_methods_when_stock_is_not_available()
     {
@@ -272,7 +272,7 @@ class ShippingMethodResolverTest extends TestCase
                     "{$currency->code}" => 200,
                 ],
             ],
-            'stock_available' => 1
+            'stock_available' => 1,
         ]);
 
         $shippingMethod->prices()->createMany([
@@ -294,7 +294,7 @@ class ShippingMethodResolverTest extends TestCase
         ]);
 
         $cart = $this->createCart($currency, 500);
-        
+
         $purchasable = ProductVariant::factory()->create();
         $purchasable->stock = 0;
 

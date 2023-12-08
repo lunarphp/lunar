@@ -53,7 +53,7 @@ class ShippingMethod extends BaseModel implements Purchasable
     /**
      * Return the shipping method driver.
      */
-    public function getShippingOption(Cart $cart): ShippingOption|null
+    public function getShippingOption(Cart $cart): ?ShippingOption
     {
         return $this->driver()->resolve(
             new ShippingOptionRequest(

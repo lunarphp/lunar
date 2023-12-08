@@ -85,7 +85,7 @@ test('can create lines', function () {
         'placed_at' => now(),
         'meta' => [
             'foo' => 'bar',
-        ]
+        ],
     ]);
 
     expect($order->lines)->toHaveCount(0);

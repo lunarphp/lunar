@@ -6,7 +6,6 @@ use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Http\Livewire\Components\ShippingMethods\Collection as ShippingMethodsCollection;
 use Lunar\Shipping\Interfaces\ShippingMethodInterface;
 use Lunar\Shipping\Models\ShippingMethod;
 
@@ -14,8 +13,6 @@ class Collection implements ShippingMethodInterface
 {
     /**
      * The shipping method for context.
-     *
-     * @var ShippingMethod
      */
     public ShippingMethod $shippingMethod;
 
@@ -35,7 +32,7 @@ class Collection implements ShippingMethodInterface
         return 'Allow customers to pick up their orders in store';
     }
 
-    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption
     {
         $shippingMethod = $shippingOptionRequest->shippingMethod;
         $cart = $shippingOptionRequest->cart;

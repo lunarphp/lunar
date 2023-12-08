@@ -18,7 +18,7 @@ test('can return correct searchable data', function () {
         'placed_at' => now(),
         'meta' => [
             'foo' => 'bar',
-        ]
+        ],
     ]);
 
     $data = app(OrderIndexer::class)->toSearchableArray($order);
