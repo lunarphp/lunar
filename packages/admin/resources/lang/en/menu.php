@@ -35,6 +35,20 @@ return [
     'product.select-product-image' => 'Select an existing product image',
     'product.choose-image' => 'Choose Image',
     /**
+     * Settings side menu.
+     */
+    'settings.store.attributes' => 'Attributes',
+    'settings.store.channels' => 'Channels',
+    'settings.store.currencies' => 'Currencies',
+    'settings.store.customer-groups' => 'Customer Groups',
+    'settings.store.languages' => 'Languages',
+    'settings.store.tags' => 'Tags',
+    'settings.store.taxes' => 'Taxes',
+    'settings.product.options' => 'Options',
+    'settings.admin.activity-log' => 'Activity Log',
+    'settings.admin.addons' => 'Addons',
+    'settings.admin.staff' => 'Staff',
+    /**
      * Generic menu items.
      */
     'attributes' => 'Attributes',
