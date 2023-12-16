@@ -27,8 +27,8 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
 class Price extends BaseModel
 {
     use HasFactory;
-    use HasMacros;
     use HasJobBatches;
+    use HasMacros;
 
     /**
      * Return a new factory instance for the model.
