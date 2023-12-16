@@ -3,12 +3,12 @@
 namespace Lunar\Models;
 
 use DateTimeInterface;
-use Illuminate\Bus\BatchRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute as AttributeCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Lunar\Base\BatchRepository;
 use Lunar\Database\Factories\JobBatchFactory;
 
 /**
