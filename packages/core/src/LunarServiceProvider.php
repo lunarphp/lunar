@@ -5,7 +5,6 @@ namespace Lunar;
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -34,22 +33,27 @@ use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
+use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
 use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
-use Lunar\Console\Commands\ScoutIndexer;
+use Lunar\Console\Commands\ScoutIndexerCommand;
 use Lunar\Console\InstallLunar;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
+use Lunar\Database\State\ConvertTaxbreakdown;
 use Lunar\Database\State\EnsureBrandsAreUpgraded;
 use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
+use Lunar\Database\State\MigrateCartOrderRelationship;
+use Lunar\Database\State\PopulateProductOptionLabelWithName;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
 use Lunar\Managers\DiscountManager;
 use Lunar\Managers\PaymentManager;
 use Lunar\Managers\PricingManager;
+use Lunar\Managers\StorefrontSessionManager;
 use Lunar\Managers\TaxManager;
 use Lunar\Models\Address;
 use Lunar\Models\CartLine;
@@ -79,24 +83,22 @@ use Lunar\Observers\UrlObserver;
 class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
+        'cart',
         'database',
         'media',
-        'shipping',
-        'taxes',
-        'cart',
         'orders',
-        'urls',
-        'search',
         'payments',
         'pricing',
+        'search',
+        'shipping',
+        'taxes',
+        'urls',
     ];
 
     protected $root = __DIR__.'/..';
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -122,6 +124,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(CartSessionInterface::class, function ($app) {
             return $app->make(CartSessionManager::class);
+        });
+
+        $this->app->singleton(StorefrontSessionInterface::class, function ($app) {
+            return $app->make(StorefrontSessionManager::class);
         });
 
         $this->app->singleton(ShippingModifiers::class, function ($app) {
@@ -175,17 +181,12 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        Relation::morphMap([
-            'product_type' => Lunar\Models\ProductType::class,
-            //'order' => Lunar\Models\Order::class,
-        ]);
+        if (! config('lunar.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
 
         $this->registerObservers();
         $this->registerBlueprintMacros();
@@ -199,6 +200,10 @@ class LunarServiceProvider extends ServiceProvider
             });
 
             $this->publishes([
+                __DIR__.'/../resources/lang' => lang_path('vendor/lunar'),
+            ], 'lunar.translation');
+
+            $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
             ], 'lunar.migrations');
 
@@ -206,7 +211,7 @@ class LunarServiceProvider extends ServiceProvider
                 InstallLunar::class,
                 AddonsDiscover::class,
                 AddressData::class,
-                ScoutIndexer::class,
+                ScoutIndexerCommand::class,
                 MigrateGetCandy::class,
                 SyncNewCustomerOrders::class,
             ]);
@@ -250,6 +255,9 @@ class LunarServiceProvider extends ServiceProvider
             EnsureDefaultTaxClassExists::class,
             EnsureBrandsAreUpgraded::class,
             EnsureMediaCollectionsAreRenamed::class,
+            PopulateProductOptionLabelWithName::class,
+            MigrateCartOrderRelationship::class,
+            ConvertTaxbreakdown::class,
         ];
 
         foreach ($states as $state) {
@@ -269,8 +277,6 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register the observers used in Lunar.
-     *
-     * @return void
      */
     protected function registerObservers(): void
     {
@@ -290,18 +296,18 @@ class LunarServiceProvider extends ServiceProvider
 
     /**
      * Register the blueprint macros.
-     *
-     * @return void
      */
     protected function registerBlueprintMacros(): void
     {
         Blueprint::macro('scheduling', function () {
+            /** @var Blueprint $this */
             $this->boolean('enabled')->default(false)->index();
             $this->timestamp('starts_at')->nullable()->index();
             $this->timestamp('ends_at')->nullable()->index();
         });
 
         Blueprint::macro('dimensions', function () {
+            /** @var Blueprint $this */
             $columns = ['length', 'width', 'height', 'weight', 'volume'];
             foreach ($columns as $column) {
                 $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
@@ -310,25 +316,26 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         Blueprint::macro('userForeignKey', function ($field_name = 'user_id', $nullable = false) {
+            /** @var Blueprint $this */
             $userModel = config('auth.providers.users.model');
 
             $type = config('lunar.database.users_id_type', 'bigint');
 
             if ($type == 'uuid') {
                 $this->foreignUuId($field_name)
-                     ->nullable($nullable)
-                     ->constrained(
-                         (new $userModel())->getTable()
-                     );
+                    ->nullable($nullable)
+                    ->constrained(
+                        (new $userModel())->getTable()
+                    );
             } elseif ($type == 'int') {
                 $this->unsignedInteger($field_name)->nullable($nullable);
                 $this->foreign($field_name)->references('id')->on('users');
             } else {
                 $this->foreignId($field_name)
-                     ->nullable($nullable)
-                     ->constrained(
-                         (new $userModel())->getTable()
-                     );
+                    ->nullable($nullable)
+                    ->constrained(
+                        (new $userModel())->getTable()
+                    );
             }
         });
     }

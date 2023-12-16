@@ -9,10 +9,9 @@ use Lunar\Base\Traits\LunarUser;
 
 class User extends Authenticatable
 {
-    use LunarUser;
     use HasFactory;
-    use Notifiable;
     use LunarUser;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -46,8 +45,6 @@ class User extends Authenticatable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Tests\Stubs\UserFactory
      */
     protected static function newFactory(): UserFactory
     {

@@ -3,9 +3,9 @@
 namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\Models\Currency;
-use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
@@ -239,5 +239,53 @@ class PriceTest extends TestCase
             ->customerGroup($customerGroup)
             ->get();
         $this->assertEquals(0.75, $price->matched->price->decimal);
+    }
+
+    /** @test */
+    public function can_get_a_price_ex_tax()
+    {
+        Config::set('lunar.pricing.stored_inclusive_of_tax', true);
+
+        $variant = ProductVariant::factory()->create();
+
+        $currency = Currency::factory()->create([
+            'code' => 'GBP',
+            'decimal_places' => 2,
+            'default' => true,
+        ]);
+
+        $price = Price::factory()->create([
+            'currency_id' => $currency->id,
+            'priceable_id' => $variant->id,
+            'priceable_type' => ProductVariant::class,
+            'price' => 999,
+            'tier' => 1,
+        ]);
+
+        $this->assertEquals(833, $price->priceExTax()->value);
+    }
+
+    /** @test */
+    public function can_get_a_price_inc_tax()
+    {
+        Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+        $variant = ProductVariant::factory()->create();
+
+        $currency = Currency::factory()->create([
+            'code' => 'GBP',
+            'decimal_places' => 2,
+            'default' => true,
+        ]);
+
+        $price = Price::factory()->create([
+            'currency_id' => $currency->id,
+            'priceable_id' => $variant->id,
+            'priceable_type' => ProductVariant::class,
+            'price' => 833,
+            'tier' => 1,
+        ]);
+
+        $this->assertEquals(1000, $price->priceIncTax()->value);
     }
 }

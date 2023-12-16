@@ -2,20 +2,18 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Taxes;
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\TaxClass;
 
 class TaxClassesIndex extends Component
 {
-    use WithPagination, Notifies;
+    use Notifies, WithPagination;
 
     /**
      * The TaxClass to edit.
-     *
-     * @var null|TaxClass
      */
     public ?TaxClass $taxClass = null;
 
@@ -28,8 +26,6 @@ class TaxClassesIndex extends Component
 
     /**
      * Whether the TaxClass should be deleted on save.
-     *
-     * @var bool
      */
     public bool $deleting = false;
 

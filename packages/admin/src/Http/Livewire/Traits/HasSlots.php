@@ -28,21 +28,21 @@ trait HasSlots
     {
         if (! isset($this->slotsForOutput)) {
             $this->slotsForOutput = $this->getSlots()
-            ->map(function ($slot) {
-                if (! isset($this->slotStore[$slot->getSlotHandle()])) {
-                    $this->saveSlotData($slot->getSlotHandle(), $slot->getSlotInitialValue());
-                }
+                ->map(function ($slot) {
+                    if (! isset($this->slotStore[$slot->getSlotHandle()])) {
+                        $this->saveSlotData($slot->getSlotHandle(), $slot->getSlotInitialValue());
+                    }
 
-                return (object) [
-                    'handle' => $slot->getSlotHandle(),
-                    'title' => $slot->getSlotTitle(),
-                    'position' => $slot->getSlotPosition(),
-                    'component' => $slot->getName(),
-                ];
-            })
-            ->groupBy('position')
-            ->sortBy('handle')
-            ->toArray();
+                    return (object) [
+                        'handle' => $slot->getSlotHandle(),
+                        'title' => $slot->getSlotTitle(),
+                        'position' => $slot->getSlotPosition(),
+                        'component' => $slot->getName(),
+                    ];
+                })
+                ->groupBy('position')
+                ->sortBy('handle')
+                ->toArray();
         }
 
         return $this->slotsForOutput[$position] ?? [];

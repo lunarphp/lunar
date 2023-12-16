@@ -7,7 +7,7 @@
       <span class="text-lg font-bold text-gray-600 uppercase">{{ __('adminhub::global.under_construction') }}</span>
       <div class="mt-6 space-y-1 text-gray-500">
         <p>{{ __('adminhub::global.building_hub') }}</p>
-        <p>{{ __('adminhub::global.reach_out') }} <a href="https://discord.gg/uW7f6k76" class="text-indigo-500 hover:underline">
+        <p>{{ __('adminhub::global.reach_out') }} <a href="https://discord.gg/uW7f6k76" class="text-sky-500 hover:underline">
             {{ __('adminhub::global.discord_server') }}</a> {{ __('adminhub::global.for_updates') }}</p>
       </div>
     </div>

@@ -9,16 +9,22 @@ use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\LanguageFactory;
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property bool $default
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Language extends BaseModel
 {
-    use HasFactory;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\LanguageFactory
      */
     protected static function newFactory(): LanguageFactory
     {
@@ -35,10 +41,8 @@ class Language extends BaseModel
 
     /**
      * Return the URLs relationship
-     *
-     * @return HasMany
      */
-    public function urls()
+    public function urls(): HasMany
     {
         return $this->hasMany(Url::class);
     }

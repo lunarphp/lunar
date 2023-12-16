@@ -3,9 +3,9 @@
 namespace Lunar\Hub\Http\Livewire\Components\Collections;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\Http\Livewire\Traits\MapsCollectionTree;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
@@ -16,12 +16,10 @@ use Lunar\Models\Language;
 
 class CollectionGroupShow extends Component
 {
-    use Notifies, MapsCollectionTree;
+    use MapsCollectionTree, Notifies;
 
     /**
      * The current collection group.
-     *
-     * @var CollectionGroup
      */
     public CollectionGroup $group;
 
@@ -34,15 +32,11 @@ class CollectionGroupShow extends Component
 
     /**
      * Show confirmation if we want to delete the group.
-     *
-     * @var bool
      */
     public bool $showDeleteConfirm = false;
 
     /**
      * Failsafe confirmation in order to delete the collection group.
-     *
-     * @var bool
      */
     public bool $deletionConfirm = false;
 

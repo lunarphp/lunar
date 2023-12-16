@@ -9,7 +9,6 @@ class SortProductsBySku
     /**
      * Execute the action.
      *
-     * @param  \Illuminate\Support\Collection  $products
      * @param  string  $direction
      * @return \Illuminate\Support\Collection
      */

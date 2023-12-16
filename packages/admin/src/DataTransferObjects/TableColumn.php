@@ -17,7 +17,6 @@ class TableColumn
     /**
      * Set the value for the table column with a closure.
      *
-     * @param  Closure  $callback
      * @return void
      */
     public function value(Closure $callback)
@@ -30,7 +29,6 @@ class TableColumn
     /**
      * Set whether the column should be sortable.
      *
-     * @param  bool  $sortable
      * @return void
      */
     public function sortable(bool $sortable = true)

@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     'connection' => '',
 
     'table_prefix' => 'lunar_',
@@ -15,4 +16,16 @@ return [
     |
     */
     'users_id_type' => 'bigint',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Disable migrations
+    |--------------------------------------------------------------------------
+    |
+    | Prevent Lunar`s default package migrations from running for the core.
+    | Set to 'true' to disable.
+    |
+    */
+    'disable_migrations' => false,
+
 ];

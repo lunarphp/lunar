@@ -8,8 +8,6 @@ class Manifest
 {
     /**
      * A collection of permissions loaded into the manifest.
-     *
-     * @var Collection
      */
     protected Collection $permissions;
 
@@ -23,8 +21,6 @@ class Manifest
 
     /**
      * Returns all permissions loaded in the manifest.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getPermissions(): Collection
     {
@@ -34,8 +30,6 @@ class Manifest
     /**
      * Returns permissions grouped by their handle
      * For example, settings:channel would become a child of settings.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getGroupedPermissions(): Collection
     {
@@ -56,7 +50,6 @@ class Manifest
     /**
      * Returns the parent permission based on handle naming.
      *
-     * @param  Permission  $permission
      * @return null|\Lunar\Hub\Acl\Permission
      */
     protected function getParentPermission(Permission $permission)
@@ -73,7 +66,6 @@ class Manifest
     /**
      * Adds a permission to the manifest if it doesn't already exist.
      *
-     * @param  \Closure  $callback
      * @return void
      */
     public function addPermission(\Closure $callback)
@@ -93,8 +85,6 @@ class Manifest
 
     /**
      * Returns the base permissions which are required by Lunar.
-     *
-     * @return array
      */
     protected function getBasePermissions(): array
     {

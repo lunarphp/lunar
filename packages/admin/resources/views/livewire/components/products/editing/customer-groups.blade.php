@@ -13,7 +13,7 @@
                 {{ now()->addDays(2)->format('d/m/Y H:ma') }}.</p>
           </div>
           <div class="col-span-6" >
-            <a href="#" x-show="!scheduling" @click.prevent="scheduling = true" class="text-indigo-500 hover:underline">
+            <a href="#" x-show="!scheduling" @click.prevent="scheduling = true" class="text-sky-500 hover:underline">
                 {{ __('adminhub::catalogue.editing.customer-groups.schedule_availability') }}
             </a>
             <div x-show="scheduling">
@@ -33,7 +33,7 @@
                 {{ now()->addDays(2)->format('d/m/Y H:ma') }}.</p>
           </div>
           <div class="col-span-6" >
-            <a href="#" x-show="!scheduling" @click.prevent="scheduling = true" class="text-indigo-500 hover:underline">
+            <a href="#" x-show="!scheduling" @click.prevent="scheduling = true" class="text-sky-500 hover:underline">
                 {{ __('adminhub::catalogue.editing.customer-groups.schedule_availability') }}
             </a>
             <div x-show="scheduling">
@@ -53,7 +53,7 @@
                 {{ now()->addDays(2)->format('d/m/Y H:ma') }}.</p>
           </div>
           <div class="col-span-6" >
-            {{-- <a href="#" x-show="!scheduling" @click.prevent="scheduling = true" class="text-indigo-500 hover:underline">Schedule availability</a>
+            {{-- <a href="#" x-show="!scheduling" @click.prevent="scheduling = true" class="text-sky-500 hover:underline">Schedule availability</a>
             <div x-show="scheduling">
               <x-hub::input.datepicker placeholder="Schedule publish date." />
             </div> --}}

@@ -90,7 +90,6 @@ class DatabaseEngine extends Engine
     /**
      * Perform the given search on the engine.
      *
-     * @param  \Laravel\Scout\Builder  $builder
      * @return mixed
      */
     public function search(Builder $builder)
@@ -101,7 +100,6 @@ class DatabaseEngine extends Engine
     /**
      * Perform the given search on the engine.
      *
-     * @param  \Laravel\Scout\Builder  $builder
      * @param  int  $perPage
      * @param  int  $page
      * @return mixed
@@ -121,7 +119,10 @@ class DatabaseEngine extends Engine
         $index = $this->getIndexFromBuilder($builder);
 
         return SearchIndex::where('index', '=', $index)
-            ->whereFullText('content', $builder->query.'*', ['mode' => 'boolean']);
+            ->when(
+                $builder->query,
+                fn ($query) => $query ->whereFullText('content', $builder->query.'*', ['mode' => 'boolean'])
+            );
     }
 
     /**
@@ -152,7 +153,6 @@ class DatabaseEngine extends Engine
     /**
      * Map the given results to instances of the given model.
      *
-     * @param  \Laravel\Scout\Builder  $builder
      * @param  mixed  $results
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return \Illuminate\Database\Eloquent\Collection
@@ -171,17 +171,16 @@ class DatabaseEngine extends Engine
         )->filter(function ($model) use ($objectIds) {
             return in_array($model->getScoutKey(), $objectIds);
             // })->sortBy(function ($model) use ($objectIdPositions) {
-        //     return $objectIdPositions[$model->getScoutKey()];
+            //     return $objectIdPositions[$model->getScoutKey()];
         })->values();
     }
 
     /**
      * Map the given results to instances of the given model via a lazy collection.
      *
-     * @param  \Laravel\Scout\Builder  $builder
      * @param  mixed  $results
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \Illuminate\Support\LazyCollection
+     * @return \Illuminate\Support\LazyCollection|void
      */
     public function lazyMap(Builder $builder, $results, $model)
     {
@@ -214,7 +213,6 @@ class DatabaseEngine extends Engine
      * Create a search index.
      *
      * @param  string  $name
-     * @param  array  $options
      * @return mixed
      *
      * @throws \Exception
@@ -238,7 +236,6 @@ class DatabaseEngine extends Engine
     /**
      * Gets the index name to use.
      *
-     * @param  \Laravel\Scout\Builder  $builder
      * @return string
      */
     protected function getIndexFromBuilder(Builder $builder)

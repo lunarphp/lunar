@@ -56,7 +56,7 @@
                                         @else
                                             <span @class([
                                                 'absolute w-4 h-4 rounded-full ring-4 bg-gray-300 ring-gray-200',
-                                                '!bg-blue-500 !ring-blue-100' => $item['log']->description == 'created',
+                                                '!bg-sky-500 !ring-sky-100' => $item['log']->description == 'created',
                                                 '!bg-purple-500 !ring-purple-100' =>
                                                     $item['log']->description == 'status-update',
                                                 '!bg-teal-500 !ring-teal-100' => $item['log']->description == 'updated',

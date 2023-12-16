@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Currencies;
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\ConfirmsDelete;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Currency;
@@ -15,8 +15,6 @@ class CurrencyShow extends Component
 
     /**
      * The instance of the currency we're viewing.
-     *
-     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 

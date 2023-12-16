@@ -2,23 +2,18 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Discounts;
 
-use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Discount;
 
 class DiscountShow extends AbstractDiscount
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 
     /**
      * The confirmation text to delete the discount.
-     *
-     * @var string|null
      */
     public ?string $deleteConfirm = null;
 
@@ -32,14 +27,17 @@ class DiscountShow extends AbstractDiscount
             'discount.handle' => 'required|unique:'.Discount::class.',handle,'.$this->discount->id,
             'discount.stop' => 'nullable',
             'discount.max_uses' => 'nullable|numeric|min:0',
+            'discount.max_uses_per_user' => 'nullable|numeric|min:0',
             'discount.priority' => 'required|min:1',
-            'discount.starts_at' => 'date',
+            'discount.starts_at' => 'required|date',
             'discount.coupon' => 'nullable',
-            'discount.ends_at' => 'nullable|date|after:starts_at',
+            'discount.ends_at' => 'nullable|date|after:discount.starts_at',
             'discount.type' => 'string|required',
             'discount.data' => 'array',
             'selectedCollections' => 'array',
             'selectedBrands' => 'array',
+            'selectedProducts' => 'array',
+            'selectedProductVariants' => 'array',
         ], $this->getDiscountComponent()->rules());
 
         foreach ($this->currencies as $currency) {
@@ -56,13 +54,13 @@ class DiscountShow extends AbstractDiscount
      */
     public function getCanDeleteProperty()
     {
-        return $this->deleteConfirm === $this->discount->name;
+        return $this->deleteConfirm === trim($this->discount->name);
     }
 
     /**
      * Delete the discount.
      *
-     * @return Redirector
+     * @return void
      */
     public function delete()
     {
@@ -71,14 +69,16 @@ class DiscountShow extends AbstractDiscount
             $this->discount->purchasableConditions()->delete();
             $this->discount->purchasableRewards()->delete();
             $this->discount->collections()->delete();
+            $this->discount->customerGroups()->detach();
+            $this->discount->channels()->detach();
+            $this->discount->users()->detach();
             $this->discount->delete();
         });
 
-        $this->emit(
-            __('adminhub::notifications.discount.deleted')
+        $this->notify(
+            __('adminhub::notifications.discount.deleted'),
+            'hub.discounts.index'
         );
-
-        return redirect()->route('hub.discounts.index');
     }
 
     /**

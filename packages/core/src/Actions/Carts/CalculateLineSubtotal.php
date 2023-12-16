@@ -14,7 +14,6 @@ class CalculateLineSubtotal
     /**
      * Execute the action.
      *
-     * @param  \Lunar\Models\CartLine  $cartLine
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
      * @return \Lunar\Models\CartLine
      */

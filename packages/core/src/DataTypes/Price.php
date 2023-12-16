@@ -2,10 +2,9 @@
 
 namespace Lunar\DataTypes;
 
-use App;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
-use NumberFormatter;
+use Lunar\Pricing\DefaultPriceFormatter;
 
 class Price
 {
@@ -13,8 +12,6 @@ class Price
      * Initialise the Price datatype.
      *
      * @param  mixed  $value
-     * @param  Currency  $currency
-     * @param  int  $unitQty
      */
     public function __construct(
         public $value,
@@ -26,9 +23,6 @@ class Price
                 'Value was "'.(gettype($value)).'" expected "int"'
             );
         }
-        $this->value = $value;
-        $this->currency = $currency;
-        $this->unitQty = $unitQty;
     }
 
     /**
@@ -54,17 +48,32 @@ class Price
         return $this->value;
     }
 
+    private function formatter()
+    {
+        return app(
+            config('lunar.pricing.formatter', DefaultPriceFormatter::class),
+            [
+                'value' => $this->value,
+                'currency' => $this->currency,
+                'unitQty' => $this->unitQty,
+            ]
+        );
+    }
+
     /**
      * Get the decimal value.
-     *
-     * @return string
      */
-    protected function decimal()
+    public function decimal(...$arguments): float
     {
-        return round(
-            ($this->value / $this->currency->factor),
-            $this->currency->decimal_places
-        );
+        return $this->formatter()->decimal(...$arguments);
+    }
+
+    /**
+     * Get the decimal unit value.
+     */
+    public function unitDecimal(...$arguments): float
+    {
+        return $this->formatter()->unitDecimal(...$arguments);
     }
 
     /**
@@ -72,17 +81,23 @@ class Price
      *
      * @return string
      */
-    public function formatted($locale = null, $formatter = NumberFormatter::CURRENCY)
+    public function formatted(...$arguments): mixed
     {
-        if (! $locale) {
-            $locale = App::currentLocale();
-        }
+        return $this->formatter()->formatted(...$arguments);
+    }
 
-        $formatter = new NumberFormatter($locale, $formatter);
+    /**
+     * Format the unit value with the currency.
+     *
+     * @return string
+     */
+    public function unitFormatted(...$arguments): mixed
+    {
+        return $this->formatter()->unitFormatted(...$arguments);
+    }
 
-        $formatter->setTextAttribute(NumberFormatter::CURRENCY_CODE, $this->currency->code);
-        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $this->currency->decimal_places);
-
-        return $formatter->format($this->decimal());
+    protected function formatValue(int|float $value, ...$arguments): mixed
+    {
+        return $this->formatter()->formatValue($value, ...$arguments);
     }
 }

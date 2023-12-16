@@ -15,15 +15,11 @@ class Status extends Component
 
     /**
      * The status label.
-     *
-     * @var string
      */
     public string $label;
 
     /**
      * The status color.
-     *
-     * @var string
      */
     public string $color;
 
@@ -42,7 +38,7 @@ class Status extends Component
 
         $match = $statuses[$status] ?? null;
 
-        $this->label = $match['label'] ?? $status;
+        $this->label = $match['label'] ?? $status ?? 'N/A';
         $this->color = $match['color'] ?? '#7C7C7C';
         $this->status = $record?->status ?: $status;
     }

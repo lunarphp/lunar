@@ -2,7 +2,10 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Traits\HasMacros;
@@ -10,11 +13,29 @@ use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TransactionFactory;
 use Lunar\Facades\Payments;
 
+/**
+ * @property int $id
+ * @property ?int $parent_transaction_id
+ * @property int $order_id
+ * @property bool $success
+ * @property string $type
+ * @property string $driver
+ * @property int $amount
+ * @property string $reference
+ * @property string $status
+ * @property ?string $notes
+ * @property string $card_type
+ * @property ?string $last_four
+ * @property ?array $meta
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ */
 class Transaction extends BaseModel
 {
     use HasFactory;
-    use LogsActivity;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * {@inheritDoc}
@@ -27,13 +48,11 @@ class Transaction extends BaseModel
     protected $casts = [
         'refund' => 'bool',
         'amount' => Price::class,
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TransactionFactory
      */
     protected static function newFactory(): TransactionFactory
     {
@@ -42,20 +61,16 @@ class Transaction extends BaseModel
 
     /**
      * Return the order relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
     /**
      * Return the currency relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
      */
-    public function currency()
+    public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
             Currency::class,

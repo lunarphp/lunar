@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Lunar\Jobs\SyncTags;
 use Lunar\Models\Tag;
@@ -9,9 +10,9 @@ use Lunar\Models\Tag;
 trait HasTags
 {
     /**
-     * Get all of the models channels.
+     * Get the tags
      */
-    public function tags()
+    public function tags(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 

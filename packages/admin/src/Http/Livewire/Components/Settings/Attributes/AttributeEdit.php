@@ -13,8 +13,8 @@ use Lunar\Models\AttributeGroup;
 
 class AttributeEdit extends Component
 {
-    use WithLanguages;
     use Notifies;
+    use WithLanguages;
 
     /**
      * The attribute group.
@@ -32,15 +32,11 @@ class AttributeEdit extends Component
 
     /**
      * Whether the panel should be visible.
-     *
-     * @var bool
      */
     public bool $panelVisible = true;
 
     /**
      * Whether the user has input a handle manually.
-     *
-     * @var bool
      */
     public bool $manualHandle = false;
 
@@ -80,7 +76,7 @@ class AttributeEdit extends Component
             'attribute.searchable' => 'nullable|boolean',
             'attribute.filterable' => 'nullable|boolean',
             'attribute.configuration' => 'nullable|array',
-            'attribute.section' => 'string',
+            'attribute.section' => 'nullable|string',
             'attribute.system' => 'boolean',
             'attribute.type' => 'required',
             'attribute.validation_rules' => 'nullable|string',
@@ -138,8 +134,6 @@ class AttributeEdit extends Component
 
     /**
      * Return the selected field type.
-     *
-     * @return
      */
     public function getFieldType()
     {
@@ -149,7 +143,7 @@ class AttributeEdit extends Component
     /**
      * Return the config for the field type.
      *
-     * @return void
+     * @return array|null
      */
     public function getFieldTypeConfig()
     {

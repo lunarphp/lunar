@@ -12,78 +12,56 @@ class TableBuilder implements TableBuilderInterface
 {
     /**
      * The columns available to the table.
-     *
-     * @var Collection
      */
     public Collection $columns;
 
     /**
      * The base columns set on the table.
-     *
-     * @var Collection
      */
     public Collection $baseColumns;
 
     /**
      * The filters available to the table.
-     *
-     * @var Collection
      */
     public Collection $filters;
 
     /**
      * The actions available to the table.
-     *
-     * @var Collection
      */
     public Collection $actions;
 
     /**
      * The bulk actions available.
-     *
-     * @var Collection
      */
     public Collection $bulkActions;
 
     /**
      * The search term for the table.
-     *
-     * @var string|null
      */
     public ?string $searchTerm = null;
 
     /**
      * The number of records per page.
-     *
-     * @var int
      */
     public int $perPage = 50;
 
     /**
      * The field to sort using.
-     *
-     * @var string|null
      */
     public ?string $sortField = 'created_at';
 
     /**
      * The sort direction.
-     *
-     * @var string|null
      */
     public ?string $sortDir = 'desc';
 
     /**
      * The filters from the query string
-     *
-     * @var array
      */
     public array $queryStringFilters = [];
 
     /**
      * The empty message.
-     *
-     * @var string|null
      */
     public ?string $emptyMessage = '';
 

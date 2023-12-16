@@ -14,8 +14,6 @@ class UserPermission extends BaseModel
 
     /**
      * Return the user relationship.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

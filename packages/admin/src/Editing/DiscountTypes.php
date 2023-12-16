@@ -2,19 +2,28 @@
 
 namespace Lunar\Hub\Editing;
 
+use Livewire\Component;
+use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\DiscountTypes\Discount;
+use Lunar\Hub\Base\DiscountTypesInterface;
+use Lunar\Hub\Http\Livewire\Components\Discounts\Types\AmountOff as TypesAmountOff;
 use Lunar\Hub\Http\Livewire\Components\Discounts\Types\BuyXGetY as TypesBuyXGetY;
-use Lunar\Hub\Http\Livewire\Components\Discounts\Types\Discount as TypesDiscount;
 
-class DiscountTypes
+class DiscountTypes implements DiscountTypesInterface
 {
     protected $mapping = [
-        Discount::class => TypesDiscount::class,
+        AmountOff::class => TypesAmountOff::class,
         BuyXGetY::class => TypesBuyXGetY::class,
     ];
 
-    public function getComponent($type)
+    public function register($discountType, $component): self
+    {
+        $this->mapping[$discountType] = $component;
+
+        return $this;
+    }
+
+    public function getComponent($type): ?Component
     {
         $component = $this->mapping[$type] ?? null;
 

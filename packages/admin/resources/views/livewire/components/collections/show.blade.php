@@ -4,7 +4,7 @@
             'group' => $collection->group,
             'collection' => $collection->parent_id,
         ]) }}"
-           class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+           class="text-gray-600 rounded bg-gray-50 hover:bg-sky-500 hover:text-white"
            title="{{ __('adminhub::catalogue.products.show.back_link_title') }}">
             <x-hub::icon ref="chevron-left"
                          style="solid"
@@ -16,13 +16,7 @@
         </h1>
     </div>
 
-    <div
-        class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-        :class="{
-            'lg:w-[calc(100vw_-_16rem)]': !menuCollapsed,
-            'w-full': menuCollapsed
-        }"
-    >
+    <x-hub::layout.bottom-panel>
         <form wire:submit.prevent="save">
             <div class="flex justify-end">
                 <x-hub::button type="submit">
@@ -30,7 +24,7 @@
                 </x-hub::button>
             </div>
         </form>
-    </div>
+    </x-hub::layout.bottom-panel>
 
     <div class="pb-24 mt-8 lg:gap-8 lg:flex lg:items-start">
         <div class="space-y-6 lg:flex-1">
@@ -103,14 +97,6 @@
                             </x-hub::input.group>
                         </div>
                     @endif
-                    @if(!$products->count() && $this->productCount >= 30)
-                        <div wire:loading.remove wire:target="loadProducts">
-                            <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
-                        </div>
-                        <div wire:loading wire:target="loadProducts">
-                            <x-hub::loading-indicator class="w-4" />
-                        </div>
-                    @else
                     <div wire:sort
                          sort.options='{ group: "products", method: "sortProducts" }'
                          class="space-y-2">
@@ -158,14 +144,66 @@
                                 </div>
                             </div>
                         @empty
-                            <x-hub::alert>
-                                {{ __('adminhub::catalogue.collections.show.no_products') }}
-                            </x-hub::alert>
+                            @if(!$products->count() && $this->productCount >= 30)
+                                <div wire:loading.remove wire:target="loadProducts">
+                                    <x-hub::button theme="gray" type="button" wire:click="loadProducts">Load {{ $this->productCount }} products</x-hub::button>
+                                </div>
+                                <div wire:loading wire:target="loadProducts">
+                                    <x-hub::loading-indicator class="w-4" />
+                                </div>
+                            @else
+                                <x-hub::alert>
+                                    {{ __('adminhub::catalogue.collections.show.no_products') }}
+                                </x-hub::alert>
+                            @endif
                         @endforelse
                     </div>
-                    @endif
                 </div>
             </div>
+
+
+            <x-hub::modal.dialog wire:model="showCreateChildForm"
+                                 form="createChildCollection">
+                <x-slot name="title">
+                        {{ __('adminhub::catalogue.collections.create.child.title', [
+                            'parent' => $collection->translateAttribute('name'),
+                        ]) }}
+                </x-slot>
+
+                <x-slot name="content">
+                    <div class="space-y-4">
+                        <x-hub::input.group :label="__('adminhub::inputs.name')"
+                                            for="name"
+                                            :error="$errors->first('childCollection.name')"
+                                            required>
+                            <x-hub::input.text wire:model="childCollection.name"
+                                               :error="$errors->first('childCollection.name')" />
+                        </x-hub::input.group>
+
+                        @if ($this->slugIsRequired)
+                            <x-hub::input.group :label="__('adminhub::inputs.slug.label')"
+                                                for="slug"
+                                                :error="$errors->first('slug')"
+                                                required>
+                                <x-hub::input.text wire:model.lazy="slug"
+                                                   :error="$errors->first('slug')" />
+                            </x-hub::input.group>
+                        @endif
+                    </div>
+                </x-slot>
+
+                <x-slot name="footer">
+                    <x-hub::button type="button"
+                                   wire:click.prevent="$set('showCreateChildForm', false)"
+                                   theme="gray">
+                        {{ __('adminhub::global.cancel') }}
+                    </x-hub::button>
+
+                    <x-hub::button type="submit">
+                        {{ __('adminhub::catalogue.collections.create.btn') }}
+                    </x-hub::button>
+                </x-slot>
+            </x-hub::modal.dialog>
 
             <div class="shadow sm:rounded-md"
                  id="collections">
@@ -174,21 +212,49 @@
                         <h3 class="text-lg font-medium leading-6 text-gray-900">
                             {{ __('adminhub::menu.collections') }}
                         </h3>
+                        
+                        <x-hub::button wire:click.prevent="$set('showCreateChildForm', true)">
+                            {{ __('adminhub::catalogue.collections.groups.node.add_child') }}
+                        </x-hub::button>
                     </header>
 
-                    <div class="space-y-2">
-                        @forelse($collection->children as $child)
+                    <div class="space-y-2"
+                        wire:sort
+                        sort.options='{group: "collection_child", method: "sort"}'>
+                        @forelse($children as $child)
                             <div
-                                 class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded">
-                                {{ $child->translateAttribute('name') }}
+                                wire:key="child_{{ $child['id'] }}"
+                                sort.item="collection_child"
+                                sort.id="{{ $child['id'] }}"
+                                class="flex items-center">
+                                <div wire:loading
+                                    wire:target="sort">
+                                    <x-hub::icon ref="refresh"
+                                                style="solid"
+                                                class="w-5 mr-2 text-gray-300 rotate-180 animate-spin" />
+                                </div>
 
-                                <a href="{{ route('hub.collections.show', [
-                                    'group' => $collection->group,
-                                    'collection' => $child,
-                                ]) }}"
-                                   class="text-sm text-blue-500 hover:underline">
-                                    {{ __('adminhub::global.edit') }}
-                                </a>
+                                <div wire:loading.remove
+                                    wire:target="sort">
+                                    <div sort.handle
+                                        class="cursor-grab">
+                                        <x-hub::icon ref="selector"
+                                                    style="solid"
+                                                    class="mr-2 text-gray-400 hover:text-gray-700" />
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-center justify-between w-full px-3 py-3 text-sm bg-white border rounded sort-item-element">
+                                    {{ $child->translateAttribute('name') }}
+
+                                    <a href="{{ route('hub.collections.show', [
+                                        'group' => $collection->group,
+                                        'collection' => $child,
+                                    ]) }}"
+                                    class="text-sm text-sky-500 hover:underline">
+                                        {{ __('adminhub::global.edit') }}
+                                    </a>
+                                </div>
                             </div>
                         @empty
                             <x-hub::alert>
@@ -198,6 +264,70 @@
                     </div>
                 </div>
             </div>
+
+            @if ($collection->id)
+                <div class="bg-white border rounded shadow border-red-300">
+                    <header class="px-6 py-4 bg-white border-b rounded-t border-red-300 text-red-700">
+                        {{ __('adminhub::inputs.danger_zone.title') }}
+                    </header>
+
+                    <div class="p-6 text-sm">
+                        <div class="grid grid-cols-12 gap-4">
+                            <div class="col-span-12 lg:col-span-8">
+                                <strong>
+                                    {{ __('adminhub::catalogue.collections.delete.title') }}
+                                </strong>
+
+                                <p class="text-xs text-gray-600">
+                                    {{ __('adminhub::catalogue.collections.delete.warning') }}
+                                </p>
+                            </div>
+
+                            <div class="col-span-6 text-right lg:col-span-4">
+                                <x-hub::button :disabled="false"
+                                            wire:click="$set('showDeleteConfirm', true)"
+                                            type="button"
+                                            theme="danger">
+                                    {{ __('adminhub::global.delete') }}
+                                </x-hub::button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <x-hub::modal.dialog wire:model="showDeleteConfirm">
+                    <x-slot name="title">
+                        {{ __('adminhub::catalogue.collections.delete.title') }}
+                    </x-slot>
+
+                    <x-slot name="content">
+                        @if ($childCount = $children->count())
+                            <x-hub::alert level="danger">
+                                {{ __('adminhub::catalogue.collections.delete.child.warning', [
+                                    'count' => $childCount,
+                                ]) }}
+                            </x-hub::alert>
+                        @else
+                            <p>{{ __('adminhub::catalogue.collections.delete.root.warning') }}</p>
+                        @endif
+                    </x-slot>
+
+                    <x-slot name="footer">
+                        <div class="flex items-center justify-end space-x-4">
+                            <x-hub::button theme="gray"
+                                           type="button"
+                                           wire:click.prevent="$set('showDeleteConfirm', false)">
+                                {{ __('adminhub::global.cancel') }}
+                            </x-hub::button>
+
+                            <x-hub::button wire:click="deleteCollection"
+                                           theme="danger">
+                                {{ __('adminhub::catalogue.collections.delete.btn') }}
+                            </x-hub::button>
+                        </div>
+                    </x-slot>
+                </x-hub::modal.dialog>
+            @endif
         </div>
 
         <x-hub::layout.page-menu>
@@ -209,13 +339,13 @@
                     <a href="#{{ $item['id'] }}"
                        @class([
                            'flex items-center gap-2 p-2 rounded text-gray-500',
-                           'hover:bg-blue-50 hover:text-blue-700' => empty($item['has_errors']),
+                           'hover:bg-sky-50 hover:text-sky-700' => empty($item['has_errors']),
                            'text-red-600 bg-red-50' => !empty($item['has_errors']),
                        ])
                        aria-current="page"
                        x-data="{ linkId: '#{{ $item['id'] }}' }"
                        :class="{
-                           'bg-blue-50 text-blue-700 hover:text-blue-600': linkId === activeAnchorLink
+                           'bg-sky-50 text-sky-700 hover:text-sky-600': linkId === activeAnchorLink
                        }"
                        x-on:click="activeAnchorLink = linkId">
                         @if (!empty($item['has_errors']))

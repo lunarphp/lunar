@@ -2,28 +2,30 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Brands;
 
+use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Lunar\Hub\Http\Livewire\Traits\HasImages;
 use Lunar\Hub\Http\Livewire\Traits\HasSlots;
 use Lunar\Hub\Http\Livewire\Traits\HasUrls;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
+use Lunar\Hub\Http\Livewire\Traits\WithAttributes;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
+use Lunar\Models\Attribute;
 use Lunar\Models\Brand;
 
 class BrandShow extends Component
 {
-    use HasSlots;
-    use Notifies;
     use HasImages;
-    use WithFileUploads;
+    use HasSlots;
     use HasUrls;
+    use Notifies;
+    use WithAttributes;
+    use WithFileUploads;
     use WithLanguages;
 
     /**
      * The current brand we're showing.
-     *
-     * @var Brand
      */
     public Brand $brand;
 
@@ -43,6 +45,19 @@ class BrandShow extends Component
             [],
             $this->getHasImagesListeners(),
             $this->getHasSlotsListeners(),
+        );
+    }
+
+    /**
+     * Returns any custom validation messages.
+     *
+     * @return array
+     */
+    protected function getValidationMessages()
+    {
+        return array_merge(
+            [],
+            $this->withAttributesValidationMessages(),
         );
     }
 
@@ -77,8 +92,29 @@ class BrandShow extends Component
             [
                 'brand.name' => 'required|string|max:255',
             ],
-            $this->hasUrlsValidationRules()
+            $this->hasUrlsValidationRules(),
+            $this->withAttributesValidationRules(),
         );
+    }
+
+    /**
+     * Get the collection attribute data.
+     *
+     * @return void
+     */
+    public function getAttributeDataProperty()
+    {
+        return $this->brand->attribute_data;
+    }
+
+    /**
+     * Returns all available attributes.
+     *
+     * @return void
+     */
+    public function getAvailableAttributesProperty()
+    {
+        return Attribute::whereAttributeType(Brand::class)->orderBy('position')->get();
     }
 
     /**
@@ -101,7 +137,18 @@ class BrandShow extends Component
      */
     public function update()
     {
-        $this->validate();
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                if ($validator->errors()->count()) {
+                    $this->notify(
+                        __('adminhub::validation.generic'),
+                        level: 'error'
+                    );
+                }
+            });
+        })->validate(null, $this->getValidationMessages());
+
+        $this->brand->attribute_data = $this->prepareAttributeData();
         $this->brand->save();
 
         $this->updateImages();

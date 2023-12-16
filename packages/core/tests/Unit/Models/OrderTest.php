@@ -4,6 +4,11 @@ namespace Lunar\Tests\Unit\Models;
 
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\DataTypes\Price;
+use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\Language;
@@ -37,6 +42,22 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function can_fetch_cart_relationship()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+        $cart = Cart::factory()->create();
+
+        $order = Order::factory()->create([
+            'cart_id' => $cart->id,
+            'user_id' => null,
+        ]);
+
+        $this->assertEquals($cart->id, $order->cart->id);
+    }
+
+    /** @test */
     public function can_make_an_order()
     {
         Currency::factory()->create([
@@ -65,13 +86,10 @@ class OrderTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['name' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $this->assertIsObject($order->meta);
-        $this->assertIsIterable($order->tax_breakdown);
+        $this->assertInstanceOf(TaxBreakdown::class, $order->tax_breakdown);
         $this->assertInstanceOf(DateTime::class, $order->placed_at);
     }
 
@@ -87,10 +105,7 @@ class OrderTest extends TestCase
             'placed_at' => now(),
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
+            ]
         ]);
 
         $this->assertCount(0, $order->lines);
@@ -202,5 +217,64 @@ class OrderTest extends TestCase
 
         $this->assertEquals($customer->id, $order->customer->id);
         $this->assertEquals($user->getKey(), $order->user->getKey());
+    }
+
+    /** @test */
+    public function can_check_order_is_placed()
+    {
+        Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $order = Order::factory()->create([
+            'user_id' => null,
+        ]);
+
+        $this->assertTrue($order->isDraft());
+
+        $order->placed_at = now();
+
+        $this->assertTrue($order->isPlaced());
+    }
+
+    /** @test */
+    public function can_cast_and_store_shipping_breakdown()
+    {
+        $order = Order::factory()->create();
+
+        $breakdown = new ShippingBreakdown(
+            items: collect([
+                new ShippingBreakdownItem(
+                    name: 'Breakdown A',
+                    identifier: 'BA',
+                    price: $shippingPrice = new Price(123, $currency = Currency::getDefault(), 1)
+                ),
+            ])
+        );
+
+        $order->shipping_breakdown = $breakdown;
+
+        $order->save();
+
+        $this->assertDatabaseHas((new Order)->getTable(), [
+            'shipping_breakdown' => json_encode([[
+                'name' => 'Breakdown A',
+                'identifier' => 'BA',
+                'value' => 123,
+                'formatted' => $shippingPrice->formatted,
+                'currency' => $currency->toArray(),
+            ]]),
+        ]);
+
+        $breakdown = $order->refresh()->shipping_breakdown;
+
+        $this->assertCount(1, $breakdown->items);
+
+        $breakdownItem = $breakdown->items->first();
+
+        $this->assertEquals('Breakdown A', $breakdownItem->name);
+        $this->assertEquals('BA', $breakdownItem->identifier);
+        $this->assertInstanceOf(Price::class, $breakdownItem->price);
+        $this->assertEquals(123, $breakdownItem->price->value);
     }
 }

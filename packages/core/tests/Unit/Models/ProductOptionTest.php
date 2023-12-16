@@ -46,7 +46,7 @@ class ProductOptionTest extends TestCase
         $productOption = ProductOption::factory()->create();
 
         $this->expectException(QueryException::class);
-        $this->expectWarningMessage('UNIQUE constraint failed');
+        $this->expectExceptionMessage('UNIQUE constraint failed');
         ProductOption::factory()->create([
             'handle' => $productOption->handle,
         ]);

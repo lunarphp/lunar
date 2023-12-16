@@ -10,7 +10,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ScriptsController extends Controller
 {
     /**
-     * @param  string  $script
      * @return \Lunar\Hub\Assets\Script
      *
      * @throws HttpException

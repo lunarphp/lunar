@@ -16,7 +16,7 @@ class AddonShow extends Component
      */
     public function render(Manifest $manifest)
     {
-        $addon = $manifest->addons()->first(fn ($addon) => $addon['marketplaceId'] === $this->addon);
+        $addon = $manifest->addons()->first(fn ($addon) => $addon['id'] == $this->addon);
 
         return view('adminhub::livewire.components.settings.addons.show', [
             'details' => $addon,

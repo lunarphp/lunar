@@ -8,17 +8,36 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\AttributeFactory;
+use Lunar\Facades\DB;
 
+/**
+ * @property int $id
+ * @property string $attribute_type
+ * @property int $attribute_group_id
+ * @property int $position
+ * @property string $name
+ * @property string $handle
+ * @property string $section
+ * @property string $type
+ * @property bool $required
+ * @property ?string $default_value
+ * @property string $configuration
+ * @property bool $system
+ * @property string $validation_rules
+ * @property bool $filterable
+ * @property bool $searchable
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Attribute extends BaseModel
 {
     use HasFactory;
-    use HasTranslations;
     use HasMacros;
+    use HasTranslations;
 
     public static function boot()
     {
@@ -32,8 +51,6 @@ class Attribute extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\AttributeFactory
      */
     protected static function newFactory(): AttributeFactory
     {
@@ -60,8 +77,6 @@ class Attribute extends BaseModel
 
     /**
      * Return the attribuable relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function attributable(): MorphTo
     {
@@ -70,8 +85,6 @@ class Attribute extends BaseModel
 
     /**
      * Returns the attribute group relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function attributeGroup(): BelongsTo
     {
@@ -81,7 +94,6 @@ class Attribute extends BaseModel
     /**
      * Apply the system scope to the query builder.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $type
      * @return void
      */

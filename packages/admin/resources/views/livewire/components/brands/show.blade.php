@@ -1,12 +1,12 @@
-<div class="space-y-4">
+<div class="space-y-4 pb-24">
     <header>
         <div class="flex items-center gap-4">
             <a href="{{ route('hub.brands.index') }}"
-               class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+               class="text-gray-600 rounded bg-gray-50 hover:bg-sky-500 hover:text-white"
                title="{{ __('adminhub::catalogue.brands.show.back_link_title') }}">
                 <x-hub::icon ref="chevron-left"
                              style="solid"
-                             class="w-8 h-8" />
+                             class="w-8 h-8"/>
             </a>
             <h1 class="text-xl font-bold md:text-xl">
                 {{ $brand->name }}
@@ -14,13 +14,7 @@
         </div>
     </header>
 
-    <div
-        class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-        :class="{
-            'lg:w-[calc(100vw_-_16rem)]': !menuCollapsed,
-            'w-full': menuCollapsed
-        }"
-    >
+    <x-hub::layout.bottom-panel>
         <form wire:submit.prevent="update">
             <div class="flex justify-end">
                 <x-hub::button type="submit">
@@ -28,7 +22,7 @@
                 </x-hub::button>
             </div>
         </form>
-    </div>
+    </x-hub::layout.bottom-panel>
 
     <div class="mt-8 lg:gap-8 lg:flex lg:items-start">
         <div class="space-y-6 lg:flex-1">
@@ -36,13 +30,17 @@
             @foreach ($this->getSlotsByPosition('top') as $slot)
                 <div id="{{ $slot->handle }}">
                     <div>
-                        @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
+                        @livewire($slot->component, ['slotModel' => $brand], key('top-slot-' . $slot->handle))
                     </div>
                 </div>
             @endforeach
 
             <div>
                 @include('adminhub::partials.forms.brand')
+            </div>
+
+            <div id="attributes">
+                @include('adminhub::partials.attributes')
             </div>
 
             <div id="images">
@@ -57,10 +55,11 @@
                 @include('adminhub::partials.urls')
             </div>
 
+
             @foreach ($this->getSlotsByPosition('bottom') as $slot)
                 <div id="{{ $slot->handle }}">
                     <div>
-                        @livewire($slot->component, ['slotModel' => $customer], key('top-slot-' . $slot->handle))
+                        @livewire($slot->component, ['slotModel' => $brand], key('top-slot-' . $slot->handle))
                     </div>
                 </div>
             @endforeach
@@ -89,7 +88,7 @@
                         </div>
                     @else
                         <div class="col-span-9 lg:col-span-4">
-                            <x-hub::input.text wire:model="deleteConfirm" />
+                            <x-hub::input.text wire:model="deleteConfirm"/>
                         </div>
 
                         <div class="col-span-3 text-right lg:col-span-2">

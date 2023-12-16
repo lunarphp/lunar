@@ -10,8 +10,8 @@ use Lunar\Models\AttributeGroup;
 
 class AttributeGroupEdit extends Component
 {
-    use WithLanguages;
     use Notifies;
+    use WithLanguages;
 
     /**
      * The type of attributable this is.
@@ -39,13 +39,16 @@ class AttributeGroupEdit extends Component
      */
     public function rules()
     {
-        return [
-            "attributeGroup.name.{$this->defaultLanguage->code}" => [
-                'required',
-                'string',
-                'max:255',
-            ],
-        ];
+        $rules = [];
+
+        $this->languages->each(function ($language) use (&$rules) {
+            $rules["attributeGroup.name.{$language->code}"] = array_merge(
+                ['string', 'max:255'],
+                $language->default ? ['required'] : []
+            );
+        });
+
+        return $rules;
     }
 
     /**
@@ -54,7 +57,7 @@ class AttributeGroupEdit extends Component
     protected function validationAttributes()
     {
         return [
-            "attributeGroup.name.{$this->defaultLanguage->code}" => lang(key:'inputs.name', lower:true),
+            "attributeGroup.name.{$this->defaultLanguage->code}" => lang(key: 'inputs.name', lower: true),
         ];
     }
 
@@ -73,9 +76,15 @@ class AttributeGroupEdit extends Component
         $handle = Str::handle("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
         $this->attributeGroup->handle = $handle;
 
+        $uniquenessConstraint = 'unique:' . get_class($this->attributeGroup) . ',handle';
+        if ($this->attributeGroup->id) {
+            $uniquenessConstraint .= ',' . $this->attributeGroup->id;
+        }
+
         $this->validate([
-            'attributeGroup.handle' => 'unique:'.get_class($this->attributeGroup).',handle',
+            'attributeGroup.handle' => $uniquenessConstraint,
         ]);
+
 
         if ($this->attributeGroup->id) {
             $this->attributeGroup->save();

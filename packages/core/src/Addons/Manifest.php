@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Lunar\Licensing\LicenseManager;
 use ReflectionClass;
 
 /**
@@ -67,21 +66,16 @@ class Manifest extends PackageManifest
             'license' => null,
         ]);
 
-        $license = LicenseManager::fetch($package['name'], $config);
-
         return [
-            'id' => $package['name'],
+            'id' => base64_encode($package['name']),
             'slug' => $lunar['slug'] ?? null,
             'editions' => $lunar['editions'] ?? [],
-            'marketplaceId' => data_get($license, 'id', null),
-            'marketplaceUrl' => data_get($license, 'url', null),
-            'licensed' => data_get($license, 'licensed', false),
-            'latestVersion' => data_get($license, 'latestVersion', null),
+            'github_url' => $package['source']['url'],
             'version' => $package['version'],
             'namespace' => $namespace,
             'autoload' => $autoload,
             'provider' => $provider,
-            'name' => $statamic['name'] ?? Arr::last($providerParts),
+            'name' => $lunar['name'] ?? Arr::last($providerParts),
             'author' => $author['name'] ?? null,
             'email' => $package['support']['email'] ?? null,
         ];
@@ -89,8 +83,6 @@ class Manifest extends PackageManifest
 
     /**
      * Get a collection of our addons.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function addons(): Collection
     {

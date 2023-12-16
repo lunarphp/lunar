@@ -3,10 +3,20 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxRateFactory;
 
+/**
+ * @property int $id
+ * @property ?int $tax_zone_id
+ * @property bool $priority
+ * @property string $name
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class TaxRate extends BaseModel
 {
     use HasFactory;
@@ -14,8 +24,6 @@ class TaxRate extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TaxRateFactory
      */
     protected static function newFactory(): TaxRateFactory
     {
@@ -32,20 +40,16 @@ class TaxRate extends BaseModel
 
     /**
      * Return the tax zone relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function taxZone()
+    public function taxZone(): BelongsTo
     {
         return $this->belongsTo(TaxZone::class);
     }
 
     /**
      * Return the tax rate amounts relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function taxRateAmounts()
+    public function taxRateAmounts(): HasMany
     {
         return $this->hasMany(TaxRateAmount::class);
     }

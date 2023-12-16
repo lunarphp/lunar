@@ -77,6 +77,6 @@ class WithLanguagesTest extends TestCase
             ->test(ProductShow::class, [
                 'product' => $product,
             ])->assertSet('defaultLanguage.id', $defaultLanguage->id)
-                ->assertCount('languages', Language::count());
+            ->assertCount('languages', Language::count());
     }
 }

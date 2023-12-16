@@ -3,8 +3,8 @@
 namespace Lunar\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\AdminHubServiceProvider;
 use Lunar\Models\Attribute;
@@ -38,8 +38,6 @@ class InstallLunar extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle(): void
     {
@@ -250,7 +248,7 @@ class InstallLunar extends Command
         $this->newLine();
 
         $this->line('Please show some love for Lunar by giving us a star on GitHub ⭐️');
-        $this->info('https://github.com/lunarphp/lunar️');
+        $this->info('https://github.com/lunarphp/lunar');
         $this->newLine(3);
     }
 
@@ -258,7 +256,6 @@ class InstallLunar extends Command
      * Checks if config exists given a filename.
      *
      * @param  string  $fileName
-     * @return bool
      */
     private function configExists($fileName): bool
     {
@@ -271,8 +268,6 @@ class InstallLunar extends Command
 
     /**
      * Returns a prompt if config exists and ask to override it.
-     *
-     * @return bool
      */
     private function shouldOverwriteConfig(): bool
     {
@@ -286,7 +281,6 @@ class InstallLunar extends Command
      * Publishes configuration for the Service Provider.
      *
      * @param  bool  $forcePublish
-     * @return void
      */
     private function publishConfiguration($forcePublish = false): void
     {

@@ -7,12 +7,16 @@ use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
-use Lunar\DiscountTypes\Discount as DiscountTypesDiscount;
+use Lunar\DiscountTypes\AmountOff;
+use Lunar\Facades\Discounts;
 use Lunar\Managers\DiscountManager;
+use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
+use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
+use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Stubs\TestDiscountType;
@@ -195,6 +199,7 @@ class DiscountManagerTest extends TestCase
 
         $discount->customerGroups()->sync([
             $channel->id => [
+                'visible' => false,
                 'enabled' => false,
                 'starts_at' => now(),
             ],
@@ -209,7 +214,7 @@ class DiscountManagerTest extends TestCase
                 'starts_at' => now()->addMinutes(1),
             ],
             $customerGroupTwo->id => [
-                'enabled' => true,
+                'enabled' => false,
                 'visible' => false,
                 'starts_at' => now()->addMinutes(1),
             ],
@@ -295,7 +300,7 @@ class DiscountManagerTest extends TestCase
         $manager = app(DiscountManagerInterface::class);
 
         Discount::factory()->create([
-            'type' => DiscountTypesDiscount::class,
+            'type' => AmountOff::class,
             'name' => 'Test Coupon',
             'coupon' => '10OFF',
             'data' => [
@@ -311,5 +316,117 @@ class DiscountManagerTest extends TestCase
         $this->assertFalse(
             $manager->validateCoupon('20OFF')
         );
+    }
+
+    /**
+     * @test
+     *
+     * @group moomoo
+     */
+    public function can_get_discount_with_coupon()
+    {
+        $currency = Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $customerGroup = CustomerGroup::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'coupon_code' => null,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+
+        Price::factory()->create([
+            'price' => 1000, // £10
+            'tier' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id' => $purchasableA->id,
+        ]);
+
+        $cart->lines()->create([
+            'purchasable_type' => get_class($purchasableA),
+            'purchasable_id' => $purchasableA->id,
+            'quantity' => 2,
+        ]);
+
+        $discountA = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Discount A',
+            'coupon' => null,
+            'starts_at' => now(),
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10,
+                ],
+            ],
+        ]);
+
+        $discountA->channels()->attach([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discountA->customerGroups()->attach([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discountB = Discount::factory()->create([
+            'type' => AmountOff::class,
+            'name' => 'Test Discount B',
+            'coupon' => null,
+            'starts_at' => now(),
+            'data' => [
+                'fixed_value' => true,
+                'fixed_values' => [
+                    'GBP' => 10,
+                ],
+            ],
+        ]);
+
+        $discountB->channels()->attach([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discountB->customerGroups()->attach([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $this->assertCount(2, Discounts::getDiscounts($cart));
+
+        $discountA->update([
+            'coupon' => 'ABCD',
+        ]);
+
+        $discountB->update([
+            'coupon' => 'ABCDEF',
+        ]);
+
+        $cart->update([
+            'coupon_code' => 'ABCDEF',
+        ]);
+
+        $this->assertCount(1, Discounts::getDiscounts($cart->refresh()));
     }
 }

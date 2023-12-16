@@ -11,13 +11,24 @@ use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CurrencyFactory;
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property float $exchange_rate
+ * @property int $decimal_places
+ * @property bool $enabled
+ * @property bool $default
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Currency extends BaseModel
 {
-    use HasFactory;
-    use LogsActivity;
     use HasDefaultRecord;
-    use HasMacros;
+    use HasFactory;
     use HasJobBatches;
+    use HasMacros;
+    use LogsActivity;
 
     /**
      * Define which attributes should be
@@ -29,8 +40,6 @@ class Currency extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CurrencyFactory
      */
     protected static function newFactory(): CurrencyFactory
     {
@@ -39,10 +48,8 @@ class Currency extends BaseModel
 
     /**
      * Return the prices relationship
-     *
-     * @return HasMany
      */
-    public function prices()
+    public function prices(): HasMany
     {
         return $this->hasMany(Price::class);
     }
@@ -50,10 +57,8 @@ class Currency extends BaseModel
     /**
      * Returns the amount we need to multiply or divide the price
      * for the cents/pence.
-     *
-     * @return string
      */
-    public function getFactorAttribute()
+    public function getFactorAttribute(): string
     {
         /**
          * If we figure out how many decimal places we need, we can work

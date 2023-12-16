@@ -16,6 +16,20 @@ class GetTaxZone
             }
         }
 
+        if ($address && $address->state) {
+            $stateZone = app(GetTaxZoneState::class)->execute($address->state);
+            if ($stateZone) {
+                return $stateZone->taxZone;
+            }
+        }
+
+        if ($address && $address->country_id) {
+            $countryZone = app(GetTaxZoneCountry::class)->execute($address->country_id);
+            if ($countryZone) {
+                return $countryZone->taxZone;
+            }
+        }
+
         return TaxZone::getDefault();
     }
 }

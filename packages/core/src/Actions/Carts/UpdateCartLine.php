@@ -2,8 +2,8 @@
 
 namespace Lunar\Actions\Carts;
 
-use Illuminate\Support\Facades\DB;
 use Lunar\Actions\AbstractAction;
+use Lunar\Facades\DB;
 use Lunar\Models\CartLine;
 
 class UpdateCartLine extends AbstractAction

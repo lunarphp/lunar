@@ -12,7 +12,7 @@
           class="space-y-6">
         <div class="flex items-center gap-4">
             <a href="{{ route('hub.products.show', $product) }}"
-               class="text-gray-600 rounded bg-gray-50 hover:bg-indigo-500 hover:text-white"
+               class="text-gray-600 rounded bg-gray-50 hover:bg-sky-500 hover:text-white"
                title="Go back to product listing">
                 <x-hub::icon ref="chevron-left"
                              style="solid"
@@ -50,8 +50,8 @@
                         ]) }}"
                            @class([
                                'p-2 rounded text-gray-500 flex items-center gap-2',
-                               'bg-blue-50 text-blue-700 hover:text-blue-600' => $variant->id == $v->id,
-                               'hover:bg-blue-50 hover:text-blue-700' => $variant->id != $v->id,
+                               'bg-sky-50 text-sky-700 hover:text-sky-600' => $variant->id == $v->id,
+                               'hover:bg-sky-50 hover:text-sky-700' => $variant->id != $v->id,
                            ])
                            aria-current="page">
                             <div class="shrink-0">
@@ -77,17 +77,11 @@
             </x-hub::slideover-simple>
         </div>
 
-        <div
-            class="fixed bottom-0 left-0 right-0 z-40 p-6 border-t border-gray-100 lg:left-auto bg-white/75"
-            :class="{
-                'lg:w-[calc(100vw_-_16rem)]': !menuCollapsed,
-                'w-full': menuCollapsed
-            }"
-        >
+        <x-hub::layout.bottom-panel>
             <div class="flex justify-end">
                 <x-hub::button>Save Variant</x-hub::button>
             </div>
-        </div>
+        </x-hub::layout.bottom-panel>
 
         <div class="space-y-6">
             @foreach ($this->getSlotsByPosition('top') as $slot)

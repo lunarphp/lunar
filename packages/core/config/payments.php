@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'default' => env('PAYMENTS_TYPE', 'offline'),
+
+    'default' => env('PAYMENTS_TYPE', 'cash-in-hand'),
 
     'types' => [
         'cash-in-hand' => [
@@ -9,4 +10,5 @@ return [
             'authorized' => 'payment-offline',
         ],
     ],
+
 ];

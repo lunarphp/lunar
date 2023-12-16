@@ -11,7 +11,6 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "creating" event.
      *
-     * @param  \Lunar\Models\OrderLine  $orderLine
      * @return void
      */
     public function creating(OrderLine $orderLine)
@@ -24,12 +23,11 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "updated" event.
      *
-     * @param  \Lunar\Models\OrderLine  $orderLine
      * @return void
      */
     public function updating(OrderLine $orderLine)
     {
-        if (! $orderLine->purchasable instanceof Purchasable) {
+        if ($orderLine->type != 'shipping' && ! $orderLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($orderLine->purchasable_type);
         }
     }

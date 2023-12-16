@@ -2,7 +2,9 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -10,17 +12,38 @@ use Lunar\Base\Traits\HasPersonalDetails;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\OrderAddressFactory;
 
+/**
+ * @property int $id
+ * @property int $order_id
+ * @property ?int $country_id
+ * @property ?string $title
+ * @property ?string $first_name
+ * @property ?string $last_name
+ * @property ?string $company_name
+ * @property ?string $line_one
+ * @property ?string $line_two
+ * @property ?string $line_three
+ * @property ?string $city
+ * @property ?string $state
+ * @property ?string $postcode
+ * @property ?string $delivery_instructions
+ * @property ?string $contact_email
+ * @property ?string $contact_phone
+ * @property string $type
+ * @property ?string $shipping_option
+ * @property array $meta
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class OrderAddress extends BaseModel implements Addressable
 {
     use HasFactory;
-    use LogsActivity;
-    use HasPersonalDetails;
     use HasMacros;
+    use HasPersonalDetails;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\OrderAddressFactory
      */
     protected static function newFactory(): OrderAddressFactory
     {
@@ -34,6 +57,7 @@ class OrderAddress extends BaseModel implements Addressable
      * @var array
      */
     protected $fillable = [
+        'order_id',
         'country_id',
         'title',
         'first_name',
@@ -58,25 +82,21 @@ class OrderAddress extends BaseModel implements Addressable
      * @var array
      */
     protected $casts = [
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**
      * Return the order relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
     /**
      * Return the country relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function country()
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

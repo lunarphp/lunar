@@ -10,15 +10,11 @@ class VariantShow extends Component
 {
     /**
      * The current product.
-     *
-     * @var \Lunar\Models\Product
      */
     public Product $product;
 
     /**
      * The current variant.
-     *
-     * @var \Lunar\Models\ProductVariant
      */
     public ProductVariant $variant;
 

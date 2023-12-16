@@ -9,7 +9,6 @@ class CurrencyObserver
     /**
      * Handle the Currency "created" event.
      *
-     * @param Currency $currency
      * @return void
      */
     public function created(Currency $currency)
@@ -20,7 +19,6 @@ class CurrencyObserver
     /**
      * Handle the Currency "updated" event.
      *
-     * @param Currency $currency
      * @return void
      */
     public function updated(Currency $currency)
@@ -42,7 +40,6 @@ class CurrencyObserver
     /**
      * Handle the Currency "deleted" event.
      *
-     * @param Currency $currency
      * @return void
      */
     public function deleted(Currency $currency)
@@ -53,7 +50,6 @@ class CurrencyObserver
     /**
      * Handle the Currency "forceDeleted" event.
      *
-     * @param Currency $currency
      * @return void
      */
     public function forceDeleted(Currency $currency)
@@ -64,8 +60,7 @@ class CurrencyObserver
     /**
      * Ensures that only one default currency exists.
      *
-     * @param Currency $savedCurrency The currency that was just saved.
-     * @return void
+     * @param  \Lunar\Models\Currency  $savedCurrency  The currency that was just saved.
      */
     protected function ensureOnlyOneDefault(Currency $savedCurrency): void
     {

@@ -34,8 +34,6 @@ class OrderCapture extends Component
 
     /**
      * The instance of the order to capture.
-     *
-     * @var Order
      */
     public Order $order;
 

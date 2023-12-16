@@ -3,6 +3,7 @@
 namespace Lunar\Managers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Lunar\Base\DataTransferObjects\PricingResponse;
@@ -15,39 +16,40 @@ use Lunar\Models\CustomerGroup;
 class PricingManager implements PricingManagerInterface
 {
     /**
-     * The instance of the purchasable model.
-     *
-     * @var \Lunar\Base\Purchasable
+     * The DTO of the pricing.
      */
-    protected Purchasable $purchasable;
+    public PricingResponse $pricing;
+
+    /**
+     * The instance of the purchasable model.
+     */
+    public Purchasable $purchasable;
 
     /**
      * The instance of the user.
      *
      * @var \Illuminate\Contracts\Auth\Authenticatable
      */
-    protected ?Authenticatable $user = null;
+    public ?Authenticatable $user = null;
 
     /**
      * The instance of the currency.
      *
      * @var \Lunar\Models\Currency
      */
-    protected ?Currency $currency = null;
+    public ?Currency $currency = null;
 
     /**
      * The quantity value.
-     *
-     * @var int
      */
-    protected int $qty = 1;
+    public int $qty = 1;
 
     /**
      * The customer groups to check against.
      *
      * @var \Illuminate\Support\Collection
      */
-    protected ?Collection $customerGroups = null;
+    public ?Collection $customerGroups = null;
 
     public function __construct()
     {
@@ -59,7 +61,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the purchasable property.
      *
-     * @param  \Lunar\Base\Purchasable  $purchasable
      * @return self
      */
     public function for(Purchasable $purchasable)
@@ -110,7 +111,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the quantity property.
      *
-     * @param  int  $qty
      * @return self
      */
     public function qty(int $qty)
@@ -215,12 +215,18 @@ class PricingManager implements PricingManagerInterface
 
         $matched = $tieredPricing->first() ?: $matched;
 
-        $response = new PricingResponse(
+        $this->pricing = new PricingResponse(
             matched: $matched,
             base: $prices->first(fn ($price) => $price->tier == 1),
             tiered: $prices->filter(fn ($price) => $price->tier > 1),
             customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
         );
+
+        $response = app(Pipeline::class)
+            ->send($this)
+            ->through(
+                config('lunar.pricing.pipelines', [])
+            )->then(fn ($pricingManager) => $pricingManager->pricing);
 
         $this->reset();
 
@@ -235,7 +241,6 @@ class PricingManager implements PricingManagerInterface
     private function reset()
     {
         $this->qty = 1;
-        $this->user = null;
         $this->customerGroups = null;
     }
 }

@@ -51,6 +51,8 @@ class ProductShowTest extends TestCase
     /** @test */
     public function cant_view_page_without_permission()
     {
+        $this->setupRolesPermissions();
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
@@ -66,15 +68,13 @@ class ProductShowTest extends TestCase
     /** @test */
     public function can_view_page_with_correct_permission()
     {
+        $this->setupRolesPermissions();
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
 
-        $staff->permissions()->createMany([
-            [
-                'handle' => 'catalogue:manage-products',
-            ],
-        ]);
+        $staff->givePermissionTo('catalogue:manage-products');
 
         $this->actingAs($staff, 'staff');
 
@@ -102,15 +102,13 @@ class ProductShowTest extends TestCase
     /** @test */
     public function product_with_one_variant_has_variant_components_visible()
     {
+        $this->setupRolesPermissions();
+
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
 
-        $staff->permissions()->createMany([
-            [
-                'handle' => 'catalogue:manage-products',
-            ],
-        ]);
+        $staff->givePermissionTo('catalogue:manage-products');
 
         $this->actingAs($staff, 'staff');
 
@@ -139,15 +137,12 @@ class ProductShowTest extends TestCase
     /** @test */
     public function product_with_variants_does_not_have_variant_components_visible()
     {
+        $this->setupRolesPermissions();
         $staff = Staff::factory()->create([
             'admin' => false,
         ]);
 
-        $staff->permissions()->createMany([
-            [
-                'handle' => 'catalogue:manage-products',
-            ],
-        ]);
+        $staff->givePermissionTo('catalogue:manage-products');
 
         $this->actingAs($staff, 'staff');
 

@@ -7,8 +7,8 @@
             ]) }}"
                @class([
                    'p-2 rounded text-gray-500 flex items-center gap-2',
-                   'bg-blue-50 text-blue-700 hover:text-blue-600' => $variant->id == $v->id,
-                   'hover:bg-blue-50 hover:text-blue-700' => $variant->id != $v->id,
+                   'bg-sky-50 text-sky-700 hover:text-sky-600' => $variant->id == $v->id,
+                   'hover:bg-sky-50 hover:text-sky-700' => $variant->id != $v->id,
                ])
                aria-current="page">
                 <div class="shrink-0">

@@ -4,6 +4,8 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
@@ -11,12 +13,20 @@ use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\ProductOptionValueFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
+/**
+ * @property int $id
+ * @property int $product_option_id
+ * @property string $name
+ * @property int $position
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class ProductOptionValue extends BaseModel implements SpatieHasMedia
 {
     use HasFactory;
+    use HasMacros;
     use HasMedia;
     use HasTranslations;
-    use HasMacros;
 
     /**
      * Define which attributes should be cast.
@@ -29,8 +39,6 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductOptionValueFactory
      */
     protected static function newFactory(): ProductOptionValueFactory
     {
@@ -45,22 +53,22 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
-    protected function setNameAttribute($value)
-    {
-        $this->attributes['name'] = json_encode($value);
-    }
-
-    public function getNameAttribute($value)
+    public function getNameAttribute(string $value): mixed
     {
         return json_decode($value);
     }
 
-    public function option()
+    protected function setNameAttribute(mixed $value): void
+    {
+        $this->attributes['name'] = json_encode($value);
+    }
+
+    public function option(): BelongsTo
     {
         return $this->belongsTo(ProductOption::class, 'product_option_id');
     }
 
-    public function variants()
+    public function variants(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 

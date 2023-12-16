@@ -148,7 +148,7 @@ class ProductCreateTest extends TestCase
                     'thumbnail' => null,
                     'breadcrumb' => ['Foo', 'Bar'],
                     'position' => 1,
-                ]
+                ],
             ]))
             ->call('save')
             ->assertHasNoErrors();
@@ -204,7 +204,7 @@ class ProductCreateTest extends TestCase
             'required' => true,
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -215,7 +215,7 @@ class ProductCreateTest extends TestCase
                 "attributeMapping.a_{$attribute->id}.data.{$language->code}" => 'required',
             ])
             ->assertHasNoErrors([
-                "attributeMapping.a_{$attribute->id}.data.fr" => 'required'
+                "attributeMapping.a_{$attribute->id}.data.fr" => 'required',
             ]);
     }
 
@@ -232,10 +232,10 @@ class ProductCreateTest extends TestCase
         $attribute = Attribute::factory()->create([
             'type' => TranslatedText::class,
             'required' => false,
-            'validation_rules' => 'string,max:9'
+            'validation_rules' => 'string,max:9',
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -247,7 +247,7 @@ class ProductCreateTest extends TestCase
                 "attributeMapping.a_{$attribute->id}.data.{$language->code}" => 'required',
             ])
             ->assertHasErrors([
-                "attributeMapping.a_{$attribute->id}.data.{$language->code}" => 'max'
+                "attributeMapping.a_{$attribute->id}.data.{$language->code}" => 'max',
             ]);
     }
 
@@ -263,7 +263,7 @@ class ProductCreateTest extends TestCase
             'required' => true,
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -279,7 +279,7 @@ class ProductCreateTest extends TestCase
             ->set("attributeMapping.a_{$attribute->id}.data", 'some value')
             ->call('save')
             ->assertHasNoErrors([
-                "attributeMapping.a_{$attribute->id}.data" => 'required'
+                "attributeMapping.a_{$attribute->id}.data" => 'required',
             ]);
     }
 
@@ -294,10 +294,10 @@ class ProductCreateTest extends TestCase
         $attribute = Attribute::factory()->create([
             'type' => Text::class,
             'required' => false,
-            'validation_rules' => 'numeric'
+            'validation_rules' => 'numeric',
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -341,7 +341,7 @@ class ProductCreateTest extends TestCase
             'configuration' => ['min' => 2, 'max' => 5],
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
@@ -376,7 +376,7 @@ class ProductCreateTest extends TestCase
             'configuration' => ['min' => 2, 'max' => 5],
         ]);
 
-        $productType = ProductType::all()->first();
+        $productType = ProductType::first();
 
         $productType->mappedAttributes()->attach($attribute);
 
