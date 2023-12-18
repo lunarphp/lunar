@@ -1,6 +1,6 @@
 <?php
 
-uses(\Unit\Base\Extendable\ExtendableTestCase::class);
+uses(\Lunar\Tests\Core\Unit\Base\Extendable\ExtendableTestCase::class);
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Product;
