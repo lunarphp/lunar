@@ -20,7 +20,6 @@ jobs:
       - name: Install dependencies
         run: |
           composer install --no-interaction
-          npm ci
       - name: Run Pint
         run: composer pint
       - name: Commit changes
