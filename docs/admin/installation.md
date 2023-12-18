@@ -21,11 +21,13 @@ Add the "packages" folder to your `.gitignore` file so the folder is not committ
 /packages // [!code focus]
 ```
 
-Fork and then clone the [panel](https://github.com/lunarphp/panel) to the `packages` folder, e.g. `/packages/lunar/`.
+Fork and then clone the [lunar monorepo](https://github.com/lunarphp/lunar) to the `packages` folder, e.g. `/packages/lunar/`.
 
 ```sh
-git clone https://github.com/YOUR-USERNAME/filament
+git clone https://github.com/YOUR-USERNAME/lunar
 ````
+
+Ensure you are using the `1.x` branch.
 
 Update your `composer.json` file similar to the following.
 
