@@ -67,4 +67,18 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
             }
         });
     }
+
+    public function getMediaCollectionTitles(): array
+    {
+        return [
+            'images' => __('lunar::base.standard-media-definitions.collection-titles.images'),
+        ];
+    }
+
+    public function getMediaCollectionDescriptions(): array
+    {
+        return [
+            'images' => '',
+        ];
+    }
 }

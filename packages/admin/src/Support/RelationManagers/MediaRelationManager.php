@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Admin\Filament\Resources\ProductResource\RelationManagers;
+namespace Lunar\Admin\Support\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -50,7 +50,16 @@ class MediaRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->heading(Str::ucfirst($this->mediaCollection))
+            ->heading(function () {
+                $product = $this->getOwnerRecord();
+
+                return $product->getMediaCollectionTitle('images') ?? Str::ucfirst($this->mediaCollection);
+            })
+            ->description(function () {
+                $product = $this->getOwnerRecord();
+
+                return $product->getMediaCollectionDescription('images') ?? '';
+            })
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))
             ->columns([

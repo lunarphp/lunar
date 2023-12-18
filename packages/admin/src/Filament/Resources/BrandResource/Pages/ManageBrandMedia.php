@@ -1,16 +1,16 @@
 <?php
 
-namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
+namespace Lunar\Admin\Filament\Resources\BrandResource\Pages;
 
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
-use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 
-class ManageProductMedia extends ManageRelatedRecords
+class ManageBrandMedia extends ManageRelatedRecords
 {
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = BrandResource::class;
 
     protected static string $relationship = 'media';
 

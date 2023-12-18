@@ -15,9 +15,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
-use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
+use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
@@ -217,6 +217,7 @@ class ProductResource extends BaseResource
                 }),
             SpatieMediaLibraryImageColumn::make('thumbnail')
                 ->collection('images')
+                ->conversion('small')
                 ->limit(1)
                 ->square()
                 ->label(''),

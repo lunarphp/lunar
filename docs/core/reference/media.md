@@ -131,6 +131,20 @@ class CustomMediaDefinitions implements MediaDefinitionsInterface
             }
         });
     }
+
+    public function getMediaCollectionTitles(): array
+    {
+        return [
+            'images' => 'Images',
+        ];
+    }
+
+    public function getMediaCollectionDescriptions(): array
+    {
+        return [
+            'images' => '',
+        ];
+    }
 }
 ```
 Then register your new class against the model(s) you wish to use it.

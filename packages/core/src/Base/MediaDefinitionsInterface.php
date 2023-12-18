@@ -10,4 +10,8 @@ interface MediaDefinitionsInterface
     public function registerMediaConversions(HasMedia $model, Media $media = null): void;
 
     public function registerMediaCollections(HasMedia $model): void;
+
+    public function getMediaCollectionTitles(): array;
+
+    public function getMediaCollectionDescriptions(): array;
 }
