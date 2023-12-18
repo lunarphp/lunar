@@ -19,6 +19,7 @@ class LunarPlugin implements Plugin
         Resources\BrandResource::class,
         Resources\ChannelResource::class,
         Resources\CollectionGroupResource::class,
+        Resources\CollectionResource::class,
         Resources\CurrencyResource::class,
         Resources\CustomerGroupResource::class,
         Resources\CustomerResource::class,
@@ -130,6 +131,7 @@ class LunarPlugin implements Plugin
             'actions::view-action' => 'lucide-eye',
             'actions::edit-action' => 'lucide-edit',
             'actions::delete-action' => 'lucide-trash-2',
+            'actions::make-collection-root-action' => 'lucide-corner-left-up',
 
             // Lunar
             'lunar::activity' => 'lucide-activity',
@@ -139,6 +141,8 @@ class LunarPlugin implements Plugin
             'lunar::brands' => 'lucide-badge-check',
             'lunar::channels' => 'lucide-store',
             'lunar::collections' => 'lucide-blocks',
+            'lunar::sub-collection' => 'lucide-square-stack',
+            'lunar::move-collection' => 'lucide-move',
             'lunar::currencies' => 'lucide-circle-dollar-sign',
             'lunar::customers' => 'lucide-users',
             'lunar::customer-groups' => 'lucide-users',
@@ -158,6 +162,9 @@ class LunarPlugin implements Plugin
             'lunar::tax' => 'lucide-landmark',
             'lunar::urls' => 'lucide-globe',
             'lunar::product-identifiers' => 'lucide-package-search',
+            'lunar::reorder' => 'lucide-grip-vertical',
+            'lunar::chevron-right' => 'lucide-chevron-right',
+            'lunar::image-placeholder' => 'lucide-image',
         ]);
     }
 

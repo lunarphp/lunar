@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\CollectionGroup;
@@ -45,13 +46,18 @@ class CollectionGroupResource extends BaseResource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(static::getMainFormComponents());
+            ->schema([
+                Forms\Components\Section::make()->schema(
+                    static::getMainFormComponents()
+                )->columns(2)
+            ]);
     }
 
     protected static function getMainFormComponents(): array
     {
         return [
             static::getNameFormComponent(),
+            static::getHandleFormComponent(),
         ];
     }
 
@@ -61,7 +67,24 @@ class CollectionGroupResource extends BaseResource
             ->label(__('lunarpanel::collectiongroup.form.name.label'))
             ->required()
             ->maxLength(255)
-            ->autofocus();
+            ->autofocus()
+            ->unique(ignoreRecord: true)
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+                $set('handle', Str::slug($state));
+            });
+    }
+
+    protected static function getHandleFormComponent(): Component
+    {
+        return Forms\Components\TextInput::make('handle')
+            ->label(__('lunarpanel::collectiongroup.form.handle.label'))
+            ->unique(ignoreRecord: true)
+            ->required()
+            ->maxLength(255);
     }
 
     public static function table(Table $table): Table
@@ -86,6 +109,14 @@ class CollectionGroupResource extends BaseResource
         return [
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::collectiongroup.table.name.label')),
+            Tables\Columns\TextColumn::make('handle')
+                ->label(__('lunarpanel::collectiongroup.table.handle.label')),
+            Tables\Columns\TextColumn::make('collections_count')
+                ->counts('collections')
+                ->formatStateUsing(
+                    fn($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::collectiongroup.table.collections_count.label')),
         ];
     }
 
@@ -100,7 +131,6 @@ class CollectionGroupResource extends BaseResource
     {
         return [
             'index' => Pages\ListCollectionGroups::route('/'),
-            'create' => Pages\CreateCollectionGroup::route('/create'),
             'edit' => Pages\EditCollectionGroup::route('/{record}/edit'),
         ];
     }

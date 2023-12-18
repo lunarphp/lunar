@@ -64,6 +64,11 @@ class Collection extends BaseModel implements SpatieHasMedia
         return CollectionFactory::new();
     }
 
+    public function getScopeAttributes()
+    {
+        return ['collection_group_id'];
+    }
+
     /**
      * Return the group relationship.
      *
@@ -124,5 +129,15 @@ class Collection extends BaseModel implements SpatieHasMedia
             'starts_at',
             'ends_at',
         ])->withTimestamps();
+    }
+
+    public function discounts()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Discount::class,
+            "{$prefix}collection_discount"
+        )->withPivot(['type'])->withTimestamps();
     }
 }

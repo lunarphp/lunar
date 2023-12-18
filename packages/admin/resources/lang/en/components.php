@@ -77,4 +77,27 @@ return [
             'helperText' => 'Enter the ID of the YouTube video. e.g. dQw4w9WgXcQ',
         ],
     ],
+
+    'collection-tree-view' => [
+        'actions' => [
+            'move' => [
+                'form' => [
+                    'target_id' => [
+                        'label' => 'Parent Collection',
+                    ],
+                ],
+            ],
+        ],
+        'notifications' => [
+            'collections-reordered' => [
+                'success' => 'Collections Reordered',
+            ],
+            'node-expanded' => [
+                'danger' => 'Unable to load collections',
+            ],
+            'delete' => [
+                'danger' => 'Unable to delete collection',
+            ],
+        ],
+    ],
 ];

@@ -63,4 +63,17 @@ class CustomerGroup extends BaseModel
             "{$prefix}customer_group_product"
         )->withTimestamps();
     }
+
+    /**
+     * Return the product relationship.
+     */
+    public function collections(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Collection::class,
+            "{$prefix}collection_customer_group"
+        )->withTimestamps();
+    }
 }

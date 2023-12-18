@@ -42,7 +42,7 @@ trait HasChannels
         return $this->morphToMany(
             Channel::class,
             'channelable',
-            "{$prefix}channelables"
+            "{$prefix}channelables",
         )->withPivot([
             'enabled',
             'starts_at',

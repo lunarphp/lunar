@@ -78,4 +78,18 @@ class Channel extends BaseModel
             "{$prefix}channelables"
         );
     }
+
+    /**
+     * Return the products relationship
+     */
+    public function collections(): MorphToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->morphedByMany(
+            Collection::class,
+            'channelable',
+            "{$prefix}channelables"
+        );
+    }
 }

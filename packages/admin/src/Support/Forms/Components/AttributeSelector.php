@@ -26,7 +26,7 @@ class AttributeSelector extends CheckboxList
         $this->loadStateFromRelationships();
     }
 
-    public function relationship(string|\Closure|null $name, string|\Closure $titleAttribute = null, \Closure $modifyQueryUsing = null): static
+    public function relationship(string|\Closure $name = null, string|\Closure $titleAttribute = null, \Closure $modifyQueryUsing = null): static
     {
         parent::relationship($name, $titleAttribute, $modifyQueryUsing);
 
