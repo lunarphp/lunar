@@ -25,7 +25,7 @@
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
         "spatie/laravel-medialibrary": "^10.0.0",
-        "filament/filament": "^3.1.0",
+        "filament/filament": "^3.1.23",
         "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
         "spatie/laravel-permission": "^5.10",
         "technikermathe/blade-lucide-icons": "^v2.24.0",
