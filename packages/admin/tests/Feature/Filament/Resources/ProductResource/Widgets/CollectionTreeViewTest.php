@@ -98,21 +98,23 @@ it('can create child collection', function () {
         'collection_group_id' => $group->id,
     ]);
 
-    $child = \Lunar\Models\Collection::factory()->create();
+    $child = \Lunar\Models\Collection::factory()->create([
+        'collection_group_id' => $group->id,
+    ]);
 
     $collection->prependNode($child);
 
-    //    \Livewire\Livewire::test(CollectionTreeView::class, [
-    //        'record' => $group,
-    //    ])->callAction('addChildCollection', [
-    //        'name' => 'Sub Collection',
-    //    ], ['id' => $collection->id])
-    //        ->assertCount('nodes', 1)
-    //        ->assertSet('nodes.0.children.0.id', $child->id)
-    //        ->mountAction('makeRoot', ['id' => $child->id])
-    //        ->callAction('makeRoot')
-    //        ->assertCount('nodes.0.children', 0)
-    //        ->assertCount('nodes', 2);
+    \Livewire\Livewire::test(CollectionTreeView::class, [
+        'record' => $group,
+    ])->callAction('addChildCollection', [
+        'name' => 'Sub Collection',
+    ], ['id' => $collection->id])
+        ->assertCount('nodes', 1)
+        ->assertSet('nodes.0.children.0.id', $child->id)
+        ->mountAction('makeRoot', ['id' => $child->id])
+        ->callAction('makeRoot')
+        ->assertCount('nodes.0.children', 0)
+        ->assertCount('nodes', 2);
 });
 
 it('can set child collection as root', function () {
