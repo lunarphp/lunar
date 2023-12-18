@@ -117,13 +117,22 @@ abstract class AbstractDiscount extends Component
     {
         $this->currency = Currency::getDefault();
 
-        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => $this->mapBrandToArray($brand));
-        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => $this->mapCollectionToArray($collection));
-        $this->selectedProducts = $this->discount->purchasableLimitations()
+        $this->selectedBrands = $this->discount->brands->map(fn ($brand) => array_merge($this->mapBrandToArray($brand), ['type' => $brand->pivot->type]));
+        $this->selectedCollections = $this->discount->collections->map(fn ($collection) => array_merge($this->mapCollectionToArray($collection), ['type' => $collection->pivot->type]));
+        $this->selectedProducts = $this->discount->purchasables()
+            ->whereIn('type', ['limitation', 'exclusion'])
             ->wherePurchasableType(Product::class)
             ->get()
             ->map(function ($limitation) {
-                return $this->mapProductToArray($limitation->purchasable);
+                return array_merge($this->mapProductToArray($limitation->purchasable), ['type' => $limitation->type]);
+            });
+            
+        $this->selectedProductVariants = $this->discount->purchasables()
+            ->whereIn('type', ['limitation', 'exclusion'])
+            ->wherePurchasableType(ProductVariant::class)
+            ->get()
+            ->map(function ($limitation) {
+                return array_merge($this->mapProductVariantToArray($limitation->purchasable), ['type' => $limitation->type]);
             });
             
         $this->selectedProductVariants = $this->discount->purchasableLimitations()
@@ -215,7 +224,7 @@ abstract class AbstractDiscount extends Component
      */
     public function selectBrands(array $ids)
     {
-        $selectedBrands = Brand::findMany($ids)->map(fn ($brand) => $this->mapBrandToArray($brand));
+        $selectedBrands = Brand::findMany($ids)->map(fn ($brand) => array_merge($this->mapBrandToArray($brand), ['type' => 'limitation']));
 
         $this->selectedBrands = $this->selectedBrands->count()
             ? $this->selectedBrands->merge($selectedBrands)
@@ -229,7 +238,7 @@ abstract class AbstractDiscount extends Component
      */
     public function selectCollections(array $ids)
     {
-        $selectedCollections = ModelsCollection::findMany($ids)->map(fn ($collection) => $this->mapCollectionToArray($collection));
+        $selectedCollections = ModelsCollection::findMany($ids)->map(fn ($collection) => array_merge($this->mapCollectionToArray($collection), ['type' => 'limitation']));
 
         $this->selectedCollections = $this->selectedCollections->count()
             ? $this->selectedCollections->merge($selectedCollections)
@@ -243,7 +252,7 @@ abstract class AbstractDiscount extends Component
      */
     public function selectProducts(array $ids)
     {
-        $selectedProducts = Product::findMany($ids)->map(fn ($brand) => $this->mapProductToArray($brand));
+        $selectedProducts = Product::findMany($ids)->map(fn ($brand) => array_merge($this->mapProductToArray($brand), ['type' => 'limitation']));
 
         $this->selectedProducts = $this->selectedProducts->count()
             ? $this->selectedProducts->merge($selectedProducts)
@@ -257,7 +266,7 @@ abstract class AbstractDiscount extends Component
      */
     public function selectProductVariants(array $ids)
     {
-        $selectedVariants = ProductVariant::findMany($ids)->map(fn ($variant) => $this->mapProductVariantToArray($variant));
+        $selectedVariants = ProductVariant::findMany($ids)->map(fn ($variant) => array_merge($this->mapProductVariantToArray($variant), ['type' => 'limitation']));
 
         $this->selectedProductVariants = $this->selectedProductVariants->count()
             ? $this->selectedProductVariants->merge($selectedVariants)
@@ -374,7 +383,7 @@ abstract class AbstractDiscount extends Component
             $this->discount->save();
 
             $this->discount->brands()->sync(
-                $this->selectedBrands->pluck('id')
+                $this->selectedBrands->mapWithKeys(fn ($brand) => [$brand['id'] => ['type' => $brand['type']]])
             );
 
             $channels = collect($this->availability['channels'])->mapWithKeys(function ($channel) {
@@ -403,22 +412,47 @@ abstract class AbstractDiscount extends Component
             $this->discount->channels()->sync($channels);
 
             $this->discount->collections()->sync(
-                $this->selectedCollections->pluck('id')->toArray()
-
+                $this->selectedCollections->mapWithKeys(fn ($collection) => [$collection['id'] => ['type' => $collection['type']]])
             );
-
-            $this->discount->purchasableLimitations()
+            
+            $this->discount->purchasables()
+                ->whereIn('type', ['exclusion', 'limitation'])
                 ->where('purchasable_type', Product::class)
                 ->whereNotIn('purchasable_id', $this->selectedProducts->pluck('id'))
                 ->delete();
 
             foreach ($this->selectedProducts as $product) {
-                $this->discount->purchasableLimitations()->firstOrCreate([
-                    'discount_id' => $this->discount->id,
-                    'type' => 'limitation',
-                    'purchasable_type' => Product::class,
-                    'purchasable_id' => $product['id'],
-                ]);
+                $this->discount->purchasables()
+                    ->whereIn('type', ['exclusion', 'limitation'])
+                    ->firstOrNew([
+                        'discount_id' => $this->discount->id,
+                        'purchasable_type' => Product::class,
+                        'purchasable_id' => $product['id'],
+                    ])
+                    ->fill([
+                        'type' => $product['type'],
+                    ])
+                    ->save();
+            }
+                        
+            $this->discount->purchasables()
+                ->whereIn('type', ['exclusion', 'limitation'])
+                ->where('purchasable_type', ProductVariant::class)
+                ->whereNotIn('purchasable_id', $this->selectedProductVariants->pluck('id'))
+                ->delete();
+
+            foreach ($this->selectedProductVariants as $variant) {
+                $this->discount->purchasables()
+                    ->whereIn('type', ['exclusion', 'limitation'])
+                    ->firstOrNew([
+                        'discount_id' => $this->discount->id,
+                        'purchasable_type' => ProductVariant::class,
+                        'purchasable_id' => $variant['id'],
+                    ])
+                    ->fill([
+                        'type' => $variant['type'],
+                    ])
+                    ->save();
             }
             
             $this->discount->purchasableLimitations()

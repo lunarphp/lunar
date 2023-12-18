@@ -163,9 +163,17 @@ class AmountOff extends AbstractDiscountType
      */
     protected function getEligibleLines(Cart $cart): \Illuminate\Support\Collection
     {
-        $collectionIds = $this->discount->collections->pluck('id');
-        $brandIds = $this->discount->brands->pluck('id');
+        $collectionIds = $this->discount->collections->where('pivot.type', 'limitation')->pluck('id');
+        $collectionExclusionIds = $this->discount->collections->where('pivot.type', 'exclusion')->pluck('id');
+        
+        $brandIds = $this->discount->brands->where('pivot.type', 'limitation')->pluck('id');
+        $brandExclusionIds = $this->discount->brands->where('pivot.type', 'exclusion')->pluck('id');
+        
         $productIds = $this->discount->purchasableLimitations
+            ->reject(fn ($limitation) => ! $limitation->purchasable)
+            ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
+            
+        $productExclusionIds = $this->discount->purchasableExclusions
             ->reject(fn ($limitation) => ! $limitation->purchasable)
             ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
 
@@ -178,16 +186,36 @@ class AmountOff extends AbstractDiscountType
                 })->exists();
             });
         }
+        
+        if ($collectionExclusionIds->count()) {
+            $lines = $lines->reject(function ($line) use ($collectionExclusionIds) {
+                return $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionExclusionIds) {
+                    $query->whereIn((new Collection)->getTable().'.id', $collectionExclusionIds);
+                })->exists();
+            });
+        }
 
         if ($brandIds->count()) {
             $lines = $lines->reject(function ($line) use ($brandIds) {
                 return ! $brandIds->contains($line->purchasable->product->brand_id);
             });
         }
+        
+        if ($brandExclusionIds->count()) {
+            $lines = $lines->reject(function ($line) use ($brandExclusionIds) {
+                return $brandExclusionIds->contains($line->purchasable->product->brand_id);
+            });
+        }
 
         if ($productIds->count()) {
             $lines = $lines->filter(function ($line) use ($productIds) {
                 return $productIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id) || $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
+            });
+        }
+        
+        if ($productExclusionIds->count()) {
+            $lines = $lines->reject(function ($line) use ($productExclusionIds) {
+                return $productExclusionIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id) || $productExclusionIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
             });
         }
 

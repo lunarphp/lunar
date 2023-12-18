@@ -60,7 +60,9 @@ class CalculateTax
         $taxTotal = $cart->lines->sum('taxAmount.value');
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
-        if ($shippingOption = ShippingManifest::getShippingOption($cart)) {
+        $shippingOption = $cart->shippingOptionOverride ?: ShippingManifest::getShippingOption($cart);
+
+        if ($shippingOption) {
             $shippingSubTotal = $cart->shippingBreakdown->items->sum('price.value');
 
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
@@ -73,9 +75,10 @@ class CalculateTax
 
             $taxTotal += $shippingTaxTotal?->value;
 
-            $cart->shippingAddress->taxBreakdown = $shippingTax;
-
-            $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+            if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
+                $cart->shippingAddress->taxBreakdown = $shippingTax;
+                $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+            }
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts
