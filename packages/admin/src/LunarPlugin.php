@@ -6,10 +6,15 @@ use Filament\Contracts\Plugin;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Pages;
 use Lunar\Admin\Filament\Resources;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
+use Lunar\Admin\Filament\Widgets\Dashboard\LatestOrders;
+use Lunar\Admin\Filament\Widgets\Dashboard\SalesPerformance;
+use Lunar\Admin\Filament\Widgets\Dashboard\StatsOverview;
 
 class LunarPlugin implements Plugin
 {
@@ -39,6 +44,9 @@ class LunarPlugin implements Plugin
     ];
 
     protected static $widgets = [
+        StatsOverview::class,
+        SalesPerformance::class,
+        LatestOrders::class,
     ];
 
     public function getId(): string
@@ -165,6 +173,11 @@ class LunarPlugin implements Plugin
             'lunar::reorder' => 'lucide-grip-vertical',
             'lunar::chevron-right' => 'lucide-chevron-right',
             'lunar::image-placeholder' => 'lucide-image',
+        ]);
+
+        FilamentColor::register([
+            'chartPrimary' => Color::Blue,
+            'chartSecondary' => Color::Green,
         ]);
     }
 

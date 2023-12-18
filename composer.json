@@ -29,7 +29,8 @@
         "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
         "spatie/laravel-permission": "^5.10",
         "technikermathe/blade-lucide-icons": "^v2.24.0",
-        "marvinosswald/filament-input-select-affix": "dev-main"
+        "marvinosswald/filament-input-select-affix": "dev-main",
+        "leandrocfe/filament-apex-charts": "^3.0"
     },
     "require-dev": {
         "laravel/pint": "1.13.1",
