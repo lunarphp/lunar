@@ -6,8 +6,12 @@ use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -16,6 +20,11 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
+use Lunar\Admin\Filament\Pages;
+use Lunar\Admin\Filament\Resources;
+use Lunar\Admin\Filament\Widgets\Dashboard\LatestOrders;
+use Lunar\Admin\Filament\Widgets\Dashboard\SalesPerformance;
+use Lunar\Admin\Filament\Widgets\Dashboard\StatsOverview;
 use Lunar\Admin\Support\Extending\BaseExtension;
 use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
@@ -27,6 +36,37 @@ class LunarPanelManager
     protected array $extensions = [];
 
     protected string $panelId = 'lunar';
+
+    protected static $resources = [
+        Resources\ActivityResource::class,
+        Resources\AttributeGroupResource::class,
+        Resources\BrandResource::class,
+        Resources\ChannelResource::class,
+        Resources\CollectionGroupResource::class,
+        Resources\CollectionResource::class,
+        Resources\CurrencyResource::class,
+        Resources\CustomerGroupResource::class,
+        Resources\CustomerResource::class,
+        Resources\LanguageResource::class,
+        Resources\OrderResource::class,
+        Resources\ProductOptionResource::class,
+        Resources\ProductResource::class,
+        Resources\ProductTypeResource::class,
+        Resources\StaffResource::class,
+        Resources\TagResource::class,
+        Resources\TaxClassResource::class,
+        Resources\TaxZoneResource::class,
+    ];
+
+    protected static $pages = [
+        Pages\Dashboard::class,
+    ];
+
+    protected static $widgets = [
+        StatsOverview::class,
+        SalesPerformance::class,
+        LatestOrders::class,
+    ];
 
     public function register(): self
     {
@@ -40,6 +80,53 @@ class LunarPanelManager
         $panel->id($this->panelId);
 
         Filament::registerPanel($panel);
+
+        FilamentIcon::register([
+            // Filament
+            'panels::topbar.global-search.field' => 'lucide-search',
+            'actions::view-action' => 'lucide-eye',
+            'actions::edit-action' => 'lucide-edit',
+            'actions::delete-action' => 'lucide-trash-2',
+            'actions::make-collection-root-action' => 'lucide-corner-left-up',
+
+            // Lunar
+            'lunar::activity' => 'lucide-activity',
+            'lunar::attributes' => 'lucide-pencil-ruler',
+            'lunar::availability' => 'lucide-calendar',
+            'lunar::basic-information' => 'lucide-edit',
+            'lunar::brands' => 'lucide-badge-check',
+            'lunar::channels' => 'lucide-store',
+            'lunar::collections' => 'lucide-blocks',
+            'lunar::sub-collection' => 'lucide-square-stack',
+            'lunar::move-collection' => 'lucide-move',
+            'lunar::currencies' => 'lucide-circle-dollar-sign',
+            'lunar::customers' => 'lucide-users',
+            'lunar::customer-groups' => 'lucide-users',
+            'lunar::dashboard' => 'lucide-bar-chart-big',
+            'lunar::languages' => 'lucide-languages',
+            'lunar::media' => 'lucide-image',
+            'lunar::orders' => 'lucide-inbox',
+            'lunar::product-pricing' => 'lucide-coins',
+            'lunar::product-associations' => 'lucide-cable',
+            'lunar::product-inventory' => 'lucide-combine',
+            'lunar::product-options' => 'lucide-list',
+            'lunar::product-shipping' => 'lucide-truck',
+            'lunar::product-variants' => 'lucide-shapes',
+            'lunar::products' => 'lucide-tag',
+            'lunar::staff' => 'lucide-shield',
+            'lunar::tags' => 'lucide-tags',
+            'lunar::tax' => 'lucide-landmark',
+            'lunar::urls' => 'lucide-globe',
+            'lunar::product-identifiers' => 'lucide-package-search',
+            'lunar::reorder' => 'lucide-grip-vertical',
+            'lunar::chevron-right' => 'lucide-chevron-right',
+            'lunar::image-placeholder' => 'lucide-image',
+        ]);
+
+        FilamentColor::register([
+            'chartPrimary' => Color::Blue,
+            'chartSecondary' => Color::Green,
+        ]);
 
         return $this;
     }
@@ -98,11 +185,38 @@ class LunarPanelManager
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->pages(
+                static::getPages()
+            )
+            ->resources(
+                static::getResources()
+            )
+            ->widgets(
+                static::getWidgets()
+            )
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarCollapsibleOnDesktop()
-            ->plugin(LunarPlugin::make());
+            ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
+            ->livewireComponents([
+                Resources\OrderResource\Pages\Components\OrderItemsTable::class,
+                \Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView::class,
+            ])
+            ->navigationGroups([
+                'Catalog',
+                'Sales',
+                NavigationGroup::make()
+                    ->label('Settings')
+                    ->collapsed(),
+            ])
+            ->navigationItems([
+                NavigationItem::make('Discounts')
+                    ->url('#')
+                    ->icon('lucide-percent-circle')
+                    ->group('Sales')
+                    ->sort(3),
+            ])
+            ->sidebarCollapsibleOnDesktop();
     }
 
     public function registerExtension(BaseExtension|ResourceExtension $extension, string $pageClass): self
@@ -110,6 +224,24 @@ class LunarPanelManager
         $this->extensions[$pageClass][] = $extension;
 
         return $this;
+    }
+
+    public static function getResources()
+    {
+        return static::$resources;
+    }
+
+    public static function getPages()
+    {
+        return static::$pages;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getWidgets(): array
+    {
+        return static::$widgets;
     }
 
     public function useRoleAsAdmin(string|array $roleHandle): self

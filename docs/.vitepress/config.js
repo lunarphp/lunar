@@ -143,7 +143,6 @@ export default defineConfig({
                         {text: 'Attributes', link: '/admin/extending/attributes'},
                         {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Panel', link: '/admin/extending/panel'},
-                        {text: 'Plugin', link: '/admin/extending/plugin'},
                         {text: 'Resources', link: '/admin/extending/resources'}
                     ]
                 }
