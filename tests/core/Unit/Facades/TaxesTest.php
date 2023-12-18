@@ -7,7 +7,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
-use Stubs\TestTaxDriver;
+use Lunar\Tests\Core\Stubs\TestTaxDriver;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

@@ -6,7 +6,7 @@ use Lunar\Actions\Carts\AssociateUser;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
-use Stubs\User;
+use Lunar\Tests\Core\Stubs\User;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

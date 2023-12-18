@@ -14,7 +14,7 @@ use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
-use Stubs\User;
+use Lunar\Tests\Core\Stubs\User;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

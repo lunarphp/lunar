@@ -1,6 +1,6 @@
 <?php
 
-namespace Stubs\Models;
+namespace Lunar\Tests\Core\Stubs\Models;
 
 trait SearchableTrait
 {

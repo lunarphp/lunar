@@ -27,7 +27,7 @@ use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
-use Stubs\User as StubUser;
+use Lunar\Tests\Core\Stubs\User as StubUser;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

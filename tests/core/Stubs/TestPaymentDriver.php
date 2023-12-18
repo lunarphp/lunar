@@ -1,6 +1,6 @@
 <?php
 
-namespace Stubs;
+namespace Lunar\Tests\Core\Stubs;
 
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;

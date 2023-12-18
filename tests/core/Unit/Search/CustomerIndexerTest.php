@@ -8,7 +8,7 @@ use Lunar\Models\Attribute;
 use Lunar\Models\Customer;
 use Lunar\Models\Language;
 use Lunar\Search\CustomerIndexer;
-use Stubs\User;
+use Lunar\Tests\Core\Stubs\User;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

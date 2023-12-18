@@ -1,6 +1,6 @@
 <?php
 
-namespace Stubs;
+namespace Lunar\Tests\Core\Stubs;
 
 use Lunar\Base\Addressable;
 use Lunar\Base\Purchasable;

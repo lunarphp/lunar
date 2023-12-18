@@ -5,7 +5,7 @@ uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Facades\Payments;
-use Stubs\TestPaymentDriver;
+use Lunar\Tests\Core\Stubs\TestPaymentDriver;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

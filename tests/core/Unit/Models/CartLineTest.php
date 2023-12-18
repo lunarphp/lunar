@@ -7,7 +7,7 @@ use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
 use Lunar\Models\ProductVariant;
-use Stubs\User;
+use Lunar\Tests\Core\Stubs\User;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

@@ -17,7 +17,7 @@ use Lunar\Models\Discount;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Stubs\TestDiscountType;
+use Lunar\Tests\Core\Stubs\TestDiscountType;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

@@ -41,5 +41,5 @@ expect()->extend('toBeOne', function () {
 
 function setAuthUserConfig()
 {
-    Config::set('auth.providers.users.model', 'Stubs\User');
+    Config::set('auth.providers.users.model', 'Lunar\Tests\Core\Stubs\Models\User');
 }

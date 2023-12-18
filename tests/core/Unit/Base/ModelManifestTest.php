@@ -19,8 +19,8 @@ test('can register models', function () {
     expect(ModelManifest::getRegisteredModels())->toHaveCount(0);
 
     ModelManifest::register(collect([
-        Product::class => \Stubs\Models\Product::class,
-        ProductOption::class => \Stubs\Models\ProductOption::class,
+        Product::class => \Lunar\Tests\Core\Stubs\Models\Product::class,
+        ProductOption::class => \Lunar\Tests\Core\Stubs\Models\ProductOption::class,
     ]));
 
     expect(ModelManifest::getRegisteredModels())->toHaveCount(2);
@@ -28,28 +28,28 @@ test('can register models', function () {
 
 test('can get registered model from base model', function () {
     ModelManifest::register(collect([
-        Product::class => \Stubs\Models\Product::class,
+        Product::class => \Lunar\Tests\Core\Stubs\Models\Product::class,
     ]));
 
     $model = ModelManifest::getRegisteredModel(Product::class);
 
-    expect($model)->toBeInstanceOf(\Stubs\Models\Product::class);
+    expect($model)->toBeInstanceOf(\Lunar\Tests\Core\Stubs\Models\Product::class);
 });
 
 test('can get morph class base model', function () {
     ModelManifest::register(collect([
-        Product::class => \Stubs\Models\Product::class,
+        Product::class => \Lunar\Tests\Core\Stubs\Models\Product::class,
     ]));
 
     $customModels = ModelManifest::getRegisteredModels()->flip();
 
-    expect(value: $customModels->get(\Stubs\Models\Product::class))->toEqual(expected: Product::class);
+    expect(value: $customModels->get(\Lunar\Tests\Core\Stubs\Models\Product::class))->toEqual(expected: Product::class);
 });
 
 test('can get list of registered base models', function () {
     ModelManifest::register(collect([
-        Product::class => \Stubs\Models\Product::class,
-        ProductOption::class => \Stubs\Models\ProductOption::class,
+        Product::class => \Lunar\Tests\Core\Stubs\Models\Product::class,
+        ProductOption::class => \Lunar\Tests\Core\Stubs\Models\ProductOption::class,
     ]));
 
     expect(ModelManifest::getBaseModelClasses())->toEqual(collect([

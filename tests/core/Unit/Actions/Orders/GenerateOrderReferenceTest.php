@@ -7,7 +7,7 @@ use Lunar\Actions\Orders\GenerateOrderReference;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
-use Stubs\TestOrderReferenceGenerator;
+use Lunar\Tests\Core\Stubs\TestOrderReferenceGenerator;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Config;
 use Lunar\Models\Address;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
-use Stubs\User;
+use Lunar\Tests\Core\Stubs\User;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -129,7 +129,7 @@ test('can fetch customer addresses', function () {
 });
 
 test('can retrieve latest customer', function () {
-    Config::set('auth.providers.users.model', 'Stubs\User');
+    Config::set('auth.providers.users.model', 'Lunar\Tests\Core\Stubs\User');
 
     $user = User::factory()->create();
 

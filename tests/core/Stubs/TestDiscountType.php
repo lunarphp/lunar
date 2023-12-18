@@ -1,6 +1,6 @@
 <?php
 
-namespace Stubs;
+namespace Lunar\Tests\Core\Stubs;
 
 use Lunar\DiscountTypes\AbstractDiscountType;
 use Lunar\Models\Cart;

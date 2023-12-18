@@ -3,7 +3,7 @@
 uses(\Unit\Base\Extendable\ExtendableTestCase::class);
 
 use Lunar\Models\Product;
-use Stubs\Models\ProductSwapModel;
+use Lunar\Tests\Core\Stubs\Models\ProductSwapModel;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

@@ -10,13 +10,13 @@ use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
-use Stubs\User as StubUser;
+use Lunar\Tests\Core\Stubs\User as StubUser;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 //function setAuthUserConfig()
 //{
-//    Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
+//    Config::set('auth.providers.users.model', 'User');
 //}
 
 test('can instantiate manager', function () {

@@ -10,9 +10,9 @@
             <directory suffix="Test.php">packages/admin/tests/Unit</directory>
         </testsuite>
         <testsuite name="core">
-            <directory suffix="Test.php">packages/core/tests/Database</directory>
-            <directory suffix="Test.php">packages/core/tests/Feature</directory>
-            <directory suffix="Test.php">packages/core/tests/Unit</directory>
+            <directory suffix="Test.php">tests/core/Database</directory>
+            <directory suffix="Test.php">tests/core/Feature</directory>
+            <directory suffix="Test.php">tests/core/Unit</directory>
         </testsuite>
         <testsuite name="table-rate-shipping">
             <directory suffix="Test.php">packages/core/tests/Unit</directory>

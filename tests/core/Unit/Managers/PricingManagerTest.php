@@ -10,8 +10,8 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Stubs\TestPricingPipeline;
-use Stubs\User;
+use Lunar\Tests\Core\Stubs\TestPricingPipeline;
+use Lunar\Tests\Core\Stubs\User;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

@@ -1,16 +1,18 @@
 <?php
 
+namespace Lunar\Tests\Core;
+
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\Facades\Taxes;
 use Lunar\LunarServiceProvider;
+use Lunar\Tests\Core\Stubs\TestTaxDriver;
+use Lunar\Tests\Core\Stubs\TestUrlGenerator;
+use Lunar\Tests\Core\Stubs\User;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
-use Stubs\TestTaxDriver;
-use Stubs\TestUrlGenerator;
-use Stubs\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
