@@ -2,12 +2,34 @@
 
 ## Overview
 
-We've made a design choice to have activity logging throughout Lunar when it comes to changes happening on Eloquent models. We believe it's important to keep track of what updates are happening and who is making them. It allows us to provide you with an invaluable insight into what's happening in your store.
+We made a design choice to include activity logging throughout Lunar to record changes made on Eloquent models. We 
+believe it is important to keep track of what updates are occurring and who is making them. It allows us to provide you 
+with an invaluable insight into what is happening in your store.
 
-## How it works
+## How It Works
 
-For the actual logging, we have opted to use the incredible package by Spatie, [laravel-activitylog](https://spatie.be/docs/laravel-activitylog). This allows Lunar to keep track changes throughout the system so you can have a full history of what's going on.
+For the actual logging, we opted to use the incredible package by Spatie, 
+[laravel-activitylog](https://spatie.be/docs/laravel-activitylog). This allows Lunar to track changes throughout 
+the system so you can have a full history of what's going on.
 
-## Enabling on your own models
+## Enabled Models
+The following models have activity logging enabled by default in Lunar.
 
-If you want to enable logging on your own models you can simply [follow the guides on their website](https://spatie.be/docs/laravel-activitylog)
+- `\Lunar\Models\Channel`
+- `\Lunar\Models\Brand`
+- `\Lunar\Models\Cart`
+- `\Lunar\Models\CartAddress`
+- `\Lunar\Models\CartLine`
+- `\Lunar\Models\Currency`
+- `\Lunar\Models\Order`
+- `\Lunar\Models\OrderAddress`
+- `\Lunar\Models\OrderLine`
+- `\Lunar\Models\Product`
+- `\Lunar\Models\ProductVariant`
+- `\Lunar\Models\Transaction`
+
+
+## Enabling On Your Own Models
+
+If you want to enable logging on your own models you can simply 
+[follow the guides on their website](https://spatie.be/docs/laravel-activitylog).

@@ -2,82 +2,106 @@
 
 ## Overview
 
-Customers may save addresses to make checking-out easier and quicker.
+When a registered customer looks to checkout it is helpful for them to be able to save their preferred shipping 
+addresses. Lunar provides the `Address` Eloquent model which allows a developer to store addresses against a `Customer`
+record for this very purpose.
 
-## Addresses
+It is worth noting that the `Address` model is **not** related to carts and orders. It is simply a facility to save address
+information for reuse.
 
-```php
-Lunar\Models\Address
-```
+::: info
+Carts and Orders have their own address models [`\Lunar\Models\CartAddress`](carts.html) and 
+[`\Lunar\Models\OrderAddress`](orders.html) which you can learn more about in those sections.
+:::
 
-|Field|Description|
-|:-|:-|
-|`id`||
-|`customer_id`||
-|`title`|nullable|
-|`first_name`||
-|`last_name`||
-|`company_name`|nullable|
-|`line_one`||
-|`line_two`|nullable|
-|`line_three`|nullable|
-|`city`||
-|`state`|nullable|
-|`postcode`|nullable|
-|`country_id`||
-|`delivery_instructions`||
-|`contact_email`||
-|`contact_phone`||
-|`last_used_at`|Timestamp for when the address was last used in an order.|
-|`meta`|JSON|
-|`shipping_default`|Boolean|
-|`billing_default`|Boolean|
-|`created_at`||
-|`updated_at`||
+## Eloquent Models
 
-## Countries
+The primary model for this facility is the `Address` model. We also have the `Country` and 
+`State` models which come pre-populated with data when installing Lunar.
 
-```php
-Lunar\Models\Country
-```
-
-|Field|Description|
-|:-|:-|
-|`id`||
-|`name`||
-|`iso3`||
-|`iso2`||
-|`phonecode`||
-|`capital`||
-|`currency`||
-|`native`||
-|`emoji`|Flag|
-|`emoji_u`|Flag|
-|`created_at`||
-|`updated_at`||
-
-
-## States
-
-```php
-Lunar\Models\State
-```
-
-|Field|Description|
-|:-|:-|
-|`id`||
-|`country_id`||
-|`name`||
-|`code`||
-|`created_at`||
-|`updated_at`||
+| Eloquent Model         | Description                            |                                                                                          |
+|:-----------------------|:---------------------------------------|:-----------------------------------------------------------------------------------------|
+| `Lunar\Models\Address` | Stores customer addresses.             |[view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/Address.html)|
+| `Lunar\Models\Country` | Lookup for all countries in the world. |[view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/Country.html)|
+| `Lunar\Models\State`   | Lookup for states per country.         |[view api](https://lunar-api-docs.staging-03.neondigital.co.uk/Lunar/Models/State.html)  |
 
 ## Address Data
 
 Data for Countries and States is provided by https://github.com/dr5hn/countries-states-cities-database.
 
-You can use the following command to import countries and states.
+Although Lunar adds the address data automatically for you on installation, you may use the following command to import 
+countries and states if required.
 
 ```sh
 php artisan lunar:import:address-data
+```
+## Example Usage
+
+### Creating An Address
+
+```php
+use Lunar\Models\Address;
+use Lunar\Models\Country;
+use Lunar\Models\State;
+
+$country = Country::where('iso', 'GB')->first();  // E.g. United Kingdom
+$state = State::find(4496); // E.g. Essex
+
+$address = Address::create([
+    'customer_id' => $customer->id,
+    'title' => 'Mr',
+    'first_name' => 'John',
+    'last_name' => 'Smith',
+    'company_name' => 'My Company Ltd', // optional
+    'line_one' => '10 Example Street',
+    'line_two' => 'My Village',
+    'line_three' => '',
+    'city' => 'Chelmsford',
+    'state' => $state->name,
+    'postcode' => 'CM1 2AB',
+    'country_id' => $country->id,
+    'delivery_instructions' => 'Leave by the side gate',
+    'contact_email' => 'some@email.com',
+    'contact_phone' => '07123 123456',
+    'last_used_at' => null,
+    'meta' => [
+        'business' => true, // meta data is optional
+    ],
+    'shipping_default' => true,
+    'billing_default' => false,
+    'created_at' => now(),
+    'updated_at' => now(),
+]);
+```
+
+### Getting Customer Addresses
+
+The example below assumes the authenticated user has been associated to a customer record.
+
+```php
+$customer = Auth::user()->latestCustomer();
+
+foreach ($customer->addresses as $address) {
+    // 
+}
+```
+
+### Listing Countries
+
+Lunar supplies country data, which includes ISO code, native country names and Emoji graphics :uk:.
+
+```php
+@foreach (Country::all() as $country)
+    <option value="{{ $country->id }}">{{ $country->emoji }} {{ $country->native }}</option>
+@endforeach
+```
+
+### Listing States
+
+States relate to countries. You can easily load them via a country model using its relationship.
+
+```php
+@foreach ($country->states as $state)
+    <option value="{{ $state->id }}">{{ $state->name }}</option>
+@endforeach
 ```
