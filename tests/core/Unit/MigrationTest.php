@@ -7,7 +7,7 @@ test('all migrations can run rollback', function () {
     $this->artisan('migrate');
 
     $migrationsList = collect(File::allFiles(
-        __DIR__.'/../../database/migrations'
+        __DIR__.'/../../../packages/core/database/migrations'
     ))->map(fn ($file) => pathinfo($file->getFilename(), PATHINFO_FILENAME));
 
     foreach ($migrationsList as $migration) {
@@ -21,7 +21,7 @@ test('all migrations can run rollback', function () {
 
 test('each migration can run and rollback', function () {
     $migrationsList = collect(File::allFiles(
-        __DIR__.'/../../database/migrations'
+        __DIR__.'/../../../packages/core/database/migrations'
     ));
 
     foreach ($migrationsList as $migration) {
