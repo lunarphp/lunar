@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMedia as TraitsHasMedia;
 use Spatie\MediaLibrary\HasMedia;
@@ -25,10 +26,8 @@ class Asset extends BaseModel implements HasMedia
 
     /**
      * Get the associated file.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
-    public function file()
+    public function file(): MorphOne
     {
         return $this->morphOne(config('media-library.media_model'), 'model');
     }

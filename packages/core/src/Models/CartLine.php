@@ -4,6 +4,10 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
@@ -112,20 +116,16 @@ class CartLine extends BaseModel
 
     /**
      * Return the cart relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function cart()
+    public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);
     }
 
     /**
      * Return the tax class relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
      */
-    public function taxClass()
+    public function taxClass(): HasOneThrough
     {
         return $this->hasOneThrough(
             TaxClass::class,
@@ -135,7 +135,10 @@ class CartLine extends BaseModel
         );
     }
 
-    public function discounts()
+    /**
+     * Return the cart line discount.
+     */
+    public function discounts(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -147,10 +150,8 @@ class CartLine extends BaseModel
 
     /**
      * Return the polymorphic relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function purchasable()
+    public function purchasable(): MorphTo
     {
         return $this->morphTo();
     }

@@ -82,11 +82,12 @@ class AttributeEdit extends Component
             'attribute.validation_rules' => 'nullable|string',
         ];
 
-        if (! $this->attribute->id) {
-            $rules['attribute.handle'] = ['required', Rule::unique(Attribute::class, 'handle')->where(function ($query) {
-                return $query->where('attribute_group_id', $this->group->id);
-            })];
-        }
+        $rules['attribute.handle'] = [
+            'required', 
+            Rule::unique(Attribute::class, 'handle')
+                ->ignore(Attribute::class)
+                ->where(fn ($query) => $query->where('attribute_type', $this->group->attributable_type))
+        ];
 
         foreach ($this->languages as $lang) {
             $rules["attribute.name.{$lang->code}"] = ($lang->default ? 'required' : 'nullable').'|string|max:255';

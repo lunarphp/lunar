@@ -5,6 +5,7 @@ namespace Lunar\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Lunar\Models\AttributeGroup;
+use Lunar\Models\ProductType;
 
 class AttributeGroupFactory extends Factory
 {
@@ -15,7 +16,7 @@ class AttributeGroupFactory extends Factory
     public function definition(): array
     {
         return [
-            'attributable_type' => 'product_type',
+            'attributable_type' => ProductType::class,
             'name' => collect([
                 'en' => $this->faker->name(),
             ]),

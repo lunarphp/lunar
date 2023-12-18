@@ -3,6 +3,8 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxRateFactory;
@@ -38,20 +40,16 @@ class TaxRate extends BaseModel
 
     /**
      * Return the tax zone relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function taxZone()
+    public function taxZone(): BelongsTo
     {
         return $this->belongsTo(TaxZone::class);
     }
 
     /**
      * Return the tax rate amounts relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function taxRateAmounts()
+    public function taxRateAmounts(): HasMany
     {
         return $this->hasMany(TaxRateAmount::class);
     }

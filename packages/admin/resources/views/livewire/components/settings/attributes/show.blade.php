@@ -146,7 +146,6 @@
         <x-slot name="title">{{ __('adminhub::components.attributes.show.create_title') }}</x-slot>
         <x-slot name="content">
             @livewire('hub.components.settings.attributes.attribute-group-edit', [
-                'typeHandle' => $type,
                 'attributableType' => $this->typeClass,
             ])
         </x-slot>
@@ -158,7 +157,6 @@
             <x-slot name="title">{{ __('adminhub::components.attributes.show.edit_title') }}</x-slot>
             <x-slot name="content">
                 @livewire('hub.components.settings.attributes.attribute-group-edit', [
-                    'typeHandle' => $type,
                     'attributableType' => $this->typeClass,
                     'attributeGroup' => $this->attributeGroupToEdit,
                 ])

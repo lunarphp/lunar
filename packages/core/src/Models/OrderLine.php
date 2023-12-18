@@ -4,6 +4,9 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price;
 use Lunar\Base\Casts\TaxBreakdown;
@@ -74,30 +77,24 @@ class OrderLine extends BaseModel
 
     /**
      * Return the order relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
     /**
      * Return the polymorphic relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function purchasable()
+    public function purchasable(): MorphTo
     {
         return $this->morphTo();
     }
 
     /**
      * Return the currency relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
      */
-    public function currency()
+    public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
             Currency::class,

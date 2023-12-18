@@ -4,9 +4,10 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Database\Factories\DiscountPurchasableFactory;
-use Lunar\Discounts\Database\Factories\DiscountFactory;
 
 /**
  * @property int $id
@@ -36,8 +37,6 @@ class DiscountPurchasable extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return DiscountFactory
      */
     protected static function newFactory(): DiscountPurchasableFactory
     {
@@ -46,25 +45,24 @@ class DiscountPurchasable extends BaseModel
 
     /**
      * Return the discount relationship.
-     *
-     * @return BelongsTo
      */
-    public function discount()
+    public function discount(): BelongsTo
     {
         return $this->belongsTo(Discount::class);
     }
 
     /**
      * Return the priceable relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function purchasable()
+    public function purchasable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function scopeCondition(Builder $query)
+    /**
+     * Scope a query where type is condition.
+     */
+    public function scopeCondition(Builder $query): void
     {
         $query->whereType('condition');
     }

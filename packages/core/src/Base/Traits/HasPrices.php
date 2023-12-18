@@ -2,7 +2,9 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Lunar\Facades\Pricing;
+use Lunar\Managers\PricingManager;
 use Lunar\Models\Price;
 
 trait HasPrices
@@ -10,7 +12,7 @@ trait HasPrices
     /**
      * Get all of the models prices.
      */
-    public function prices()
+    public function prices(): MorphMany
     {
         return $this->morphMany(
             Price::class,
@@ -20,20 +22,16 @@ trait HasPrices
 
     /**
      * Return base prices query.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function basePrices()
+    public function basePrices(): MorphMany
     {
         return $this->prices()->whereTier(1)->whereNull('customer_group_id');
     }
 
     /**
      * Return a PricingManager for this model.
-     *
-     * @return \Lunar\Managers\PricingManager
      */
-    public function pricing()
+    public function pricing(): PricingManager
     {
         return Pricing::for($this);
     }

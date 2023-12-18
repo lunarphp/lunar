@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxZonePostcodeFactory;
@@ -38,20 +39,16 @@ class TaxZonePostcode extends BaseModel
 
     /**
      * Return the tax zone relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function taxZone()
+    public function taxZone(): BelongsTo
     {
         return $this->belongsTo(TaxZone::class);
     }
 
     /**
      * Return the country relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function country()
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

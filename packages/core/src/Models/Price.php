@@ -3,6 +3,8 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price as CastsPrice;
 use Lunar\Base\Traits\HasMacros;
@@ -49,40 +51,32 @@ class Price extends BaseModel
 
     /**
      * Return the priceable relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function priceable()
+    public function priceable(): MorphTo
     {
         return $this->morphTo();
     }
 
     /**
      * Return the currency relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
 
     /**
      * Return the customer group relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function customerGroup()
+    public function customerGroup(): BelongsTo
     {
         return $this->belongsTo(CustomerGroup::class);
     }
 
     /**
      * Return the price exclusive of tax.
-     *
-     * @return \Lunar\DataTypes\Price
      */
-    public function priceExTax()
+    public function priceExTax(): \Lunar\DataTypes\Price
     {
         if (! prices_inc_tax()) {
             return $this->price;
@@ -97,10 +91,8 @@ class Price extends BaseModel
 
     /**
      * Return the price inclusive of tax.
-     *
-     * @return \Lunar\DataTypes\Price
      */
-    public function priceIncTax()
+    public function priceIncTax(): int|\Lunar\DataTypes\Price
     {
         if (prices_inc_tax()) {
             return $this->price;
@@ -114,10 +106,8 @@ class Price extends BaseModel
 
     /**
      * Return the total tax rate amount within the predefined tax zone for the related priceable
-     *
-     * @return int|float
      */
-    protected function getPriceableTaxRate()
+    protected function getPriceableTaxRate(): int|float
     {
         return Blink::once('price_tax_rate_'.$this->priceable->getTaxClass()->id, function () {
             $taxZone = TaxZone::where('default', '=', 1)->first();

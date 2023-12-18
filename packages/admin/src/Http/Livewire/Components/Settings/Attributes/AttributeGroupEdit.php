@@ -3,6 +3,7 @@
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Attributes;
 
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
@@ -19,13 +20,6 @@ class AttributeGroupEdit extends Component
      * @var string
      */
     public $attributableType;
-
-    /**
-     * The handle for the attributable type.
-     *
-     * @var string
-     */
-    public $typeHandle;
 
     /**
      * The new attribute group.
@@ -73,18 +67,16 @@ class AttributeGroupEdit extends Component
     {
         $this->validate();
 
-        $handle = Str::handle("{$this->typeHandle}_{$this->attributeGroup->translate('name')}");
-        $this->attributeGroup->handle = $handle;
-
-        $uniquenessConstraint = 'unique:' . get_class($this->attributeGroup) . ',handle';
-        if ($this->attributeGroup->id) {
-            $uniquenessConstraint .= ',' . $this->attributeGroup->id;
-        }
+        $this->attributeGroup->handle = Str::handle("{$this->attributeGroup->translate('name')}");
 
         $this->validate([
-            'attributeGroup.handle' => $uniquenessConstraint,
+            'attributeGroup.handle' => [
+                'required', 
+                Rule::unique(AttributeGroup::class, 'handle')
+                    ->ignore(AttributeGroup::class)
+                    ->where(fn ($query) => $query->where('attributable_type', $this->attributableType))
+            ]
         ]);
-
 
         if ($this->attributeGroup->id) {
             $this->attributeGroup->save();
@@ -101,7 +93,6 @@ class AttributeGroupEdit extends Component
             $this->attributableType
         )->count() + 1;
 
-        $this->attributeGroup->handle = $handle;
         $this->attributeGroup->save();
 
         $this->emit('attribute-group-edit.created', $this->attributeGroup->id);
