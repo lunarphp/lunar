@@ -66,7 +66,7 @@ trait WithAttributes
                 $existingData->first(fn ($value, $handle) => $handle == $attribute->handle)
                 : null;
 
-            $value = $data ? $data->getValue() : null;
+            $value = $data ? $data->getValue() : $attribute->default_value;
             // We need to make sure we give livewire all the languages if we're trying to translate.
             if ($attribute->type == TranslatedText::class) {
                 $value = $this->prepareTranslatedText($value);
