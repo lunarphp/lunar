@@ -64,7 +64,7 @@
     "autoload-dev": {
         "psr-4": {
             "Lunar\\Admin\\Tests\\": "packages/admin/tests",
-            "Lunar\\Tests\\": "packages/core/tests",
+            "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Opayo\\Tests\\": "packages/core/opayo/tests",
             "Lunar\\ScoutDatabaseEngine\\Tests\\": "packages/scout-database-engine/tests",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests"
