@@ -45,6 +45,6 @@ const defaultOptions = {
 
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/index.js'],
-    outfile: './resources/dist/lunar-panel.js',
+    entryPoints: ['./packages/admin/resources/js/index.js'],
+    outfile: './packages/admin/resources/dist/lunar-panel.js',
 })
