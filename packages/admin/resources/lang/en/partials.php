@@ -86,14 +86,18 @@ return [
     /**
      * Discounts
      */
-    'discounts.limitations.heading' => 'Limitations',
-    'discounts.limitations.by_collection' => 'Limit by collection',
-    'discounts.limitations.by_brand' => 'Limit by brand',
-    'discounts.limitations.by_product' => 'Limit by product',
+    'discounts.limitations.heading' => 'Limitations and Exclusions',
+    'discounts.limitations.by_collection' => 'By collection',
+    'discounts.limitations.by_brand' => 'By brand',
+    'discounts.limitations.by_product' => 'By product',
+    'discounts.limitations.by_product_variant' => 'By product variant',
     'discounts.limitations.view_brand' => 'View Brand',
     'discounts.limitations.view_product' => 'View Product',
-
+    'discounts.limitations.view_product_variant' => 'View Product Variant',
+    'discounts.limitations.limitation' => 'Limitation',
+    'discounts.limitations.exclusion' => 'Exclusion',
     /**
+    
      * Product Collections.
      */
     'products.collections.heading' => 'Collections',

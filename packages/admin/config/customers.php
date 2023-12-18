@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Searchable meta fields.
@@ -13,5 +14,7 @@ return [
     |
     */
     'searchable_meta' => [],
+
     'impersonate' => null,
+
 ];

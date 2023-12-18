@@ -79,6 +79,11 @@ class Discount extends BaseModel
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('condition');
     }
+    
+    public function purchasableExclusions()
+    {
+        return $this->hasMany(DiscountPurchasable::class)->whereType('exclusion');
+    }
 
     public function purchasableLimitations()
     {
@@ -107,7 +112,7 @@ class Discount extends BaseModel
         return $this->belongsToMany(
             Collection::class,
             "{$prefix}collection_discount"
-        )->withTimestamps();
+        )->withPivot(['type'])->withTimestamps();
     }
 
     /**
@@ -135,7 +140,7 @@ class Discount extends BaseModel
         return $this->belongsToMany(
             Brand::class,
             "{$prefix}brand_discount"
-        )->withTimestamps();
+        )->withPivot(['type'])->withTimestamps();
     }
 
     /**
@@ -169,6 +174,30 @@ class Discount extends BaseModel
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
                         ->wherePurchasableType(Product::class)
+                        ->when(
+                            $type,
+                            fn ($query) => $query->whereType($type)
+                        )
+                )
+        );
+    }
+    
+    /**
+     * Return the product variants scope.
+     *
+     * @return Builder
+     */
+    public function scopeProductVariants(Builder $query, iterable $variantIds = [], string $type = null)
+    {
+        if (is_array($variantIds)) {
+            $variantIds = collect($variantIds);
+        }
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+                ->orWhereHas('purchasables',
+                    fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
+                        ->wherePurchasableType(ProductVariant::class)
                         ->when(
                             $type,
                             fn ($query) => $query->whereType($type)

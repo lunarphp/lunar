@@ -23,7 +23,7 @@ Lunar\Models\Order
 | discount_breakdown    | A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]` 
 | discount_total        | Any discount amount excl. tax                                                                                      
 | shipping_total        | The shipping total excl. tax                                                                                       
-| tax_breakdown         | A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]`                        
+| tax_breakdown         | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]`                        
 | tax_total             | The total amount of tax applied                                                                                    
 | total                 | The grand total with tax                                                                                           
 | notes                 | Any additional order notes                                                                                         
@@ -44,15 +44,14 @@ $order = \Lunar\Models\Order::create([/** .. */]);
 
 // Recommended way
 $order = Cart::first()->createOrder(
-    allowMultiple: false,
-    draftOrderId: null,
+    allowMultipleOrders: false,
+    orderIdToUpdate: null,
 );
 ```
 
-- `allowMultiple` - Generally carts will only have one draft order associated, however if you want to allow carts to
+- `allowMultipleOrders` - Generally carts will only have one draft order associated, however if you want to allow carts to
   have multiple, you can pass `true` here.
-- `draftOrderId` - If you want to be sure you're going to get the existing/correct order back, you can pass an ID of a
-  draft order here to use, note it does have to relate to this cart already.
+- `orderIdToUpdate` - You can optionally pass the ID of an order to update instead of attempting to create a new order, this must be a draft order i.e. a null `placed_at` and related to the cart.
 
 The underlying class for creating an order is `Lunar\Actions\Carts\CreateOrder`, you are free to override this in the
 config file `config/cart.php`
@@ -211,7 +210,7 @@ Lunar\Models\OrderLine
 | quantity         | The amount of this item purchased                                                           
 | sub_total        | The sub total minus any discounts, excl. tax                                                
 | discount_total   | Any discount amount excl. tax                                                               
-| tax_breakdown    | A json field for the tax breakdown e.g. `[{"name": "VAT", "total": 123, "percentage": 20}]` 
+| tax_breakdown    | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]` 
 | shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
 | tax_total        | The total amount of tax applied                                                             
 | total            | The grand total with tax                                                                    

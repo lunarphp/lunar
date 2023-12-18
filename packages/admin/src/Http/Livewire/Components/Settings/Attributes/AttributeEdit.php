@@ -76,7 +76,7 @@ class AttributeEdit extends Component
             'attribute.searchable' => 'nullable|boolean',
             'attribute.filterable' => 'nullable|boolean',
             'attribute.configuration' => 'nullable|array',
-            'attribute.section' => 'string',
+            'attribute.section' => 'nullable|string',
             'attribute.system' => 'boolean',
             'attribute.type' => 'required',
             'attribute.validation_rules' => 'nullable|string',

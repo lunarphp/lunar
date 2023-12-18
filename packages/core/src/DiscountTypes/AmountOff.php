@@ -107,34 +107,40 @@ class AmountOff extends AbstractDiscountType
         // enough left to apply the remaining too.
         if ($remaining) {
             // prioritise sharing the remaining over eligible lines
-            $line = $lines->first(function ($line) use ($remaining) {
-                return $line->subTotalDiscounted->value - $remaining > 0;
-            });
+            $lines->filter(function ($line) {
+                return $line->subTotalDiscounted->value > 0;
+            })
+                ->each(function($line) use ($affectedLines, $cart, &$remaining) {
+                    if ($remaining <= 0) {
+                        return;
+                    }
+                    
+                    $amountAvailable = min($line->subTotalDiscounted->value, $remaining);
+                    $remaining -= $amountAvailable;
 
-            if ($line) {
-                $newDiscountTotal = $line->discountTotal->value + $remaining;
-
-                $line->discountTotal = new Price(
-                    $newDiscountTotal,
-                    $cart->currency,
-                    1
-                );
-
-                $line->subTotalDiscounted = new Price(
-                    $line->subTotal->value - $newDiscountTotal,
-                    $cart->currency,
-                    1
-                );
-
-                if (! $affectedLines->first(function ($breakdownLine) use ($line) {
-                    return $breakdownLine->line == $line;
-                })) {
-                    $affectedLines->push(new DiscountBreakdownLine(
-                        line: $line,
-                        quantity: $line->quantity
-                    ));
-                }
-            }
+                    $newDiscountTotal = $line->discountTotal->value + $amountAvailable;
+    
+                    $line->discountTotal = new Price(
+                        $newDiscountTotal,
+                        $cart->currency,
+                        1
+                    );
+    
+                    $line->subTotalDiscounted = new Price(
+                        $line->subTotal->value - $newDiscountTotal,
+                        $cart->currency,
+                        1
+                    );
+    
+                    if (! $affectedLines->first(function ($breakdownLine) use ($line) {
+                        return $breakdownLine->line == $line;
+                    })) {
+                        $affectedLines->push(new DiscountBreakdownLine(
+                            line: $line,
+                            quantity: $line->quantity
+                        ));
+                    }
+                });
         }
 
         if (! $cart->discounts) {
@@ -146,7 +152,7 @@ class AmountOff extends AbstractDiscountType
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
             discount: $this->discount,
             lines: $affectedLines,
-            price: new Price($value, $cart->currency, 1)
+            price: new Price($value - $remaining, $cart->currency, 1)
         ));
 
         return $cart;
@@ -157,9 +163,17 @@ class AmountOff extends AbstractDiscountType
      */
     protected function getEligibleLines(Cart $cart): \Illuminate\Support\Collection
     {
-        $collectionIds = $this->discount->collections->pluck('id');
-        $brandIds = $this->discount->brands->pluck('id');
+        $collectionIds = $this->discount->collections->where('pivot.type', 'limitation')->pluck('id');
+        $collectionExclusionIds = $this->discount->collections->where('pivot.type', 'exclusion')->pluck('id');
+        
+        $brandIds = $this->discount->brands->where('pivot.type', 'limitation')->pluck('id');
+        $brandExclusionIds = $this->discount->brands->where('pivot.type', 'exclusion')->pluck('id');
+        
         $productIds = $this->discount->purchasableLimitations
+            ->reject(fn ($limitation) => ! $limitation->purchasable)
+            ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
+            
+        $productExclusionIds = $this->discount->purchasableExclusions
             ->reject(fn ($limitation) => ! $limitation->purchasable)
             ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
 
@@ -172,16 +186,36 @@ class AmountOff extends AbstractDiscountType
                 })->exists();
             });
         }
+        
+        if ($collectionExclusionIds->count()) {
+            $lines = $lines->reject(function ($line) use ($collectionExclusionIds) {
+                return $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionExclusionIds) {
+                    $query->whereIn((new Collection)->getTable().'.id', $collectionExclusionIds);
+                })->exists();
+            });
+        }
 
         if ($brandIds->count()) {
             $lines = $lines->reject(function ($line) use ($brandIds) {
                 return ! $brandIds->contains($line->purchasable->product->brand_id);
             });
         }
+        
+        if ($brandExclusionIds->count()) {
+            $lines = $lines->reject(function ($line) use ($brandExclusionIds) {
+                return $brandExclusionIds->contains($line->purchasable->product->brand_id);
+            });
+        }
 
         if ($productIds->count()) {
-            $lines = $lines->reject(function ($line) use ($productIds) {
-                return ! $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
+            $lines = $lines->filter(function ($line) use ($productIds) {
+                return $productIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id) || $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
+            });
+        }
+        
+        if ($productExclusionIds->count()) {
+            $lines = $lines->reject(function ($line) use ($productExclusionIds) {
+                return $productExclusionIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id) || $productExclusionIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
             });
         }
 

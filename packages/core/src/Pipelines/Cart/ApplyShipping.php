@@ -21,7 +21,9 @@ final class ApplyShipping
         $shippingSubTotal = 0;
         $shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
 
-        if ($shippingOption = ShippingManifest::getShippingOption($cart)) {
+        $shippingOption = $cart->shippingOptionOverride ?: ShippingManifest::getShippingOption($cart);
+
+        if ($shippingOption) {
             $shippingBreakdown->items->put(
                 $shippingOption->getIdentifier(),
                 new ShippingBreakdownItem(
@@ -34,8 +36,10 @@ final class ApplyShipping
             $shippingSubTotal = $shippingOption->price->value;
             $shippingTotal = $shippingSubTotal;
 
-            $cart->shippingAddress->shippingTotal = new Price($shippingTotal, $cart->currency, 1);
-            $cart->shippingAddress->shippingSubTotal = new Price($shippingOption->price->value, $cart->currency, 1);
+            if ($cart->shippingAddress && ! $cart->shippingBreakdown) {
+                $cart->shippingAddress->shippingTotal = new Price($shippingTotal, $cart->currency, 1);
+                $cart->shippingAddress->shippingSubTotal = new Price($shippingOption->price->value, $cart->currency, 1);
+            }
         }
 
         $cart->shippingBreakdown = $shippingBreakdown;
