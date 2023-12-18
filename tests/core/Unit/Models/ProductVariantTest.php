@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Support\Facades\Config;
 use Lunar\Exceptions\MissingCurrencyPriceException;
 use Lunar\Facades\Pricing;

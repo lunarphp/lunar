@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Lunar\Facades\DB;
 use Lunar\Models\Brand;

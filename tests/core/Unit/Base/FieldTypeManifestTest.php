@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Support\Collection;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;

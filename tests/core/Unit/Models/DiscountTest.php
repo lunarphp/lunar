@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Models\Discount;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);

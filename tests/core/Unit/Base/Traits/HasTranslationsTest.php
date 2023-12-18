@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\FieldTypes\Dropdown;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Text;

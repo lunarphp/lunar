@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Support\Facades\File;
 
 test('all migrations can run rollback', function () {

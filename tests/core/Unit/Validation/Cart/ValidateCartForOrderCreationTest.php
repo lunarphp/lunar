@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;

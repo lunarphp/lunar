@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Text;
 

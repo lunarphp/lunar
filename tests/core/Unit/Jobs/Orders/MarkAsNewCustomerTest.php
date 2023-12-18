@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;

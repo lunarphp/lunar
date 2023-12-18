@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Jobs\Collections\UpdateProductPositions;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;

@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Actions\Carts\GenerateFingerprint;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;

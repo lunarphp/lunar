@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Support\Facades\Route;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasModelExtending;

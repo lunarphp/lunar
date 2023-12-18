@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Support\Facades\Storage;
 use Lunar\Database\State\ConvertTaxbreakdown;
 use Lunar\Facades\DB;

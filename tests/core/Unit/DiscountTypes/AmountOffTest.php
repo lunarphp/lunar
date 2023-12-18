@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Facades\CartSession;

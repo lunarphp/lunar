@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;

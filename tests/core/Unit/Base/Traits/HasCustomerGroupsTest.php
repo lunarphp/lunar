@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Exceptions\SchedulingException;
 use Lunar\Models\Channel;
 use Lunar\Models\CustomerGroup;

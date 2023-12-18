@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Models\Cart;

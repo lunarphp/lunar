@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\DataTypes\Price;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;

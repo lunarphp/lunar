@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;

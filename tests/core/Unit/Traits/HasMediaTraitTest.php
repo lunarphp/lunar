@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Http\UploadedFile;
 use Lunar\Base\StandardMediaDefinitions;
 use Lunar\Models\Product;
