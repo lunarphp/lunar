@@ -102,7 +102,7 @@ return [
                 ],
                 'quantity_increment' => [
                     'label' => 'Quantity Increment',
-                    'helper_text' => 'The number of items by which a product variant can be purchased.',
+                    'helper_text' => 'The product variant must be purchased in multiples of this quantity.',
                 ],
             ],
         ],
