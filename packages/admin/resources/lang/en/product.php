@@ -98,7 +98,7 @@ return [
                 ],
                 'min_quantity' => [
                     'label' => 'Minimum Quantity',
-                    'helper_text' => 'The fewest number of items of a product variant that can be purchased at the same time.',
+                    'helper_text' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
                 ],
                 'quantity_increment' => [
                     'label' => 'Quantity Increment',
