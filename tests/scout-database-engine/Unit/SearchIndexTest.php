@@ -1,6 +1,7 @@
 <?php
 
-uses(\Lunar\ScoutDatabaseEngine\Tests\TestCase::class);
+uses(\Lunar\Tests\ScoutDatabaseEngine\TestCase::class);
+
 use Lunar\ScoutDatabaseEngine\SearchIndex;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);

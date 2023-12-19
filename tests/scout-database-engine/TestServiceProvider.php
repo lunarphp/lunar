@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\ScoutDatabaseEngine\Tests;
+namespace Lunar\Tests\ScoutDatabaseEngine;
 
 use Illuminate\Support\ServiceProvider;
 

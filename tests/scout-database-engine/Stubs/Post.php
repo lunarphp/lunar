@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\ScoutDatabaseEngine\Tests\Stubs;
+namespace Lunar\Tests\ScoutDatabaseEngine\Stubs;
 
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;

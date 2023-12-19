@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\ScoutDatabaseEngine\Tests;
+namespace Lunar\Tests\ScoutDatabaseEngine;
 
 use Laravel\Scout\ScoutServiceProvider;
 use Lunar\ScoutDatabaseEngine\ScoutDatabaseServiceProvider;

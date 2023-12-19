@@ -1,8 +1,9 @@
 <?php
 
-uses(\Lunar\ScoutDatabaseEngine\Tests\TestCase::class);
+uses(\Lunar\Tests\ScoutDatabaseEngine\TestCase::class);
+
 use Lunar\ScoutDatabaseEngine\SearchIndex;
-use Lunar\ScoutDatabaseEngine\Tests\Stubs\Post;
+use Lunar\Tests\ScoutDatabaseEngine\Stubs\Post;
 
 uses(\Illuminate\Foundation\Testing\DatabaseMigrations::class);
 
