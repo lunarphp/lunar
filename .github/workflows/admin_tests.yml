@@ -43,4 +43,4 @@ jobs:
           APP_ENV: testing
           DB_CONNECTION: testing
           DB_DATABASE: ":memory:"
-        run: vendor/bin/pest  --testsuite admin
+        run: vendor/bin/pest --testsuite admin --parallel
