@@ -703,10 +703,10 @@ class BuyXGetYTest extends TestCase
         $this->assertEquals(200, $lineA->discountTotal->value);
 
         $this->assertEquals(1000, $lineB->subTotal->value);
-        $this->assertEquals(450, $lineB->subTotalDiscounted->value);
-        $this->assertEquals(550, $lineB->discountTotal->value);
+        $this->assertEquals(500, $lineB->subTotalDiscounted->value);
+        $this->assertEquals(500, $lineB->discountTotal->value);
 
-        $this->assertEquals(750, $cart->discountTotal->value);
+        $this->assertEquals(700, $cart->discountTotal->value);
         $this->assertCount(2, $cart->discountBreakdown);
     }
 

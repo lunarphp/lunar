@@ -87,7 +87,7 @@ class BuyXGetY extends AbstractDiscountType
         $discountTotal = 0;
 
         // Get the reward lines and sort by cheapest first.
-        $rewardLines = $lines->filter(function ($line) {
+        $rewardLines = $cart->lines->filter(function ($line) {
             return $this->discount->purchasableRewards->first(function ($item) use ($line) {
                 return $item->purchasable_type == Product::class &&
                     $item->purchasable_id == $line->purchasable->product->id;
