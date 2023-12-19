@@ -32,16 +32,16 @@ class CartLineQuantity extends BaseValidator
             );
         }
 
-        if ($purchasable && $purchasable->min_quantity < $quantity) {
+        if ($purchasable && $quantity < $purchasable->min_quantity) {
             $this->fail(
                 'cart',
                 __('lunar::exceptions.minimum_quantity', [
-                    'minimum' => $purchasable->min_quantity,
+                    'quantity' => $purchasable->min_quantity,
                 ])
             );
         }
 
-        if ($purchasable && ($purchasable->quantity_increment % $quantity) !== 0) {
+        if ($purchasable && ($quantity % $purchasable->quantity_increment) !== 0) {
             $this->fail(
                 'cart',
                 __('lunar::exceptions.quantity_increment', [
