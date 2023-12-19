@@ -34,7 +34,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::PACKAGE_DIRECTORIES, [
         // default value
         __DIR__.'/packages',
-        __DIR__.'/utils',
     ]);
 
     // for "merge" command
