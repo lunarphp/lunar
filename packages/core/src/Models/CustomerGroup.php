@@ -38,10 +38,8 @@ class CustomerGroup extends BaseModel
 
     /**
      * Return the customer's relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function customers()
+    public function customers(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
