@@ -62,4 +62,4 @@ jobs:
           DB_DATABASE: "test"
           DB_USERNAME: "root"
           DB_PASSWORD: "password"
-        run: vendor/bin/pest --testsuite scout-database-engine --parallel
+        run: vendor/bin/pest --testsuite scout-database-engine

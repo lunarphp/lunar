@@ -1,6 +1,7 @@
 <?php
 
-uses(\Lunar\Tests\ScoutDatabaseEngine\TestCase::class);
+uses(\Lunar\Tests\ScoutDatabaseEngine\TestCase::class)
+    ->group('db');
 
 use Illuminate\Support\Facades\Artisan;
 use Lunar\ScoutDatabaseEngine\SearchIndex;
@@ -109,7 +110,7 @@ test('can flush data', function () {
     // 3 models x 2 fields = 6
     $this->assertDatabaseCount('search_index', 12);
 
-    Artisan::call('scout:flush "Lunar\\\ScoutDatabaseEngine\\\Tests\\\Stubs\\\Post"');
+    Artisan::call('scout:flush "Lunar\\\Tests\\\ScoutDatabaseEngine\\\Stubs\\\Post"');
 
     $this->assertDatabaseCount('search_index', 0);
 });
