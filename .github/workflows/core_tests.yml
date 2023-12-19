@@ -1,5 +1,6 @@
 name: Lunar Core Tests
 on:
+  push:
   pull_request:
 defaults:
   run:
