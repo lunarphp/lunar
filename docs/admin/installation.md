@@ -61,5 +61,19 @@ public function register(): void
     LunarPanel::register(); // [!code focus]
 ```
 
+## Execute migration
+
+```php
+php artisan migrate
+```
+
+## Publish assets
+
+```php
+php artisan filament:assets
+```
+
+## Ready !
+
 You should now be able to access the panel at `https://<yoursite>/lunar`.
 s
