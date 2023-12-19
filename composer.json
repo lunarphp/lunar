@@ -63,10 +63,12 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Lunar\\Admin\\Tests\\": "packages/admin/tests",
-            "Lunar\\Tests\\": "packages/core/tests",
-            "Lunar\\Opayo\\Tests\\": "packages/core/opayo/tests",
-            "Lunar\\ScoutDatabaseEngine\\Tests\\": "packages/scout-database-engine/tests",
+            "Lunar\\Tests\\Admin\\": "tests/admin",
+            "Lunar\\Tests\\Core\\": "tests/core",
+            "Lunar\\Tests\\Opayo\\": "tests/opayo",
+            "Lunar\\Tests\\Paypal\\": "tests/paypal",
+            "Lunar\\Tests\\ScoutDatabaseEngine\\": "tests/scout-database-engine",
+            "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests"
         }
     },

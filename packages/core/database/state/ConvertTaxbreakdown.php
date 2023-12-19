@@ -15,10 +15,10 @@ class ConvertTaxbreakdown
     public function run()
     {
         DB::usingConnection(config('lunar.database.connection') ?: DB::getDefaultConnection(), function () {
-                
+
             $prefix = config('lunar.database.table_prefix');
             $updateTime = now();
-    
+
             if ($this->canRunOnOrders()) {
                 DB::table("{$prefix}orders")
                     ->whereJsonContainsKey("{$prefix}orders.tax_breakdown->[0]->total")
@@ -42,7 +42,7 @@ class ConvertTaxbreakdown
                         }
                     });
             }
-    
+
             if ($this->canRunOnOrderLines()) {
                 DB::table("{$prefix}order_lines")
                     ->whereJsonContainsKey("{$prefix}order_lines.tax_breakdown->[0]->total")
@@ -57,7 +57,7 @@ class ConvertTaxbreakdown
                         DB::transaction(function () use ($prefix, $updateTime, $rows) {
                             foreach ($rows as $row) {
                                 $originalBreakdown = json_decode($row->tax_breakdown, true);
-    
+
                                 DB::table("{$prefix}order_lines")->where('id', '=', $row->id)->update([
                                     'tax_breakdown' => collect($originalBreakdown)->map(function ($breakdown) use ($row) {
                                         return [
@@ -74,7 +74,7 @@ class ConvertTaxbreakdown
                         });
                     });
             }
-            
+
         });
     }
 
