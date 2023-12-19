@@ -34,7 +34,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, intl, amqp, dba
+          extensions: mbstring, intl, amqp, dba, bcmath
           tools: composer:v2, phpunit:${{ matrix.php }}
 
       - name: Get composer cache directory
