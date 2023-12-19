@@ -14,6 +14,6 @@ if (! function_exists('is_lunar_user')) {
 if (! function_exists('prices_inc_tax')) {
     function prices_inc_tax()
     {
-            return config('lunar.pricing.stored_inclusive_of_tax', false);
+        return config('lunar.pricing.stored_inclusive_of_tax', false);
     }
 }
