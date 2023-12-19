@@ -25,6 +25,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property array $attribute_data
  * @property ?string $tax_ref
  * @property int $unit_quantity
+ * @property int $min_quantity
+ * @property int $quantity_increment
  * @property ?string $sku
  * @property ?string $gtin
  * @property ?string $mpn

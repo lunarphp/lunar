@@ -92,6 +92,18 @@ return [
                         'backorder' => 'Backorder Only',
                     ],
                 ],
+                'unit_quantity' => [
+                    'label' => 'Unit Quantity',
+                    'helper_text' => 'How many individual items make up 1 unit.',
+                ],
+                'min_quantity' => [
+                    'label' => 'Minimum Quantity',
+                    'helper_text' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
+                ],
+                'quantity_increment' => [
+                    'label' => 'Quantity Increment',
+                    'helper_text' => 'The product variant must be purchased in multiples of this quantity.',
+                ],
             ],
         ],
         'shipping' => [

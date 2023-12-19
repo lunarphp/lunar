@@ -23,6 +23,12 @@ class ManageProductInventory extends BaseEditRecord
 
     public ?string $purchasable = null;
 
+    public ?int $unit_quantity = 1;
+
+    public ?int $quantity_increment = 1;
+
+    public ?int $min_quantity = 1;
+
     public function getTitle(): string|Htmlable
     {
         return __('lunarpanel::product.pages.inventory.label');
@@ -62,7 +68,9 @@ class ManageProductInventory extends BaseEditRecord
         $this->stock = $variant->stock;
         $this->backorder = $variant->backorder;
         $this->purchasable = $variant->purchasable;
-
+        $this->unit_quantity = $variant->unit_quantity;
+        $this->min_quantity = $variant->min_quantity;
+        $this->quantity_increment = $variant->quantity_increment;
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
@@ -109,6 +117,24 @@ class ManageProductInventory extends BaseEditRecord
                     ->label(
                         __('lunarpanel::product.pages.inventory.form.purchasable.label')
                     ),
+                TextInput::make('unit_quantity')
+                    ->label(
+                        __('lunarpanel::product.pages.inventory.form.unit_quantity.label')
+                    )->helperText(
+                        __('lunarpanel::product.pages.inventory.form.unit_quantity.helper_text')
+                    )->numeric(),
+                TextInput::make('quantity_increment')
+                    ->label(
+                        __('lunarpanel::product.pages.inventory.form.quantity_increment.label')
+                    )->helperText(
+                        __('lunarpanel::product.pages.inventory.form.quantity_increment.helper_text')
+                    )->numeric(),
+                TextInput::make('min_quantity')
+                    ->label(
+                        __('lunarpanel::product.pages.inventory.form.min_quantity.label')
+                    )->helperText(
+                        __('lunarpanel::product.pages.inventory.form.min_quantity.helper_text')
+                    )->numeric(),
             ])->columns([
                 'sm' => 1,
                 'xl' => 3,

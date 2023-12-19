@@ -11,6 +11,8 @@ return [
     'carts.order_exists' => 'An order for this cart already exists',
     'carts.shipping_option_missing' => 'Missing Shipping Option',
     'missing_currency_price' => 'No price for currency ":currency" exists',
+    'minimum_quantity' => 'You must add a minimum of :quantity items.',
+    'quantity_increment' => 'Quantity :quantity must be in increments of :increment',
     'fieldtype_missing' => 'FieldType ":class" does not exist',
     'invalid_fieldtype' => 'Class ":class" does not implement the FieldType interface.',
     'discounts.invalid_type' => 'Collection must only contain ":expected", found ":actual"',
