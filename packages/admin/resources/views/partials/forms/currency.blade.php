@@ -25,7 +25,7 @@
           :label="__('adminhub::inputs.default.label')"
           for="handle"
           :instructions="__('adminhub::inputs.default.instructions', [
-            'model' => 'channel',
+            'model' => 'currency',
           ])"
         >
           <x-hub::input.toggle wire:click="toggleDefault" :on="$currency->default" name="handle" id="handle" :disabled="$currency->id && $currency->getOriginal('default')" />
@@ -40,7 +40,7 @@
     </div>
 
     <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
-      <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+      <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
         {{ __(
           $currency->id ? 'adminhub::settings.currencies.form.update_btn' : 'adminhub::settings.currencies.form.create_btn'
         ) }}

@@ -12,8 +12,6 @@ trait CanExtendValidation
 
     /**
      * Extend validation rules
-     *
-     * @return void
      */
     public static function extendValidation(array $rules, array $messages = []): void
     {
@@ -23,8 +21,6 @@ trait CanExtendValidation
 
     /**
      * Get extended validation rules
-     *
-     * @return array
      */
     protected function getExtendedValidationRules($parameters): array
     {
@@ -50,8 +46,6 @@ trait CanExtendValidation
 
     /**
      * Get extended validation messages
-     *
-     * @return array
      */
     protected function getExtendedValidationMessages(): array
     {

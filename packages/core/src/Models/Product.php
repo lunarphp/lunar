@@ -2,10 +2,15 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasChannels;
@@ -18,7 +23,6 @@ use Lunar\Base\Traits\HasUrls;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\ProductFactory;
-use Lunar\FieldTypes\TranslatedText;
 use Lunar\Jobs\Products\Associations\Associate;
 use Lunar\Jobs\Products\Associations\Dissociate;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
@@ -35,56 +39,20 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Product extends BaseModel implements SpatieHasMedia
 {
-    use HasFactory;
-    use HasMedia;
-    use LogsActivity;
     use HasChannels;
-    use HasTranslations;
-    use HasTags;
     use HasCustomerGroups;
+    use HasFactory;
+    use HasMacros;
+    use HasMedia;
+    use HasTags;
+    use HasTranslations;
     use HasUrls;
+    use LogsActivity;
     use Searchable;
     use SoftDeletes;
-    use HasMacros;
-
-    /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [
-        '__soft_deleted',
-        'skus',
-        'status',
-    ];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'name',
-        'created_at',
-        'updated_at',
-        'skus',
-        'status',
-    ];
-
-    /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return config('scout.prefix').'products';
-    }
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductFactory
      */
     protected static function newFactory(): ProductFactory
     {
@@ -115,50 +83,40 @@ class Product extends BaseModel implements SpatieHasMedia
 
     /**
      * Returns the attributes to be stored against this model.
-     *
-     * @return array
      */
-    public function mappedAttributes()
+    public function mappedAttributes(): Collection
     {
         return $this->productType->mappedAttributes;
     }
 
     /**
      * Return the product type relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function productType()
+    public function productType(): BelongsTo
     {
         return $this->belongsTo(ProductType::class);
     }
 
     /**
      * Return the product images relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function images()
+    public function images(): MorphMany
     {
         return $this->media()->where('collection_name', 'images');
     }
 
     /**
      * Return the product variants relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function variants()
+    public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }
 
     /**
      * Return the product collections relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function collections()
+    public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
             Collection::class,
@@ -168,80 +126,38 @@ class Product extends BaseModel implements SpatieHasMedia
 
     /**
      * Return the associations relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function associations()
+    public function associations(): HasMany
     {
         return $this->hasMany(ProductAssociation::class, 'product_parent_id');
     }
 
     /**
      * Return the associations relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function inverseAssociations()
+    public function inverseAssociations(): HasMany
     {
         return $this->hasMany(ProductAssociation::class, 'product_target_id');
     }
 
     /**
      * Associate a product to another with a type.
-     *
-     * @param  mixed  $product
-     * @param  string  $type
-     * @return void
      */
-    public function associate($product, $type)
+    public function associate(mixed $product, string $type): void
     {
         Associate::dispatch($this, $product, $type);
     }
 
     /**
      * Dissociate a product to another with a type.
-     *
-     * @param  mixed  $product
-     * @param  string  $type
-     * @return void
      */
-    public function dissociate($product, $type = null)
+    public function dissociate(mixed $product, string $type = null): void
     {
         Dissociate::dispatch($this, $product, $type);
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getSearchableAttributes()
-    {
-        $attributes = $this->getAttributes();
-
-        $data = Arr::except($attributes, 'attribute_data');
-
-        foreach ($this->attribute_data ?? [] as $field => $value) {
-            if ($value instanceof TranslatedText) {
-                foreach ($value->getValue() as $locale => $text) {
-                    $data[$field.'_'.$locale] = $text?->getValue();
-                }
-            } else {
-                $data[$field] = $this->translateAttribute($field);
-            }
-        }
-
-        if ($this->thumbnail) {
-            $data['thumbnail'] = $this->thumbnail->getUrl('small');
-        }
-
-        $data['skus'] = $this->variants()->pluck('sku')->toArray();
-
-        return $data;
-    }
-
-    /**
      * Return the customer groups relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {
@@ -261,11 +177,30 @@ class Product extends BaseModel implements SpatieHasMedia
 
     /**
      * Return the brand relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function brand()
+    public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    /**
+     * Apply the status scope.
+     */
+    public function scopeStatus(Builder $query, string $status): Builder
+    {
+        return $query->whereStatus($status);
+    }
+
+    /**
+     * Return the prices relationship.
+     */
+    public function prices(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Price::class,
+            ProductVariant::class,
+            'product_id',
+            'priceable_id'
+        )->wherePriceableType(ProductVariant::class);
     }
 }

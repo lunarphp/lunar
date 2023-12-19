@@ -33,7 +33,6 @@ class SlotRegistry
      *
      * @param  string  $handle
      * @param  class  $slot
-     * @return void
      */
     public function register($handle, $slot): void
     {
@@ -48,7 +47,6 @@ class SlotRegistry
      * What handle do we want slots for?
      *
      * @param  string  $handle
-     * @return self
      */
     public function for($handle): self
     {
@@ -59,9 +57,6 @@ class SlotRegistry
 
     /**
      * Get slots for the current component.
-     *
-     * @param  Model  $model
-     * @return \Illuminate\Support\Collection
      */
     public function get(Model $model): Collection
     {

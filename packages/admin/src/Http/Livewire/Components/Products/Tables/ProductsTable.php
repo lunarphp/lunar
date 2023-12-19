@@ -172,8 +172,6 @@ class ProductsTable extends Table
 
     /**
      * Return the saved searches available to the table.
-     *
-     * @return Collection
      */
     public function getSavedSearchesProperty(): Collection
     {
@@ -209,9 +207,9 @@ class ProductsTable extends Table
         }
 
         return $this->tableBuilder
-        ->searchTerm($query)
-        ->queryStringFilters($filters)
-        ->perPage($this->perPage)
-        ->getData();
+            ->searchTerm($query)
+            ->queryStringFilters($filters)
+            ->perPage($this->perPage)
+            ->getData();
     }
 }

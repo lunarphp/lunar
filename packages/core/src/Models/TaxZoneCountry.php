@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxZoneCountryFactory;
@@ -21,8 +22,6 @@ class TaxZoneCountry extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TaxZoneCountryFactory
      */
     protected static function newFactory(): TaxZoneCountryFactory
     {
@@ -39,20 +38,16 @@ class TaxZoneCountry extends BaseModel
 
     /**
      * Return the tax zone relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function taxZone()
+    public function taxZone(): BelongsTo
     {
         return $this->belongsTo(TaxZone::class);
     }
 
     /**
      * Return the country relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function country()
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

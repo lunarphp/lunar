@@ -16,8 +16,8 @@ use Lunar\Models\ProductVariant;
 abstract class AbstractProductType extends Component
 {
     use Notifies;
-    use WithPagination;
     use WithLanguages;
+    use WithPagination;
 
     /**
      * The current view of attributes we're assigning.
@@ -28,22 +28,16 @@ abstract class AbstractProductType extends Component
 
     /**
      * Instance of the parent product.
-     *
-     * @var \Lunar\Models\ProductType
      */
     public ProductType $productType;
 
     /**
      * Attributes which are ready to be synced.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $selectedProductAttributes;
 
     /**
      * Attributes which are ready to be synced.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $selectedVariantAttributes;
 
@@ -213,6 +207,6 @@ abstract class AbstractProductType extends Component
                 fn ($query, $search) => $query->where("name->{$this->defaultLanguage->code}", 'LIKE', '%'.$search.'%')
             )->whereSystem(false)
             ->whereNotIn('id', $existing->pluck('id')->toArray())
-            ->paginate(25);
+            ->get();
     }
 }

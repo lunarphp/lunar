@@ -13,11 +13,11 @@ use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 
 abstract class BaseColumn extends Component
 {
-    use HasLivewireComponent,
-        HasClosure,
-        HasViewComponent,
+    use HasClosure,
         HasEloquentRelationships,
+        HasLivewireComponent,
         HasTranslations,
+        HasViewComponent,
         HasViewProperties;
 
     /**
@@ -55,6 +55,12 @@ abstract class BaseColumn extends Component
         return $this;
     }
 
+    /**
+     * Set the field property.
+     *
+     * @param  string  $column
+     * @return $this
+     */
     public function after($column)
     {
         $this->after = $column;
@@ -65,8 +71,7 @@ abstract class BaseColumn extends Component
     /**
      * Set the property value for sortable.
      *
-     * @param  bool  $sortable
-     * @return self
+     * @return $this
      */
     public function sortable(bool $sortable = true): self
     {
@@ -101,7 +106,7 @@ abstract class BaseColumn extends Component
     /**
      * Return the column value.
      *
-     * @return void
+     * @return mixed|void
      */
     public function getValue()
     {
@@ -133,7 +138,6 @@ abstract class BaseColumn extends Component
      * Set the record property.
      *
      * @param  mixed  $record
-     * @return self
      */
     public function record($record): self
     {

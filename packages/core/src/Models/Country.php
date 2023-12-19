@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\CountryFactory;
@@ -28,8 +29,6 @@ class Country extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CountryFactory
      */
     protected static function newFactory(): CountryFactory
     {
@@ -46,10 +45,8 @@ class Country extends BaseModel
 
     /**
      * Return the states relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function states()
+    public function states(): HasMany
     {
         return $this->hasMany(State::class);
     }

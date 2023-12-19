@@ -9,6 +9,9 @@ class ProductOption extends \Lunar\Models\ProductOption
 {
     use SizesTrait;
 
+    /**
+     * Get the tags
+     */
     public function sizes(): HasMany
     {
         return $this->values()->where('id', 1);

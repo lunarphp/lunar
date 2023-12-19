@@ -18,30 +18,24 @@ class CalculateLines
     {
         foreach ($cart->lines as $line) {
             $cartLine = app(Pipeline::class)
-            ->send($line)
-            ->through(
-                config('lunar.cart.pipelines.cart_lines', [])
-            )->thenReturn(function ($cartLine) {
-                $cartLine->cacheProperties();
+                ->send($line)
+                ->through(
+                    config('lunar.cart.pipelines.cart_lines', [])
+                )->thenReturn(function ($cartLine) {
+                    $cartLine->cacheProperties();
 
-                return $cartLine;
-            });
+                    return $cartLine;
+                });
+            
+            $unitPrice = $cartLine->unitPrice->unitDecimal(false) * $cart->currency->factor;
 
-            $purchasable = $cartLine->purchasable;
-            $unitQuantity = $purchasable->getUnitQuantity();
+            $subTotal = (int) round($unitPrice * $cartLine->quantity, $cart->currency->decimal_places);
 
-            $unitPrice = (int) round(
-                (($cartLine->unitPrice->decimal / $purchasable->getUnitQuantity())
-                    * $cart->currency->factor),
-                $cart->currency->decimal_places);
-
-            $subTotal = $unitPrice * $cartLine->quantity;
-
-            $cartLine->subTotal = new Price($subTotal, $cart->currency, $unitQuantity);
-            $cartLine->taxAmount = new Price(0, $cart->currency, $unitQuantity);
-            $cartLine->total = new Price($subTotal, $cart->currency, $unitQuantity);
-            $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);
-            $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
+            $cartLine->subTotal = new Price($subTotal, $cart->currency, 1);
+            $cartLine->taxAmount = new Price(0, $cart->currency, 1);
+            $cartLine->total = new Price($subTotal, $cart->currency, 1);
+            $cartLine->subTotalDiscounted = new Price($subTotal, $cart->currency, 1);
+            $cartLine->discountTotal = new Price(0, $cart->currency, 1);
         }
 
         return $next($cart);

@@ -22,7 +22,6 @@ class CartSessionAuthListener
     /**
      * Handle the login event.
      *
-     * @param  \Illuminate\Auth\Events\Login  $event
      * @return void
      */
     public function login(Login $event)
@@ -54,12 +53,11 @@ class CartSessionAuthListener
     /**
      * Handle the logout event.
      *
-     * @param  \Illuminate\Auth\Events\Logout  $event
      * @return void
      */
     public function logout(Logout $event)
     {
-        if (! is_lunar_user($event->user)) {
+        if (is_null($event->user) || ! is_lunar_user($event->user)) {
             return;
         }
 

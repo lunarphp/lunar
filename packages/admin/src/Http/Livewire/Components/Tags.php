@@ -4,8 +4,8 @@ namespace Lunar\Hub\Http\Livewire\Components;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Models\Tag;
 
@@ -22,15 +22,11 @@ class Tags extends Component
 
     /**
      * The model to associate tags to.
-     *
-     * @var Model
      */
     public Model $taggable;
 
     /**
      * The search term for showing relevant available tags.
-     *
-     * @var string|null
      */
     public ?string $searchTerm = null;
 
@@ -99,9 +95,9 @@ class Tags extends Component
         }
 
         return DB::connection(config('lunar.database.connection'))
-        ->table(
-            config('lunar.database.table_prefix').'taggables'
-        )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
+            ->table(
+                config('lunar.database.table_prefix').'taggables'
+            )->join($tagTable, 'tag_id', '=', "{$tagTable}.id")
             ->whereTaggableType(
                 $this->taggable->getMorphClass()
             )

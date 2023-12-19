@@ -11,7 +11,7 @@
         onSort: ({ newIndex, oldIndex }) => {
 
           list = JSON.parse(
-            JSON.stringify(lookups)
+            JSON.stringify(this.lookups)
           )
 
           const moved = list[oldIndex]
@@ -20,7 +20,7 @@
           list.splice(oldIndex, 1)
           list.splice(newIndex, 0, moved)
 
-          lookups = list
+          this.lookups = list
         }
       });
     },

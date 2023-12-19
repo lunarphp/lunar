@@ -10,7 +10,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class StylesController extends Controller
 {
     /**
-     * @param  string  $style
      * @return \Lunar\Hub\Assets\Script
      *
      * @throws HttpException

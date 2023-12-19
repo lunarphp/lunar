@@ -4,18 +4,20 @@ namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Brand;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\CustomerGroup;
+use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
 use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 use Lunar\Tests\TestCase;
 
 /**
- * @group associations
+ * @group lunar.products
  */
 class ProductTest extends TestCase
 {
@@ -40,6 +42,30 @@ class ProductTest extends TestCase
             ]);
 
         $this->assertEquals($attribute_data, $product->attribute_data);
+    }
+
+    /** @test */
+    public function can_fetch_using_status_scope()
+    {
+        $attribute_data = collect([
+            'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
+            'pack_qty' => new \Lunar\FieldTypes\Number(12345),
+            'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+                'en' => new \Lunar\FieldTypes\Text('Blue'),
+                'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+            ])),
+        ]);
+
+        Product::factory()
+            ->for(ProductType::factory())
+            ->create([
+                'attribute_data' => $attribute_data,
+                'status' => 'draft',
+            ]);
+
+        $this->assertCount(0, Product::status('published')->get());
+
+        $this->assertCount(1, Product::status('draft')->get());
     }
 
     /**
@@ -115,6 +141,28 @@ class ProductTest extends TestCase
                 'customer_group_id' => $customerGroup->id,
                 'enabled' => 1,
                 'purchasable' => '1',
+                'ends_at' => null,
+            ],
+        );
+    }
+
+    /** @test */
+    public function customer_groups_can_be_scheduled_always_available()
+    {
+        $product = Product::factory()->create();
+
+        $customerGroup = CustomerGroup::factory()->create();
+
+        $product->scheduleCustomerGroup($customerGroup);
+
+        $this->assertDatabaseHas(
+            'lunar_customer_group_product',
+            [
+                'customer_group_id' => $customerGroup->id,
+                'enabled' => 1,
+                'purchasable' => 1,
+                'visible' => 1,
+                'starts_at' => null,
                 'ends_at' => null,
             ],
         );
@@ -454,5 +502,35 @@ class ProductTest extends TestCase
         $this->assertInstanceOf(Collection::class, $product->collections->first());
         $this->assertNotNull($product->collections->first()->pivot);
         $this->assertNotNull($product->collections->first()->pivot->position);
+    }
+
+    /** @test */
+    public function can_retrieve_prices()
+    {
+        $attribute_data = collect([
+            'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
+            'pack_qty' => new \Lunar\FieldTypes\Number(12345),
+            'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+                'en' => new \Lunar\FieldTypes\Text('Blue'),
+                'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+            ])),
+        ]);
+
+        $product = Product::factory()
+            ->for(ProductType::factory())
+            ->create([
+                'attribute_data' => $attribute_data,
+            ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        Price::factory()->create([
+            'priceable_id' => $variant->id,
+            'priceable_type' => ProductVariant::class,
+        ]);
+
+        $this->assertCount(1, $product->refresh()->prices);
     }
 }

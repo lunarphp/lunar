@@ -51,10 +51,7 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
+            ]
         ]);
 
         $this->assertCount(0, $order->lines);
@@ -66,9 +63,9 @@ class OrderShowTest extends TestCase
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order,
-        ])->assertSet('order.id', $order->id);
+            ->test(OrderShow::class, [
+                'order' => $order,
+            ])->assertSet('order.id', $order->id);
     }
 
     /** @test */
@@ -86,9 +83,6 @@ class OrderShowTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $this->assertCount(0, $order->lines);
@@ -100,12 +94,12 @@ class OrderShowTest extends TestCase
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order,
-        ])->assertSet('order.status', $order->status)
-        ->set('order.status', 'foo-bar')
-        ->call('updateStatus')
-        ->assertHasNoErrors();
+            ->test(OrderShow::class, [
+                'order' => $order,
+            ])->assertSet('order.status', $order->status)
+            ->set('order.status', 'foo-bar')
+            ->call('updateStatus')
+            ->assertHasNoErrors();
 
         $this->assertEquals('foo-bar', $order->refresh()->status);
 
@@ -136,9 +130,6 @@ class OrderShowTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $shipping = OrderAddress::factory()->create([
@@ -154,17 +145,17 @@ class OrderShowTest extends TestCase
         OrderAddress::factory()->create($billing);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order,
-        ])->assertSet('order.status', $order->status)
-        ->assertSee(
-            __('adminhub::components.orders.show.billing_matches_shipping')
-        )->set('billingAddress.postcode', 'TX1 1TX')
-        ->call('saveBillingAddress')
-        ->assertHasNoErrors()
-        ->assertDontSee(
-            __('adminhub::components.orders.show.billing_matches_shipping')
-        );
+            ->test(OrderShow::class, [
+                'order' => $order,
+            ])->assertSet('order.status', $order->status)
+            ->assertSee(
+                __('adminhub::components.orders.show.billing_matches_shipping')
+            )->set('billingAddress.postcode', 'TX1 1TX')
+            ->call('saveBillingAddress')
+            ->assertHasNoErrors()
+            ->assertDontSee(
+                __('adminhub::components.orders.show.billing_matches_shipping')
+            );
     }
 
     /** @test */
@@ -182,9 +173,6 @@ class OrderShowTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $shipping = OrderAddress::factory()->create([
@@ -200,16 +188,16 @@ class OrderShowTest extends TestCase
         $billing = OrderAddress::factory()->create($billing);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order,
-        ])->assertSet('shippingAddress.id', $shipping->id)
-         ->set('shippingAddress.postcode', '1TX RX1')
-         ->set('billingAddress.postcode', 'BI1 LL1')
-         ->call('saveShippingAddress')
-         ->call('saveBillingAddress')
-         ->assertHasNoErrors()
-         ->assertSet('shippingAddress.postcode', '1TX RX1')
-         ->assertSet('billingAddress.postcode', 'BI1 LL1');
+            ->test(OrderShow::class, [
+                'order' => $order,
+            ])->assertSet('shippingAddress.id', $shipping->id)
+            ->set('shippingAddress.postcode', '1TX RX1')
+            ->set('billingAddress.postcode', 'BI1 LL1')
+            ->call('saveShippingAddress')
+            ->call('saveBillingAddress')
+            ->assertHasNoErrors()
+            ->assertSet('shippingAddress.postcode', '1TX RX1')
+            ->assertSet('billingAddress.postcode', 'BI1 LL1');
 
         $this->assertEquals($shipping->refresh()->postcode, '1TX RX1');
         $this->assertEquals($billing->refresh()->postcode, 'BI1 LL1');
@@ -230,18 +218,15 @@ class OrderShowTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order,
-        ])->assertSet('order.status', $order->status)
-        ->assertDontSee(
-            __('adminhub::components.orders.show.capture_payment_btn')
-        );
+            ->test(OrderShow::class, [
+                'order' => $order,
+            ])->assertSet('order.status', $order->status)
+            ->assertDontSee(
+                __('adminhub::components.orders.show.capture_payment_btn')
+            );
 
         $order = Order::factory()->create([
             'user_id' => null,
@@ -250,9 +235,6 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 
@@ -268,12 +250,12 @@ class OrderShowTest extends TestCase
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order->refresh(),
-        ])->assertSet('order.status', $order->status)
-        ->assertSee(
-            __('adminhub::components.orders.show.capture_payment_btn')
-        );
+            ->test(OrderShow::class, [
+                'order' => $order->refresh(),
+            ])->assertSet('order.status', $order->status)
+            ->assertSee(
+                __('adminhub::components.orders.show.capture_payment_btn')
+            );
     }
 
     /** @test */
@@ -288,14 +270,11 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'placed_at' => null,
             'status' => 'awaiting-payment',
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         LiveWire::actingAs($staff, 'staff')
-        ->test(OrderShow::class, [
-            'order' => $order,
-        ])->assertSet('order.placed_at', null);
+            ->test(OrderShow::class, [
+                'order' => $order,
+            ])->assertSet('order.placed_at', null);
     }
 }

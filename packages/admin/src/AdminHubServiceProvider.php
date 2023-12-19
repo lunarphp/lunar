@@ -2,8 +2,10 @@
 
 namespace Lunar\Hub;
 
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
+use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -13,7 +15,11 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Hub\Auth\Manifest;
 use Lunar\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
+use Lunar\Hub\Base\DiscountTypesInterface;
 use Lunar\Hub\Console\Commands\InstallHub;
+use Lunar\Hub\Console\Commands\InstallPermissions;
+use Lunar\Hub\Database\State\EnsurePermissionsAreUpgraded;
+use Lunar\Hub\Editing\DiscountTypes;
 use Lunar\Hub\Facades\ActivityLog;
 use Lunar\Hub\Http\Livewire\Components\Account;
 use Lunar\Hub\Http\Livewire\Components\ActivityLogFeed;
@@ -35,6 +41,7 @@ use Lunar\Hub\Http\Livewire\Components\CurrentStaffName;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersIndex;
 use Lunar\Hub\Http\Livewire\Components\Customers\CustomersTable;
+use Lunar\Hub\Http\Livewire\Components\Dashboard\SalesPerformance;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountCreate;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountShow;
 use Lunar\Hub\Http\Livewire\Components\Discounts\DiscountsIndex;
@@ -67,6 +74,7 @@ use Lunar\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantSideMenu;
 use Lunar\Hub\Http\Livewire\Components\ProductSearch;
+use Lunar\Hub\Http\Livewire\Components\ProductVariantSearch;
 use Lunar\Hub\Http\Livewire\Components\Reporting\ApexChart;
 use Lunar\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Addons\AddonShow;
@@ -112,13 +120,14 @@ use Lunar\Hub\Http\Livewire\Components\Settings\Taxes\TaxZonesIndex;
 use Lunar\Hub\Http\Livewire\Components\Tables\Actions\UpdateStatus;
 use Lunar\Hub\Http\Livewire\Components\Tags;
 use Lunar\Hub\Http\Livewire\Dashboard;
-use Lunar\Hub\Http\Livewire\HubLicense;
+use Lunar\Hub\Http\Middleware\Authenticate;
+use Lunar\Hub\Http\Middleware\RedirectIfAuthenticated;
 use Lunar\Hub\Listeners\SetStaffAuthMiddlewareListener;
 use Lunar\Hub\Menu\MenuRegistry;
 use Lunar\Hub\Menu\OrderActionsMenu;
 use Lunar\Hub\Menu\SettingsMenu;
 use Lunar\Hub\Menu\SidebarMenu;
-use Lunar\Hub\Menu\SlotRegistry;
+use Lunar\Hub\Models\Staff;
 use Lunar\Hub\Tables\Builders\CustomersTableBuilder;
 use Lunar\Hub\Tables\Builders\OrdersTableBuilder;
 use Lunar\Hub\Tables\Builders\ProductsTableBuilder;
@@ -128,7 +137,13 @@ use Lunar\Models\Product;
 
 class AdminHubServiceProvider extends ServiceProvider
 {
-    protected $configFiles = ['products', 'customers', 'storefront', 'system'];
+    protected $configFiles = [
+        'customers',
+        'database',
+        'products',
+        'storefront',
+        'system',
+    ];
 
     protected $root = __DIR__.'/..';
 
@@ -151,8 +166,8 @@ class AdminHubServiceProvider extends ServiceProvider
             return new MenuRegistry();
         });
 
-        $this->app->singleton(SlotRegistry::class, function () {
-            return new SlotRegistry();
+        $this->app->singleton(DiscountTypesInterface::class, function () {
+            return new DiscountTypes();
         });
 
         $this->app->singleton(\Lunar\Hub\Editing\ProductSection::class, function ($app) {
@@ -185,23 +200,24 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        if (config('lunar-hub.system.enable', true)) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        }
+
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'adminhub');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'adminhub');
 
-        Config::set('livewire-tables.translate_namespace', 'adminhub');
+        if (! config('lunar-hub.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
 
-        Auth::resolved(function ($auth) {
-            $auth->extend('lunarhub', function ($app, $name, array $config) {
-                return $app->make(\Lunar\Hub\Auth\HubGuard::class);
-            });
-        });
+        Config::set('livewire-tables.translate_namespace', 'adminhub');
 
         $this->registerLivewireComponents();
         $this->registerAuthGuard();
         $this->registerPermissionManifest();
         $this->registerPublishables();
+        $this->registerStateListeners();
 
         Route::bind('product', function ($id) {
             return Product::withTrashed()->findOrFail($id);
@@ -221,15 +237,16 @@ class AdminHubServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../resources/views/components/branding' => resource_path('views/vendor/adminhub/components/branding'),
-                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub'),
+                __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/adminhub/pdf'),
             ], 'lunar.hub.views');
 
             $this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/adminhub'),
+                __DIR__.'/../resources/lang' => lang_path('vendor/adminhub'),
             ], 'lunar.hub.translations');
 
             $this->commands([
                 InstallHub::class,
+                InstallPermissions::class,
             ]);
         }
 
@@ -267,6 +284,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerCustomerComponents();
         $this->registerFieldtypeComponents();
         $this->registerDiscountComponents();
+        $this->registerDashboardComponents();
 
         // Blade Components
         Blade::componentNamespace('Lunar\\Hub\\Views\\Components', 'hub');
@@ -280,9 +298,9 @@ class AdminHubServiceProvider extends ServiceProvider
     protected function registerGlobalComponents()
     {
         Livewire::component('dashboard', Dashboard::class);
-        Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
+        Livewire::component('hub.components.product-variant-search', ProductVariantSearch::class);
         Livewire::component('hub.components.collection-search', CollectionSearch::class);
         Livewire::component('hub.components.brand-search', BrandSearch::class);
         Livewire::component('hub.components.account', Account::class);
@@ -290,6 +308,11 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
 
         Livewire::component('hub.components.tags', Tags::class);
+    }
+
+    protected function registerDashboardComponents()
+    {
+        Livewire::component('hub.components.dashboard.sales-performance', SalesPerformance::class);
     }
 
     /**
@@ -498,8 +521,19 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerAuthGuard()
     {
+        $this->app['config']->set('auth.providers.staff', [
+            'driver' => 'eloquent',
+            'model' => Staff::class,
+        ]);
+
         $this->app['config']->set('auth.guards.staff', [
-            'driver' => 'lunarhub',
+            'driver' => 'session',
+            'provider' => 'staff',
+        ]);
+
+        Livewire::addPersistentMiddleware([
+            Authenticate::class,
+            RedirectIfAuthenticated::class,
         ]);
     }
 
@@ -514,8 +548,29 @@ class AdminHubServiceProvider extends ServiceProvider
             // Are we trying to authorize something within the hub?
             $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
-                return $user->admin || $user->authorize($ability);
+                return $user->admin || $user->hasPermissionTo($ability);
             }
         });
+    }
+
+    protected function registerStateListeners()
+    {
+        $states = [
+            EnsurePermissionsAreUpgraded::class,
+        ];
+
+        foreach ($states as $state) {
+            $class = new $state;
+
+            Event::listen(
+                [MigrationsStarted::class],
+                [$class, 'prepare']
+            );
+
+            Event::listen(
+                [MigrationsEnded::class, NoPendingMigrations::class],
+                [$class, 'run']
+            );
+        }
     }
 }

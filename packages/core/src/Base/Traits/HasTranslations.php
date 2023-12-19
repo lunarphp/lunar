@@ -80,7 +80,6 @@ trait HasTranslations
     /**
      * Shorthand to translate an attribute.
      *
-     * @param $params
      * @return void
      */
     public function attr(...$params)

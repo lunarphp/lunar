@@ -3,6 +3,7 @@
 namespace Lunar\Base\Traits;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Lunar\Models\CustomerGroup;
@@ -13,8 +14,6 @@ trait HasCustomerGroups
 
     /**
      * Get the relationship for the customer groups.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     abstract public function customerGroups(): Relation;
 
@@ -22,9 +21,6 @@ trait HasCustomerGroups
      * Schedule models against customer groups.
      *
      * @param  mixed  $models
-     * @param  DateTime|null  $starts
-     * @param  DateTime|null  $ends
-     * @param  array  $pivotData
      * @return void
      */
     public function scheduleCustomerGroup(
@@ -46,7 +42,6 @@ trait HasCustomerGroups
      * Unschedule models against a customer group.
      *
      * @param  mixed  $models
-     * @param  array  $pivotData
      * @return void
      */
     public function unscheduleCustomerGroup(
@@ -67,5 +62,68 @@ trait HasCustomerGroups
                 return false;
             }
         }
+    }
+
+    /**
+     * Apply customer group scope.
+     *
+     * @param  Collection  $customerGroups
+     * @return Builder
+     */
+    public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTime $startsAt, DateTime $endsAt)
+    {
+        return $query->whereHas('customerGroups', function ($relation) use ($groupIds, $startsAt, $endsAt) {
+            $relation->whereIn(
+                $this->customerGroups()->getTable().'.customer_group_id',
+                $groupIds
+            )->where(function ($query) use ($startsAt) {
+                $query->whereNull('starts_at')
+                    ->orWhere('starts_at', '<=', $startsAt);
+            })->where(function ($query) use ($endsAt) {
+                $query->whereNull('ends_at')
+                    ->orWhere('ends_at', '>=', $endsAt);
+            })->where(function ($query) {
+                $query->where('enabled', '=', true)
+                    ->orWhere('visible', '=', true);
+            });
+        });
+    }
+
+    /**
+     * Apply the customer group scope
+     *
+     * @param  Builder  $query
+     * @param  CustomerGroup|string  $customerGroup
+     * @return Builder
+     */
+    public function scopeCustomerGroup($query, CustomerGroup|iterable $customerGroup = null, DateTime $startsAt = null, DateTime $endsAt = null)
+    {
+        if (blank($customerGroup)) {
+            return $query;
+        }
+
+        $groupIds = collect();
+
+        if (is_a($customerGroup, CustomerGroup::class)) {
+            $groupIds = collect([$customerGroup->id]);
+        }
+
+        if (is_a($customerGroup, Collection::class)) {
+            $groupIds = $customerGroup->pluck('id');
+        }
+
+        if (is_array($customerGroup)) {
+            $groupIds = collect($customerGroup)->pluck('id');
+        }
+
+        if (! $startsAt) {
+            $startsAt = now();
+        }
+
+        if (! $endsAt) {
+            $endsAt = now()->addSecond();
+        }
+
+        return $this->applyCustomerGroupScope($query, $groupIds, $startsAt, $endsAt);
     }
 }

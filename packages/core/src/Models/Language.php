@@ -19,14 +19,12 @@ use Lunar\Database\Factories\LanguageFactory;
  */
 class Language extends BaseModel
 {
-    use HasFactory;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\LanguageFactory
      */
     protected static function newFactory(): LanguageFactory
     {
@@ -43,10 +41,8 @@ class Language extends BaseModel
 
     /**
      * Return the URLs relationship
-     *
-     * @return HasMany
      */
-    public function urls()
+    public function urls(): HasMany
     {
         return $this->hasMany(Url::class);
     }

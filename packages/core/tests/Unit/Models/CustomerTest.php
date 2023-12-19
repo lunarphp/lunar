@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Lunar\Models\Address;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
@@ -30,6 +31,8 @@ class CustomerTest extends TestCase
 
         Customer::create($customer);
 
+        $customer['meta'] = json_encode($customer['meta']);
+
         $this->assertDatabaseHas(
             'lunar_customers',
             $customer
@@ -49,6 +52,8 @@ class CustomerTest extends TestCase
         ];
 
         Customer::create($customer);
+
+        $customer['meta'] = json_encode($customer['meta']);
 
         $this->assertDatabaseHas(
             'lunar_customers',
@@ -72,7 +77,7 @@ class CustomerTest extends TestCase
 
         $customer = Customer::create($customer);
 
-        $this->assertEquals(123456, $customer->meta->account);
+        $this->assertEquals(123456, $customer->meta['account']);
     }
 
     /** @test */
@@ -154,5 +159,25 @@ class CustomerTest extends TestCase
         ]);
 
         $this->assertCount($addresses->count(), $customer->addresses()->get());
+    }
+
+    /**
+     * @test
+     */
+    public function can_retrieve_latest_customer()
+    {
+        Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
+
+        $user = User::factory()->create();
+
+        $customers = Customer::factory(5)->create();
+
+        $user->customers()->sync($customers->pluck('id'));
+
+        $this->assertCount(5, $user->customers()->get());
+
+        $this->assertDatabaseCount((new Customer)->getTable(), 5);
+
+        $this->assertEquals($customers->last()->id, $user->latestCustomer()->id);
     }
 }

@@ -9,7 +9,6 @@ class CustomerGroupObserver
     /**
      * Handle the Language "created" event.
      *
-     * @param  \Lunar\Models\CustomerGroup  $customerGroup
      * @return void
      */
     public function created(CustomerGroup $customerGroup)
@@ -20,7 +19,6 @@ class CustomerGroupObserver
     /**
      * Handle the CustomerGroup "updated" event.
      *
-     * @param  \Lunar\Models\CustomerGroup  $customerGroup
      * @return void
      */
     public function updated(CustomerGroup $customerGroup)
@@ -31,7 +29,6 @@ class CustomerGroupObserver
     /**
      * Handle the CustomerGroup "deleted" event.
      *
-     * @param  \Lunar\Models\CustomerGroup  $customerGroup
      * @return void
      */
     public function deleted(CustomerGroup $customerGroup)
@@ -42,7 +39,6 @@ class CustomerGroupObserver
     /**
      * Handle the CustomerGroup "forceDeleted" event.
      *
-     * @param  \Lunar\Models\CustomerGroup  $customerGroup
      * @return void
      */
     public function forceDeleted(CustomerGroup $customerGroup)
@@ -54,7 +50,6 @@ class CustomerGroupObserver
      * Ensures that only one default CustomerGroup exists.
      *
      * @param  \Lunar\Models\CustomerGroup  $savedCustomerGroup  The customer group that was just saved.
-     * @return void
      */
     protected function ensureOnlyOneDefault(CustomerGroup $savedCustomerGroup): void
     {

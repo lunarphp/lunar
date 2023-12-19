@@ -5,23 +5,23 @@
     <div x-cloak
          x-transition
          x-show="showUserMenu"
-         class="absolute z-50 p-2 -mt-2 bg-white border border-gray-100 rounded-lg dark:bg-gray-900 dark:border-gray-800 top-full right-4 w-36">
+         class="absolute z-50 p-2 -mt-1 bg-white border border-gray-100 rounded-lg dark:bg-gray-900 dark:border-gray-800 top-full right-4 w-40">
         <ul>
-            <li>
+            <li class="p-2">
                 <a href="{{ route('hub.account') }}"
-                   class="menu-link menu-link--inactive">
+                   class="menu-link menu-link--inactive hover:text-sky-500">
                     <span class="text-sm font-medium">
                         {{ __('adminhub::account.view-profile') }}
                     </span>
                 </a>
             </li>
 
-            <li>
+            <li class="p-2">
                 <form method="POST"
                       action="{{ route('hub.logout') }}">
                     @csrf
                     <button type="submit"
-                            class="w-full menu-link menu-link--inactive">
+                            class="menu-link menu-link--inactive hover:text-sky-500">
                         <x-hub::icon ref="logout"
                                      class="w-4 h-4 shrink-0" />
 

@@ -17,18 +17,18 @@ class Calculate
     {
         $discountTotal = $cart->lines->sum('discountTotal.value');
 
-        $subTotal = $cart->lines->sum('subTotal.value') - $discountTotal;
-        $total = $cart->lines->sum('total.value');
+        $subTotal = $cart->lines->sum('subTotal.value');
 
-        // Get the shipping address
-        if ($shippingAddress = $cart->shippingAddress) {
-            if ($shippingAddress->shippingSubTotal) {
-                $subTotal += $shippingAddress->shippingSubTotal?->value;
-                $total += $shippingAddress->shippingTotal?->value;
-            }
-        }
+        $total = $cart->lines->sum('total.value') + $cart->shippingTotal?->value;
+
+        $subTotalDiscounted = $cart->lines->sum(function ($line) {
+            return $line->subTotalDiscounted ?
+                $line->subTotalDiscounted->value :
+                $line->subTotal->value;
+        });
 
         $cart->subTotal = new Price($subTotal, $cart->currency, 1);
+        $cart->subTotalDiscounted = new Price($subTotalDiscounted, $cart->currency, 1);
         $cart->discountTotal = new Price($discountTotal, $cart->currency, 1);
         $cart->total = new Price($total, $cart->currency, 1);
 

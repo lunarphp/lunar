@@ -15,6 +15,11 @@ class BrandsTable extends LunarTable
     /**
      * {@inheritDoc}
      */
+    public bool $searchable = true;
+
+    /**
+     * {@inheritDoc}
+     */
     public bool $filterable = false;
 
     /**
@@ -43,6 +48,13 @@ class BrandsTable extends LunarTable
     public function getData()
     {
         return Brand::with(['thumbnail'])
+            ->when($this->query, function ($query) {
+                $this->resetPage();
+                $query->whereIn('id', Brand::search($this->query)
+                    ->query(fn ($query) => $query->select('id'))
+                    ->take(1000)
+                    ->keys());
+            })
             ->withCount(['products'])
             ->orderBy('name')
             ->paginate($this->perPage);

@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
@@ -21,13 +22,11 @@ use Lunar\Database\Factories\AttributeGroupFactory;
 class AttributeGroup extends BaseModel
 {
     use HasFactory;
-    use HasTranslations;
     use HasMacros;
+    use HasTranslations;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\AttributeGroupFactory
      */
     protected static function newFactory(): AttributeGroupFactory
     {
@@ -53,10 +52,8 @@ class AttributeGroup extends BaseModel
 
     /**
      * Return the attributes relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function attributes()
+    public function attributes(): HasMany
     {
         return $this->hasMany(Attribute::class)->orderBy('position');
     }

@@ -17,8 +17,6 @@ class Dropdown extends Component
 
     /**
      * Whether we should be displaying a minimal "three dot" dropdown.
-     *
-     * @var bool
      */
     public bool $minimal = false;
 

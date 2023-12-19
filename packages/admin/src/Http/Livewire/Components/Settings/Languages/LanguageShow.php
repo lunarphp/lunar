@@ -12,8 +12,6 @@ class LanguageShow extends Component
 
     /**
      * The current language we're showing.
-     *
-     * @var \Lunar\Models\Language
      */
     public Language $language;
 

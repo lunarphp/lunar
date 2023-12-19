@@ -108,7 +108,7 @@
     </x-hub::slideover>
 
     <x-hub::slideover :title="__('adminhub::components.orders.status.preview.title')" wire:model="previewTemplate" class="!max-w-4xl">
-        <div class="space-y-4">
+        <div class="space-y-4 h-full">
             <x-hub::alert>
                 {{ __('adminhub::components.orders.status.preview.alert') }}
             </x-hub::alert>

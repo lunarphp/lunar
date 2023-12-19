@@ -3,22 +3,21 @@
 namespace Lunar\Hub\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lunar\Hub\Database\Factories\StaffFactory;
+use Spatie\Permission\Traits\HasRoles;
 
 class Staff extends Authenticatable
 {
     use HasFactory;
+    use HasRoles;
     use Notifiable;
     use SoftDeletes;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Hub\Database\Factories\StaffFactory
      */
     protected static function newFactory(): StaffFactory
     {
@@ -37,6 +36,8 @@ class Staff extends Authenticatable
         'email',
         'password',
     ];
+
+    protected $guard_name = 'staff';
 
     /**
      * The attributes that should be hidden for arrays.
@@ -59,8 +60,6 @@ class Staff extends Authenticatable
 
     /**
      * Create a new instance of the Model.
-     *
-     * @param  array  $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -89,31 +88,6 @@ class Staff extends Authenticatable
     }
 
     /**
-     * Return the user permissions relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function permissions(): HasMany
-    {
-        return $this->hasMany(StaffPermission::class);
-    }
-
-    /**
-     * Authorize an action via permissions.
-     *
-     * @param  string  $permission
-     * @return bool
-     */
-    public function authorize($permission): bool
-    {
-        if (! is_array($permission)) {
-            $permission = [$permission];
-        }
-
-        return $this->permissions()->whereIn('handle', $permission)->exists();
-    }
-
-    /**
      * Apply the basic search scope to a given Eloquent query builder.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
@@ -127,8 +101,8 @@ class Staff extends Authenticatable
 
             foreach ($parts as $part) {
                 $query->where('email', 'LIKE', "%$part%")
-                        ->orWhere('firstname', 'LIKE', "%$part%")
-                        ->orWhere('lastname', 'LIKE', "%$part%");
+                    ->orWhere('firstname', 'LIKE', "%$part%")
+                    ->orWhere('lastname', 'LIKE', "%$part%");
             }
         }
     }

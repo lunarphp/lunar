@@ -12,8 +12,6 @@ class OrdersTableBuilder extends TableBuilder
 {
     /**
      * The field to sort using.
-     *
-     * @var string|null
      */
     public ?string $sortField = 'placed_at';
 
@@ -81,7 +79,10 @@ class OrdersTableBuilder extends TableBuilder
         ])->orderBy($this->sortField, $this->sortDir);
 
         if ($this->searchTerm) {
-            $query->whereIn('id', Order::search($this->searchTerm)->keys());
+            $query->whereIn('id', Order::search($this->searchTerm)
+                ->query(fn ($query) => $query->select('id'))
+                ->take(200)
+                ->keys());
         }
 
         $filters = collect($this->queryStringFilters)->filter(function ($value) {

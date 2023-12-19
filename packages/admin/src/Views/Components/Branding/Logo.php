@@ -9,15 +9,11 @@ class Logo extends Component
 {
     /**
      * Determine if we should display only the logo icon.
-     *
-     * @var bool
      */
     public bool $iconOnly;
 
     /**
      * Initialise the component.
-     *
-     * @param  bool  $iconOnly
      */
     public function __construct(bool $iconOnly = false)
     {

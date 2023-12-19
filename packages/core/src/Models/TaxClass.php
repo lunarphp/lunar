@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
@@ -17,8 +18,8 @@ use Lunar\Database\Factories\TaxClassFactory;
  */
 class TaxClass extends BaseModel
 {
-    use HasFactory;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
 
     public static function booted()
@@ -42,8 +43,6 @@ class TaxClass extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\TaxClassFactory
      */
     protected static function newFactory(): TaxClassFactory
     {
@@ -60,20 +59,16 @@ class TaxClass extends BaseModel
 
     /**
      * Return the tax rate amounts relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function taxRateAmounts()
+    public function taxRateAmounts(): HasMany
     {
         return $this->hasMany(TaxRateAmount::class);
     }
 
     /**
      * Return the ProductVariants relationship.
-     *
-     * @return HasMany
      */
-    public function productVariants()
+    public function productVariants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }

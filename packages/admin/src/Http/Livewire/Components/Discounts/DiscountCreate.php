@@ -11,8 +11,6 @@ class DiscountCreate extends AbstractDiscount
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 
@@ -34,6 +32,7 @@ class DiscountCreate extends AbstractDiscount
         $this->selectedBrands = collect();
         $this->selectedCollections = collect();
         $this->selectedProducts = collect();
+        $this->selectedProductVariants = collect();
     }
 
     /**
@@ -48,13 +47,15 @@ class DiscountCreate extends AbstractDiscount
             'discount.max_uses' => 'nullable|numeric|min:0',
             'discount.max_uses_per_user' => 'nullable|numeric|min:0',
             'discount.priority' => 'required|min:1',
-            'discount.starts_at' => 'date',
+            'discount.starts_at' => 'required|date',
             'discount.coupon' => 'nullable',
-            'discount.ends_at' => 'nullable|date|after:starts_at',
+            'discount.ends_at' => 'nullable|date|after:discount.starts_at',
             'discount.type' => 'string|required',
             'discount.data' => 'array',
             'selectedCollections' => 'array',
             'selectedBrands' => 'array',
+            'selectedProducts' => 'array',
+            'selectedProductVariants' => 'array',
         ], $this->getDiscountComponent()->rules());
 
         foreach ($this->currencies as $currency) {

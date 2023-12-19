@@ -57,7 +57,7 @@
           </x-hub::table.cell>
 
           <x-hub::table.cell>
-            <a href="{{ route('hub.orders.show', $order->id) }}" class="text-indigo-500 hover:underline">
+            <a href="{{ route('hub.orders.show', $order->id) }}" class="text-sky-500 hover:underline">
               {{ __('adminhub::global.view') }}
             </a>
           </x-hub::table.cell>

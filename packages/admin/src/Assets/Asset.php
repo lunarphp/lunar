@@ -11,8 +11,6 @@ abstract class Asset implements Responsable
 {
     /**
      * Name of the asset.
-     *
-     * @var string
      */
     protected string $name;
 
@@ -33,11 +31,9 @@ abstract class Asset implements Responsable
     /**
      * Construct a new Asset instance.
      *
-     * @param  string|self  $name
-     * @param  string  $path
      * @param  bool|null  $remote
      */
-    public function __construct(string|self $name, string $path, $remote = null)
+    final public function __construct(string|self $name, string $path, $remote = null)
     {
         if ($name instanceof self) {
             $this->name = $name->name();
@@ -60,9 +56,6 @@ abstract class Asset implements Responsable
 
     /**
      * Make a remote URL.
-     *
-     * @param  string  $path
-     * @return static
      */
     public static function remote(string $path): static
     {
@@ -71,8 +64,6 @@ abstract class Asset implements Responsable
 
     /**
      * Get asset name.
-     *
-     * @return string
      */
     public function name(): string
     {
@@ -81,8 +72,6 @@ abstract class Asset implements Responsable
 
     /**
      * Get asset path.
-     *
-     * @return string
      */
     public function path(): string
     {
@@ -91,8 +80,6 @@ abstract class Asset implements Responsable
 
     /**
      * Determine if URL is remote.
-     *
-     * @return bool
      */
     public function isRemote(): bool
     {
@@ -103,7 +90,6 @@ abstract class Asset implements Responsable
      * Create an HTTP response that represents the object.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function toResponse($request): Response
     {
@@ -116,8 +102,6 @@ abstract class Asset implements Responsable
 
     /**
      * Get asset url.
-     *
-     * @return string
      */
     abstract public function url(): string;
 

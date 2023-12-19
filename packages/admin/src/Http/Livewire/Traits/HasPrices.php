@@ -3,8 +3,8 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Facades\DB;
 use Lunar\Hub\Actions\Pricing\UpdateCustomerGroupPricing;
 use Lunar\Hub\Actions\Pricing\UpdatePrices;
 use Lunar\Hub\Actions\Pricing\UpdateTieredPricing;
@@ -24,8 +24,6 @@ trait HasPrices
 
     /**
      * Collection of customer group prices.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $customerGroupPrices;
 
@@ -38,15 +36,11 @@ trait HasPrices
 
     /**
      * The currency currency.
-     *
-     * @var \Lunar\Models\Currency
      */
     public Currency $currency;
 
     /**
      * Whether customer group pricing is enabled.
-     *
-     * @var bool
      */
     public bool $customerPricingEnabled = false;
 
@@ -86,7 +80,6 @@ trait HasPrices
     /**
      * Save pricing.
      *
-     * @param  Collection|null  $basePrices
      * @param  Collecton|null  $tierPrices
      * @return void
      */
@@ -230,7 +223,6 @@ trait HasPrices
     /**
      * Return mapped base prices.
      *
-     * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
     private function mapBasePrices(Collection $prices)
@@ -265,7 +257,6 @@ trait HasPrices
     /**
      * Return mapped customer group prices.
      *
-     * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
     private function mapCustomerGroupPrices(Collection $prices)
@@ -301,7 +292,6 @@ trait HasPrices
     /**
      * Return mapped tiered pricing.
      *
-     * @param  \Illuminate\Support\Collection  $prices
      * @return \Illuminate\Support\Collection
      */
     private function mapTieredPrices(Collection $prices)
@@ -447,5 +437,13 @@ trait HasPrices
         }
 
         return $messages;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPricesIncludeTaxProperty()
+    {
+        return (bool) prices_inc_tax();
     }
 }

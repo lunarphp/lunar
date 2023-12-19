@@ -9,8 +9,6 @@ abstract class AbstractDiscountType extends Component
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 
@@ -28,7 +26,7 @@ abstract class AbstractDiscountType extends Component
         return [];
     }
 
-    public function save()
+    public function save($discountId)
     {
         // ..
     }

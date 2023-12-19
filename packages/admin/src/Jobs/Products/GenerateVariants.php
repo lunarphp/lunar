@@ -9,8 +9,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Lunar\Facades\DB;
 use Lunar\Hub\Exceptions\InvalidProductValuesException;
 use Lunar\Hub\Exceptions\VariantsDisabledException;
 use Lunar\Models\Product;
@@ -35,8 +35,6 @@ class GenerateVariants implements ShouldQueue
 
     /**
      * The option values to use to generate variants.
-     *
-     * @var array
      */
     protected array $optionValues;
 
@@ -45,8 +43,6 @@ class GenerateVariants implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \Lunar\Models\Product  $product
-     * @param  iterable  $optionValues
      * @return void
      */
     public function __construct(Product $product, iterable $optionValues, $additional = false)

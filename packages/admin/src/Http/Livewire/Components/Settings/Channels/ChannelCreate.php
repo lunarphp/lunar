@@ -12,8 +12,6 @@ class ChannelCreate extends Component
 
     /**
      * A new instance of the channel model.
-     *
-     * @var Channel
      */
     public Channel $channel;
 

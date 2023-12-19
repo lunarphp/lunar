@@ -15,8 +15,6 @@ class CustomerGroupShow extends Component
 
     /**
      * The current customer group we're showing.
-     *
-     * @var CustomerGroup
      */
     public CustomerGroup $customerGroup;
 
@@ -29,8 +27,6 @@ class CustomerGroupShow extends Component
 
     /**
      * Define whether the handle should be treated as manually input.
-     *
-     * @var bool
      */
     public bool $manualHandle = true;
 

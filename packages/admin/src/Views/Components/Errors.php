@@ -22,8 +22,6 @@ class Errors extends Component
 
     /**
      * Determine whether error icon should be shown.
-     *
-     * @var bool
      */
     public bool $errorIcon = true;
 

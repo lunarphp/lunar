@@ -2,8 +2,8 @@
 
 namespace Lunar\Hub\Http\Livewire\Components\Settings\Product\Options;
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Http\Livewire\Traits\WithLanguages;
 use Lunar\Models\ProductOption;
@@ -11,8 +11,8 @@ use Lunar\Models\ProductOptionValue;
 
 class OptionEdit extends Component
 {
-    use WithLanguages;
     use Notifies;
+    use WithLanguages;
 
     /**
      * The option to edit.
@@ -32,15 +32,11 @@ class OptionEdit extends Component
 
     /**
      * The new option value to create.
-     *
-     * @var ProductOptionValue
      */
     public ProductOptionValue $newProductOptionValue;
 
     /**
      * The option values.
-     *
-     * @var array
      */
     public array $values = [];
 
@@ -109,6 +105,7 @@ class OptionEdit extends Component
 
         foreach ($this->languages as $language) {
             $rules["productOption.name.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
+            $rules["productOption.label.{$language->code}"] = ($language->default ? 'required' : 'nullable').'|max:255';
             $rules["newProductOptionValue.name.{$language->code}"] = 'nullable|max:255';
             $rules["productOptionValue.name.{$language->code}"] = 'nullable|max:255';
         }
@@ -119,7 +116,6 @@ class OptionEdit extends Component
     /**
      * Sort the option values.
      *
-     * @param  array  $optionValues
      * @return void
      */
     public function sortOptionValues(array $optionValues)
@@ -194,7 +190,7 @@ class OptionEdit extends Component
 
         if ($this->productOption->id) {
             $this->productOption->save();
-            $this->emit('option-edit.updated', $this->productOption->id);
+
             $this->notify(
                 __('adminhub::notifications.attribute-groups.updated')
             );
@@ -207,8 +203,6 @@ class OptionEdit extends Component
         }
 
         $this->productOption->save();
-
-        $this->emit('option-edit.created', $this->productOption->id);
 
         $this->productOption = new ProductOption();
 

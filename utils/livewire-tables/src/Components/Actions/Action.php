@@ -12,8 +12,8 @@ use Lunar\LivewireTables\Components\Concerns\HasViewProperties;
 
 class Action extends Component implements Htmlable
 {
-    use HasLivewireComponent,
-        HasClosure,
+    use HasClosure,
+        HasLivewireComponent,
         HasViewComponent,
         HasViewProperties;
 
@@ -37,7 +37,6 @@ class Action extends Component implements Htmlable
      * Set the label on the action.
      *
      * @param  string  $label
-     * @return self
      */
     public function label($label): self
     {

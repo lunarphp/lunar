@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Product;
 
 class Dissociate implements ShouldQueue
@@ -29,8 +29,6 @@ class Dissociate implements ShouldQueue
 
     /**
      * The parent product instance.
-     *
-     * @var \Lunar\Models\Product
      */
     protected Product $product;
 
@@ -44,7 +42,6 @@ class Dissociate implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  \Lunar\Models\Product  $product
      * @param  mixed  $targets
      * @param  string  $type
      */

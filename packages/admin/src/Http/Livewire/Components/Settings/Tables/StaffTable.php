@@ -104,8 +104,6 @@ class StaffTable extends LunarTable
 
     /**
      * Return the saved searches available to the table.
-     *
-     * @return Collection
      */
     public function getSavedSearchesProperty(): Collection
     {

@@ -9,8 +9,6 @@ class DiscountCreate extends Component
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 

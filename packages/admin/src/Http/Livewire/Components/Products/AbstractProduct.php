@@ -4,10 +4,10 @@ namespace Lunar\Hub\Http\Livewire\Components\Products;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Lunar\Facades\DB;
 use Lunar\Hub\Http\Livewire\Traits\CanExtendValidation;
 use Lunar\Hub\Http\Livewire\Traits\HasAvailability;
 use Lunar\Hub\Http\Livewire\Traits\HasDimensions;
@@ -32,31 +32,27 @@ use Lunar\Models\ProductVariant;
 
 abstract class AbstractProduct extends Component
 {
-    use Notifies;
-    use WithFileUploads;
-    use HasImages;
+    use CanExtendValidation;
     use HasAvailability;
+    use HasDimensions;
+    use HasImages;
+    use HasPrices;
+    use HasSlots;
+    use HasTags;
+    use HasUrls;
+    use Notifies;
     use SearchesProducts;
     use WithAttributes;
+    use WithFileUploads;
     use WithLanguages;
-    use HasPrices;
-    use HasDimensions;
-    use HasUrls;
-    use HasTags;
-    use HasSlots;
-    use CanExtendValidation;
 
     /**
      * The current product we are editing.
-     *
-     * @var Product
      */
     public Product $product;
 
     /**
      * The current variant we're editing.
-     *
-     * @var ProductVariant
      */
     public ProductVariant $variant;
 
@@ -69,15 +65,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * Whether to use a custom brand.
-     *
-     * @var bool
      */
     public bool $useNewBrand = false;
 
     /**
      * The options we want to use for the product.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public Collection $options;
 
@@ -104,8 +96,6 @@ abstract class AbstractProduct extends Component
 
     /**
      * Determines whether the options panel should be on show.
-     *
-     * @var bool
      */
     public bool $optionsPanelVisible = false;
 
@@ -167,15 +157,11 @@ abstract class AbstractProduct extends Component
 
     /**
      * The current product associations.
-     *
-     * @var Collection
      */
     public Collection $associations;
 
     /**
      * Associations that need removing.
-     *
-     * @var array
      */
     public array $associationsToRemove = [];
 
@@ -255,8 +241,8 @@ abstract class AbstractProduct extends Component
                 $baseRules,
                 $this->hasPriceValidationRules(),
                 [
-                    'variant.stock' => 'numeric|max:10000000',
-                    'variant.backorder' => 'numeric|max:10000000',
+                    'variant.stock' => 'required|min:0|numeric|max:10000000',
+                    'variant.backorder' => 'required|min:0|numeric|max:10000000',
                     'variant.purchasable' => 'string|required',
                     'variant.length_value' => 'numeric|nullable',
                     'variant.length_unit' => 'string|nullable',
@@ -381,6 +367,8 @@ abstract class AbstractProduct extends Component
             $data = $this->prepareAttributeData();
             $variantData = $this->prepareAttributeData($this->variantAttributes);
 
+            $this->product->brand_id = $this->product->brand_id ?: null;
+
             if ($this->brand) {
                 $brand = Brand::create([
                     'name' => $this->brand,
@@ -417,6 +405,7 @@ abstract class AbstractProduct extends Component
 
             if (! $this->variantsEnabled && $this->getVariantsCount()) {
                 $variantToKeep = $this->product->variants()->first();
+                $variantToKeep->values()->detach();
 
                 $variantsToRemove = $this->product->variants->filter(function ($variant) use ($variantToKeep) {
                     return $variant->id != $variantToKeep->id;
@@ -425,6 +414,7 @@ abstract class AbstractProduct extends Component
                 DB::transaction(function () use ($variantsToRemove) {
                     foreach ($variantsToRemove as $variant) {
                         $variant->values()->detach();
+                        $variant->prices()->delete();
                         $variant->forceDelete();
                     }
                 });
@@ -486,7 +476,7 @@ abstract class AbstractProduct extends Component
                     return;
                 }
 
-                ProductAssociation::create([
+                ProductAssociation::firstOrCreate([
                     'product_target_id' => $assoc['inverse'] ? $this->product->id : $assoc['target_id'],
                     'product_parent_id' => $assoc['inverse'] ? $assoc['target_id'] : $this->product->id,
                     'type' => $assoc['type'],
@@ -512,6 +502,7 @@ abstract class AbstractProduct extends Component
             $this->variantsEnabled = $this->getVariantsCount() > 1;
 
             $this->syncAvailability();
+            $this->syncAssociations();
 
             $this->dispatchBrowserEvent('remove-images');
 
@@ -555,6 +546,7 @@ abstract class AbstractProduct extends Component
         }
         $variant = ProductVariant::find($variantId);
         $variant->values()->detach();
+        $variant->prices()->delete();
         $variant->delete();
         $this->product->refresh();
     }
@@ -694,6 +686,10 @@ abstract class AbstractProduct extends Component
         $this->associations = $this->product->associations
             ->merge($this->product->inverseAssociations)
             ->map(function ($assoc) {
+                if (! $assoc->target) {
+                    return;
+                }
+
                 $inverse = $assoc->target->id == $this->product->id;
 
                 $product = $inverse ? $assoc->parent : $assoc->target;
@@ -706,7 +702,8 @@ abstract class AbstractProduct extends Component
                     'name' => $product->translateAttribute('name'),
                     'type' => $assoc->type,
                 ];
-            });
+            })
+            ->filter();
     }
 
     /**

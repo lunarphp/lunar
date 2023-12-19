@@ -3,10 +3,10 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\FileUploadConfiguration;
 use Livewire\TemporaryUploadedFile;
+use Lunar\Facades\DB;
 use Spatie\Activitylog\Facades\LogBatch;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -28,15 +28,11 @@ trait HasImages
 
     /**
      * An array of selected images.
-     *
-     * @var array
      */
     public array $selectedImages = [];
 
     /**
      * Whether to shoe the image select modal dialog.
-     *
-     * @var bool
      */
     public bool $showImageSelectModal = false;
 
@@ -135,7 +131,6 @@ trait HasImages
      * Method to handle when Livewire uploads a product image.
      *
      * @param  string  $name
-     * @param  array  $filenames
      * @return void
      */
     public function handleUploadFinished($name, array $filenames = [])

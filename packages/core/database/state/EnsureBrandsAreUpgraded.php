@@ -27,13 +27,13 @@ class EnsureBrandsAreUpgraded
 
         foreach ($legacyBrands as $productId => $brand) {
             if (empty($brands[$brand])) {
-                $this->legacyBrands[$brand] = [];
+                $brands[$brand] = [];
             }
 
             $brands[$brand][] = $productId;
         }
 
-        Storage::put('tmp/state/legacy_brands.json', json_encode($brands));
+        Storage::disk('local')->put('tmp/state/legacy_brands.json', json_encode($brands));
     }
 
     public function run()
@@ -45,7 +45,7 @@ class EnsureBrandsAreUpgraded
         $brands = null;
 
         try {
-            $brands = Storage::get('tmp/state/legacy_brands.json');
+            $brands = Storage::disk('local')->get('tmp/state/legacy_brands.json');
         } catch (FileNotFoundException $e) {
         }
 

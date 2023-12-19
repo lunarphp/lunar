@@ -3,6 +3,8 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -13,6 +15,7 @@ use Lunar\Base\Traits\HasPrices;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ProductVariantFactory;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
@@ -46,12 +49,12 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class ProductVariant extends BaseModel implements Purchasable
 {
-    use HasFactory;
-    use HasPrices;
-    use LogsActivity;
     use HasDimensions;
-    use HasTranslations;
+    use HasFactory;
     use HasMacros;
+    use HasPrices;
+    use HasTranslations;
+    use LogsActivity;
 
     /**
      * Define the guarded attributes.
@@ -70,8 +73,6 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductVariantFactory
      */
     protected static function newFactory(): ProductVariantFactory
     {
@@ -80,30 +81,24 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * The related product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class)->withTrashed();
     }
 
     /**
      * Return the tax class relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function taxClass()
+    public function taxClass(): BelongsTo
     {
         return $this->belongsTo(TaxClass::class);
     }
 
     /**
      * Return the related product option values.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function values()
+    public function values(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -122,8 +117,6 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * Return the unit quantity for the variant.
-     *
-     * @return int
      */
     public function getUnitQuantity(): int
     {
@@ -132,15 +125,15 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * Return the tax class.
-     *
-     * @return \Lunar\Models\TaxClass
      */
     public function getTaxClass(): TaxClass
     {
-        return $this->taxClass;
+        return Blink::once("tax_class_{$this->tax_class_id}", function () {
+            return $this->taxClass;
+        });
     }
 
-    public function getTaxReference()
+    public function getTaxReference(): ?string
     {
         return $this->tax_ref;
     }
@@ -148,7 +141,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->shippable ? 'physical' : 'digital';
     }
@@ -156,7 +149,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function isShippable()
+    public function isShippable(): bool
     {
         return $this->shippable;
     }
@@ -164,7 +157,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->product->translateAttribute('name');
     }
@@ -172,7 +165,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getOption()
+    public function getOption(): string
     {
         return $this->values->map(fn ($value) => $value->translate('name'))->join(', ');
     }
@@ -180,7 +173,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getOptions()
+    public function getOptions(): Collection
     {
         return $this->values->map(fn ($value) => $value->translate('name'));
     }
@@ -188,12 +181,12 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->sku;
     }
 
-    public function images()
+    public function images(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -203,14 +196,10 @@ class ProductVariant extends BaseModel implements Purchasable
             ->withTimestamps();
     }
 
-    public function getThumbnail()
+    public function getThumbnail(): ?Media
     {
-        $thumbnail = $this->images()->wherePivot('primary', true)?->first();
-
-        if (! $thumbnail) {
-            return $this->product->thumbnail;
-        }
-
-        return $thumbnail;
+        return $this->images->first(function ($media) {
+            return (bool) $media->pivot?->primary;
+        }) ?: $this->product->thumbnail;
     }
 }

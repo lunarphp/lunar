@@ -4,7 +4,7 @@ namespace Lunar\Hub\Menu;
 
 use Lunar\Hub\Facades\Menu;
 
-class SidebarMenu
+final class SidebarMenu
 {
     /**
      * Make menu.
@@ -13,7 +13,7 @@ class SidebarMenu
      */
     public static function make()
     {
-        (new static())
+        (new self())
             ->makeTopLevel()
             ->addSections();
     }
@@ -59,6 +59,7 @@ class SidebarMenu
             ->section('hub.products')
             ->name(__('adminhub::menu.sidebar.products'))
             ->handle('hub.products')
+            ->gate('catalogue:manage-products')
             ->route('hub.products.index')
             ->icon('shopping-bag');
 
@@ -69,6 +70,7 @@ class SidebarMenu
                 'hub.collection-groups',
                 'hub.collections',
             ])
+            ->gate('catalogue:manage-collections')
             ->route('hub.collection-groups.index')
             ->icon('collection');
 
@@ -76,6 +78,7 @@ class SidebarMenu
             $menuItem
                 ->name(__('adminhub::menu.sidebar.product-types'))
                 ->handle('hub.product-types')
+                ->gate('catalogue:manage-products')
                 ->route('hub.product-types.index');
         });
 
@@ -83,6 +86,7 @@ class SidebarMenu
             $menuItem
                 ->name(__('adminhub::menu.sidebar.brands'))
                 ->handle('hub.brands')
+                ->gate('catalogue:manage-products')
                 ->route('hub.brands.index');
         });
 
@@ -90,6 +94,7 @@ class SidebarMenu
             $menuItem
                 ->name(__('adminhub::menu.sidebar.orders'))
                 ->handle('hub.orders')
+                ->gate('catalogue:manage-orders')
                 ->route('hub.orders.index')
                 ->icon('cash');
         });
@@ -98,6 +103,7 @@ class SidebarMenu
             $menuItem
                 ->name(__('adminhub::menu.sidebar.customers'))
                 ->handle('hub.customers')
+                ->gate('catalogue:manage-customers')
                 ->route('hub.customers.index')
                 ->icon('users');
         });
@@ -106,6 +112,7 @@ class SidebarMenu
             $menuItem
                 ->name(__('adminhub::menu.sidebar.discounts'))
                 ->handle('hub.discounts')
+                ->gate('catalogue:manage-discounts')
                 ->route('hub.discounts.index')
                 ->icon('ticket');
         });

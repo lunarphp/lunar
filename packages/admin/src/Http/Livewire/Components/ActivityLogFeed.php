@@ -11,19 +11,15 @@ use Lunar\Hub\Http\Livewire\Traits\Notifies;
 
 class ActivityLogFeed extends Component
 {
-    use WithPagination, Notifies;
+    use Notifies, WithPagination;
 
     /**
      * The log subject to get activity for.
-     *
-     * @var \Illuminate\Database\Eloquent\Model
      */
     public Model $subject;
 
     /**
      * The new comment for the subject.
-     *
-     * @var string|null
      */
     public ?string $comment = null;
 
@@ -102,6 +98,6 @@ class ActivityLogFeed extends Component
     public function render()
     {
         return view('adminhub::livewire.components.activity-log-feed')
-        ->layout('adminhub::layouts.base');
+            ->layout('adminhub::layouts.base');
     }
 }

@@ -36,6 +36,13 @@ class MenuSlot
     protected $handle;
 
     /**
+     * The menu slot gate.
+     *
+     * @var string
+     */
+    protected ?string $gate = null;
+
+    /**
      * Initialise the class.
      *
      * @param  string  $handle
@@ -48,10 +55,16 @@ class MenuSlot
         $this->groups = collect();
     }
 
+    public function gate($gate)
+    {
+        $this->gate = $gate;
+
+        return $this;
+    }
+
     /**
      * Add an item to the menu slot.
      *
-     * @param  \Closure  $callback
      * @param  string  $after
      * @return static
      */
@@ -67,7 +80,7 @@ class MenuSlot
             });
         }
 
-        if ($index) {
+        if (is_int($index)) {
             $this->items->splice($index + 1, 0, [$item]);
 
             return $this;
@@ -81,7 +94,6 @@ class MenuSlot
     /**
      * Add multiple items.
      *
-     * @param  array  $items
      * @return static
      */
     public function addItems(array $items)
@@ -95,8 +107,6 @@ class MenuSlot
 
     /**
      * Get the items for the menu slot.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getItems(): Collection
     {
@@ -112,17 +122,55 @@ class MenuSlot
      */
     public function getSections()
     {
-        return $this->sections;
+        return $this->sections->filter(function ($section) {
+            return ! $section->gate || Auth::user()->can($section->gate);
+        });
     }
 
     /**
-     * Get the sections available.
+     * Get the groups available.
      *
      * @return \Illuminate\Support\Collection
      */
     public function getGroups()
     {
-        return $this->groups;
+        return $this->groups->filter(function ($group) {
+            return ! $group->gate || Auth::user()->can($group->gate);
+        });
+    }
+
+    public function hasLinks(): bool
+    {
+        if ($this->getItems()->count()) {
+            return true;
+        }
+
+        if ($this->getGroups()->filter(fn ($group) => $group->hasLinks())->count()) {
+            return true;
+        }
+
+        if ($this->getSections()->filter(fn ($section) => $section->hasLinks())->count()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getFirstLink()
+    {
+        if ($firstItem = $this->getItems()->first()) {
+            return $firstItem;
+        }
+
+        if ($firstGroupItem = $this->getGroups()->first()?->getFirstLink()) {
+            return $firstGroupItem;
+        }
+
+        if ($firstSectionItem = $this->getSections()->first()?->getFirstLink()) {
+            return $firstSectionItem;
+        }
+
+        return null;
     }
 
     /**

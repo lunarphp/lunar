@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Lunar\Hub\Assets\Script;
 use Lunar\Hub\Assets\Style;
 
-class LunarHub
+final class LunarHub
 {
     /**
      * Registered scripts.
@@ -31,7 +31,7 @@ class LunarHub
      */
     public static function scripts(): array
     {
-        return static::$scripts;
+        return self::$scripts;
     }
 
     /**
@@ -42,28 +42,23 @@ class LunarHub
      */
     public static function styles(): array
     {
-        return static::$styles;
+        return self::$styles;
     }
 
     /**
      * Register script with Lunar.
-     *
-     * @param  string|Script  $name
-     * @param  string  $path
-     * @return static
      */
     public static function script(string|Script $name, string $path): static
     {
-        static::$scripts[] = new Script($name, $path);
+        self::$scripts[] = new Script($name, $path);
 
-        return new static();
+        return new self();
     }
 
     /**
      * Register remote script with Lunar.
      *
      * @param  string  $path
-     * @return static
      */
     public static function remoteScript($path): static
     {
@@ -72,10 +67,6 @@ class LunarHub
 
     /**
      * Register style with Lunar.
-     *
-     * @param  string|Style  $name
-     * @param  string  $path
-     * @return static
      */
     public static function style(string|Style $name, string $path): static
     {
@@ -88,7 +79,6 @@ class LunarHub
      * Register remote style with Lunar.
      *
      * @param  string  $path
-     * @return static
      */
     public static function remoteStyle($path): static
     {

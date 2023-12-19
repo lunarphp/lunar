@@ -22,7 +22,7 @@
             x-on:click.prevent="tab = 'search'"
             class="px-3 py-2 text-sm font-medium rounded-md"
             :class="{
-              'bg-indigo-100 text-indigo-700': tab == 'search',
+              'bg-sky-100 text-sky-700': tab == 'search',
               'text-gray-500 hover:text-gray-700': tab != 'search'
             }"
           >
@@ -33,7 +33,7 @@
             class="px-3 py-2 text-sm font-medium rounded-md"
             @click.prevent="tab = 'selected'"
             :class="{
-              'bg-indigo-100 text-indigo-700': tab == 'selected',
+              'bg-sky-100 text-sky-700': tab == 'selected',
               'text-gray-500 hover:text-gray-700': tab != 'selected'
             }"
           >
@@ -46,7 +46,7 @@
         <x-hub::input.text wire:model.debounce.300ms="searchTerm" />
         @if($this->searchTerm)
           @if($this->results->total() > $maxResults)
-            <span class="block p-3 my-2 text-xs text-blue-600 rounded bg-blue-50">
+            <span class="block p-3 my-2 text-xs text-sky-600 rounded bg-sky-50">
               {{ __('adminhub::components.product-search.max_results_exceeded', [
                 'max' => $maxResults,
                 'total' => $this->results->total()
@@ -74,7 +74,7 @@
                     </button>
                   @elseif (!collect($this->exclude)->contains($product->id))
                     <button
-                      class="px-2 py-1 text-xs text-blue-700 border border-blue-200 rounded shadow-sm hover:bg-blue-50"
+                      class="px-2 py-1 text-xs text-sky-700 border border-sky-200 rounded shadow-sm hover:bg-sky-50"
                       wire:click.prevent="selectProduct('{{ $product->id }}')"
                     >
                       {{ __('adminhub::global.select') }}

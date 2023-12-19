@@ -22,7 +22,7 @@
             <div class="border border-t-0 rounded-b">
               <div class="grid items-center grid-cols-12 p-4 text-sm">
                 <div class="col-span-11">
-                  <a class="block text-sm text-indigo-500 truncate hover:underline" href="#">{{ __('adminhub::catalogue.collections.summer_seasonal') }}</a>
+                  <a class="block text-sm text-sky-500 truncate hover:underline" href="#">{{ __('adminhub::catalogue.collections.summer_seasonal') }}</a>
                 </div>
                 <div class="col-span-1 text-right">
                   <button>

@@ -6,8 +6,6 @@ class AvatarColumn extends BaseColumn
 {
     /**
      * Whether this should use gravatar
-     *
-     * @var bool
      */
     public bool $gravatar = false;
 

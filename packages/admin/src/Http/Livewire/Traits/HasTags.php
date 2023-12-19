@@ -6,8 +6,6 @@ trait HasTags
 {
     /**
      * Array of tags to assign.
-     *
-     * @var array
      */
     public array $tags = [];
 
@@ -18,8 +16,6 @@ trait HasTags
 
     /**
      * Computed property for existing tags.
-     *
-     * @return array
      */
     abstract public function getExistingTagsProperty(): array;
 }

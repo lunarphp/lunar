@@ -2,7 +2,9 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\CachesProperties;
@@ -38,10 +40,10 @@ use Lunar\DataTypes\ShippingOption;
  */
 class CartAddress extends BaseModel implements Addressable
 {
-    use HasFactory;
-    use LogsActivity;
-    use HasMacros;
     use CachesProperties;
+    use HasFactory;
+    use HasMacros;
+    use LogsActivity;
 
     /**
      * Array of cachable class properties.
@@ -58,43 +60,31 @@ class CartAddress extends BaseModel implements Addressable
 
     /**
      * The applied shipping option.
-     *
-     * @var ShippingOption|null
      */
     public ?ShippingOption $shippingOption = null;
 
     /**
      * The shipping sub total.
-     *
-     * @var Price|null
      */
     public ?Price $shippingSubTotal = null;
 
     /**
      * The shipping tax total.
-     *
-     * @var Price|null
      */
     public ?Price $shippingTaxTotal = null;
 
     /**
      * The shipping total.
-     *
-     * @var Price|null
      */
     public ?Price $shippingTotal = null;
 
     /**
      * The tax breakdown.
-     *
-     * @var TaxBreakdown
      */
     public ?TaxBreakdown $taxBreakdown = null;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return CartAddressFactory
      */
     protected static function newFactory(): CartAddressFactory
     {
@@ -133,25 +123,21 @@ class CartAddress extends BaseModel implements Addressable
      * @var array
      */
     protected $casts = [
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**
      * Return the cart relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function cart()
+    public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);
     }
 
     /**
      * Return the country relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function country()
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

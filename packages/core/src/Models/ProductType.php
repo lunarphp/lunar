@@ -3,6 +3,8 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasMacros;
@@ -22,8 +24,6 @@ class ProductType extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductTypeFactory
      */
     protected static function newFactory(): ProductTypeFactory
     {
@@ -40,10 +40,8 @@ class ProductType extends BaseModel
 
     /**
      * Get the mapped attributes relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function mappedAttributes()
+    public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -56,30 +54,24 @@ class ProductType extends BaseModel
 
     /**
      * Return the product attributes relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function productAttributes()
+    public function productAttributes(): MorphToMany
     {
         return $this->mappedAttributes()->whereAttributeType(Product::class);
     }
 
     /**
      * Return the variant attributes relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function variantAttributes()
+    public function variantAttributes(): MorphToMany
     {
         return $this->mappedAttributes()->whereAttributeType(ProductVariant::class);
     }
 
     /**
      * Get the products relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class);
     }

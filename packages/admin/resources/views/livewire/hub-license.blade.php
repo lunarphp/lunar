@@ -20,7 +20,7 @@
             </a>
           </div>
           {{-- <div class="flex-shrink-0 order-2 sm:order-3 sm:ml-2">
-            <button type="button" class="flex p-2 -mr-1 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
+            <button type="button" class="flex p-2 -mr-1 rounded-md hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-white">
               <span class="sr-only">Dismiss</span>
               <!-- Heroicon name: outline/x -->
               <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

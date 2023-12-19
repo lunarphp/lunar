@@ -33,7 +33,7 @@ class StaffShow extends AbstractStaff
      */
     public function mount()
     {
-        $this->staffPermissions = $this->staff->permissions->pluck('handle');
+        $this->staffPermissions = $this->staff->getAllPermissions()->pluck('name');
     }
 
     /**
@@ -120,6 +120,7 @@ class StaffShow extends AbstractStaff
 
         $this->staff->save();
 
+        $this->syncRole();
         $this->syncPermissions();
 
         $this->notify('Staff member updated');
@@ -136,7 +137,7 @@ class StaffShow extends AbstractStaff
         $permissions = $manifest->getGroupedPermissions();
 
         return view('adminhub::livewire.components.settings.staff.show', [
-            'firstPartyPermissions' => $permissions->filter(fn ($permission) => (bool) $permission->firstParty),
+            'permissions' => $permissions->sortByDesc(fn ($permission) => (bool) $permission->firstParty),
         ])->layout('adminhub::layouts.base');
     }
 }

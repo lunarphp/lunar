@@ -73,11 +73,11 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSet('images', [])
-                ->assertSet('options', collect())
-                ->assertSet('variantsEnabled', false);
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSet('images', [])
+            ->assertSet('options', collect())
+            ->assertSet('variantsEnabled', false);
     }
 
     /** @test */
@@ -105,9 +105,9 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSet('product.id', $product->id);
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSet('product.id', $product->id);
     }
 
     /** @test */
@@ -135,11 +135,11 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSet('product.status', 'published')
-                ->set('product.status', 'draft')
-                ->assertSet('product.status', 'draft');
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSet('product.status', 'published')
+            ->set('product.status', 'draft')
+            ->assertSet('product.status', 'draft');
     }
 
     /** @test */
@@ -171,30 +171,30 @@ class ProductShowTest extends TestCase
         $variantB = $productB->variants->first();
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSet('variant.sku', $variant->sku)
-                ->assertSet('variant.ean', $variant->ean)
-                ->assertSet('variant.gtin', $variant->gtin)
-                ->assertSet('variant.mpn', $variant->mpn)
-                ->assertSet('vartian.tax_ref', $variant->tax_ref)
-                ->set('variant.sku', 'FOOBAR')
-                ->set('variant.ean', 'NEWEAN')
-                ->set('variant.gtin', 'NEWGTIN')
-                ->set('variant.mpn', 'NEWMPN')
-                ->set('variant.tax_ref', 'CUSTOMTAXREF')
-                ->assertSet('variant.ean', 'NEWEAN')
-                ->assertSet('variant.gtin', 'NEWGTIN')
-                ->assertSet('variant.mpn', 'NEWMPN')
-                ->assertSet('variant.sku', 'FOOBAR')
-                ->assertSet('variant.tax_ref', 'CUSTOMTAXREF')
-                ->call('save')
-                ->assertHasNoErrors([
-                    'variant.sku',
-                    'variant.ean',
-                    'variant.mpn',
-                    'variant.gtin',
-                ]);
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSet('variant.sku', $variant->sku)
+            ->assertSet('variant.ean', $variant->ean)
+            ->assertSet('variant.gtin', $variant->gtin)
+            ->assertSet('variant.mpn', $variant->mpn)
+            ->assertSet('vartian.tax_ref', $variant->tax_ref)
+            ->set('variant.sku', 'FOOBAR')
+            ->set('variant.ean', 'NEWEAN')
+            ->set('variant.gtin', 'NEWGTIN')
+            ->set('variant.mpn', 'NEWMPN')
+            ->set('variant.tax_ref', 'CUSTOMTAXREF')
+            ->assertSet('variant.ean', 'NEWEAN')
+            ->assertSet('variant.gtin', 'NEWGTIN')
+            ->assertSet('variant.mpn', 'NEWMPN')
+            ->assertSet('variant.sku', 'FOOBAR')
+            ->assertSet('variant.tax_ref', 'CUSTOMTAXREF')
+            ->call('save')
+            ->assertHasNoErrors([
+                'variant.sku',
+                'variant.ean',
+                'variant.mpn',
+                'variant.gtin',
+            ]);
     }
 
     /** @test */
@@ -223,19 +223,19 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSet('variant.sku', $variant->sku)
-                ->set('variant.sku', null)
-                ->set('variant.ean', null)
-                ->set('variant.mpn', null)
-                ->set('variant.gtin', null)
-                ->call('save')
-                ->assertHasNoErrors([
-                    'variant.ean',
-                    'variant.mpn',
-                    'variant.gtin',
-                ]);
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSet('variant.sku', $variant->sku)
+            ->set('variant.sku', null)
+            ->set('variant.ean', null)
+            ->set('variant.mpn', null)
+            ->set('variant.gtin', null)
+            ->call('save')
+            ->assertHasNoErrors([
+                'variant.ean',
+                'variant.mpn',
+                'variant.gtin',
+            ]);
     }
 
     /** @test */
@@ -275,13 +275,13 @@ class ProductShowTest extends TestCase
         $product->productType->mappedAttributes()->attach(Attribute::get());
 
         $component = LiveWire::actingAs($staff, 'staff')
-                             ->test(ProductShow::class, [
-                                 'product' => $product->refresh(),
-                             ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
-                             ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription')
-                             ->set('product.brand_id', $brand->id)
-                             ->call('addUrl')
-                             ->set('urls.0.slug', 'foo-bar');
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->set('attributeMapping.'.'a_'.$name->id.'.data', 'nouseforaname')
+            ->set('attributeMapping.'.'a_'.$description->id.'.data', 'nouseforadescription')
+            ->set('product.brand_id', $brand->id)
+            ->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar');
 
         $component->call('save')->assertHasNoErrors();
 
@@ -322,9 +322,9 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSet('variantsEnabled', false);
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSet('variantsEnabled', false);
     }
 
     /** @test */
@@ -339,9 +339,9 @@ class ProductShowTest extends TestCase
         $currency = Currency::getDefault();
 
         ProductVariant::factory()
-                      ->count(2)
-                      ->for($product)
-                      ->create();
+            ->count(2)
+            ->for($product)
+            ->create();
 
         foreach ($product->variants as $variant) {
             Price::factory()->create([
@@ -352,9 +352,9 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSet('variantsEnabled', true);
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSet('variantsEnabled', true);
     }
 
     /** @test */
@@ -384,11 +384,11 @@ class ProductShowTest extends TestCase
         $options = ProductOption::factory(4)->create();
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertCount('options', 0)
-                ->emit('useProductOptions', $options->pluck('id'))
-                ->assertCount('options', $options->count());
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertCount('options', 0)
+            ->emit('useProductOptions', $options->pluck('id'))
+            ->assertCount('options', $options->count());
     }
 
     /** @test */
@@ -428,14 +428,14 @@ class ProductShowTest extends TestCase
         Config::set('lunar-hub.products.sku.unique', true);
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->set('optionValues', $values->pluck('id')->toArray())
-                ->call('addUrl')
-                ->set('product.brand_id', $brand->id)
-                ->set('urls.0.slug', 'foo-bar')
-                ->call('save')
-                ->assertHasNoErrors();
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->set('optionValues', $values->pluck('id')->toArray())
+            ->call('addUrl')
+            ->set('product.brand_id', $brand->id)
+            ->set('urls.0.slug', 'foo-bar')
+            ->call('save')
+            ->assertHasNoErrors();
 
         $this->assertEquals(4, $product->variants()->count());
     }
@@ -467,11 +467,11 @@ class ProductShowTest extends TestCase
         $options = ProductOption::factory(4)->create();
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertCount('options', 0)
-                ->set('options', $options->pluck('id'))
-                ->assertCount('options', $options->count());
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertCount('options', 0)
+            ->set('options', $options->pluck('id'))
+            ->assertCount('options', $options->count());
     }
 
     /** @test */
@@ -501,13 +501,13 @@ class ProductShowTest extends TestCase
         $options = ProductOption::factory(4)->create();
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertCount('options', 0)
-                ->set('options', $options)
-                ->assertCount('options', $options->count())
-                ->call('removeOption', 0)
-                ->assertCount('options', $options->count() - 1);
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertCount('options', 0)
+            ->set('options', $options)
+            ->assertCount('options', $options->count())
+            ->call('removeOption', 0)
+            ->assertCount('options', $options->count() - 1);
     }
 
     /** @test */
@@ -545,21 +545,21 @@ class ProductShowTest extends TestCase
         $product->productType->mappedAttributes()->attach(Attribute::get());
 
         $component = LiveWire::actingAs($staff, 'staff')
-                             ->test(ProductShow::class, [
-                                 'product' => $product->refresh(),
-                             ])->call('addUrl')
-                             ->set('urls.0.slug', 'foo-bar')
-                             ->assertCount('collections', 0)
-                             ->set('product.brand_id', $brand->id)
-                             ->set('collections', collect([[
-                                 'id' => $collection->id,
-                                 'name' => $collection->translateAttribute('name'),
-                                 'group_id' => $collection->collection_group_id,
-                                 'group_name' => $collection->group->name,
-                                 'thumbnail' => null,
-                                 'breadcrumb' => ['Foo', 'Bar'],
-                                 'position' => 1,
-                             ]]))->call('save')->assertHasNoErrors();
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->assertCount('collections', 0)
+            ->set('product.brand_id', $brand->id)
+            ->set('collections', collect([[
+                'id' => $collection->id,
+                'name' => $collection->translateAttribute('name'),
+                'group_id' => $collection->collection_group_id,
+                'group_name' => $collection->group->name,
+                'thumbnail' => null,
+                'breadcrumb' => ['Foo', 'Bar'],
+                'position' => 1,
+            ]]))->call('save')->assertHasNoErrors();
 
         $this->assertDatabaseHas((new Product)->collections()->getTable(), [
             'collection_id' => $collection->id,
@@ -608,21 +608,21 @@ class ProductShowTest extends TestCase
         $product->productType->mappedAttributes()->attach(Attribute::get());
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product->refresh(),
-                ])->call('addUrl')
-                ->set('urls.0.slug', 'foo-bar')
-                ->set('product.brand_id', $brand->id)
-                ->assertCount('associations', 0)
-                ->set('associations', collect([
-                    [
-                        'inverse' => false,
-                        'target_id' => $productB->id,
-                        'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
-                        'name' => $productB->translateAttribute('name'),
-                        'type' => 'cross-sell',
-                    ],
-                ]))->call('save')->assertHasNoErrors();
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->set('product.brand_id', $brand->id)
+            ->assertCount('associations', 0)
+            ->set('associations', collect([
+                [
+                    'inverse' => false,
+                    'target_id' => $productB->id,
+                    'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
+                    'name' => $productB->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+            ]))->call('save')->assertHasNoErrors();
 
         $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
             'product_parent_id' => $product->id,
@@ -672,27 +672,87 @@ class ProductShowTest extends TestCase
         $product->productType->mappedAttributes()->attach(Attribute::get());
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product->refresh(),
-                ])->call('addUrl')
-                ->set('urls.0.slug', 'foo-bar')
-                ->assertCount('associations', 0)
-                ->set('product.brand_id', $brand->id)
-                ->set('associations', collect([
-                    [
-                        'inverse' => true,
-                        'target_id' => $productB->id,
-                        'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
-                        'name' => $productB->translateAttribute('name'),
-                        'type' => 'cross-sell',
-                    ],
-                ]))->call('save')->assertHasNoErrors();
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->assertCount('associations', 0)
+            ->set('product.brand_id', $brand->id)
+            ->set('associations', collect([
+                [
+                    'inverse' => true,
+                    'target_id' => $productB->id,
+                    'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
+                    'name' => $productB->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+            ]))->call('save')->assertHasNoErrors();
 
         $this->assertDatabaseHas((new ProductAssociation)->getTable(), [
             'product_parent_id' => $productB->id,
             'product_target_id' => $product->id,
             'type' => 'cross-sell',
         ]);
+    }
+
+    /** @test */
+    public function can_save_product_without_associations_duplicating()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
+
+        // Need some attributes...
+        $name = Attribute::factory()->create([
+            'handle' => 'name',
+        ]);
+        $description = Attribute::factory()->create([
+            'handle' => 'description',
+        ]);
+
+        $brand = Brand::factory()->create();
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+        ]);
+
+        $productB = Product::factory()->create([
+            'status' => 'published',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
+            ]);
+        }
+
+        $product->productType->mappedAttributes()->attach(Attribute::get());
+
+        LiveWire::actingAs($staff, 'staff')
+            ->test(ProductShow::class, [
+                'product' => $product->refresh(),
+            ])->call('addUrl')
+            ->set('urls.0.slug', 'foo-bar')
+            ->set('product.brand_id', $brand->id)
+            ->assertCount('associations', 0)
+            ->set('associations', collect([
+                [
+                    'inverse' => false,
+                    'target_id' => $productB->id,
+                    'thumbnail' => optional($productB->thumbnail)->getUrl('small'),
+                    'name' => $productB->translateAttribute('name'),
+                    'type' => 'cross-sell',
+                ],
+            ]))->call('save')->assertHasNoErrors()->call('save')->assertHasNoErrors();
+
+        $this->assertCount(1, $product->refresh()->associations);
     }
 
     /**
@@ -722,9 +782,9 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertSeeHtml('Variants');
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertSeeHtml('Variants');
     }
 
     /**
@@ -756,9 +816,9 @@ class ProductShowTest extends TestCase
         }
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->assertDontSeeHtml('Variants');
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->assertDontSeeHtml('Variants');
     }
 
     /**
@@ -802,14 +862,14 @@ class ProductShowTest extends TestCase
         Config::set('lunar-hub.products.sku.unique', true);
 
         LiveWire::actingAs($staff, 'staff')
-                ->test(ProductShow::class, [
-                    'product' => $product,
-                ])->call('addUrl')
-                ->set('product.brand_id', $brand->id)
-                ->set('urls.0.slug', 'foo-bar')
-                ->set('optionValues', $values->pluck('id')->toArray())
-                ->call('save')
-                ->assertHasNoErrors();
+            ->test(ProductShow::class, [
+                'product' => $product,
+            ])->call('addUrl')
+            ->set('product.brand_id', $brand->id)
+            ->set('urls.0.slug', 'foo-bar')
+            ->set('optionValues', $values->pluck('id')->toArray())
+            ->call('save')
+            ->assertHasNoErrors();
 
         $this->assertEquals(1, $product->variants()->count());
     }

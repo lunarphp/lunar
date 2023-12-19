@@ -21,6 +21,9 @@ class ProductOptionFactory extends Factory
             'name' => [
                 'en' => $name,
             ],
+            'label' => [
+                'en' => $name,
+            ],
             'position' => self::$position++,
         ];
     }

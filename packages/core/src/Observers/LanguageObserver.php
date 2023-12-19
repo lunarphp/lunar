@@ -2,7 +2,7 @@
 
 namespace Lunar\Observers;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Language;
 
 class LanguageObserver
@@ -10,7 +10,6 @@ class LanguageObserver
     /**
      * Handle the Language "created" event.
      *
-     * @param  \Lunar\Models\Language  $language
      * @return void
      */
     public function created(Language $language)
@@ -21,7 +20,6 @@ class LanguageObserver
     /**
      * Handle the Language "updated" event.
      *
-     * @param  \Lunar\Models\Language  $language
      * @return void
      */
     public function updated(Language $language)
@@ -32,7 +30,6 @@ class LanguageObserver
     /**
      * Handle the Language "deleted" event.
      *
-     * @param  \Lunar\Models\Language  $language
      * @return void
      */
     public function deleting(Language $language)
@@ -45,7 +42,6 @@ class LanguageObserver
     /**
      * Handle the Language "forceDeleted" event.
      *
-     * @param  \Lunar\Models\Language  $language
      * @return void
      */
     public function forceDeleted(Language $language)
@@ -57,7 +53,6 @@ class LanguageObserver
      * Ensures that only one default language exists.
      *
      * @param  \Lunar\Models\Language  $savedLanguage  The language that was just saved.
-     * @return void
      */
     protected function ensureOnlyOneDefault(Language $savedLanguage): void
     {

@@ -13,8 +13,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
 {
     /**
      * The instance of the discount.
-     *
-     * @var Discount
      */
     public Discount $discount;
 
@@ -22,7 +20,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      * Set the data for the discount to user.
      *
      * @param  array  $data
-     * @return self
      */
     public function with(Discount $discount): self
     {
@@ -33,8 +30,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
 
     /**
      * Mark a discount as used
-     *
-     * @return self
      */
     public function markAsUsed(Cart $cart): self
     {
@@ -50,7 +45,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     /**
      * Return the eligible lines for the discount.
      *
-     * @param  Cart  $cart
      * @return Illuminate\Support\Collection
      */
     protected function getEligibleLines(Cart $cart): Collection
@@ -60,20 +54,17 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
 
     /**
      * Check if discount's conditions met.
-     *
-     * @param  Cart  $cart
-     * @return bool
      */
     protected function checkDiscountConditions(Cart $cart): bool
     {
         $data = $this->discount->data;
 
-        $cartCoupon = strtoupper($cart->coupon_code ?? null);
-        $conditionCoupon = strtoupper($this->discount->coupon ?? null);
+        $cartCoupon = strtoupper($cart->coupon_code ?? '');
+        $conditionCoupon = strtoupper($this->discount->coupon ?? '');
 
         $validCoupon = $cartCoupon ? ($cartCoupon === $conditionCoupon) : blank($conditionCoupon);
 
-        $minSpend = $data['min_prices'][$cart->currency->code] ?? null;
+        $minSpend = $data['min_prices'][$cart->currency->code] ?? 0;
         $minSpend = (int) bcmul($minSpend, $cart->currency->factor);
 
         $lines = $this->getEligibleLines($cart);
@@ -91,7 +82,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     /**
      * Check if discount's conditions met.
      *
-     * @param  Cart  $cart
      * @param  Lunar\Base\ValueObjects\Cart\DiscountBreakdown  $breakdown
      * @return self
      */
@@ -100,7 +90,6 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         if (! $cart->discountBreakdown) {
             $cart->discountBreakdown = collect();
         }
-
         $cart->discountBreakdown->push($breakdown);
 
         return $this;

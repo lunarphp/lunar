@@ -2,7 +2,11 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
@@ -29,30 +33,10 @@ class Customer extends BaseModel
 {
     use HasAttributes;
     use HasFactory;
+    use HasMacros;
     use HasPersonalDetails;
     use HasTranslations;
     use Searchable;
-    use HasMacros;
-
-    /**
-     * Define our base filterable attributes.
-     *
-     * @var array
-     */
-    protected $filterable = [
-        'name',
-        'company_name',
-    ];
-
-    /**
-     * Define our base sortable attributes.
-     *
-     * @var array
-     */
-    protected $sortable = [
-        'name',
-        'company_name',
-    ];
 
     /**
      * Define the guarded attributes.
@@ -66,13 +50,11 @@ class Customer extends BaseModel
      */
     protected $casts = [
         'attribute_data' => AsAttributeData::class,
-        'meta' => 'object',
+        'meta' => AsArrayObject::class,
     ];
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\CustomerFactory
      */
     protected static function newFactory(): CustomerFactory
     {
@@ -80,57 +62,9 @@ class Customer extends BaseModel
     }
 
     /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return config('scout.prefix').'customers';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSearchableAttributes()
-    {
-        $metaFields = (array) $this->meta;
-
-        $data = [
-            'id' => $this->id,
-            'name' => $this->fullName,
-            'company_name' => $this->company_name,
-            'vat_no' => $this->vat_no,
-            'account_ref' => $this->account_ref,
-        ];
-
-        foreach ($metaFields as $key => $value) {
-            $data[$key] = $value;
-        }
-
-        foreach ($this->attribute_data ?? [] as $field => $value) {
-            if ($value instanceof TranslatedText) {
-                foreach ($value->getValue() as $locale => $text) {
-                    $data[$field.'_'.$locale] = $text?->getValue();
-                }
-            } else {
-                $data[$field] = $this->translateAttribute($field);
-            }
-        }
-
-        $data['addresses'] = $this->addresses->toArray();
-
-        $data['user_emails'] = $this->users->pluck('email')->toArray();
-
-        return $data;
-    }
-
-    /**
      * Return the customer group relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function customerGroups()
+    public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -142,10 +76,8 @@ class Customer extends BaseModel
 
     /**
      * Return the customer group relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -157,25 +89,24 @@ class Customer extends BaseModel
 
     /**
      * Return the addresses relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function addresses()
+    public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);
     }
 
-    public function orders()
+    /**
+     * Return the orders relationship.
+     */
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
     /**
      * Get the mapped attributes relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function mappedAttributes()
+    public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 

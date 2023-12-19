@@ -26,11 +26,32 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function current()
+    public function current($estimateShipping = false)
     {
         return $this->fetchOrCreate(
-            config('lunar.cart.auto_create', false)
+            config('lunar.cart.auto_create', false),
+            estimateShipping: $estimateShipping
         );
+    }
+
+    /**
+     * Set the criteria to use when estimating shipping costs.
+     *
+     * @return $this
+     */
+    public function estimateShippingUsing(array $meta): self
+    {
+        $this->sessionManager->put('shipping_estimate_meta', $meta);
+
+        return $this;
+    }
+
+    /**
+     * Return the shipping estimate meta.
+     */
+    public function getShippingEstimateMeta(): array
+    {
+        return $this->sessionManager->get('shipping_estimate_meta', []);
     }
 
     /**
@@ -38,6 +59,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function forget()
     {
+        $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
             $this->getSessionKey()
         );
@@ -49,7 +71,7 @@ class CartSessionManager implements CartSessionInterface
     public function manager()
     {
         if (! $this->cart) {
-            $this->fetchOrCreate(create:true);
+            $this->fetchOrCreate(create: true);
         }
 
         return $this->cart;
@@ -66,7 +88,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the cart to be used for the session.
+     *
+     * @return \Lunar\Models\Cart
      */
     public function use(Cart $cart)
     {
@@ -84,7 +108,7 @@ class CartSessionManager implements CartSessionInterface
      * @param  bool  $create
      * @return \Lunar\Models\Cart|null
      */
-    private function fetchOrCreate($create = false)
+    private function fetchOrCreate($create = false, bool $estimateShipping = false)
     {
         $cartId = $this->sessionManager->get(
             $this->getSessionKey()
@@ -106,11 +130,22 @@ class CartSessionManager implements CartSessionInterface
             return $this->createNewCart();
         }
 
+        if ($estimateShipping) {
+            // Some shipping drivers might require sub totals to be present
+            // before they can estimate a shipping cost, doing this in the driver
+            // itself can lead to infinite loops, so we calculate before.
+            $this->cart->calculate();
+            $this->cart->getEstimatedShipping(
+                $this->getShippingEstimateMeta(),
+                setOverride: true
+            );
+        }
+
         return $this->cart->calculate();
     }
 
     /**
-     * {@inheritDoc}
+     * Get the cart session key.
      */
     public function getSessionKey()
     {
@@ -118,7 +153,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the current channel.
+     *
+     * @return void
      */
     public function setChannel(Channel $channel)
     {
@@ -132,7 +169,9 @@ class CartSessionManager implements CartSessionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Set the current currency.
+     *
+     * @return void
      */
     public function setCurrency(Currency $currency)
     {
@@ -147,8 +186,6 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Return the current currency.
-     *
-     * @return \Lunar\Models\Currency
      */
     public function getCurrency(): Currency
     {
@@ -157,8 +194,6 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Return the current channel.
-     *
-     * @return \Lunar\Models\Channel
      */
     public function getChannel(): Channel
     {
@@ -195,7 +230,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Create a new cart instance.
      *
-     * @return void
+     * @return \Lunar\Models\Cart
      */
     protected function createNewCart()
     {

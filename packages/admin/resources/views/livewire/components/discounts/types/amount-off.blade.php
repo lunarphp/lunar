@@ -6,7 +6,7 @@
             @class([
                 'text-sm rounded-md py-1 px-3' => true,
                 'bg-gray-100 text-gray-700 font-medium hover:bg-gray-200' => !empty($this->discount->data['fixed_value']),
-                'bg-blue-500 text-white font-medium' => empty($this->discount->data['fixed_value'])
+                'bg-sky-500 text-white font-medium' => empty($this->discount->data['fixed_value'])
             ])
         >
             Percentage
@@ -17,7 +17,7 @@
             @class([
                 'text-sm rounded-md py-1 px-3' => true,
                 'bg-gray-100 text-gray-700 font-medium hover:bg-gray-200' => empty($this->discount->data['fixed_value']),
-                'bg-blue-500 text-white font-medium' => $this->discount->data['fixed_value'] ?? false
+                'bg-sky-500 text-white font-medium' => $this->discount->data['fixed_value'] ?? false
             ])
         >
             Fixed amount

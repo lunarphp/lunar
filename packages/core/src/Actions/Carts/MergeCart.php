@@ -2,7 +2,7 @@
 
 namespace Lunar\Actions\Carts;
 
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Cart;
 
 class MergeCart
@@ -10,8 +10,6 @@ class MergeCart
     /**
      * Execute the action.
      *
-     * @param  \Lunar\Models\Cart  $target
-     * @param  \Lunar\Models\Cart  $source
      * @return \Lunar\Models\Cart
      */
     public function execute(Cart $target, Cart $source)

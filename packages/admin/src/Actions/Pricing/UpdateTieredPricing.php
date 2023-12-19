@@ -4,7 +4,7 @@ namespace Lunar\Hub\Actions\Pricing;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 
@@ -13,8 +13,6 @@ class UpdateTieredPricing
     /**
      * Execute the action.
      *
-     * @param  Model  $owner
-     * @param  \Illuminate\Support\Collection  $tieredPrices
      * @return \Illuminate\Support\Collection
      */
     public function execute(Model $owner, Collection $tieredPrices)
@@ -51,7 +49,6 @@ class UpdateTieredPricing
     /**
      * Create or update a price.
      *
-     * @param  Model  $owner
      * @param  int  $tier
      * @param  int|null  $groupId
      * @param  float  $price
@@ -67,7 +64,7 @@ class UpdateTieredPricing
         $currency = Currency::find($currencyId);
 
         $priceModel->fill([
-            'price' => (int) ($price * $currency->factor),
+            'price' => (int) bcmul($price, $currency->factor),
             'currency_id' => $currencyId,
             'customer_group_id' => $groupId,
             'tier' => $tier,

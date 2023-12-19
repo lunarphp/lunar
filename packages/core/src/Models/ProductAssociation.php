@@ -4,9 +4,9 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasMedia;
 use Lunar\Database\Factories\ProductAssociationFactory;
 
 /**
@@ -20,16 +20,15 @@ use Lunar\Database\Factories\ProductAssociationFactory;
 class ProductAssociation extends BaseModel
 {
     use HasFactory;
-    use HasMedia;
     use HasMacros;
 
     /**
-     * Define the cross sell type.
+     * Define the cross-sell type.
      */
     const CROSS_SELL = 'cross-sell';
 
     /**
-     * Define the up sell type.
+     * Define the upsell type.
      */
     const UP_SELL = 'up-sell';
 
@@ -51,8 +50,6 @@ class ProductAssociation extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ProductAssociationFactory
      */
     protected static function newFactory(): ProductAssociationFactory
     {
@@ -61,65 +58,48 @@ class ProductAssociation extends BaseModel
 
     /**
      * Return the parent relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_parent_id');
     }
 
     /**
      * Return the parent relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function target()
+    public function target(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_target_id');
     }
 
     /**
-     * Apply the cross sell scope.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return void
+     * Apply the cross-sell scope.
      */
-    public function scopeCrossSell(Builder $query)
+    public function scopeCrossSell(Builder $query): void
     {
         $query->type(self::CROSS_SELL);
     }
 
     /**
-     * Apply the up sell scope.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return void
+     * Apply the upsell scope.
      */
-    public function scopeUpSell(Builder $query)
+    public function scopeUpSell(Builder $query): void
     {
         $query->type(self::UP_SELL);
     }
 
     /**
      * Apply the up alternate scope.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return void
      */
-    public function scopeAlternate(Builder $query)
+    public function scopeAlternate(Builder $query): void
     {
         $query->type(self::ALTERNATE);
     }
 
     /**
      * Apply the type scope.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $type
-     * @return void
      */
-    public function scopeType(Builder $query, $type)
+    public function scopeType(Builder $query, string $type): Builder
     {
         return $query->whereType($type);
     }

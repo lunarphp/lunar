@@ -8,8 +8,6 @@ class ShippingModifiers
 {
     /**
      * The collection of modifiers to use.
-     *
-     * @var \Illuminate\Support\Collection
      */
     protected Collection $modifiers;
 

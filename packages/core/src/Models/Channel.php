@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Lunar\Base\BaseModel;
@@ -23,16 +24,14 @@ use Lunar\Database\Factories\ChannelFactory;
  */
 class Channel extends BaseModel
 {
-    use HasFactory;
-    use SoftDeletes;
-    use LogsActivity;
     use HasDefaultRecord;
+    use HasFactory;
     use HasMacros;
+    use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Database\Factories\ChannelFactory
      */
     protected static function newFactory(): ChannelFactory
     {
@@ -49,11 +48,8 @@ class Channel extends BaseModel
 
     /**
      * Mutator for formatting the handle to a slug.
-     *
-     * @param  string  $val
-     * @return void
      */
-    public function setHandleAttribute($val)
+    public function setHandleAttribute(?string $val): void
     {
         $this->attributes['handle'] = Str::slug($val);
     }
@@ -61,7 +57,7 @@ class Channel extends BaseModel
     /**
      * Get the parent channelable model.
      */
-    public function channelable()
+    public function channelable(): MorphTo
     {
         return $this->morphTo();
     }

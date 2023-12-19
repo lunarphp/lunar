@@ -9,15 +9,12 @@ use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
-use Lunar\Models\Discount;
 use Lunar\Models\Product;
 
 class BuyXGetY extends AbstractDiscountType
 {
     /**
      * Return the name of the discount.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -35,13 +32,13 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function getRewardQuantity($linesQuantity, $minQty, $rewardQty, $maxRewardQty = null)
     {
-        $result = ($linesQuantity / ($minQty ?: 1)) * $rewardQty;
-
-        if ($maxRewardQty && $result > $maxRewardQty) {
-            return $maxRewardQty;
+        if ($linesQuantity < $minQty) {
+            return 0;
         }
 
-        return $result;
+        $result = floor(($linesQuantity / ($minQty ?: 1)) * $rewardQty);
+
+        return $maxRewardQty ? min($result, $maxRewardQty) : $result;
     }
 
     /**
@@ -58,23 +55,23 @@ class BuyXGetY extends AbstractDiscountType
         $maxRewardQty = $data['max_reward_qty'] ?? null;
         $automaticallyAddRewards = $data['automatically_add_rewards'] ?? false;
 
-        // Get the first condition line where the qty check passes.
-        $conditions = $cart->lines->reject(function ($line) use ($minQty) {
-            $match = $this->discount->purchasableConditions->first(function ($item) use ($line) {
+        // Get all purchasables that are eligible.
+        $conditions = $cart->lines->reject(function ($line) {
+            return ! $this->discount->purchasableConditions->first(function ($item) use ($line) {
                 return $item->purchasable_type == Product::class &&
                     $item->purchasable_id == $line->purchasable->product->id;
             });
-
-            return ! $match || ($minQty && $line->quantity < $minQty);
         });
 
-        if (! $conditions->count()) {
+        $totalQuantity = $conditions->sum('quantity');
+
+        if (! $conditions->count() || ($minQty && $totalQuantity < $minQty)) {
             return $cart;
         }
 
         // How many products are rewarded?
         $totalRewardQty = $this->getRewardQuantity(
-            $conditions->sum('quantity'),
+            $totalQuantity,
             $minQty,
             $rewardQty,
             $maxRewardQty
@@ -85,11 +82,6 @@ class BuyXGetY extends AbstractDiscountType
         }
 
         $remainingRewardQty = $totalRewardQty;
-
-        // ignore (for now) any lines added by this discount
-        $lines = $cart->lines->reject(function ($line) {
-            return in_array($this->discount->id, array_keys($line->meta->added_by_discount ?? []));
-        });
 
         $affectedLines = collect();
         $discountTotal = 0;
@@ -107,12 +99,17 @@ class BuyXGetY extends AbstractDiscountType
                 continue;
             }
 
-            $remainder = $rewardLine->quantity % $remainingRewardQty;
+            $remainder = (int) floor($remainingRewardQty);
+            $qtyToAllocate = $remainder;
 
-            $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+            if ($rewardLine->quantity < $remainder) {
+                $remainder = $rewardLine->quantity % $remainingRewardQty;
+                $qtyToAllocate = (int) round(($remainingRewardQty - $remainder) / $rewardLine->quantity);
+            }
 
-            if (! $remainder && $remainingRewardQty < $rewardLine->quantity) {
-                $qtyToAllocate = $remainingRewardQty;
+            if ($rewardLine->quantity == 1 && $remainder) {
+                $qtyToAllocate = 1;
+                $remainder = $remainder - 1;
             }
 
             if (! $qtyToAllocate) {
@@ -124,7 +121,8 @@ class BuyXGetY extends AbstractDiscountType
                 quantity: $qtyToAllocate
             ));
 
-            $conditionQtyToAllocate = $qtyToAllocate * $rewardQty;
+            $conditionQtyToAllocate = $qtyToAllocate * ($minQty - $rewardQty);
+
             $conditions->each(function ($conditionLine) use ($affectedLines, &$conditionQtyToAllocate) {
                 if (! $conditionQtyToAllocate) {
                     return;
@@ -136,7 +134,7 @@ class BuyXGetY extends AbstractDiscountType
 
                     $affectedLines->push(new DiscountBreakdownLine(
                         line: $conditionLine,
-                        quantity: $conditionQtyToAllocate
+                        quantity: $qtyCanBeApplied
                     ));
                 }
             });

@@ -29,10 +29,10 @@ use Lunar\Database\Factories\DiscountFactory;
  */
 class Discount extends BaseModel
 {
-    use HasFactory,
-        HasTranslations,
-        HasChannels,
-        HasCustomerGroups;
+    use HasChannels,
+        HasCustomerGroups,
+        HasFactory,
+        HasTranslations;
 
     protected $guarded = [];
 
@@ -49,15 +49,13 @@ class Discount extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return DiscountFactory
      */
     protected static function newFactory(): DiscountFactory
     {
         return DiscountFactory::new();
     }
 
-    public function users()
+    public function users(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -69,25 +67,40 @@ class Discount extends BaseModel
 
     /**
      * Return the purchasables relationship.
-     *
-     * @return HasMany
      */
-    public function purchasables()
+    public function purchasables(): HasMany
     {
         return $this->hasMany(DiscountPurchasable::class);
     }
 
-    public function purchasableConditions()
+    /**
+     * Return the purchasable conditions relationship.
+     */
+    public function purchasableConditions(): HasMany
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('condition');
     }
 
-    public function purchasableLimitations()
+    /**
+     * Return the purchasable exclusions relationship.
+     */
+    public function purchasableExclusions(): HasMany
+    {
+        return $this->hasMany(DiscountPurchasable::class)->whereType('exclusion');
+    }
+
+    /**
+     * Return the purchasable limitations relationship.
+     */
+    public function purchasableLimitations(): HasMany
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('limitation');
     }
 
-    public function purchasableRewards()
+    /**
+     * Return the purchasable rewards relationship.
+     */
+    public function purchasableRewards(): HasMany
     {
         return $this->hasMany(DiscountPurchasable::class)->whereType('reward');
     }
@@ -99,23 +112,19 @@ class Discount extends BaseModel
 
     /**
      * Return the collections relationship.
-     *
-     * @return HasMany
      */
-    public function collections()
+    public function collections(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             Collection::class,
             "{$prefix}collection_discount"
-        )->withTimestamps();
+        )->withPivot(['type'])->withTimestamps();
     }
 
     /**
      * Return the customer groups relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function customerGroups(): BelongsToMany
     {
@@ -132,23 +141,20 @@ class Discount extends BaseModel
         ])->withTimestamps();
     }
 
-    public function brands()
+    public function brands(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
             Brand::class,
             "{$prefix}brand_discount"
-        )->withTimestamps();
+        )->withPivot(['type'])->withTimestamps();
     }
 
     /**
      * Return the active scope.
-     *
-     * @param  Builder  $query
-     * @return void
      */
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->whereNotNull('starts_at')
             ->where('starts_at', '<=', now())
@@ -156,5 +162,60 @@ class Discount extends BaseModel
                 $query->whereNull('ends_at')
                     ->orWhere('ends_at', '>', now());
             });
+    }
+
+    /**
+     * Return the products scope.
+     */
+    public function scopeProducts(Builder $query, iterable $productIds = [], string $type = null): Builder
+    {
+        if (is_array($productIds)) {
+            $productIds = collect($productIds);
+        }
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+                ->orWhereHas('purchasables',
+                    fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
+                        ->wherePurchasableType(Product::class)
+                        ->when(
+                            $type,
+                            fn ($query) => $query->whereType($type)
+                        )
+                )
+        );
+    }
+
+    /**
+     * Return the product variants scope.
+     */
+    public function scopeProductVariants(Builder $query, iterable $variantIds = [], string $type = null): Builder
+    {
+        if (is_array($variantIds)) {
+            $variantIds = collect($variantIds);
+        }
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+                ->orWhereHas('purchasables',
+                    fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
+                        ->wherePurchasableType(ProductVariant::class)
+                        ->when(
+                            $type,
+                            fn ($query) => $query->whereType($type)
+                        )
+                )
+        );
+    }
+
+    /**
+     * Return when the discount is usable.
+     */
+    public function scopeUsable(Builder $query): Builder
+    {
+        return $query->where(function ($subQuery) {
+            $subQuery->whereRaw('uses < max_uses')
+                ->orWhereNull('max_uses');
+        });
     }
 }

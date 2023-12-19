@@ -3,11 +3,11 @@
 namespace Lunar\Hub\Http\Livewire\Traits;
 
 use Illuminate\Support\Collection;
+use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\AttributeGroup;
-use Lunar\Models\Language;
 
 trait WithAttributes
 {
@@ -55,7 +55,6 @@ trait WithAttributes
     /**
      * Parse the attributes into the correct collection format.
      *
-     * @param  \Illuminate\Support\Collection  $attributes
      * @return \Illuminate\Support\Collection
      */
     protected function parseAttributes(Collection $attributes, $existingData, $key = 'attributeMapping')
@@ -67,10 +66,15 @@ trait WithAttributes
                 $existingData->first(fn ($value, $handle) => $handle == $attribute->handle)
                 : null;
 
-            $value = $data ? $data->getValue() : null;
+            $value = $data ? $data->getValue() : $attribute->default_value;
             // We need to make sure we give livewire all the languages if we're trying to translate.
             if ($attribute->type == TranslatedText::class) {
                 $value = $this->prepareTranslatedText($value);
+            }
+
+            // No data (null) for ListField is an empty array
+            if ($attribute->type == ListField::class) {
+                $value = $value ?? [];
             }
 
             $reference = 'a_'.$attribute->id;
@@ -198,9 +202,13 @@ trait WithAttributes
                 foreach ($this->languages as $language) {
                     // all rules set when attribute was created (resets on each iteration)
                     $validationRules = $validation;
-                    if ($language->default && $isRequired) {
+                    if ($language->default) {
                         // append required for the default language
-                        $validationRules = array_merge($validationRules, ['required']);
+                        if ($isRequired) {
+                            $validationRules = array_merge($validationRules, ['required']);
+                        } else {
+                            $validationRules = array_merge($validationRules, ['nullable']);
+                        }
                     }
                     $rules["{$attribute['signature']}.{$language->code}"] = $validationRules;
                 }
@@ -210,6 +218,8 @@ trait WithAttributes
 
             if ($isRequired) {
                 $validation = array_merge($validation, ['required']);
+            } else {
+                $validation = array_merge($validation, ['nullable']);
             }
 
             if ($attribute['type'] == Number::class) {

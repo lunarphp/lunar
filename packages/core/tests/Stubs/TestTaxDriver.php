@@ -17,31 +17,28 @@ class TestTaxDriver implements TaxDriver
 {
     /**
      * The taxable shipping address.
-     *
-     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $shippingAddress = null;
 
     /**
      * The taxable billing address.
-     *
-     * @var \Lunar\Base\Addressable|null
      */
     protected ?Addressable $billingAddress = null;
 
     /**
      * The currency model.
-     *
-     * @var Currency
      */
     protected Currency $currency;
 
     /**
      * The purchasable item.
-     *
-     * @var Purchasable
      */
     protected Purchasable $purchasable;
+
+    /**
+     * The cart line.
+     */
+    protected CartLine $cartLine;
 
     /**
      * {@inheritDoc}
@@ -85,9 +82,6 @@ class TestTaxDriver implements TaxDriver
 
     /**
      * Set the cart line.
-     *
-     * @param  CartLine  $cartLine
-     * @return self
      */
     public function setCartLine(CartLine $cartLine): self
     {
@@ -103,22 +97,28 @@ class TestTaxDriver implements TaxDriver
     {
         $breakdown = new TaxBreakdown;
 
+        if ($this->purchasable) {
+            $taxClass = $this->purchasable->getTaxClass();
+            $taxAmounts = $taxClass->taxRateAmounts;
+        } else {
+            $taxAmounts = TaxRateAmount::factory(2)->create();
+        }
+
         $currency = Currency::first() ?: Currency::factory()->create();
 
-        $taxAmount = TaxRateAmount::factory()->create();
+        $variant = $this->purchasable ?: ProductVariant::factory()->create();
 
-        $result = round($subTotal * ($taxAmount->percentage / 100));
+        foreach ($taxAmounts as $amount) {
+            $result = round($subTotal * ($amount->percentage / 100));
 
-        $variant = ProductVariant::factory()->create();
-
-        $amount = new TaxBreakdownAmount(
-            price: new Price((int) $result, $currency, $variant->getUnitQuantity()),
-            description: $taxAmount->taxRate->name,
-            identifier: "tax_rate_{$taxAmount->taxRate->id}",
-            percentage: $taxAmount->percentage
-        );
-
-        $breakdown->addAmount($amount);
+            $amount = new TaxBreakdownAmount(
+                price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
+                identifier: "tax_rate_{$amount->taxRate->id}",
+                description: $amount->taxRate->name,
+                percentage: $amount->percentage
+            );
+            $breakdown->addAmount($amount);
+        }
 
         return $breakdown;
     }

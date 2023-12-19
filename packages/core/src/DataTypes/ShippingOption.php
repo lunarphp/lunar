@@ -16,6 +16,7 @@ class ShippingOption implements Purchasable
         public TaxClass $taxClass,
         public $taxReference = null,
         public $option = null,
+        public bool $collect = false,
         public $meta = null
     ) {
         //  ..
@@ -33,8 +34,6 @@ class ShippingOption implements Purchasable
 
     /**
      * Get prices for the purchasable item.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getPrices(): Collection
     {
@@ -45,8 +44,6 @@ class ShippingOption implements Purchasable
 
     /**
      * Return the purchasable unit quantity.
-     *
-     * @return int
      */
     public function getUnitQuantity(): int
     {

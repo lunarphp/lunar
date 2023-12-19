@@ -124,30 +124,30 @@ class GetExistingCartLineTest extends TestCase
 
         $action = new GetExistingCartLine;
 
-        function shuffle_assoc($list)
-        {
-            if (! is_array($list)) {
-                return $list;
-            }
-
-            $keys = array_keys($list);
-            shuffle($keys);
-            $random = [];
-            foreach ($keys as $key) {
-                $random[$key] = $list[$key];
-            }
-
-            return $random;
-        }
-
         foreach ($cart->lines as $line) {
             $meta = (array) $line->meta;
             foreach (range(1, 10) as $i) {
-                shuffle_assoc($meta);
+                $this->shuffle_assoc($meta);
                 $existing = $action->execute($cart, $purchasable, $meta);
                 $this->assertInstanceOf(CartLine::class, $existing);
                 $this->assertEquals($line->id, $line->id);
             }
         }
+    }
+
+    private function shuffle_assoc($list)
+    {
+        if (! is_array($list)) {
+            return $list;
+        }
+
+        $keys = array_keys($list);
+        shuffle($keys);
+        $random = [];
+        foreach ($keys as $key) {
+            $random[$key] = $list[$key];
+        }
+
+        return $random;
     }
 }

@@ -36,7 +36,7 @@
                                                type="checkbox"
                                                @if (in_array($productImage->id, $this->currentImageIds)) disabled @endif>
                                         <img src="{{ $productImage->getFullUrl('small') }}"
-                                             class="border-2 border-transparent rounded-lg shadow-sm peer-checked:border-blue-500">
+                                             class="border-2 border-transparent rounded-lg shadow-sm peer-checked:border-sky-500">
                                     </label>
                                 @empty
                                     <div class="col-span-3">
@@ -182,7 +182,7 @@
                                                 type="button">
                                             <x-hub::icon ref="refresh"
                                                          style="solid"
-                                                         class="text-gray-400 hover:text-indigo-500" />
+                                                         class="text-gray-400 hover:text-sky-500" />
                                         </button>
                                     </x-hub::tooltip>
                                 @endif
@@ -191,7 +191,7 @@
                                     wire:click="$set('images.{{ $key }}.edit', true)">
                                     <x-hub::icon ref="pencil"
                                                  style="solid"
-                                                 class="text-gray-400 hover:text-indigo-500" />
+                                                 class="text-gray-400 hover:text-sky-500" />
                                 </button>
 
                                 <x-hub::tooltip :text="$image['primary'] ? __('adminhub::partials.image-manager.delete_primary') : __('adminhub::partials.image-manager.delete_row_btn')">

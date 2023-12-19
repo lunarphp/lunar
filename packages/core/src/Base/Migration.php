@@ -8,8 +8,6 @@ abstract class Migration extends BaseMigration
 {
     /**
      * Migration table prefix.
-     *
-     * @var string
      */
     protected string $prefix = '';
 

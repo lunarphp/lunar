@@ -4,7 +4,7 @@ namespace Lunar\Hub\Menu;
 
 use Lunar\Hub\Facades\Menu;
 
-class OrderActionsMenu
+final class OrderActionsMenu
 {
     /**
      * Make menu.
@@ -13,7 +13,7 @@ class OrderActionsMenu
      */
     public static function make()
     {
-        (new static())
+        (new self())
             ->makeTopLevel();
     }
 

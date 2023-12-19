@@ -3,6 +3,7 @@
 use Lunar\Base\OrderReferenceGenerator;
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Order Reference Generator
@@ -13,6 +14,7 @@ return [
     |
     */
     'reference_generator' => OrderReferenceGenerator::class,
+
     /*
     |--------------------------------------------------------------------------
     | Draft Status
@@ -24,29 +26,59 @@ return [
     |
     */
     'draft_status' => 'awaiting-payment',
+
     'statuses' => [
+
         'awaiting-payment' => [
             'label' => 'Awaiting Payment',
             'color' => '#848a8c',
             'mailers' => [],
             'notifications' => [],
         ],
+
         'payment-offline' => [
             'label' => 'Payment Offline',
             'color' => '#0A81D7',
             'mailers' => [],
             'notifications' => [],
         ],
+
         'payment-received' => [
             'label' => 'Payment Received',
             'color' => '#6a67ce',
             'mailers' => [],
             'notifications' => [],
         ],
+
         'dispatched' => [
             'label' => 'Dispatched',
             'mailers' => [],
             'notifications' => [],
         ],
+
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Order Pipelines
+    |--------------------------------------------------------------------------
+    |
+    | Define which pipelines should be run throughout an orders lifecycle.
+    | The default ones provided should suit most needs, however you are
+    | free to add your own as you see fit.
+    |
+    | Each pipeline class will be run from top to bottom.
+    |
+    */
+    'pipelines' => [
+        'creation' => [
+            Lunar\Pipelines\Order\Creation\FillOrderFromCart::class,
+            Lunar\Pipelines\Order\Creation\CreateOrderLines::class,
+            Lunar\Pipelines\Order\Creation\CreateOrderAddresses::class,
+            Lunar\Pipelines\Order\Creation\CreateShippingLine::class,
+            Lunar\Pipelines\Order\Creation\CleanUpOrderLines::class,
+            Lunar\Pipelines\Order\Creation\MapDiscountBreakdown::class,
+        ],
+    ],
+
 ];

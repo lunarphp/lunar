@@ -16,7 +16,7 @@ class StaffCreate extends AbstractStaff
     public function mount()
     {
         $this->staff = new Staff();
-        $this->staffPermissions = $this->staff->permissions->pluck('handle');
+        $this->staffPermissions = $this->staff->getAllPermissions()->pluck('name');
     }
 
     /**
@@ -51,6 +51,7 @@ class StaffCreate extends AbstractStaff
 
         $this->staff->save();
 
+        $this->syncRole();
         $this->syncPermissions();
 
         $this->notify('Staff member added.', 'hub.staff.index');
@@ -67,7 +68,7 @@ class StaffCreate extends AbstractStaff
         $permissions = $manifest->getGroupedPermissions();
 
         return view('adminhub::livewire.components.settings.staff.create', [
-            'firstPartyPermissions' => $permissions->filter(fn ($permission) => (bool) $permission->firstParty),
+            'permissions' => $permissions->sortByDesc(fn ($permission) => (bool) $permission->firstParty),
         ])->layout('adminhub::layouts.base');
     }
 }
