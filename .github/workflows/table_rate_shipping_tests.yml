@@ -1,6 +1,5 @@
 name: Lunar Table Rate Shipping Tests
 on:
-  push:
   pull_request:
 defaults:
   run:

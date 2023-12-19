@@ -1,6 +1,5 @@
 name: Scout DB Engine MySQL Tests
 on:
-  push:
   pull_request:
 defaults:
   run:
