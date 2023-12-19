@@ -89,6 +89,15 @@
         "lunarphp/paypal": "self.version",
         "lunarphp/scout-database-engine": "self.version"
     },
+    "scripts": {
+        "pint": "pint",
+        "test:pest": "pest --parallel",
+        "test:phpstan": "phpstan analyse",
+        "test": [
+            "@test:pest",
+            "@test:phpstan"
+        ]
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
