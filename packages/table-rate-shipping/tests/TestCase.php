@@ -2,10 +2,10 @@
 
 namespace Lunar\Shipping\Tests;
 
+use admin\Stubs\User;
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
-use Lunar\Admin\Tests\Stubs\User;
 use Lunar\LunarServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
