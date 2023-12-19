@@ -41,7 +41,7 @@ class CartLineQuantity extends BaseValidator
             );
         }
 
-        if ($purchasable && ($quantity % $purchasable->quantity_increment) !== 0) {
+        if ($purchasable && ($quantity % ($purchasable->quantity_increment ?? 1)) !== 0) {
             $this->fail(
                 'cart',
                 __('lunar::exceptions.quantity_increment', [
