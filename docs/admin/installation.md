@@ -54,9 +54,12 @@ composer update
 In your application's service provider add the following to the register method...
 
 ```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
 public function register(): void
 {
     LunarPanel::register(); // [!code focus]
 ```
 
 You should now be able to access the panel at `https://<yoursite>/lunar`.
+s

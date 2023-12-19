@@ -69,7 +69,16 @@ class MyCreateExtension extends CreatePageExtension
         return $record;
     }
 }
+```
+```php
+use Lunar\Admin\Support\Pages\BaseCreateRecord;
 
+class CreateProduct extends BaseCreateRecord
+{
+    // ...
+}
+```
+```php
 // Typically placed in your AppServiceProvider file...
 LunarPanel::registerExtension(new MyCreateExtension, CreateProduct::class);
 ```
@@ -137,7 +146,16 @@ class MyEditExtension extends EditPageExtension
         return $managers;
     }
 }
+```
+```php
+use Lunar\Admin\Support\Pages\BaseEditRecord;
 
+class EditProduct extends BaseEditRecord
+{
+    // ...
+}
+```
+```php
 // Typically placed in your AppServiceProvider file...
 LunarPanel::registerExtension(new MyEditExtension, EditProduct::class);
 ```
@@ -169,7 +187,16 @@ class MyListExtension extends ListPageExtension
     }
   
 }
+```
+```php
+use Lunar\Admin\Support\Pages\BaseListRecords;
 
+class ListProducts extends BaseListRecords
+{
+    // ...
+}
+```
+```php
 // Typically placed in your AppServiceProvider file...
 LunarPanel::registerExtension(new MyListExtension, ListProducts::class);
 ```
