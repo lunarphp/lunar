@@ -57,7 +57,7 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via Pest
         env:
           APP_ENV: testing
-          DB_CONNECTION: postgres
+          DB_CONNECTION: pgsql
           DB_HOST: postgres
           DB_DATABASE: "test"
           DB_USERNAME: "root"
