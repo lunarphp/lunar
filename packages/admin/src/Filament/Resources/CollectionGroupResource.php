@@ -49,7 +49,7 @@ class CollectionGroupResource extends BaseResource
             ->schema([
                 Forms\Components\Section::make()->schema(
                     static::getMainFormComponents()
-                )->columns(2)
+                )->columns(2),
             ]);
     }
 
@@ -114,7 +114,7 @@ class CollectionGroupResource extends BaseResource
             Tables\Columns\TextColumn::make('collections_count')
                 ->counts('collections')
                 ->formatStateUsing(
-                    fn($state) => number_format($state, 0)
+                    fn ($state) => number_format($state, 0)
                 )
                 ->label(__('lunarpanel::collectiongroup.table.collections_count.label')),
         ];
