@@ -4,7 +4,7 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductTypeResource;
 use Lunar\Models\ProductType;
 
-uses(\Lunar\Admin\Tests\Feature\Filament\TestCase::class)
+uses(\Lunar\Tests\Admin\TestCase::class)
     ->group('resource.productType');
 
 it('can associate attributes', function () {
