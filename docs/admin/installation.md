@@ -59,6 +59,7 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 public function register(): void
 {
     LunarPanel::register(); // [!code focus]
+}
 ```
 
 ## Execute migration
