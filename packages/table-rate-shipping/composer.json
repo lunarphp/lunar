@@ -25,11 +25,6 @@
       "Lunar\\Shipping\\Database\\Factories\\": "database/factories"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "Lunar\\Shipping\\Tests\\": "tests"
-    }
-  },
   "extra": {
     "lunar": {
       "name": "Table Rate Shipping"
@@ -43,8 +38,5 @@
   "require": {
     "php": "^8.2",
     "lunarphp/admin": "self.version"
-  },
-  "require-dev": {
-    "orchestra/testbench": "^8.0"
   }
 }

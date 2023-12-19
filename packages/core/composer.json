@@ -21,11 +21,6 @@
             "src/helpers.php"
         ]
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Lunar\\Tests\\": "tests"
-        }
-    },
     "extra": {
         "laravel": {
             "providers": [
@@ -48,10 +43,5 @@
         "doctrine/dbal": "^3.6",
         "spatie/laravel-blink": "^1.6",
         "lukascivil/treewalker": "0.9.1"
-    },
-    "require-dev": {
-        "orchestra/testbench": "^8.0",
-        "pestphp/pest": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0"
     }
 }

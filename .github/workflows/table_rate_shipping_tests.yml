@@ -43,4 +43,4 @@ jobs:
           APP_ENV: testing
           DB_CONNECTION: testing
           DB_DATABASE: ":memory:"
-        run: vendor/bin/pest  --testsuite table-rate-shipping --test-directory packages/table-rate-shipping/tests
+        run: vendor/bin/pest  --testsuite shipping --parallel
