@@ -48,7 +48,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: '0.x',
+                text: '1.x',
                 items: [
                     {text: 'Changelog', link: '/core/upgrading'},
                     {text: 'Contributing', link: '/core/contributing'},

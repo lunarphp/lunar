@@ -10,8 +10,6 @@ This package is very much in-development. It is incomplete and not production re
 
 ## Contributing
 
-If you wish to contribute to the project, please review the project at https://github.com/orgs/lunarphp/projects/3
+If you wish to contribute to the project, please review the project at https://github.com/orgs/lunarphp/projects/8/views/8
 
 You can request to contribute on an issue in the backlog, or you can propose a new issue.
-
-Please do NOT submit a Pull Request without being assigned to an issue first.
