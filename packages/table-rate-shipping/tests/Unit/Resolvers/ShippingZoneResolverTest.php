@@ -1,128 +1,111 @@
 <?php
 
-namespace Lunar\Shipping\Tests\Unit\Actions\Carts;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+uses(\Lunar\Shipping\Tests\TestCase::class);
 use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Resolvers\ShippingZoneResolver;
-use Lunar\Shipping\Tests\TestCase;
 
-/**
- * @group lunar.shipping
- */
-class ShippingZoneResolverTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function can_fetch_shipping_zones_by_country()
-    {
-        $countryA = Country::factory()->create();
-        $countryB = Country::factory()->create();
+test('can fetch shipping zones by country', function () {
+    $countryA = Country::factory()->create();
+    $countryB = Country::factory()->create();
 
-        $shippingZoneA = ShippingZone::factory()->create([
-            'type' => 'countries',
-        ]);
+    $shippingZoneA = ShippingZone::factory()->create([
+        'type' => 'countries',
+    ]);
 
-        $shippingZoneB = ShippingZone::factory()->create([
-            'type' => 'countries',
-        ]);
+    $shippingZoneB = ShippingZone::factory()->create([
+        'type' => 'countries',
+    ]);
 
-        $shippingZoneA->countries()->attach($countryA);
-        $shippingZoneB->countries()->attach($countryB);
+    $shippingZoneA->countries()->attach($countryA);
+    $shippingZoneB->countries()->attach($countryB);
 
-        $this->assertCount(1, $shippingZoneA->refresh()->countries);
+    expect($shippingZoneA->refresh()->countries)->toHaveCount(1);
 
-        $zones = (new ShippingZoneResolver())->country($countryA)->get();
+    $zones = (new ShippingZoneResolver())->country($countryA)->get();
 
-        $this->assertCount(1, $zones);
+    expect($zones)->toHaveCount(1);
 
-        $this->assertEquals($shippingZoneA->id, $zones->first()->id);
-    }
+    expect($zones->first()->id)->toEqual($shippingZoneA->id);
+});
 
-    /** @test */
-    public function can_fetch_shipping_zones_by_state()
-    {
-        $countryA = Country::factory()->create();
-        $countryB = Country::factory()->create();
+test('can fetch shipping zones by state', function () {
+    $countryA = Country::factory()->create();
+    $countryB = Country::factory()->create();
 
-        $stateA = State::factory()->create([
-            'country_id' => $countryA->id,
-        ]);
+    $stateA = State::factory()->create([
+        'country_id' => $countryA->id,
+    ]);
 
-        $stateB = State::factory()->create([
-            'country_id' => $countryB->id,
-        ]);
+    $stateB = State::factory()->create([
+        'country_id' => $countryB->id,
+    ]);
 
-        $shippingZoneA = ShippingZone::factory()->create([
-            'type' => 'states',
-        ]);
+    $shippingZoneA = ShippingZone::factory()->create([
+        'type' => 'states',
+    ]);
 
-        $shippingZoneB = ShippingZone::factory()->create([
-            'type' => 'countries',
-        ]);
+    $shippingZoneB = ShippingZone::factory()->create([
+        'type' => 'countries',
+    ]);
 
-        $shippingZoneA->states()->attach($stateA);
-        $shippingZoneB->states()->attach($stateB);
+    $shippingZoneA->states()->attach($stateA);
+    $shippingZoneB->states()->attach($stateB);
 
-        $this->assertCount(1, $shippingZoneA->refresh()->states);
+    expect($shippingZoneA->refresh()->states)->toHaveCount(1);
 
-        $zones = (new ShippingZoneResolver())->state($stateA)->get();
+    $zones = (new ShippingZoneResolver())->state($stateA)->get();
 
-        $this->assertCount(1, $zones);
+    expect($zones)->toHaveCount(1);
 
-        $this->assertEquals($shippingZoneA->id, $zones->first()->id);
-    }
+    expect($zones->first()->id)->toEqual($shippingZoneA->id);
+});
 
-    /** @test */
-    public function doesnt_fetch_postcode_shipping_zones_by_country()
-    {
-        $countryA = Country::factory()->create();
+test('doesnt fetch postcode shipping zones by country', function () {
+    $countryA = Country::factory()->create();
 
-        $shippingZoneA = ShippingZone::factory()->create([
-            'type' => 'postcodes',
-        ]);
+    $shippingZoneA = ShippingZone::factory()->create([
+        'type' => 'postcodes',
+    ]);
 
-        $shippingZoneA->countries()->attach($countryA);
+    $shippingZoneA->countries()->attach($countryA);
 
-        $this->assertCount(1, $shippingZoneA->refresh()->countries);
+    expect($shippingZoneA->refresh()->countries)->toHaveCount(1);
 
-        $zones = (new ShippingZoneResolver())->country($countryA)->get();
+    $zones = (new ShippingZoneResolver())->country($countryA)->get();
 
-        $this->assertEmpty($zones);
-    }
+    expect($zones)->toBeEmpty();
+});
 
-    /** @test */
-    public function can_fetch_zone_by_postcode_lookup()
-    {
-        $country = Country::factory()->create();
+test('can fetch zone by postcode lookup', function () {
+    $country = Country::factory()->create();
 
-        $shippingZone = ShippingZone::factory()->create([
-            'type' => 'postcodes',
-        ]);
+    $shippingZone = ShippingZone::factory()->create([
+        'type' => 'postcodes',
+    ]);
 
-        $shippingZone->countries()->attach($country);
+    $shippingZone->countries()->attach($country);
 
-        $shippingZone->postcodes()->create([
-            'postcode' => 'ABC',
-        ]);
+    $shippingZone->postcodes()->create([
+        'postcode' => 'ABC',
+    ]);
 
-        $this->assertCount(1, $shippingZone->refresh()->countries);
-        $this->assertCount(1, $shippingZone->refresh()->postcodes);
+    expect($shippingZone->refresh()->countries)->toHaveCount(1);
+    expect($shippingZone->refresh()->postcodes)->toHaveCount(1);
 
-        $postcode = new PostcodeLookup(
-            $country,
-            'ABC 123'
-        );
+    $postcode = new PostcodeLookup(
+        $country,
+        'ABC 123'
+    );
 
-        $zones = (new ShippingZoneResolver())->postcode($postcode)->get();
+    $zones = (new ShippingZoneResolver())->postcode($postcode)->get();
 
-        $this->assertCount(1, $zones);
+    expect($zones)->toHaveCount(1);
 
-        $this->assertEquals($shippingZone->id, $zones->first()->id);
-    }
-}
+    expect($zones->first()->id)->toEqual($shippingZone->id);
+});

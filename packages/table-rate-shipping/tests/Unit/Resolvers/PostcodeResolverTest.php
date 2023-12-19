@@ -1,38 +1,28 @@
 <?php
 
-namespace Lunar\Shipping\Tests\Unit\Actions\Carts;
-
+uses(\Lunar\Shipping\Tests\TestCase::class);
 use Lunar\Shipping\Resolvers\PostcodeResolver;
-use Lunar\Shipping\Tests\TestCase;
 
-/**
- * @group lunar.postcodes
- */
-class PostcodeResolverTest extends TestCase
-{
-    /** @test */
-    public function can_get_postcode_query_parts()
-    {
-        $postcode = 'ABC 123';
+test('can get postcode query parts', function () {
+    $postcode = 'ABC 123';
 
-        $parts = (new PostcodeResolver())->getParts($postcode);
+    $parts = (new PostcodeResolver())->getParts($postcode);
 
-        $this->assertContains('ABC123', $parts);
-        $this->assertContains('ABC', $parts);
-        $this->assertContains('AB', $parts);
+    expect($parts)->toContain('ABC123');
+    expect($parts)->toContain('ABC');
+    expect($parts)->toContain('AB');
 
-        $postcode = 'NW1 1TX';
+    $postcode = 'NW1 1TX';
 
-        $parts = (new PostcodeResolver())->getParts($postcode);
+    $parts = (new PostcodeResolver())->getParts($postcode);
 
-        $this->assertContains('NW11TX', $parts);
-        $this->assertContains('NW1', $parts);
-        $this->assertContains('NW', $parts);
+    expect($parts)->toContain('NW11TX');
+    expect($parts)->toContain('NW1');
+    expect($parts)->toContain('NW');
 
-        $postcode = 90210;
+    $postcode = 90210;
 
-        $parts = (new PostcodeResolver())->getParts($postcode);
-        $this->assertContains('90210', $parts);
-        $this->assertContains('90', $parts);
-    }
-}
+    $parts = (new PostcodeResolver())->getParts($postcode);
+    expect($parts)->toContain('90210');
+    expect($parts)->toContain('90');
+});
