@@ -220,7 +220,7 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerStateListeners();
 
         Route::bind('product', function (mixed $value, \Illuminate\Routing\Route $route) {
-            if ($route->getPrefix() === config('lunar-hub.system.path', 'hub')) {
+            if (in_array(\Lunar\Hub\Http\Middleware\Authenticate::class, $route->middleware())) {
                 return Product::withTrashed()->findOrFail($value);
             }
 
