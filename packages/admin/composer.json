@@ -12,11 +12,6 @@
             "src/helpers.php"
         ]
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Lunar\\Admin\\Tests\\": "tests"
-        }
-    },
     "minimum-stability": "dev",
     "require": {
         "lunarphp/core": "self.version",
@@ -28,28 +23,11 @@
         "marvinosswald/filament-input-select-affix": "dev-main",
         "leandrocfe/filament-apex-charts": "^3.0"
     },
-    "require-dev": {
-        "orchestra/testbench": "^8.0",
-        "pestphp/pest": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0"
-    },
     "extra": {
         "laravel": {
             "providers": [
                 "Lunar\\Admin\\LunarPanelProvider"
             ]
         }
-    },
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
-    },
-    "scripts": {
-        "pint": "pint",
-        "test:pest": "pest --parallel",
-        "test": [
-            "@test:pest"
-        ]
     }
 }
