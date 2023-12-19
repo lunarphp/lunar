@@ -52,9 +52,6 @@ class OrderStatusTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $this->assertCount(0, $order->lines);
@@ -84,9 +81,6 @@ class OrderStatusTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 
@@ -127,9 +121,6 @@ class OrderStatusTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 
@@ -185,9 +176,6 @@ class OrderStatusTest extends TestCase
             'meta' => [
                 'foo' => 'bar',
             ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
-            ],
         ]);
 
         $this->assertCount(0, $order->lines);
@@ -240,9 +228,6 @@ class OrderStatusTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ],
-            'tax_breakdown' => [
-                ['description' => 'VAT', 'percentage' => 20, 'total' => 200],
             ],
         ]);
 

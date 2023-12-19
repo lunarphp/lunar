@@ -36,6 +36,8 @@ class DiscountShow extends AbstractDiscount
             'discount.data' => 'array',
             'selectedCollections' => 'array',
             'selectedBrands' => 'array',
+            'selectedProducts' => 'array',
+            'selectedProductVariants' => 'array',
         ], $this->getDiscountComponent()->rules());
 
         foreach ($this->currencies as $currency) {

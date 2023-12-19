@@ -22,7 +22,61 @@ php artisan lunar:hub:install
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.6`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
+
+## 0.7
+
+### High Impact
+
+#### TaxBreakdown casting has been refactored
+
+Database columns which have `tax_breakdown` casting will now actually cast back into the `TaxBreakdown` object. This means you will need to update any storefront views or API transformers to accommodate this.
+
+Before:
+
+```php
+@foreach ($order->tax_breakdown as $tax)
+    {{ $tax->total->formatted }}
+@endforeach
+```
+
+```php
+@foreach ($order->tax_breakdown->amounts as $tax)
+    {{ $tax->price->formatted }}
+@endforeach
+```
+
+When migrations are run, a state update routine will trigger to convert all existing `tax_breakdown` column. Please ensure you take a backup of your database beforehand and avoid running in production until you are satisfied the data is correct.
+
+### Medium Impact
+
+#### Discount updates
+
+Limitations and exclusions on discounts have had a revamp, please double-check all discounts you have in Lunar to ensure they are all correct. Generally speaking the integrity should be unaffected, but it's better to be sure.
+
+#### Calculate lines pipeline update
+
+If you are using unit quantities greater than `1`, there was an issue in the calculate lines pipeline which resulted in the unit quantity being applied twice, so if the price was `10` with a unit quantity of `100` it would show the unit price as `0.001` instead of `0.01`. This should be resolved going forward to show correctly.
+
+### Low Impact
+
+#### Click & Collect parameter added to `ShippingOption`
+
+The `Lunar\DataTypes\ShippingOption` class now has an additional `collect` parameter. This can be used to determine whether the shipping option is considered "collect in store". This defaults to `false` so there are no additional steps if your store doesn't offer click and collect.
+
+```php
+ShippingManifest::addOption(
+    new ShippingOption(
+        name: 'Pick up in store',
+        description: 'Pick your order up in store',
+        identifier: 'PICKUP',
+        price: new Price(/** .. */),
+        taxClass: $taxClass,
+        collect: true
+    )
+);
+```
+
 
 ## 0.6
 

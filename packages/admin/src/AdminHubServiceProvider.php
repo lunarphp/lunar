@@ -74,6 +74,7 @@ use Lunar\Hub\Http\Livewire\Components\Products\Variants\Editing\Inventory;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantShow;
 use Lunar\Hub\Http\Livewire\Components\Products\Variants\VariantSideMenu;
 use Lunar\Hub\Http\Livewire\Components\ProductSearch;
+use Lunar\Hub\Http\Livewire\Components\ProductVariantSearch;
 use Lunar\Hub\Http\Livewire\Components\Reporting\ApexChart;
 use Lunar\Hub\Http\Livewire\Components\Settings\ActivityLog\ActivityLogIndex;
 use Lunar\Hub\Http\Livewire\Components\Settings\Addons\AddonShow;
@@ -303,6 +304,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('dashboard', Dashboard::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
+        Livewire::component('hub.components.product-variant-search', ProductVariantSearch::class);
         Livewire::component('hub.components.collection-search', CollectionSearch::class);
         Livewire::component('hub.components.brand-search', BrandSearch::class);
         Livewire::component('hub.components.account', Account::class);
