@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Shipping\Tests;
+namespace Lunar\Tests\Shipping;
 
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;

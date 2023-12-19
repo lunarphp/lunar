@@ -1,20 +1,20 @@
 <?php
 
-namespace Lunar\Shipping\Tests;
+namespace Lunar\Tests\Shipping;
 
-use admin\Stubs\User;
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
+use Lunar\Tests\Admin\Stubs\User;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         // additional setup

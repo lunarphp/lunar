@@ -1,6 +1,7 @@
 <?php
 
-uses(\Lunar\Shipping\Tests\TestCase::class);
+uses(\Lunar\Tests\Shipping\TestCase::class);
+
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
@@ -11,7 +12,7 @@ use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Resolvers\ShippingZoneResolver;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-uses(\Lunar\Shipping\Tests\TestUtils::class);
+uses(\Lunar\Tests\Shipping\TestUtils::class);
 
 test('zones method uses shipping zone resolver', function () {
     $resolver = Shipping::zones();

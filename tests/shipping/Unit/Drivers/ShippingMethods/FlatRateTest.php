@@ -1,18 +1,19 @@
 <?php
 
-uses(\Lunar\Shipping\Tests\TestCase::class);
+uses(\Lunar\Tests\Shipping\TestCase::class);
+
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Currency;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Drivers\ShippingMethods\Collection;
+use Lunar\Shipping\Drivers\ShippingMethods\FlatRate;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingZone;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-uses(\Lunar\Shipping\Tests\TestUtils::class);
+uses(\Lunar\Tests\Shipping\TestUtils::class);
 
-test('can get free shipping', function () {
+test('can get flat rate shipping', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -27,13 +28,25 @@ test('can get free shipping', function () {
 
     $shippingMethod = ShippingMethod::factory()->create([
         'shipping_zone_id' => $shippingZone->id,
-        'driver' => 'free-shipping',
-        'data' => [],
+        'driver' => 'flat-rate',
+        'data' => [
+            'minimum_spend' => [
+                "{$currency->code}" => 200,
+            ],
+        ],
+    ]);
+
+    $shippingMethod->prices()->createMany([
+        [
+            'price' => 600,
+            'tier' => 1,
+            'currency_id' => $currency->id,
+        ],
     ]);
 
     $cart = $this->createCart($currency, 500);
 
-    $driver = new Collection();
+    $driver = new FlatRate();
 
     $request = new ShippingOptionRequest(
         cart: $cart,
@@ -44,5 +57,5 @@ test('can get free shipping', function () {
 
     expect($shippingOption)->toBeInstanceOf(ShippingOption::class);
 
-    expect($shippingOption->price->value)->toEqual(0);
+    expect($shippingOption->price->value)->toEqual(600);
 });

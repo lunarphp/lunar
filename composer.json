@@ -68,6 +68,7 @@
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
             "Lunar\\Tests\\Paypal\\": "tests/paypal",
             "Lunar\\Tests\\ScoutDatabaseEngine\\": "tests/scout-database-engine",
+            "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests"
         }
     },

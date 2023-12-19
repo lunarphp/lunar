@@ -1,6 +1,7 @@
 <?php
 
-uses(\Lunar\Shipping\Tests\TestCase::class);
+uses(\Lunar\Tests\Shipping\TestCase::class);
+
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
@@ -13,7 +14,7 @@ use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingZone;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-uses(\Lunar\Shipping\Tests\TestUtils::class);
+uses(\Lunar\Tests\Shipping\TestUtils::class);
 
 test('can fetch shipping methods by country', function () {
     $currency = Currency::factory()->create([

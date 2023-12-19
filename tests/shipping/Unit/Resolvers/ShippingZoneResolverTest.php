@@ -1,10 +1,10 @@
 <?php
 
-uses(\Lunar\Shipping\Tests\TestCase::class);
+uses(\Lunar\Tests\Shipping\TestCase::class);
+
 use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
-use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Resolvers\ShippingZoneResolver;
 
