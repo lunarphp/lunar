@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasPosition;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\AttributeGroupFactory;
 
@@ -23,6 +24,7 @@ class AttributeGroup extends BaseModel
 {
     use HasFactory;
     use HasMacros;
+    use HasPosition;
     use HasTranslations;
 
     /**
@@ -48,6 +50,16 @@ class AttributeGroup extends BaseModel
      */
     protected $casts = [
         'name' => AsCollection::class,
+    ];
+
+    /**
+     * Define which attributes should be used 
+     * to define the unique position constraint.
+     *
+     * @var array
+     */
+    protected $positionUniqueConstraints = [
+        'attributable_type',
     ];
 
     /**

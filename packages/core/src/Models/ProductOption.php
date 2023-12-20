@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
+use Lunar\Base\Traits\HasPosition;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\ProductOptionFactory;
@@ -28,6 +29,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasPosition;
     use HasTranslations;
     use Searchable;
 
@@ -49,7 +51,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         return ProductOptionFactory::new();
     }
 
-    public function getNameAttribute(string $value): mixed
+    public function getNameAttribute(?string $value): mixed
     {
         return json_decode($value);
     }

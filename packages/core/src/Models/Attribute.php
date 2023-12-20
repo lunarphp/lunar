@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasPosition;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\AttributeFactory;
 use Lunar\Facades\DB;
@@ -37,6 +38,7 @@ class Attribute extends BaseModel
 {
     use HasFactory;
     use HasMacros;
+    use HasPosition;
     use HasTranslations;
 
     public static function boot()
@@ -73,6 +75,17 @@ class Attribute extends BaseModel
     protected $casts = [
         'name' => AsCollection::class,
         'configuration' => AsCollection::class,
+    ];
+
+    /**
+     * Define which attributes should be used 
+     * to define the unique position constraint.
+     *
+     * @var array
+     */
+    protected $positionUniqueConstraints = [
+        'attribute_type',
+        'attribute_group_id',
     ];
 
     /**

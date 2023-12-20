@@ -198,10 +198,6 @@ class OptionEdit extends Component
             return;
         }
 
-        if (! $this->productOption->position) {
-            $this->productOption->position = ProductOption::count() + 1;
-        }
-
         $this->productOption->save();
 
         $this->productOption = new ProductOption();

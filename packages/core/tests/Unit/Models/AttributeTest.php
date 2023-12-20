@@ -23,7 +23,6 @@ class AttributeTest extends TestCase
         $attribute = Attribute::factory()
             ->for(AttributeGroup::factory())
             ->create([
-                'position' => 4,
                 'name' => [
                     'en' => 'Meta Description',
                 ],
@@ -42,7 +41,8 @@ class AttributeTest extends TestCase
         $this->assertEquals('meta_description', $attribute->handle);
         $this->assertEquals(\Lunar\FieldTypes\Text::class, $attribute->type);
         $this->assertTrue($attribute->system);
-        $this->assertEquals(4, $attribute->position);
+        $this->assertIsInt($attribute->position);
+        $this->assertGreaterThan(0, $attribute->position);
         $this->assertEquals($options, $attribute->configuration->get('options'));
     }
 }

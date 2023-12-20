@@ -12,6 +12,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
@@ -29,6 +30,8 @@ use Lunar\Base\OrderModifiers;
 use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Base\OrderReferenceGeneratorInterface;
 use Lunar\Base\PaymentManagerInterface;
+use Lunar\Base\PositionManifest;
+use Lunar\Base\PositionManifestInterface;
 use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
@@ -166,6 +169,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
+        });
+
+        $this->app->singleton(PositionManifestInterface::class, function ($app) {
+            return $app->make(PositionManifest::class);
         });
     }
 
@@ -327,5 +334,7 @@ class LunarServiceProvider extends ServiceProvider
                     );
             }
         });
+
+        PositionManifest::registerBlueprintMacros();
     }
 }

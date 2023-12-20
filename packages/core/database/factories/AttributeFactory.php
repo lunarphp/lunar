@@ -10,8 +10,6 @@ use Lunar\Models\Product;
 
 class AttributeFactory extends Factory
 {
-    private static $position = 1;
-
     protected $model = Attribute::class;
 
     public function definition(): array
@@ -19,7 +17,6 @@ class AttributeFactory extends Factory
         return [
             'attribute_group_id' => AttributeGroup::factory(),
             'attribute_type' => Product::class,
-            'position' => self::$position++,
             'name' => [
                 'en' => $this->faker->name(),
             ],
