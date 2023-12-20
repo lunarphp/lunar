@@ -95,7 +95,8 @@ class BrandResource extends BaseResource
                 ->square()
                 ->label(''),
             Tables\Columns\TextColumn::make('name')
-                ->label(__('lunarpanel::brand.table.name.label')),
+                ->label(__('lunarpanel::brand.table.name.label'))
+                ->searchable()
         ];
     }
 
