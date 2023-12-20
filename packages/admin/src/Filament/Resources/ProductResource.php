@@ -29,8 +29,6 @@ class ProductResource extends BaseResource
 
     protected static ?string $model = Product::class;
 
-    protected static ?string $recordTitleAttribute = 'record_title';
-
     protected static ?int $navigationSort = 1;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;

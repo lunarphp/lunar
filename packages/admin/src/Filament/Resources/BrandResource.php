@@ -20,6 +20,8 @@ class BrandResource extends BaseResource
 
     protected static ?string $model = Brand::class;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?int $navigationSort = 3;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
@@ -114,5 +116,10 @@ class BrandResource extends BaseResource
             'edit' => Pages\EditBrand::route('/{record}/edit'),
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
         ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name'];
     }
 }

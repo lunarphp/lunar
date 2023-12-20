@@ -14,6 +14,9 @@ use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\UserRelatio
 use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Customer;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
 
 class CustomerResource extends BaseResource
 {
@@ -210,5 +213,35 @@ class CustomerResource extends BaseResource
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
             'view' => Pages\ViewCustomer::route('/{record}'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return  $record->first_name . ' ' . $record->last_name;
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['first_name', 'last_name', 'company_name'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var Customer $record */
+        $details = [];
+
+        if ($record->first_name && $record->last_name) {
+            $details[__('lunarpanel::customer.table.full_name.label')] = $record->first_name . ' ' . $record->last_name;
+        }
+
+        if ($record->title) {
+            $details[__('lunarpanel::customer.table.title.label')] = $record->title;
+        }
+
+        if ($record->company_name) {
+            $details[__('lunarpanel::customer.table.company_name.label')] = $record->company_name;
+        }
+
+        return $details;
     }
 }
