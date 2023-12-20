@@ -8,6 +8,9 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\OrderStatus;
@@ -129,5 +132,47 @@ class OrderResource extends BaseResource
             'order' => Pages\ManageOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->reference;
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'reference',
+            'customer_reference',
+            'notes',
+            'shippingAddress.first_name',
+            'shippingAddress.last_name',
+            'shippingAddress.contact_email'
+        ];
+    }
+    
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'shippingAddress',
+        ]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+         /** @var Order $record */
+         $details = [
+            __('lunarpanel::order.table.status.label') => $record->getStatusLabelAttribute(),
+            __('lunarpanel::order.table.total.label') => $record->total?->formatted,
+            __('lunarpanel::order.table.customer.label')  => $record->shippingAddress->fullName,
+        ];
+
+        if ($record->shippingAddress->contact_email) {
+            $details[__('lunarpanel::order.table.email.label')] = $record->shippingAddress->contact_email;
+        }
+
+        $details[__('lunarpanel::order.table.date.label')] = $record->placed_at ?: $record->placed_at->formatted;
+
+        return $details;
     }
 }
