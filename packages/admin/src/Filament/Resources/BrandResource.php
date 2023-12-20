@@ -2,6 +2,8 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Pages\SubNavigationPosition;
@@ -19,8 +21,6 @@ class BrandResource extends BaseResource
     protected static ?string $permission = 'catalog:manage-products';
 
     protected static ?string $model = Brand::class;
-
-    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = 3;
 
@@ -117,7 +117,10 @@ class BrandResource extends BaseResource
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
         ];
     }
-
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->name;
+    }
     public static function getGloballySearchableAttributes(): array
     {
         return ['name'];
