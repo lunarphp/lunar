@@ -116,7 +116,10 @@ class CollectionResource extends BaseResource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['attribute_data', 'group.name'];
+        return [
+            'attribute_data',
+            'group.name'
+        ];
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder

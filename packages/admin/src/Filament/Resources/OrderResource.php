@@ -147,7 +147,8 @@ class OrderResource extends BaseResource
             'notes',
             'shippingAddress.first_name',
             'shippingAddress.last_name',
-            'shippingAddress.contact_email'
+            'shippingAddress.contact_email',
+            'tags.value',
         ];
     }
     
@@ -155,6 +156,7 @@ class OrderResource extends BaseResource
     {
         return parent::getGlobalSearchEloquentQuery()->with([
             'shippingAddress',
+            'tags'
         ]);
     }
 

@@ -123,6 +123,8 @@ class BrandResource extends BaseResource
     }
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name'];
+        return [
+            'name'
+        ];
     }
 }
