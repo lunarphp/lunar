@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\CollectionGroupFactory;
@@ -29,7 +30,10 @@ class CollectionGroup extends BaseModel
         return CollectionGroupFactory::new();
     }
 
-    public function collections()
+    /**
+     * Return the collections relationship.
+     */
+    public function collections(): HasMany
     {
         return $this->hasMany(Collection::class);
     }

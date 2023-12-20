@@ -39,14 +39,7 @@ class CreateShippingLine
                 'quantity' => 1,
                 'sub_total' => $shippingAddress->shippingSubTotal->value,
                 'discount_total' => $shippingAddress->shippingSubTotal->discountTotal?->value ?: 0,
-                'tax_breakdown' => $shippingAddress->taxBreakdown->amounts->map(function ($amount) {
-                    return [
-                        'description' => $amount->description,
-                        'identifier' => $amount->identifier,
-                        'percentage' => $amount->percentage,
-                        'total' => $amount->price->value,
-                    ];
-                })->values(),
+                'tax_breakdown' => $shippingAddress->taxBreakdown,
                 'tax_total' => $shippingAddress->shippingTaxTotal->value,
                 'total' => $shippingAddress->shippingTotal->value,
                 'notes' => null,

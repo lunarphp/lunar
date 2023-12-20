@@ -4,6 +4,9 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\DiscountBreakdown;
 use Lunar\Base\Casts\Price;
@@ -82,10 +85,8 @@ class Order extends BaseModel
 
     /**
      * Getter for status label.
-     *
-     * @return string
      */
-    public function getStatusLabelAttribute()
+    public function getStatusLabelAttribute(): string
     {
         $statuses = config('lunar.orders.statuses');
 
@@ -94,170 +95,136 @@ class Order extends BaseModel
 
     /**
      * Return the channel relationship.
-     *
-     * @return void
      */
-    public function channel()
+    public function channel(): BelongsTo
     {
         return $this->belongsTo(Channel::class);
     }
 
     /**
      * Return the cart relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function cart()
+    public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);
     }
 
     /**
      * Return the lines relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function lines()
+    public function lines(): HasMany
     {
         return $this->hasMany(OrderLine::class);
     }
 
     /**
      * Return physical product lines relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function physicalLines()
+    public function physicalLines(): HasMany
     {
         return $this->lines()->whereType('physical');
     }
 
     /**
      * Return digital product lines relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function digitalLines()
+    public function digitalLines(): HasMany
     {
         return $this->lines()->whereType('digital');
     }
 
     /**
      * Return shipping lines relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function shippingLines()
+    public function shippingLines(): HasMany
     {
         return $this->lines()->whereType('shipping');
     }
 
     /**
      * Return product lines relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function productLines()
+    public function productLines(): HasMany
     {
         return $this->lines()->where('type', '!=', 'shipping');
     }
 
     /**
      * Return the currency relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class, 'currency_code', 'code');
     }
 
     /**
      * Return the addresses relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function addresses()
+    public function addresses(): HasMany
     {
         return $this->hasMany(OrderAddress::class, 'order_id');
     }
 
     /**
      * Return the shipping address relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function shippingAddress()
+    public function shippingAddress(): HasOne
     {
         return $this->hasOne(OrderAddress::class, 'order_id')->whereType('shipping');
     }
 
     /**
      * Return the billing address relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function billingAddress()
+    public function billingAddress(): HasOne
     {
         return $this->hasOne(OrderAddress::class, 'order_id')->whereType('billing');
     }
 
     /**
      * Return the transactions relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
     /**
      * Return the charges relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function captures()
+    public function captures(): HasMany
     {
         return $this->transactions()->whereType('capture');
     }
 
     /**
      * Return the charges relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function intents()
+    public function intents(): HasMany
     {
         return $this->transactions()->whereType('intent');
     }
 
     /**
      * Return the refunds relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function refunds()
+    public function refunds(): HasMany
     {
         return $this->transactions()->whereType('refund');
     }
 
     /**
      * Return the customer relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
     /**
      * Return the user relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(
             config('auth.providers.users.model')

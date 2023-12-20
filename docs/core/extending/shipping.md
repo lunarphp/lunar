@@ -36,6 +36,18 @@ class CustomShippingModifier extends ShippingModifier
             )
         );
 
+        ShippingManifest::addOption(
+            new ShippingOption(
+                name: 'Pick up in store',
+                description: 'Pick your order up in store',
+                identifier: 'PICKUP',
+                price: new Price(0, $cart->currency, 1),
+                taxClass: $taxClass,
+                // This is for your reference, so you can check if a collection option has been selected.
+                collect: true
+            )
+        );
+
         // Or add multiple options, it's your responsibility to ensure the identifiers are unique
         ShippingManifest::addOptions(collect([
             new ShippingOption(
