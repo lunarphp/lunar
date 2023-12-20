@@ -2,6 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
@@ -14,8 +17,6 @@ use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\UserRelatio
 use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Customer;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Support\Htmlable;
 
 class CustomerResource extends BaseResource
 {
@@ -221,7 +222,14 @@ class CustomerResource extends BaseResource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['first_name', 'last_name', 'company_name'];
+        return ['first_name', 'last_name', 'company_name', 'users.name', 'users.email'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'users',
+        ]);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
