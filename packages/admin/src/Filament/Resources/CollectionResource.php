@@ -2,6 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Pages\Page;
@@ -104,5 +107,30 @@ class CollectionResource extends BaseResource
             'media' => Pages\ManageCollectionMedia::route('/{record}/media'),
             'urls' => Pages\ManageCollectionUrls::route('/{record}/urls'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return  $record->translateAttribute('name');
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['attribute_data', 'group.name'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'group'
+        ]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var Collection $record */
+        $details = [];
+
+        return $details;
     }
 }
