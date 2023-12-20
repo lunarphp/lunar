@@ -111,7 +111,7 @@ class CollectionResource extends BaseResource
 
     public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
-        return  $record->translateAttribute('name');
+        return $record->translateAttribute('name');
     }
 
     public static function getGloballySearchableAttributes(): array
@@ -124,13 +124,5 @@ class CollectionResource extends BaseResource
         return parent::getGlobalSearchEloquentQuery()->with([
             'group'
         ]);
-    }
-
-    public static function getGlobalSearchResultDetails(Model $record): array
-    {
-        /** @var Collection $record */
-        $details = [];
-
-        return $details;
     }
 }

@@ -316,12 +316,10 @@ class ProductResource extends BaseResource
         /** @var Product $record */
         $details = [];
 
-        $defaultVariant = $record->variants->first();
-
-        if ($defaultVariant)
+        if ($record->variants->first())
         {
-            $details[__('lunarpanel::product.table.sku.label')] = $defaultVariant->getIdentifier();
-            $details[__('lunarpanel::product.table.stock.label')] = $defaultVariant->stock;
+            $details[__('lunarpanel::product.table.sku.label')] = $record->variants->first()->getIdentifier();
+            $details[__('lunarpanel::product.table.stock.label')] = $record->variants->first()->stock;
             $details[__('lunarpanel::product.table.brand.label')] = $record->brand->name;
         }
 

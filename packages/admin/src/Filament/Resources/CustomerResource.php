@@ -217,12 +217,25 @@ class CustomerResource extends BaseResource
 
     public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
-        return  $record->first_name . ' ' . $record->last_name;
+        if ($record->company_name) {
+            return $record->company_name;
+        }
+
+        return $record->first_name . ' ' . $record->last_name;
     }
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['first_name', 'last_name', 'company_name', 'users.name', 'users.email'];
+        return [
+            'attribute_data',
+            'first_name',
+            'last_name',
+            'company_name',
+            'account_ref',
+            'vat_no',
+            'users.name',
+            'users.email'
+        ];
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder
@@ -245,8 +258,12 @@ class CustomerResource extends BaseResource
             $details[__('lunarpanel::customer.table.title.label')] = $record->title;
         }
 
-        if ($record->company_name) {
-            $details[__('lunarpanel::customer.table.company_name.label')] = $record->company_name;
+        if ($record->account_ref) {
+            $details[__('lunarpanel::customer.table.account_reference.label')] = $record->account_ref;
+        }
+
+        if ($record->users() && $record->users()->count() >= 1) {
+            $details[__('lunarpanel::user.table.email.label')] = $record->users()->first()->email;
         }
 
         return $details;
