@@ -38,6 +38,16 @@ class LanguageResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'info';
+    }
+
     protected static function getMainFormComponents(): array
     {
         return [
