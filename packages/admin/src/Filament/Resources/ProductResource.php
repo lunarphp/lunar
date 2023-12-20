@@ -13,6 +13,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Support\Forms\Components\Attributes;
@@ -22,6 +24,7 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+
 
 class ProductResource extends BaseResource
 {
@@ -287,5 +290,41 @@ class ProductResource extends BaseResource
             'collections' => Pages\ManageProductCollections::route('/{record}/collections'),
             'associations' => Pages\ManageProductAssociations::route('/{record}/associations'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return  $record->translateAttribute('name');
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['id', 'attribute_data', 'variants.sku', 'tags.value'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'variants',
+            'brand',
+            'tags'
+        ]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var Product $record */
+        $details = [];
+
+        $defaultVariant = $record->variants->first();
+
+        if ($defaultVariant)
+        {
+            $details[__('lunarpanel::product.table.sku.label')] = $defaultVariant->getIdentifier();
+            $details[__('lunarpanel::product.table.stock.label')] = $defaultVariant->stock;
+            $details[__('lunarpanel::product.table.brand.label')] = $record->brand->name;
+        }
+
+        return $details;
     }
 }

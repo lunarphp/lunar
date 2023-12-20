@@ -15,7 +15,6 @@ use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOvervie
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Customer;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 
 class CustomerResource extends BaseResource
