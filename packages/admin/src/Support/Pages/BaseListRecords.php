@@ -15,6 +15,6 @@ abstract class BaseListRecords extends ListRecords
         parent::table($table);
 
         return $table
-            ->paginated([20, 50, 100, 'all']);
+            ->paginated([20, 50, 100]);
     }
 }
