@@ -640,8 +640,17 @@ class ManageOrder extends ViewRecord
                         ->options(fn () => collect(config('lunar.orders.statuses', []))
                             ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
                         ->required(),
+                    Forms\Components\Textarea::make('additional_content'),
+                    Forms\Components\Section::make('mailers')
+                        ->heading('Mailers')
+                        ->schema([
+                            Forms\Components\Placeholder::make('empty_text')->label('')
+                                ->hidden(false)
+                                ->content('Select a status to see available mailers'),
+                        ])
+                        ->compact(),
                 ])
-                ->modalWidth('md')
+                ->modalWidth('lg')
                 ->slideOver()
                 ->action(fn ($record, $data) => $record
                     ->update([
