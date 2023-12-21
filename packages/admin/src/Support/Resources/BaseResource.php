@@ -49,8 +49,6 @@ class BaseResource extends Resource
             return app()->get(static::$model)::class;
         }
 
-        return static::$model ?? (string) str(class_basename(static::class))
-            ->beforeLast('Resource')
-            ->prepend('App\\Models\\');
+        return parent::getModel();
     }
 }
