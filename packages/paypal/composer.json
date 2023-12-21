@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": "^8.0",
+    "php": "^8.1",
     "lunarphp/core": "self.version"
   },
   "require-dev": {
@@ -22,11 +22,6 @@
   "autoload": {
     "psr-4": {
       "Lunar\\Paypal\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Lunar\\Paypal\\Tests\\": "tests/"
     }
   },
   "extra": {

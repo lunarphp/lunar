@@ -9,37 +9,39 @@
         }
     ],
     "require": {
-        "php": "^8.1",
-        "ext-bcmath": "*",
-        "ext-exif": "*",
-        "ext-intl": "*",
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^8.0",
         "doctrine/dbal": "^3.6",
+        "ext-bcmath": "*",
+        "ext-exif": "*",
+        "ext-intl": "*",
+        "filament/filament": "^3.1.23",
+        "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/http": "^10.0",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^10.0",
         "laravel/scout": "^10.0",
+        "leandrocfe/filament-apex-charts": "^3.0",
         "lukascivil/treewalker": "0.9.1",
+        "lunarphp/admin": "self.version",
+        "marvinosswald/filament-input-select-affix": "dev-main",
+        "php": "^8.1",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
         "spatie/laravel-medialibrary": "^10.0.0",
-        "filament/filament": "^3.1.23",
-        "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
         "spatie/laravel-permission": "^5.10",
-        "technikermathe/blade-lucide-icons": "^v2.24.0",
-        "marvinosswald/filament-input-select-affix": "dev-main",
-        "leandrocfe/filament-apex-charts": "^3.0"
+        "technikermathe/blade-lucide-icons": "^v2.24.0"
     },
     "require-dev": {
         "laravel/pint": "1.13.1",
         "mockery/mockery": "^1.4.4",
-        "orchestra/testbench": "^8.0",
-        "symplify/monorepo-builder": "^10.0",
         "nunomaduro/larastan": "^2.0",
+        "orchestra/testbench": "^6.0|^7.0",
         "pestphp/pest": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0"
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "phpunit/phpunit": "^9.5",
+        "symplify/monorepo-builder": "^10.0"
     },
     "autoload": {
         "files": [
@@ -54,8 +56,14 @@
             "Lunar\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Database\\State\\": "packages/core/database/state",
-            "Lunar\\Opayo\\": "packages/opayo/src",
-            "Lunar\\Paypal\\": "packages/paypal/src",
+            "Lunar\\Opayo\\": [
+                "packages/opayo/src",
+                "packages/opayo/src/"
+            ],
+            "Lunar\\Paypal\\": [
+                "packages/paypal/src",
+                "packages/paypal/src/"
+            ],
             "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories"
@@ -73,23 +81,32 @@
         }
     },
     "extra": {
+        "lunar": {
+            "name": [
+                "Table Rate Shipping",
+                "Opayo Payments",
+                "Paypal Payments"
+            ]
+        },
         "laravel": {
             "providers": [
-                "Lunar\\LunarServiceProvider",
+                "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
-                "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
-                "Lunar\\Shipping\\ShippingServiceProvider"
+                "Lunar\\Shipping\\ShippingServiceProvider",
+                "Lunar\\LunarServiceProvider"
             ]
         }
     },
     "replace": {
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
+        "lunarphp/lunar": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
-        "lunarphp/scout-database-engine": "self.version"
+        "lunarphp/scout-database-engine": "self.version",
+        "lunarphp/table-rate-shipping": "self.version"
     },
     "scripts": {
         "pint": "pint",
@@ -100,11 +117,11 @@
             "@test:phpstan"
         ]
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
