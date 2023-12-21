@@ -13,7 +13,7 @@ trait HasModelExtending
     {
         $shortName = (new \ReflectionClass(static::class))->getShortName();
 
-        $contractClass = 'Lunar\\Models\\Contracts\\' . $shortName;
+        $contractClass = 'Lunar\\Models\\Contracts\\'.$shortName;
 
         return ModelManifest::get($contractClass) ?? static::class;
     }
