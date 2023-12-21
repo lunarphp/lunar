@@ -30,6 +30,7 @@
         "spatie/laravel-blink": "^1.6",
         "spatie/laravel-medialibrary": "^10.0.0",
         "spatie/laravel-permission": "^5.10",
+        "spatie/php-structure-discoverer": "^2.0",
         "technikermathe/blade-lucide-icons": "^v2.24.0"
     },
     "require-dev": {
