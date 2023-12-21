@@ -104,7 +104,7 @@ class Product extends BaseModel implements SpatieHasMedia
      */
     public function productType(): BelongsTo
     {
-        return $this->belongsTo(ProductType::class);
+        return $this->belongsTo(ProductType::modelClass());
     }
 
     /**
