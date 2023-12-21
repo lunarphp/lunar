@@ -121,6 +121,7 @@ class BrandResource extends BaseResource
     {
         return $record->name;
     }
+    
     public static function getGloballySearchableAttributes(): array
     {
         return [
