@@ -5,24 +5,29 @@ namespace Lunar\Base;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Lunar\Models;
-use Lunar\Models\Contracts;
+use Spatie\StructureDiscoverer\Discover;
 
 class ModelManifest implements ModelManifestInterface
 {
     /**
      * The collection of models to register to this manifest.
      */
-    protected array $models = [
-        Contracts\ProductType::class => Models\ProductType::class,
-    ];
+    protected array $models = [];
 
     /**
      * Bind initial models in container and set explicit model binding.
      */
     public function register(): void
     {
-        foreach ($this->models as $interfaceClass => $modelClass) {
+        // Discover models
+        $modelClasses = Discover::in(__DIR__ . '/../Models')
+            ->classes()
+            ->extending(BaseModel::class)
+            ->get();
+
+        foreach ($modelClasses as $modelClass) {
+            $interfaceClass = $this->guessContractClass($modelClass);
+            $this->models[$interfaceClass] = $modelClass;
             $this->bindModel($interfaceClass, $modelClass);
         }
     }
@@ -81,5 +86,12 @@ class ModelManifest implements ModelManifestInterface
         $shortName = (new \ReflectionClass($modelClass))->getShortName();
 
         return Str::camel($shortName);
+    }
+
+    public function guessContractClass(string $modelClass)
+    {
+        $shortName = (new \ReflectionClass($modelClass))->getShortName();
+
+        return 'Lunar\\Models\\Contracts\\'.$shortName;
     }
 }
