@@ -159,6 +159,7 @@ class LunarPanelManager
         };
 
         return Panel::make()
+            ->spa()
             ->default()
             ->id($this->panelId)
             ->brandName('Lunar')
