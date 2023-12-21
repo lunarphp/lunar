@@ -1,5 +1,5 @@
 {
-    "name": "lunarphp/lunar",
+    "name": "lunarphp/admin",
     "description": "Admin panel for LunarPHP",
     "license": "MIT",
     "autoload": {
