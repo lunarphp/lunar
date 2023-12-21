@@ -90,10 +90,11 @@ class ListProducts extends BaseListRecords
         return [
             'all' => Tab::make('All'),
             'published' => Tab::make('Published')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'published')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'published'))
+                ->badge(Product::query()->where('status', 'published')->count()),
             'draft' => Tab::make('Draft')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'draft'))
-                ->badge(Product::query()->where('status', 'draft')->count()),
+                ->badge(Product::query()->where('status', 'draft')->count())->badgeColor('warning'),
         ];
     }
 
