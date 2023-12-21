@@ -173,7 +173,9 @@ class OrderResource extends BaseResource
             $details[__('lunarpanel::order.table.email.label')] = $record->shippingAddress->contact_email;
         }
 
-        $details[__('lunarpanel::order.table.date.label')] = $record->placed_at ?: $record->placed_at->formatted;
+        if ($record->placed_at) {
+            $details[__('lunarpanel::order.table.date.label')] = $record->placed_at->formatted;
+        }
 
         return $details;
     }
