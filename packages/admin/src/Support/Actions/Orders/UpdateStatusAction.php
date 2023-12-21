@@ -32,12 +32,13 @@ class UpdateStatusAction extends Action
                 ->required()
                 ->live(),
             Forms\Components\Textarea::make('additional_content')->hidden(function (Forms\Get $get) {
-                return !count(
+                return ! count(
                     config('lunar.orders.statuses.'.$get('status').'.mailers', [])
                 );
             }),
             MailerCheckbox::make('mailers')->options(function (Forms\Get $get) {
                 $mailers = config('lunar.orders.statuses.'.$get('status').'.mailers', []);
+
                 return collect($mailers)->mapWithKeys(function ($mailer) {
                     return [
                         $mailer => Str::title(
@@ -46,14 +47,14 @@ class UpdateStatusAction extends Action
                     ];
                 });
             })->hidden(function (Forms\Get $get) {
-                return !count(
+                return ! count(
                     config('lunar.orders.statuses.'.$get('status').'.mailers', [])
                 );
             })->live(),
             Forms\Components\CheckboxList::make('email_addresses')
                 ->hidden(function (Forms\Get $get, Order $record) {
-                    return !count($get('mailers') ?: [])
-                        || !($record->billingAddress?->contact_email && $record->shippingAddress->contact_email);
+                    return ! count($get('mailers') ?: [])
+                        || ! ($record->billingAddress?->contact_email && $record->shippingAddress->contact_email);
                 })->options(function (Order $record) {
                     return collect([
                         'billing' => $record->billingAddress->contact_email,
@@ -64,8 +65,8 @@ class UpdateStatusAction extends Action
                     'shipping' => 'Shipping Email',
                 ]),
             Forms\Components\TextInput::make('additional_email')->hidden(function (Forms\Get $get) {
-                return !count($get('mailers') ?: []);
-            })
+                return ! count($get('mailers') ?: []);
+            }),
         ]);
 
         $this->action(
@@ -76,7 +77,7 @@ class UpdateStatusAction extends Action
                 ]);
 
                 $emails = collect(
-                    [...$data['email_addresses'],$data['additional_email']]
+                    [...$data['email_addresses'], $data['additional_email']]
                 )->filter()->unique();
 
                 foreach ($data['mailers'] ?? [] as $mailerClass) {
@@ -85,7 +86,7 @@ class UpdateStatusAction extends Action
                         Mail::to($email)
                             ->queue($mailable);
 
-                        $storedPath = 'orders/activity/' . Str::random() . '.html';
+                        $storedPath = 'orders/activity/'.Str::random().'.html';
 
                         Storage::put(
                             $storedPath,
@@ -106,7 +107,6 @@ class UpdateStatusAction extends Action
             }
         );
     }
-
 }
 
 //Actions\Action::make('update_status')
