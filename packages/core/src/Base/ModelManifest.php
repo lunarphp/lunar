@@ -50,9 +50,9 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Gets the registered class for the interface.
      */
-    public function get(string $interfaceClass)
+    public function get(string $interfaceClass): ?string
     {
-        return $this->models[$interfaceClass];
+        return $this->models[$interfaceClass] ?? null;
     }
 
     /**
@@ -67,7 +67,7 @@ class ModelManifest implements ModelManifestInterface
         }
     }
 
-    protected function bindModel(string $interfaceClass, string $modelClass)
+    protected function bindModel(string $interfaceClass, string $modelClass): void
     {
         // Bind in container
         app()->bind($interfaceClass, $modelClass);
