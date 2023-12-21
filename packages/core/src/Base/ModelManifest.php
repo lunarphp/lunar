@@ -20,7 +20,7 @@ class ModelManifest implements ModelManifestInterface
     public function register(): void
     {
         // Discover models
-        $modelClasses = Discover::in(__DIR__ . '/../Models')
+        $modelClasses = Discover::in(__DIR__.'/../Models')
             ->classes()
             ->extending(BaseModel::class)
             ->get();
