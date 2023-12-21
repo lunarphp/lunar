@@ -24,6 +24,7 @@ use Livewire\Attributes\Computed;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
+use Lunar\Admin\Support\Actions\Orders\UpdateStatusAction;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Admin\Support\Infolists\Components\Alert;
 use Lunar\Admin\Support\Infolists\Components\Livewire;
@@ -631,32 +632,13 @@ class ManageOrder extends ViewRecord
         return [
             $this->getCaptureAction(),
             $this->getRefundAction(),
-            Actions\Action::make('update_status')
-                ->label(__('lunarpanel::order.action.update_status.label'))
-                ->form(fn () => [
-                    Forms\Components\Select::make('status')
-                        ->label(__('lunarpanel::order.form.status.label'))
-                        ->default(fn ($record) => $record->status)
-                        ->options(fn () => collect(config('lunar.orders.statuses', []))
-                            ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
-                        ->required(),
-                    Forms\Components\Textarea::make('additional_content'),
-                    Forms\Components\Section::make('mailers')
-                        ->heading('Mailers')
-                        ->schema([
-                            Forms\Components\Placeholder::make('empty_text')->label('')
-                                ->hidden(false)
-                                ->content('Select a status to see available mailers'),
-                        ])
-                        ->compact(),
-                ])
-                ->modalWidth('lg')
-                ->slideOver()
-                ->action(fn ($record, $data) => $record
-                    ->update([
-                        'status' => $data['status'],
-                    ]))
-                ->after(fn () => $this->dispatchActivityUpdated() && Notification::make()->title(__('lunarpanel::order.action.update_status.notification'))->success()->send()),
+            UpdateStatusAction::make('update_status')
+                ->after(
+                    function () {
+                        $this->dispatchActivityUpdated();
+                        Notification::make()->title(__('lunarpanel::order.action.update_status.notification'))->success()->send();
+                    }
+                ),
             Actions\Action::make('download_pdf')
                 ->label(__('lunarpanel::order.action.download_order_pdf.label'))
                 ->action(function ($record) {
