@@ -223,10 +223,6 @@ return [
             'label' => 'Update Status',
             'notification' => 'Orders status updated',
         ],
-        'update_status' => [
-            'label' => 'Update Status',
-            'notification' => 'Order status updated',
-        ],
         'download_order_pdf' => [
             'label' => 'Download PDF',
             'notification' => 'Order PDF downloading',

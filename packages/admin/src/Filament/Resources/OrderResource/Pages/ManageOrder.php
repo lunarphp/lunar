@@ -636,7 +636,6 @@ class ManageOrder extends ViewRecord
                 ->after(
                     function () {
                         $this->dispatchActivityUpdated();
-                        Notification::make()->title(__('lunarpanel::order.action.update_status.notification'))->success()->send();
                     }
                 ),
             Actions\Action::make('download_pdf')
@@ -825,5 +824,13 @@ class ManageOrder extends ViewRecord
     public function intents(): \Illuminate\Support\Collection
     {
         return $this->record->transactions()->whereType('intent')->whereSuccess(true)->get();
+    }
+
+    public function previewAction(): Actions\Action
+    {
+        return Actions\ViewAction::make('preview')
+            ->form([
+                Forms\Components\TextInput::make('foo'),
+            ]);
     }
 }

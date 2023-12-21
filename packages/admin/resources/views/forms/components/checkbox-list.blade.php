@@ -213,7 +213,7 @@
 
           </label>
 
-{{--          {{ ($this->previewAction())(['mailer' => $value]) }}--}}
+          {{ ($this->previewAction)(['mailer' => $value]) }}
         </div>
       @empty
         <div
