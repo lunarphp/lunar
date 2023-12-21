@@ -2,4 +2,6 @@
 
 namespace Lunar\Models\Contracts;
 
-interface ProductType {}
+interface ProductType
+{
+}
