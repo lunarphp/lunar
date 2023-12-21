@@ -8,6 +8,7 @@ use Filament\Resources\Components\Tab;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Number;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Facades\DB;
@@ -91,10 +92,10 @@ class ListProducts extends BaseListRecords
             'all' => Tab::make('All'),
             'published' => Tab::make('Published')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'published'))
-                ->badge(Product::query()->where('status', 'published')->count()),
+                ->badge(Number::format(Product::query()->where('status', 'published')->count())),
             'draft' => Tab::make('Draft')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'draft'))
-                ->badge(Product::query()->where('status', 'draft')->count())->badgeColor('warning'),
+                ->badge(Number::format(Product::query()->where('status', 'draft')->count()))->badgeColor('warning'),
         ];
     }
 
