@@ -174,7 +174,7 @@ class OrderResource extends BaseResource
         }
 
         if ($record->placed_at) {
-            $details[__('lunarpanel::order.table.date.label')] = $record->placed_at->formatted;
+            $details[__('lunarpanel::order.table.date.label')] = $record->placed_at;
         }
 
         return $details;
