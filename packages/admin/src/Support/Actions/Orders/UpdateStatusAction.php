@@ -31,7 +31,11 @@ class UpdateStatusAction extends Action
                     ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
                 ->required()
                 ->live(),
-            Forms\Components\Textarea::make('additional_content'),
+            Forms\Components\Textarea::make('additional_content')->hidden(function (Forms\Get $get) {
+                return !count(
+                    config('lunar.orders.statuses.'.$get('status').'.mailers', [])
+                );
+            }),
             MailerCheckbox::make('mailers')->options(function (Forms\Get $get) {
                 $mailers = config('lunar.orders.statuses.'.$get('status').'.mailers', []);
                 return collect($mailers)->mapWithKeys(function ($mailer) {
@@ -41,10 +45,15 @@ class UpdateStatusAction extends Action
                         ),
                     ];
                 });
+            })->hidden(function (Forms\Get $get) {
+                return !count(
+                    config('lunar.orders.statuses.'.$get('status').'.mailers', [])
+                );
             })->live(),
             Forms\Components\CheckboxList::make('email_addresses')
-                ->hidden(function (Forms\Get $get) {
-                    return !count($get('mailers') ?: []);
+                ->hidden(function (Forms\Get $get, Order $record) {
+                    return !count($get('mailers') ?: [])
+                        || !($record->billingAddress?->contact_email && $record->shippingAddress->contact_email);
                 })->options(function (Order $record) {
                     return collect([
                         'billing' => $record->billingAddress->contact_email,
@@ -93,8 +102,6 @@ class UpdateStatusAction extends Action
                                 'mailer' => $mailerClass,
                             ])->log('email-notification');
                     }
-
-
                 }
             }
         );

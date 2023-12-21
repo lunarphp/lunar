@@ -218,7 +218,8 @@
       @empty
         <div
                 wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $field::class }}.empty"
-        ></div>
+        >
+        </div>
       @endforelse
     </x-filament::grid>
 
