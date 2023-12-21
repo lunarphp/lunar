@@ -5,8 +5,8 @@ namespace Lunar\Base;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Lunar\Models\Contracts;
 use Lunar\Models;
+use Lunar\Models\Contracts;
 
 class ModelManifest implements ModelManifestInterface
 {

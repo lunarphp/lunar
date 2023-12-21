@@ -9,8 +9,8 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages;
 use Lunar\Admin\Support\Forms\Components\AttributeSelector;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Product;
 use Lunar\Models\Contracts\ProductType;
+use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
 class ProductTypeResource extends BaseResource
