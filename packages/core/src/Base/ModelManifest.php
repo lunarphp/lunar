@@ -4,6 +4,7 @@ namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Lunar\Models\Contracts;
 use Lunar\Models;
 
@@ -13,10 +14,7 @@ class ModelManifest implements ModelManifestInterface
      * The collection of models to register to this manifest.
      */
     protected array $models = [
-        Contracts\ProductType::class => [
-            'model' => Models\ProductType::class,
-            'binding' => 'productType',
-        ],
+        Contracts\ProductType::class => Models\ProductType::class,
     ];
 
     /**
@@ -24,29 +22,21 @@ class ModelManifest implements ModelManifestInterface
      */
     public function register(): void
     {
-        foreach ($this->models as $interface => $data) {
-            app()->bind($interface, $data['model']);
-            Route::model($data['binding'], $data['model']);
+        foreach ($this->models as $interfaceClass => $modelClass) {
+            $this->bindModel($interfaceClass, $modelClass);
         }
     }
 
     /**
      * Register models.
      */
-    public function add(string $interfaceClass, string $modelClass, string $binding): void
+    public function add(string $interfaceClass, string $modelClass): void
     {
         $this->validateClassIsEloquentModel($modelClass);
 
-        $this->models[$interfaceClass] = [
-            'model' => $modelClass,
-            'binding' => $binding,
-        ];
+        $this->models[$interfaceClass] = $modelClass;
 
-        // Bind in container
-        app()->bind($interfaceClass, $modelClass);
-
-        // Route model binding
-        Route::model($binding, $modelClass);
+        $this->bindModel($interfaceClass, $modelClass);
     }
 
     /**
@@ -54,14 +44,7 @@ class ModelManifest implements ModelManifestInterface
      */
     public function replace(string $interfaceClass, string $modelClass): void
     {
-        $this->validateClassIsEloquentModel($modelClass);
-        $this->models[$interfaceClass]['model'] = $modelClass;
-
-        // Bind in container
-        app()->bind($interfaceClass, $modelClass);
-
-        // Route model binding
-        Route::model($this->models[$interfaceClass]['binding'], $modelClass);
+        $this->add($interfaceClass, $modelClass);
     }
 
     /**
@@ -82,5 +65,21 @@ class ModelManifest implements ModelManifestInterface
         if (! is_subclass_of($class, Model::class)) {
             throw new \InvalidArgumentException(sprintf('Given [%s] is not a subclass of [%s].', $class, Model::class));
         }
+    }
+
+    protected function bindModel(string $interfaceClass, string $modelClass)
+    {
+        // Bind in container
+        app()->bind($interfaceClass, $modelClass);
+
+        // Route model binding
+        Route::model($this->bindingName($modelClass), $modelClass);
+    }
+
+    protected function bindingName(string $modelClass): string
+    {
+        $shortName = (new \ReflectionClass($modelClass))->getShortName();
+
+        return Str::camel($shortName);
     }
 }
