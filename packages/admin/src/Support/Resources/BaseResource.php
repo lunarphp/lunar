@@ -40,4 +40,17 @@ class BaseResource extends Resource
 
         return $user->can(static::$permission);
     }
+
+    public static function getModel(): string
+    {
+        $class = new \ReflectionClass(static::$model);
+
+        if ($class->isInterface()) {
+            return app()->get(static::$model)::class;
+        }
+
+        return static::$model ?? (string) str(class_basename(static::class))
+            ->beforeLast('Resource')
+            ->prepend('App\\Models\\');
+    }
 }

@@ -3,92 +3,77 @@
 namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
-use Lunar\Base\Traits\HasModelExtending;
+use Illuminate\Support\Facades\Route;
+use Lunar\Models\Contracts;
+use Lunar\Models;
 
 class ModelManifest implements ModelManifestInterface
 {
     /**
      * The collection of models to register to this manifest.
      */
-    protected Collection $models;
+    protected array $models = [
+        Contracts\ProductType::class => [
+            'model' => Models\ProductType::class,
+            'binding' => 'productType',
+        ],
+    ];
 
     /**
-     * The model manifest instance.
+     * Bind initial models in container and set explicit model binding.
      */
-    public function __construct()
+    public function register(): void
     {
-        $this->models = collect();
+        foreach ($this->models as $interface => $data) {
+            app()->bind($interface, $data['model']);
+            Route::model($data['binding'], $data['model']);
+        }
     }
 
     /**
      * Register models.
      */
-    public function register(Collection $models): void
+    public function add(string $interfaceClass, string $modelClass, string $binding): void
     {
-        foreach ($models as $baseModelClass => $modelClass) {
-            $this->validateInteractsWithEloquent($baseModelClass);
-            $this->validateClassIsEloquentModel($modelClass);
+        $this->validateClassIsEloquentModel($modelClass);
 
-            $this->models->put($baseModelClass, $modelClass);
-        }
+        $this->models[$interfaceClass] = [
+            'model' => $modelClass,
+            'binding' => $binding,
+        ];
+
+        // Bind in container
+        app()->bind($interfaceClass, $modelClass);
+
+        // Route model binding
+        Route::model($binding, $modelClass);
     }
 
     /**
-     * Get the registered model for a base model class.
+     * Replace a model with a different implementation.
      */
-    public function getRegisteredModel(string $baseModelClass): Model
+    public function replace(string $interfaceClass, string $modelClass): void
     {
-        return app($this->models->get($baseModelClass) ?? $baseModelClass);
+        $this->validateClassIsEloquentModel($modelClass);
+        $this->models[$interfaceClass]['model'] = $modelClass;
+
+        // Bind in container
+        app()->bind($interfaceClass, $modelClass);
+
+        // Route model binding
+        Route::model($this->models[$interfaceClass]['binding'], $modelClass);
     }
 
     /**
-     * Removes model from manifest.
+     * Gets the registered class for the interface.
      */
-    public function removeModel(string $baseModelClass): void
+    public function get(string $interfaceClass)
     {
-        $this->models = $this->models->flip()->forget($baseModelClass);
-    }
-
-    /**
-     * Swap the model implementation.
-     */
-    public function swapModel(string $currentModelClass, string $newModelClass): void
-    {
-        $baseModelClass = $this->models->flip()->get($currentModelClass);
-
-        $this->models->put($baseModelClass, $newModelClass);
-    }
-
-    /**
-     * Get the morph class base model.
-     */
-    public function getMorphClassBaseModel(string $morphClass): ?string
-    {
-        $customModels = $this->models->flip();
-
-        return $customModels->get($morphClass);
-    }
-
-    /**
-     * Get list of registered base model classes.
-     */
-    public function getBaseModelClasses(): Collection
-    {
-        return $this->models->keys();
-    }
-
-    /**
-     * Get list of all registered models.
-     */
-    public function getRegisteredModels(): Collection
-    {
-        return $this->models;
+        return $this->models[$interfaceClass];
     }
 
     /**
      * Validate class is an eloquent model.
-     *
      *
      * @throws \InvalidArgumentException
      */
@@ -96,20 +81,6 @@ class ModelManifest implements ModelManifestInterface
     {
         if (! is_subclass_of($class, Model::class)) {
             throw new \InvalidArgumentException(sprintf('Given [%s] is not a subclass of [%s].', $class, Model::class));
-        }
-    }
-
-    /**
-     * Validate base class interacts with eloquent model trait.
-     *
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function validateInteractsWithEloquent(string $baseClass): void
-    {
-        $uses = class_uses_recursive($baseClass);
-        if (! isset($uses[HasModelExtending::class])) {
-            throw new \InvalidArgumentException(sprintf("Given [%s] doesn't use [%s] trait.", $baseClass, HasModelExtending::class));
         }
     }
 }
