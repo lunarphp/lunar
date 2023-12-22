@@ -16,7 +16,7 @@ use Lunar\Models\Brand;
 
 class BrandResource extends BaseResource
 {
-    protected static ?string $permission = 'catalog:manage-products';
+    protected static ?string $permission = 'catalog:manage-brands';
 
     protected static ?string $model = Brand::class;
 

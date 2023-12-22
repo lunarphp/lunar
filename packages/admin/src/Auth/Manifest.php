@@ -144,6 +144,7 @@ class Manifest
             'settings:manage-attributes',
             'catalog:manage-products',
             'catalog:manage-collections',
+            'catalog:manage-brands',
             'sales:manage-orders',
             'sales:manage-customers',
             'sales:manage-discounts',

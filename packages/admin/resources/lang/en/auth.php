@@ -23,6 +23,8 @@ return [
     'permissions.catalog:manage-products.description' => 'Allow the staff member to edit products, product types and brands',
     'permissions.catalog:manage-collections.label' => 'Manage Collections',
     'permissions.catalog:manage-collections.description' => 'Allow the staff member to edit collections and their groups',
+    'permissions.catalog:manage-brands.label' => 'Manage Brands',
+    'permissions.catalog:manage-brands.description' => 'Allow the staff member to manage brands',
     'permissions.sales:manage-orders.label' => 'Manage Orders',
     'permissions.sales:manage-orders.description' => 'Allow the staff member to manage orders',
     'permissions.sales:manage-customers.label' => 'Manage Customers',
