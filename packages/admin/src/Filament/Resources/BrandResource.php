@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Forms\Components\Component;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Pages\Page;
@@ -10,8 +11,10 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Number;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Models\Brand;
 
 class BrandResource extends BaseResource
@@ -52,6 +55,19 @@ class BrandResource extends BaseResource
         ]);
     }
 
+    public static function getDefaultForm(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\Section::make()
+                    ->schema(
+                        static::getMainFormComponents(),
+                    ),
+                static::getAttributeDataFormComponent(),
+            ])
+            ->columns(1);
+    }
+
     protected static function getMainFormComponents(): array
     {
         return [
@@ -66,6 +82,11 @@ class BrandResource extends BaseResource
             ->required()
             ->maxLength(255)
             ->autofocus();
+    }
+
+    protected static function getAttributeDataFormComponent(): Component
+    {
+        return Attributes::make()->statePath('attribute_data');
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -93,9 +114,15 @@ class BrandResource extends BaseResource
                 ->conversion('small')
                 ->limit(1)
                 ->square()
-                ->label(''),
+                ->label(__('lunarpanel::brand.table.image.label')),
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::brand.table.name.label')),
+            Tables\Columns\TextColumn::make('products_count')
+                ->counts('products')
+                ->formatStateUsing(
+                    fn($state) => Number::format($state)
+                )
+                ->label(__('lunarpanel::brand.table.products_count.label')),
         ];
     }
 
