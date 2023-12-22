@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
-use Lunar\Hub\AdminHubServiceProvider;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Channel;
@@ -14,11 +13,14 @@ use Lunar\Models\Collection;
 use Lunar\Models\CollectionGroup;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
+use Lunar\Models\Brand;
+use Lunar\Admin\Models\Staff;
 
 class InstallLunar extends Command
 {
@@ -151,6 +153,24 @@ class InstallLunar extends Command
                     'position' => 1,
                 ]);
 
+                $customerGroup = AttributeGroup::create([
+                    'attributable_type' => Customer::class,
+                    'name' => collect([
+                        'en' => 'Details',
+                    ]),
+                    'handle' => 'customer_details',
+                    'position' => 1,
+                ]);
+
+                $brandGroup = AttributeGroup::create([
+                    'attributable_type' => Brand::class,
+                    'name' => collect([
+                        'en' => 'Details',
+                    ]),
+                    'handle' => 'brand_details',
+                    'position' => 1,
+                ]);
+                
                 Attribute::create([
                     'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
@@ -209,6 +229,42 @@ class InstallLunar extends Command
                     'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
                     'position' => 2,
+                    'name' => [
+                        'en' => 'Description',
+                    ],
+                    'handle' => 'description',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => false,
+                    'default_value' => null,
+                    'configuration' => [
+                        'richtext' => true,
+                    ],
+                    'system' => false,
+                ]);
+
+                Attribute::create([
+                    'attribute_type' => Customer::class,
+                    'attribute_group_id' => $customerGroup->id,
+                    'position' => 1,
+                    'name' => [
+                        'en' => 'Description',
+                    ],
+                    'handle' => 'description',
+                    'section' => 'main',
+                    'type' => TranslatedText::class,
+                    'required' => false,
+                    'default_value' => null,
+                    'configuration' => [
+                        'richtext' => true,
+                    ],
+                    'system' => false,
+                ]);
+
+                Attribute::create([
+                    'attribute_type' => Brand::class,
+                    'attribute_group_id' => $brandGroup->id,
+                    'position' => 1,
                     'name' => [
                         'en' => 'Description',
                     ],
@@ -237,11 +293,34 @@ class InstallLunar extends Command
             }
         });
 
-        if ($this->isHubInstalled()) {
-            $this->newLine();
-            $this->line('Installing Admin Hub.');
-            $this->call('lunar:hub:install');
+        if (! Staff::whereAdmin(true)->exists()) {
+            $this->info('Create an admin user');
+
+            $firstname = $this->ask('Whats your first name?');
+            $lastname = $this->ask('Whats your last name?');
+            $email = $this->ask('Whats your email address?');
+            $password = $this->secret('Enter a password');
+
+            /** @var Staff $staff */
+            $staff = Staff::create([
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'email' => $email,
+                'password' => bcrypt($password),
+                'admin' => true,
+            ]);
+
+            $staff->syncRoles('admin');
         }
+
+        
+        $this->comment('Publishing assets...');
+        $this->publishAssets();
+        $this->newLine();
+
+        $this->comment('Cache clear...');
+        $this->cleaning();
+        $this->newLine();
 
         $this->newLine();
         $this->comment('Lunar is now installed 🚀');
@@ -297,12 +376,21 @@ class InstallLunar extends Command
     }
 
     /**
-     * Determines if the admin hub is installed.
+     * Publishes assets for Lunar panel.
      *
-     * @return bool
      */
-    private function isHubInstalled()
+    private function publishAssets(): void
     {
-        return class_exists(AdminHubServiceProvider::class);
+        $this->call('filament:assets');
+    }
+
+     /**
+     * Cleaning 
+     *
+     */
+    private function cleaning(): void
+    {
+        $this->call('config:clear');
+        $this->call('cache:clear');
     }
 }
