@@ -34,7 +34,6 @@ class EnsureBaseRolesAndPermissions
             // Rename any existing permissions
             Permission::where('name', 'catalogue:manage-products')->update(['name' => 'catalog:manage-products']);
             Permission::where('name', 'catalogue:manage-collections')->update(['name' => 'catalog:manage-collections']);
-            Permission::where('name', 'catalogue:manage-brands')->update(['name' => 'sales:manage-brands']);
             Permission::where('name', 'catalogue:manage-orders')->update(['name' => 'sales:manage-orders']);
             Permission::where('name', 'catalogue:manage-customers')->update(['name' => 'sales:manage-customers']);
             Permission::where('name', 'catalogue:manage-discounts')->update(['name' => 'sales:manage-discounts']);
@@ -48,7 +47,7 @@ class EnsureBaseRolesAndPermissions
 
             // Create new permission
             Permission::firstOrCreate([
-                'name' => 'catalog::manage-brands',
+                'name' => 'catalog:manage-brands',
                 'guard_name' => $guard,
             ]);
         }
