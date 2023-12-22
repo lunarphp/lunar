@@ -7,7 +7,11 @@ resources, pages and widgets. See https://filamentphp.com/docs/3.x/panels/plugin
 
 ## Registering Filament plugins
 
-To register a plugin in the Lunar admin panel you will want to do something similar to the below example.
+Add-on packages should not try to register a Filament plugin automatically in the Lunar panel. Instead, installation 
+instructions should be provided.
+
+Below is an example of how a plugin should be registered to the Lunar admin panel, typically in your Laravel app 
+service provider.
 
 ```php
 use Lunar\Admin\Support\Facades\LunarPanel;
