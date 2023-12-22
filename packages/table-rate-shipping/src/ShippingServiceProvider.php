@@ -2,8 +2,7 @@
 
 namespace Lunar\Shipping;
 
-use Filament\Panel;
-use Filament\PanelProvider;
+use Illuminate\Support\ServiceProvider;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
@@ -13,7 +12,7 @@ use Lunar\Shipping\Managers\ShippingManager;
 use Lunar\Shipping\Models\ShippingExclusion;
 use Lunar\Shipping\Models\ShippingZone;
 
-class ShippingServiceProvider extends PanelProvider
+class ShippingServiceProvider extends ServiceProvider
 {
     public function boot(ShippingModifiers $shippingModifiers)
     {
@@ -51,10 +50,5 @@ class ShippingServiceProvider extends PanelProvider
         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
             return $app->make(ShippingManager::class);
         });
-    }
-
-    public function panel(Panel $panel): Panel
-    {
-        return $panel->plugin(new ShippingPlugin());
     }
 }

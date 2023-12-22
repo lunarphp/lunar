@@ -3,8 +3,8 @@
 namespace Lunar\Shipping;
 
 use Filament\Contracts\Plugin;
-use Filament\Navigation\NavigationItem;
 use Filament\Panel;
+use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
 
 class ShippingPlugin implements Plugin
 {
@@ -22,17 +22,8 @@ class ShippingPlugin implements Plugin
     {
         $panel->navigationGroups([
             'Shipping',
-        ])->navigationItems([
-            NavigationItem::make('Shipping Zones')
-                ->url('#')
-                ->icon('lucide-truck')
-                ->group('Shipping')
-                ->sort(1),
-            NavigationItem::make('Shipping Exclusions')
-                ->url('#')
-                ->icon('lucide-archive-x')
-                ->group('Shipping')
-                ->sort(1),
+        ])->resources([
+            ShippingZoneResource::class,
         ]);
     }
 
