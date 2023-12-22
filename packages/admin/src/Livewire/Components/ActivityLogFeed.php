@@ -18,7 +18,6 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Lunar\Admin\Support\Facades\ActivityLog;
-use Lunar\Facades\ModelManifest;
 
 class ActivityLogFeed extends Component implements HasActions, HasForms
 {
