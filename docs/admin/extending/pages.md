@@ -8,6 +8,8 @@ To extend a page you need to create and register an extension.
 For example, the code below will register a custom extension called `MyEditExtension` for the `EditProduct` Filament page.
 
 ```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
 LunarPanel::registerExtension(new MyEditExtension, EditProduct::class);
 ```
 
