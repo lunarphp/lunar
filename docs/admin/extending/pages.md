@@ -71,7 +71,7 @@ class MyCreateExtension extends CreatePageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyCreateExtension, CreateProduct::class);
+LunarPanel::registerExtension(new MyCreateExtension, \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class);
 ```
 
 ## EditPageExtension
@@ -139,7 +139,7 @@ class MyEditExtension extends EditPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyEditExtension, EditProduct::class);
+LunarPanel::registerExtension(new MyEditExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class);
 ```
 
 ## ListPageExtension
@@ -171,7 +171,7 @@ class MyListExtension extends ListPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyListExtension, ListProducts::class);
+LunarPanel::registerExtension(new MyListExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class);
 ```
 
 ## Extending Pages In Addons
