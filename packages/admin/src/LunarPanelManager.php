@@ -12,6 +12,7 @@ use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables\Table;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -128,6 +129,12 @@ class LunarPanelManager
             'chartSecondary' => Color::Green,
         ]);
 
+        Table::configureUsing(function (Table $table): void {
+            $table
+                ->paginationPageOptions([20, 50, 100])
+                ->defaultPaginationPageOption(20);
+        });
+       
         return $this;
     }
 

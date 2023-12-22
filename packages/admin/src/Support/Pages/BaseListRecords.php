@@ -9,9 +9,4 @@ abstract class BaseListRecords extends ListRecords
 {
     use Concerns\ExtendsHeaderActions;
     use \Lunar\Admin\Support\Concerns\CallsHooks;
-
-    public function table(Table $table): Table
-    {
-        return parent::table($table)->paginated([20, 50, 100]);
-    }
 }
