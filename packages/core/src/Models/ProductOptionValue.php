@@ -53,7 +53,7 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
-    public function getNameAttribute(string $value): mixed
+    public function getNameAttribute(string $value = null): mixed
     {
         return json_decode($value);
     }
