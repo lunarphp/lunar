@@ -19,7 +19,6 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
-use Lunar\Models\Brand;
 
 class InstallLunar extends Command
 {
@@ -152,15 +151,6 @@ class InstallLunar extends Command
                     'position' => 1,
                 ]);
 
-                $brandGroup = AttributeGroup::create([
-                    'attributable_type' => Brand::class,
-                    'name' => collect([
-                        'en' => 'Details',
-                    ]),
-                    'handle' => 'brand_details',
-                    'position' => 1,
-                ]);
-
                 Attribute::create([
                     'attribute_type' => Product::class,
                     'attribute_group_id' => $group->id,
@@ -219,24 +209,6 @@ class InstallLunar extends Command
                     'attribute_type' => Collection::class,
                     'attribute_group_id' => $collectionGroup->id,
                     'position' => 2,
-                    'name' => [
-                        'en' => 'Description',
-                    ],
-                    'handle' => 'description',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => false,
-                    'default_value' => null,
-                    'configuration' => [
-                        'richtext' => true,
-                    ],
-                    'system' => false,
-                ]);
-
-                Attribute::create([
-                    'attribute_type' => Brand::class,
-                    'attribute_group_id' => $brandGroup->id,
-                    'position' => 1,
                     'name' => [
                         'en' => 'Description',
                     ],
