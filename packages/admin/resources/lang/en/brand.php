@@ -9,7 +9,7 @@ return [
     'table' => [
         'name' => [
             'label' => 'Name',
-        ]
+        ],
     ],
 
     'form' => [

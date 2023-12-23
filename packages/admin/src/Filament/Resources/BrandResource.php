@@ -11,7 +11,6 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Number;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Forms\Components\Attributes;
@@ -116,7 +115,7 @@ class BrandResource extends BaseResource
                 ->square()
                 ->label(''),
             Tables\Columns\TextColumn::make('name')
-                ->label(__('lunarpanel::brand.table.name.label'))
+                ->label(__('lunarpanel::brand.table.name.label')),
         ];
     }
 
