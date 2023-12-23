@@ -13,9 +13,6 @@ return [
     ],
 
     'form' => [
-        'image' => [
-            'label' => 'Image',
-        ],
         'name' => [
             'label' => 'Name',
         ],
