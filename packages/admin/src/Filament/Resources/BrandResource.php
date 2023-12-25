@@ -117,6 +117,7 @@ class BrandResource extends BaseResource
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
         ];
     }
+    
     public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
         return $record->name;

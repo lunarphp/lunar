@@ -117,8 +117,7 @@ class CollectionResource extends BaseResource
     public static function getGloballySearchableAttributes(): array
     {
         return [
-            'attribute_data',
-            'group.name'
+            'group.name' // Needed to trig canGloballySearch()
         ];
     }
 

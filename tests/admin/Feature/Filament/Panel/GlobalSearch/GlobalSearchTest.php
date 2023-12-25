@@ -71,9 +71,9 @@ it('can search collection', function () {
     ]);
 
     $record = \Lunar\Models\Collection::factory()->create();
-
+ 
     \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
-        ->set('search', $record->translateAttribute('name'))
+        ->set('search', $record->group->name)
         ->assertDispatched('open-global-search-results')
         ->assertSee($record->translateAttribute('name'));
 });

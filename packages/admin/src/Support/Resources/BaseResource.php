@@ -2,10 +2,19 @@
 
 namespace Lunar\Admin\Support\Resources;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Connection;
+use Illuminate\Support\Arr;
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Concerns;
+use Lunar\Models\Attribute;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\FieldTypes\Text;
+
+use function Filament\Support\generate_search_term_expression;
+use function PHPSTORM_META\map;
 
 class BaseResource extends Resource
 {
@@ -39,5 +48,53 @@ class BaseResource extends Resource
         $user = Filament::auth()->user();
 
         return $user->can(static::$permission);
+    }
+
+    /**
+     * Override filament query builder 
+     */
+    protected static function applyGlobalSearchAttributeConstraints(Builder $query, string $search): void
+    {
+        /** @var Connection $databaseConnection */
+        $databaseConnection = $query->getConnection();
+
+        $search = generate_search_term_expression($search, static::isGlobalSearchForcedCaseInsensitive(), $databaseConnection);
+
+        foreach (explode(' ', $search) as $searchWord) {
+            $query->where(function (Builder $query) use ($searchWord) {
+                $isFirst = true;
+
+                $searchableAttributes = static::getGloballySearchableAttributes();
+
+                static::mapSearchableAttributes($searchableAttributes);
+
+                foreach ($searchableAttributes as $attributes) {
+                    static::applyGlobalSearchAttributeConstraint(
+                        query: $query,
+                        search: $searchWord,
+                        searchAttributes: Arr::wrap($attributes),
+                        isFirst: $isFirst,
+                    );
+                }
+            });
+        }
+    }
+
+    /**
+     * Return map hydrated with attributes
+     *
+     * @return array
+     */
+    protected static function mapSearchableAttributes(array &$map)
+    {
+        $attributes = Attribute::whereAttributeType(static::$model)
+            ->whereSearchable(true)
+            ->get();
+
+        foreach ($attributes as $attribute) {
+            if ($attribute->type == TranslatedText::class) {
+                array_push($map, 'attribute_data->' . $attribute->handle . '->value');
+            }
+        }
     }
 }

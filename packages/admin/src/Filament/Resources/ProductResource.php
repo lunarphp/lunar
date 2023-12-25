@@ -298,7 +298,10 @@ class ProductResource extends BaseResource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['id', 'attribute_data', 'variants.sku', 'tags.value'];
+        return [
+            'variants.sku',
+            'tags.value'
+        ];
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder

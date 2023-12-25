@@ -223,7 +223,6 @@ class CustomerResource extends BaseResource
     public static function getGloballySearchableAttributes(): array
     {
         return [
-            'attribute_data',
             'first_name',
             'last_name',
             'company_name',
