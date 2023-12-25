@@ -96,5 +96,7 @@ class BaseResource extends Resource
                 array_push($map, 'attribute_data->' . $attribute->handle . '->value');
             }
         }
+
+        return $map;
     }
 }
