@@ -121,7 +121,6 @@ class LunarPanelManager
             'lunar::reorder' => 'lucide-grip-vertical',
             'lunar::chevron-right' => 'lucide-chevron-right',
             'lunar::image-placeholder' => 'lucide-image',
-            'lunar::translate' => 'lucide-languages'
         ]);
 
         FilamentColor::register([
