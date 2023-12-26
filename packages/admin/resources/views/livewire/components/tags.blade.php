@@ -1,14 +1,17 @@
 <div class="relative mt-1 space-y-4"
     x-data="{
         tags: $wire.entangle('tags'),
-        value: $wire.entangle('searchTerm', true),
+        newValue: $wire.entangle('searchTerm', true),
     
         addTag(newTag) {
             let trimTag = newTag.toUpperCase().trim();
-    
-            if (!this.tags.includes(trimTag)) {
+            
+            if (trimTag && !this.tags.includes(trimTag)) {
                 this.tags.push(trimTag);
             }            
+
+            console.log(trimTag);
+            console.log(this.tags);
         },
     
         removeTag(index) {
@@ -22,11 +25,11 @@
         },
 
         clearInput(){
-            this.value = null
+            this.newValue = null
         }
     }"
     x-on:click.outside="value = null"
-    x-init="$watch('value', (newValue) => {
+    x-init="$watch('newValue', (newValue) => {
         if(newValue === null) return
 
         let trimTag = newValue.trim()
@@ -55,6 +58,7 @@
                 color="primary"
                 outlined
                 @click.prevent="removeTag(tagIndex)"
+                
             >
                 <span x-text="tag"></span>
             </x-filament::button>
@@ -66,7 +70,7 @@
             <x-filament::input
                 placeholder="{{ __('lunarpanel::components.tags.input.placeholder') }}"
                 maxlength="255"
-                x-model="value"
+                x-model="newValue"
                 x-on:keyup.enter="addTag($event.target.value); clearInput()"
                 x-on:keyup="removeLastTag($event.key)"
                 type="text"

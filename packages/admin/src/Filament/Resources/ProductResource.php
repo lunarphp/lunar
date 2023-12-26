@@ -19,6 +19,7 @@ use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Forms\Components\Tags;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
@@ -175,9 +176,8 @@ class ProductResource extends BaseResource
 
     protected static function getTagsFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('tags')
-            ->label(__('lunarpanel::product.form.tags.label'))
-            ->placeholder('TODO: convert to Spatie Tags');
+        return Tags::make('tags')
+            ->label(__('lunarpanel::product.form.tags.label')); // TODO: convert to Spatie Tags
     }
 
     protected static function getAttributeDataFormComponent(): Component
