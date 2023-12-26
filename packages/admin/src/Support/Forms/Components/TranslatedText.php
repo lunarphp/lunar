@@ -16,15 +16,20 @@ class TranslatedText extends TextInput
      */
     public $expanded = false;
 
+    /**
+     * Default language
+     *
+     * @var Language
+     */
     public $default;
 
+    /**
+     * Languages exclude default language
+     *
+     * @var Language
+     */
     public $languages;
 
-     /**
-     * Create a new instance of the component.
-     *
-     * @param  bool  $expanded
-     */
     public function setUp() : void
     {
         $languages = Language::orderBy('created_at', 'asc')->get();
@@ -40,13 +45,11 @@ class TranslatedText extends TextInput
 
     public function getDefault()
     {
-        // TODO: blink + sort
         return $this->default;
     }
  
     public function getLanguages()
     {
-        // TODO: blink + sort
         return $this->languages;
     }
 }
