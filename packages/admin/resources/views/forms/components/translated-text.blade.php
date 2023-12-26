@@ -6,7 +6,7 @@
     <div x-data="{ state: $wire.entangle('{{ $getStatePath() }}') }" class="flex items-center gap-2">
         @if ($getLanguages()->count())
             <span
-                class="items-center text-xs font-semibold p-2 rounded shadow-sm bg-gray-200 text-gray-950 dark:bg-white/5 dark:text-white uppercase">
+                class="items-center text-xs font-normal p-2 rounded shadow-sm bg-gray-200 text-gray-400 dark:bg-white/5 dark:text-white uppercase">
                 {{ $getDefault()->code }}
             </span>
         @endif
@@ -21,7 +21,7 @@
     @if ($getLanguages()->count())
         @foreach ($getLanguages() as $language)
         <div x-data="{ state: $wire.entangle('{{ $getStatePath() }}') }" x-show="showTranslations" class="flex items-center gap-2">
-            <span class="items-center text-xs font-semibold p-2 rounded shadow-sm bg-gray-200 text-gray-950 dark:bg-white/5 dark:text-white uppercase">
+            <span class="items-center text-xs font-normal p-2 rounded shadow-sm bg-gray-200 text-gray-400 dark:bg-white/5 dark:text-white uppercase">
                 {{ $language->code }}
             </span>
             <x-filament::input.wrapper class="w-full">
