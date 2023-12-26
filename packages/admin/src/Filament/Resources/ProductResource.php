@@ -177,7 +177,7 @@ class ProductResource extends BaseResource
     protected static function getTagsFormComponent(): Component
     {
         return Tags::make('tags')
-            ->label(__('lunarpanel::product.form.tags.label')); // TODO: convert to Spatie Tags
+            ->label(__('lunarpanel::product.form.tags.label'));
     }
 
     protected static function getAttributeDataFormComponent(): Component
