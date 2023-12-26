@@ -9,9 +9,6 @@
             if (trimTag && !this.tags.includes(trimTag)) {
                 this.tags.push(trimTag);
             }            
-
-            console.log(trimTag);
-            console.log(this.tags);
         },
     
         removeTag(index) {
