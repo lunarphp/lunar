@@ -57,7 +57,7 @@
                     </div>
                 </button>
 
-                <div class="items-center flex-shrink-0 hidden px-2 space-x-2 rtl:space-x-reverse group-hover:flex">
+                <div class="flex items-center flex-shrink-0 px-2 space-x-2 rtl:space-x-reverse">
                     <x-filament-actions::group
                             :actions="$actions"
                             label="Actions"
