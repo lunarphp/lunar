@@ -91,9 +91,7 @@ class TaxZoneResource extends BaseResource
             ->options(Country::get()->pluck('name', 'iso3'))
             ->multiple()
             ->required()
-            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, $state): void {
-                $record = $component->getModelInstance();
-
+            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
                 $record->loadMissing('countries.country');
 
                 /** @var Collection $relatedModels */
@@ -105,20 +103,15 @@ class TaxZoneResource extends BaseResource
                         ->map(static fn ($key): string => strval($key))
                         ->toArray(),
                 );
-            })->getOptionLabelsUsing(static function (Forms\Components\Select $component, array $values): array {
-                $record = $component->getModelInstance();
-
+            })->getOptionLabelsUsing(static function (Model $record): array {
                 $record->loadMissing('countries.country');
 
                 return $record->countries
                     ->pluck('country.name', 'country.iso3')
                     ->toArray();
             })
-            ->saveRelationshipsUsing(static function (Forms\Components\Select $component, Model $record, $state) {
+            ->saveRelationshipsUsing(static function (Model $record, $state) {
                 $selectedCountries = Country::whereIn('iso3', $state)->get()->pluck('id');
-
-                /** @var TaxZone $record */
-                $record = $component->getModelInstance();
 
                 self::syncCountries($record, $selectedCountries);
 
@@ -136,9 +129,7 @@ class TaxZoneResource extends BaseResource
             ->required()
             ->options(Country::get()->pluck('name', 'id'))
             ->searchable()
-            ->afterStateHydrated(static function (Forms\Components\Select $component, $state): void {
-                $record = $component->getModelInstance();
-
+            ->afterStateHydrated(static function (Forms\Components\Select $component, Model $record): void {
                 $record->loadMissing('countries.country');
 
                 /** @var Collection $relatedModels */
@@ -161,9 +152,7 @@ class TaxZoneResource extends BaseResource
             ->options(fn ($get) => State::where('country_id', $get('zone_country'))->get()->pluck('name', 'code'))
             ->multiple()
             ->required()
-            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, $state): void {
-                $record = $component->getModelInstance();
-
+            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
                 $record->loadMissing('states.state');
 
                 /** @var Collection $relatedModels */
@@ -175,20 +164,15 @@ class TaxZoneResource extends BaseResource
                         ->map(static fn ($key): string => strval($key))
                         ->toArray(),
                 );
-            })->getOptionLabelsUsing(static function (Forms\Components\Select $component, array $values): array {
-                $record = $component->getModelInstance();
-
+            })->getOptionLabelsUsing(static function (Model $record): array {
                 $record->loadMissing('states.state');
 
                 return $record->states
                     ->pluck('state.name', 'state.code')
                     ->toArray();
             })
-            ->saveRelationshipsUsing(static function (Forms\Components\Select $component, Model $record, $state, $get) {
+            ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
                 $selectedStates = State::where('country_id', $get('zone_country'))->whereIn('code', $state)->get()->pluck('id');
-
-                /** @var TaxZone $record */
-                $record = $component->getModelInstance();
 
                 self::syncCountries($record, [$get('zone_country')]);
                 self::syncStates($record, $selectedStates);
@@ -206,9 +190,7 @@ class TaxZoneResource extends BaseResource
             ->rows(10)
             ->helperText(__('lunarpanel::taxzone.form.zone_postcodes.helper'))
             ->required()
-            ->afterStateHydrated(static function (Forms\Components\Textarea $component, $state): void {
-                $record = $component->getModelInstance();
-
+            ->afterStateHydrated(static function (Forms\Components\Textarea $component, Model $record): void {
                 /** @var Collection $relatedModels */
                 $relatedModels = $record->postcodes;
 
@@ -218,10 +200,7 @@ class TaxZoneResource extends BaseResource
                         ->join("\n"),
                 );
             })
-            ->saveRelationshipsUsing(static function (Forms\Components\Textarea $component, Model $record, $state, $get) {
-                /** @var TaxZone $record */
-                $record = $component->getModelInstance();
-
+            ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
                 self::syncCountries($record, [$get('zone_country')]);
                 self::syncPostcodes($record, $get('zone_country'), $state);
 
