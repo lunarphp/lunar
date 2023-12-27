@@ -7,8 +7,11 @@ use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Country;
+use Lunar\Models\State;
 use Lunar\Models\TaxZone;
 
 class TaxZoneResource extends BaseResource
@@ -43,10 +46,17 @@ class TaxZoneResource extends BaseResource
     {
         return [
             static::getNameFormComponent(),
-            static::getZoneTypeFormComponent(),
             static::getPriceDisplayFormComponent(),
             static::getActiveFormComponent(),
             static::getDefaultFormComponent(),
+            static::getZoneTypeFormComponent(),
+            Forms\Components\Grid::make()
+                ->schema([
+                    static::getZoneTypeCountriesFormComponent(),
+                    static::getZoneTypeCountryFormComponent(),
+                    static::getZoneTypeStatesFormComponent(),
+                    static::getZoneTypePostcodesFormComponent(),
+                ]),
         ];
     }
 
@@ -68,7 +78,216 @@ class TaxZoneResource extends BaseResource
                 'postcodes' => __('lunarpanel::taxzone.form.zone_type.options.postcodes'),
             ])
             ->label(__('lunarpanel::taxzone.form.zone_type.label'))
+            ->live()
             ->required();
+    }
+
+    protected static function getZoneTypeCountriesFormComponent(): Component
+    {
+        return Forms\Components\Select::make('zone_countries')
+            ->label(__('lunarpanel::taxzone.form.zone_countries.label'))
+            ->visible(fn ($get) => $get('zone_type') == 'country')
+            ->dehydrated(false)
+            ->options(Country::get()->pluck('name', 'iso3'))
+            ->multiple()
+            ->required()
+            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, $state): void {
+                $record = $component->getModelInstance();
+
+                $record->loadMissing('countries.country');
+
+                /** @var Collection $relatedModels */
+                $relatedModels = $record->countries;
+
+                $component->state(
+                    $relatedModels
+                        ->pluck('country.iso3')
+                        ->map(static fn ($key): string => strval($key))
+                        ->toArray(),
+                );
+            })->getOptionLabelsUsing(static function (Forms\Components\Select $component, array $values): array {
+                $record = $component->getModelInstance();
+
+                $record->loadMissing('countries.country');
+
+                return $record->countries
+                    ->pluck('country.name', 'country.iso3')
+                    ->toArray();
+            })
+            ->saveRelationshipsUsing(static function (Forms\Components\Select $component, Model $record, $state) {
+                $selectedCountries = Country::whereIn('iso3', $state)->get()->pluck('id');
+
+                /** @var TaxZone $record */
+                $record = $component->getModelInstance();
+
+                self::syncCountries($record, $selectedCountries);
+
+                $record->states()->delete();
+                $record->postcodes()->delete();
+            });
+    }
+
+    protected static function getZoneTypeCountryFormComponent(): Component
+    {
+        return Forms\Components\Select::make('zone_country')
+            ->label(__('lunarpanel::taxzone.form.zone_country.label'))
+            ->visible(fn ($get) => $get('zone_type') !== 'country')
+            ->dehydrated(false)
+            ->required()
+            ->options(Country::get()->pluck('name', 'id'))
+            ->searchable()
+            ->afterStateHydrated(static function (Forms\Components\Select $component, $state): void {
+                $record = $component->getModelInstance();
+
+                $record->loadMissing('countries.country');
+
+                /** @var Collection $relatedModels */
+                $relatedModels = $record->countries;
+
+                $component->state(
+                    $relatedModels
+                        ->pluck('country')
+                        ->first()->id,
+                );
+            });
+    }
+
+    protected static function getZoneTypeStatesFormComponent(): Component
+    {
+        return Forms\Components\Select::make('zone_states')
+            ->label(__('lunarpanel::taxzone.form.zone_states.label'))
+            ->visible(fn ($get) => $get('zone_type') == 'states')
+            ->dehydrated(false)
+            ->options(fn ($get) => State::where('country_id', $get('zone_country'))->get()->pluck('name', 'code'))
+            ->multiple()
+            ->required()
+            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, $state): void {
+                $record = $component->getModelInstance();
+
+                $record->loadMissing('states.state');
+
+                /** @var Collection $relatedModels */
+                $relatedModels = $record->states;
+
+                $component->state(
+                    $relatedModels
+                        ->pluck('state.code')
+                        ->map(static fn ($key): string => strval($key))
+                        ->toArray(),
+                );
+            })->getOptionLabelsUsing(static function (Forms\Components\Select $component, array $values): array {
+                $record = $component->getModelInstance();
+
+                $record->loadMissing('states.state');
+
+                return $record->states
+                    ->pluck('state.name', 'state.code')
+                    ->toArray();
+            })
+            ->saveRelationshipsUsing(static function (Forms\Components\Select $component, Model $record, $state, $get) {
+                $selectedStates = State::where('country_id', $get('zone_country'))->whereIn('code', $state)->get()->pluck('id');
+
+                /** @var TaxZone $record */
+                $record = $component->getModelInstance();
+
+                self::syncCountries($record, [$get('zone_country')]);
+                self::syncStates($record, $selectedStates);
+
+                $record->postcodes()->delete();
+            });
+    }
+
+    protected static function getZoneTypePostcodesFormComponent(): Component
+    {
+        return Forms\Components\Textarea::make('zone_postcodes')
+            ->label(__('lunarpanel::taxzone.form.zone_postcodes.label'))
+            ->visible(fn ($get) => $get('zone_type') == 'postcodes')
+            ->dehydrated(false)
+            ->rows(10)
+            ->helperText(__('lunarpanel::taxzone.form.zone_postcodes.helper'))
+            ->required()
+            ->afterStateHydrated(static function (Forms\Components\Textarea $component, $state): void {
+                $record = $component->getModelInstance();
+
+                /** @var Collection $relatedModels */
+                $relatedModels = $record->postcodes;
+
+                $component->state(
+                    $relatedModels
+                        ->pluck('postcode')
+                        ->join("\n"),
+                );
+            })
+            ->saveRelationshipsUsing(static function (Forms\Components\Textarea $component, Model $record, $state, $get) {
+                /** @var TaxZone $record */
+                $record = $component->getModelInstance();
+
+                self::syncCountries($record, [$get('zone_country')]);
+                self::syncPostcodes($record, $get('zone_country'), $state);
+
+                $record->states()->delete();
+            });
+    }
+
+    private static function syncCountries(TaxZone $taxZone, $selectedCountries)
+    {
+        $existingCountries = $taxZone->countries()->pluck('country_id');
+
+        $countriesToAssign = collect($selectedCountries)
+            ->reject(function ($countryId) use ($existingCountries) {
+                return $existingCountries->contains($countryId);
+            });
+
+        $taxZone->countries()->createMany(
+            $countriesToAssign->map(fn ($countryId) => [
+                'country_id' => $countryId,
+            ])
+        );
+
+        $taxZone->countries()
+            ->whereNotIn('country_id', $selectedCountries)
+            ->delete();
+    }
+
+    private static function syncStates(TaxZone $taxZone, $selectedStates)
+    {
+        $existingStates = $taxZone->states()->pluck('state_id');
+
+        $statesToAssign = collect($selectedStates)
+            ->reject(function ($stateId) use ($existingStates) {
+                return $existingStates->contains($stateId);
+            });
+
+        $taxZone->states()->createMany(
+            $statesToAssign->map(fn ($stateId) => [
+                'state_id' => $stateId,
+            ])
+        );
+
+        $taxZone->states()
+            ->whereNotIn('state_id', $selectedStates)
+            ->delete();
+    }
+
+    private static function syncPostcodes(TaxZone $taxZone, $countryId, $postcodes)
+    {
+        $postcodes = collect(
+            explode(
+                "\n",
+                str_replace(' ', '', $postcodes)
+            )
+        )->unique()->filter();
+
+        $taxZone->postcodes()->delete();
+
+        $taxZone->postcodes()->createMany(
+            $postcodes->map(function ($postcode) use ($countryId) {
+                return [
+                    'country_id' => $countryId,
+                    'postcode' => $postcode,
+                ];
+            })
+        );
     }
 
     protected static function getPriceDisplayFormComponent(): Component
