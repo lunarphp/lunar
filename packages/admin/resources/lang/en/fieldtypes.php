@@ -6,6 +6,8 @@ return [
         'form' => [
             'lookups' => [
                 'label' => 'Lookups',
+                'key_label' => 'Label',
+                'value_label' => 'Value',
             ],
         ],
     ],
