@@ -6,14 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TagsInput;
-use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Models\Tag;
 use Lunar\Facades\DB;
 
 class Tags extends TagsInput
 {
-    use CanDispatchActivityUpdated;
-
     protected function setUp(): void
     {
         parent::setUp();
