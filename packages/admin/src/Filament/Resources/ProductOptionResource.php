@@ -74,6 +74,7 @@ class ProductOptionResource extends BaseResource
         return Forms\Components\TextInput::make('handle')
             ->label(__('lunarpanel::productoption.form.handle.label'))
             ->required()
+            ->unique(ignoreRecord: true)
             ->maxLength(255);
     }
 
