@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
+use Closure;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
@@ -11,6 +12,8 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
 class TranslatedText extends TextInput
 {
     protected string $view = 'lunarpanel::forms.components.translated-text';
+
+    protected bool $requireDefault = false;
 
     public function getLanguages(): Collection
     {
@@ -53,5 +56,29 @@ class TranslatedText extends TextInput
         $this->mutateDehydratedStateUsing(static function (TranslatedText $component, ?array $state) {
             return (object) $state;
         });
+
+        $this->rules([
+            function (TranslatedText $component) {
+                return function (string $attribute, $value, Closure $fail) use ($component) {
+                    $defaultLanguage = $component->getDefaultLanguage();
+
+                    if (blank($value[$defaultLanguage->code] ?? null)) {
+                        $fail("The {$defaultLanguage->name} :attribute is required.");
+                    }
+                };
+            },
+        ], fn (TranslatedText $component) => $component->isRequireDefault());
+    }
+
+    public function requireDefault($requireDefault = true): static
+    {
+        $this->requireDefault = $requireDefault;
+
+        return $this;
+    }
+
+    public function isRequireDefault(): bool
+    {
+        return $this->requireDefault;
     }
 }

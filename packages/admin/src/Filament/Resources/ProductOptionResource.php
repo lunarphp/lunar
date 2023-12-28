@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
@@ -53,18 +54,20 @@ class ProductOptionResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
+        return TranslatedText::make('name')
             ->label(__('lunarpanel::productoption.form.name.label'))
             ->required()
+            ->requireDefault()
             ->maxLength(255)
             ->autofocus();
     }
 
     protected static function getLabelFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('label')
+        return TranslatedText::make('label')
             ->label(__('lunarpanel::productoption.form.label.label'))
             ->required()
+            ->requireDefault()
             ->maxLength(255)
             ->autofocus();
     }
