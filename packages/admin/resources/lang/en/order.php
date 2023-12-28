@@ -246,6 +246,9 @@ return [
                 ],
             ],
         ],
+        'edit_tags' => [
+            'label' => 'Edit'
+        ],
         'capture_payment' => [
             'label' => 'Capture Payment',
 
