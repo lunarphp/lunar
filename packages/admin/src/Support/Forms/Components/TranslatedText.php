@@ -44,10 +44,9 @@ class TranslatedText extends TextInput
 
         $this->afterStateHydrated(static function ($state, TranslatedText $component) {
             $defaults = $component->getLanguageDefaults();
-            $defaultLang = $component->getDefaultLanguage()->code;
 
-            foreach ($defaults as $language => $value) {
-                $defaults[$language] = $state[$language] ?? $state[$defaultLang] ?? null;
+            foreach ($defaults as $language => $_) {
+                $defaults[$language] = $state[$language] ?? null;
             }
 
             $component->state($defaults);
