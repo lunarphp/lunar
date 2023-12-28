@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Models\Language;
 
 class ValuesRelationManager extends RelationManager
 {
@@ -26,10 +27,12 @@ class ValuesRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return $table
+        $language = Language::getDefault()->code;
 
+        return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name.en'),
+                Tables\Columns\TextColumn::make('name')
+                    ->formatStateUsing(fn ($state) => $state->$language),
                 Tables\Columns\TextColumn::make('handle'),
                 Tables\Columns\TextColumn::make('position'),
             ])

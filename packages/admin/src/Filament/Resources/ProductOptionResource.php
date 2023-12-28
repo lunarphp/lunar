@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
 
 class ProductOptionResource extends BaseResource
@@ -88,12 +89,16 @@ class ProductOptionResource extends BaseResource
 
     public static function getDefaultTable(Table $table): Table
     {
+        $language = Language::getDefault()->code;
+
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name.en')  // TODO: Need to determine correct way to localise, maybe custom column type?
-                    ->label(__('lunarpanel::productoption.table.name.label')),
-                Tables\Columns\TextColumn::make('label.en')  // TODO: Need to determine correct way to localise, maybe custom column type?
-                    ->label(__('lunarpanel::productoption.table.label.label')),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('lunarpanel::productoption.table.name.label'))
+                    ->formatStateUsing(fn ($state) => $state->$language),
+                Tables\Columns\TextColumn::make('label')
+                    ->label(__('lunarpanel::productoption.table.label.label'))
+                    ->formatStateUsing(fn ($state) => $state->$language),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(__('lunarpanel::productoption.table.handle.label')),
                 Tables\Columns\TextColumn::make('position')
