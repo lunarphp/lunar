@@ -509,9 +509,9 @@ class ManageOrder extends ViewRecord
             ->modalWidth('2xl')
             ->label(__('lunarpanel::order.action.edit_tags.label'))
             ->button()
-            ->fillForm(function ($record) {
-                return ['tags' => $record->tags];
-            })
+            ->fillForm(fn ($record): array => [
+                'tags' => $record->tags
+            ])
             ->form(function () {
                 return [
                     TagsComponent::make('')

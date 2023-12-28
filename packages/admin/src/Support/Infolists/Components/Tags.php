@@ -19,22 +19,21 @@ class Tags extends TextEntry
     {
         $state = parent::getState();
 
-        if ($state && (! $state instanceof Collection)) {
-            return $state;
-        }
-
         $record = $this->getRecord();
 
         if (! $record) {
             return [];
         }
 
-        if (! (method_exists($record, 'tags'))) {
+        if (! method_exists($record, 'tags')) {
             return [];
         }
 
-        return $record->tags->pluck('value')->map(function (string $value) {
-            return Str::upper($value);
-        })->all();
+        return $record
+                ->tags
+                ->pluck('value')
+                ->map(function (string $value) {
+                    return Str::upper($value);
+                })->all();
     }
 }

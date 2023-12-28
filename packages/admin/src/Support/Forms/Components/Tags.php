@@ -16,19 +16,21 @@ class Tags extends TagsInput
         parent::setUp();
 
         $this->loadStateFromRelationshipsUsing(static function (Tags $component, ?Model $record): void {
-            if (!method_exists($record, 'tags')) {
+            if (! method_exists($record, 'tags')) {
                 return;
             }
 
-            $state = $record->tags->pluck('value')->map(function (string $value) {
-                return Str::upper($value);
-            })->all();
+            $state = $record->tags
+                ->pluck('value')
+                ->map(function (string $value) {
+                    return Str::upper($value);
+                })->all();
 
             $component->state($state);
         });
 
         $this->saveRelationshipsUsing(static function (Tags $component, ?Model $record, array $state) {
-            if (!(method_exists($record, 'tags'))) {
+            if (! method_exists($record, 'tags')) {
                 return;
             }
 
