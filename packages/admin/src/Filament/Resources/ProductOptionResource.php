@@ -52,7 +52,7 @@ class ProductOptionResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name') // TODO: we need a custom field type for this
+        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
             ->label(__('lunarpanel::productoption.form.name.label'))
             ->required()
             ->maxLength(255)
@@ -61,7 +61,7 @@ class ProductOptionResource extends BaseResource
 
     protected static function getLabelFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('label') // TODO: we need a custom field type for this
+        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('label')
             ->label(__('lunarpanel::productoption.form.label.label'))
             ->required()
             ->maxLength(255)

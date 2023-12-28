@@ -49,14 +49,12 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         return ProductOptionFactory::new();
     }
 
-    public function getNameAttribute(string $value): mixed
+    protected function name(): Attribute
     {
-        return json_decode($value);
-    }
-
-    protected function setNameAttribute(mixed $value): void
-    {
-        $this->attributes['name'] = json_encode($value);
+        return Attribute::make(
+            get: fn (string $value) => json_decode($value),
+            set: fn ($value) => json_encode($value),
+        );
     }
 
     protected function label(): Attribute
