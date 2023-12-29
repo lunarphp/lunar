@@ -12,34 +12,34 @@ use Lunar\Models\ProductOption;
 
 class ProductOptionCreateTest extends TestCase
 {
-  use RefreshDatabase;
+    use RefreshDatabase;
 
-  public function setUp(): void
-  {
-    parent::setUp();
+    public function setUp(): void
+    {
+        parent::setUp();
 
-    Language::factory()->create([
-      'default' => true,
-      'code' => 'en',
-    ]);
-  }
+        Language::factory()->create([
+            'default' => true,
+            'code' => 'en',
+        ]);
+    }
 
-  /**
-   * @test
-   * */
-  public function can_populate_product_option_data()
-  {
-    $staff = Staff::factory()->create([
-      'admin' => true,
-    ]);
+    /**
+     * @test
+     * */
+    public function can_populate_product_option_data()
+    {
+        $staff = Staff::factory()->create([
+            'admin' => true,
+        ]);
 
-    LiveWire::actingAs($staff, 'staff')
-      ->test(OptionsIndex::class)
-      ->set('newProductOption.name.' . Language::getDefault()->code, 'Size')
-      ->call('createOption');
+        LiveWire::actingAs($staff, 'staff')
+            ->test(OptionsIndex::class)
+            ->set('newProductOption.name.'.Language::getDefault()->code, 'Size')
+            ->call('createOption');
 
-    $this->assertDatabaseHas((new ProductOption())->getTable(), [
-      'name' => json_encode([Language::getDefault()->code => 'Size']),
-    ]);
-  }
+        $this->assertDatabaseHas((new ProductOption())->getTable(), [
+            'name' => json_encode([Language::getDefault()->code => 'Size']),
+        ]);
+    }
 }
