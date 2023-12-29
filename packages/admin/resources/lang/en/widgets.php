@@ -34,4 +34,17 @@ return [
             'heading' => 'Latest Orders',
         ],
     ],
+    'customer' => [
+        'stats_overview' => [
+            'total_orders' => [
+                'label'=> 'Total orders'
+            ],
+            'avg_spend' => [
+                'label'=> 'Avg. Spend'
+            ],
+            'total_spend' => [
+                'label'=> 'Total Spend'
+            ],
+        ]
+    ]
 ];
