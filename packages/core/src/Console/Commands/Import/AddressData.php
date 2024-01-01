@@ -42,7 +42,7 @@ class AddressData extends Command
             ->object();
 
         $newCountries = collect($countries)->filter(function ($country) use ($existing) {
-            return !$existing->contains($country->iso3);
+            return ! $existing->contains($country->iso3);
         });
 
         if (! $newCountries->count()) {
