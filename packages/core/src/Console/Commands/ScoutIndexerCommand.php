@@ -11,7 +11,7 @@ class ScoutIndexerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'lunar:search:index 
+    protected $signature = 'lunar:search:index
                             {models?* : Model or space-separated list of Models for indexing.}
                             {--ignore : If informed, only uses the models listed in the command call for indexing, ignoring the Models present in the config file.}
                             {--refresh : If informed, the records will be delete before indexing. Can\'t be used with the [--flush] option.}
@@ -42,39 +42,31 @@ class ScoutIndexerCommand extends Command
     private function indexer(array $models): void
     {
         foreach ($models as $model) {
-            $this->newLine();
-
             // Check whether to delete the records
             if ($this->option('flush') || $this->option('refresh')) {
                 // Delete model records from the index
-                $this->warn('Deleting ['.$model.'] records from the index.');
+                $this->components->info('Deleting [' . $model . '] records from the index.');
                 $this->call('scout:flush', ['model' => $model]);
             }
 
             // Checks whether to import the records
-            if (! $this->option('flush')) {
+            if (!$this->option('flush')) {
                 // Import model records to index
                 $this->call('scout:import', ['model' => $model]);
             }
-
-            $this->newLine();
         }
     }
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): void
     {
         // Check if --refresh and --flush options has been passed
         if ($this->option('flush') && $this->option('refresh')) {
-            $this->newLine();
-            $this->error('You can\'t use the [--refresh] and [--flush] options together.');
-            $this->newLine();
+            $this->components->error('You can\'t use the [--refresh] and [--flush] options together.');
 
-            return;
+            exit(self::FAILURE);
         }
 
         // Return searchable models from config
@@ -85,12 +77,10 @@ class ScoutIndexerCommand extends Command
             // Checks if a model was passed in the call
             if (empty($this->argument('models'))) {
                 // Error if option [--ignore] is passed and no model is informed
-                $this->newLine();
-                $this->error('No model passed on call');
-                $this->info('When using the [--ignore] option, you must provide at least one model to index.');
-                $this->newLine();
+                $this->components->error('No model passed on call');
+                $this->components->info('When using the [--ignore] option, you must provide at least one model to index.');
 
-                return;
+                exit(self::FAILURE);
             } else {
                 // Run the indexer commands
                 $this->indexer($this->argument('models'));
@@ -104,6 +94,6 @@ class ScoutIndexerCommand extends Command
             $this->indexer($models);
         }
 
-        return 0;
+        exit(self::SUCCESS);
     }
 }

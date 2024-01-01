@@ -26,28 +26,22 @@ class MigrateGetCandy extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $tableNames = collect(
             DB::connection()->getDoctrineSchemaManager()->listTableNames()
         );
 
-        $tables = $tableNames->filter(function ($table) {
-            return str_contains($table, 'getcandy_');
-        });
+        $tables = $tableNames->filter(fn($table) => str_contains($table, 'getcandy_'));
 
-        $lunarTables = $tableNames->filter(function ($table) {
-            return str_contains($table, 'lunar_');
-        });
+        $lunarTables = $tableNames->filter(fn($table) => str_contains($table, 'lunar_'));
 
-        if ($tables->count() && ! $lunarTables->count()) {
+        if ($tables->count() && !$lunarTables->count()) {
             $this->migrateTableNames($tables);
         }
 
-        $this->info('Updating Polymorphic relationships');
+        $this->components->info('Updating Polymorphic relationships');
 
         $prefix = config('lunar.database.table_prefix');
 
@@ -87,7 +81,7 @@ class MigrateGetCandy extends Command
         ];
 
         foreach ($tables as $table => $rows) {
-            $this->line("Updating {$table}");
+            $this->components->info("Updating {$table}");
             DB::transaction(function () use ($table, $rows) {
                 foreach ($rows as $row) {
                     DB::table($table)->update([
@@ -99,7 +93,7 @@ class MigrateGetCandy extends Command
             });
         }
 
-        $this->line('Updating attribute data');
+        $this->components->info('Updating attribute data');
 
         $tables = [
             'products',
@@ -109,9 +103,9 @@ class MigrateGetCandy extends Command
         ];
 
         foreach ($tables as $table) {
-            $tableName = $prefix.$table;
+            $tableName = $prefix . $table;
 
-            $this->line("Migrating {$tableName}");
+            $this->components->info("Migrating {$tableName}");
 
             DB::table($tableName)->update([
                 'attribute_data' => DB::RAW(
@@ -120,23 +114,23 @@ class MigrateGetCandy extends Command
             ]);
         }
 
-        return Command::SUCCESS;
+        exit(self::SUCCESS);
     }
 
     protected function migrateTableNames($tables)
     {
         try {
             $adminMigrations = collect(File::files(
-                __DIR__.'/../../../../admin/database/migrations'
+                __DIR__ . '/../../../../admin/database/migrations'
             ));
         } catch (DirectoryNotFoundException $e) {
             $adminMigrations = collect();
         }
 
         $migrations = collect(File::files(
-            __DIR__.'/../../../database/migrations'
+            __DIR__ . '/../../../database/migrations'
         ))->merge($adminMigrations)->map(function ($file) {
-            return $file->getBasename('.'.$file->getExtension());
+            return $file->getBasename('.' . $file->getExtension());
         });
 
         $this->line('Removing old migrations');
@@ -151,7 +145,7 @@ class MigrateGetCandy extends Command
             $old = $table;
             $new = str_replace('getcandy_', 'lunar_', $table);
 
-            if (! Schema::hasTable($old) || ! Schema::hasTable($new)) {
+            if (!Schema::hasTable($old) || !Schema::hasTable($new)) {
                 continue;
             }
 
@@ -178,7 +172,7 @@ class MigrateGetCandy extends Command
 
                 foreach ($rows as $row) {
                     $data = (array) $row;
-                    if (! empty($data['brand'])) {
+                    if (!empty($data['brand'])) {
                         $brand = $brands->first(function ($brand) use ($data) {
                             return $brand->name == $data['brand'];
                         });
