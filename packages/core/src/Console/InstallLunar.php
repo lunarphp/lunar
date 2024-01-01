@@ -47,7 +47,7 @@ class InstallLunar extends Command
 
         $this->components->info('Publishing configuration...');
 
-        if (!$this->configExists('lunar')) {
+        if (! $this->configExists('lunar')) {
             $this->publishConfiguration();
         } else {
             if ($this->shouldOverwriteConfig()) {
@@ -63,12 +63,12 @@ class InstallLunar extends Command
         }
 
         DB::transaction(function () {
-            if (!Country::count()) {
+            if (! Country::count()) {
                 $this->components->info('Importing countries');
                 $this->call('lunar:import:address-data');
             }
 
-            if (!Channel::whereDefault(true)->exists()) {
+            if (! Channel::whereDefault(true)->exists()) {
                 $this->components->info('Setting up default channel');
 
                 Channel::create([
@@ -79,7 +79,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (!Language::count()) {
+            if (! Language::count()) {
                 $this->components->info('Adding default language');
 
                 Language::create([
@@ -89,7 +89,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (!Currency::whereDefault(true)->exists()) {
+            if (! Currency::whereDefault(true)->exists()) {
                 $this->components->info('Adding a default currency (USD)');
 
                 Currency::create([
@@ -102,7 +102,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (!CustomerGroup::whereDefault(true)->exists()) {
+            if (! CustomerGroup::whereDefault(true)->exists()) {
                 $this->components->info('Adding a default customer group.');
 
                 CustomerGroup::create([
@@ -112,7 +112,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (!CollectionGroup::count()) {
+            if (! CollectionGroup::count()) {
                 $this->components->info('Adding an initial collection group');
 
                 CollectionGroup::create([
@@ -121,7 +121,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (!TaxClass::count()) {
+            if (! TaxClass::count()) {
                 $this->components->info('Adding a default tax class.');
 
                 TaxClass::create([
@@ -130,7 +130,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (!Attribute::count()) {
+            if (! Attribute::count()) {
                 $this->components->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
@@ -224,7 +224,7 @@ class InstallLunar extends Command
                 ]);
             }
 
-            if (!ProductType::count()) {
+            if (! ProductType::count()) {
                 $this->components->info('Adding a product type.');
 
                 $type = ProductType::create([
@@ -260,11 +260,11 @@ class InstallLunar extends Command
      */
     private function configExists(string $fileName): bool
     {
-        if (!File::isDirectory(config_path($fileName))) {
+        if (! File::isDirectory(config_path($fileName))) {
             return false;
         }
 
-        return !empty(File::allFiles(config_path($fileName)));
+        return ! empty(File::allFiles(config_path($fileName)));
     }
 
     /**
