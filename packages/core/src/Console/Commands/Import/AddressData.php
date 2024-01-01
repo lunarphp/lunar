@@ -45,7 +45,7 @@ class AddressData extends Command
             return !$existing->contains($country->iso3);
         });
 
-        if (!$newCountries->count()) {
+        if (! $newCountries->count()) {
             $this->components->info('There are no new countries to import');
 
             exit(self::SUCCESS);
