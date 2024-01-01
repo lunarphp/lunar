@@ -45,7 +45,7 @@ class ScoutIndexerCommand extends Command
             // Check whether to delete the records
             if ($this->option('flush') || $this->option('refresh')) {
                 // Delete model records from the index
-                $this->components->info('Deleting ['.$model.'] records from the index.');
+                $this->components->warn('Deleting ['.$model.'] records from the index.');
                 $this->call('scout:flush', ['model' => $model]);
             }
 
