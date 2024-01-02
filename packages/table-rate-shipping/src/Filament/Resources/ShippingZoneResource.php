@@ -43,6 +43,7 @@ class ShippingZoneResource extends BaseResource
     {
         return [
             static::getNameFormComponent(),
+            static::getTypeFormComponent(),
         ];
     }
 
@@ -53,6 +54,19 @@ class ShippingZoneResource extends BaseResource
             ->required()
             ->maxLength(255)
             ->autofocus();
+    }
+
+    protected static function getTypeFormComponent(): Component
+    {
+        return Forms\Components\Select::make('type')
+            ->label('Type')
+            ->required()
+            ->options([
+                'unrestricted' => 'Unrestricted',
+                'countries' => 'Limit to Countries',
+                'states' => 'Limit to States / Provinces',
+                'postcodes' => 'Limit to Postcodes',
+            ]);
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -77,6 +91,8 @@ class ShippingZoneResource extends BaseResource
         return [
             Tables\Columns\TextColumn::make('name')
                 ->label('Name'),
+            Tables\Columns\TextColumn::make('type')
+                ->label('Type'),
         ];
     }
 
