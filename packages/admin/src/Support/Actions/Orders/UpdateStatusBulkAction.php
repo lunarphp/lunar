@@ -26,7 +26,6 @@ class UpdateStatusBulkAction extends BulkAction
 
         $this->action(
             function (Collection $records, array $data) {
-                dd($records);
                 DB::beginTransaction();
                 foreach ($records as $record) {
                     $this->updateStatus($record, $data);

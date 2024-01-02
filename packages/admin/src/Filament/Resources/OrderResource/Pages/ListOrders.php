@@ -51,7 +51,7 @@ class ListOrders extends BaseListRecords
         return Actions\Action::make('preview')
             ->slideOver()
             ->modalContent(function (Collection $records) {
-                dd($records);
+                //                dd($records);
             });
     }
 }
