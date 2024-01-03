@@ -9,7 +9,7 @@ use Lunar\Models\Order;
 
 class LatestOrders extends TableWidget
 {
-    protected int|string|array $columnSpan = 'full';
+    //    protected int|string|array $columnSpan = 'full';
 
     public static function getHeading(): ?string
     {

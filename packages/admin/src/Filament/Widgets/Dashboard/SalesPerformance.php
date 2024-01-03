@@ -18,8 +18,6 @@ class SalesPerformance extends ApexChartWidget
      */
     protected static string $chartId = 'salesPerformanceChart';
 
-    protected int|string|array $columnSpan = 'full';
-
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.sales_performance.heading');
