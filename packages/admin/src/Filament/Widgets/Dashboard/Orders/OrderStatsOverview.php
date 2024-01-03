@@ -75,7 +75,12 @@ class OrderStatsOverview extends BaseWidget
             DB::RAW('sum(sub_total) as sub_total')
         )->first()->sub_total;
 
-        $percentage = round((($currentSubTotal->value - $previousSubTotal->value) / $previousSubTotal->value) * 100);
+        if ($previousSubTotal->value) {
+            $percentage = round((($currentSubTotal->value - $previousSubTotal->value) / $previousSubTotal->value) * 100);
+        } else {
+            $percentage = $currentSubTotal->value ? 100 : 0;
+        }
+
         $increase = $percentage > 0;
 
         return Stat::make(
@@ -98,7 +103,13 @@ class OrderStatsOverview extends BaseWidget
     {
         $currentCount = $currentDate->count();
         $previousCount = $previousDate->count();
-        $daysPercentage = round((($currentCount - $previousCount) / $previousCount) * 100);
+
+        if ($previousCount) {
+            $daysPercentage = round((($currentCount - $previousCount) / $previousCount) * 100);
+        } else {
+            $daysPercentage = $currentCount ? 100 : 0;
+        }
+
         $daysIncreased = $daysPercentage > 0;
 
         return Stat::make(
