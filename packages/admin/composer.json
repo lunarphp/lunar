@@ -21,7 +21,8 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "technikermathe/blade-lucide-icons": "^v2.24.0",
         "marvinosswald/filament-input-select-affix": "^0.1.0",
-        "leandrocfe/filament-apex-charts": "^3.0"
+        "leandrocfe/filament-apex-charts": "^3.0",
+        "awcodes/shout": "2.x-dev"
     },
     "extra": {
         "laravel": {
