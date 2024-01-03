@@ -8,6 +8,7 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Support\Pages\BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -38,6 +39,7 @@ class Dashboard extends BaseDashboard
             OrdersSalesChart::class,
             AverageOrderValueChart::class,
             NewVsReturningCustomersChart::class,
+            PopularProductsTable::class,
         ];
     }
 

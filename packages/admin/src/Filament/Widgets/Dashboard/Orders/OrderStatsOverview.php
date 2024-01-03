@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Lunar\Facades\DB;
@@ -55,67 +56,64 @@ class OrderStatsOverview extends BaseWidget
         );
 
         return [
-            Stat::make(
-                label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_one.label'),
-                value: number_format($today->count()),
-            )->description(
-                __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_one.description', [
-                    'count' => number_format($yesterday->count()),
-                ])
-            ),
-            Stat::make(
-                label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_two.label'),
-                value: number_format($currentWeek->count()),
-            )->description(
-                __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_two.description', [
-                    'count' => number_format($previousWeek->count()),
-                ])
-            ),
-            Stat::make(
-                label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_three.label'),
-                value: number_format($currentMonth->count()),
-            )->description(
-                __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_three.description', [
-                    'count' => number_format($previousMonth->count()),
-                ])
-            ),
-            Stat::make(
-                label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_four.label'),
-                value: $today->select(
-                    DB::RAW('sum(sub_total) as sub_total')
-                )->first()->sub_total->formatted,
-            )->description(
-                __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_four.description', [
-                    'total' => $yesterday->select(
-                        DB::RAW('sum(sub_total) as sub_total')
-                    )->first()->sub_total->formatted,
-                ])
-            ),
-            Stat::make(
-                label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_five.label'),
-                value: $currentWeek->select(
-                    DB::RAW('sum(sub_total) as sub_total')
-                )->first()->sub_total->formatted,
-            )->description(
-                __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_five.description', [
-                    'total' => $previousWeek->select(
-                        DB::RAW('sum(sub_total) as sub_total')
-                    )->first()->sub_total->formatted,
-                ])
-            ),
-            Stat::make(
-                label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_six.label'),
-                value: $currentMonth->select(
-                    DB::RAW('sum(sub_total) as sub_total')
-                )->first()->sub_total->formatted,
-            )->description(
-                __('lunarpanel::widgets.dashboard.orders.order_stats_overview.stat_six.description', [
-                    'total' => $previousMonth->select(
-                        DB::RAW('sum(sub_total) as sub_total')
-                    )->first()->sub_total->formatted,
-                ])
-            ),
-
+            $this->getStatCount($today, $yesterday, 'stat_one'),
+            $this->getStatCount($currentWeek, $previousWeek, 'stat_two'),
+            $this->getStatCount($currentMonth, $previousMonth, 'stat_three'),
+            $this->getStatTotal($today, $yesterday, 'stat_four'),
+            $this->getStatTotal($currentWeek, $previousWeek, 'stat_five'),
+            $this->getStatTotal($currentMonth, $previousMonth, 'stat_six'),
         ];
+    }
+
+    protected function getStatTotal($currentDate, $previousDate, $reference): Stat
+    {
+        $currentSubTotal = $currentDate->select(
+            DB::RAW('sum(sub_total) as sub_total')
+        )->first()->sub_total;
+
+        $previousSubTotal = $previousDate->select(
+            DB::RAW('sum(sub_total) as sub_total')
+        )->first()->sub_total;
+
+        $percentage = round((($currentSubTotal->value - $previousSubTotal->value) / $previousSubTotal->value) * 100);
+        $increase = $percentage > 0;
+
+        return Stat::make(
+            label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.label'),
+            value: $currentSubTotal->formatted,
+        )->description(
+            __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.'.($increase ? 'increase' : 'decrease'), [
+                'percentage' => abs($percentage),
+                'total' => $previousSubTotal->formatted,
+            ])
+        )->descriptionIcon(
+            FilamentIcon::resolve(
+                $increase ? 'lunar:trending-up' : 'lunar:trending-down'
+            )
+        )
+            ->color($increase ? 'success' : 'danger');
+    }
+
+    protected function getStatCount($currentDate, $previousDate, $reference): Stat
+    {
+        $currentCount = $currentDate->count();
+        $previousCount = $previousDate->count();
+        $daysPercentage = round((($currentCount - $previousCount) / $previousCount) * 100);
+        $daysIncreased = $daysPercentage > 0;
+
+        return Stat::make(
+            label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.label'),
+            value: number_format($currentCount),
+        )->description(
+            __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.'.($daysIncreased ? 'increase' : 'decrease'), [
+                'percentage' => abs($daysPercentage),
+                'count' => number_format($previousCount),
+            ])
+        )->descriptionIcon(
+            FilamentIcon::resolve(
+                $daysIncreased ? 'lunar:trending-up' : 'lunar:trending-down'
+            )
+        )
+            ->color($daysIncreased ? 'success' : 'danger');
     }
 }

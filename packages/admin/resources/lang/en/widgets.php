@@ -6,27 +6,33 @@ return [
             'order_stats_overview' => [
                 'stat_one' => [
                     'label' => 'Orders today',
-                    'description' => 'from :count yesterday',
+                    'increase' => ':percentage% increase from :count yesterday',
+                    'decrease' => ':percentage% decrease from :count yesterday',
                 ],
                 'stat_two' => [
                     'label' => 'Orders this week',
-                    'description' => 'from :count last week',
+                    'increase' => ':percentage% increase from :count last week',
+                    'decrease' => ':percentage% decrease from :count last week',
                 ],
                 'stat_three' => [
                     'label' => 'Orders this month',
-                    'description' => 'from :count last month',
+                    'increase' => ':percentage% increase from :count last month',
+                    'decrease' => ':percentage% decrease from :count last month',
                 ],
                 'stat_four' => [
                     'label' => 'Sales today',
-                    'description' => 'from :total last month',
+                    'increase' => ':percentage% increase from :total yesterday',
+                    'decrease' => ':percentage% decrease from :total yesterday',
                 ],
                 'stat_five' => [
                     'label' => 'Sales this week',
-                    'description' => 'from :total last week',
+                    'increase' => ':percentage% increase from :total last week',
+                    'decrease' => ':percentage% decrease from :total last week',
                 ],
                 'stat_six' => [
                     'label' => 'Sales this month',
-                    'description' => 'from :total last month',
+                    'increase' => ':percentage% increase from :total last month',
+                    'decrease' => ':percentage% decrease from :total last month',
                 ],
             ],
             'order_totals_chart' => [
@@ -69,6 +75,10 @@ return [
                 'series_two' => [
                     'label' => 'Returning Customers',
                 ],
+            ],
+            'popular_products' => [
+                'heading' => 'This months best sellers',
+                'description' => 'These figures are based on the number of times a product appears on an order, not the quantity ordered.',
             ],
         ],
     ],
