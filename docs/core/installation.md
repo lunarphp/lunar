@@ -15,8 +15,12 @@
 ### Composer Require Package
 
 ```sh
-composer require lunarphp/lunar:1.0-dev -W
+composer require lunarphp/lunar:1.x-dev -W
 ```
+
+::: tip
+You may need to update your app's `composer.json` to set `"minimum-stability": "dev",`
+:::
 
 ### Add the LunarUser Trait
 
