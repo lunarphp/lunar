@@ -22,9 +22,13 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
 use Lunar\Admin\Filament\Pages;
 use Lunar\Admin\Filament\Resources;
-use Lunar\Admin\Filament\Widgets\Dashboard\LatestOrders;
-use Lunar\Admin\Filament\Widgets\Dashboard\SalesPerformance;
-use Lunar\Admin\Filament\Widgets\Dashboard\StatsOverview;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Support\Extending\BaseExtension;
 use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
@@ -63,9 +67,13 @@ class LunarPanelManager
     ];
 
     protected static $widgets = [
-        StatsOverview::class,
-        SalesPerformance::class,
-        LatestOrders::class,
+        OrderStatsOverview::class,
+        OrderTotalsChart::class,
+        OrdersSalesChart::class,
+        AverageOrderValueChart::class,
+        NewVsReturningCustomersChart::class,
+        PopularProductsTable::class,
+        LatestOrdersTable::class,
     ];
 
     public function register(): self
@@ -121,6 +129,8 @@ class LunarPanelManager
             'lunar::reorder' => 'lucide-grip-vertical',
             'lunar::chevron-right' => 'lucide-chevron-right',
             'lunar::image-placeholder' => 'lucide-image',
+            'lunar:trending-up' => 'lucide-trending-up',
+            'lunar:trending-down' => 'lucide-trending-down',
         ]);
 
         FilamentColor::register([
