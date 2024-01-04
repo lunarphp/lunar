@@ -73,6 +73,10 @@ trait UpdatesOrderStatus
                     ),
                 ];
             });
+        })->hidden(function (Forms\Get $get) {
+            return ! count(
+                static::getMailers($get('status'))
+            );
         });
     }
 
@@ -88,8 +92,6 @@ trait UpdatesOrderStatus
                 static::getEmailAddressesInput(),
                 static::getAdditionalEmailInput(),
             ])->hidden(function (Forms\Get $get) {
-                \Log::debug($get('status'));
-
                 return ! count(
                     static::getMailers($get('status'))
                 );
