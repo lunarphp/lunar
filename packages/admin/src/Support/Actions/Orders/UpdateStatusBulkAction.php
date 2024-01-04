@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Actions\Orders;
 
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
 use Lunar\Admin\Support\Actions\Traits\UpdatesOrderStatus;
@@ -19,10 +20,9 @@ class UpdateStatusBulkAction extends BulkAction
             __('lunarpanel::actions.orders.update_status.label')
         );
 
-        $this->modalWidth('lg');
-        $this->slideOver();
+        $this->modalWidth(MaxWidth::TwoExtraLarge);
 
-        $this->form(fn () => $this->getUpdatesOrderStatusFormInputs());
+        $this->form($this->getFormSteps());
 
         $this->action(
             function (Collection $records, array $data) {

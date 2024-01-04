@@ -825,13 +825,4 @@ class ManageOrder extends ViewRecord
     {
         return $this->record->transactions()->whereType('intent')->whereSuccess(true)->get();
     }
-
-    public function previewAction(): Actions\Action
-    {
-        return Actions\Action::make('preview')
-            ->slideOver()
-            ->modalContent(function () {
-                return 'fooo';
-            });
-    }
 }

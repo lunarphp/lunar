@@ -2,11 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
-use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 
@@ -44,14 +42,5 @@ class ListOrders extends BaseListRecords
     public function getMaxContentWidth(): ?string
     {
         return 'full';
-    }
-
-    public function previewAction(): Actions\Action
-    {
-        return Actions\Action::make('preview')
-            ->slideOver()
-            ->modalContent(function (Collection $records) {
-                //                dd($records);
-            });
     }
 }
