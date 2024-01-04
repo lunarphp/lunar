@@ -2,12 +2,12 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
-use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
+use Lunar\Models\Order;
 
 class ListOrders extends BaseListRecords
 {
@@ -33,6 +33,17 @@ class ListOrders extends BaseListRecords
             'dispatched' => Tab::make('Dispatched')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'dispatched')),
         ];
+    }
+
+    protected function applySearchToTableQuery(Builder $query): Builder
+    {
+        $this->applyColumnSearchesToTableQuery($query);
+
+        if (filled($search = $this->getTableSearch())) {
+            $query->whereIn('id', Order::search($search)->keys());
+        }
+
+        return $query;
     }
 
     protected function paginateTableQuery(Builder $query): Paginator
