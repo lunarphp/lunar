@@ -8,7 +8,7 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'Currently in draft status, this product is concealed across all channels and customer groups.',
+            'content' => 'Currently in draft status, this product is hidden across all channels and customer groups.',
         ],
         'availability' => [
             'customer_groups' => 'This product is currently unavailable for all customer groups.',
