@@ -78,6 +78,10 @@ trait UpdatesOrderStatus
                         $get('additionalContent')
                     ),
                 ];
+            })->hidden(function (Forms\Get $get) {
+                return ! count(
+                    $this->getMailers($get('status'))
+                );
             }),
         ];
     }
