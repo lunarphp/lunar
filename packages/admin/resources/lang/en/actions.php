@@ -24,9 +24,11 @@ return [
                 ],
                 'step_two' => [
                     'label' => 'Mailers & Notifications',
+                    'no_mailers' => 'There are no mailers available for this status.',
                 ],
                 'step_three' => [
                     'label' => 'Preview & Save',
+                    'no_mailers' => 'No mailers have been chosen for preview.',
                 ],
             ],
             'notification' => [

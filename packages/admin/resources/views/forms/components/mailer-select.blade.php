@@ -1,9 +1,5 @@
 <div>
-  @if(!count($getMailers()))
-    <p class="text-sm text-grey-500 block text-center">
-      {{ __('lunarpanel::components.forms.mailer-select.preview.empty') }}
-    </p>
-  @else
+  @if(count($getMailers()))
     <x-filament::input.wrapper>
       <x-filament::input.select wire:model="selectedMailer">
         @foreach($getMailers() as $value => $label)

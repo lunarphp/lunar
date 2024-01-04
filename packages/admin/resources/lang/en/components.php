@@ -73,11 +73,6 @@ return [
     ],
 
     'forms' => [
-        'mailer-select' => [
-            'preview' => [
-                'empty' => 'No mailers have been selected to be sent.',
-            ],
-        ],
         'youtube' => [
             'helperText' => 'Enter the ID of the YouTube video. e.g. dQw4w9WgXcQ',
         ],

@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Actions\Traits;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
@@ -95,6 +96,13 @@ trait UpdatesOrderStatus
             Forms\Components\Wizard\Step::make(
                 __('lunarpanel::actions.orders.update_status.wizard.step_two.label')
             )->schema([
+                Shout::make('no-mailers')->content(
+                    __('lunarpanel::actions.orders.update_status.wizard.step_two.no_mailers')
+                )->hidden(function (Forms\Get $get) {
+                    return count(
+                        static::getMailers($get('status'))
+                    );
+                }),
                 static::getMailersCheckboxInput(),
                 static::getAdditionalContentInput(),
                 static::getEmailAddressesInput(),
@@ -107,6 +115,13 @@ trait UpdatesOrderStatus
                 $mailers = $get('mailers');
 
                 return [
+                    Shout::make('no-mailers')->content(
+                        __('lunarpanel::actions.orders.update_status.wizard.step_three.no_mailers')
+                    )->hidden(function (Forms\Get $get) {
+                        return count(
+                            static::getMailers($get('status'))
+                        );
+                    }),
                     MailerSelect::make('mailer')->context($record)->mailers($mailers)->additionalContent(
                         $get('additionalContent')
                     ),
