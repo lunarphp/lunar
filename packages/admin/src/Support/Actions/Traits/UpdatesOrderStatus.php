@@ -4,8 +4,6 @@ namespace Lunar\Admin\Support\Actions\Traits;
 
 use Filament\Forms;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -44,14 +42,14 @@ trait UpdatesOrderStatus
                     );
                 }),
                 Forms\Components\CheckboxList::make('email_addresses')
-                    ->hidden(function (Forms\Get $get, Collection $records, Order $record = null) {
+                    ->hidden(function (Forms\Get $get, Order $record = null) {
                         if (! $record) {
                             return true;
                         }
 
                         return ! count($get('mailers') ?: [])
                             || ! ($record?->billingAddress?->contact_email && $record->shippingAddress->contact_email);
-                    })->options(function (Order $record) {
+                    })->options(function (Order $record = null) {
                         return collect([
                             $record?->billingAddress->contact_email,
                             $record?->shippingAddress->contact_email,
@@ -70,7 +68,7 @@ trait UpdatesOrderStatus
                 );
             }),
 
-            Forms\Components\Wizard\Step::make('Preview & Send')->schema(function (Forms\Get $get, Model $record) {
+            Forms\Components\Wizard\Step::make('Preview & Send')->schema(function (Forms\Get $get, Order $record = null) {
                 $mailers = $get('mailers');
 
                 return [
@@ -91,6 +89,14 @@ trait UpdatesOrderStatus
         $record->update([
             'status' => $data['status'],
         ]);
+
+        if (isset($data['send_notifications']) && ! $data['send_notifications']) {
+            Notification::make()->title(
+                __('lunarpanel::actions.orders.update_status.notification.label')
+            )->success()->send();
+
+            return;
+        }
 
         $emails = collect(
             [...$data['email_addresses'] ?? [], $data['additional_email'] ?? null]
