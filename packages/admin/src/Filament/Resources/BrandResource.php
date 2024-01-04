@@ -84,7 +84,7 @@ class BrandResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->searchable();
     }
 
     protected static function getTableColumns(): array
