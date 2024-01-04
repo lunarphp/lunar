@@ -8,31 +8,37 @@ return [
                     'label' => 'Orders today',
                     'increase' => ':percentage% increase from :count yesterday',
                     'decrease' => ':percentage% decrease from :count yesterday',
+                    'neutral' => 'No change compared to yesterday',
                 ],
                 'stat_two' => [
                     'label' => 'Orders this week',
                     'increase' => ':percentage% increase from :count last week',
                     'decrease' => ':percentage% decrease from :count last week',
+                    'neutral' => 'No change compared to last week',
                 ],
                 'stat_three' => [
                     'label' => 'Orders this month',
                     'increase' => ':percentage% increase from :count last month',
                     'decrease' => ':percentage% decrease from :count last month',
+                    'neutral' => 'No change compared to last month',
                 ],
                 'stat_four' => [
                     'label' => 'Sales today',
                     'increase' => ':percentage% increase from :total yesterday',
                     'decrease' => ':percentage% decrease from :total yesterday',
+                    'neutral' => 'No change compared to yesterday',
                 ],
                 'stat_five' => [
                     'label' => 'Sales this week',
                     'increase' => ':percentage% increase from :total last week',
                     'decrease' => ':percentage% decrease from :total last week',
+                    'neutral' => 'No change compared to last week',
                 ],
                 'stat_six' => [
                     'label' => 'Sales this month',
                     'increase' => ':percentage% increase from :total last month',
                     'decrease' => ':percentage% decrease from :total last month',
+                    'neutral' => 'No change compared to last month',
                 ],
             ],
             'order_totals_chart' => [

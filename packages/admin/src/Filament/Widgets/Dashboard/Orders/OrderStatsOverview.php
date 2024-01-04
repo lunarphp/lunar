@@ -80,21 +80,23 @@ class OrderStatsOverview extends BaseWidget
             ($currentSubTotal->value ? 100 : 0);
 
         $increase = $percentage > 0;
+        $neutral = $percentage === 0;
+        $trend = $neutral ? 'neutral' : ($increase ? 'increase' : 'decrease');
 
         return Stat::make(
             label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.label'),
             value: $currentSubTotal->formatted,
         )->description(
-            __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.'.($increase ? 'increase' : 'decrease'), [
+            __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.'.$trend, [
                 'percentage' => abs($percentage),
                 'total' => $previousSubTotal->formatted,
             ])
         )->descriptionIcon(
             FilamentIcon::resolve(
-                $increase ? 'lunar:trending-up' : 'lunar:trending-down'
+                $trend == 'neutral' ? 'lunar:trending-neutral' : ($increase ? 'lunar:trending-up' : 'lunar:trending-down')
             )
         )
-            ->color($increase ? 'success' : 'danger');
+            ->color($trend == 'neutral' ? 'gray' : ($increase ? 'success' : 'danger'));
     }
 
     protected function getStatCount($currentDate, $previousDate, $reference): Stat
@@ -102,27 +104,29 @@ class OrderStatsOverview extends BaseWidget
         $currentCount = $currentDate->count();
         $previousCount = $previousDate->count();
 
-        if ($previousCount) {
-            $daysPercentage = round((($currentCount - $previousCount) / $previousCount) * 100);
-        } else {
-            $daysPercentage = $currentCount ? 100 : 0;
-        }
+        $percentage = $previousCount ?
+            round((($currentCount - $previousCount) / $previousCount) * 100) :
+            ($currentCount ? 100 : 0);
 
-        $daysIncreased = $daysPercentage > 0;
+        $increase = $percentage > 0;
+        $neutral = $percentage === 0;
+        $trend = $neutral ? 'neutral' : ($increase ? 'increase' : 'decrease');
+
+        $daysIncreased = $percentage > 0;
 
         return Stat::make(
             label: __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.label'),
             value: number_format($currentCount),
         )->description(
-            __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.'.($daysIncreased ? 'increase' : 'decrease'), [
-                'percentage' => abs($daysPercentage),
+            __('lunarpanel::widgets.dashboard.orders.order_stats_overview.'.$reference.'.'.$trend, [
+                'percentage' => abs($percentage),
                 'count' => number_format($previousCount),
             ])
         )->descriptionIcon(
             FilamentIcon::resolve(
-                $daysIncreased ? 'lunar:trending-up' : 'lunar:trending-down'
+                $trend == 'neutral' ? '' : ($increase ? 'lunar:trending-up' : 'lunar:trending-down')
             )
         )
-            ->color($daysIncreased ? 'success' : 'danger');
+            ->color($trend == 'neutral' ? 'gray' : ($increase ? 'success' : 'danger'));
     }
 }
