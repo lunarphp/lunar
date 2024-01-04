@@ -31,7 +31,7 @@
         "spatie/laravel-medialibrary": "^10.0.0",
         "spatie/laravel-permission": "^5.10",
         "technikermathe/blade-lucide-icons": "^v2.24.0",
-        "awcodes/shout": "2.x-dev"
+        "awcodes/shout": "^2.0.2"
     },
     "require-dev": {
         "laravel/pint": "1.13.1",
