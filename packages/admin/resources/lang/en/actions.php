@@ -18,6 +18,17 @@ return [
     'orders' => [
         'update_status' => [
             'label' => 'Update Status',
+            'wizard' => [
+                'step_one' => [
+                    'label' => 'Status',
+                ],
+                'step_two' => [
+                    'label' => 'Mailers & Notifications',
+                ],
+                'step_three' => [
+                    'label' => 'Preview & Save',
+                ],
+            ],
             'notification' => [
                 'label' => 'Order status updated',
             ],

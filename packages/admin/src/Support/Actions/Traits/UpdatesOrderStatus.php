@@ -87,21 +87,23 @@ trait UpdatesOrderStatus
     protected function getFormSteps()
     {
         return [
-            Forms\Components\Wizard\Step::make('Status')->schema([
+            Forms\Components\Wizard\Step::make(
+                __('lunarpanel::actions.orders.update_status.wizard.step_one.label')
+            )->schema([
                 static::getStatusSelectInput(),
             ]),
-            Forms\Components\Wizard\Step::make('Mailers & Notifications')->schema([
+            Forms\Components\Wizard\Step::make(
+                __('lunarpanel::actions.orders.update_status.wizard.step_two.label')
+            )->schema([
                 static::getMailersCheckboxInput(),
                 static::getAdditionalContentInput(),
                 static::getEmailAddressesInput(),
                 static::getAdditionalEmailInput(),
-            ])->hidden(function (Forms\Get $get) {
-                return ! count(
-                    static::getMailers($get('status'))
-                );
-            }),
+            ]),
 
-            Forms\Components\Wizard\Step::make('Preview & Send')->schema(function (Forms\Get $get, Order $record = null) {
+            Forms\Components\Wizard\Step::make(
+                __('lunarpanel::actions.orders.update_status.wizard.step_three.label')
+            )->schema(function (Forms\Get $get, Order $record = null) {
                 $mailers = $get('mailers');
 
                 return [
@@ -109,10 +111,6 @@ trait UpdatesOrderStatus
                         $get('additionalContent')
                     ),
                 ];
-            })->hidden(function (Forms\Get $get) {
-                return ! count(
-                    static::getMailers($get('status'))
-                );
             }),
         ];
     }
