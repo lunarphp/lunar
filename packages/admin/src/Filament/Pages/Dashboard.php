@@ -2,42 +2,30 @@
 
 namespace Lunar\Admin\Filament\Pages;
 
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
-use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Filament\Support\Facades\FilamentIcon;
-use Lunar\Admin\Filament\Widgets\Dashboard\LatestOrders;
-use Lunar\Admin\Filament\Widgets\Dashboard\SalesPerformance;
-use Lunar\Admin\Filament\Widgets\Dashboard\StatsOverview;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Support\Pages\BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
-    use HasFiltersForm;
-
     protected static ?int $navigationSort = 1;
-
-    public function filtersForm(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Section::make()
-                    ->schema([
-                        DatePicker::make('startDate'),
-                        DatePicker::make('endDate'),
-                        // ...
-                    ])
-                    ->columns(2),
-            ]);
-    }
 
     public function getWidgets(): array
     {
         return [
-            StatsOverview::class,
-            SalesPerformance::class,
-            LatestOrders::class,
+            OrderStatsOverview::class,
+            OrderTotalsChart::class,
+            OrdersSalesChart::class,
+            AverageOrderValueChart::class,
+            NewVsReturningCustomersChart::class,
+            PopularProductsTable::class,
+            LatestOrdersTable::class,
         ];
     }
 
