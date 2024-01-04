@@ -75,11 +75,9 @@ class OrderStatsOverview extends BaseWidget
             DB::RAW('sum(sub_total) as sub_total')
         )->first()->sub_total;
 
-        if ($previousSubTotal->value) {
-            $percentage = round((($currentSubTotal->value - $previousSubTotal->value) / $previousSubTotal->value) * 100);
-        } else {
-            $percentage = $currentSubTotal->value ? 100 : 0;
-        }
+        $percentage = $previousSubTotal->value ?
+            round((($currentSubTotal->value - $previousSubTotal->value) / $previousSubTotal->value) * 100) :
+            ($currentSubTotal->value ? 100 : 0);
 
         $increase = $percentage > 0;
 
