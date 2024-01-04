@@ -97,22 +97,6 @@ class ListProducts extends BaseListRecords
         ];
     }
 
-    protected function applySearchToTableQuery(Builder $query): Builder
-    {
-        $this->applyColumnSearchesToTableQuery($query);
-
-        if (filled($search = $this->getTableSearch())) {
-            $query->whereIn(
-                'id',
-                collect(Product::search($search)->keys())->map(
-                    fn ($result) => str_replace(Product::class.'::', '', $result)
-                )
-            );
-        }
-
-        return $query;
-    }
-
     protected function paginateTableQuery(Builder $query): Paginator
     {
         return $query->simplePaginate($this->getTableRecordsPerPage());

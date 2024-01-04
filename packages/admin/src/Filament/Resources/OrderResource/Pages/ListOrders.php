@@ -7,7 +7,6 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
-use Lunar\Models\Order;
 
 class ListOrders extends BaseListRecords
 {
@@ -33,22 +32,6 @@ class ListOrders extends BaseListRecords
             'dispatched' => Tab::make('Dispatched')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'dispatched')),
         ];
-    }
-
-    protected function applySearchToTableQuery(Builder $query): Builder
-    {
-        $this->applyColumnSearchesToTableQuery($query);
-
-        if (filled($search = $this->getTableSearch())) {
-            $query->whereIn(
-                'id',
-                collect(Order::search($search)->keys())->map(
-                    fn ($result) => str_replace(Order::class.'::', '', $result)
-                )
-            );
-        }
-
-        return $query;
     }
 
     protected function paginateTableQuery(Builder $query): Paginator
