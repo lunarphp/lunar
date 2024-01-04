@@ -8,6 +8,8 @@ Much like extending pages, to extend a resource you need to create and register 
 For example, the code below will register a custom extension called `MyProductResourceExtension` for the `ProductResource` Filament resource.
 
 ```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
 LunarPanel::registerExtension(new MyProductResourceExtension, \Lunar\Panel\Filament\Resources\ProductResource::class);
 ```
 
