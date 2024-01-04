@@ -1,19 +1,19 @@
 <?php
 
-namespace Lunar\Admin\Filament\Widgets\Dashboard;
+namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Models\Order;
 
-class LatestOrders extends TableWidget
+class LatestOrdersTable extends TableWidget
 {
-    //    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public static function getHeading(): ?string
     {
-        return __('lunarpanel::widgets.dashboard.latest_orders.heading');
+        return __('lunarpanel::widgets.dashboard.orders.latest_orders.heading');
     }
 
     public function table(Table $table): Table

@@ -86,6 +86,9 @@ return [
                 'heading' => 'This months best sellers',
                 'description' => 'These figures are based on the number of times a product appears on an order, not the quantity ordered.',
             ],
+            'latest_orders' => [
+                'heading' => 'Latest orders',
+            ],
         ],
     ],
 ];
