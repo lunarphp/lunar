@@ -18,7 +18,7 @@ abstract class BaseListRecords extends ListRecords
 
         $this->applyColumnSearchesToTableQuery($query);
 
-        if (! $scoutEnabled) {
+        if (! $scoutEnabled || ! $isScoutSearchable) {
             $this->applyGlobalSearchToTableQuery($query);
         }
 
