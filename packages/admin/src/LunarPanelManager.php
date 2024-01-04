@@ -64,6 +64,7 @@ class LunarPanelManager
 
     protected static $pages = [
         Pages\Dashboard::class,
+        Pages\Reports\SalesReport::class,
     ];
 
     protected static $widgets = [
@@ -129,8 +130,8 @@ class LunarPanelManager
             'lunar::reorder' => 'lucide-grip-vertical',
             'lunar::chevron-right' => 'lucide-chevron-right',
             'lunar::image-placeholder' => 'lucide-image',
-            'lunar:trending-up' => 'lucide-trending-up',
-            'lunar:trending-down' => 'lucide-trending-down',
+            'lunar::trending-up' => 'lucide-trending-up',
+            'lunar::trending-down' => 'lucide-trending-down',
         ]);
 
         FilamentColor::register([
