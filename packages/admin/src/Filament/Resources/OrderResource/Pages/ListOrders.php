@@ -40,7 +40,12 @@ class ListOrders extends BaseListRecords
         $this->applyColumnSearchesToTableQuery($query);
 
         if (filled($search = $this->getTableSearch())) {
-            $query->whereIn('id', Order::search($search)->keys());
+            $query->whereIn(
+                'id',
+                collect(Order::search($search)->keys())->map(
+                    fn ($result) => str_replace(Order::class.'::', '', $result)
+                )
+            );
         }
 
         return $query;

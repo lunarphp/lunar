@@ -102,7 +102,12 @@ class ListProducts extends BaseListRecords
         $this->applyColumnSearchesToTableQuery($query);
 
         if (filled($search = $this->getTableSearch())) {
-            $query->whereIn('id', Product::search($search)->keys());
+            $query->whereIn(
+                'id',
+                collect(Product::search($search)->keys())->map(
+                    fn ($result) => str_replace(Product::class.'::', '', $result)
+                )
+            );
         }
 
         return $query;

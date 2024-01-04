@@ -24,7 +24,12 @@ class ListCustomers extends BaseListRecords
         $this->applyColumnSearchesToTableQuery($query);
 
         if (filled($search = $this->getTableSearch())) {
-            $query->whereIn('id', Customer::search($search)->keys());
+            $query->whereIn(
+                'id',
+                collect(Customer::search($search)->keys())->map(
+                    fn ($result) => str_replace(Customer::class.'::', '', $result)
+                )
+            );
         }
 
         return $query;
