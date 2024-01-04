@@ -6,6 +6,16 @@ return [
 
     'plural_label' => 'Products',
 
+    'status' => [
+        'unpublished' => [
+            'content' => 'Currently in draft status, this product is hidden across all channels and customer groups.',
+        ],
+        'availability' => [
+            'customer_groups' => 'This product is currently unavailable for all customer groups.',
+            'channels' => 'This product is currently unavailable for all channels.',
+        ],
+    ],
+
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -27,6 +37,13 @@ return [
         ],
     ],
 
+    'actions' => [
+        'edit_status' => [
+            'label' => 'Update Status',
+            'heading' => 'Update Status',
+        ],
+    ],
+
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -42,6 +59,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
+            'options' => [
+                'published' => [
+                    'label' => 'Published',
+                    'description' => 'This product will be available across all enabled customer groups and channels',
+                ],
+                'draft' => [
+                    'label' => 'Draft',
+                    'description' => 'This product will be hidden across all channels and customer groups',
+                ],
+            ],
         ],
         'tags' => [
             'label' => 'Tags',
