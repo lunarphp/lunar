@@ -14,17 +14,11 @@ Run any migrations
 php artisan migrate
 ```
 
-Re-publish the admin hub assets
-
-```sh
-php artisan lunar:hub:install
-```
-
 ## Support Policy
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
-## [UNRELEASED]
+## 1.0
 
 ### High Impact
 
