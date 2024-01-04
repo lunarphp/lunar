@@ -12,9 +12,9 @@ Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) approa
 
 ## Repository Branching
 
-**Bug Fixes** should target the latest compatible branch version i.e `0.7`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
+**Bug Fixes** should target the latest compatible branch version i.e `0.7`.
 
-**Features** that bring new (or enhance current) functionality to Lunar should always target the `main` branch.
+**Enhancements** should target either `0.8`, or `1.x` if for the new Filament admin panel.
 
 ## Contributing Code
 
