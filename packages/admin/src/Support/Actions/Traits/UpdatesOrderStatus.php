@@ -18,6 +18,10 @@ trait UpdatesOrderStatus
             return ! count(
                 static::getMailers($get('status'))
             );
+        })->hidden(function (Forms\Get $get) {
+            return ! count(
+                static::getMailers($get('status'))
+            );
         });
     }
 
