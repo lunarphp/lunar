@@ -828,9 +828,10 @@ class ManageOrder extends ViewRecord
 
     public function previewAction(): Actions\Action
     {
-        return Actions\ViewAction::make('preview')
-            ->form([
-                Forms\Components\TextInput::make('foo'),
-            ]);
+        return Actions\Action::make('preview')
+            ->slideOver()
+            ->modalContent(function () {
+                return 'fooo';
+            });
     }
 }
