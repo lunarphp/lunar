@@ -34,16 +34,12 @@ class OrderIndexer extends ScoutIndexer
 
     public function makeAllSearchableUsing(Builder $query): Builder
     {
-        // Limit to the last 5 years
         return $query->with([
             'channel',
             'transactions',
             'productLines',
             'addresses',
             'tags',
-        ])->whereBetween('placed_at', [
-            now()->subYears(5)->startOfDay(),
-            now()->endOfDay(),
         ]);
     }
 
