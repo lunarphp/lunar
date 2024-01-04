@@ -12,59 +12,86 @@ use Lunar\Models\Order;
 
 trait UpdatesOrderStatus
 {
+    protected static function getAdditionalContentInput(): Forms\Components\Textarea
+    {
+        return Forms\Components\Textarea::make('additional_content')->hidden(function (Forms\Get $get) {
+            return ! count(
+                static::getMailers($get('status'))
+            );
+        });
+    }
+
+    protected static function getStatusSelectInput(): Forms\Components\Select
+    {
+        return Forms\Components\Select::make('status')
+            ->label(__('lunarpanel::order.form.status.label'))
+            ->default(fn ($record) => $record?->status)
+            ->options(fn () => collect(config('lunar.orders.statuses', []))
+                ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
+            ->required()
+            ->live();
+    }
+
+    protected static function getEmailAddressesInput(): Forms\Components\CheckboxList
+    {
+        return Forms\Components\CheckboxList::make('email_addresses')
+            ->hidden(function (Forms\Get $get, Order $record = null) {
+                if (! $record) {
+                    return true;
+                }
+
+                return ! count($get('mailers') ?: [])
+                    || ! ($record?->billingAddress?->contact_email && $record->shippingAddress->contact_email);
+            })->options(function (Order $record = null) {
+                return collect([
+                    $record?->billingAddress->contact_email,
+                    $record?->shippingAddress->contact_email,
+                ])->filter()->unique()->mapWithKeys(
+                    fn ($email) => [$email => $email]
+                )->toArray();
+            });
+    }
+
+    protected static function getAdditionalEmailInput(): Forms\Components\TextInput
+    {
+        return Forms\Components\TextInput::make('additional_email')->hidden(function (Forms\Get $get) {
+            return ! count(
+                static::getMailers($get('status'))
+            );
+        });
+    }
+
+    protected static function getMailersCheckboxInput(): Forms\Components\CheckboxList
+    {
+        return Forms\Components\CheckboxList::make('mailers')->options(function (Forms\Get $get) {
+            $mailers = config('lunar.orders.statuses.'.$get('status').'.mailers', []);
+
+            return collect($mailers)->mapWithKeys(function ($mailer) {
+                return [
+                    $mailer => Str::title(
+                        Str::snake(class_basename($mailer), ' ')
+                    ),
+                ];
+            });
+        });
+    }
+
     protected function getFormSteps()
     {
         return [
             Forms\Components\Wizard\Step::make('Status')->schema([
-                Forms\Components\Select::make('status')
-                    ->label(__('lunarpanel::order.form.status.label'))
-                    ->default(fn ($record) => $record?->status)
-                    ->options(fn () => collect(config('lunar.orders.statuses', []))
-                        ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
-                    ->required()
-                    ->live(),
+                static::getStatusSelectInput(),
             ]),
             Forms\Components\Wizard\Step::make('Mailers & Notifications')->schema([
-                Forms\Components\CheckboxList::make('mailers')->options(function (Forms\Get $get) {
-                    $mailers = config('lunar.orders.statuses.'.$get('status').'.mailers', []);
-
-                    return collect($mailers)->mapWithKeys(function ($mailer) {
-                        return [
-                            $mailer => Str::title(
-                                Str::snake(class_basename($mailer), ' ')
-                            ),
-                        ];
-                    });
-                }),
-                Forms\Components\Textarea::make('additional_content')->hidden(function (Forms\Get $get) {
-                    return ! count(
-                        $this->getMailers($get('status'))
-                    );
-                }),
-                Forms\Components\CheckboxList::make('email_addresses')
-                    ->hidden(function (Forms\Get $get, Order $record = null) {
-                        if (! $record) {
-                            return true;
-                        }
-
-                        return ! count($get('mailers') ?: [])
-                            || ! ($record?->billingAddress?->contact_email && $record->shippingAddress->contact_email);
-                    })->options(function (Order $record = null) {
-                        return collect([
-                            $record?->billingAddress->contact_email,
-                            $record?->shippingAddress->contact_email,
-                        ])->filter()->unique()->mapWithKeys(
-                            fn ($email) => [$email => $email]
-                        )->toArray();
-                    }),
-                Forms\Components\TextInput::make('additional_email')->hidden(function (Forms\Get $get) {
-                    return ! count(
-                        $this->getMailers($get('status'))
-                    );
-                }),
+                static::getMailersCheckboxInput(),
+                static::getAdditionalContentInput(),
+                static::getEmailAddressesInput(),
+                static::getAdditionalEmailInput(),
             ])->hidden(function (Forms\Get $get) {
+                \Log::debug($get('status'));
+
                 return ! count(
-                    $this->getMailers($get('status'))
+                    static::getMailers($get('status'))
                 );
             }),
 
@@ -78,7 +105,7 @@ trait UpdatesOrderStatus
                 ];
             })->hidden(function (Forms\Get $get) {
                 return ! count(
-                    $this->getMailers($get('status'))
+                    static::getMailers($get('status'))
                 );
             }),
         ];
@@ -134,7 +161,7 @@ trait UpdatesOrderStatus
         )->success()->send();
     }
 
-    protected function getMailers(string $status = null): array
+    protected static function getMailers(string $status = null): array
     {
         if (! $status) {
             return [];
