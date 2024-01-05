@@ -64,7 +64,7 @@ class LunarPanelManager
 
     protected static $pages = [
         Pages\Dashboard::class,
-        Pages\Reports\SalesReport::class,
+        // Pages\Reports\SalesReport::class,
     ];
 
     protected static $widgets = [
