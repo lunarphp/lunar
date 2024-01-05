@@ -16,10 +16,10 @@ class ShippingExclusionRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel.shipping::relationmanagers.shipping_exclusions.title_plural');
+        return __('lunarpanel.shipping::relationmanagers.exclusions.title_plural');
     }
 
-    protected static ?string $recordTitleAttribute = 'name';  // TODO: localise somehow
+    protected static ?string $recordTitleAttribute = 'name';
 
     public function form(Form $form): Form
     {

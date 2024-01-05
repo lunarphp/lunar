@@ -47,6 +47,7 @@ class ShippingZoneResource extends BaseResource
         return $page->generateNavigationItems([
             Pages\EditShippingZone::class,
             Pages\ManageShippingRates::class,
+            Pages\ManageShippingExclusions::class,
         ]);
     }
 
@@ -145,6 +146,7 @@ class ShippingZoneResource extends BaseResource
             'index' => Pages\ListShippingZones::route('/'),
             'edit' => Pages\EditShippingZone::route('/{record}/edit'),
             'rates' => Pages\ManageShippingRates::route('/{record}/rates'),
+            'exclusions' => Pages\ManageShippingExclusions::route('/{record}/exclusions'),
         ];
     }
 }

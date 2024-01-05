@@ -69,22 +69,6 @@ class ShippingMethod extends BaseModel implements Purchasable
         return Shipping::driver($this->driver);
     }
 
-    /**
-     * Return the shipping exclusions property.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function shippingExclusions()
-    {
-        return $this->belongsToMany(
-            ShippingExclusionList::class,
-            config('lunar.database.table_prefix').'exclusion_list_shipping_method',
-            'method_id',
-            'exclusion_id',
-            // 'method_id',
-        )->withTimestamps();
-    }
-
     public function getPrices(): Collection
     {
         return $this->prices;

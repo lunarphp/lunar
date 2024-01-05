@@ -91,11 +91,12 @@ class ShippingExclusionListResource extends BaseResource
             ]);
     }
 
-    protected static function getTableColumns(): array
+    public static function getTableColumns(): array
     {
         return [
             Tables\Columns\TextColumn::make('name')
                 ->label('Name'),
+            Tables\Columns\TextColumn::make('exclusions_count')->counts('exclusions'),
         ];
     }
 
