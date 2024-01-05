@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Actions;
+use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
@@ -23,6 +24,25 @@ class EditProduct extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
+            Actions\EditAction::make('update_status')
+                ->label(
+                    __('lunarpanel::product.actions.edit_status.label')
+                )
+                ->modalHeading(
+                    __('lunarpanel::product.actions.edit_status.heading')
+                )
+                ->record(
+                    $this->record
+                )->form([
+                    Forms\Components\Radio::make('status')->options([
+                        'published' => __('lunarpanel::product.form.status.options.published.label'),
+                        'draft' => __('lunarpanel::product.form.status.options.draft.label'),
+                    ])
+                        ->descriptions([
+                            'published' => __('lunarpanel::product.form.status.options.published.description'),
+                            'draft' => __('lunarpanel::product.form.status.options.draft.description'),
+                        ])->live(),
+                ]),
             Actions\DeleteAction::make(),
         ];
     }
