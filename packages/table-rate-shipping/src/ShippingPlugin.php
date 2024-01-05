@@ -5,6 +5,7 @@ namespace Lunar\Shipping;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Facades\FilamentIcon;
+use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
 
@@ -27,12 +28,14 @@ class ShippingPlugin implements Plugin
         ])->resources([
             ShippingMethodResource::class,
             ShippingZoneResource::class,
+            ShippingExclusionListResource::class,
         ]);
 
         FilamentIcon::register([
             'lunar::shipping-rates' => 'lucide-coins',
             'lunar::shipping-zones' => 'lucide-globe-2',
             'lunar::shipping-methods' => 'lucide-truck',
+            'lunar::shipping-exclusion-lists' => 'lucide-package-minus',
         ]);
     }
 

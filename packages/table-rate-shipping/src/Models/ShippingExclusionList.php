@@ -43,13 +43,13 @@ class ShippingExclusionList extends BaseModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function shippingMethods()
+    public function shippingZones()
     {
         return $this->belongsToMany(
             ShippingMethod::class,
-            config('lunar.database.table_prefix').'exclusion_list_shipping_method',
+            config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
             'exclusion_id',
-            'method_id',
+            'shipping_zone_id',
         );
     }
 }
