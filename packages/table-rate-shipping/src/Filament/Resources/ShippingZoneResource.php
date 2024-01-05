@@ -16,8 +16,6 @@ use Lunar\Shipping\Models\ShippingZone;
 
 class ShippingZoneResource extends BaseResource
 {
-    //    protected static ?string $permission = 'settings:shipping';
-
     protected static ?string $model = ShippingZone::class;
 
     protected static ?int $navigationSort = 1;
@@ -48,7 +46,7 @@ class ShippingZoneResource extends BaseResource
     {
         return $page->generateNavigationItems([
             Pages\EditShippingZone::class,
-            Pages\ManageShippingZoneRates::class,
+            Pages\ManageShippingRates::class,
         ]);
     }
 
@@ -146,7 +144,7 @@ class ShippingZoneResource extends BaseResource
         return [
             'index' => Pages\ListShippingZones::route('/'),
             'edit' => Pages\EditShippingZone::route('/{record}/edit'),
-            'rates' => Pages\ManageShippingZoneRates::route('/{record}/rates'),
+            'rates' => Pages\ManageShippingRates::route('/{record}/rates'),
         ];
     }
 }

@@ -30,6 +30,7 @@ class ShippingPlugin implements Plugin
         ]);
 
         FilamentIcon::register([
+            'lunar::shipping-rates' => 'lucide-coins',
             'lunar::shipping-zones' => 'lucide-globe-2',
             'lunar::shipping-methods' => 'lucide-truck',
         ]);

@@ -1,7 +1,12 @@
 <?php
 
 return [
-    'shipping_zone_rates' => [
-        'title_plural' => 'Shipping Zone Rates',
+    'shipping_rates' => [
+        'title_plural' => 'Shipping Rates',
+        'actions' => [
+            'create' => [
+                'label' => 'Create Shipping Rate',
+            ],
+        ],
     ],
 ];

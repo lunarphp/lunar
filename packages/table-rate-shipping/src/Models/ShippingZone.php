@@ -79,6 +79,6 @@ class ShippingZone extends BaseModel
 
     public function rates()
     {
-        return $this->hasMany(ShippingZoneRate::class);
+        return $this->hasMany(ShippingRate::class);
     }
 }

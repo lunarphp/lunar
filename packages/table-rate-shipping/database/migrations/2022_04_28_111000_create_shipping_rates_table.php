@@ -16,6 +16,7 @@ class CreateShippingRatesTable extends Migration
             $table->foreignId('shipping_zone_id')->constrained(
                 $this->prefix.'shipping_zones'
             );
+            $table->boolean('enabled')->default(true);
             $table->timestamps();
         });
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
 
-class ShippingZoneRate extends BaseModel
+class ShippingRate extends BaseModel
 {
     use HasFactory;
 
