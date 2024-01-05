@@ -2,7 +2,9 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
@@ -36,8 +38,10 @@ class ManageShippingRates extends ManageRelatedRecords
     public function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('shipping_method_id')->relationship(name: 'shippingMethod', titleAttribute: 'name'),
-        ]);
+            Select::make('shipping_method_id')->relationship(name: 'shippingMethod', titleAttribute: 'name')->columnSpan(2),
+            TextInput::make('base_price')->numeric()->required()->columnSpan(2),
+            Repeater::make('prices'),
+        ])->columns(1);
     }
 
     public function table(Table $table): Table
@@ -47,7 +51,9 @@ class ManageShippingRates extends ManageRelatedRecords
         ])->headerActions([
             Tables\Actions\CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
-            ),
+            )->slideOver(),
+        ])->actions([
+            Tables\Actions\EditAction::make()->slideOver(),
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping\Filament\Resources;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
@@ -10,7 +11,11 @@ use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Country;
+use Lunar\Models\State;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 use Lunar\Shipping\Models\ShippingZone;
 
@@ -21,6 +26,8 @@ class ShippingZoneResource extends BaseResource
     protected static ?int $navigationSort = 1;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+
+    public string $postcodes = 'awd';
 
     public static function getLabel(): string
     {
@@ -67,13 +74,20 @@ class ShippingZoneResource extends BaseResource
             static::getTypeFormComponent(),
             static::getCountryFormComponent(),
             static::getPostcodesFormComponent(),
+            static::getStatesFormComponent(),
+            static::getCountriesFormComponent(),
+            Shout::make('unrestricted')->content(
+                __('lunarpanel.shipping::shippingzone.form.unrestricted.content')
+            )->hidden(
+                fn (Forms\Get $get) => $get('type') != 'unrestricted'
+            ),
         ];
     }
 
     public static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('lunarpanel::taxzone.form.name.label'))
+            ->label(__('lunarpanel.shipping::shippingzone.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -82,28 +96,160 @@ class ShippingZoneResource extends BaseResource
     public static function getTypeFormComponent(): Component
     {
         return Forms\Components\Select::make('type')
-            ->label('Type')
+            ->label(__('lunarpanel.shipping::shippingzone.form.type.label'))
             ->required()
             ->options([
                 'unrestricted' => 'Unrestricted',
                 'countries' => 'Limit to Countries',
                 'states' => 'Limit to States / Provinces',
                 'postcodes' => 'Limit to Postcodes',
-            ]);
+            ])->live();
     }
 
     protected static function getCountryFormComponent(): Component
     {
-        return Forms\Components\Select::make('country_id')
+        return Forms\Components\Select::make('country')
+            ->label(__('lunarpanel.shipping::shippingzone.form.country.label'))
+            ->dehydrated(false)
+            ->visible(
+                fn (Forms\Get $get) => ! in_array($get('type'), ['countries', 'unrestricted'])
+            )
+            ->options(Country::get()->pluck('name', 'id'))
+
+            ->required()
+            ->searchable()
+            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
+                $record->loadMissing('countries');
+
+                /** @var Collection $relatedModels */
+                $country = $record->countries->first();
+
+                $component->state(
+                    $country->id
+                );
+            })->getOptionLabelsUsing(static function (Model $record): array {
+                $record->loadMissing('countries.country');
+
+                return $record->countries
+                    ->pluck('country.name', 'country.id')
+                    ->toArray();
+            })
+            ->saveRelationshipsUsing(static function (Model $record, $state) {
+                $selectedCountry = Country::where('id', $state)->first();
+
+                $record->countries()->sync($selectedCountry->id);
+            });
+    }
+
+    protected static function getCountriesFormComponent(): Component
+    {
+        return Forms\Components\Select::make('countries')
+            ->label(__('lunarpanel.shipping::shippingzone.form.countries.label'))
+            ->visible(fn ($get) => $get('type') == 'countries')
+            ->dehydrated(false)
+            ->options(Country::get()->pluck('name', 'id'))
             ->multiple()
-            ->relationship(name: 'countries', titleAttribute: 'name');
+            ->required()
+            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
+                $record->loadMissing('countries');
+                /** @var Collection $relatedModels */
+                $relatedModels = $record->countries;
+
+                $component->state(
+                    $relatedModels
+                        ->pluck('id')
+                        ->map(static fn ($key): string => strval($key))
+                        ->toArray(),
+                );
+            })->getOptionLabelsUsing(static function (Model $record): array {
+                $record->loadMissing('countries');
+
+                return $record->countries
+                    ->pluck('name', 'id')
+                    ->toArray();
+            })
+            ->saveRelationshipsUsing(static function (Model $record, $state) {
+                $record->countries()->sync($state);
+            });
+    }
+
+    protected static function getStatesFormComponent(): Component
+    {
+        return Forms\Components\Select::make('states')
+            ->label(__('lunarpanel.shipping::shippingzone.form.states.label'))
+            ->visible(fn ($get) => $get('type') == 'states')
+            ->dehydrated(false)
+            ->options(fn ($get) => State::where('country_id', $get('country'))->get()->pluck('name', 'id'))
+            ->multiple()
+            ->required()
+            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
+                $record->loadMissing('states');
+
+                /** @var Collection $relatedModels */
+                $relatedModels = $record->states;
+
+                $component->state(
+                    $relatedModels
+                        ->pluck('id')
+                        ->map(static fn ($key): string => strval($key))
+                        ->toArray(),
+                );
+            })->getOptionLabelsUsing(static function (Model $record): array {
+                $record->loadMissing('states');
+
+                return $record->states
+                    ->pluck('name', 'id')
+                    ->toArray();
+            })
+            ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
+                $record->states()->sync($state);
+            });
     }
 
     protected static function getPostcodesFormComponent(): Component
     {
         return Forms\Components\Textarea::make('postcodes')
+            ->label(__('lunarpanel.shipping::shippingzone.form.postcodes.label'))
+            ->visible(fn ($get) => $get('type') == 'postcodes')
+            ->dehydrated(false)
             ->rows(10)
-            ->helperText('List each postcode on a new line. Supports wildcards such as NW*');
+            ->helperText(__('lunarpanel.shipping::shippingzone.form.postcodes.helper'))
+            ->required()
+            ->afterStateHydrated(static function (Forms\Components\Textarea $component, Model $record): void {
+                /** @var Collection $relatedModels */
+                $relatedModels = $record->postcodes;
+
+                $component->state(
+                    $relatedModels
+                        ->pluck('postcode')
+                        ->join("\n"),
+                );
+            })
+            ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
+                static::syncPostcodes($record, $get('zone_country'), $state);
+
+                $record->states()->delete();
+            });
+    }
+
+    private static function syncPostcodes(ShippingZone $shippingZone, $countryId, $postcodes)
+    {
+        $postcodes = collect(
+            explode(
+                "\n",
+                str_replace(' ', '', $postcodes)
+            )
+        )->unique()->filter();
+
+        $shippingZone->postcodes()->delete();
+
+        $shippingZone->postcodes()->createMany(
+            $postcodes->map(function ($postcode) {
+                return [
+                    'postcode' => $postcode,
+                ];
+            })
+        );
     }
 
     public static function getDefaultTable(Table $table): Table
