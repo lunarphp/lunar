@@ -8,7 +8,10 @@
     }
 @endphp
 <div class="relative group">
-    <div class='w-full flex justify-between'>
+    <div @class([
+        'w-full flex justify-between',
+        'dark:bg-gray-900 dark:border-white/10',
+    ])>
         <div class="flex w-full space-x-2">
             <div @class([
                 'flex items-center text-gray-400 hover:text-gray-500',
@@ -17,9 +20,9 @@
                 <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
             </div>
 
-            <div class="flex grow bg-white dark:bg-gray-900 ring-1 ring-gray-950/5 dark:ring-white/10 shadow-sm rounded">
+            <div class="flex grow bg-white border shadow-sm rounded">
                     <button
-                            class="px-3 text-gray-500 dark:text-gray-400 appearance-none disabled:text-gray-300 dark:disabled:text-gray-700"
+                            class="px-3 text-gray-500 appearance-none disabled:text-gray-50"
                             type="button"
                             title=""
                             wire:click.prevent="toggleChildren('{{ $id }}')"
@@ -28,29 +31,31 @@
                         <x-filament::icon
                                 alias="lunar::chevron-right"
                                 @class([
-                                    'w-3.5 h-3.5 transition-transform ease-in-out duration-200 rtl:rotate-180',
+                                    'w-3.5 h-3.5 transition ease-in-out duration-200 rtl:rotate-180',
                                     'ltr:rotate-90 rtl:!rotate-90' => !!count($children),
                                 ])
                         />
                     </button>
 
-                <div
+                <button
                         @class([
                             'w-full py-2 text-left rtl:text-right appearance-none',
-                            'cursor-default',
+                            'px-4' => false,
+                            'cursor-default' => true,
                         ])
+                        type="button"
                 >
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
                         <div>
                             @if($thumbnail)
-                                <img src="{{ $thumbnail }}" class="w-10 ring-1 ring-gray-950/10 dark:ring-white/5 rounded p-0.5">
+                                <img src="{{ $thumbnail }}" class="w-10 border rounded p-0.5">
                             @else
-                                <x-filament::icon alias="lunar::image-placeholder" class="p-1 text-gray-200 dark:text-gray-500 w-10 h-10" />
+                                <x-filament::icon alias="lunar::image-placeholder" class="p-1 text-gray-200 w-10 h-10" />
                             @endif
                         </div>
                         <x-filament::link :href="$editUrl" class="text-base">{{ $name }}</x-filament::link>
                     </div>
-                </div>
+                </button>
 
                 <div class="flex items-center flex-shrink-0 px-2 space-x-2 rtl:space-x-reverse">
                     <x-filament-actions::group
