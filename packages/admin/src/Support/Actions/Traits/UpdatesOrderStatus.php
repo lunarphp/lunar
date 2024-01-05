@@ -15,21 +15,23 @@ trait UpdatesOrderStatus
 {
     protected static function getAdditionalContentInput(): Forms\Components\Textarea
     {
-        return Forms\Components\Textarea::make('additional_content')->hidden(function (Forms\Get $get) {
-            return ! count(
-                static::getMailers($get('status'))
-            );
-        })->hidden(function (Forms\Get $get) {
-            return ! count(
-                static::getMailers($get('status'))
-            );
-        });
+        return Forms\Components\Textarea::make('additional_content')
+            ->label(__('lunarpanel::order.action.update_status.additional_content.label'))
+            ->hidden(function (Forms\Get $get) {
+                return ! count(
+                    static::getMailers($get('status'))
+                );
+            })->hidden(function (Forms\Get $get) {
+                return ! count(
+                    static::getMailers($get('status'))
+                );
+            });
     }
 
     protected static function getStatusSelectInput(): Forms\Components\Select
     {
         return Forms\Components\Select::make('status')
-            ->label(__('lunarpanel::order.form.status.label'))
+            ->label(__('lunarpanel::order.action.update_status.new_status.label'))
             ->default(fn ($record) => $record?->status)
             ->options(fn () => collect(config('lunar.orders.statuses', []))
                 ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
@@ -59,11 +61,14 @@ trait UpdatesOrderStatus
 
     protected static function getAdditionalEmailInput(): Forms\Components\TextInput
     {
-        return Forms\Components\TextInput::make('additional_email')->hidden(function (Forms\Get $get) {
-            return ! count(
-                static::getMailers($get('status'))
-            );
-        });
+        return Forms\Components\TextInput::make('additional_email')
+            ->label(__('lunarpanel::order.action.update_status.additional_email_recipient.label'))
+            ->placeholder(__('lunarpanel::order.action.update_status.additional_email_recipient.placeholder'))
+            ->hidden(function (Forms\Get $get) {
+                return ! count(
+                    static::getMailers($get('status'))
+                );
+            });
     }
 
     protected static function getMailersCheckboxInput(): Forms\Components\CheckboxList
