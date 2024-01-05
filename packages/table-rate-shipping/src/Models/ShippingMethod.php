@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
@@ -27,7 +28,7 @@ class ShippingMethod extends BaseModel implements Purchasable
     protected $guarded = [];
 
     protected $casts = [
-        'data' => 'object',
+        'data' => AsArrayObject::class,
     ];
 
     /**

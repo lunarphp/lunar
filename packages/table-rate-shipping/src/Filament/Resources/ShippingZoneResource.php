@@ -4,6 +4,9 @@ namespace Lunar\Shipping\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
+use Filament\Forms\Form;
+use Filament\Pages\Page;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,6 +22,8 @@ class ShippingZoneResource extends BaseResource
 
     protected static ?int $navigationSort = 1;
 
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+
     public static function getLabel(): string
     {
         return 'Shipping Zone';
@@ -31,7 +36,7 @@ class ShippingZoneResource extends BaseResource
 
     public static function getNavigationIcon(): ?string
     {
-        return FilamentIcon::resolve('lunar::tax');
+        return FilamentIcon::resolve('lunar::shipping-zones');
     }
 
     public static function getNavigationGroup(): ?string
@@ -39,15 +44,34 @@ class ShippingZoneResource extends BaseResource
         return 'Shipping';
     }
 
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\EditShippingZone::class,
+            Pages\ManageShippingZoneRates::class,
+        ]);
+    }
+
+    public static function getDefaultForm(Form $form): Form
+    {
+        return $form->schema([
+            Forms\Components\Section::make()->schema(
+                static::getMainFormComponents(),
+            ),
+        ]);
+    }
+
     protected static function getMainFormComponents(): array
     {
         return [
             static::getNameFormComponent(),
             static::getTypeFormComponent(),
+            static::getCountryFormComponent(),
+            static::getPostcodesFormComponent(),
         ];
     }
 
-    protected static function getNameFormComponent(): Component
+    public static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('lunarpanel::taxzone.form.name.label'))
@@ -56,7 +80,7 @@ class ShippingZoneResource extends BaseResource
             ->autofocus();
     }
 
-    protected static function getTypeFormComponent(): Component
+    public static function getTypeFormComponent(): Component
     {
         return Forms\Components\Select::make('type')
             ->label('Type')
@@ -67,6 +91,20 @@ class ShippingZoneResource extends BaseResource
                 'states' => 'Limit to States / Provinces',
                 'postcodes' => 'Limit to Postcodes',
             ]);
+    }
+
+    protected static function getCountryFormComponent(): Component
+    {
+        return Forms\Components\Select::make('country_id')
+            ->multiple()
+            ->relationship(name: 'countries', titleAttribute: 'name');
+    }
+
+    protected static function getPostcodesFormComponent(): Component
+    {
+        return Forms\Components\Textarea::make('postcodes')
+            ->rows(10)
+            ->helperText('List each postcode on a new line. Supports wildcards such as NW*');
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -107,6 +145,8 @@ class ShippingZoneResource extends BaseResource
     {
         return [
             'index' => Pages\ListShippingZones::route('/'),
+            'edit' => Pages\EditShippingZone::route('/{record}/edit'),
+            'rates' => Pages\ManageShippingZoneRates::route('/{record}/rates'),
         ];
     }
 }

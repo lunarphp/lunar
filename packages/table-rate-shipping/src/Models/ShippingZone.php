@@ -76,4 +76,9 @@ class ShippingZone extends BaseModel
     {
         return $this->hasMany(ShippingZonePostcode::class);
     }
+
+    public function rates()
+    {
+        return $this->hasMany(ShippingZoneRate::class);
+    }
 }

@@ -4,6 +4,8 @@ namespace Lunar\Shipping;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Filament\Support\Facades\FilamentIcon;
+use Lunar\Shipping\Filament\Resources\ShippingMethodResource;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
 
 class ShippingPlugin implements Plugin
@@ -23,7 +25,13 @@ class ShippingPlugin implements Plugin
         $panel->navigationGroups([
             'Shipping',
         ])->resources([
+            ShippingMethodResource::class,
             ShippingZoneResource::class,
+        ]);
+
+        FilamentIcon::register([
+            'lunar::shipping-zones' => 'lucide-globe-2',
+            'lunar::shipping-methods' => 'lucide-truck',
         ]);
     }
 
@@ -34,9 +42,7 @@ class ShippingPlugin implements Plugin
 
     public function panel(Panel $panel): Panel
     {
-        return $panel
-            // ...
-            ->plugin(BlogPlugin::make());
+        return $panel;
     }
 
     // ...

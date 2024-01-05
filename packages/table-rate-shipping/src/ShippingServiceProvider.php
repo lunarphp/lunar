@@ -22,7 +22,7 @@ class ShippingServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar::shipping');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
