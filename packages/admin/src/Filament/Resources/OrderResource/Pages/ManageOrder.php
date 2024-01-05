@@ -2,6 +2,8 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
+use Awcodes\Shout\Components\Shout;
+use Awcodes\Shout\Components\ShoutEntry;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Closure;
 use Filament\Actions;
@@ -17,6 +19,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
@@ -25,7 +28,6 @@ use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
-use Lunar\Admin\Support\Infolists\Components\Alert;
 use Lunar\Admin\Support\Infolists\Components\Livewire;
 use Lunar\Admin\Support\Infolists\Components\Tags;
 use Lunar\Admin\Support\Infolists\Components\Timeline;
@@ -78,18 +80,19 @@ class ManageOrder extends ViewRecord
             ->schema([
                 Infolists\Components\Group::make()
                     ->schema([
-                        Alert::make('requires_capture')
-                            ->danger()
+                        ShoutEntry::make('requires_capture')
+                            ->type('danger')
                             ->content(__('lunarpanel::order.infolist.alert.requires_capture'))
                             ->visible(fn () => $this->requiresCapture),
-                        Alert::make('requires_capture')
+                        ShoutEntry::make('requires_capture')
                             ->state(fn () => $this->paymentStatus)
-                            ->icons(fn ($state) => [
-                                'heroicon-o-exclamation-circle' => 'refunded',
-                            ])
-                            ->configureColor(fn (Alert $component, $state) => match ($state) {
-                                'partial-refund' => $component->info(),
-                                'refunded' => $component->danger(),
+                            ->icon(fn ($state) => match ($state) {
+                                'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
+                                default => null
+                            })
+                            ->color(fn (ShoutEntry $component, $state) => match ($state) {
+                                'partial-refund' => 'info',
+                                'refunded' => 'danger',
                                 default => null
                             })->content(fn ($state) => match ($state) {
                                 'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
@@ -780,7 +783,7 @@ class ManageOrder extends ViewRecord
                     ->live()
                     ->autocomplete(false)
                     ->minValue(1)
-                    ->helperText(function ($get, $state) {
+                    ->helperText(function (Forms\Components\TextInput $component, $get, $state) {
                         $transaction = Transaction::findOrFail($get('transaction'));
 
                         $message = $transaction->amount->decimal > $state ? __('lunarpanel::order.form.amount.hint.less_than_total') : null;
@@ -789,10 +792,11 @@ class ManageOrder extends ViewRecord
                             return null;
                         }
 
-                        return view('lunarpanel::components.alert', [
-                            'content' => $message,
-                            'color' => 'danger',
-                        ]);
+                        return Shout::make('aaa')
+                            ->container($component->getContainer())
+                            ->type('danger')
+                            ->icon(FilamentIcon::resolve('lunar::exclamation-circle'))
+                            ->content($message);
                     })
                     ->numeric(),
                 Forms\Components\Toggle::make('confirm')
