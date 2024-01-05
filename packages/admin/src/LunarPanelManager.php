@@ -131,6 +131,7 @@ class LunarPanelManager
             'lunar::image-placeholder' => 'lucide-image',
             'lunar::trending-up' => 'lucide-trending-up',
             'lunar::trending-down' => 'lucide-trending-down',
+            'lunar::exclamation-circle' => 'lucide-alert-circle',
         ]);
 
         FilamentColor::register([
