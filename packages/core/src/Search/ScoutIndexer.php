@@ -73,6 +73,10 @@ class ScoutIndexer implements ScoutIndexerInterface
 
         $attributeData = $model->attribute_data;
 
+        if (! $attributeData) {
+            return [];
+        }
+
         $data = [];
 
         foreach ($attributes as $attribute) {

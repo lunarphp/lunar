@@ -224,8 +224,16 @@ return [
             'notification' => 'Orders status updated',
         ],
         'update_status' => [
-            'label' => 'Update Status',
-            'notification' => 'Order status updated',
+            'new_status' => [
+                'label' => 'New status',
+            ],
+            'additional_content' => [
+                'label' => 'Additional content',
+            ],
+            'additional_email_recipient' => [
+                'label' => 'Additional email recipient',
+                'placeholder' => 'optional',
+            ],
         ],
         'download_order_pdf' => [
             'label' => 'Download PDF',
@@ -254,7 +262,6 @@ return [
                 'success' => 'Capture successful',
             ],
         ],
-
         'refund_payment' => [
             'label' => 'Refund',
 
