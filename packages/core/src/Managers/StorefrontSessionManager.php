@@ -89,16 +89,14 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             return $this->customerGroups;
         }
 
-        if (! $this->customerGroups?->count()) {
-            return $this->setCustomerGroups(
-                collect([
-                    CustomerGroup::getDefault(),
-                ])
-            );
+        if (count($groupHandles) > 0) {
+            return $this->customerGroups = CustomerGroup::whereIn('handle', $groupHandles)->get();
         }
 
         return $this->setCustomerGroups(
-            CustomerGroup::whereIn('handle', $groupHandles)->get()
+            collect([
+                CustomerGroup::getDefault(),
+            ])
         );
     }
 
