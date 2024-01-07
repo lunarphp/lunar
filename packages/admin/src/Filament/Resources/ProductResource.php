@@ -80,19 +80,19 @@ class ProductResource extends BaseResource
                 Shout::make('product-status')
                     ->content(
                         __('lunarpanel::product.status.unpublished.content')
-                    )->type('danger')->hidden(
+                    )->type('info')->hidden(
                         fn (Model $record) => $record?->status == 'published'
                     ),
                 Shout::make('product-customer-groups')
                     ->content(
                         __('lunarpanel::product.status.availability.customer_groups')
-                    )->type('danger')->hidden(function (Model $record) {
+                    )->type('warning')->hidden(function (Model $record) {
                         return $record->customerGroups()->where('enabled', true)->count();
                     }),
                 Shout::make('product-channels')
                     ->content(
                         __('lunarpanel::product.status.availability.channels')
-                    )->type('danger')->hidden(function (Model $record) {
+                    )->type('warning')->hidden(function (Model $record) {
                         return $record->channels()->where('enabled', true)->count();
                     }),
                 Forms\Components\Section::make()
