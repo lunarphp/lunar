@@ -96,6 +96,12 @@ class BrandResource extends BaseResource
                 ->label(''),
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::brand.table.name.label')),
+            Tables\Columns\TextColumn::make('products_count')
+                ->counts('products')
+                ->formatStateUsing(
+                    fn ($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::brand.table.products_count.label')),
         ];
     }
 

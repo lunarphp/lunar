@@ -10,6 +10,15 @@ return [
         'name' => [
             'label' => 'Name',
         ],
+        'products_count' => [
+            'label'=> 'Product count',
+        ],
+        'product_attributes_count' => [
+            'label'=> 'Attributes Product count',
+        ],
+        'variant_attributes_count' => [
+            'label'=> 'Attributes Variant count',
+        ]
     ],
 
     'form' => [
