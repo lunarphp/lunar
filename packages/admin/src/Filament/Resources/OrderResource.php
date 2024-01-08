@@ -24,6 +24,8 @@ class OrderResource extends BaseResource
 
     protected static ?int $navigationSort = 1;
 
+    protected static int $globalSearchResultsLimit = 5;
+
     public static function getLabel(): string
     {
         return __('lunarpanel::order.label');
@@ -137,7 +139,7 @@ class OrderResource extends BaseResource
             'tags.value',
         ];
     }
-    
+
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with([

@@ -24,6 +24,8 @@ class BrandResource extends BaseResource
 
     protected static ?int $navigationSort = 3;
 
+    protected static int $globalSearchResultsLimit = 5;
+
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
@@ -117,12 +119,12 @@ class BrandResource extends BaseResource
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
         ];
     }
-    
+
     public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
         return $record->name;
     }
-    
+
     public static function getGloballySearchableAttributes(): array
     {
         return [

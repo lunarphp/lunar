@@ -34,6 +34,8 @@ class ProductResource extends BaseResource
 
     protected static ?int $navigationSort = 1;
 
+    protected static int $globalSearchResultsLimit = 5;
+
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string

@@ -26,6 +26,8 @@ class CustomerResource extends BaseResource
 
     protected static ?int $navigationSort = 2;
 
+    protected static int $globalSearchResultsLimit = 5;
+
     public static function getWidgets(): array
     {
         return [

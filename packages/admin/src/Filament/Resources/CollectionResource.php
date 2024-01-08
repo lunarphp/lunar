@@ -20,6 +20,8 @@ class CollectionResource extends BaseResource
 
     protected static ?string $model = Collection::class;
 
+    protected static int $globalSearchResultsLimit = 5;
+
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
