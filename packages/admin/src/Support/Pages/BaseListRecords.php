@@ -27,12 +27,15 @@ abstract class BaseListRecords extends ListRecords
             $scoutEnabled &&
             $isScoutSearchable
         ) {
-            $query->whereIn(
-                'id',
-                collect(static::getModel()::search($search)->keys())->map(
-                    fn ($result) => str_replace(static::getModel().'::', '', $result)
-                )
+            $ids = collect(static::getModel()::search($search)->keys())->map(
+                fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
+
+            $query->whereIn(
+                    'id',
+                    $ids
+                )
+                ->orderByRaw("FIELD(id, ".$ids->implode(',') .")"); // TODO: Only supports MySQL
         }
 
         return $query;
