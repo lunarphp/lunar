@@ -7,6 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class UserRelationManager extends RelationManager
 {
@@ -28,21 +29,28 @@ class UserRelationManager extends RelationManager
             Tables\Actions\EditAction::make('edit')
                 ->form([
                     Group::make([
+                        TextInput::make('email')
+                            ->label(
+                                __('lunarpanel::user.form.email.label')
+                            )
+                            ->required()
+                            ->email()
+                            ->columnSpan(2),
                         TextInput::make('password')
                             ->label(
                                 __('lunarpanel::user.form.password.label')
                             )
                             ->password()
-                            ->required()
                             ->minLength(8)
+                            ->required(fn ($record) => blank($record))
+                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                            ->dehydrated(fn (?string $state): bool => filled($state))
                             ->currentPassword(false)
-
                             ->confirmed(),
                         TextInput::make('password_confirmation')
                             ->label(
                                 __('lunarpanel::user.form.password_confirmation.label')
                             )
-                            ->required()
                             ->password()
                             ->minLength(8),
                     ])->columns(2),

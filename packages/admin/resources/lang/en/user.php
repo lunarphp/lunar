@@ -16,6 +16,9 @@ return [
     ],
 
     'form' => [
+        'email' => [
+            'label' => 'Email',
+        ],
         'password' => [
             'label' => 'New Password',
         ],
