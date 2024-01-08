@@ -113,6 +113,10 @@ class ManageShippingRates extends ManageRelatedRecords
 
     protected static function saveShippingRate(ShippingRate $shippingRate = null, array $data = []): void
     {
+        //        \Lunar\Admin\Support\Facades\LunarPanel::panel(function (Panel $panel) {
+        //            //            return $panel;
+        //            return $panel->plugin(new ShippingPlugin());
+        //        })->register();
         $currency = Currency::getDefault();
 
         $basePrice = $shippingRate->basePrices->first() ?: new Price;
