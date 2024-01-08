@@ -34,6 +34,17 @@ return [
                 ],
             ],
         ],
+        'table' => [
+            'shipping_method' => [
+                'label' => 'Shipping Method',
+            ],
+            'base_price' => [
+                'label' => 'Base Price',
+            ],
+            'tiered_prices_count' => [
+                'label' => 'No. Tiers',
+            ],
+        ],
     ],
     'exclusions' => [
         'title_plural' => 'Shipping Exclusions',

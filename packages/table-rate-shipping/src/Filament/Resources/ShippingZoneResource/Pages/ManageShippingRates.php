@@ -120,16 +120,23 @@ class ManageShippingRates extends ManageRelatedRecords
     public function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('shippingMethod.name'),
+            TextColumn::make('shippingMethod.name')
+                ->label(
+                    __('lunarpanel.shipping::relationmanagers.shipping_rates.table.shipping_method.label')
+                ),
             TextColumn::make('basePrices.0')->formatStateUsing(
                 fn ($state = null) => $state->price->formatted
-            )->label('Base Price'),
-            TextColumn::make('tiered_prices_count')->counts('tieredPrices'),
+            )->label(
+                __('lunarpanel.shipping::relationmanagers.shipping_rates.table.base_price.label')
+            ),
+            TextColumn::make('tiered_prices_count')
+                ->label(
+                    __('lunarpanel.shipping::relationmanagers.shipping_rates.table.tiered_prices_count.label')
+                )->counts('tieredPrices'),
         ])->headerActions([
             Tables\Actions\CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
             )->action(function (Table $table, ShippingRate $shippingRate = null, array $data = []) {
-                $model = $this->getModel();
                 $relationship = $table->getRelationship();
 
                 $record = new ShippingRate();
