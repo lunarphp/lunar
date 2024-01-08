@@ -14,4 +14,13 @@ return [
             'label' => 'Email',
         ],
     ],
+
+    'form' => [
+        'password' => [
+            'label' => 'New Password',
+        ],
+        'password_confirmation' => [
+            'label' => 'Confirm New Password',
+        ],
+    ],
 ];
