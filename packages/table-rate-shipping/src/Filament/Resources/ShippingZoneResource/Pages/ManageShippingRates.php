@@ -41,8 +41,16 @@ class ManageShippingRates extends ManageRelatedRecords
     public function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Select::make('shipping_method_id')->relationship(name: 'shippingMethod', titleAttribute: 'name')->columnSpan(2),
+            Forms\Components\Select::make('shipping_method_id')
+                ->label(
+                    __('lunarpanel.shipping::relationmanagers.shipping_rates.form.shipping_method_id.label')
+                )
+                ->relationship(name: 'shippingMethod', titleAttribute: 'name')
+                ->columnSpan(2),
             Forms\Components\TextInput::make('base_price')
+                ->label(
+                    __('lunarpanel.shipping::relationmanagers.shipping_rates.form.base_price.label')
+                )
                 ->numeric()
                 ->required()
                 ->columnSpan(2)
@@ -55,37 +63,57 @@ class ManageShippingRates extends ManageRelatedRecords
                         );
                     }
                 }),
-            Forms\Components\Repeater::make('prices')->schema([
-                Forms\Components\Select::make('customer_group_id')
-                    ->options(
-                        fn () => CustomerGroup::all()->pluck('name', 'id')
-                    )->preload(),
-                Forms\Components\Select::make('currency_id')
-                    ->options(
-                        fn () => Currency::all()->pluck('name', 'id')
-                    )->default(
-                        Currency::getDefault()->id
-                    )->required()->preload(),
-                Forms\Components\TextInput::make('tier')
-                    ->numeric(),
-                Forms\Components\TextInput::make('price')
-                    ->numeric(),
-            ])->afterStateHydrated(
-                static function (Forms\Components\Repeater $component, Model $record = null): void {
-                    if ($record) {
-                        $component->state(
-                            $record->tieredPrices->map(function ($price) {
-                                return [
-                                    'customer_group_id' => $price->customer_group_id,
-                                    'price' => $price->price->decimal,
-                                    'currency_id' => $price->currency_id,
-                                    'tier' => $price->tier,
-                                ];
-                            })->toArray()
-                        );
+            Forms\Components\Repeater::make('prices')
+                ->label(
+                    __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.label')
+                )->schema([
+                    Forms\Components\Select::make('customer_group_id')
+                        ->label(
+                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.customer_group_id.label')
+                        )
+                        ->options(
+                            fn () => CustomerGroup::all()->pluck('name', 'id')
+                        )->placeholder(
+                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.customer_group_id.placeholder')
+                        )->preload(),
+                    Forms\Components\Select::make('currency_id')
+                        ->label(
+                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.currency_id.label')
+                        )
+                        ->options(
+                            fn () => Currency::all()->pluck('name', 'id')
+                        )->default(
+                            Currency::getDefault()->id
+                        )->required()->preload(),
+                    Forms\Components\TextInput::make('tier')
+                        ->label(
+                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.tier.label')
+                        )
+                        ->numeric()
+                        ->minValue(1)
+                        ->required(),
+                    Forms\Components\TextInput::make('price')
+                        ->label(
+                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.price.label')
+                        )
+                        ->numeric()
+                        ->required(),
+                ])->afterStateHydrated(
+                    static function (Forms\Components\Repeater $component, Model $record = null): void {
+                        if ($record) {
+                            $component->state(
+                                $record->tieredPrices->map(function ($price) {
+                                    return [
+                                        'customer_group_id' => $price->customer_group_id,
+                                        'price' => $price->price->decimal,
+                                        'currency_id' => $price->currency_id,
+                                        'tier' => $price->tier,
+                                    ];
+                                })->toArray()
+                            );
+                        }
                     }
-                }
-            )->columns(4),
+                )->columns(4),
         ])->columns(1);
     }
 
