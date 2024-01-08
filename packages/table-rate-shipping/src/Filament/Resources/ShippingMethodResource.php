@@ -14,8 +14,6 @@ use Lunar\Shipping\Models\ShippingMethod;
 
 class ShippingMethodResource extends BaseResource
 {
-    //    protected static ?string $permission = 'settings:shipping';
-
     protected static ?string $model = ShippingMethod::class;
 
     protected static ?int $navigationSort = 1;

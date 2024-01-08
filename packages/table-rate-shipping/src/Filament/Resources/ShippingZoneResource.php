@@ -27,16 +27,14 @@ class ShippingZoneResource extends BaseResource
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
-    public string $postcodes = 'awd';
-
     public static function getLabel(): string
     {
-        return 'Shipping Zone';
+        return __('lunarpanel.shipping::shippingzone.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return 'Shipping Zones';
+        return __('lunarpanel.shipping::shippingzone.label_plural');
     }
 
     public static function getNavigationIcon(): ?string
@@ -46,7 +44,7 @@ class ShippingZoneResource extends BaseResource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Shipping';
+        return __('lunarpanel.shipping::plugin.navigation.group');
     }
 
     public static function getRecordSubNavigation(Page $page): array
@@ -99,10 +97,10 @@ class ShippingZoneResource extends BaseResource
             ->label(__('lunarpanel.shipping::shippingzone.form.type.label'))
             ->required()
             ->options([
-                'unrestricted' => 'Unrestricted',
-                'countries' => 'Limit to Countries',
-                'states' => 'Limit to States / Provinces',
-                'postcodes' => 'Limit to Postcodes',
+                'unrestricted' => __('lunarpanel.shipping::shippingzone.form.type.options.unrestricted'),
+                'countries' => __('lunarpanel.shipping::shippingzone.form.type.options.countries'),
+                'states' => __('lunarpanel.shipping::shippingzone.form.type.options.states'),
+                'postcodes' => __('lunarpanel.shipping::shippingzone.form.type.options.postcodes'),
             ])->live();
     }
 
@@ -273,9 +271,16 @@ class ShippingZoneResource extends BaseResource
     {
         return [
             Tables\Columns\TextColumn::make('name')
-                ->label('Name'),
+                ->label(
+                    __('lunarpanel.shipping::shippingzone.table.name.label')
+                ),
             Tables\Columns\TextColumn::make('type')
-                ->label('Type'),
+                ->label(
+                    __('lunarpanel.shipping::shippingzone.table.type.label')
+                )
+                ->formatStateUsing(
+                    fn ($state) => __("lunarpanel.shipping::shippingzone.table.type.options.{$state}")
+                ),
         ];
     }
 

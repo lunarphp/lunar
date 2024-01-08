@@ -25,7 +25,7 @@ class ShippingPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->navigationGroups([
-            NavigationGroup::make()
+            NavigationGroup::make('shipping')
                 ->label(
                     fn () => __('lunarpanel.shipping::plugin.navigation.group')
                 ),
