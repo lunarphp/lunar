@@ -325,7 +325,7 @@ class ProductResource extends BaseResource
         return  [
             __('lunarpanel::product.table.sku.label') => $record->variants->first()->getIdentifier(),
             __('lunarpanel::product.table.stock.label') => $record->variants->first()->stock,
-            __('lunarpanel::product.table.brand.label') => $record->brand->name,
+            __('lunarpanel::product.table.brand.label') => $record->brand?->name,
         ];
     }
 }
