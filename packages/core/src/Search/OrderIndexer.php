@@ -92,7 +92,7 @@ class OrderIndexer extends ScoutIndexer
             $data["{$address->type}_country"] = optional($address->country)->name;
 
             // Full name for searching
-            $data["{$address->type}_fullname"] = $address->first_name . ' ' . $address->last_name;
+            $data["{$address->type}_fullname"] = $address->first_name.' '.$address->last_name;
         }
 
         $data['tags'] = $model->tags->pluck('value')->toArray();
