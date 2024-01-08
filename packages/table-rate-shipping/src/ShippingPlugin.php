@@ -3,6 +3,7 @@
 namespace Lunar\Shipping;
 
 use Filament\Contracts\Plugin;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
@@ -24,7 +25,10 @@ class ShippingPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->navigationGroups([
-            'Shipping',
+            NavigationGroup::make()
+                ->label(
+                    fn () => __('lunarpanel.shipping::plugin.navigation.group')
+                ),
         ])->resources([
             ShippingMethodResource::class,
             ShippingZoneResource::class,

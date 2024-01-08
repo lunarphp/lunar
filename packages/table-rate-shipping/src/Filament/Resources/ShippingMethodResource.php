@@ -22,12 +22,12 @@ class ShippingMethodResource extends BaseResource
 
     public static function getLabel(): string
     {
-        return 'Shipping Method';
+        return __('lunarpanel.shipping::shippingmethod.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return 'Shipping Methods';
+        return __('lunarpanel.shipping::shippingmethod.label_plural');
     }
 
     public static function getNavigationIcon(): ?string
@@ -37,7 +37,7 @@ class ShippingMethodResource extends BaseResource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Shipping';
+        return __('lunarpanel.shipping::plugin.navigation.group');
     }
 
     public static function getDefaultForm(Form $form): Form
@@ -70,7 +70,7 @@ class ShippingMethodResource extends BaseResource
     public static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('lunarpanel::taxzone.form.name.label'))
+            ->label(__('lunarpanel.shipping::shippingmethod.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -78,33 +78,40 @@ class ShippingMethodResource extends BaseResource
 
     public static function getDescriptionFormComponent(): Component
     {
-        return Forms\Components\RichEditor::make('description');
+        return Forms\Components\RichEditor::make('description')
+            ->label(__('lunarpanel.shipping::shippingmethod.form.description.label'));
     }
 
     public static function getCodeFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('code')->required()
+        return Forms\Components\TextInput::make('code')
+            ->label(__('lunarpanel.shipping::shippingmethod.form.code.label'))
+            ->required()
             ->unique(ignoreRecord: true);
     }
 
     public static function getCutoffFormComponent(): Component
     {
-        return Forms\Components\TimePicker::make('cutoff');
+        return Forms\Components\TimePicker::make('cutoff')
+            ->label(__('lunarpanel.shipping::shippingmethod.form.cutoff.label'));
     }
 
     public static function getStockAvailableFormComponent(): Component
     {
-        return Forms\Components\Toggle::make('stock_available')->label('Stock of all basket items must be available');
+        return Forms\Components\Toggle::make('stock_available')
+            ->label(__('lunarpanel.shipping::shippingmethod.form.stock_available.label'));
     }
 
     public static function getChargeByFormComponent(): Component
     {
-
         return Forms\Components\Group::make([
             Forms\Components\Select::make('charge_by')
+                ->label(
+                    __('lunarpanel.shipping::shippingmethod.form.charge_by.label')
+                )
                 ->options([
-                    'cart_total' => 'Cart Total',
-                    'weight' => 'Weight',
+                    'cart_total' => __('lunarpanel.shipping::shippingmethod.form.charge_by.options.cart_total'),
+                    'weight' => __('lunarpanel.shipping::shippingmethod.form.charge_by.options.weight'),
                 ]),
 
         ])->columns(1)->statePath('data');
@@ -113,9 +120,10 @@ class ShippingMethodResource extends BaseResource
     public static function getDriverFormComponent(): Component
     {
         return Forms\Components\Select::make('driver')
+            ->label(__('lunarpanel.shipping::shippingmethod.form.driver.label'))
             ->options([
-                'ship-by' => 'Standard',
-                'collection' => 'Collection',
+                'ship-by' => __('lunarpanel.shipping::shippingmethod.form.driver.options.ship-by'),
+                'collection' => __('lunarpanel.shipping::shippingmethod.form.driver.options.collection'),
             ])->label('Type')
             ->default('ship-by');
     }
@@ -141,10 +149,19 @@ class ShippingMethodResource extends BaseResource
     {
         return [
             Tables\Columns\TextColumn::make('name')
-                ->label('Name'),
+                ->label(
+                    __('lunarpanel.shipping::shippingmethod.table.name.label')
+                ),
+            Tables\Columns\TextColumn::make('code')
+                ->label(
+                    __('lunarpanel.shipping::shippingmethod.table.code.label')
+                ),
             Tables\Columns\TextColumn::make('driver')
-
-                ->label('Type'),
+                ->label(
+                    __('lunarpanel.shipping::shippingmethod.table.driver.label')
+                )->formatStateUsing(
+                    fn ($state) => __("lunarpanel.shipping::shippingmethod.table.driver.options.{$state}")
+                ),
         ];
     }
 
