@@ -4,6 +4,7 @@ namespace Lunar\Shipping\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
@@ -62,6 +63,11 @@ class ShippingMethod extends BaseModel implements Purchasable
                 shippingMethod: $this
             )
         );
+    }
+
+    public function shippingRates(): HasMany
+    {
+        return $this->hasMany(ShippingRate::class);
     }
 
     public function driver()

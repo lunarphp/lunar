@@ -40,8 +40,6 @@ class ManageShippingRates extends ManageRelatedRecords
 
     public function form(Form $form): Form
     {
-        $priceInputs = [];
-
         return $form->schema([
             Forms\Components\Select::make('shipping_method_id')->relationship(name: 'shippingMethod', titleAttribute: 'name')->columnSpan(2),
             Forms\Components\TextInput::make('base_price')
@@ -91,6 +89,10 @@ class ManageShippingRates extends ManageRelatedRecords
     {
         return $table->columns([
             TextColumn::make('shippingMethod.name'),
+            TextColumn::make('basePrices.0')->formatStateUsing(
+                fn ($state = null) => $state->price->formatted
+            )->label('Base Price'),
+            TextColumn::make('tiered_prices_count')->counts('tieredPrices'),
         ])->headerActions([
             Tables\Actions\CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
