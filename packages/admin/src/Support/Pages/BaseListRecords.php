@@ -32,10 +32,10 @@ abstract class BaseListRecords extends ListRecords
             );
 
             $query->whereIn(
-                    'id',
-                    $ids
-                )
-                ->orderByRaw("FIELD(id, ".$ids->implode(',') .")"); // TODO: Only supports MySQL
+                'id',
+                $ids
+            )
+                ->orderByRaw('FIELD(id, '.$ids->implode(',').')'); // TODO: Only supports MySQL
         }
 
         return $query;
