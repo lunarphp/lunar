@@ -24,12 +24,12 @@ class ShippingExclusionListResource extends BaseResource
 
     public static function getLabel(): string
     {
-        return 'Shipping Exclusion List';
+        return __('lunarpanel.shipping::shippingexclusionlist.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return 'Shipping Exclusion Lists';
+        return __('lunarpanel.shipping::shippingexclusionlist.label_plural');
     }
 
     public static function getNavigationIcon(): ?string
@@ -39,7 +39,7 @@ class ShippingExclusionListResource extends BaseResource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Shipping';
+        return __('lunarpanel.shipping::plugin.navigation.group');
     }
 
     public static function getDefaultForm(Form $form): Form
@@ -68,7 +68,7 @@ class ShippingExclusionListResource extends BaseResource
     public static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('lunarpanel::taxzone.form.name.label'))
+            ->label(__('lunarpanel.shipping::shippingexclusionlist.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -95,8 +95,14 @@ class ShippingExclusionListResource extends BaseResource
     {
         return [
             Tables\Columns\TextColumn::make('name')
-                ->label('Name'),
-            Tables\Columns\TextColumn::make('exclusions_count')->counts('exclusions'),
+                ->label(
+                    __('lunarpanel.shipping::shippingexclusionlist.table.name.label')
+                ),
+            Tables\Columns\TextColumn::make('exclusions_count')
+                ->label(
+                    __('lunarpanel.shipping::shippingexclusionlist.table.exclusions_count.label')
+                )
+                ->counts('exclusions'),
         ];
     }
 
@@ -105,7 +111,6 @@ class ShippingExclusionListResource extends BaseResource
         return [
             'index' => Pages\ListShippingExclusionLists::route('/'),
             'edit' => Pages\EditShippingExclusionList::route('/{record}/edit'),
-            //            'rates' => Pages\ManageShippingRates::route('/{record}/rates'),
         ];
     }
 }

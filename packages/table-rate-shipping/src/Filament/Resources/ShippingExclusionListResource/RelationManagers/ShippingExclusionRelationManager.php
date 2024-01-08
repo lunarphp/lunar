@@ -36,7 +36,9 @@ class ShippingExclusionRelationManager extends RelationManager
                                     ->all();
                             }),
                     ])
-                    ->label('Product')
+                    ->label(
+                        __('lunarpanel.shipping::relationmanagers.exclusions.form.purchasable.label')
+                    )
                     ->required()
                     ->searchable(true),
             ]);

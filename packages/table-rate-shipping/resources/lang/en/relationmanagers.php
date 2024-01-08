@@ -48,9 +48,20 @@ return [
     ],
     'exclusions' => [
         'title_plural' => 'Shipping Exclusions',
+        'form' => [
+            'purchasable' => [
+                'label' => 'Product',
+            ],
+        ],
         'actions' => [
             'create' => [
                 'label' => 'Add shipping exclusion list',
+            ],
+            'attach' => [
+                'label' => 'Add exclusion list',
+            ],
+            'detach' => [
+                'label' => 'Remove',
             ],
         ],
     ],
