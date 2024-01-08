@@ -14,7 +14,7 @@ use Lunar\Models\Discount;
 
 class DiscountResource extends BaseResource
 {
-    //    protected static ?string $permission = 'catalog:manage-discounts';
+    protected static ?string $permission = 'sales:manage-discounts';
 
     protected static ?string $model = Discount::class;
 
