@@ -8,6 +8,7 @@ use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 
 class ManageProductVariants extends ManageRelatedRecords
@@ -21,6 +22,20 @@ class ManageProductVariants extends ManageRelatedRecords
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::product-variants');
+    }
+
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return config('lunar.panel.enable_variants', true);
+    }
+
+    public static function canAccess(Model $record = null): bool
+    {
+        if (! config('lunar.panel.enable_variants', true)) {
+            return false;
+        }
+
+        return parent::canAccess($record);
     }
 
     public static function getNavigationLabel(): string
