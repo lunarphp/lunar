@@ -46,12 +46,14 @@ class ManageShippingRates extends ManageRelatedRecords
                 ->numeric()
                 ->required()
                 ->columnSpan(2)
-                ->afterStateHydrated(static function (Forms\Components\TextInput $component, Model $record): void {
-                    $basePrice = $record->basePrices->first();
+                ->afterStateHydrated(static function (Forms\Components\TextInput $component, Model $record = null): void {
+                    if ($record) {
+                        $basePrice = $record->basePrices->first();
 
-                    $component->state(
-                        $basePrice->price->decimal
-                    );
+                        $component->state(
+                            $basePrice->price->decimal
+                        );
+                    }
                 }),
             Forms\Components\Repeater::make('prices')->schema([
                 Forms\Components\Select::make('customer_group_id')
@@ -69,17 +71,19 @@ class ManageShippingRates extends ManageRelatedRecords
                 Forms\Components\TextInput::make('price')
                     ->numeric(),
             ])->afterStateHydrated(
-                static function (Forms\Components\Repeater $component, Model $record): void {
-                    $component->state(
-                        $record->tieredPrices->map(function ($price) {
-                            return [
-                                'customer_group_id' => $price->customer_group_id,
-                                'price' => $price->price->decimal,
-                                'currency_id' => $price->currency_id,
-                                'tier' => $price->tier,
-                            ];
-                        })->toArray()
-                    );
+                static function (Forms\Components\Repeater $component, Model $record = null): void {
+                    if ($record) {
+                        $component->state(
+                            $record->tieredPrices->map(function ($price) {
+                                return [
+                                    'customer_group_id' => $price->customer_group_id,
+                                    'price' => $price->price->decimal,
+                                    'currency_id' => $price->currency_id,
+                                    'tier' => $price->tier,
+                                ];
+                            })->toArray()
+                        );
+                    }
                 }
             )->columns(4),
         ])->columns(1);
@@ -96,25 +100,32 @@ class ManageShippingRates extends ManageRelatedRecords
         ])->headerActions([
             Tables\Actions\CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
-            )->slideOver(),
+            )->action(function (ShippingRate $shippingRate = null, array $data = []) {
+                static::saveShippingRate($shippingRate, $data);
+            })->slideOver(),
         ])->actions([
             Tables\Actions\EditAction::make()->slideOver()->action(function (ShippingRate $shippingRate, array $data) {
-                $currency = Currency::getDefault();
-
-                $basePrice = $shippingRate->basePrices->first() ?: new Price;
-
-                $basePrice->price = (int) ($data['base_price'] * $currency->factor);
-                $basePrice->priceable_type = get_class($shippingRate);
-                $basePrice->currency_id = $currency->id;
-                $basePrice->priceable_id = $shippingRate->id;
-                $basePrice->customer_group_id = null;
-                $basePrice->save();
-
-                $shippingRate->tieredPrices()->delete();
-
-                $shippingRate->prices()->createMany($data['prices'] ?? []);
+                static::saveShippingRate($shippingRate, $data);
             }),
 
         ]);
+    }
+
+    protected static function saveShippingRate(ShippingRate $shippingRate = null, array $data = []): void
+    {
+        $currency = Currency::getDefault();
+
+        $basePrice = $shippingRate->basePrices->first() ?: new Price;
+
+        $basePrice->price = (int) ($data['base_price'] * $currency->factor);
+        $basePrice->priceable_type = get_class($shippingRate);
+        $basePrice->currency_id = $currency->id;
+        $basePrice->priceable_id = $shippingRate->id;
+        $basePrice->customer_group_id = null;
+        $basePrice->save();
+
+        $shippingRate->tieredPrices()->delete();
+
+        $shippingRate->prices()->createMany($data['prices'] ?? []);
     }
 }
