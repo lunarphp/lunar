@@ -21,16 +21,20 @@ class ListOrders extends BaseListRecords
 
     public function getTabs(): array
     {
+        $statuses = collect(
+            config('lunar.orders.statuses', [])
+        )->filter(
+            fn ($config) => $config['favourite'] ?? false
+        );
+
         return [
             'all' => Tab::make('All'),
-            'in-process' => Tab::make('In Process')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'in-process')),
-            'on-back-order' => Tab::make('On Backorder')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'on-back-order')),
-            'collection-processed' => Tab::make('Collection Processed')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'collection-processed')),
-            'dispatched' => Tab::make('Dispatched')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'dispatched')),
+            ...collect($statuses)->mapWithKeys(
+                fn ($config, $status) => [
+                    $status => Tab::make($config['label'])
+                        ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $status)),
+                ]
+            ),
         ];
     }
 

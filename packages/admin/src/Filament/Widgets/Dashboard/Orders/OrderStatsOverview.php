@@ -93,7 +93,7 @@ class OrderStatsOverview extends BaseWidget
             ])
         )->descriptionIcon(
             FilamentIcon::resolve(
-                $trend == 'neutral' ? 'lunar:trending-neutral' : ($increase ? 'lunar:trending-up' : 'lunar:trending-down')
+                $trend == 'neutral' ? 'lunar::trending-neutral' : ($increase ? 'lunar::trending-up' : 'lunar::trending-down')
             )
         )
             ->color($trend == 'neutral' ? 'gray' : ($increase ? 'success' : 'danger'));
@@ -124,7 +124,7 @@ class OrderStatsOverview extends BaseWidget
             ])
         )->descriptionIcon(
             FilamentIcon::resolve(
-                $trend == 'neutral' ? '' : ($increase ? 'lunar:trending-up' : 'lunar:trending-down')
+                $trend == 'neutral' ? '' : ($increase ? 'lunar::trending-up' : 'lunar::trending-down')
             )
         )
             ->color($trend == 'neutral' ? 'gray' : ($increase ? 'success' : 'danger'));

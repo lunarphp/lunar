@@ -24,6 +24,7 @@ class LunarPanelProvider extends ServiceProvider
 {
     protected $configFiles = [
         'search',
+        'panel',
     ];
 
     protected $root = __DIR__.'/..';
