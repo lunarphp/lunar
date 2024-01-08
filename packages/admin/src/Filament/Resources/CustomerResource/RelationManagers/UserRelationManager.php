@@ -12,6 +12,11 @@ class UserRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function table(Table $table): Table
     {
         return $table->columns([
