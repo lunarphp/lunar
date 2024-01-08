@@ -7,7 +7,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
@@ -51,6 +50,7 @@ class LunarPanelManager
         Resources\CurrencyResource::class,
         Resources\CustomerGroupResource::class,
         Resources\CustomerResource::class,
+        Resources\DiscountResource::class,
         Resources\LanguageResource::class,
         Resources\OrderResource::class,
         Resources\ProductOptionResource::class,
@@ -111,6 +111,7 @@ class LunarPanelManager
             'lunar::customers' => 'lucide-users',
             'lunar::customer-groups' => 'lucide-users',
             'lunar::dashboard' => 'lucide-bar-chart-big',
+            'lunar::discounts' => 'lucide-percent-circle',
             'lunar::languages' => 'lucide-languages',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',
@@ -220,15 +221,7 @@ class LunarPanelManager
                 NavigationGroup::make()
                     ->label('Settings')
                     ->collapsed(),
-            ])
-            ->navigationItems([
-                NavigationItem::make('Discounts')
-                    ->url('#')
-                    ->icon('lucide-percent-circle')
-                    ->group('Sales')
-                    ->sort(3),
-            ])
-            ->sidebarCollapsibleOnDesktop();
+            ])->sidebarCollapsibleOnDesktop();
     }
 
     public function registerExtension(BaseExtension|ResourceExtension $extension, string $pageClass): self
