@@ -7,7 +7,6 @@ use Filament\Panel;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource;
-use Lunar\Shipping\Filament\Resources\ShippingRateResource;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
 
 class ShippingPlugin implements Plugin
@@ -30,7 +29,6 @@ class ShippingPlugin implements Plugin
             ShippingMethodResource::class,
             ShippingZoneResource::class,
             ShippingExclusionListResource::class,
-            ShippingRateResource::class,
         ]);
 
         FilamentIcon::register([

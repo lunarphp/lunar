@@ -125,7 +125,7 @@ class ShippingZoneResource extends BaseResource
                 $country = $record->countries->first();
 
                 $component->state(
-                    $country->id
+                    $country?->id
                 );
             })->getOptionLabelsUsing(static function (Model $record): array {
                 $record->loadMissing('countries.country');
@@ -228,7 +228,7 @@ class ShippingZoneResource extends BaseResource
             ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
                 static::syncPostcodes($record, $get('zone_country'), $state);
 
-                $record->states()->delete();
+                $record->states()->detach();
             });
     }
 

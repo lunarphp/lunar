@@ -100,8 +100,15 @@ class ManageShippingRates extends ManageRelatedRecords
         ])->headerActions([
             Tables\Actions\CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
-            )->action(function (ShippingRate $shippingRate = null, array $data = []) {
-                static::saveShippingRate($shippingRate, $data);
+            )->action(function (Table $table, ShippingRate $shippingRate = null, array $data = []) {
+                $model = $this->getModel();
+                $relationship = $table->getRelationship();
+
+                $record = new ShippingRate();
+                $record->shipping_method_id = $data['shipping_method_id'];
+                $relationship->save($record);
+
+                static::saveShippingRate($record, $data);
             })->slideOver(),
         ])->actions([
             Tables\Actions\EditAction::make()->slideOver()->action(function (ShippingRate $shippingRate, array $data) {
