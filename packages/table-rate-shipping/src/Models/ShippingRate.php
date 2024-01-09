@@ -7,8 +7,11 @@ use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasPrices;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Models\Cart;
 use Lunar\Models\TaxClass;
-use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
+use Lunar\Shipping\Database\Factories\ShippingRateFactory;
+use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 
 class ShippingRate extends BaseModel implements Purchasable
 {
@@ -25,12 +28,10 @@ class ShippingRate extends BaseModel implements Purchasable
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Shipping\Factories\ShippingZoneFactory
      */
-    protected static function newFactory(): ShippingZoneFactory
+    protected static function newFactory(): ShippingRateFactory
     {
-        return ShippingZoneFactory::new();
+        return ShippingRateFactory::new();
     }
 
     public function shippingZone()
@@ -66,7 +67,7 @@ class ShippingRate extends BaseModel implements Purchasable
 
     public function getTaxReference()
     {
-        return $this->code;
+        return $this->shippingMethod->code;
     }
 
     /**
@@ -90,7 +91,7 @@ class ShippingRate extends BaseModel implements Purchasable
      */
     public function getDescription()
     {
-        return $this->name ?: $this->driver()->name();
+        return $this->shippingMethod->name ?: $this->driver()->name();
     }
 
     /**
@@ -98,7 +99,7 @@ class ShippingRate extends BaseModel implements Purchasable
      */
     public function getOption()
     {
-        return $this->code;
+        return $this->shippingMethod->code;
     }
 
     /**
@@ -114,11 +115,24 @@ class ShippingRate extends BaseModel implements Purchasable
      */
     public function getIdentifier()
     {
-        return $this->code;
+        return $this->shippingMethod->code;
     }
 
     public function getThumbnail()
     {
         return null;
+    }
+
+    /**
+     * Return the shipping method driver.
+     */
+    public function getShippingOption(Cart $cart): ?ShippingOption
+    {
+        return $this->shippingMethod->driver()->resolve(
+            new ShippingOptionRequest(
+                shippingRate: $this,
+                cart: $cart,
+            )
+        );
     }
 }

@@ -27,14 +27,19 @@ test('can get shipping option by cart total', function () {
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'charge_by' => 'cart_total',
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 1000,
             'tier' => 1,
@@ -47,15 +52,15 @@ test('can get shipping option by cart total', function () {
         ],
     ]);
 
-    expect($shippingMethod->prices)->toHaveCount(2);
+    expect($shippingRate->prices)->toHaveCount(2);
 
     $cart = $this->createCart($currency, 100);
 
     $driver = new ShipBy();
 
     $request = new ShippingOptionRequest(
+        shippingRate: $shippingRate,
         cart: $cart,
-        shippingMethod: $shippingMethod
     );
 
     $shippingOption = $driver->resolve($request);
@@ -69,8 +74,8 @@ test('can get shipping option by cart total', function () {
     $driver = new ShipBy();
 
     $request = new ShippingOptionRequest(
-        cart: $cart,
-        shippingMethod: $shippingMethod
+        shippingRate: $shippingRate,
+        cart: $cart
     );
 
     $shippingOption = $driver->resolve($request);
@@ -95,14 +100,19 @@ test('can get shipping option if outside tier without default price', function (
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'charge_by' => 'cart_total',
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 500,
             'tier' => 700,
@@ -110,15 +120,15 @@ test('can get shipping option if outside tier without default price', function (
         ],
     ]);
 
-    expect($shippingMethod->prices)->toHaveCount(1);
+    expect($shippingRate->prices)->toHaveCount(1);
 
     $cart = $this->createCart($currency, 100);
 
     $driver = new ShipBy();
 
     $request = new ShippingOptionRequest(
-        cart: $cart,
-        shippingMethod: $shippingMethod
+        shippingRate: $shippingRate,
+        cart: $cart
     );
 
     $this->expectException(\ErrorException::class);

@@ -5,12 +5,12 @@ namespace Lunar\Shipping\Drivers\ShippingMethods;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Product;
-use Lunar\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Interfaces\ShippingMethodInterface;
+use Lunar\Shipping\Interfaces\ShippingRateInterface;
 use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 
-class FreeShipping implements ShippingMethodInterface
+class FreeShipping implements ShippingRateInterface
 {
     /**
      * The shipping method for context.
@@ -35,7 +35,9 @@ class FreeShipping implements ShippingMethodInterface
 
     public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption
     {
-        $shippingMethod = $shippingOptionRequest->shippingMethod;
+        $shippingRate = $shippingOptionRequest->shippingRate;
+        $shippingMethod = $shippingRate->shippingMethod;
+        $shippingZone = $shippingRate->shippingZone;
         $data = $shippingMethod->data;
         $cart = $shippingOptionRequest->cart;
 
@@ -43,7 +45,7 @@ class FreeShipping implements ShippingMethodInterface
         // If so, we do not want to return this option regardless.
         $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
 
-        $hasExclusions = $shippingMethod->shippingExclusions()
+        $hasExclusions = $shippingZone->shippingExclusions()
             ->whereHas('exclusions', function ($query) use ($productIds) {
                 $query->wherePurchasableType(Product::class)->whereIn('purchasable_id', $productIds);
             })->exists();
@@ -54,41 +56,37 @@ class FreeShipping implements ShippingMethodInterface
 
         $subTotal = $cart->lines->sum('subTotal.value');
 
-        if ($data->use_discount_amount ?? false) {
+        if ($data['use_discount_amount'] ?? false) {
             $subTotal -= $cart->discountTotal->value;
         }
 
-        if (empty($data)) {
-            $minSpend = 0;
-        } else {
-            if (is_array($data->minimum_spend)) {
-                $minSpend = ($data->minimum_spend[$cart->currency->code] ?? null);
-            } else {
-                $minSpend = ($data->minimum_spend->{$cart->currency->code} ?? null);
-            }
+        $minSpend = $data['minimum_spend'] ?? null;
+
+        if (is_array($minSpend)) {
+            $minSpend = $minSpend[$cart->currency->code] ?? null;
         }
 
-        if (is_null($minSpend) || ($minSpend) > $subTotal) {
+        if (is_null($minSpend) || $minSpend > $subTotal) {
             return null;
         }
 
         return new ShippingOption(
             name: $shippingMethod->name,
             description: $shippingMethod->description,
-            identifier: $shippingMethod->code,
+            identifier: $shippingRate->getIdentifier(),
             price: new Price(0, $cart->currency, 1),
-            taxClass: TaxClass::getDefault(),
-            option: $shippingMethod->shippingZone->name,
-            meta: ['shipping_zone' => $shippingMethod->shippingZone->name]
+            taxClass: $shippingRate->getTaxClass(),
+            option: $shippingZone->name,
+            meta: ['shipping_zone' => $shippingZone->name]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function on(ShippingMethod $shippingMethod): self
+    public function on(ShippingRate $shippingRate): self
     {
-        $this->shippingMethod = $shippingMethod;
+        $this->shippingRate = $shippingRate;
 
         return $this;
     }

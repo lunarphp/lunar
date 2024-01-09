@@ -4,9 +4,9 @@ namespace Lunar\Shipping\Interfaces;
 
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 
-interface ShippingMethodInterface
+interface ShippingRateInterface
 {
     /**
      * Return the name of the shipping method.
@@ -21,12 +21,10 @@ interface ShippingMethodInterface
     /**
      * Set the context for the driver.
      */
-    public function on(ShippingMethod $shippingMethod): self;
+    public function on(ShippingRate $shippingRate): self;
 
     /**
      * Return the shipping option price.
-     *
-     * @return ShippingOption
      */
     public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption;
 }
