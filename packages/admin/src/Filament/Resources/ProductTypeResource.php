@@ -67,7 +67,7 @@ class ProductTypeResource extends BaseResource
                                 ->label('')
                                 ->columnSpan(2),
                         ])->visible(
-                            config('lunar.panel.enable_variants', false)
+                            config('lunar.panel.enable_variants', true)
                         ),
 
                 ])->columnSpan(2),
