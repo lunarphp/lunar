@@ -26,7 +26,7 @@ return [
                         'label' => 'Currency',
                     ],
                     'tier' => [
-                        'label' => 'Tier',
+                        'label' => 'Min. Spend',
                     ],
                     'price' => [
                         'label' => 'Price',

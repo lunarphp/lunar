@@ -107,7 +107,7 @@ class ManageShippingRates extends ManageRelatedRecords
                                         'customer_group_id' => $price->customer_group_id,
                                         'price' => $price->price->decimal,
                                         'currency_id' => $price->currency_id,
-                                        'tier' => $price->tier,
+                                        'tier' => $price->tier / 100,
                                     ];
                                 })->toArray()
                             );
@@ -168,6 +168,14 @@ class ManageShippingRates extends ManageRelatedRecords
 
         $shippingRate->tieredPrices()->delete();
 
-        $shippingRate->prices()->createMany($data['prices'] ?? []);
+        $tiers = collect($data['prices'] ?? [])->map(
+            function ($price) {
+                $price['tier'] = $price['tier'] * 100;
+
+                return $price;
+            }
+        );
+
+        $shippingRate->prices()->createMany($tiers->toArray());
     }
 }
