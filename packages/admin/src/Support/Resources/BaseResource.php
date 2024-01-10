@@ -11,7 +11,7 @@ use Filament\Resources\Resource;
 use Lunar\Admin\Support\Concerns;
 use Lunar\Models\Attribute;
 use Lunar\FieldTypes\TranslatedText;
-use Lunar\FieldTypes\Text;
+use Lunar\Base\Traits\Searchable;
 
 use function Filament\Support\generate_search_term_expression;
 
@@ -54,28 +54,46 @@ class BaseResource extends Resource
      */
     protected static function applyGlobalSearchAttributeConstraints(Builder $query, string $search): void
     {
-        /** @var Connection $databaseConnection */
-        $databaseConnection = $query->getConnection();
+        $scoutEnabled = config('lunar.search.scout_enabled', false);
+        $isScoutSearchable = in_array(Searchable::class, class_uses_recursive(static::getModel()));
 
-        $search = generate_search_term_expression($search, static::isGlobalSearchForcedCaseInsensitive(), $databaseConnection);
+        if (
+            $scoutEnabled &&
+            $isScoutSearchable
+        ) {
+            $ids = collect(static::getModel()::search($search)->keys())->map(
+                fn ($result) => str_replace(static::getModel() . '::', '', $result)
+            );
 
-        foreach (explode(' ', $search) as $searchWord) {
-            $query->where(function (Builder $query) use ($searchWord) {
-                $isFirst = true;
+            $query->whereIn(
+                'id',
+                $ids
+            )
+            ->orderByRaw('FIELD(id, ' . "'" . $ids->implode(',') . "'" . ')'); // TODO: Only supports MySQL
+        } else {
+            /** @var Connection $databaseConnection */
+            $databaseConnection = $query->getConnection();
 
-                $searchableAttributes = static::getGloballySearchableAttributes();
+            $search = generate_search_term_expression($search, static::isGlobalSearchForcedCaseInsensitive(), $databaseConnection);
 
-                static::mapSearchableAttributes($searchableAttributes);
+            foreach (explode(' ', $search) as $searchWord) {
+                $query->where(function (Builder $query) use ($searchWord) {
+                    $isFirst = true;
 
-                foreach ($searchableAttributes as $attributes) {
-                    static::applyGlobalSearchAttributeConstraint(
-                        query: $query,
-                        search: $searchWord,
-                        searchAttributes: Arr::wrap($attributes),
-                        isFirst: $isFirst,
-                    );
-                }
-            });
+                    $searchableAttributes = static::getGloballySearchableAttributes();
+
+                    static::mapSearchableAttributes($searchableAttributes);
+
+                    foreach ($searchableAttributes as $attributes) {
+                        static::applyGlobalSearchAttributeConstraint(
+                            query: $query,
+                            search: $searchWord,
+                            searchAttributes: Arr::wrap($attributes),
+                            isFirst: $isFirst,
+                        );
+                    }
+                });
+            }
         }
     }
 
