@@ -66,7 +66,9 @@ class ProductTypeResource extends BaseResource
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),
-                        ]),
+                        ])->visible(
+                            config('lunar.panel.enable_variants', true)
+                        ),
 
                 ])->columnSpan(2),
             ]);
