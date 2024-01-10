@@ -3,10 +3,13 @@
 namespace Lunar\Shipping;
 
 use Illuminate\Support\ServiceProvider;
+use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Observers\OrderObserver;
+use Lunar\Shipping\Filament\Extensions\OrderResourceExtension;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\ShippingManager;
 use Lunar\Shipping\Models\ShippingExclusion;
@@ -50,5 +53,7 @@ class ShippingServiceProvider extends ServiceProvider
         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
             return $app->make(ShippingManager::class);
         });
+
+        LunarPanel::registerExtension(new OrderResourceExtension(), OrderResource::class);
     }
 }
