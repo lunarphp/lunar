@@ -196,10 +196,9 @@ class ProductResource extends BaseResource
     {
         return $table
             ->columns(static::getTableColumns())
-            ->filters([
-                Tables\Filters\SelectFilter::make('brand')
-                    ->relationship('brand', 'name'),
-            ])
+            ->filters(
+                static::getTableFilters()
+            )
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -277,6 +276,14 @@ class ProductResource extends BaseResource
                 CustomerGroupRelationManager::class,
             ]),
             MediaRelationManager::class,
+        ];
+    }
+
+    public static function getDefaultFilters(): array
+    {
+        return [
+            Tables\Filters\SelectFilter::make('brand')
+                ->relationship('brand', 'name'),
         ];
     }
 

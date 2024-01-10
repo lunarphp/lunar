@@ -180,9 +180,9 @@ class CustomerResource extends BaseResource
                     ->label(__('lunarpanel::customer.table.account_reference.label'))
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters(
+                static::getTableFilters()
+            )
             ->actions([
                 Tables\Actions\ViewAction::make(),
             ])

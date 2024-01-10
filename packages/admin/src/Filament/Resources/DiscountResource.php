@@ -62,9 +62,9 @@ class DiscountResource extends BaseResource
     {
         return $table
             ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
+            ->filters(
+                static::getTableFilters()
+            )
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
