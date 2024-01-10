@@ -29,13 +29,13 @@ class ManageProductVariants extends ManageRelatedRecords
         return config('lunar.panel.enable_variants', true);
     }
 
-    public static function canAccess(Model $record = null): bool
+    public static function canAccess(array $parameters = []): bool
     {
         if (! config('lunar.panel.enable_variants', true)) {
             return false;
         }
 
-        return parent::canAccess($record);
+        return parent::canAccess($parameters);
     }
 
     public static function getNavigationLabel(): string
