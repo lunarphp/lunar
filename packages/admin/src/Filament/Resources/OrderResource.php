@@ -10,6 +10,7 @@ use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Actions\Orders\UpdateStatusBulkAction;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Tables\Filters\DateRangeFilter;
 use Lunar\Models\Order;
 
 class OrderResource extends BaseResource
@@ -49,9 +50,9 @@ class OrderResource extends BaseResource
     {
         return $table
             ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
+            ->filters(
+                static::getTableFilters()
+            )
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -66,6 +67,23 @@ class OrderResource extends BaseResource
             ->paginated([10, 25, 50, 100])
             ->selectCurrentPageOnly()
             ->deferLoading();
+    }
+
+    public static function getDefaultFilters(): array
+    {
+        return [
+            Tables\Filters\SelectFilter::make('status')
+                ->options(function () {
+                    return collect(
+                        config('lunar.orders.statuses')
+                    )->mapWithKeys(
+                        fn ($status, $key) => [$key => $status['label']]
+                    );
+                })->label(
+                    __('lunarpanel::order.table.status.label')
+                ),
+            DateRangeFilter::make('placed_at'),
+        ];
     }
 
     public static function getTableColumns(): array

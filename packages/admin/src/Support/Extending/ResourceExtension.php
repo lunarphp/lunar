@@ -8,4 +8,9 @@ abstract class ResourceExtension extends BaseExtension
     {
         return $managers;
     }
+
+    public function extendTableFilters(array $filters): array
+    {
+        return $filters;
+    }
 }
