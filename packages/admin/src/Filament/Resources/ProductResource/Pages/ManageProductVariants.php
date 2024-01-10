@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 
 class ManageProductVariants extends ManageRelatedRecords
