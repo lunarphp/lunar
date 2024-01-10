@@ -29,6 +29,15 @@ class MyProductResourceExtension extends \Lunar\Panel\Support\Extending\Resource
         ]);
     }
     
+    public function extendTableFilters(array $filters): array
+    {
+        return [
+            ...$filters,
+            \Filament\Tables\Filters\SelectFilter::make('custom_filter')
+                ->options(/* .. */),
+        ];
+    }
+    
     public function extendTable(\Filament\Tables\Table $table): \Filament\Tables\Table
     {
         $actions = [
