@@ -53,3 +53,64 @@ Shipping Rates are the prices you offer for each of your shipping zones, they ar
 Sometimes, you might not want to ship certain items to particular Shipping Zone, this is where exclusion lists come in. You can associate purchasables to a list which you can then associate to a shipping zone, if a cart contains any of them then they won't be able to select a shipping rate.
 
 # Storefront usage
+
+This addon uses the shipping modifiers provided by the Lunar core, so you shouldn't need to change your existing implementation.
+
+```php
+$options = \Lunar\Base\ShippingManifest::getOptions(
+    $cart
+);
+```
+
+# Advanced usage
+
+## Return available drivers
+
+```php
+\Lunar\Shipping\Facades\Shipping::getSupportedDrivers();
+```
+
+## Using the driver directly
+
+```php
+\Lunar\Shipping\Facades\Shipping::with('ship-by')->resolve(
+    new \Lunar\Shipping\DataTransferObjects\ShippingOptionRequest(
+        shippingRate: \Lunar\Shipping\Models\ShippingRate $shippingRate,
+        cart: \Lunar\Models\Cart $cart
+    )
+);
+```
+
+## Shipping Zones
+
+Each method is optional, the more you add the more strict it becomes.
+
+```php
+$shippingZones = Lunar\Shipping\Facades\Shipping::zones()
+    ->country(\Lunar\Models\Country $country)
+    ->state(\Lunar\Models\State $state)
+    ->postcode(
+        new \Lunar\Shipping\DataTransferObjects\PostcodeLookup(
+            country: \Lunar\Models\Country $country,
+            postcode: 'NW1'
+        )
+    )->get()
+    
+$shippingZones->map(/* .. */);
+```
+
+## Shipping Rates
+
+```php
+$shippingRates = \Lunar\Shipping\Facades\Shipping::shippingRates(
+    \Lunar\Models\Cart $cart
+);
+```
+
+## Shipping Options
+
+```php
+$shippingOptions = \Lunar\Shipping\Facades\Shipping::shippingOptions(
+    \Lunar\Models\Cart $cart
+);
+```
