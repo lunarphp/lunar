@@ -35,7 +35,7 @@ abstract class BaseListRecords extends ListRecords
                 'id',
                 $ids
             )
-                ->orderByRaw('FIELD(id, '.$ids->implode(',').')'); // TODO: Only supports MySQL
+            ->orderByRaw('FIELD(id, ' . "'" . $ids->implode(',') . "'" . ')'); // TODO: Only supports MySQL
         }
 
         return $query;
