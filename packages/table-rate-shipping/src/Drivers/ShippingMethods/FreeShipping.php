@@ -7,7 +7,6 @@ use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
-use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 
 class FreeShipping implements ShippingRateInterface
@@ -15,7 +14,7 @@ class FreeShipping implements ShippingRateInterface
     /**
      * The shipping method for context.
      */
-    public ShippingMethod $shippingMethod;
+    public ShippingRate $shippingRate;
 
     /**
      * {@inheritDoc}
