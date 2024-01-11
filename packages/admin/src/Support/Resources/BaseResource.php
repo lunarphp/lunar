@@ -2,16 +2,16 @@
 
 namespace Lunar\Admin\Support\Resources;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Connection;
-use Illuminate\Support\Arr;
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Lunar\Admin\Support\Concerns;
-use Lunar\Models\Attribute;
-use Lunar\FieldTypes\TranslatedText;
 use Lunar\Base\Traits\Searchable;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\Attribute;
 
 use function Filament\Support\generate_search_term_expression;
 
@@ -50,7 +50,7 @@ class BaseResource extends Resource
     }
 
     /**
-     * Override filament query builder 
+     * Override filament query builder
      */
     protected static function applyGlobalSearchAttributeConstraints(Builder $query, string $search): void
     {
@@ -62,14 +62,16 @@ class BaseResource extends Resource
             $isScoutSearchable
         ) {
             $ids = collect(static::getModel()::search($search)->keys())->map(
-                fn ($result) => str_replace(static::getModel() . '::', '', $result)
+                fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
+
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
             $query->whereIn(
                 'id',
                 $ids
-            )
-            ->orderByRaw('FIELD(id, ' . "'" . $ids->implode(',') . "'" . ')'); // TODO: Only supports MySQL
+            )->orderByRaw("field(id, {$placeholders})", $ids->toArray());
+
         } else {
             /** @var Connection $databaseConnection */
             $databaseConnection = $query->getConnection();
@@ -110,7 +112,7 @@ class BaseResource extends Resource
 
         foreach ($attributes as $attribute) {
             if ($attribute->type == TranslatedText::class) {
-                array_push($map, 'attribute_data->' . $attribute->handle . '->value');
+                array_push($map, 'attribute_data->'.$attribute->handle.'->value');
             }
         }
 
