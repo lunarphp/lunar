@@ -80,7 +80,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
 
         if ($this->customerGroups?->count()) {
-            if (! $groupHandles) {
+            if ($groupHandles->isEmpty()) {
                 return $this->setCustomerGroups(
                     $this->customerGroups
                 );
@@ -89,7 +89,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             return $this->customerGroups;
         }
 
-        if (count($groupHandles) > 0) {
+        if (! $groupHandles->isEmpty()) {
             return $this->customerGroups = CustomerGroup::whereIn('handle', $groupHandles)->get();
         }
 
