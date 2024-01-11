@@ -26,7 +26,7 @@ class CalculateLines
 
                     return $cartLine;
                 });
-            
+
             $unitPrice = $cartLine->unitPrice->unitDecimal(false) * $cart->currency->factor;
 
             $subTotal = (int) round($unitPrice * $cartLine->quantity, $cart->currency->decimal_places);

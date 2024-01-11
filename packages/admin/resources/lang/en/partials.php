@@ -97,7 +97,6 @@ return [
     'discounts.limitations.limitation' => 'Limitation',
     'discounts.limitations.exclusion' => 'Exclusion',
     /**
-    
      * Product Collections.
      */
     'products.collections.heading' => 'Collections',

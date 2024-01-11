@@ -105,7 +105,7 @@ class OrderTest extends TestCase
             'placed_at' => now(),
             'meta' => [
                 'foo' => 'bar',
-            ]
+            ],
         ]);
 
         $this->assertCount(0, $order->lines);
