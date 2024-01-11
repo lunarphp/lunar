@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
@@ -78,6 +79,24 @@ class ProductResource extends BaseResource
     {
         return $form
             ->schema([
+                Shout::make('product-status')
+                    ->content(
+                        __('lunarpanel::product.status.unpublished.content')
+                    )->type('info')->hidden(
+                        fn (Model $record) => $record?->status == 'published'
+                    ),
+                Shout::make('product-customer-groups')
+                    ->content(
+                        __('lunarpanel::product.status.availability.customer_groups')
+                    )->type('warning')->hidden(function (Model $record) {
+                        return $record->customerGroups()->where('enabled', true)->count();
+                    }),
+                Shout::make('product-channels')
+                    ->content(
+                        __('lunarpanel::product.status.availability.channels')
+                    )->type('warning')->hidden(function (Model $record) {
+                        return $record->channels()->where('enabled', true)->count();
+                    }),
                 Forms\Components\Section::make()
                     ->schema(
                         static::getMainFormComponents(),
@@ -92,7 +111,6 @@ class ProductResource extends BaseResource
         return [
             static::getBrandFormComponent(),
             static::getProductTypeFormComponent(),
-            static::getStatusFormComponent(),
             static::getTagsFormComponent(),
         ];
     }
@@ -162,17 +180,6 @@ class ProductResource extends BaseResource
             ->preload()
             ->live()
             ->required();
-    }
-
-    protected static function getStatusFormComponent(): Component
-    {
-        return Forms\Components\Select::make('status')
-            ->label(__('lunarpanel::product.form.status.label'))
-            ->options([
-                'draft' => 'Draft',
-                'published' => 'Published',
-            ])
-            ->selectablePlaceholder(false);
     }
 
     protected static function getTagsFormComponent(): Component

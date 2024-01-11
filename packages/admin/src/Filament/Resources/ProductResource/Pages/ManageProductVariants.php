@@ -23,6 +23,20 @@ class ManageProductVariants extends ManageRelatedRecords
         return FilamentIcon::resolve('lunar::product-variants');
     }
 
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return config('lunar.panel.enable_variants', true);
+    }
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        if (! config('lunar.panel.enable_variants', true)) {
+            return false;
+        }
+
+        return parent::canAccess($parameters);
+    }
+
     public static function getNavigationLabel(): string
     {
         return 'Variants';
