@@ -129,7 +129,10 @@ class ProductTypeResource extends BaseResource
                 ->formatStateUsing(
                     fn ($state) => number_format($state, 0)
                 )
-                ->label(__('lunarpanel::producttype.table.variant_attributes_count.label')),
+                ->label(__('lunarpanel::producttype.table.variant_attributes_count.label'))
+                ->visible(
+                    config('lunar.panel.enable_variants', true)
+                ),
         ];
     }
 
