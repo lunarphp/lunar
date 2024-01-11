@@ -120,6 +120,7 @@ class ProductOptionResource extends BaseResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
+            ->searchable()
             ->defaultSort('position', 'asc')
             ->reorderable('position');
     }
