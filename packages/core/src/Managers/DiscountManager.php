@@ -138,12 +138,12 @@ class DiscountManager implements DiscountManagerInterface
                 function ($query, $value) {
                     return $query->where(function ($query) use ($value) {
                         return $query->where(fn ($query) => $query->products(
-                                    $value->lines->pluck('purchasable.product_id')->filter()->values()
-                                )
-                            )
+                            $value->lines->pluck('purchasable.product_id')->filter()->values()
+                        )
+                        )
                             ->orWhere(fn ($query) => $query->productVariants(
-                                    $value->lines->pluck('purchasable.id')->filter()->values()
-                                )
+                                $value->lines->pluck('purchasable.id')->filter()->values()
+                            )
                             );
                     });
                 }
