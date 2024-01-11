@@ -279,7 +279,7 @@ CartSession::add($purchasable, $quantity);
 ```php
 CartSession::addLines([
     [
-        'id' => 1,
+        'purchasable' => \Lunar\Models\ProductVariant::find(123),
         'quantity' => 25,
         'meta' => ['foo' => 'bar'],
     ],
