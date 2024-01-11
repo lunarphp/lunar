@@ -5,10 +5,9 @@ namespace Lunar\Admin\Filament\Resources;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Actions\Orders\UpdateStatusBulkAction;
@@ -127,6 +126,13 @@ class OrderResource extends BaseResource
         return $record->reference;
     }
 
+    public static function getGlobalSearchResultUrl(Model $record): ?string
+    {
+        return OrderResource::getUrl('order', [
+            'record' => $record,
+        ]);
+    }
+
     public static function getGloballySearchableAttributes(): array
     {
         return [
@@ -144,17 +150,17 @@ class OrderResource extends BaseResource
     {
         return parent::getGlobalSearchEloquentQuery()->with([
             'shippingAddress',
-            'tags'
+            'tags',
         ]);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-         /** @var Order $record */
-         $details = [
+        /** @var Order $record */
+        $details = [
             __('lunarpanel::order.table.status.label') => $record->getStatusLabelAttribute(),
             __('lunarpanel::order.table.total.label') => $record->total?->formatted,
-            __('lunarpanel::order.table.customer.label')  => $record->shippingAddress->fullName,
+            __('lunarpanel::order.table.customer.label') => $record->shippingAddress->fullName,
         ];
 
         if ($record->shippingAddress->contact_email) {
