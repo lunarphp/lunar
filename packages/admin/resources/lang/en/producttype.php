@@ -21,6 +21,15 @@ return [
         ]
     ],
 
+    'tabs' => [
+        'product_attributes' => [
+            'label' => 'Product Attributes',
+        ],
+        'variant_attributes' => [
+            'label' => 'Variant Attributes',
+        ],
+    ],
+
     'form' => [
         'name' => [
             'label' => 'Name',

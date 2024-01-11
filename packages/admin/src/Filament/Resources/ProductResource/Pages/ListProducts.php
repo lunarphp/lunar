@@ -5,6 +5,7 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Filament\Actions;
 use Filament\Forms\Components\Grid;
 use Filament\Resources\Components\Tab;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -100,5 +101,10 @@ class ListProducts extends BaseListRecords
     protected function paginateTableQuery(Builder $query): Paginator
     {
         return $query->simplePaginate($this->getTableRecordsPerPage());
+    }
+
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::Full;
     }
 }
