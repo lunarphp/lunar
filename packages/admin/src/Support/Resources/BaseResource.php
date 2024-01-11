@@ -70,7 +70,12 @@ class BaseResource extends Resource
             $query->whereIn(
                 'id',
                 $ids
-            )->orderByRaw("field(id, {$placeholders})", $ids->toArray());
+            );
+
+            $query->when(
+                ! $ids->isEmpty(),
+                fn ($query) => $query->orderByRaw("field(id, {$placeholders})", $ids->toArray())
+            );
 
         } else {
             /** @var Connection $databaseConnection */
