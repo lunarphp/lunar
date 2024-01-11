@@ -112,6 +112,27 @@ class ProductTypeResource extends BaseResource
         return [
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::producttype.table.name.label')),
+            Tables\Columns\TextColumn::make('products_count')
+                ->counts('products')
+                ->formatStateUsing(
+                    fn ($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::producttype.table.products_count.label')),
+            Tables\Columns\TextColumn::make('product_attributes_count')
+                ->counts('productAttributes')
+                ->formatStateUsing(
+                    fn ($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::producttype.table.product_attributes_count.label')),
+            Tables\Columns\TextColumn::make('variant_attributes_count')
+                ->counts('variantAttributes')
+                ->formatStateUsing(
+                    fn ($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::producttype.table.variant_attributes_count.label'))
+                ->visible(
+                    config('lunar.panel.enable_variants', true)
+                ),
         ];
     }
 
