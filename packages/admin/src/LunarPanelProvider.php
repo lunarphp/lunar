@@ -22,6 +22,13 @@ use Lunar\Admin\Support\Synthesizers\PriceSynth;
 
 class LunarPanelProvider extends ServiceProvider
 {
+    protected $configFiles = [
+        'search',
+        'panel',
+    ];
+
+    protected $root = __DIR__.'/..';
+
     public function register(): void
     {
         $this->app->scoped('lunar-panel', function (): LunarPanelManager {
@@ -53,6 +60,10 @@ class LunarPanelProvider extends ServiceProvider
             __DIR__.'/../resources/views' => resource_path('views/vendor/lunarpanel'),
             __DIR__.'/../resources/lang' => $this->app->langPath('vendor/lunarpanel'),
         ]);
+
+        collect($this->configFiles)->each(function ($config) {
+            $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar.$config");
+        });
 
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunarpanel'),
