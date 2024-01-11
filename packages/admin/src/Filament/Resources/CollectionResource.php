@@ -2,13 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Pages\Page;
 use Filament\Pages\SubNavigationPosition;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -119,14 +119,14 @@ class CollectionResource extends BaseResource
     public static function getGloballySearchableAttributes(): array
     {
         return [
-            'group.name' // Needed to trig canGloballySearch()
+            'group.name', // Needed to trig canGloballySearch()
         ];
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with([
-            'group'
+            'group',
         ]);
     }
 }

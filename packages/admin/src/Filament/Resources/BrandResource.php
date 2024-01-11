@@ -2,8 +2,6 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Pages\SubNavigationPosition;
@@ -12,6 +10,8 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Brand;
@@ -128,7 +128,7 @@ class BrandResource extends BaseResource
     public static function getGloballySearchableAttributes(): array
     {
         return [
-            'name'
+            'name',
         ];
     }
 }

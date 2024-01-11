@@ -20,7 +20,7 @@ it('can search customer', function () {
     ]);
 
     $record = \Lunar\Models\Customer::factory()->create([
-        'account_ref' => 'X67HB'
+        'account_ref' => 'X67HB',
     ]);
 
     \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
@@ -58,7 +58,7 @@ it('can search order', function () {
             ],
         ]);
 
-        \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
+    \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
         ->set('search', $record->reference)
         ->assertDispatched('open-global-search-results')
         ->assertSee($record->reference);
@@ -71,7 +71,7 @@ it('can search collection', function () {
     ]);
 
     $record = \Lunar\Models\Collection::factory()->create();
- 
+
     \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
         ->set('search', $record->group->name)
         ->assertDispatched('open-global-search-results')

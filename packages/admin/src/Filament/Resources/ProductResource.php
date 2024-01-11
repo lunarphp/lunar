@@ -13,9 +13,9 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Support\Forms\Components\Attributes;
@@ -302,14 +302,14 @@ class ProductResource extends BaseResource
 
     public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
-        return  $record->translateAttribute('name');
+        return $record->translateAttribute('name');
     }
 
     public static function getGloballySearchableAttributes(): array
     {
         return [
             'variants.sku',
-            'tags.value'
+            'tags.value',
         ];
     }
 
@@ -318,13 +318,13 @@ class ProductResource extends BaseResource
         return parent::getGlobalSearchEloquentQuery()->with([
             'variants',
             'brand',
-            'tags'
+            'tags',
         ]);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-        return  [
+        return [
             __('lunarpanel::product.table.sku.label') => $record->variants->first()->getIdentifier(),
             __('lunarpanel::product.table.stock.label') => $record->variants->first()->stock,
             __('lunarpanel::product.table.brand.label') => $record->brand?->name,

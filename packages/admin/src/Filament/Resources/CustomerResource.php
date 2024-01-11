@@ -2,14 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages;
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\AddressRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
@@ -231,7 +231,7 @@ class CustomerResource extends BaseResource
             'account_ref',
             'vat_no',
             'users.name',
-            'users.email'
+            'users.email',
         ];
     }
 
@@ -247,7 +247,7 @@ class CustomerResource extends BaseResource
         /** @var Customer $record */
         $details = [
             __('lunarpanel::customer.table.full_name.label') => $record->fullName,
-            __('lunarpanel::customer.table.title.label') => $record->title
+            __('lunarpanel::customer.table.title.label') => $record->title,
         ];
 
         if ($record->account_ref) {
