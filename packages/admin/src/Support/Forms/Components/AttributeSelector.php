@@ -24,7 +24,7 @@ class AttributeSelector extends CheckboxList
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->loadStateFromRelationships();
     }
 
