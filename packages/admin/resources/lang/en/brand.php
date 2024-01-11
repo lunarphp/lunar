@@ -11,8 +11,8 @@ return [
             'label' => 'Name',
         ],
         'products_count' => [
-            'label'=> 'Product count',
-        ]
+            'label' => 'No. Products',
+        ],
     ],
 
     'form' => [

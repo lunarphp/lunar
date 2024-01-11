@@ -11,14 +11,14 @@ return [
             'label' => 'Name',
         ],
         'products_count' => [
-            'label'=> 'Product count',
+            'label' => 'Product count',
         ],
         'product_attributes_count' => [
-            'label'=> 'Attributes Product count',
+            'label' => 'Product Attributes',
         ],
         'variant_attributes_count' => [
-            'label'=> 'Attributes Variant count',
-        ]
+            'label' => 'Variant Attributes',
+        ],
     ],
 
     'tabs' => [
