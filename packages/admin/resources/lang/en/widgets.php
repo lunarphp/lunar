@@ -94,14 +94,14 @@ return [
     'customer' => [
         'stats_overview' => [
             'total_orders' => [
-                'label'=> 'Total orders'
+                'label' => 'Total orders',
             ],
             'avg_spend' => [
-                'label'=> 'Avg. Spend'
+                'label' => 'Avg. Spend',
             ],
             'total_spend' => [
-                'label'=> 'Total Spend'
+                'label' => 'Total Spend',
             ],
-        ]
-    ]
+        ],
+    ],
 ];
