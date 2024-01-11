@@ -966,6 +966,7 @@ class CartTest extends TestCase
 
     /**
      * @test
+     *
      * @group foofoo
      */
     public function can_get_estimated_shipping()

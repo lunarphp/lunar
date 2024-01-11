@@ -17,6 +17,6 @@ class AddTypeToBrandDiscountTable extends Migration
     {
         Schema::table($this->prefix.'brand_discount', function ($table) {
             $table->dropColumn('type');
-        });        
+        });
     }
 }

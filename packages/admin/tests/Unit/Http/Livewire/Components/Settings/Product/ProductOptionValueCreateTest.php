@@ -37,12 +37,12 @@ class ProductOptionValueCreateTest extends TestCase
 
             LiveWire::actingAs($staff, 'staff')
                 ->test(OptionEdit::class, ['productOption' => $option])
-                ->set('newProductOptionValue.name.' . Language::getDefault()->code, 'Size')
+                ->set('newProductOptionValue.name.'.Language::getDefault()->code, 'Size')
                 ->call('createOptionValue');
 
             $this->assertDatabaseHas((new ProductOptionValue())->getTable(), [
                 'product_option_id' => $option->id,
-                'name' => json_encode([Language::getDefault()->code => 'Size'])
+                'name' => json_encode([Language::getDefault()->code => 'Size']),
             ]);
         });
     }
