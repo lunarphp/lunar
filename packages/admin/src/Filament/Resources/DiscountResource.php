@@ -5,20 +5,18 @@ namespace Lunar\Admin\Filament\Resources;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\Page;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Filament\Resources\BrandResource\Pages;
+use Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Brand;
+use Lunar\Models\Discount;
 
-class BrandResource extends BaseResource
+class DiscountResource extends BaseResource
 {
-    protected static ?string $permission = 'catalog:manage-products';
+    protected static ?string $permission = 'sales:manage-discounts';
 
-    protected static ?string $model = Brand::class;
+    protected static ?string $model = Discount::class;
 
     protected static ?int $navigationSort = 3;
 
@@ -26,30 +24,22 @@ class BrandResource extends BaseResource
 
     public static function getLabel(): string
     {
-        return __('lunarpanel::brand.label');
+        return __('lunarpanel::discount.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('lunarpanel::brand.plural_label');
+        return __('lunarpanel::discount.plural_label');
     }
 
     public static function getNavigationIcon(): ?string
     {
-        return FilamentIcon::resolve('lunar::brands');
+        return FilamentIcon::resolve('lunar::discounts');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __('lunarpanel::global.sections.catalog');
-    }
-
-    public static function getRecordSubNavigation(Page $page): array
-    {
-        return $page->generateNavigationItems([
-            Pages\EditBrand::class,
-            Pages\ManageBrandMedia::class,
-        ]);
+        return 'Sales';
     }
 
     protected static function getMainFormComponents(): array
@@ -62,7 +52,7 @@ class BrandResource extends BaseResource
     protected static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('lunarpanel::brand.form.name.label'))
+            ->label(__('lunarpanel::discount.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -88,20 +78,8 @@ class BrandResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection('images')
-                ->conversion('small')
-                ->limit(1)
-                ->square()
-                ->label(''),
             Tables\Columns\TextColumn::make('name')
-                ->label(__('lunarpanel::brand.table.name.label')),
-            Tables\Columns\TextColumn::make('products_count')
-                ->counts('products')
-                ->formatStateUsing(
-                    fn ($state) => number_format($state, 0)
-                )
-                ->label(__('lunarpanel::brand.table.products_count.label')),
+                ->label(__('lunarpanel::discount.table.name.label')),
         ];
     }
 
@@ -115,10 +93,7 @@ class BrandResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListBrands::route('/'),
-            'create' => Pages\CreateBrand::route('/create'),
-            'edit' => Pages\EditBrand::route('/{record}/edit'),
-            'media' => Pages\ManageBrandMedia::route('/{record}/media'),
+            'index' => Pages\ListDiscounts::route('/'),
         ];
     }
 }

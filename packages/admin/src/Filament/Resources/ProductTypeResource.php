@@ -51,7 +51,7 @@ class ProductTypeResource extends BaseResource
                     static::getMainFormComponents()
                 ),
                 Forms\Components\Tabs::make('Attributes')->tabs([
-                    Forms\Components\Tabs\Tab::make('Product Attributes')
+                    Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.product_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
                                 ->withType(Product::class)
@@ -59,14 +59,16 @@ class ProductTypeResource extends BaseResource
                                 ->label('')
                                 ->columnSpan(2),
                         ]),
-                    Forms\Components\Tabs\Tab::make('Variant Attributes')
+                    Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.variant_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
                                 ->withType(ProductVariant::class)
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),
-                        ]),
+                        ])->visible(
+                            config('lunar.panel.enable_variants', true)
+                        ),
 
                 ])->columnSpan(2),
             ]);
@@ -110,6 +112,27 @@ class ProductTypeResource extends BaseResource
         return [
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::producttype.table.name.label')),
+            Tables\Columns\TextColumn::make('products_count')
+                ->counts('products')
+                ->formatStateUsing(
+                    fn ($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::producttype.table.products_count.label')),
+            Tables\Columns\TextColumn::make('product_attributes_count')
+                ->counts('productAttributes')
+                ->formatStateUsing(
+                    fn ($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::producttype.table.product_attributes_count.label')),
+            Tables\Columns\TextColumn::make('variant_attributes_count')
+                ->counts('variantAttributes')
+                ->formatStateUsing(
+                    fn ($state) => number_format($state, 0)
+                )
+                ->label(__('lunarpanel::producttype.table.variant_attributes_count.label'))
+                ->visible(
+                    config('lunar.panel.enable_variants', true)
+                ),
         ];
     }
 
