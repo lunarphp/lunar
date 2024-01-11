@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
 use Filament\Resources\Components\Tab;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
@@ -43,8 +44,8 @@ class ListOrders extends BaseListRecords
         return $query->simplePaginate($this->getTableRecordsPerPage());
     }
 
-    public function getMaxContentWidth(): ?string
+    public function getMaxContentWidth(): MaxWidth
     {
-        return 'full';
+        return MaxWidth::Full;
     }
 }
