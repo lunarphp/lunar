@@ -10,6 +10,14 @@ return [
         'name' => [
             'label' => 'Name',
         ],
+        'attributes' => [
+            'product_attributes' => [
+                'label' => 'Product Attributes',
+            ],
+            'variant_attributes' => [
+                'label' => 'Variant Attributes',
+            ],
+        ],
     ],
 
     'form' => [
