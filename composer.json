@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^8.0",
         "doctrine/dbal": "^3.6",
@@ -107,7 +108,7 @@
     },
     "scripts": {
         "pint": "pint",
-        "test:pest": "pest --parallel",
+        "test:pest": "pest",
         "test:phpstan": "phpstan analyse",
         "test": [
             "@test:pest",
