@@ -40,6 +40,18 @@ class AttributesRelationManager extends RelationManager
                         }
                         $set('handle', Str::slug($state));
                     }),
+                Forms\Components\TextInput::make('description.en')
+                    ->label(
+                        __('lunarpanel::attribute.form.description.label')
+                    )
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                        if ($operation !== 'create') {
+                            return;
+                        }
+                        $set('handle', Str::slug($state));
+                    }),
                 Forms\Components\TextInput::make('handle')
                     ->label(
                         __('lunarpanel::attribute.form.handle.label')
@@ -95,6 +107,9 @@ class AttributesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name.en')->label(
                     __('lunarpanel::attribute.table.name.label')
+                ),
+                Tables\Columns\TextColumn::make('description.en')->label(
+                    __('lunarpanel::attribute.table.description.label')
                 ),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(
