@@ -34,9 +34,9 @@ class CustomerStatsOverviewWidget extends BaseWidget
         $avgSpend = new Price($avg, Currency::getDefault());
 
         return [
-            Stat::make('Total Orders', $this->record->orders()->count()),
-            Stat::make('Avg. Spend', $avgSpend->formatted),
-            Stat::make('Total Spend', $totalSpend->formatted),
+            Stat::make(__('lunarpanel::widgets.customer.stats_overview.total_orders.label'), $this->record->orders()->count()),
+            Stat::make(__('lunarpanel::widgets.customer.stats_overview.avg_spend.label'), $avgSpend->formatted),
+            Stat::make(__('lunarpanel::widgets.customer.stats_overview.total_spend.label'), $totalSpend->formatted),
         ];
     }
 }
