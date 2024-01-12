@@ -107,7 +107,7 @@ class LunarPanelProvider extends ServiceProvider
     {
         Gate::after(function ($user, $ability) {
             // Are we trying to authorize something within the admin panel?
-            $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
+            $permission = $this->app->get('lunar-access-control')->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
                 return $user->admin || $user->hasPermissionTo($ability);
             }
