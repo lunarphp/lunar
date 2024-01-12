@@ -51,8 +51,6 @@ class Order extends BaseModel
         LogsActivity,
         Searchable;
 
-    public static array $defaultLogExcept = ['status'];
-
     /**
      * {@inheritDoc}
      */
@@ -245,5 +243,12 @@ class Order extends BaseModel
     public function isPlaced(): bool
     {
         return ! blank($this->placed_at);
+    }
+
+    public static function getDefaultLogExcept(): array
+    {
+        return [
+            'status',
+        ];
     }
 }
