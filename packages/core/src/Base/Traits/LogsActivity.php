@@ -12,8 +12,6 @@ trait LogsActivity
 
     public static array $logExcept = [];
 
-    public static array $defaultLogExcept = [];
-
     /**
      * Get the log options for the activity log.
      */
