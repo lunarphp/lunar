@@ -5,6 +5,8 @@ uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
 
 it('can search brand by name on brand list', function () {
 
+    Config::set('lunar.search.scout_enabled', false);
+
     $this->asStaff(admin: true);
 
     \Lunar\Models\Language::factory()->create([
