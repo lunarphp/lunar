@@ -51,7 +51,7 @@ class NewVsReturningCustomersChart extends ApexChartWidget
                 ) as new_customer_count'),
                 DB::RAW('SUM(
                     CASE
-                        WHEN !new_customer THEN 1 
+                        WHEN NOT new_customer THEN 1 
                         ELSE 0
                     END
                 ) as returning_customer_count'),
@@ -64,7 +64,7 @@ class NewVsReturningCustomersChart extends ApexChartWidget
                 DB::RAW('year'),
                 DB::RAW('monthstamp'),
                 DB::RAW(db_date('placed_at', '%Y-%m')),
-            )->orderBy(DB::RAW("DATE_FORMAT(placed_at, '%Y-%m')"), 'desc')->get();
+            )->orderBy(DB::RAW(db_date('placed_at', '%Y-%m')), 'desc')->get();
 
         $labels = [];
         $newCustomers = [];
@@ -137,7 +137,7 @@ class NewVsReturningCustomersChart extends ApexChartWidget
                 DB::RAW('year'),
                 DB::RAW('monthstamp'),
                 DB::RAW(db_date('placed_at', '%Y-%m')),
-            )->orderBy(DB::RAW("DATE_FORMAT(placed_at, '%Y-%m')"), 'desc')->get();
+            )->orderBy(DB::RAW(db_date('placed_at', '%Y-%m')), 'desc')->get();
 
         foreach ($period as $date) {
             // Find our records for this period.
