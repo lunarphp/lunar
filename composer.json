@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^8.0",
         "doctrine/dbal": "^3.6",
@@ -30,8 +31,7 @@
         "spatie/laravel-blink": "^1.6",
         "spatie/laravel-medialibrary": "^10.0.0",
         "spatie/laravel-permission": "^5.10",
-        "technikermathe/blade-lucide-icons": "^v2.24.0",
-        "awcodes/shout": "^2.0.2"
+        "technikermathe/blade-lucide-icons": "^v2.24.0"
     },
     "require-dev": {
         "laravel/pint": "1.13.1",
@@ -108,7 +108,7 @@
     },
     "scripts": {
         "pint": "pint",
-        "test:pest": "pest --parallel",
+        "test:pest": "pest",
         "test:phpstan": "phpstan analyse",
         "test": [
             "@test:pest",

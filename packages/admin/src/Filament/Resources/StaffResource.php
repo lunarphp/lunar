@@ -93,6 +93,7 @@ class StaffResource extends BaseResource
     {
         return Forms\Components\TextInput::make('password')
             ->label(__('lunarpanel::staff.form.password.label'))
+            ->password()
             ->required(fn ($record) => blank($record))
             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
             ->dehydrated(fn (?string $state): bool => filled($state))
