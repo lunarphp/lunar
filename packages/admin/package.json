@@ -7,7 +7,7 @@
         "build:styles": "npx tailwindcss -i resources/css/index.css -o resources/dist/lunar-panel.css --postcss --minify && npm run purge",
         "build:scripts": "node bin/build.js",
         "purge": "filament-purge -i resources/dist/lunar-panel.css -o resources/dist/lunar-panel.css -v 3.x",
-        "dev": "npm-run-all dev:*",
+        "dev": "npm-run-all --parallel dev:*",
         "build": "npm-run-all build:*"
     },
     "devDependencies": {
