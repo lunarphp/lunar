@@ -4,8 +4,9 @@ uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('actions');
 
 beforeEach(function () {
-    $this->asStaff(admin: true);
+    Config::set('lunar.search.scout_enabled', false);
 
+    $this->asStaff(admin: true);
 });
 
 it('can render', function () {
