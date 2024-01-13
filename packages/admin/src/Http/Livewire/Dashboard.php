@@ -64,14 +64,14 @@ class Dashboard extends Component
             return 0;
         }
 
-        $returning = $orders->first(fn ($order) => !$order->new_customer);
+        $returning = $orders->first(fn ($order) => ! $order->new_customer);
         $new = $orders->first(fn ($order) => $order->new_customer);
 
-        if (!$returning || !$returning->count) {
+        if (! $returning || ! $returning->count) {
             return 0;
         }
 
-        if (!$new || !$new->count) {
+        if (! $new || ! $new->count) {
             return 100;
         }
 
@@ -220,7 +220,7 @@ class Dashboard extends Component
         foreach ($customerGroups as $group) {
             // Find our counts...
             $data = $orders->filter(function ($row) use ($group) {
-                if ($group->default && !$row->customer_group_id) {
+                if ($group->default && ! $row->customer_group_id) {
                     return true;
                 }
 
