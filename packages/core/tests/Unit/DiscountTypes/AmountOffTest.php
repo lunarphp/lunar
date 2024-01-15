@@ -147,7 +147,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2280, $cart->total->value);
     }
-    
+
     /** @test */
     public function will_not_apply_to_lines_with_excluded_brand()
     {
@@ -350,7 +350,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2280, $cart->total->value);
     }
-    
+
     /** @test */
     public function will_only_apply_to_lines_with_correct_product_variant()
     {
@@ -449,7 +449,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(100, $cart->discountTotal->value);
         $this->assertEquals(2280, $cart->total->value);
     }
-    
+
     /** @test */
     public function will_not_apply_to_lines_with_excluded_product()
     {
@@ -544,11 +544,11 @@ class AmountOffTest extends TestCase
         ]);
 
         $cart = $cart->calculate();
-        
+
         $this->assertEquals(200, $cart->discountTotal->value);
         $this->assertEquals(3360, $cart->total->value);
     }
-    
+
     /** @test */
     public function will_not_apply_to_lines_with_excluded_product_variant()
     {
@@ -643,7 +643,7 @@ class AmountOffTest extends TestCase
         ]);
 
         $cart = $cart->calculate();
-        
+
         $this->assertEquals(200, $cart->discountTotal->value);
         $this->assertEquals(3360, $cart->total->value);
     }
@@ -1619,7 +1619,7 @@ class AmountOffTest extends TestCase
         $this->assertEquals(2400, $cart->total->value);
         $this->assertEquals(2000, $cart->subTotal->value);
     }
-    
+
     /**
      * @test
      */
