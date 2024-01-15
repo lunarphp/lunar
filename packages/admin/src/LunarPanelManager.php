@@ -210,6 +210,9 @@ class LunarPanelManager
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->plugins([
+                \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
+            ])
             ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
             ->livewireComponents([
                 Resources\OrderResource\Pages\Components\OrderItemsTable::class,
