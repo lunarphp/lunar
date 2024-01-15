@@ -2,9 +2,38 @@
 
 namespace Lunar\Admin\Support\Infolists\Components;
 
-use Filament\Infolists\Components\Entry;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Collection;
+use Filament\Infolists\Components\TextEntry;
 
-class Tags extends Entry
+class Tags extends TextEntry
 {
-    protected string $view = 'lunarpanel::infolists.components.tags';
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->badge();
+    }
+
+    public function getState(): array
+    {
+        $state = parent::getState();
+
+        $record = $this->getRecord();
+
+        if (! $record) {
+            return [];
+        }
+
+        if (! method_exists($record, 'tags')) {
+            return [];
+        }
+
+        return $record
+                ->tags
+                ->pluck('value')
+                ->map(function (string $value) {
+                    return Str::upper($value);
+                })->all();
+    }
 }

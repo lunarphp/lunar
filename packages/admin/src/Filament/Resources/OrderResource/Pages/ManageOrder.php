@@ -33,11 +33,13 @@ use Lunar\Admin\Support\Infolists\Components\Livewire;
 use Lunar\Admin\Support\Infolists\Components\Tags;
 use Lunar\Admin\Support\Infolists\Components\Timeline;
 use Lunar\Admin\Support\Infolists\Components\Transaction as InfolistsTransaction;
+use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Models\Transaction;
+use Lunar\Models\Tag;
 
 /**
  * @property \Lunar\Models\Order $record
@@ -292,9 +294,12 @@ class ManageOrder extends ViewRecord
                         $this->getOrderAddressInfolistSchema('billing'),
                         Infolists\Components\Section::make('tags')
                             ->heading(__('lunarpanel::order.infolist.tags.label'))
+                            ->headerActions([
+                                fn ($record) => $this->getEditTagsActions(),
+                            ])
                             ->compact()
                             ->schema([
-                                Tags::make('tagging'),
+                                Tags::make(''),
                             ]),
 
                         Infolists\Components\Section::make('additional_info')
@@ -499,6 +504,26 @@ class ManageOrder extends ViewRecord
                     ->color(fn ($state) => $state !== '-' ? Color::Sky : null)
                     ->iconColor(fn ($state) => $state !== '-' ? Color::Amber : null),
             ]);
+    }
+
+    public function getEditTagsActions(): Action
+    {
+        return Action::make("edit_tags")
+            ->modalHeading(__("lunarpanel::order.infolist.tags.label"))
+            ->modalWidth('2xl')
+            ->label(__('lunarpanel::order.action.edit_tags.label'))
+            ->button()
+            ->fillForm(fn ($record): array => [
+                'tags' => $record->tags
+            ])
+            ->form(function () {
+                return [
+                    TagsComponent::make('')
+                        ->suggestions(Tag::all()->pluck('value')->all())
+                ];
+            })->action(function (Action $action, $record, $data) {
+                $this->dispatchActivityUpdated();
+            });
     }
 
     public function getEditAddressAction(string $type): Action
