@@ -10,6 +10,9 @@ return [
         'name' => [
             'label' => 'Name',
         ],
+        'products_count' => [
+            'label' => 'No. Products',
+        ],
     ],
 
     'form' => [
