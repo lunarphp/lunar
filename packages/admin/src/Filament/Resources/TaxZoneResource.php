@@ -61,7 +61,7 @@ class TaxZoneResource extends BaseResource
         ];
     }
 
-    protected static function getNameFormComponent(): Component
+    public static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('lunarpanel::taxzone.form.name.label'))
@@ -70,7 +70,7 @@ class TaxZoneResource extends BaseResource
             ->autofocus();
     }
 
-    protected static function getZoneTypeFormComponent(): Component
+    public static function getZoneTypeFormComponent(): Component
     {
         return Forms\Components\Select::make('zone_type')
             ->options([
@@ -271,7 +271,7 @@ class TaxZoneResource extends BaseResource
         );
     }
 
-    protected static function getPriceDisplayFormComponent(): Component
+    public static function getPriceDisplayFormComponent(): Component
     {
         return Forms\Components\Select::make('price_display')
             ->options([
@@ -336,7 +336,6 @@ class TaxZoneResource extends BaseResource
     {
         return [
             'index' => Pages\ListTaxZones::route('/'),
-            'create' => Pages\CreateTaxZone::route('/create'),
             'edit' => Pages\EditTaxZone::route('/{record}/edit'),
         ];
     }

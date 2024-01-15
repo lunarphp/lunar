@@ -13,7 +13,11 @@ class ListTaxZones extends BaseListRecords
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->form([
+                TaxZoneResource::getNameFormComponent(),
+                TaxZoneResource::getZoneTypeFormComponent(),
+                TaxZoneResource::getPriceDisplayFormComponent(),
+            ]),
         ];
     }
 }
