@@ -131,17 +131,19 @@ class TaxZoneResource extends BaseResource
             ->required()
             ->options(Country::get()->pluck('name', 'id'))
             ->searchable()
-            ->afterStateHydrated(static function (Forms\Components\Select $component, Model $record): void {
-                $record->loadMissing('countries.country');
+            ->afterStateHydrated(static function (Forms\Components\Select $component, ?Model $record): void {
+                if ($record) {
+                    $record->loadMissing('countries.country');
 
-                /** @var Collection $relatedModels */
-                $relatedModels = $record->countries;
+                    /** @var Collection $relatedModels */
+                    $relatedModels = $record->countries;
 
-                $component->state(
-                    $relatedModels
-                        ->pluck('country')
-                        ->first()->id,
-                );
+                    $component->state(
+                        $relatedModels
+                            ->pluck('country')
+                            ->first()->id,
+                    );
+                }
             });
     }
 
@@ -192,15 +194,17 @@ class TaxZoneResource extends BaseResource
             ->rows(10)
             ->helperText(__('lunarpanel::taxzone.form.zone_postcodes.helper'))
             ->required()
-            ->afterStateHydrated(static function (Forms\Components\Textarea $component, Model $record): void {
-                /** @var Collection $relatedModels */
-                $relatedModels = $record->postcodes;
+            ->afterStateHydrated(static function (Forms\Components\Textarea $component, ?Model $record): void {
+                if ($record) {
+                    /** @var Collection $relatedModels */
+                    $relatedModels = $record->postcodes;
 
-                $component->state(
-                    $relatedModels
-                        ->pluck('postcode')
-                        ->join("\n"),
-                );
+                    $component->state(
+                        $relatedModels
+                            ->pluck('postcode')
+                            ->join("\n"),
+                    );
+                }
             })
             ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
                 self::syncCountries($record, [$get('zone_country')]);
@@ -337,6 +341,7 @@ class TaxZoneResource extends BaseResource
         return [
             'index' => Pages\ListTaxZones::route('/'),
             'edit' => Pages\EditTaxZone::route('/{record}/edit'),
+            'create' => Pages\CreateTaxZone::route('/create'),
         ];
     }
 }
