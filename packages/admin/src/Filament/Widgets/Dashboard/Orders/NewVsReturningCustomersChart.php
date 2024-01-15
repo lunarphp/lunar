@@ -13,7 +13,7 @@ class NewVsReturningCustomersChart extends ApexChartWidget
     /**
      * Chart Id
      */
-    protected static string $chartId = 'newVsReturningCustomers';
+    protected static ?string $chartId = 'newVsReturningCustomers';
 
     protected function getHeading(): ?string
     {
