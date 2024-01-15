@@ -4,9 +4,13 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
@@ -45,6 +49,35 @@ class ProductOptionResource extends BaseResource
     protected static function getMainFormComponents(): array
     {
         return [
+            Grid::make()
+                ->schema([
+                    Placeholder::make('test')
+                        ->hiddenLabel()
+                        ->columnSpanFull()
+                        ->content(function () {
+                            $expand = __('lunarpanel::global.translation.expand');
+                            $collapse = __('lunarpanel::global.translation.collapse');
+
+                            return new HtmlString(Blade::render('
+                        <x-filament::link 
+                            tag="button"
+                            x-data="{
+                                expand: false,
+                                toggle(){
+                                    this.expand = !this.expand
+                                },
+                                init(){
+                                    $watch(\'expand\', (value) => value ? $dispatch(\'expand-translated-text-field\') : $dispatch(\'collapse-translated-text-field\'))
+                                }
+                            }"
+                            x-on:click="toggle"
+                            
+                        >
+                            <span x-text="expand ? \''.$collapse.'\' : \''.$expand.'\'">'.$expand.'</span>
+                        </x-filament::link>
+                        '));
+                        }),
+                ]),
             static::getNameFormComponent(),
             static::getLabelFormComponent(),
             static::getHandleFormComponent(),
