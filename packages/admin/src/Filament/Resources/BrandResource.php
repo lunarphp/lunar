@@ -11,6 +11,8 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -23,6 +25,8 @@ class BrandResource extends BaseResource
     protected static ?string $model = Brand::class;
 
     protected static ?int $navigationSort = 3;
+
+    protected static int $globalSearchResultsLimit = 5;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -137,6 +141,18 @@ class BrandResource extends BaseResource
             'create' => Pages\CreateBrand::route('/create'),
             'edit' => Pages\EditBrand::route('/{record}/edit'),
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->name;
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'name',
         ];
     }
 }

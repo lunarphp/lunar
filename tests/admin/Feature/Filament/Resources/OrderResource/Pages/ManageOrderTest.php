@@ -5,7 +5,6 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Livewire\Components\ActivityLogFeed as ActivityLogFeedComponent;
-use Lunar\Admin\Livewire\Components\Tags as TagsComponent;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
@@ -120,7 +119,7 @@ it('can render order manage page', function () {
     ])
         ->assertSuccessful()
         ->assertSeeLivewire(ActivityLogFeedComponent::class)
-        ->assertSeeLivewire(TagsComponent::class)
+        ->assertSee($this->order->tags)
         ->assertSee($this->order->shippingAddress->line_one)
         ->assertSee($this->order->shippingAddress->line_one)
         ->assertSee($this->order->total->formatted)

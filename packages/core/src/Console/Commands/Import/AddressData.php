@@ -4,8 +4,10 @@ namespace Lunar\Console\Commands\Import;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use Lunar\Facades\DB;
+use Laravel\Prompts\Progress;
 use Lunar\Models\Country;
+
+use function Laravel\Prompts\progress;
 
 class AddressData extends Command
 {
@@ -25,12 +27,10 @@ class AddressData extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): void
     {
-        $this->info('Importing Countries and States');
+        $this->components->info('Importing Countries and States');
 
         $existing = Country::pluck('iso3');
 
@@ -46,13 +46,15 @@ class AddressData extends Command
         });
 
         if (! $newCountries->count()) {
-            $this->info('There are no new countries to import');
+            $this->components->info('There are no new countries to import');
 
-            return Command::SUCCESS;
+            exit(self::SUCCESS);
         }
 
-        DB::transaction(function () use ($newCountries) {
-            $this->withProgressBar($newCountries, function ($country) {
+        progress(
+            'Importing Countries and States',
+            $newCountries,
+            function ($country, Progress $progress) {
                 $model = Country::create([
                     'name' => $country->name,
                     'iso3' => $country->iso3,
@@ -73,11 +75,13 @@ class AddressData extends Command
                 });
 
                 $model->states()->createMany($states->toArray());
-            });
-        });
 
-        $this->line('');
+                $progress->advance();
+            }
+        );
 
-        return Command::SUCCESS;
+        $this->components->info('Countries and States imported successfully');
+
+        exit(self::SUCCESS);
     }
 }

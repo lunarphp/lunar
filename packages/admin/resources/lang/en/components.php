@@ -2,13 +2,6 @@
 
 return [
     'tags' => [
-
-        'input' => [
-
-            'placeholder' => 'Seperate tags with ,',
-
-        ],
-
         'notification' => [
 
             'updated' => 'Tags updated',
