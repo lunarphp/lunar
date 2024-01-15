@@ -45,18 +45,19 @@ class TaxZoneResource extends BaseResource
     protected static function getMainFormComponents(): array
     {
         return [
-            static::getNameFormComponent(),
-            static::getPriceDisplayFormComponent(),
-            static::getActiveFormComponent(),
-            static::getDefaultFormComponent(),
-            static::getZoneTypeFormComponent(),
-            Forms\Components\Grid::make()
-                ->schema([
-                    static::getZoneTypeCountriesFormComponent(),
-                    static::getZoneTypeCountryFormComponent(),
-                    static::getZoneTypeStatesFormComponent(),
-                    static::getZoneTypePostcodesFormComponent(),
-                ]),
+            Forms\Components\Section::make()->schema([
+                static::getNameFormComponent(),
+                static::getPriceDisplayFormComponent(),
+                Forms\Components\Group::make([
+                    static::getActiveFormComponent(),
+                    static::getDefaultFormComponent(),
+                ])->columns(2),
+                static::getZoneTypeFormComponent(),
+                static::getZoneTypeCountriesFormComponent(),
+                static::getZoneTypeCountryFormComponent(),
+                static::getZoneTypeStatesFormComponent(),
+                static::getZoneTypePostcodesFormComponent(),
+            ]),
         ];
     }
 
@@ -79,7 +80,8 @@ class TaxZoneResource extends BaseResource
             ])
             ->label(__('lunarpanel::taxzone.form.zone_type.label'))
             ->live()
-            ->required();
+            ->required()
+            ->selectablePlaceholder(false);
     }
 
     protected static function getZoneTypeCountriesFormComponent(): Component
@@ -273,8 +275,8 @@ class TaxZoneResource extends BaseResource
     {
         return Forms\Components\Select::make('price_display')
             ->options([
-                'include_tax' => __('lunarpanel::taxzone.form.price_display.options.include_tax'),
-                'exclude_tax' => __('lunarpanel::taxzone.form.price_display.options.exclude_tax'),
+                'tax_inclusive' => __('lunarpanel::taxzone.form.price_display.options.include_tax'),
+                'tax_exclusive' => __('lunarpanel::taxzone.form.price_display.options.exclude_tax'),
             ])
             ->label(__('lunarpanel::taxzone.form.price_display.label'))
             ->required();
