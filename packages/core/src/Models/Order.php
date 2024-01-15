@@ -244,4 +244,11 @@ class Order extends BaseModel
     {
         return ! blank($this->placed_at);
     }
+
+    public static function getDefaultLogExcept(): array
+    {
+        return [
+            'status',
+        ];
+    }
 }
