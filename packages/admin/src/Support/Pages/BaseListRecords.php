@@ -31,11 +31,12 @@ abstract class BaseListRecords extends ListRecords
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
 
-            $query->whereIn(
-                'id',
-                $ids
-            )
-            ->orderByRaw('FIELD(id, ' . "'" . $ids->implode(',') . "'" . ')'); // TODO: Only supports MySQL
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+            $query->when(
+                ! $ids->isEmpty(),
+                fn ($query) => $query->orderByRaw("field(id, {$placeholders})", $ids->toArray())  // TODO: Only supports MySQL
+            );
         }
 
         return $query;
