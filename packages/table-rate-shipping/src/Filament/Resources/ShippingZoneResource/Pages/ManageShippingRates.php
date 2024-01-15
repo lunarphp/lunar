@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -41,15 +42,26 @@ class ManageShippingRates extends ManageRelatedRecords
     public function form(Form $form): Form
     {
         return $form->schema([
+            Shout::make('')->content(
+                function () {
+                    $pricesIncTax = config('lunar.pricing.stored_inclusive_of_tax', false);
+
+                    if ($pricesIncTax) {
+                        return __('lunarpanel.shipping::relationmanagers.shipping_rates.notices.prices_inc_tax');
+                    }
+
+                    return __('lunarpanel.shipping::relationmanagers.shipping_rates.notices.prices_excl_tax');
+                }
+            ),
             Forms\Components\Select::make('shipping_method_id')
                 ->label(
                     __('lunarpanel.shipping::relationmanagers.shipping_rates.form.shipping_method_id.label')
                 )
                 ->relationship(name: 'shippingMethod', titleAttribute: 'name')
                 ->columnSpan(2),
-            Forms\Components\TextInput::make('base_price')
+            Forms\Components\TextInput::make('price')
                 ->label(
-                    __('lunarpanel.shipping::relationmanagers.shipping_rates.form.base_price.label')
+                    __('lunarpanel.shipping::relationmanagers.shipping_rates.form.price.label')
                 )
                 ->numeric()
                 ->required()
@@ -90,7 +102,6 @@ class ManageShippingRates extends ManageRelatedRecords
                             __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.tier.label')
                         )
                         ->numeric()
-                        ->minValue(1)
                         ->required(),
                     Forms\Components\TextInput::make('price')
                         ->label(
@@ -127,7 +138,7 @@ class ManageShippingRates extends ManageRelatedRecords
             TextColumn::make('basePrices.0')->formatStateUsing(
                 fn ($state = null) => $state->price->formatted
             )->label(
-                __('lunarpanel.shipping::relationmanagers.shipping_rates.table.base_price.label')
+                __('lunarpanel.shipping::relationmanagers.shipping_rates.table.price.label')
             ),
             TextColumn::make('tiered_prices_count')
                 ->label(
@@ -159,7 +170,7 @@ class ManageShippingRates extends ManageRelatedRecords
 
         $basePrice = $shippingRate->basePrices->first() ?: new Price;
 
-        $basePrice->price = (int) ($data['base_price'] * $currency->factor);
+        $basePrice->price = (int) ($data['price'] * $currency->factor);
         $basePrice->priceable_type = get_class($shippingRate);
         $basePrice->currency_id = $currency->id;
         $basePrice->priceable_id = $shippingRate->id;

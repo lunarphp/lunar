@@ -8,12 +8,16 @@ return [
                 'label' => 'Create Shipping Rate',
             ],
         ],
+        'notices' => [
+            'prices_incl_tax' => 'All prices include tax, which will be considered when calculating minimum spend.',
+            'prices_excl_tax' => 'All prices exclude tax, the minimum spend will be based on the cart sub total.',
+        ],
         'form' => [
             'shipping_method_id' => [
                 'label' => 'Shipping Method',
             ],
-            'base_price' => [
-                'label' => 'Base Price',
+            'price' => [
+                'label' => 'Price',
             ],
             'prices' => [
                 'label' => 'Pricing Tiers',
@@ -38,8 +42,8 @@ return [
             'shipping_method' => [
                 'label' => 'Shipping Method',
             ],
-            'base_price' => [
-                'label' => 'Base Price',
+            'price' => [
+                'label' => 'Price',
             ],
             'tiered_prices_count' => [
                 'label' => 'No. Tiers',
