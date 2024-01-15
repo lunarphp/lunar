@@ -14,7 +14,7 @@ class AverageOrderValueChart extends ApexChartWidget
     /**
      * Chart Id
      */
-    protected static string $chartId = 'averageOrderValue';
+    protected static ?string $chartId = 'averageOrderValue';
 
     protected function getHeading(): ?string
     {
@@ -162,7 +162,7 @@ class AverageOrderValueChart extends ApexChartWidget
                 DB::RAW('year'),
                 DB::RAW('monthstamp'),
                 DB::RAW(db_date('placed_at', '%Y-%m')),
-            )->orderBy(DB::RAW("DATE_FORMAT(placed_at, '%Y-%m')"), 'desc')->get();
+            )->orderBy(DB::RAW(db_date('placed_at', '%Y-%m')), 'desc')->get();
 
         foreach ($period as $date) {
             // Find our records for this period.
