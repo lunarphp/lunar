@@ -2,9 +2,8 @@
 
 namespace Lunar\Admin\Support\Infolists\Components;
 
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Collection;
 use Filament\Infolists\Components\TextEntry;
+use Illuminate\Support\Str;
 
 class Tags extends TextEntry
 {
@@ -30,10 +29,10 @@ class Tags extends TextEntry
         }
 
         return $record
-                ->tags
-                ->pluck('value')
-                ->map(function (string $value) {
-                    return Str::upper($value);
-                })->all();
+            ->tags
+            ->pluck('value')
+            ->map(function (string $value) {
+                return Str::upper($value);
+            })->all();
     }
 }

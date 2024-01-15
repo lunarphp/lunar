@@ -255,7 +255,7 @@ return [
             ],
         ],
         'edit_tags' => [
-            'label' => 'Edit'
+            'label' => 'Edit',
         ],
         'capture_payment' => [
             'label' => 'Capture Payment',

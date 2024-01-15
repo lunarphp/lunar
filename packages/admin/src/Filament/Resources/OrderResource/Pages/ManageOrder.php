@@ -29,17 +29,17 @@ use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
 use Lunar\Admin\Support\Actions\Orders\UpdateStatusAction;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
+use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\Infolists\Components\Livewire;
 use Lunar\Admin\Support\Infolists\Components\Tags;
 use Lunar\Admin\Support\Infolists\Components\Timeline;
 use Lunar\Admin\Support\Infolists\Components\Transaction as InfolistsTransaction;
-use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Country;
 use Lunar\Models\State;
-use Lunar\Models\Transaction;
 use Lunar\Models\Tag;
+use Lunar\Models\Transaction;
 
 /**
  * @property \Lunar\Models\Order $record
@@ -508,18 +508,18 @@ class ManageOrder extends ViewRecord
 
     public function getEditTagsActions(): Action
     {
-        return Action::make("edit_tags")
-            ->modalHeading(__("lunarpanel::order.infolist.tags.label"))
+        return Action::make('edit_tags')
+            ->modalHeading(__('lunarpanel::order.infolist.tags.label'))
             ->modalWidth('2xl')
             ->label(__('lunarpanel::order.action.edit_tags.label'))
             ->button()
             ->fillForm(fn ($record): array => [
-                'tags' => $record->tags
+                'tags' => $record->tags,
             ])
             ->form(function () {
                 return [
                     TagsComponent::make('')
-                        ->suggestions(Tag::all()->pluck('value')->all())
+                        ->suggestions(Tag::all()->pluck('value')->all()),
                 ];
             })->action(function (Action $action, $record, $data) {
                 $this->dispatchActivityUpdated();

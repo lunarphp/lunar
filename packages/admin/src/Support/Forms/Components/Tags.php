@@ -2,12 +2,12 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TagsInput;
-use Lunar\Models\Tag;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Lunar\Facades\DB;
+use Lunar\Models\Tag;
 
 class Tags extends TagsInput
 {
