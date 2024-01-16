@@ -31,7 +31,7 @@ use Filament\Actions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Lunar\Admin\Support\Extending\CreatePageExtension;
-use \Lunar\Admin\Filament\Widgets;
+use Lunar\Admin\Filament\Widgets;
 
 class MyCreateExtension extends CreatePageExtension
 {
@@ -106,7 +106,7 @@ use Filament\Actions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Lunar\Admin\Support\Extending\EditPageExtension;
-use \Lunar\Admin\Filament\Widgets;
+use Lunar\Admin\Filament\Widgets;
 
 class MyEditExtension extends EditPageExtension
 {
@@ -195,7 +195,7 @@ use Filament\Actions;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Lunar\Admin\Support\Extending\ListPageExtension;
-use \Lunar\Admin\Filament\Widgets;
+use Lunar\Admin\Filament\Widgets;
 
 class MyListExtension extends ListPageExtension
 {
