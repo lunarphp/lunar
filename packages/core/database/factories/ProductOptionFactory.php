@@ -24,7 +24,7 @@ class ProductOptionFactory extends Factory
             'label' => [
                 'en' => $name,
             ],
-            'position' => self::$position++,
+            'shared' => true,
         ];
     }
 }
