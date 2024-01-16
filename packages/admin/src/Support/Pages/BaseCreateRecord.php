@@ -9,6 +9,8 @@ abstract class BaseCreateRecord extends CreateRecord
 {
     use Concerns\ExtendsFormActions;
     use Concerns\ExtendsHeaderActions;
+    use Concerns\ExtendsHeaderWidgets;
+    use Concerns\ExtendsFooterWidgets;
     use \Lunar\Admin\Support\Concerns\CallsHooks;
 
     protected function mutateFormDataBeforeCreate(array $data): array
