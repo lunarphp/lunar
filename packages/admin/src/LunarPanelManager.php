@@ -7,7 +7,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
@@ -23,9 +22,13 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
 use Lunar\Admin\Filament\Pages;
 use Lunar\Admin\Filament\Resources;
-use Lunar\Admin\Filament\Widgets\Dashboard\LatestOrders;
-use Lunar\Admin\Filament\Widgets\Dashboard\SalesPerformance;
-use Lunar\Admin\Filament\Widgets\Dashboard\StatsOverview;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Support\Extending\BaseExtension;
 use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
@@ -48,6 +51,7 @@ class LunarPanelManager
         Resources\CurrencyResource::class,
         Resources\CustomerGroupResource::class,
         Resources\CustomerResource::class,
+        Resources\DiscountResource::class,
         Resources\LanguageResource::class,
         Resources\OrderResource::class,
         Resources\ProductOptionResource::class,
@@ -64,9 +68,13 @@ class LunarPanelManager
     ];
 
     protected static $widgets = [
-        StatsOverview::class,
-        SalesPerformance::class,
-        LatestOrders::class,
+        OrderStatsOverview::class,
+        OrderTotalsChart::class,
+        OrdersSalesChart::class,
+        AverageOrderValueChart::class,
+        NewVsReturningCustomersChart::class,
+        PopularProductsTable::class,
+        LatestOrdersTable::class,
     ];
 
     public function register(): self
@@ -104,6 +112,7 @@ class LunarPanelManager
             'lunar::customers' => 'lucide-users',
             'lunar::customer-groups' => 'lucide-users',
             'lunar::dashboard' => 'lucide-bar-chart-big',
+            'lunar::discounts' => 'lucide-percent-circle',
             'lunar::languages' => 'lucide-languages',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',
@@ -122,6 +131,9 @@ class LunarPanelManager
             'lunar::reorder' => 'lucide-grip-vertical',
             'lunar::chevron-right' => 'lucide-chevron-right',
             'lunar::image-placeholder' => 'lucide-image',
+            'lunar::trending-up' => 'lucide-trending-up',
+            'lunar::trending-down' => 'lucide-trending-down',
+            'lunar::exclamation-circle' => 'lucide-alert-circle',
         ]);
 
         FilamentColor::register([
@@ -166,6 +178,7 @@ class LunarPanelManager
         };
 
         return Panel::make()
+            ->spa()
             ->default()
             ->id($this->panelId)
             ->brandName('Lunar')
@@ -204,6 +217,9 @@ class LunarPanelManager
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->plugins([
+                \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
+            ])
             ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
             ->livewireComponents([
                 Resources\OrderResource\Pages\Components\OrderItemsTable::class,
@@ -215,15 +231,7 @@ class LunarPanelManager
                 NavigationGroup::make()
                     ->label('Settings')
                     ->collapsed(),
-            ])
-            ->navigationItems([
-                NavigationItem::make('Discounts')
-                    ->url('#')
-                    ->icon('lucide-percent-circle')
-                    ->group('Sales')
-                    ->sort(3),
-            ])
-            ->sidebarCollapsibleOnDesktop();
+            ])->sidebarCollapsibleOnDesktop();
     }
 
     public function registerExtension(BaseExtension|ResourceExtension $extension, string $pageClass): self

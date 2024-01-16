@@ -3,7 +3,7 @@
 ## Server Requirements
 
 - PHP ^8.1
-- Laravel 9|10
+- Laravel 10
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
@@ -15,8 +15,12 @@
 ### Composer Require Package
 
 ```sh
-composer require lunarphp/lunar
+composer require lunarphp/lunar:1.x-dev -W
 ```
+
+::: tip
+You may need to update your app's `composer.json` to set `"minimum-stability": "dev",`
+:::
 
 ### Add the LunarUser Trait
 
@@ -51,9 +55,22 @@ This will take you through a set of questions to configure your Lunar install. T
 - Seeding initial data
 - Inviting you to star our repo on GitHub ⭐
 
-::: tip
-You are now installed! You can access the admin hub at `http://<yoursite>/hub`
-:::
+## Register the admin panel
+
+The admin panel needs registering in your app service provider before you can use it.
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        LunarPanel::register();
+    }
+```
+
+You should now be able to access the panel at `https://<yoursite>/lunar`.
 
 ## Advanced Installation Options
 

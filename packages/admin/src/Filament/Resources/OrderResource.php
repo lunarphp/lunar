@@ -2,14 +2,15 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
+use Lunar\Admin\Support\Actions\Orders\UpdateStatusBulkAction;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Order;
@@ -21,6 +22,8 @@ class OrderResource extends BaseResource
     protected static ?string $model = Order::class;
 
     protected static ?int $navigationSort = 1;
+
+    protected static int $globalSearchResultsLimit = 5;
 
     public static function getLabel(): string
     {
@@ -60,20 +63,7 @@ class OrderResource extends BaseResource
             ->recordUrl(fn ($record) => ManageOrder::getUrl(['record' => $record]))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\BulkAction::make('update_status')
-                        ->label(__('lunarpanel::order.action.bulk_update_status.label'))
-                        ->form([
-                            Forms\Components\Select::make('status')
-                                ->label(__('lunarpanel::order.table.status.label'))
-                                ->options(fn () => collect(config('lunar.orders.statuses', []))
-                                    ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
-                                ->required(),
-                        ])
-                        ->modalWidth('md')
-                        ->action(fn (Collection $records, $data) => $records->toQuery()->update([
-                            'status' => $data['status'],
-                        ]))
-                        ->after(fn () => Notification::make()->title(__('lunarpanel::order.action.bulk_update_status.notification'))->success()->send())
+                    UpdateStatusBulkAction::make('update_status')
                         ->deselectRecordsAfterCompletion(),
                 ]),
             ])
@@ -129,5 +119,58 @@ class OrderResource extends BaseResource
             'order' => Pages\ManageOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->reference;
+    }
+
+    public static function getGlobalSearchResultUrl(Model $record): ?string
+    {
+        return OrderResource::getUrl('order', [
+            'record' => $record,
+        ]);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'reference',
+            'customer_reference',
+            'notes',
+            'shippingAddress.first_name',
+            'shippingAddress.last_name',
+            'shippingAddress.contact_email',
+            'tags.value',
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'shippingAddress',
+            'tags',
+        ]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var Order $record */
+        $details = [
+            __('lunarpanel::order.table.status.label') => $record->getStatusLabelAttribute(),
+            __('lunarpanel::order.table.total.label') => $record->total?->formatted,
+            __('lunarpanel::order.table.customer.label') => $record->shippingAddress->fullName,
+        ];
+
+        if ($record->shippingAddress->contact_email) {
+            $details[__('lunarpanel::order.table.email.label')] = $record->shippingAddress->contact_email;
+        }
+
+        if ($record->placed_at) {
+            $details[__('lunarpanel::order.table.date.label')] = $record->placed_at;
+        }
+
+        return $details;
     }
 }

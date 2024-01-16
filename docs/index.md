@@ -23,7 +23,7 @@ features:
     link: /core/overview
   - title: Admin Panel
     details: Filament-powered admin panel to administer your product catalog, customers, orders and much more.
-    link: #
+    link: /admin/overview
   - title: API - Coming Soon
     details: Connect to your store via a JSON:API, ideal for PWA storefronts and mobile apps.
 ---
