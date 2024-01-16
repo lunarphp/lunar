@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -39,6 +40,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     protected $casts = [
         'name' => AsCollection::class,
         'label' => AsCollection::class,
+        'shared' => 'boolean',
     ];
 
     /**
@@ -74,6 +76,16 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      * @var array
      */
     protected $guarded = [];
+
+    public function scopeShared(Builder $builder)
+    {
+        return $builder->where('shared', '=', true);
+    }
+
+    public function scopeScoped(Builder $builder)
+    {
+        return $builder->where('shared', '=', false);
+    }
 
     /**
      * Get the values.
