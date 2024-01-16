@@ -82,7 +82,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         return $builder->where('shared', '=', true);
     }
 
-    public function scopeScoped(Builder $builder)
+    public function scopeExclusive(Builder $builder)
     {
         return $builder->where('shared', '=', false);
     }
