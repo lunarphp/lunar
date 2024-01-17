@@ -4,6 +4,7 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Widgets;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -17,7 +18,23 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    protected static string $view = 'lunarpanel::resources.product-resource.widgets.product-options';
+
     public ?Model $record;
+
+    public array $variants = [];
+
+    public bool $configuringOptions = false;
+
+    public function mount()
+    {
+        //        dd($this->record);
+    }
+
+    public function cancelOptionConfiguring(): void
+    {
+        $this->configuringOptions = false;
+    }
 
     public function query()
     {
@@ -33,18 +50,23 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
     {
         return $table->query(
             fn () => $this->query()
-        )->columns([
-            TextColumn::make('name')
-                ->formatStateUsing(
-                    fn (ProductOption $productOption) => $productOption->translate('name')
+        )->heading('Product Options')
+            ->headerActions([
+                Action::make('configure')->label('Configure Options')
+                    ->action(
+                        fn () => $this->configuringOptions = true
+                    ),
+            ])
+            ->columns([
+                TextColumn::make('name')
+                    ->formatStateUsing(
+                        fn (ProductOption $productOption) => $productOption->translate('name')
+                    ),
+                TextColumn::make('values')->formatStateUsing(
+                    fn (ProductOption $productOption) => $productOption->values->map(
+                        fn ($value) => $value->translate('name')
+                    )->join(', ')
                 ),
-            TextColumn::make('values')->formatStateUsing(
-                fn (ProductOption $productOption) => $productOption->values->map(
-                    fn ($value) => $value->translate('name')
-                )->join(', ')
-            ),
-        ]);
+            ])->paginated(false);
     }
-
-    protected static string $view = 'lunarpanel::resources.product-resource.widgets.product-options';
 }

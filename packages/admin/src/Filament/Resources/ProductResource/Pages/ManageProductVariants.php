@@ -61,6 +61,8 @@ class ManageProductVariants extends ManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        return $table;
+
         return $table
             ->recordTitleAttribute('name')
             ->columns([
