@@ -13,16 +13,20 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Support\Forms\Components\Attributes;
+use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\Tag;
 
 class ProductResource extends BaseResource
 {
@@ -30,9 +34,9 @@ class ProductResource extends BaseResource
 
     protected static ?string $model = Product::class;
 
-    protected static ?string $recordTitleAttribute = 'record_title';
-
     protected static ?int $navigationSort = 1;
+
+    protected static int $globalSearchResultsLimit = 5;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -182,9 +186,9 @@ class ProductResource extends BaseResource
 
     protected static function getTagsFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('tags')
-            ->label(__('lunarpanel::product.form.tags.label'))
-            ->placeholder('TODO: convert to Spatie Tags');
+        return TagsComponent::make('tags')
+            ->suggestions(Tag::all()->pluck('value')->all())
+            ->label(__('lunarpanel::product.form.tags.label'));
     }
 
     protected static function getAttributeDataFormComponent(): Component
@@ -295,6 +299,37 @@ class ProductResource extends BaseResource
             'urls' => Pages\ManageProductUrls::route('/{record}/urls'),
             'collections' => Pages\ManageProductCollections::route('/{record}/collections'),
             'associations' => Pages\ManageProductAssociations::route('/{record}/associations'),
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->translateAttribute('name');
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'variants.sku',
+            'tags.value',
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'variants',
+            'brand',
+            'tags',
+        ]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            __('lunarpanel::product.table.sku.label') => $record->variants->first()->getIdentifier(),
+            __('lunarpanel::product.table.stock.label') => $record->variants->first()->stock,
+            __('lunarpanel::product.table.brand.label') => $record->brand?->name,
         ];
     }
 }

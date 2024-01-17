@@ -213,4 +213,14 @@ class Product extends BaseModel implements SpatieHasMedia
             'priceable_id'
         )->wherePriceableType(ProductVariant::class);
     }
+
+    public function productOptions(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            ProductOption::class,
+            "{$prefix}product_product_option"
+        )->withPivot(['position'])->orderByPivot('position');
+    }
 }

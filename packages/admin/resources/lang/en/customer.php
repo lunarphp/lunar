@@ -7,11 +7,17 @@ return [
     'plural_label' => 'Customers',
 
     'table' => [
+        'full_name' => [
+            'label' => 'Name',
+        ],
         'first_name' => [
             'label' => 'First Name',
         ],
         'last_name' => [
             'label' => 'Last Name',
+        ],
+        'title' => [
+            'label' => 'Title',
         ],
         'company_name' => [
             'label' => 'Company Name',
