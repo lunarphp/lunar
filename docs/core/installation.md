@@ -37,12 +37,6 @@ class User extends Authenticatable
 }
 ```
 
-### Add Scout engine to ENV
-Add the following line to your `.env` file.
-```
-SCOUT_DRIVER=database_index
-```
-
 ### Run the Artisan Installer
 
 ```sh
