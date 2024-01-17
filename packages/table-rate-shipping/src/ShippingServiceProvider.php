@@ -29,7 +29,7 @@ class ShippingServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
 
         $shippingModifiers->add(
-            ShippingModifier::class, // TODO: param typed incorrectly
+            ShippingModifier::class,
         );
 
         Order::observe(OrderObserver::class);
