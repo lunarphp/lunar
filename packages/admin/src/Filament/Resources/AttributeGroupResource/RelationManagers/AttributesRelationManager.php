@@ -27,7 +27,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name.en')
+                Forms\Components\TextInput::make('name.en') // TODO: localise
                     ->label(
                         __('lunarpanel::attribute.form.name.label')
                     )
@@ -40,7 +40,7 @@ class AttributesRelationManager extends RelationManager
                         }
                         $set('handle', Str::slug($state));
                     }),
-                Forms\Components\TextInput::make('description.en')
+                Forms\Components\TextInput::make('description.en') // TODO: localise
                     ->label(
                         __('lunarpanel::attribute.form.description.label')
                     )
