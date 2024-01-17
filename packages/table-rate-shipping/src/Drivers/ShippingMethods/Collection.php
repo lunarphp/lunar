@@ -6,15 +6,15 @@ use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Interfaces\ShippingMethodInterface;
-use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Interfaces\ShippingRateInterface;
+use Lunar\Shipping\Models\ShippingRate;
 
-class Collection implements ShippingMethodInterface
+class Collection implements ShippingRateInterface
 {
     /**
-     * The shipping method for context.
+     * The shipping rate for context.
      */
-    public ShippingMethod $shippingMethod;
+    public ShippingRate $shippingRate;
 
     /**
      * {@inheritdoc}
@@ -34,14 +34,16 @@ class Collection implements ShippingMethodInterface
 
     public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption
     {
-        $shippingMethod = $shippingOptionRequest->shippingMethod;
+        $shippingRate = $shippingOptionRequest->shippingRate;
+        $shippingMethod = $shippingRate->shippingMethod;
+        $shippingZone = $shippingRate->shippingZone;
         $cart = $shippingOptionRequest->cart;
 
         // Do we have any products in our exclusions list?
         // If so, we do not want to return this option regardless.
         $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
 
-        $hasExclusions = $shippingMethod->shippingExclusions()
+        $hasExclusions = $shippingZone->shippingExclusions()
             ->whereHas('exclusions', function ($query) use ($productIds) {
                 $query->wherePurchasableType(Product::class)->whereIn('purchasable_id', $productIds);
             })->exists();
@@ -53,26 +55,26 @@ class Collection implements ShippingMethodInterface
         return new ShippingOption(
             name: $shippingMethod->name,
             description: $shippingMethod->description,
-            identifier: $shippingMethod->getIdentifier(),
+            identifier: $shippingRate->getIdentifier(),
             price: new Price(
                 value: 0,
                 currency: $cart->currency,
                 unitQty: 1
             ),
-            taxClass: $shippingMethod->getTaxClass(),
-            taxReference: $shippingMethod->getTaxReference(),
-            option: $shippingMethod->shippingZone->name,
+            taxClass: $shippingRate->getTaxClass(),
+            taxReference: $shippingRate->getTaxReference(),
+            option: $shippingZone->name,
             collect: true,
-            meta: ['shipping_zone' => $shippingMethod->shippingZone->name]
+            meta: ['shipping_zone' => $shippingZone->name]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function on(ShippingMethod $shippingMethod): self
+    public function on(ShippingRate $shippingRate): self
     {
-        $this->shippingMethod = $shippingMethod;
+        $this->shippingRate = $shippingRate;
 
         return $this;
     }

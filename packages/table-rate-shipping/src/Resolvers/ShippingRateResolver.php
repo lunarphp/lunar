@@ -9,7 +9,7 @@ use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Shipping;
 
-class ShippingMethodResolver
+class ShippingRateResolver
 {
     /**
      * The cart to use when resolving.
@@ -143,11 +143,13 @@ class ShippingMethodResolver
             )
         )->get();
 
-        $shippingMethods = collect();
+        $shippingRates = collect();
 
         foreach ($zones as $zone) {
-            $shippingMethods = $zone->shippingMethods
-                ->reject(function ($method) {
+            $shippingRates = $zone->rates
+                ->reject(function ($rate) {
+                    $method = $rate->shippingMethod;
+
                     if (! $method->cutoff) {
                         return false;
                     }
@@ -159,23 +161,23 @@ class ShippingMethodResolver
                         ->set('second', $s)
                         ->isPast();
                 })
-                ->reject(function ($method) {
-                    if ($this->allCartItemsAreInStock || ! ($method->stock_available ?? false)) {
+                ->reject(function ($rate) {
+                    if ($this->allCartItemsAreInStock || ! ($rate->shippingMethod->stock_available ?? false)) {
                         return false;
                     }
 
                     return true;
                 });
 
-            foreach ($shippingMethods as $shippingMethod) {
-                $shippingMethods->push(
-                    $shippingMethod
+            foreach ($shippingRates as $shippingRate) {
+                $shippingRates->push(
+                    $shippingRate
                 );
             }
         }
 
-        return $shippingMethods->filter()->unique(function ($method) {
-            return $method->code;
+        return $shippingRates->filter()->unique(function ($rate) {
+            return $rate->shippingMethod->code;
         });
     }
 }
