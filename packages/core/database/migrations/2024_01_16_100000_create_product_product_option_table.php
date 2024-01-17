@@ -10,7 +10,7 @@ class CreateProductProductOptionTable extends Migration
     {
         Schema::create($this->prefix.'product_product_option', function (Blueprint $table) {
             $table->foreignId('product_id')->constrained($this->prefix.'products');
-            $table->foreignId('product_option_id')->constrained($this->prefix.'products');
+            $table->foreignId('product_option_id')->constrained($this->prefix.'product_options');
             $table->smallInteger('position')->index();
         });
     }
