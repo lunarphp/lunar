@@ -24,9 +24,11 @@ class TextField extends BaseFieldType
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         if ($attribute->configuration->get('richtext')) {
-            return RichEditor::make($attribute->handle);
+            return RichEditor::make($attribute->handle)
+                ->helperText($attribute->translate('description'));
         }
 
-        return TextInput::make($attribute->handle);
+        return TextInput::make($attribute->handle)
+            ->helperText($attribute->translate('description'));
     }
 }

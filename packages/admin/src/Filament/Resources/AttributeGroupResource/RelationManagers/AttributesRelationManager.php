@@ -44,14 +44,10 @@ class AttributesRelationManager extends RelationManager
                     ->label(
                         __('lunarpanel::attribute.form.description.label')
                     )
-                    ->maxLength(255)
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
-                        if ($operation !== 'create') {
-                            return;
-                        }
-                        $set('handle', Str::slug($state));
-                    }),
+                    ->helperText(
+                        __('lunarpanel::attribute.form.description.helper')
+                    )
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('handle')
                     ->label(
                         __('lunarpanel::attribute.form.handle.label')

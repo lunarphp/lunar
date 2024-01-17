@@ -18,13 +18,13 @@ class Number extends BaseFieldType
 
         $input = TextField::getFilamentComponent($attribute)->numeric();
 
-        if ($min) {
-            $input->min($min);
-        }
+        // if ($min) {
+        //     $input->min($min);
+        // }
 
-        if ($max) {
-            $input->max($max);
-        }
+        // if ($max) {
+        //     $input->max($max);
+        // }
 
         return $input;
     }
