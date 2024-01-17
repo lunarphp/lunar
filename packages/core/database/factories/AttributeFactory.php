@@ -23,6 +23,9 @@ class AttributeFactory extends Factory
             'name' => [
                 'en' => $this->faker->name(),
             ],
+            'description' => [
+                'en' => Str::limit($this->faker->text(), 100),
+            ],
             'handle' => Str::slug($this->faker->name()),
             'section' => $this->faker->name(),
             'type' => \Lunar\FieldTypes\Text::class,
