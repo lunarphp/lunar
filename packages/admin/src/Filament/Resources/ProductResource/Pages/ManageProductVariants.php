@@ -18,6 +18,13 @@ class ManageProductVariants extends ManageRelatedRecords
 
     protected static ?string $title = 'Variants';
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ProductResource\Widgets\ProductOptionsWidget::class,
+        ];
+    }
+
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::product-variants');
