@@ -57,7 +57,7 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
             ];
         })->toArray();
 
-        $this->updateConfiguredOptions();
+        $this->mapVariantPermutations(fillMissing: false);
     }
 
     public function cancelOptionConfiguring(): void
@@ -131,7 +131,7 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
         }
     }
 
-    public function mapVariantPermutations(): void
+    public function mapVariantPermutations($fillMissing = true): void
     {
         $optionValues = collect($this->configuredOptions)
             ->filter(
@@ -154,7 +154,7 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
             ];
         })->toArray();
 
-        $this->variants = MapVariantsToProductOptions::map($optionValues, $variants);
+        $this->variants = MapVariantsToProductOptions::map($optionValues, $variants, $fillMissing);
     }
 
     public function table(Table $table)

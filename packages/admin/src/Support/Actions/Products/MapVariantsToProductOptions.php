@@ -7,7 +7,7 @@ use Lunar\Utils\Arr;
 
 class MapVariantsToProductOptions
 {
-    public static function map(array $options, array $variants): array
+    public static function map(array $options, array $variants, bool $fillMissing = true): array
     {
         $permutations = Arr::permutate($options);
 
@@ -37,8 +37,10 @@ class MapVariantsToProductOptions
             });
 
             $variant = $variants[$variantIndex] ?? null;
+
             $variantId = $variant['id'] ?? null;
             $sku = $variant['sku'] ?? null;
+            $shouldFill = true;
 
             if ($variant) {
                 // Does this variant already exist in our permutations?
@@ -54,15 +56,21 @@ class MapVariantsToProductOptions
                     $sku = $existing['sku'].'-'.implode('-', array_values($diff));
                     $variantId = null;
                 }
+
+                if ($existing && ! $fillMissing) {
+                    $shouldFill = false;
+                }
             }
 
-            $variantPermutations[] = [
-                'key' => Str::random(),
-                'variant_id' => $variantId,
-                'sku' => $sku,
-                'price' => 12.99,
-                'values' => $permutation,
-            ];
+            if ($shouldFill) {
+                $variantPermutations[] = [
+                    'key' => Str::random(),
+                    'variant_id' => $variantId,
+                    'sku' => $sku,
+                    'price' => 12.99,
+                    'values' => $permutation,
+                ];
+            }
         }
 
         return $variantPermutations;
