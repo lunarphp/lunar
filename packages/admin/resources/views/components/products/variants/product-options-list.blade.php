@@ -35,8 +35,6 @@
             )
 
             configuredOptions = rows
-
-{{--            $wire.set('configuredOptions', rows).defer--}}
           }
       })
     }"
@@ -45,9 +43,10 @@
     <div wire:key="option_{{ $item['key'] }}" x-sortable-item="{{ $item['key'] }}">
       <div class="flex space-x-2 items-center">
         <div @class([
-                'flex items-center text-gray-400 hover:text-gray-500',
-                'cursor-grab',
-            ]) x-sortable-handle>
+                'flex items-center',
+                'cursor-grab text-gray-400 hover:text-gray-500' => !$item['readonly'] || $context == 'options',
+                ' text-gray-200' => $item['readonly'] && $context == 'values',
+            ]) @if(!$item['readonly'] || $context == 'options') x-sortable-handle @endif>
           <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
         </div>
         <div class="grow">
@@ -76,7 +75,6 @@
           />
         </div>
       @endif
-
     </div>
   @endforeach
 
@@ -86,7 +84,7 @@
     </x-filament::link>
   @endif
 
-  @if($context == 'values')
+  @if($context == 'values' && !$item['readonly'])
     <x-filament::link href="#" wire:click.prevent="addOptionValue('{{ $optionKey }}')">
       Add Value
     </x-filament::link>

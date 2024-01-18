@@ -12,8 +12,8 @@ use Filament\Tables\Table;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Admin\Support\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Models\ProductOption;
-use Lunar\Utils\Arr;
 
 class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
 {
@@ -108,28 +108,20 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
 
     public function getVariantPermutationsProperty()
     {
-        $permutations = Arr::permutate(
-            collect($this->configuredOptions)
-                ->filter(
-                    fn ($option) => $option['value']
-                )
-                ->mapWithKeys(
-                    fn ($option) => [$option['value'] => collect($option['option_values'])
-                        ->map(
-                            fn ($value) => $value['value']
-                        )]
-                )->toArray()
-        );
+        $optionValues = collect($this->configuredOptions)
+            ->filter(
+                fn ($option) => $option['value']
+            )
+            ->mapWithKeys(
+                fn ($option) => [$option['value'] => collect($option['option_values'])
+                    ->map(
+                        fn ($value) => $value['value']
+                    )]
+            )->toArray();
 
-        if (count($this->configuredOptions) == 1) {
-            $newPermutations = [];
-            foreach ($permutations as $p) {
-                $newPermutations[] = [
-                    $this->configuredOptions[0]['value'] => $p,
-                ];
-            }
-            $permutations = $newPermutations;
-        }
+        $options = MapVariantsToProductOptions::map($optionValues);
+
+        dd($options);
 
         $variants = $this->record->variants->load('values.option')->map(function ($variant) {
             return [
