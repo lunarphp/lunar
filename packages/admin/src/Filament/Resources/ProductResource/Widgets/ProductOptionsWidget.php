@@ -31,9 +31,14 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
      */
     public array $configuredOptions = [];
 
-    public bool $configuringOptions = true;
+    public bool $configuringOptions = false;
 
     public function mount()
+    {
+        $this->configureBaseOptions();
+    }
+
+    public function configureBaseOptions(): void
     {
         $this->configuredOptions = $this->query()->get()->map(function ($option) {
             return [
@@ -51,11 +56,14 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
                 }),
             ];
         })->toArray();
+
+        $this->updateConfiguredOptions();
     }
 
     public function cancelOptionConfiguring(): void
     {
         $this->configuringOptions = false;
+        $this->configureBaseOptions();
     }
 
     public function query()
@@ -86,8 +94,25 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
         ];
     }
 
+    public function updateConfiguredOptions()
+    {
+        $this->mapVariantPermutations();
+        $this->configuringOptions = false;
+    }
+
+    public function removeVariant($key): void
+    {
+        unset($this->variants[$key]);
+    }
+
     public function addOptionValue($path)
     {
+        $option = $this->configuredOptions[$path];
+
+        if ($option['readonly']) {
+            return;
+        }
+
         $this->configuredOptions[$path]['option_values'][] = [
             'key' => Str::random(),
             'value' => '',
@@ -106,7 +131,7 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
         }
     }
 
-    public function getVariantPermutationsProperty()
+    public function mapVariantPermutations(): void
     {
         $optionValues = collect($this->configuredOptions)
             ->filter(
@@ -119,43 +144,17 @@ class ProductOptionsWidget extends BaseWidget implements HasForms, HasTable
                     )]
             )->toArray();
 
-        $options = MapVariantsToProductOptions::map($optionValues);
-
-        dd($options);
-
         $variants = $this->record->variants->load('values.option')->map(function ($variant) {
             return [
-                'model' => $variant,
+                'id' => $variant->id,
+                'sku' => $variant->sku,
                 'values' => $variant->values->mapWithKeys(
                     fn ($value) => [$value->option->translate('name') => $value->translate('name')]
                 )->toArray(),
             ];
-        });
+        })->toArray();
 
-        $variantPermutations = [];
-
-        foreach ($permutations as $permutation) {
-            $variantIndex = $variants->search(function ($variant) use ($permutation) {
-                $diffCount = count(array_diff($permutation, $variant['values']));
-                $amountMatched = count($permutation) - $diffCount;
-
-                return ! $diffCount || $amountMatched == count($variant['values']);
-            });
-
-            $variant = $variants[$variantIndex]['model'] ?? null;
-
-            $variantPermutations[] = [
-                'variant_id' => $variant?->id,
-                'sku' => $variant?->sku,
-                'values' => $permutation,
-            ];
-
-            if (! is_null($variantIndex)) {
-                $variants->forget($variantIndex);
-            }
-        }
-
-        return $variantPermutations;
+        $this->variants = MapVariantsToProductOptions::map($optionValues, $variants);
     }
 
     public function table(Table $table)

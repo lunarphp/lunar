@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Actions\Products;
 
+use Illuminate\Support\Str;
 use Lunar\Utils\Arr;
 
 class MapVariantsToProductOptions
@@ -24,34 +25,46 @@ class MapVariantsToProductOptions
 
         foreach ($permutations as $permutation) {
             $variantIndex = collect($variants)->search(function ($variant) use ($permutation) {
+                $valueDifference = array_diff_assoc($permutation, $variant['values']);
 
-                $valueDifference = array_diff($permutation, $variant['values']);
-
-                if (! $valueDifference) {
+                if (! count($valueDifference)) {
                     return $variant;
                 }
 
-                dd($valueDifference, $permutation, $variant['values']);
+                $amountMatched = count($permutation) - count($valueDifference);
 
-                $diffCount = count();
-                $amountMatched = count($permutation) - $diffCount;
-
-                return ! $diffCount || $amountMatched == count($variant['values']);
+                return $amountMatched == count($variant['values']);
             });
 
-            $variant = $variants[$variantIndex]['model'] ?? null;
+            $variant = $variants[$variantIndex] ?? null;
+            $variantId = $variant['id'] ?? null;
+            $sku = $variant['sku'] ?? null;
+
+            if ($variant) {
+                // Does this variant already exist in our permutations?
+                // if so we want to mark it as new but
+                $existing = collect($variantPermutations)
+                    ->first(
+                        fn ($p) => $p['variant_id'] == $variant['id']
+                    );
+
+                // Now what?
+                if ($existing) {
+                    $diff = array_diff_assoc($permutation, $variant['values']);
+                    $sku = $existing['sku'].'-'.implode('-', array_values($diff));
+                    $variantId = null;
+                }
+            }
 
             $variantPermutations[] = [
-                'variant_id' => $variant?->id,
-                'sku' => $variant?->sku,
+                'key' => Str::random(),
+                'variant_id' => $variantId,
+                'sku' => $sku,
+                'price' => 12.99,
                 'values' => $permutation,
             ];
-
-            if (! is_null($variantIndex)) {
-                $variants->forget($variantIndex);
-            }
         }
 
-        return [];
+        return $variantPermutations;
     }
 }

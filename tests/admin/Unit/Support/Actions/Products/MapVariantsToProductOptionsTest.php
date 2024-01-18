@@ -5,13 +5,13 @@ use Lunar\Admin\Support\Actions\Products\MapVariantsToProductOptions;
 uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('support.actions');
 
-it('can map variants given a set of option values', function () {
+it('can map variants given one set of option values', function () {
 
     $optionValues = [
         'Shoe Size' => [
-            'UK 5',
-            'UK 10',
-            'UK 15',
+            'UK-5',
+            'UK-10',
+            'UK-15',
         ],
     ];
 
@@ -20,24 +20,87 @@ it('can map variants given a set of option values', function () {
             'id' => 1,
             'sku' => 'ABC',
             'values' => [
-                'Shoe Size' => 'UK 5',
+                'Shoe Size' => 'UK-5',
             ],
         ],
         [
             'id' => 2,
             'sku' => 'DEF',
             'values' => [
-                'Shoe Size' => 'UK 10',
+                'Shoe Size' => 'UK-10',
             ],
         ],
         [
             'id' => 3,
             'sku' => 'GHI',
             'values' => [
-                'Shoe Size' => 'UK 15',
+                'Shoe Size' => 'UK-15',
             ],
         ],
     ];
+
     $result = MapVariantsToProductOptions::map($optionValues, $variants);
-    dd($result);
+
+    expect($result[0]['sku'])->toBe('ABC');
+    expect($result[1]['sku'])->toBe('DEF');
+    expect($result[2]['sku'])->toBe('GHI');
 });
+
+it('can map variants given three sets of option values', function () {
+
+    $optionValues = [
+        'Size' => [
+            'Small',
+            'Medium',
+        ],
+        'Colour' => [
+            'Blue',
+            'Black',
+        ],
+        'Material' => [
+            'Black',
+        ],
+    ];
+
+    $variants = [
+        [
+            'id' => 1,
+            'sku' => 'SMBLK',
+            'values' => [
+                'Size' => 'Small',
+                'Colour' => 'Black',
+            ],
+        ],
+        //        [
+        //            'id' => 2,
+        //            'sku' => 'MDBLK',
+        //            'values' => [
+        //                'Size' => 'Medium',
+        //                'Colour' => 'Black',
+        //            ],
+        //        ],
+        //        [
+        //            'id' => 3,
+        //            'sku' => 'SMBLU',
+        //            'values' => [
+        //                'Size' => 'Small',
+        //                'Colour' => 'Blue',
+        //            ],
+        //        ],
+        //        [
+        //            'id' => 3,
+        //            'sku' => 'MDBLU',
+        //            'values' => [
+        //                'Size' => 'Medium',
+        //                'Colour' => 'Blue',
+        //            ],
+        //        ],
+    ];
+
+    $result = MapVariantsToProductOptions::map($optionValues, $variants);
+
+    dd($result);
+    expect($result[0]['sku'])->toBe('ABC');
+    expect($result[1]['sku'])->toBe('DEF');
+    expect($result[2]['sku'])->toBe('GHI');
+})->group('momo');
