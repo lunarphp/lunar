@@ -121,7 +121,7 @@ class DatabaseEngine extends Engine
         return SearchIndex::where('index', '=', $index)
             ->when(
                 $builder->query,
-                fn ($query) => $query->whereFullText('content', $builder->query.'*', ['mode' => 'boolean'])
+                fn ($query) => $query->whereFullText('content', '"'.$builder->query.'*"')
             );
     }
 
