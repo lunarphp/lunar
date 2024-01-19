@@ -67,7 +67,8 @@ class MapVariantsToProductOptions
                     'key' => Str::random(),
                     'variant_id' => $variantId,
                     'sku' => $sku,
-                    'price' => 12.99,
+                    'price' => $variant['price'] ?? 0,
+                    'stock' => $variant['stock'] ?? 0,
                     'values' => $permutation,
                 ];
             }

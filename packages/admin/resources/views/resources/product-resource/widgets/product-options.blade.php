@@ -14,44 +14,48 @@
           </div>
         </div>
         <div class="fi-ta-content divide-gray-200 overflow-x-auto">
-          <x-filament-tables::table>
-            <thead>
-              <tr class="bg-gray-50 dark:bg-white/5">
-                <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
-                    <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                      Option
-                    </span>
-                </x-filament-tables::header-cell>
-                <x-filament-tables::header-cell>
-                    <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                      Values
-                    </span>
-                </x-filament-tables::header-cell>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
-            @foreach($this->configuredOptions as $option)
-              <x-filament-tables::row>
-                <x-filament-tables::cell class="bg-white">
-                  <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                    <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
-                      {{ $option['value'] }}
-                    </span>
-                  </div>
-                </x-filament-tables::cell>
-                <x-filament-tables::cell>
-                  <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                    <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
-                    {{ collect($option['option_values'])->map(
-                        fn ($value) => $value['value']
-                    )->join(', ') }}
-                    </span>
-                  </div>
-                </x-filament-tables::cell>
-              </x-filament-tables::row>
-            @endforeach
-            </tbody>
-          </x-filament-tables::table>
+          @if(count($this->configuredOptions))
+            <x-filament-tables::table>
+              <thead>
+                <tr class="bg-gray-50 dark:bg-white/5">
+                  <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
+                      <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        Option
+                      </span>
+                  </x-filament-tables::header-cell>
+                  <x-filament-tables::header-cell>
+                      <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        Values
+                      </span>
+                  </x-filament-tables::header-cell>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
+              @foreach($this->configuredOptions as $option)
+                <x-filament-tables::row>
+                  <x-filament-tables::cell class="bg-white">
+                    <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                      <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
+                        {{ $option['value'] }}
+                      </span>
+                    </div>
+                  </x-filament-tables::cell>
+                  <x-filament-tables::cell>
+                    <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                      <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
+                      {{ collect($option['option_values'])->map(
+                          fn ($value) => $value['value']
+                      )->join(', ') }}
+                      </span>
+                    </div>
+                  </x-filament-tables::cell>
+                </x-filament-tables::row>
+              @endforeach
+              </tbody>
+            </x-filament-tables::table>
+          @else
+            <x-filament-tables::empty-state heading="No Product Options Configured" icon="lucide-shapes"></x-filament-tables::empty-state>
+          @endif
         </div>
       </div>
 
@@ -64,86 +68,102 @@
           </div>
         </div>
         <div class="fi-ta-content divide-y divide-gray-200 overflow-x-auto dark:divide-white/10 dark:border-t-white/10">
-          <x-filament-tables::table>
-            <thead class="divide-y divide-gray-200 dark:divide-white/5">
-              <tr class="bg-gray-50 dark:bg-white/5">
-                <x-filament-tables::header-cell>
-                </x-filament-tables::header-cell>
-                <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
-                  <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                    Option
-                  </span>
-                </x-filament-tables::header-cell>
-                <x-filament-tables::header-cell>
-                  SKU
-                </x-filament-tables::header-cell>
-                <x-filament-tables::header-cell>
-                  Price
-                </x-filament-tables::header-cell>
-                <x-filament-tables::header-cell>
-                </x-filament-tables::header-cell>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
-            @foreach($this->variants as $permutationIndex => $permutation)
-              <x-filament-tables::row wire:key="permutation_{{ $permutation['key'] }}">
-                <x-filament-tables::cell class="fi-ta-text grid w-full gap-y-1 px-3 py-4 bg-white">
-                  <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                    @if(!$permutation['variant_id'])
-                      <x-filament::badge color="info">
-                        NEW
-                      </x-filament::badge>
-                    @endif
-                  </div>
-                </x-filament-tables::cell>
-                <x-filament-tables::cell class="bg-white">
-                  <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                    <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
-                      @foreach($permutation['values'] as $option => $value)
-                        <small><strong>{{ $option }}:</strong> {{ $value }}</small>
-                      @endforeach
-                    </span>
-                  </div>
-                </x-filament-tables::cell>
-                <x-filament-tables::cell>
-                  <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                    <x-filament::input.wrapper>
-                      <x-filament::input
-                              type="text"
-                              wire:model="variants.{{ $permutationIndex }}.sku"
-                              :disabled="$permutation['variant_id']"
-                      />
-                    </x-filament::input.wrapper>
-                  </div>
-                </x-filament-tables::cell>
-                <x-filament-tables::cell>
-                  <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                    <x-filament::input.wrapper>
-                      <x-filament::input
-                              prefix="GBP"
-                              type="text"
-                              wire:model="variants.{{ $permutationIndex }}.price"
-                              :disabled="$permutation['variant_id']"
-                      />
-                    </x-filament::input.wrapper>
-                  </div>
-                </x-filament-tables::cell>
-                <x-filament-tables::cell>
-                  @if(!$permutation['variant_id'])
-                    <button type="button" wire:click="removeVariant('{{ $permutationIndex }}')">
-                      <x-filament::icon alias="actions::delete-action" class="w-4 h-4 text-red-500" />
-                    </button>
-                  @else
-                    <x-filament::link href="#">
-                      Edit
-                    </x-filament::link>
-                  @endif
-                </x-filament-tables::cell>
+          @if(count($this->variants))
+              <x-filament-tables::table>
+                <thead class="divide-y divide-gray-200 dark:divide-white/5">
+                  <tr class="bg-gray-50 dark:bg-white/5">
+                    <x-filament-tables::header-cell>
+                    </x-filament-tables::header-cell>
+                    <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
+                      <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        Option
+                      </span>
+                    </x-filament-tables::header-cell>
+                    <x-filament-tables::header-cell>
+                      SKU
+                    </x-filament-tables::header-cell>
+                    <x-filament-tables::header-cell>
+                      Price
+                    </x-filament-tables::header-cell>
+                    <x-filament-tables::header-cell>
+                      Stock
+                    </x-filament-tables::header-cell>
+                    <x-filament-tables::header-cell>
+                    </x-filament-tables::header-cell>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
 
-              </x-filament-tables::row>
-            @endforeach
-            </tbody>
-          </x-filament-tables::table>
+                @foreach($this->variants as $permutationIndex => $permutation)
+                  <x-filament-tables::row wire:key="permutation_{{ $permutation['key'] }}">
+                    <x-filament-tables::cell class="fi-ta-text grid w-full gap-y-1 px-3 py-4 bg-white">
+                      <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                        @if(!$permutation['variant_id'])
+                          <x-filament::badge color="info">
+                            NEW
+                          </x-filament::badge>
+                        @endif
+                      </div>
+                    </x-filament-tables::cell>
+                    <x-filament-tables::cell class="bg-white">
+                      <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                        <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
+                          @foreach($permutation['values'] as $option => $value)
+                            <small><strong>{{ $option }}:</strong> {{ $value }}</small>
+                          @endforeach
+                        </span>
+                      </div>
+                    </x-filament-tables::cell>
+                    <x-filament-tables::cell>
+                      <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                        <x-filament::input.wrapper>
+                          <x-filament::input
+                                  type="text"
+                                  wire:model="variants.{{ $permutationIndex }}.sku"
+                          />
+                        </x-filament::input.wrapper>
+                      </div>
+                    </x-filament-tables::cell>
+                    <x-filament-tables::cell>
+                      <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                        <x-filament::input.wrapper>
+                          <x-filament::input
+                                  prefix="GBP"
+                                  type="text"
+                                  wire:model="variants.{{ $permutationIndex }}.price"
+                          />
+                        </x-filament::input.wrapper>
+                      </div>
+                    </x-filament-tables::cell>
+                    <x-filament-tables::cell>
+                      <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                        <x-filament::input.wrapper>
+                          <x-filament::input
+                                  type="text"
+                                  wire:model="variants.{{ $permutationIndex }}.stock"
+                          />
+                        </x-filament::input.wrapper>
+                      </div>
+                    </x-filament-tables::cell>
+                    <x-filament-tables::cell>
+                      @if(!$permutation['variant_id'])
+                        <button type="button" wire:click="removeVariant('{{ $permutationIndex }}')">
+                          <x-filament::icon alias="actions::delete-action" class="w-4 h-4 text-red-500" />
+                        </button>
+                      @else
+                        <x-filament::link href="#">
+                          Edit
+                        </x-filament::link>
+                      @endif
+                    </x-filament-tables::cell>
+
+                  </x-filament-tables::row>
+                @endforeach
+                </tbody>
+              </x-filament-tables::table>
+            @else
+              <x-filament-tables::empty-state heading="No Variants Configured" icon="lucide-shapes"></x-filament-tables::empty-state>
+            @endif
         </div>
       </div>
     </div>
