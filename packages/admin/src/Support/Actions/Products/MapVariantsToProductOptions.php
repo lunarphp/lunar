@@ -40,6 +40,7 @@ class MapVariantsToProductOptions
 
             $variantId = $variant['id'] ?? null;
             $sku = $variant['sku'] ?? null;
+            $copiedFrom = null;
             $shouldFill = true;
 
             if ($variant) {
@@ -55,6 +56,7 @@ class MapVariantsToProductOptions
                     $diff = array_diff_assoc($permutation, $variant['values']);
                     $sku = $existing['sku'].'-'.implode('-', array_values($diff));
                     $variantId = null;
+                    $copiedFrom = $variant['id'];
                 }
 
                 if ($existing && ! $fillMissing) {
@@ -66,6 +68,7 @@ class MapVariantsToProductOptions
                 $variantPermutations[] = [
                     'key' => Str::random(),
                     'variant_id' => $variantId,
+                    'copied_id' => $copiedFrom,
                     'sku' => $sku,
                     'price' => $variant['price'] ?? 0,
                     'stock' => $variant['stock'] ?? 0,

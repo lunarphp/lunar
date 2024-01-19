@@ -3,7 +3,8 @@
   class="space-y-4"
   x-ref="sortable"
   x-data="{
-      configuredOptions: @js($items)
+    context: '{{ $context }}',
+    configuredOptions: @entangle($statePath)
   }"
   x-init="() => {
       el = $refs.sortable
@@ -16,29 +17,45 @@
           animation: 300,
           ghostClass: 'fi-sortable-ghost',
           onEnd: (event) => {
-            const rows = configuredOptions
-
-            // Get the current node
-            const reorderedStored = rows[event.oldIndex]
-            const siblingStored = rows[event.newIndex]
-
-            const reorderedRow = rows.splice(event.oldIndex, 1)[0]
-
-            let direction = event.oldIndex < event.newIndex ? 'after' : 'before'
-
-            let newSibling = rows[event.newIndex]
-
-            rows.splice(event.newIndex, 0, reorderedRow)
-
-            rows.forEach(
-              (row, rowIndex) => rows[rowIndex].position = rowIndex + 1
+            const rows = JSON.parse(
+              JSON.stringify(
+                configuredOptions
+              )
             )
 
-            configuredOptions = rows
+{{--            const reorderedRow = rows.splice(event.oldIndex, 1)[0]--}}
+
+{{--            rows.splice(event.newIndex, 0, reorderedRow)--}}
+
+{{--            rows.forEach(--}}
+{{--              (row, rowIndex) => rows[rowIndex].position = rowIndex + 1--}}
+{{--            )--}}
+
+{{--            configuredOptions = rows--}}
           }
       })
     }"
 >
+{{--  <template x-for="row in configuredOptions" :key="row.key">--}}
+{{--    <div x-sortable-item>--}}
+{{--      <div class="flex space-x-2 items-center">--}}
+{{--        <div x-class="{--}}
+{{--          'flex items-center': true,--}}
+{{--          'cursor-grab text-gray-400 hover:text-gray-500': !row.readonly || context == 'options',--}}
+{{--          'text-gray-200':  row.readonly && context == 'values',--}}
+{{--        }" x-sortable-handle>--}}
+{{--          <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />--}}
+{{--        </div>--}}
+
+{{--        <div class="grow">--}}
+{{--          <span x-text="row.value"></span>--}}
+{{--          <span x-text="row.position"></span>--}}
+{{--          <span x-text="row.key"></span>--}}
+{{--          <span x-text="context"></span>--}}
+{{--        </div>--}}
+{{--      </div>--}}
+{{--    </div>--}}
+{{--  </template>--}}
   @foreach($items as $itemIndex => $item)
     <div wire:key="option_{{ $item['key'] }}" x-sortable-item="{{ $item['key'] }}">
       <div class="flex space-x-2 items-center">
@@ -46,14 +63,15 @@
                 'flex items-center',
                 'cursor-grab text-gray-400 hover:text-gray-500' => !$item['readonly'] || $context == 'options',
                 ' text-gray-200' => $item['readonly'] && $context == 'values',
-            ]) @if(!$item['readonly'] || $context == 'options') x-sortable-handle @endif>
+            ]) @if(!$item['readonly'] || $context == 'options') x-sortable-handle @endif >
           <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
         </div>
         <div class="grow">
-          <x-filament::input.wrapper>
+          <x-filament::input.wrapper :valid="!$errors->has($statePath.'.'.$itemIndex.'.value')">
             <x-filament::input
                     type="text"
-                    wire:model.live="{{ $statePath }}.{{ $itemIndex }}.value"
+                    error="'dawda'"
+                    wire:model="{{ $statePath }}.{{ $itemIndex }}.value"
                     :disabled="$item['readonly']"
             />
           </x-filament::input.wrapper>

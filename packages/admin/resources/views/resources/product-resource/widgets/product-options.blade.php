@@ -167,15 +167,45 @@
         </div>
       </div>
     </div>
-  @else
-    <x-lunarpanel::products.variants.product-options-list
-            :items="$configuredOptions"
-            group="product_options"
-            state-path="configuredOptions"
-    />
-    <div class="mt-4">
-      <x-filament::button color="gray" wire:click="cancelOptionConfiguring">Cancel</x-filament::button>
-      <x-filament::button type="button" wire:click="updateConfiguredOptions">Save Options</x-filament::button>
+
+    <div class="mt-4 flex">
+      {{ $this->saveVariantsAction }}
     </div>
+
+  @else
+    <div class="space-y-4">
+      <div class="text-right">
+        <div class="flex space-x-2 items-end justify-end">
+        <x-filament::button color="gray" wire:click="addRestrictedOption">
+          Add Option
+        </x-filament::button>
+        {{ $this->addSharedOptionAction }}
+        </div>
+      </div>
+      @if(!count($this->configuredOptions))
+        <x-filament-tables::empty-state
+                heading="There are no product options configured"
+                description="Add a shared or restricted product option to start generating some variants."
+                icon="lucide-shapes"
+        ></x-filament-tables::empty-state>
+      @else
+        <div>
+          <x-lunarpanel::products.variants.product-options-list
+                  :items="$configuredOptions"
+                  group="product_options"
+                  state-path="configuredOptions"
+          />
+        </div>
+      @endif
+
+
+      <div class="flex space-x-2">
+        <x-filament::button color="gray" wire:click="cancelOptionConfiguring">Cancel</x-filament::button>
+        @if(count($this->configuredOptions))
+          <x-filament::button type="button" wire:click="updateConfiguredOptions">Save Options</x-filament::button>
+        @endif
+      </div>
+    </div>
+    <x-filament-actions::modals />
   @endif
 </x-filament-widgets::widget>
