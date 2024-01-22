@@ -137,6 +137,7 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         {text: 'Access Control', link: '/admin/extending/access-control'},
+                        {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
                         {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Panel', link: '/admin/extending/panel'},

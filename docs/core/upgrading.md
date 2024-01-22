@@ -27,6 +27,10 @@ The `lunar.media.conversions` configuration has been removed, in favour of regis
 Media definition classes allow you to register media collections, conversions and much more. See [Media Collections](/core/reference/media.html#media-collections)
 for further information.
 
+#### Product Options
+The `position` field has been removed from the `product_options` table and is now found on the `product_product_option` 
+pivot table. Any position data will be automatically adjusted when running migrations.
+
 ## 0.7
 
 ### High Impact

@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Lunar\Facades\DB;
 use Lunar\Models\Brand;
@@ -33,6 +34,32 @@ test('can make a product', function () {
 
     expect($product->attribute_data)->toEqual($attribute_data);
 });
+
+test('can fetch product options', function () {
+    $attribute_data = collect([
+        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
+        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
+        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+            'en' => new \Lunar\FieldTypes\Text('Blue'),
+            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        ])),
+    ]);
+
+    $product = Product::factory()
+        ->for(ProductType::factory())
+        ->create([
+            'attribute_data' => $attribute_data,
+        ]);
+
+    $productOptions = \Lunar\Models\ProductOption::factory(2)->create();
+
+    foreach ($productOptions as $index => $productOption) {
+        $product->productOptions()->attach($productOption, ['position' => $index + 1]);
+    }
+
+    expect($product->refresh()->productOptions)->toHaveCount(2);
+
+})->group('momo');
 
 test('can fetch using status scope', function () {
     $attribute_data = collect([

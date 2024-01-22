@@ -47,10 +47,10 @@ class ShippingOptionResolver
             return collect();
         }
 
-        foreach ($shippingOptionLookup->shippingMethods as $shippingMethod) {
+        foreach ($shippingOptionLookup->shippingRates as $shippingRate) {
             $shippingOptions->push((object) [
-                'shippingMethod' => $shippingMethod,
-                'option' => $shippingMethod->getShippingOption($this->cart),
+                'shippingRate' => $shippingRate,
+                'option' => $shippingRate->getShippingOption($this->cart),
             ]);
         }
 
@@ -61,7 +61,7 @@ class ShippingOptionResolver
         })->each(function ($option) {
             ShippingOptionResolvedEvent::dispatch(
                 $this->cart,
-                $option->shippingMethod,
+                $option->shippingRate,
                 $option->option
             );
         });
