@@ -127,4 +127,5 @@ return [
     'not_provided' => 'Non fourni',
     'billing_email' => 'Email de facturation',
     'add_new' => 'Ajouter nouveau',
+    'store' => 'Boutique',
 ];
