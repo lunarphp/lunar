@@ -4,7 +4,7 @@
   x-ref="sortable"
   x-data="{
     context: '{{ $context }}',
-    configuredOptions: @entangle($statePath).live
+    items: @entangle($statePath).live
   }"
   x-init="() => {
       el = $refs.sortable
@@ -17,23 +17,21 @@
           animation: 300,
           ghostClass: 'fi-sortable-ghost',
           onEnd: (event) => {
-            const rows = configuredOptions
-
+            const rows = Alpine.raw(items)
             const reorderedRow = rows.splice(event.oldIndex, 1)[0]
-
-            rows.splice(event.newIndex, 0, reorderedRow)
+            items.splice(event.newIndex, 0, reorderedRow)
 
             rows.forEach(
-              (row, rowIndex) => rows[rowIndex].position = rowIndex + 1
+              (item, itemIndex) => item.position = itemIndex + 1
             )
 
-            configuredOptions = rows
+            this.items = rows
           }
       })
     }"
 >
   @foreach($items as $itemIndex => $item)
-    <div wire:key="option_{{ $item['key'] }}" x-sortable-item="{{ $item['key'] }}">
+    <div wire:key="option_{{ $itemIndex }}" x-sortable-item="{{ $itemIndex }}">
       <div class="flex space-x-2 items-center">
         <div @class([
                 'flex items-center',
@@ -63,7 +61,7 @@
           <x-lunarpanel::products.variants.product-options-list
                   :items="$item['option_values']"
                   context="values"
-                  group="product_option_values_{{ $item['key'] }}"
+                  group="product_option_values_{{ $itemIndex }}"
                   :optionKey="$itemIndex"
                   state-path="configuredOptions.{{ $itemIndex }}.option_values"
           />

@@ -47,9 +47,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         $existing = collect($this->configuredOptions)->pluck('id');
 
         return Action::make('addSharedOption')
-            ->label(
-                __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.label')
-            )
             ->form([
                 Select::make('product_option')
                     ->options(
@@ -93,14 +90,12 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     {
         $this->configuredOptions[] = [
             'id' => null,
-            'key' => Str::random(),
             'value' => '',
             'position' => count($this->configuredOptions) + 1,
             'readonly' => false,
             'option_values' => [
                 [
                     'id' => null,
-                    'key' => Str::random(),
                     'value' => '',
                     'position' => 1,
                     'readonly' => false,
@@ -134,7 +129,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         }
 
         $this->configuredOptions[$path]['option_values'][] = [
-            'key' => Str::random(),
             'value' => '',
             'position' => count($this->configuredOptions[$path]['option_values']) + 1,
             'readonly' => false,
@@ -144,7 +138,8 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function removeOptionValue($index, $valueIndex)
     {
         if (! $index && ! is_numeric($index)) {
-            unset($this->configuredOptions[$valueIndex]);
+            $options = collect($this->configuredOptions)->forget($valueIndex);
+            $this->configuredOptions = $options->values()->toArray();
         } else {
             unset($this->configuredOptions[$index]['option_values'][$valueIndex]);
         }
@@ -176,6 +171,21 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         })->toArray();
 
         $this->variants = MapVariantsToProductOptions::map($optionValues, $variants, $fillMissing);
+    }
+
+    public function updatePositions(string $statePath, array $items)
+    {
+        $statePathParts = explode('.', $statePath);
+
+        foreach ($items as $itemIndex => $item) {
+            $item[$itemIndex]['position'] = $itemIndex + 1;
+        }
+
+        // We are at root.
+        if (count($statePathParts) == 1) {
+            $this->configuredOptions = $items;
+        }
+        //        dd($statePathParts, $statePath, $items);
     }
 
     protected function storeConfiguredOptions(): void
@@ -311,14 +321,14 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     {
         return [
             'id' => $option->id,
-            'key' => Str::random(),
+            'key' => "option_{$option->id}",
             'value' => $option->translate('name'),
             'position' => $option->pivot?->position ?: count($this->configuredOptions) + 1,
             'readonly' => $option->shared,
             'option_values' => $option->values->map(function ($value) use ($option) {
                 return [
                     'id' => $value->id,
-                    'key' => Str::random(),
+                    'key' => "option_value_{$option->id}",
                     'value' => $value->translate('name'),
                     'position' => $value->position,
                     'readonly' => $option->shared,

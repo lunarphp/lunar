@@ -196,6 +196,7 @@
                 icon="lucide-shapes"
         ></x-filament-tables::empty-state>
       @else
+        <div>
           <x-lunarpanel::products.variants.product-options-list
                   :items="$configuredOptions"
                   group="product_options"
