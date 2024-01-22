@@ -30,4 +30,43 @@ return [
         ],
     ],
 
+    'widgets' => [
+        'product-options' => [
+            'options-table' => [
+                'title' => 'Product Options',
+                'configure-options' => [
+                    'label' => 'Configure Options',
+                ],
+                'table' => [
+                    'option' => [
+                        'label' => 'Option',
+                    ],
+                    'values' => [
+                        'label' => 'Values',
+                    ],
+                ],
+            ],
+            'variants-table' => [
+                'title' => 'Product Variants',
+                'table' => [
+                    'new' => [
+                        'label' => 'NEW',
+                    ],
+                    'option' => [
+                        'label' => 'Option',
+                    ],
+                    'sku' => [
+                        'label' => 'SKU',
+                    ],
+                    'price' => [
+                        'label' => 'Price',
+                    ],
+                    'stock' => [
+                        'label' => 'Stock',
+                    ],
+                ],
+            ],
+        ],
+    ],
+
 ];

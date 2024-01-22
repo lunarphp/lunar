@@ -93,4 +93,13 @@ return [
             ],
         ],
     ],
+
+    'product-options-list' => [
+        'add-option' => [
+            'label' => 'Add Option',
+        ],
+        'add-value' => [
+            'label' => 'Add Value',
+        ],
+    ],
 ];

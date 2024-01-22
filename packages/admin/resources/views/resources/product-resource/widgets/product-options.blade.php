@@ -6,11 +6,13 @@
         <div class="fi-ta-header flex flex-col gap-3 p-4 sm:px-6 sm:flex-row sm:items-center">
           <div class="grid gap-y-1">
             <h3 class="fi-ta-header-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
-              Product Options
+              {{ __('lunarpanel::productoption.widgets.product-options.options-table.title') }}
             </h3>
           </div>
           <div class="fi-ta-actions flex shrink-0 items-center gap-3 flex-wrap justify-start sm:ms-auto">
-            <x-filament::button type="button" wire:click="$set('configuringOptions', true)">Configure Options</x-filament::button>
+            <x-filament::button type="button" wire:click="$set('configuringOptions', true)">
+              {{ __('lunarpanel::productoption.widgets.product-options.options-table.configure-options.label') }}
+            </x-filament::button>
           </div>
         </div>
         <div class="fi-ta-content divide-gray-200 overflow-x-auto">
@@ -20,12 +22,12 @@
                 <tr class="bg-gray-50 dark:bg-white/5">
                   <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                        Option
+                        {{ __('lunarpanel::productoption.widgets.product-options.options-table.table.option.label') }}
                       </span>
                   </x-filament-tables::header-cell>
                   <x-filament-tables::header-cell>
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                        Values
+                        {{ __('lunarpanel::productoption.widgets.product-options.options-table.table.values.label') }}
                       </span>
                   </x-filament-tables::header-cell>
                 </tr>
@@ -63,7 +65,7 @@
         <div class="fi-ta-header flex flex-col gap-3 p-4 sm:px-6 sm:flex-row sm:items-center">
           <div class="grid gap-y-1">
             <h3 class="fi-ta-header-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
-              Product Variants
+              {{ __('lunarpanel::productoption.widgets.product-options.variants-table.title') }}
             </h3>
           </div>
         </div>
@@ -76,17 +78,23 @@
                     </x-filament-tables::header-cell>
                     <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                        Option
+                        {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.option.label') }}
                       </span>
                     </x-filament-tables::header-cell>
                     <x-filament-tables::header-cell>
-                      SKU
+                      <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.sku.label') }}
+                      </span>
                     </x-filament-tables::header-cell>
                     <x-filament-tables::header-cell>
-                      Price
+                      <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.price.label') }}
+                      </span>
                     </x-filament-tables::header-cell>
                     <x-filament-tables::header-cell>
-                      Stock
+                      <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.stock.label') }}
+                      </span>
                     </x-filament-tables::header-cell>
                     <x-filament-tables::header-cell>
                     </x-filament-tables::header-cell>
@@ -100,7 +108,7 @@
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         @if(!$permutation['variant_id'])
                           <x-filament::badge color="info">
-                            NEW
+                            {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.new.label') }}
                           </x-filament::badge>
                         @endif
                       </div>

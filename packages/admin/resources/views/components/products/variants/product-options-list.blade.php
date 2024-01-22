@@ -4,7 +4,7 @@
   x-ref="sortable"
   x-data="{
     context: '{{ $context }}',
-    configuredOptions: @entangle($statePath)
+    configuredOptions: @entangle($statePath).live
   }"
   x-init="() => {
       el = $refs.sortable
@@ -17,45 +17,21 @@
           animation: 300,
           ghostClass: 'fi-sortable-ghost',
           onEnd: (event) => {
-            const rows = JSON.parse(
-              JSON.stringify(
-                configuredOptions
-              )
+            const rows = configuredOptions
+
+            const reorderedRow = rows.splice(event.oldIndex, 1)[0]
+
+            rows.splice(event.newIndex, 0, reorderedRow)
+
+            rows.forEach(
+              (row, rowIndex) => rows[rowIndex].position = rowIndex + 1
             )
 
-{{--            const reorderedRow = rows.splice(event.oldIndex, 1)[0]--}}
-
-{{--            rows.splice(event.newIndex, 0, reorderedRow)--}}
-
-{{--            rows.forEach(--}}
-{{--              (row, rowIndex) => rows[rowIndex].position = rowIndex + 1--}}
-{{--            )--}}
-
-{{--            configuredOptions = rows--}}
+            configuredOptions = rows
           }
       })
     }"
 >
-{{--  <template x-for="row in configuredOptions" :key="row.key">--}}
-{{--    <div x-sortable-item>--}}
-{{--      <div class="flex space-x-2 items-center">--}}
-{{--        <div x-class="{--}}
-{{--          'flex items-center': true,--}}
-{{--          'cursor-grab text-gray-400 hover:text-gray-500': !row.readonly || context == 'options',--}}
-{{--          'text-gray-200':  row.readonly && context == 'values',--}}
-{{--        }" x-sortable-handle>--}}
-{{--          <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />--}}
-{{--        </div>--}}
-
-{{--        <div class="grow">--}}
-{{--          <span x-text="row.value"></span>--}}
-{{--          <span x-text="row.position"></span>--}}
-{{--          <span x-text="row.key"></span>--}}
-{{--          <span x-text="context"></span>--}}
-{{--        </div>--}}
-{{--      </div>--}}
-{{--    </div>--}}
-{{--  </template>--}}
   @foreach($items as $itemIndex => $item)
     <div wire:key="option_{{ $item['key'] }}" x-sortable-item="{{ $item['key'] }}">
       <div class="flex space-x-2 items-center">
@@ -98,13 +74,13 @@
 
   @if($context == 'options')
     <x-filament::link href="#" wire:click.prevent="addRestrictedOption">
-      Add Option
+      {{ __('lunarpanel::components.product-options-list.add-option.label') }}
     </x-filament::link>
   @endif
 
   @if($context == 'values' && !$item['readonly'])
     <x-filament::link href="#" wire:click.prevent="addOptionValue('{{ $optionKey }}')">
-      Add Value
+      {{ __('lunarpanel::components.product-options-list.add-value.label') }}
     </x-filament::link>
   @endif
 
