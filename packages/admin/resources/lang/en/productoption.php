@@ -32,6 +32,33 @@ return [
 
     'widgets' => [
         'product-options' => [
+            'notifications' => [
+                'save-variants' => [
+                    'success' => [
+                        'title' => 'Product Variants Saved',
+                    ],
+                ],
+            ],
+            'actions' => [
+                'cancel' => [
+                    'label' => 'Cancel',
+                ],
+                'save-options' => [
+                    'label' => 'Save Options',
+                ],
+                'add-shared-option' => [
+                    'label' => 'Add Shared Option',
+                ],
+                'add-restricted-option' => [
+                    'label' => 'Add Restricted Option',
+                ],
+            ],
+            'options-list' => [
+                'empty' => [
+                    'heading' => 'There are no product options configured',
+                    'description' => 'Add a shared or restricted product option to start generating some variants.',
+                ],
+            ],
             'options-table' => [
                 'title' => 'Product Options',
                 'configure-options' => [
@@ -48,6 +75,17 @@ return [
             ],
             'variants-table' => [
                 'title' => 'Product Variants',
+                'actions' => [
+                    'create' => [
+                        'label' => 'Create Variant',
+                    ],
+                    'edit' => [
+                        'label' => 'Edit',
+                    ],
+                ],
+                'empty' => [
+                    'heading' => 'No Variants Configured',
+                ],
                 'table' => [
                     'new' => [
                         'label' => 'NEW',

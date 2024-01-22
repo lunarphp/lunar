@@ -136,7 +136,6 @@
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <x-filament::input.wrapper>
                           <x-filament::input
-                                  prefix="GBP"
                                   type="text"
                                   wire:model="variants.{{ $permutationIndex }}.price"
                           />
@@ -160,7 +159,7 @@
                         </button>
                       @else
                         <x-filament::link href="#">
-                          Edit
+                          {{ __('lunarpanel::productoption.widgets.product-options.variants-table.actions.edit.label') }}
                         </x-filament::link>
                       @endif
                     </x-filament-tables::cell>
@@ -170,7 +169,7 @@
                 </tbody>
               </x-filament-tables::table>
             @else
-              <x-filament-tables::empty-state heading="No Variants Configured" icon="lucide-shapes"></x-filament-tables::empty-state>
+              <x-filament-tables::empty-state :heading="__('lunarpanel::productoption.widgets.product-options.variants-table.empty.heading')" icon="lucide-shapes"></x-filament-tables::empty-state>
             @endif
         </div>
       </div>
@@ -185,19 +184,18 @@
       <div class="text-right">
         <div class="flex space-x-2 items-end justify-end">
         <x-filament::button color="gray" wire:click="addRestrictedOption">
-          Add Option
+          {{ __('lunarpanel::productoption.widgets.product-options.actions.add-restricted-option.label') }}
         </x-filament::button>
         {{ $this->addSharedOptionAction }}
         </div>
       </div>
       @if(!count($this->configuredOptions))
         <x-filament-tables::empty-state
-                heading="There are no product options configured"
-                description="Add a shared or restricted product option to start generating some variants."
+                :heading="__('lunarpanel::productoption.widgets.product-options.options-list.empty.heading')"
+                :description="__('lunarpanel::productoption.widgets.product-options.options-list.empty.description')"
                 icon="lucide-shapes"
         ></x-filament-tables::empty-state>
       @else
-        <div>
           <x-lunarpanel::products.variants.product-options-list
                   :items="$configuredOptions"
                   group="product_options"
@@ -206,11 +204,14 @@
         </div>
       @endif
 
-
       <div class="flex space-x-2">
-        <x-filament::button color="gray" wire:click="cancelOptionConfiguring">Cancel</x-filament::button>
+        <x-filament::button color="gray" wire:click="cancelOptionConfiguring">
+          {{ __('lunarpanel::productoption.widgets.product-options.actions.cancel.label') }}
+        </x-filament::button>
         @if(count($this->configuredOptions))
-          <x-filament::button type="button" wire:click="updateConfiguredOptions">Save Options</x-filament::button>
+          <x-filament::button type="button" wire:click="updateConfiguredOptions">
+            {{ __('lunarpanel::productoption.widgets.product-options.actions.save-options.label') }}
+          </x-filament::button>
         @endif
       </div>
     </div>

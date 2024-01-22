@@ -47,6 +47,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         $existing = collect($this->configuredOptions)->pluck('id');
 
         return Action::make('addSharedOption')
+            ->label(
+                __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.label')
+            )
             ->form([
                 Select::make('product_option')
                     ->options(
@@ -250,7 +253,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     if (! empty($variantData['variant_id'])) {
                         $variant = ProductVariant::find($variantData['variant_id']);
                         $basePrice = $variant->basePrices->first();
-                        $currency = $basePrice->currency;
                     }
 
                     if (! empty($variantData['copied_id'])) {
@@ -300,7 +302,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 DB::commit();
 
                 Notification::make()->title(
-                    'Product Variants Updated'
+                    __('lunarpanel::productoption.widgets.product-options.notifications.save-variants.success.title')
                 )->success()->send();
             });
     }
