@@ -4,6 +4,7 @@ namespace Lunar\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -306,7 +307,7 @@ class InstallLunar extends Command
                 'firstname' => $firstname,
                 'lastname' => $lastname,
                 'email' => $email,
-                'password' => bcrypt($password),
+                'password' => Hash::make($password),
                 'admin' => true,
             ]);
 
@@ -314,12 +315,8 @@ class InstallLunar extends Command
         }
 
         
-        $this->comment('Publishing assets...');
+        $this->comment('Publishing Filament::assets...');
         $this->publishAssets();
-        $this->newLine();
-
-        $this->comment('Cache clear...');
-        $this->cleaning();
         $this->newLine();
 
         $this->newLine();
@@ -382,15 +379,5 @@ class InstallLunar extends Command
     private function publishAssets(): void
     {
         $this->call('filament:assets');
-    }
-
-     /**
-     * Cleaning 
-     *
-     */
-    private function cleaning(): void
-    {
-        $this->call('config:clear');
-        $this->call('cache:clear');
     }
 }
