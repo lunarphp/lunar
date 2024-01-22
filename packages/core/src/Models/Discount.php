@@ -174,7 +174,7 @@ class Discount extends BaseModel
         }
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($type, fn ($query) => $query->whereType($type)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
                         ->wherePurchasableType(Product::class)
@@ -196,7 +196,7 @@ class Discount extends BaseModel
         }
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($type, fn ($query) => $query->whereType($type)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
                         ->wherePurchasableType(ProductVariant::class)
