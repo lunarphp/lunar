@@ -36,6 +36,10 @@ class TranslatedText extends TextInput
 
         $this->languages = $languages->filter(fn ($lang) => ! $lang->default);
         $this->default = $languages->first(fn ($lang) => $lang->default);
+
+        $this->default(static function (TranslatedText $component): array {
+            return $component->getLanguageDefaults();
+        });
     }
 
     public function getExpanded()
@@ -46,6 +50,11 @@ class TranslatedText extends TextInput
     public function getDefault()
     {
         return $this->default;
+    }
+
+    public function getLanguageDefaults(): array
+    {
+        return $this->getLanguages()->mapWithKeys(fn ($language) => [$language->code => null])->toArray();
     }
  
     public function getLanguages()
