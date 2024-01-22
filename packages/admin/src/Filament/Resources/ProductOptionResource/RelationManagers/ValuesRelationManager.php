@@ -7,12 +7,17 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Models\ProductOptionValue;
 
 class ValuesRelationManager extends RelationManager
 {
     protected static string $relationship = 'values';
 
-    protected static ?string $recordTitleAttribute = 'name.en';  // TODO: localise somehow
+    public function getTableRecordTitle(Model $record): ?string
+    {
+        return $record->translate('name');
+    }
 
     public function form(Form $form): Form
     {
@@ -29,8 +34,10 @@ class ValuesRelationManager extends RelationManager
         return $table
 
             ->columns([
-                Tables\Columns\TextColumn::make('name.en'),
-                Tables\Columns\TextColumn::make('handle'),
+                Tables\Columns\TextColumn::make('name')
+                    ->formatStateUsing(
+                        fn (ProductOptionValue $productOption) => $productOption->translate('name')
+                    ),
                 Tables\Columns\TextColumn::make('position'),
             ])
             ->filters([

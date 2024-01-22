@@ -4,23 +4,19 @@ namespace Lunar\Shipping\DataTransferObjects;
 
 use Doctrine\Common\Cache\Psr6\InvalidArgument;
 use Illuminate\Support\Collection;
-use Lunar\Models\Country;
-use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionLookup
 {
     /**
-     * Initialise the postcode lookup class.
-     *
-     * @param Country Country description
-     * @param public string description
+     * Initialise the shipping option lookup class.
      */
     public function __construct(
-        public Collection $shippingMethods
+        public Collection $shippingRates
     ) {
         throw_if(
-            $shippingMethods->filter(
-                fn ($method) => get_class($method) != ShippingMethod::class
+            $this->shippingRates->filter(
+                fn ($method) => get_class($method) != ShippingRate::class
             )->count(),
             new InvalidArgument()
         );

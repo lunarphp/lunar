@@ -6,15 +6,15 @@ use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\Pricing;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
-use Lunar\Shipping\Interfaces\ShippingMethodInterface;
-use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Interfaces\ShippingRateInterface;
+use Lunar\Shipping\Models\ShippingRate;
 
-class FlatRate implements ShippingMethodInterface
+class FlatRate implements ShippingRateInterface
 {
     /**
      * The shipping method for context.
      */
-    public ShippingMethod $shippingMethod;
+    public ShippingRate $shippingRate;
 
     /**
      * {@inheritdoc}
@@ -34,15 +34,16 @@ class FlatRate implements ShippingMethodInterface
 
     public function resolve(ShippingOptionRequest $shippingOptionRequest): ?ShippingOption
     {
-        $data = $shippingOptionRequest->shippingMethod->data;
+        $shippingRate = $shippingOptionRequest->shippingRate;
+        $shippingMethod = $shippingRate->shippingMethod;
+        $shippingZone = $shippingRate->shippingZone;
         $cart = $shippingOptionRequest->cart;
-        $shippingMethod = $shippingOptionRequest->shippingMethod;
 
         // Do we have any products in our exclusions list?
         // If so, we do not want to return this option regardless.
         $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
 
-        $hasExclusions = $shippingMethod->shippingExclusions()
+        $hasExclusions = $shippingZone->shippingExclusions()
             ->whereHas('exclusions', function ($query) use ($productIds) {
                 $query->wherePurchasableType(Product::class)->whereIn('purchasable_id', $productIds);
             })->exists();
@@ -53,7 +54,7 @@ class FlatRate implements ShippingMethodInterface
 
         $subTotal = $cart->lines->sum('subTotal.value');
 
-        $pricing = Pricing::for($shippingMethod)->qty($subTotal)->get();
+        $pricing = Pricing::for($shippingRate)->qty($subTotal)->get();
 
         if (! $pricing->matched) {
             return null;
@@ -62,21 +63,21 @@ class FlatRate implements ShippingMethodInterface
         return new ShippingOption(
             name: $shippingMethod->name ?: $this->name(),
             description: $shippingMethod->description ?: $this->description(),
-            identifier: $shippingMethod->getIdentifier(),
+            identifier: $shippingRate->getIdentifier(),
             price: $pricing->matched->price,
-            taxClass: $shippingMethod->getTaxClass(),
-            taxReference: $shippingMethod->getTaxReference(),
-            option: $shippingMethod->shippingZone->name,
-            meta: ['shipping_zone' => $shippingMethod->shippingZone->name]
+            taxClass: $shippingRate->getTaxClass(),
+            taxReference: $shippingRate->getTaxReference(),
+            option: $shippingZone->name,
+            meta: ['shipping_zone' => $shippingZone->name]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function on(ShippingMethod $shippingMethod): self
+    public function on(ShippingRate $shippingRate): self
     {
-        $this->shippingMethod = $shippingMethod;
+        $this->shippingRate = $shippingRate;
 
         return $this;
     }
