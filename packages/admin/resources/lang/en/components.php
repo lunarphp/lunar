@@ -99,7 +99,7 @@ return [
             'label' => 'Add Option',
         ],
         'add-value' => [
-            'label' => 'Add Value',
+            'label' => 'Add Another Value',
         ],
     ],
 ];

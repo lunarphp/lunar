@@ -806,6 +806,10 @@ select {
   z-index: 20;
 }
 
+.col-span-1 {
+  grid-column: span 1 / span 1;
+}
+
 .-my-8 {
   margin-top: -2rem;
   margin-bottom: -2rem;
@@ -860,6 +864,30 @@ select {
 
 .mt-4 {
   margin-top: 1rem;
+}
+
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
+.ml-7 {
+  margin-left: 1.75rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.-mt-4 {
+  margin-top: -1rem;
+}
+
+.-mt-3 {
+  margin-top: -0.75rem;
+}
+
+.-mt-3\.5 {
+  margin-top: -0.875rem;
 }
 
 .block {
@@ -938,6 +966,10 @@ select {
   width: 0.875rem;
 }
 
+.w-32 {
+  width: 8rem;
+}
+
 .w-4 {
   width: 1rem;
 }
@@ -1013,12 +1045,32 @@ select {
           appearance: none;
 }
 
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .items-end {
   align-items: flex-end;
 }
 
 .items-center {
   align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
 }
 
 .justify-end {
@@ -1051,6 +1103,10 @@ select {
 
 .gap-2\.5 {
   gap: 0.625rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
 }
 
 .gap-4 {
@@ -1092,6 +1148,18 @@ select {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+}
+
+.space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1rem * var(--tw-space-x-reverse));
+  margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
 }
 
 .divide-x > :not([hidden]) ~ :not([hidden]) {
@@ -1155,6 +1223,10 @@ select {
 
 .rounded-lg {
   border-radius: 0.5rem;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
 }
 
 .rounded-b-lg {
@@ -1340,14 +1412,19 @@ select {
   padding-bottom: 0.75rem;
 }
 
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+.py-3\.5 {
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
 }
 
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .\!ps-6 {
@@ -1394,8 +1471,8 @@ select {
   text-align: center;
 }
 
-.text-start {
-  text-align: start;
+.text-right {
+  text-align: right;
 }
 
 .text-base {
@@ -1427,6 +1504,10 @@ select {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.leading-6 {
+  line-height: 1.5rem;
 }
 
 .\!text-red-400\/60 {
@@ -1569,6 +1650,10 @@ select {
   --tw-ring-color: rgba(var(--gray-950), 0.1);
 }
 
+.ring-gray-950\/5 {
+  --tw-ring-color: rgba(var(--gray-950), 0.05);
+}
+
 .ring-purple-100 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(243 232 255 / var(--tw-ring-opacity));
@@ -1622,14 +1707,6 @@ select {
 
 .last\:border-e-0:last-child {
   border-inline-end-width: 0px;
-}
-
-.first-of-type\:ps-1:first-of-type {
-  padding-inline-start: 0.25rem;
-}
-
-.last-of-type\:pe-1:last-of-type {
-  padding-inline-end: 0.25rem;
 }
 
 .hover\:cursor-pointer:hover {
@@ -1902,12 +1979,29 @@ select {
 }
 
 @media (min-width: 640px) {
-  .sm\:first-of-type\:ps-3:first-of-type {
-    padding-inline-start: 0.75rem;
+  .sm\:ms-auto {
+    margin-inline-start: auto;
   }
 
-  .sm\:last-of-type\:pe-3:last-of-type {
-    padding-inline-end: 0.75rem;
+  .sm\:flex-row {
+    flex-direction: row;
+  }
+
+  .sm\:items-center {
+    align-items: center;
+  }
+
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .sm\:first-of-type\:ps-6:first-of-type {
+    padding-inline-start: 1.5rem;
+  }
+
+  .sm\:last-of-type\:pe-6:last-of-type {
+    padding-inline-end: 1.5rem;
   }
 }
 

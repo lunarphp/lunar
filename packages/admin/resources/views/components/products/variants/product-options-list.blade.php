@@ -10,7 +10,7 @@
       el = $refs.sortable
 
       el.sortable = Sortable.create(el, {
-          group: '{{ $group }}',
+          group: 'product_options',
           draggable: '[x-sortable-item]',
           handle: '[x-sortable-handle]',
           dataIdAttr: 'x-sortable-item',
@@ -31,55 +31,54 @@
     }"
 >
   @foreach($items as $itemIndex => $item)
-    <div wire:key="option_{{ $itemIndex }}" x-sortable-item="{{ $itemIndex }}">
-      <div class="flex space-x-2 items-center">
-        <div @class([
-                'flex items-center',
-                'cursor-grab text-gray-400 hover:text-gray-500' => !$item['readonly'] || $context == 'options',
-                ' text-gray-200' => $item['readonly'] && $context == 'values',
-            ]) @if(!$item['readonly'] || $context == 'options') x-sortable-handle @endif >
-          <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
-        </div>
-        <div class="grow">
-          <x-filament::input.wrapper :valid="!$errors->has($statePath.'.'.$itemIndex.'.value')">
-            <x-filament::input
-                    type="text"
-                    error="'dawda'"
-                    wire:model="{{ $statePath }}.{{ $itemIndex }}.value"
-                    :disabled="$item['readonly']"
-            />
-          </x-filament::input.wrapper>
-        </div>
+    <div wire:key="option_{{ $itemIndex }}" x-sortable-item="option_{{ $itemIndex }}">
+      <div class="grid grid-cols-2 space-x-4">
         <div>
-          <button type="button" wire:click.prevent="removeOptionValue('{{ $optionKey }}', '{{ $itemIndex }}')">
-            <x-filament::icon alias="actions::delete-action" class="w-4 h-4 text-red-500" />
-          </button>
+            <div>
+              <x-filament-forms::field-wrapper.label class="ml-7">
+                Name
+              </x-filament-forms::field-wrapper.label>
+              <div class="flex w-full space-x-2 mt-1">
+                <div
+                  @class([
+                    'flex items-center',
+                    'cursor-grab text-gray-400 hover:text-gray-500' => !$item['readonly'] || $context == 'options',
+                    ' text-gray-200' => $item['readonly'] && $context == 'values',
+                  ])
+                  @if(!$item['readonly'] || $context == 'options') x-sortable-handle @endif
+                >
+                  <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
+                </div>
+                <div class="grow">
+                  <x-filament::input.wrapper :valid="!$errors->has($statePath.'.'.$itemIndex.'.value')">
+                    <x-filament::input
+                            type="text"
+                            wire:model="{{ $statePath }}.{{ $itemIndex }}.value"
+                            :disabled="$item['readonly']"
+                    />
+                  </x-filament::input.wrapper>
+
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="space-y-1">
+          <x-filament-forms::field-wrapper.label>
+            Values
+          </x-filament-forms::field-wrapper.label>
+          <div>
+            <x-lunarpanel::products.variants.product-option-list-values
+              :items="$item['option_values']"
+              :key="$itemIndex"
+              state-path="configuredOptions.{{ $itemIndex }}.option_values"
+            />
+          </div>
         </div>
       </div>
-      @if(!empty($item['option_values']))
-        <div class="space-y-2 mt-4 mx-8 ml-8">
-          <x-lunarpanel::products.variants.product-options-list
-                  :items="$item['option_values']"
-                  context="values"
-                  group="product_option_values_{{ $itemIndex }}"
-                  :optionKey="$itemIndex"
-                  state-path="configuredOptions.{{ $itemIndex }}.option_values"
-          />
-        </div>
-      @endif
     </div>
   @endforeach
 
-  @if($context == 'options')
-    <x-filament::link href="#" wire:click.prevent="addRestrictedOption">
-      {{ __('lunarpanel::components.product-options-list.add-option.label') }}
-    </x-filament::link>
-  @endif
-
-  @if($context == 'values' && !$item['readonly'])
-    <x-filament::link href="#" wire:click.prevent="addOptionValue('{{ $optionKey }}')">
-      {{ __('lunarpanel::components.product-options-list.add-value.label') }}
-    </x-filament::link>
-  @endif
-
+  <x-filament::button color="gray" size="sm" type="button" wire:click.prevent="addRestrictedOption">
+    {{ __('lunarpanel::components.product-options-list.add-option.label') }}
+  </x-filament::button>
 </div>

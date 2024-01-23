@@ -48,9 +48,17 @@ return [
                 ],
                 'add-shared-option' => [
                     'label' => 'Add Shared Option',
+                    'form' => [
+                        'product_option' => [
+                            'label' => 'Product Option',
+                        ],
+                        'no_shared_components' => [
+                            'label' => 'No more shared options are available.',
+                        ],
+                    ],
                 ],
                 'add-restricted-option' => [
-                    'label' => 'Add Restricted Option',
+                    'label' => 'Add Option',
                 ],
             ],
             'options-list' => [

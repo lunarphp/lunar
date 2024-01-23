@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Widgets;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -35,7 +36,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
      */
     public array $configuredOptions = [];
 
-    public bool $configuringOptions = false;
+    public bool $configuringOptions = true;
 
     public function mount()
     {
@@ -45,15 +46,28 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function addSharedOptionAction()
     {
         $existing = collect($this->configuredOptions)->pluck('id');
+        $options = ProductOption::whereNotIn('id', $existing)
+            ->shared()
+            ->get();
 
         return Action::make('addSharedOption')
             ->form([
+                Shout::make('no_shared_components')
+                    ->content(
+                        __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.form.no_shared_components.label')
+                    )
+                    ->visible(
+                        $options->isEmpty()
+                    ),
                 Select::make('product_option')
                     ->options(
-                        fn () => ProductOption::whereNotIn('id', $existing)->get()
-                            ->mapWithKeys(
-                                fn ($option) => [$option->id => $option->translate('name')]
-                            )
+                        fn () => $options->mapWithKeys(
+                            fn ($option) => [$option->id => $option->translate('name')]
+                        )
+                    )->label(
+                        __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.form.product_option.label')
+                    )->visible(
+                        $options->isNotEmpty()
                     ),
             ])->action(function (array $data) {
                 $productOption = ProductOption::with(['values'])->find($data['product_option']);
@@ -173,19 +187,12 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         $this->variants = MapVariantsToProductOptions::map($optionValues, $variants, $fillMissing);
     }
 
-    public function updatePositions(string $statePath, array $items)
+    public function getHasNewVariantsProperty()
     {
-        $statePathParts = explode('.', $statePath);
-
-        foreach ($items as $itemIndex => $item) {
-            $item[$itemIndex]['position'] = $itemIndex + 1;
-        }
-
-        // We are at root.
-        if (count($statePathParts) == 1) {
-            $this->configuredOptions = $items;
-        }
-        //        dd($statePathParts, $statePath, $items);
+        return collect($this->variants)
+            ->reject(
+                fn ($variant) => $variant['variant_id']
+            )->isNotEmpty();
     }
 
     protected function storeConfiguredOptions(): void

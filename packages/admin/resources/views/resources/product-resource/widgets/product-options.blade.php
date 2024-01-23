@@ -74,8 +74,10 @@
               <x-filament-tables::table>
                 <thead class="divide-y divide-gray-200 dark:divide-white/5">
                   <tr class="bg-gray-50 dark:bg-white/5">
-                    <x-filament-tables::header-cell>
-                    </x-filament-tables::header-cell>
+                    @if($this->hasNewVariants)
+                      <x-filament-tables::header-cell>
+                      </x-filament-tables::header-cell>
+                    @endif
                     <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.option.label') }}
@@ -104,15 +106,17 @@
 
                 @foreach($this->variants as $permutationIndex => $permutation)
                   <x-filament-tables::row wire:key="permutation_{{ $permutation['key'] }}">
-                    <x-filament-tables::cell class="fi-ta-text grid w-full gap-y-1 px-3 py-4 bg-white">
-                      <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                        @if(!$permutation['variant_id'])
-                          <x-filament::badge color="info">
-                            {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.new.label') }}
-                          </x-filament::badge>
-                        @endif
-                      </div>
-                    </x-filament-tables::cell>
+                    @if($this->hasNewVariants)
+                      <x-filament-tables::cell class="fi-ta-text grid w-full gap-y-1 px-3 py-4 bg-white">
+                        <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                          @if(!$permutation['variant_id'])
+                            <x-filament::badge color="info">
+                              {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.new.label') }}
+                            </x-filament::badge>
+                          @endif
+                        </div>
+                      </x-filament-tables::cell>
+                    @endif
                     <x-filament-tables::cell class="bg-white">
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
@@ -132,7 +136,7 @@
                         </x-filament::input.wrapper>
                       </div>
                     </x-filament-tables::cell>
-                    <x-filament-tables::cell>
+                    <x-filament-tables::cell class="w-32">
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <x-filament::input.wrapper>
                           <x-filament::input
@@ -142,7 +146,7 @@
                         </x-filament::input.wrapper>
                       </div>
                     </x-filament-tables::cell>
-                    <x-filament-tables::cell>
+                    <x-filament-tables::cell class="w-32">
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <x-filament::input.wrapper>
                           <x-filament::input
@@ -205,15 +209,16 @@
         </div>
       @endif
 
-      <div class="flex space-x-2">
-        <x-filament::button color="gray" wire:click="cancelOptionConfiguring">
-          {{ __('lunarpanel::productoption.widgets.product-options.actions.cancel.label') }}
-        </x-filament::button>
+      <div class="flex space-x-2 border-t pt-4">
         @if(count($this->configuredOptions))
           <x-filament::button type="button" wire:click="updateConfiguredOptions">
             {{ __('lunarpanel::productoption.widgets.product-options.actions.save-options.label') }}
           </x-filament::button>
         @endif
+        <x-filament::button color="gray" wire:click="cancelOptionConfiguring">
+          {{ __('lunarpanel::productoption.widgets.product-options.actions.cancel.label') }}
+        </x-filament::button>
+
       </div>
     </div>
     <x-filament-actions::modals />
