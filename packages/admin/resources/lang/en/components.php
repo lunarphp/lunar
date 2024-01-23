@@ -101,5 +101,11 @@ return [
         'add-value' => [
             'label' => 'Add Another Value',
         ],
+        'name' => [
+            'label' => 'Name',
+        ],
+        'values' => [
+            'label' => 'Values',
+        ],
     ],
 ];

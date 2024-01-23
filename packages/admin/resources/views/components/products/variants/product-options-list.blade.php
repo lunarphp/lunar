@@ -36,7 +36,7 @@
         <div>
             <div>
               <x-filament-forms::field-wrapper.label class="ml-7">
-                Name
+                {{ __('lunarpanel::components.product-options-list.name.label') }}
               </x-filament-forms::field-wrapper.label>
               <div class="flex w-full space-x-2 mt-1">
                 <div
@@ -57,14 +57,13 @@
                             :disabled="$item['readonly']"
                     />
                   </x-filament::input.wrapper>
-
                 </div>
               </div>
             </div>
         </div>
         <div class="space-y-1">
           <x-filament-forms::field-wrapper.label>
-            Values
+            {{ __('lunarpanel::components.product-options-list.values.label') }}
           </x-filament-forms::field-wrapper.label>
           <div>
             <x-lunarpanel::products.variants.product-option-list-values
