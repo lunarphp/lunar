@@ -36,7 +36,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
      */
     public array $configuredOptions = [];
 
-    public bool $configuringOptions = false;
+    public bool $configuringOptions = true;
 
     public function mount()
     {
@@ -121,11 +121,12 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function updateConfiguredOptions()
     {
         $this->validate([
-            'configuredOptions' => 'array|min:1',
+            'configuredOptions' => 'array',
             'configuredOptions.*.value' => 'required|string',
             'configuredOptions.*.option_values.*.value' => 'required|string',
         ]);
         $this->mapVariantPermutations();
+
         $this->configuringOptions = false;
     }
 
@@ -151,16 +152,18 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
     public function removeOptionValue($index, $valueIndex)
     {
-        if (! $index && ! is_numeric($index)) {
-            $options = collect($this->configuredOptions)->forget($valueIndex);
-            $this->configuredOptions = $options->values()->toArray();
-        } else {
-            unset($this->configuredOptions[$index]['option_values'][$valueIndex]);
-        }
+        unset($this->configuredOptions[$index]['option_values'][$valueIndex]);
+    }
+
+    public function removeOption($index)
+    {
+        $options = collect($this->configuredOptions)->forget($index);
+        $this->configuredOptions = $options->values()->toArray();
     }
 
     public function mapVariantPermutations($fillMissing = true): void
     {
+        //        dd(1);
         $optionValues = collect($this->configuredOptions)
             ->filter(
                 fn ($option) => $option['value']

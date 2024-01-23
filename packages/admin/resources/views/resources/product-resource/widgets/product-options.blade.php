@@ -195,31 +195,30 @@
         </div>
       </div>
       @if(!count($this->configuredOptions))
-        <x-filament-tables::empty-state
-                :heading="__('lunarpanel::productoption.widgets.product-options.options-list.empty.heading')"
-                :description="__('lunarpanel::productoption.widgets.product-options.options-list.empty.description')"
-                icon="lucide-shapes"
-        ></x-filament-tables::empty-state>
+        <div wire:key="product_options">
+          <x-filament-tables::empty-state
+            :heading="__('lunarpanel::productoption.widgets.product-options.options-list.empty.heading')"
+            :description="__('lunarpanel::productoption.widgets.product-options.options-list.empty.description')"
+            icon="lucide-shapes"
+          ></x-filament-tables::empty-state>
+        </div>
       @else
         <div>
           <x-lunarpanel::products.variants.product-options-list
-                  :items="$configuredOptions"
-                  group="product_options"
-                  state-path="configuredOptions"
+            :items="$configuredOptions"
+            group="product_options"
+            state-path="configuredOptions"
           />
         </div>
       @endif
 
       <div class="flex space-x-2 border-t pt-4">
-        @if(count($this->configuredOptions))
-          <x-filament::button type="button" wire:click="updateConfiguredOptions">
-            {{ __('lunarpanel::productoption.widgets.product-options.actions.save-options.label') }}
-          </x-filament::button>
-        @endif
+        <x-filament::button type="button" wire:click="updateConfiguredOptions">
+          {{ __('lunarpanel::productoption.widgets.product-options.actions.save-options.label') }}
+        </x-filament::button>
         <x-filament::button color="gray" wire:click="cancelOptionConfiguring">
           {{ __('lunarpanel::productoption.widgets.product-options.actions.cancel.label') }}
         </x-filament::button>
-
       </div>
     </div>
     <x-filament-actions::modals />

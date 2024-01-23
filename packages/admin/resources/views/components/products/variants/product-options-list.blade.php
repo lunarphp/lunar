@@ -4,7 +4,7 @@
   x-ref="sortable"
   x-data="{
     context: '{{ $context }}',
-    items: @entangle($statePath).live
+    items: @js($items)
   }"
   x-init="() => {
       el = $refs.sortable
@@ -38,7 +38,7 @@
               <x-filament-forms::field-wrapper.label class="ml-7">
                 {{ __('lunarpanel::components.product-options-list.name.label') }}
               </x-filament-forms::field-wrapper.label>
-              <div class="flex w-full space-x-2 mt-1">
+              <div class="flex w-full space-x-2 mt-1 items-start">
                 <div
                   @class([
                     'flex items-center',
@@ -57,6 +57,13 @@
                             :disabled="$item['readonly']"
                     />
                   </x-filament::input.wrapper>
+                  <button
+                    type="button"
+                    class="text-sm font-semibold text-red-500 hover:underline mt-2"
+                    wire:click.prevent="removeOption('{{ $itemIndex }}')"
+                  >
+                    {{ __('lunarpanel::components.product-options-list.delete-option.label') }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -65,11 +72,12 @@
           <x-filament-forms::field-wrapper.label>
             {{ __('lunarpanel::components.product-options-list.values.label') }}
           </x-filament-forms::field-wrapper.label>
-          <div>
+          <div wire:key="option_values_{{ $itemIndex }}">
             <x-lunarpanel::products.variants.product-option-list-values
               :items="$item['option_values']"
               :key="$itemIndex"
               state-path="configuredOptions.{{ $itemIndex }}.option_values"
+              :can-add-values="!$item['readonly']"
             />
           </div>
         </div>

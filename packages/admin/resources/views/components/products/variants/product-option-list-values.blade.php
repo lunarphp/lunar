@@ -1,10 +1,10 @@
-@props(['items', 'statePath', 'key'])
+@props(['items', 'statePath', 'key', 'canAddValues'])
 <div>
   <div
    class="space-y-2"
    x-sortable
    x-data="{
-      items: @entangle($statePath).live
+      valueItems: @js($items)
     }"
    x-init="() => {
         el = $refs.sortable
@@ -30,16 +30,16 @@
         })
       }"
   >
-    @foreach($items as $itemIndex => $item)
-      <div x-sortable-item="option_{{ $itemIndex }}_value">
+    @foreach($items as $itemIndex => $valueItem)
+      <div x-sortable-item="option_{{ $itemIndex }}_value" wire:key="option_{{ $itemIndex }}_value">
         <div class="flex space-x-2 items-center">
           <div
             @class([
               'flex items-center',
-              'cursor-grab text-gray-400 hover:text-gray-500' => !$item['readonly'],
-              ' text-gray-200' => $item['readonly'],
+              'cursor-grab text-gray-400 hover:text-gray-500' => !$valueItem['readonly'],
+              ' text-gray-200' => $valueItem['readonly'],
             ])
-            @if(!$item['readonly']) x-sortable-handle @endif
+            @if(!$valueItem['readonly']) x-sortable-handle @endif
           >
             <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
           </div>
@@ -48,7 +48,7 @@
               <x-filament::input
                 type="text"
                 wire:model="{{ $statePath }}.{{ $itemIndex }}.value"
-                :disabled="$item['readonly']"
+                :disabled="$valueItem['readonly']"
               />
             </x-filament::input.wrapper>
           </div>
@@ -61,7 +61,7 @@
       </div>
     @endforeach
   </div>
-  @if(!$item['readonly'])
+  @if($canAddValues)
     <div class="text-center mt-4">
       <x-filament::button color="gray" size="xs" type="button" wire:click.prevent="addOptionValue('{{ $key }}')">
         {{ __('lunarpanel::components.product-options-list.add-value.label') }}
