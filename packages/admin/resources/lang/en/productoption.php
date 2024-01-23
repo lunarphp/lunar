@@ -90,6 +90,9 @@ return [
                     'edit' => [
                         'label' => 'Edit',
                     ],
+                    'delete' => [
+                        'label' => 'Delete',
+                    ],
                 ],
                 'empty' => [
                     'heading' => 'No Variants Configured',

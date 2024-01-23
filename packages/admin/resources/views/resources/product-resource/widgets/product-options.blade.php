@@ -157,15 +157,16 @@
                       </div>
                     </x-filament-tables::cell>
                     <x-filament-tables::cell>
-                      @if(!$permutation['variant_id'])
-                        <button type="button" wire:click="removeVariant('{{ $permutationIndex }}')">
-                          <x-filament::icon alias="actions::delete-action" class="w-4 h-4 text-red-500" />
+                      <div class="flex items-center space-x-2">
+                        @if($permutation['variant_id'])
+                          <x-filament::link href="#">
+                            {{ __('lunarpanel::productoption.widgets.product-options.variants-table.actions.edit.label') }}
+                          </x-filament::link>
+                        @endif
+                        <button type="button" wire:click="removeVariant('{{ $permutationIndex }}')" class="text-red-500 font-semibold text-sm hover:underline">
+                          {{ __('lunarpanel::productoption.widgets.product-options.variants-table.actions.delete.label') }}
                         </button>
-                      @else
-                        <x-filament::link href="#">
-                          {{ __('lunarpanel::productoption.widgets.product-options.variants-table.actions.edit.label') }}
-                        </x-filament::link>
-                      @endif
+                      </div>
                     </x-filament-tables::cell>
 
                   </x-filament-tables::row>

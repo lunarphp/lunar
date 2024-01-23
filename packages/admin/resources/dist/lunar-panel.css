@@ -1736,6 +1736,10 @@ select {
   color: rgba(var(--gray-500), var(--tw-text-opacity));
 }
 
+.hover\:underline:hover {
+  text-decoration-line: underline;
+}
+
 .focus-visible\:z-10:focus-visible {
   z-index: 10;
 }
