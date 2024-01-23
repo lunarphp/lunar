@@ -71,36 +71,9 @@ it('can map variants given three sets of option values', function () {
                 'Colour' => 'Black',
             ],
         ],
-        //        [
-        //            'id' => 2,
-        //            'sku' => 'MDBLK',
-        //            'values' => [
-        //                'Size' => 'Medium',
-        //                'Colour' => 'Black',
-        //            ],
-        //        ],
-        //        [
-        //            'id' => 3,
-        //            'sku' => 'SMBLU',
-        //            'values' => [
-        //                'Size' => 'Small',
-        //                'Colour' => 'Blue',
-        //            ],
-        //        ],
-        //        [
-        //            'id' => 3,
-        //            'sku' => 'MDBLU',
-        //            'values' => [
-        //                'Size' => 'Medium',
-        //                'Colour' => 'Blue',
-        //            ],
-        //        ],
     ];
 
     $result = MapVariantsToProductOptions::map($optionValues, $variants);
 
-    dd($result);
-    expect($result[0]['sku'])->toBe('ABC');
-    expect($result[1]['sku'])->toBe('DEF');
-    expect($result[2]['sku'])->toBe('GHI');
+    expect($result)->toHaveCount(4);
 })->group('momo');
