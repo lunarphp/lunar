@@ -23,7 +23,7 @@
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^10.0",
         "laravel/scout": "^10.0",
-        "leandrocfe/filament-apex-charts": "^3.0",
+        "leandrocfe/filament-apex-charts": "^3.1.2",
         "lukascivil/treewalker": "0.9.1",
         "marvinosswald/filament-input-select-affix": "^0.1.0",
         "php": "^8.1",
