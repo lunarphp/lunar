@@ -53,7 +53,7 @@ return [
                             'label' => 'Product Option',
                         ],
                         'no_shared_components' => [
-                            'label' => 'No more shared options are available.',
+                            'label' => 'No shared options are available.',
                         ],
                     ],
                 ],
