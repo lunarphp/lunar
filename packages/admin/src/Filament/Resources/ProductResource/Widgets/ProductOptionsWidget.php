@@ -261,6 +261,32 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
                 $this->storeConfiguredOptions();
 
+                /**
+                 * If there are no variants, then all the configured option
+                 * have been removed. In this case we still want to keep a
+                 * variant at least one is needed for Lunar to function.
+                 */
+                if (! count($this->variants)) {
+                    DB::beginTransaction();
+                    $variant = $this->record->variants()->first();
+                    $variant->values()->detach();
+                    $this->record->productOptions()->exclusive()->delete();
+                    $this->record->productOptions()->shared()->detach();
+                    $this->record->variants()
+                        ->where('id', '!=', $variant->id)
+                        ->get()
+                        ->each(
+                            fn ($variant) => $variant->delete()
+                        );
+                    DB::commit();
+
+                    Notification::make()->title(
+                        __('lunarpanel::productoption.widgets.product-options.notifications.save-variants.success.title')
+                    )->success()->send();
+
+                    return;
+                }
+
                 foreach ($this->variants as $variantIndex => $variantData) {
                     $variant = new ProductVariant([
                         'product_id' => $this->record->id,

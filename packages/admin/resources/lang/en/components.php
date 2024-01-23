@@ -98,6 +98,9 @@ return [
         'add-option' => [
             'label' => 'Add Option',
         ],
+        'delete-option' => [
+            'label' => 'Delete Option',
+        ],
         'add-value' => [
             'label' => 'Add Another Value',
         ],
