@@ -4,17 +4,17 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateShippingExclusionListShippingMethodTable extends Migration
+class CreateShippingExclusionListShippingZoneTable extends Migration
 {
     public function up()
     {
-        Schema::create($this->prefix.'exclusion_list_shipping_method', function (Blueprint $table) {
+        Schema::create($this->prefix.'exclusion_list_shipping_zone', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('exclusion_id')->constrained(
                 $this->prefix.'shipping_exclusion_lists'
             );
-            $table->foreignId('method_id')->constrained(
-                $this->prefix.'shipping_methods'
+            $table->foreignId('shipping_zone_id')->constrained(
+                $this->prefix.'shipping_zones'
             );
             $table->timestamps();
         });
@@ -22,6 +22,6 @@ class CreateShippingExclusionListShippingMethodTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists($this->prefix.'shipping_exclusion_list_shipping_method');
+        Schema::dropIfExists($this->prefix.'exclusion_list_shipping_zone');
     }
 }

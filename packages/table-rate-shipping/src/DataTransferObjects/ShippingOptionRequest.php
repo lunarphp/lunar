@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\DataTransferObjects;
 
 use Lunar\Models\Cart;
-use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionRequest
 {
@@ -11,7 +11,7 @@ class ShippingOptionRequest
      * Initialise the shipping option request class.
      */
     public function __construct(
-        public ShippingMethod $shippingMethod,
+        public ShippingRate $shippingRate,
         public Cart $cart
     ) {
         //
