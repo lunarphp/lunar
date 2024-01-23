@@ -24,8 +24,7 @@ You may need to update your app's `composer.json` to set `"minimum-stability": "
 
 ### Add the LunarUser Trait
 
-Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait
-which you must add to any models that represent users in your database.
+Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
 
 ```php
 use Lunar\Base\Traits\LunarUser;
@@ -87,13 +86,11 @@ php artisan vendor:publish --tag=lunar
 
 ### Table Prefix
 
-Lunar uses table prefixes to avoid conflicts with your app's tables. You can change this in
-the [configuration](/core/configuration.html).
+Lunar uses table prefixes to avoid conflicts with your app's tables. You can change this in the [configuration](/core/configuration.html).
 
 ### User ID Field Type
 
-Lunar assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the
-configuration in `config/lunar/database.php` to set the correct field type before running the migrations.
+Lunar assumes your User ID field is a "BIGINT". If you are using an "INT" or "UUID", you will want to update the configuration in `config/lunar/database.php` to set the correct field type before running the migrations.
 
 ### Publish Migrations
 
