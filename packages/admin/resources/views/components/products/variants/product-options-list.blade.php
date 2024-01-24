@@ -1,19 +1,19 @@
 @props(['items', 'group', 'statePath', 'context' => 'options', 'optionKey' => null])
 <div
   class="space-y-4"
-  x-ref="sortable"
+  x-ref="sortableOptionList"
   x-data="{
     context: '{{ $context }}',
     items: @js($items)
   }"
   x-init="() => {
-      el = $refs.sortable
+      el = $refs.sortableOptionList
 
       el.sortable = Sortable.create(el, {
           group: 'product_options',
-          draggable: '[x-sortable-item]',
-          handle: '[x-sortable-handle]',
-          dataIdAttr: 'x-sortable-item',
+          draggable: '[x-sortable-option-item]',
+          handle: '[x-sortable-option-handle]',
+          dataIdAttr: 'x-sortable-option-item',
           animation: 300,
           ghostClass: 'fi-sortable-ghost',
           onEnd: (event) => {
@@ -26,12 +26,14 @@
             )
 
             this.items = rows
+
+            $wire.call('updateOptionPositions', rows)
           }
       })
     }"
 >
   @foreach($items as $itemIndex => $item)
-    <div wire:key="option_{{ $itemIndex }}" x-sortable-item="option_{{ $itemIndex }}">
+    <div wire:key="option_{{ $itemIndex }}" x-sortable-option-item="option_{{ $itemIndex }}">
       <div class="grid grid-cols-2 space-x-4">
         <div>
             <div>
@@ -45,7 +47,7 @@
                     'cursor-grab text-gray-400 hover:text-gray-500' => !$item['readonly'] || $context == 'options',
                     ' text-gray-200' => $item['readonly'] && $context == 'values',
                   ])
-                  @if(!$item['readonly'] || $context == 'options') x-sortable-handle @endif
+                  @if(!$item['readonly'] || $context == 'options') x-sortable-option-handle @endif
                 >
                   <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
                 </div>

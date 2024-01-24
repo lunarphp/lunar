@@ -99,7 +99,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         $options = [];
 
         foreach ($productOptions as $productOption) {
-            //            $disabledValues = $sharedOptionValues->;
             $values = $productOption->values->map(function ($value) {
                 return $this->mapOptionValue($value, true);
             })->merge(
@@ -108,7 +107,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 )->map(
                     fn ($value) => $this->mapOptionValue($value, false)
                 )
-            )->sortBy('position')->toArray();
+            )->sortBy('position')->values()->toArray();
 
             $options[] = $this->mapOption($productOption, $values);
         }
@@ -197,6 +196,16 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         $this->configuredOptions = $options->values()->toArray();
     }
 
+    public function updateValuePositions($optionKey, $rows)
+    {
+        $this->configuredOptions[$optionKey]['option_values'] = $rows;
+    }
+
+    public function updateOptionPositions($rows)
+    {
+        $this->configuredOptions = $rows;
+    }
+
     public function mapVariantPermutations($fillMissing = true): void
     {
         $optionValues = collect($this->configuredOptions)
@@ -245,31 +254,41 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
          * so they are ready.
          */
         foreach ($this->configuredOptions as $optionIndex => $option) {
-            if (empty($option['id'])) {
-                $optionModel = ProductOption::create([
-                    'name' => [
-                        $language->code => $option['value'],
-                    ],
-                    'label' => [
-                        $language->code => $option['value'],
-                    ],
-                    'handle' => Str::slug($option['value']),
-                    'shared' => 0,
-                ]);
-                $this->configuredOptions[$optionIndex]['id'] = $optionModel->id;
-            }
+
+            $optionModel = empty($option['id']) ?
+                new ProductOption() :
+                ProductOption::find($option['id']);
+
+            $optionValue = $option['value'];
+
+            $optionModel->name = [
+                $language->code => $optionValue,
+            ];
+            $optionModel->label = [
+                $language->code => $optionValue,
+            ];
+            $optionModel->handle = Str::slug($optionValue);
+            $optionModel->shared = false;
+            $optionModel->save();
+
+            $this->configuredOptions[$optionIndex]['id'] = $optionModel->id;
+            $option['id'] = $optionModel->id;
 
             foreach ($option['option_values'] as $optionValueIndex => $value) {
-                if (empty($value['id'])) {
-                    $optionValueModel = ProductOptionValue::create([
-                        'product_option_id' => $this->configuredOptions[$optionIndex]['id'],
-                        'name' => [
-                            $language->code => $value['value'],
-                        ],
-                        'position' => $value['position'],
-                    ]);
-                    $this->configuredOptions[$optionIndex]['option_values'][$optionValueIndex]['id'] = $optionValueModel->id;
-                }
+                $optionValueModel = empty($value['id']) ?
+                    new ProductOptionValue([
+                        'product_option_id' => $option['id'],
+                    ]) :
+                    ProductOptionValue::find($value['id']);
+
+                $optionValueModel->name = [
+                    $language->code => $value['value'],
+                ];
+                $optionValueModel->position = $value['position'];
+                $optionValueModel->save();
+
+                $this->configuredOptions[$optionIndex]['option_values'][$optionValueIndex]['id'] =
+                    $optionValueModel->id;
             }
         }
     }

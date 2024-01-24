@@ -2,12 +2,13 @@
 <div>
   <div
    class="space-y-2"
-   x-sortable
+   x-ref="sortableListValues"
    x-data="{
-      valueItems: @js($items)
+      items: @js($items)
     }"
    x-init="() => {
-        el = $refs.sortable
+   console.log(items)
+        el = $refs.sortableListValues
 
         el.sortable = Sortable.create(el, {
             group: 'option_values_{{ $key }}',
@@ -17,7 +18,8 @@
             animation: 300,
             ghostClass: 'fi-sortable-ghost',
             onEnd: (event) => {
-              const rows = Alpine.raw(items)
+              const rows = items
+              console.log(rows)
               const reorderedRow = rows.splice(event.oldIndex, 1)[0]
               items.splice(event.newIndex, 0, reorderedRow)
 
@@ -26,12 +28,14 @@
               )
 
               this.items = rows
+
+              $wire.call('updateValuePositions', '{{ $key }}', rows)
             }
         })
       }"
   >
     @foreach($items as $itemIndex => $valueItem)
-      <div x-sortable-item="option_{{ $itemIndex }}_value" wire:key="option_{{ $itemIndex }}_value">
+      <div x-sortable-item="{{ $itemIndex }}" wire:key="option_{{ $itemIndex }}_value">
         <div class="flex space-x-2 items-center">
           <div
             @class([
@@ -39,7 +43,7 @@
               'cursor-grab text-gray-400 hover:text-gray-500' => !$readonly,
               'text-gray-200' => $readonly,
             ])
-            @if(!$readonly) x-sortable-handle @endif
+            x-sortable-handle
           >
             <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
           </div>
