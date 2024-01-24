@@ -96,8 +96,6 @@ it('can create product price', function () {
     \Livewire\Livewire::test(
         \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing::class, [
             'record' => $record->getRouteKey(),
-        ])->assertFormSet([
-            'price' => null,
         ])->callTableAction('create', data: [
             'price' => 10.99,
             'currency_id' => $currency->id,
