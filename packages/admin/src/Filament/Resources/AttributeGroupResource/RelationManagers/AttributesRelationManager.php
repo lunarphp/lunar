@@ -93,7 +93,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name.en')->label(
+                \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('name')->label(
                     __('lunarpanel::attribute.table.name.label')
                 ),
                 Tables\Columns\TextColumn::make('handle')

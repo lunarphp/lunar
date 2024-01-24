@@ -103,7 +103,7 @@ class AttributeGroupResource extends BaseResource
             ->columns([
                 Tables\Columns\TextColumn::make('attributable_type')
                     ->label(__('lunarpanel::attributegroup.table.attributable_type.label')),
-                Tables\Columns\TextColumn::make('name.en')  // TODO: Need to determine correct way to localise, maybe custom column type?
+                \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('name')
                     ->label(__('lunarpanel::attributegroup.table.name.label')),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(__('lunarpanel::attributegroup.table.handle.label')),
