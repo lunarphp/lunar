@@ -14,7 +14,7 @@ class ListCollections extends ListRecords
         abort(404);
     }
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [];
     }
