@@ -20,7 +20,7 @@
             <x-filament-tables::table>
               <thead>
                 <tr class="bg-gray-50 dark:bg-white/5">
-                  <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
+                  <x-filament-tables::header-cell>
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.options-table.table.option.label') }}
                       </span>
@@ -35,7 +35,7 @@
               <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
               @foreach($this->configuredOptions as $option)
                 <x-filament-tables::row>
-                  <x-filament-tables::cell class="bg-white">
+                  <x-filament-tables::cell>
                     <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                       <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
                         {{ $option['value'] }}
@@ -45,7 +45,10 @@
                   <x-filament-tables::cell>
                     <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                       <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
-                      {{ collect($option['option_values'])->map(
+                      {{ collect($option['option_values'])
+                        ->filter(
+                            fn ($value) => $value['enabled']
+                        )->map(
                           fn ($value) => $value['value']
                       )->join(', ') }}
                       </span>
@@ -107,7 +110,7 @@
                 @foreach($this->variants as $permutationIndex => $permutation)
                   <x-filament-tables::row wire:key="permutation_{{ $permutation['key'] }}">
                     @if($this->hasNewVariants)
-                      <x-filament-tables::cell class="fi-ta-text grid w-full gap-y-1 px-3 py-4 bg-white">
+                      <x-filament-tables::cell class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                           @if(!$permutation['variant_id'])
                             <x-filament::badge color="info">
@@ -117,7 +120,7 @@
                         </div>
                       </x-filament-tables::cell>
                     @endif
-                    <x-filament-tables::cell class="bg-white">
+                    <x-filament-tables::cell>
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
                           @foreach($permutation['values'] as $option => $value)
@@ -212,7 +215,7 @@
         </div>
       @endif
 
-      <div class="flex space-x-2 border-t pt-4">
+      <div class="flex space-x-2 border-t dark:border-white/10 pt-4">
         <x-filament::button type="button" wire:click="updateConfiguredOptions">
           {{ __('lunarpanel::productoption.widgets.product-options.actions.save-options.label') }}
         </x-filament::button>

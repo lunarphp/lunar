@@ -159,6 +159,24 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             'configuredOptions.*.value' => 'required|string',
             'configuredOptions.*.option_values.*.value' => 'required|string',
         ]);
+
+        // Go through each one and if a configuration has none enabled, then just
+        // remove it from the array.
+        $options = collect();
+
+        foreach ($this->configuredOptions as $configuredOption) {
+            $enabledCount = collect($configuredOption['option_values'])
+                ->filter(
+                    fn ($value) => $value['enabled']
+                )->count();
+
+            if ($enabledCount) {
+                $options->push($configuredOption);
+            }
+        }
+
+        $this->configuredOptions = $options->values()->toArray();
+
         $this->mapVariantPermutations();
 
         $this->configuringOptions = false;
@@ -256,7 +274,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         foreach ($this->configuredOptions as $optionIndex => $option) {
 
             $optionModel = empty($option['id']) ?
-                new ProductOption() :
+                new ProductOption([
+                    'shared' => false,
+                ]) :
                 ProductOption::find($option['id']);
 
             $optionValue = $option['value'];
@@ -268,7 +288,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 $language->code => $optionValue,
             ];
             $optionModel->handle = Str::slug($optionValue);
-            $optionModel->shared = false;
             $optionModel->save();
 
             $this->configuredOptions[$optionIndex]['id'] = $optionModel->id;
@@ -316,7 +335,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     {
         return Action::make('saveVariants')
             ->action(function () {
-
                 DB::beginTransaction();
 
                 $this->storeConfiguredOptions();
@@ -327,7 +345,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                  * variant at least one is needed for Lunar to function.
                  */
                 if (! count($this->variants)) {
-                    DB::beginTransaction();
                     $variant = $this->record->variants()->first();
                     $variant->values()->detach();
                     $this->record->productOptions()->exclusive()->delete();
@@ -338,6 +355,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         ->each(
                             fn ($variant) => $variant->delete()
                         );
+
                     DB::commit();
 
                     Notification::make()->title(
