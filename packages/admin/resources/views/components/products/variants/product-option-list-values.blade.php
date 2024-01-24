@@ -1,4 +1,4 @@
-@props(['items', 'statePath', 'key', 'canAddValues'])
+@props(['items', 'statePath', 'key', 'canAddValues', 'readonly' => false])
 <div>
   <div
    class="space-y-2"
@@ -36,26 +36,39 @@
           <div
             @class([
               'flex items-center',
-              'cursor-grab text-gray-400 hover:text-gray-500' => !$valueItem['readonly'],
-              ' text-gray-200' => $valueItem['readonly'],
+              'cursor-grab text-gray-400 hover:text-gray-500' => !$readonly,
+              'text-gray-200' => $readonly,
             ])
-            @if(!$valueItem['readonly']) x-sortable-handle @endif
+            @if(!$readonly) x-sortable-handle @endif
           >
             <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
           </div>
-          <div class="grow">
+          <div
+            @class([
+              'grow',
+              'opacity-50' => !$valueItem['enabled']
+            ])
+          >
             <x-filament::input.wrapper :valid="!$errors->has($statePath.'.'.$itemIndex.'.value')">
               <x-filament::input
                 type="text"
                 wire:model="{{ $statePath }}.{{ $itemIndex }}.value"
-                :disabled="$valueItem['readonly']"
+                :disabled="$readonly"
               />
             </x-filament::input.wrapper>
           </div>
           <div>
-            <button type="button" wire:click.prevent="removeOptionValue('{{ $key }}', '{{ $itemIndex }}')">
-              <x-filament::icon alias="actions::delete-action" class="w-4 h-4 text-red-500" />
-            </button>
+            @if(!$readonly)
+              <div>
+                <button type="button" wire:click.prevent="removeOptionValue('{{ $key }}', '{{ $itemIndex }}')">
+                  <x-filament::icon alias="actions::delete-action" class="w-4 h-4 text-red-500" />
+                </button>
+              </div>
+            @else
+              <div>
+                <x-lunarpanel::forms.toggle :statePath="$statePath . '.'.$itemIndex.'.enabled'" />
+              </div>
+            @endif
           </div>
         </div>
       </div>

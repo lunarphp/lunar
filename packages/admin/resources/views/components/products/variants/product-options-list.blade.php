@@ -78,6 +78,7 @@
               :key="$itemIndex"
               state-path="configuredOptions.{{ $itemIndex }}.option_values"
               :can-add-values="!$item['readonly']"
+              :readonly="$item['readonly']"
             />
           </div>
         </div>

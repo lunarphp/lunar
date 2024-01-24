@@ -71,15 +71,49 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     ),
             ])->action(function (array $data) {
                 $productOption = ProductOption::with(['values'])->find($data['product_option']);
-                $this->configuredOptions[] = $this->mapOption($productOption);
+                $this->configuredOptions[] = $this->mapOption(
+                    $productOption,
+                    $productOption->values->map(
+                        fn ($value) => $this->mapOptionValue($value, true)
+                    )->toArray()
+                );
             });
     }
 
     public function configureBaseOptions(): void
     {
-        $this->configuredOptions = $this->query()->get()->map(
-            fn ($option) => $this->mapOption($option)
-        )->toArray();
+        $productOptions = $this->query()->get();
+
+        $sharedOptionIds = $productOptions->filter(
+            fn ($option) => $option->shared
+        )->pluck('id');
+
+        $disabledSharedOptionValues = ProductOptionValue::whereIn(
+            'product_option_id',
+            $sharedOptionIds
+        )->whereNotIn(
+            'id',
+            $productOptions->pluck('values')->flatten()->pluck('id')
+        )->get();
+
+        $options = [];
+
+        foreach ($productOptions as $productOption) {
+            //            $disabledValues = $sharedOptionValues->;
+            $values = $productOption->values->map(function ($value) {
+                return $this->mapOptionValue($value, true);
+            })->merge(
+                $disabledSharedOptionValues->filter(
+                    fn ($value) => $value->product_option_id == $productOption->id
+                )->map(
+                    fn ($value) => $this->mapOptionValue($value, false)
+                )
+            )->sortBy('position')->toArray();
+
+            $options[] = $this->mapOption($productOption, $values);
+        }
+
+        $this->configuredOptions = $options;
 
         $this->mapVariantPermutations(fillMissing: false);
     }
@@ -113,6 +147,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     'value' => '',
                     'position' => 1,
                     'readonly' => false,
+                    'enabled' => true,
                 ],
             ],
         ];
@@ -147,6 +182,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             'value' => '',
             'position' => count($this->configuredOptions[$path]['option_values']) + 1,
             'readonly' => false,
+            'enabled' => true,
         ];
     }
 
@@ -163,13 +199,15 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
     public function mapVariantPermutations($fillMissing = true): void
     {
-        //        dd(1);
         $optionValues = collect($this->configuredOptions)
             ->filter(
                 fn ($option) => $option['value']
             )
             ->mapWithKeys(
                 fn ($option) => [$option['value'] => collect($option['option_values'])
+                    ->filter(
+                        fn ($value) => $value['enabled']
+                    )
                     ->map(
                         fn ($value) => $value['value']
                     )]
@@ -353,7 +391,18 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             });
     }
 
-    protected function mapOption(ProductOption $option): array
+    protected function mapOptionValue(ProductOptionValue $value, bool $enabled = true)
+    {
+        return [
+            'id' => $value->id,
+            'key' => "option_value_{$value->id}",
+            'enabled' => $enabled,
+            'value' => $value->translate('name'),
+            'position' => $value->position,
+        ];
+    }
+
+    protected function mapOption(ProductOption $option, array $values = []): array
     {
         return [
             'id' => $option->id,
@@ -361,15 +410,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             'value' => $option->translate('name'),
             'position' => $option->pivot?->position ?: count($this->configuredOptions) + 1,
             'readonly' => $option->shared,
-            'option_values' => $option->values->map(function ($value) use ($option) {
-                return [
-                    'id' => $value->id,
-                    'key' => "option_value_{$option->id}",
-                    'value' => $value->translate('name'),
-                    'position' => $value->position,
-                    'readonly' => $option->shared,
-                ];
-            })->toArray(),
+            'option_values' => $values,
         ];
     }
 }
