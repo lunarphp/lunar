@@ -2,51 +2,54 @@
 <div>
   <div
    class="space-y-2"
-   x-ref="sortableListValues"
-   x-data="{
-      items: @js($items)
-    }"
-   x-init="() => {
-   console.log(items)
-        el = $refs.sortableListValues
-
-        el.sortable = Sortable.create(el, {
-            group: 'option_values_{{ $key }}',
-            draggable: '[x-sortable-item]',
-            handle: '[x-sortable-handle]',
-            dataIdAttr: 'x-sortable-item',
-            animation: 300,
-            ghostClass: 'fi-sortable-ghost',
-            onEnd: (event) => {
-              const rows = items
-              console.log(rows)
-              const reorderedRow = rows.splice(event.oldIndex, 1)[0]
-              items.splice(event.newIndex, 0, reorderedRow)
-
-              rows.forEach(
-                (item, itemIndex) => item.position = itemIndex + 1
-              )
-
-              this.items = rows
-
-              $wire.call('updateValuePositions', '{{ $key }}', rows)
-            }
-        })
+   @if(!$readonly)
+     x-ref="sortableListValues"
+     x-data="{
+        items: @js($items)
       }"
+     x-init="() => {
+          el = $refs.sortableListValues
+
+          el.sortable = Sortable.create(el, {
+              group: 'option_values_{{ $key }}',
+              draggable: '[x-sortable-item]',
+              handle: '[x-sortable-handle]',
+              dataIdAttr: 'x-sortable-item',
+              animation: 300,
+              ghostClass: 'fi-sortable-ghost',
+              onEnd: (event) => {
+                const rows = items
+                console.log(rows)
+                const reorderedRow = rows.splice(event.oldIndex, 1)[0]
+                items.splice(event.newIndex, 0, reorderedRow)
+
+                rows.forEach(
+                  (item, itemIndex) => item.position = itemIndex + 1
+                )
+
+                this.items = rows
+
+                $wire.call('updateValuePositions', '{{ $key }}', rows)
+              }
+          })
+        }"
+     @endif
   >
     @foreach($items as $itemIndex => $valueItem)
       <div x-sortable-item="{{ $itemIndex }}" wire:key="option_{{ $itemIndex }}_value">
         <div class="flex space-x-2 items-center">
+          @if(!$readonly)
           <div
             @class([
               'flex items-center',
               'cursor-grab text-gray-400 hover:text-gray-500' => !$readonly,
               'text-gray-200' => $readonly,
             ])
-            x-sortable-handle
+             x-sortable-handle
           >
             <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
           </div>
+          @endif
           <div
             @class([
               'grow',
