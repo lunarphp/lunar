@@ -25,9 +25,24 @@ class EditProductVariant extends BaseEditRecord
         ];
     }
 
+    public function mount(int|string $record): void
+    {
+        parent::mount($record);
+
+        $variant = $this->getRecord();
+
+        if ($variant->mappedAttributes->isEmpty()) {
+            redirect()->to(
+                ProductVariantResource::getUrl('identifiers', [
+                    'record' => $this->getRecord(),
+                ])
+            );
+        }
+    }
+
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
-        return false;
+        return $parameters['record']->mappedAttributes->isNotEmpty();
     }
 
     protected function getDefaultHeaderActions(): array
