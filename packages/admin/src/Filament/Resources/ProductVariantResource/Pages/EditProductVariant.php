@@ -13,6 +13,23 @@ class EditProductVariant extends BaseEditRecord
 
     public static bool $formActionsAreSticky = true;
 
+    public function getBreadcrumbs(): array
+    {
+        return [
+            ...ProductVariantResource::getBaseBreadcrumbs(
+                $this->getRecord()
+            ),
+            ProductVariantResource::getUrl('edit', [
+                'record' => $this->getRecord(),
+            ]) => $this->getRecord()->sku,
+        ];
+    }
+
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return false;
+    }
+
     protected function getDefaultHeaderActions(): array
     {
         return [];

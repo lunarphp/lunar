@@ -21,6 +21,11 @@ class EditProduct extends BaseEditRecord
         return FilamentIcon::resolve('lunar::basic-information');
     }
 
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return false;
+    }
+
     protected function getDefaultHeaderActions(): array
     {
         return [
