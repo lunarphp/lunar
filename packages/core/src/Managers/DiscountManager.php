@@ -138,18 +138,24 @@ class DiscountManager implements DiscountManagerInterface
                 function ($query, $value) {
                     return $query->where(function ($query) use ($value) {
                         return $query->where(fn ($query) => $query->products(
-                                    $value->lines->pluck('purchasable.product_id')->filter()->values()
-                                )
-                            )
+                            $value->lines->pluck('purchasable.product_id')->filter()->values()
+                        )
+                        )
                             ->orWhere(fn ($query) => $query->productVariants(
-                                    $value->lines->pluck('purchasable.id')->filter()->values()
-                                )
+                                $value->lines->pluck('purchasable.id')->filter()->values()
+                            )
                             );
                     });
                 }
             )->when(
                 $cart?->coupon_code,
-                fn ($query, $value) => $query->where('coupon', '=', $value)->orWhere(fn ($query) => $query->whereNull('coupon')->orWhere('coupon', '')),
+                function ($query, $value) {
+                    return $query->where(function ($query) use ($value) {
+                        $query->where('coupon', $value)
+                            ->orWhereNull('coupon')
+                            ->orWhere('coupon', '');
+                    });
+                },
                 fn ($query, $value) => $query->whereNull('coupon')->orWhere('coupon', '')
             )->orderBy('priority', 'desc')
             ->orderBy('id')
