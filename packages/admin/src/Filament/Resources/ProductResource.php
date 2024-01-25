@@ -232,19 +232,10 @@ class ProductResource extends BaseResource
                 ->limit(1)
                 ->square()
                 ->label(''),
-            Tables\Columns\TextColumn::make('attribute_data.name')
-                ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
+            \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('attribute_data.name')
+                ->attributeData(true)
+                ->limitedTooltip()
                 ->limit(50)
-                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-                    $state = $column->getState();
-
-                    if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
-                        return null;
-                    }
-
-                    // Only render the tooltip if the column contents exceeds the length limit.
-                    return $record->translateAttribute('name');
-                })
                 ->label(__('lunarpanel::product.table.name.label')),
             Tables\Columns\TextColumn::make('brand.name')
                 ->label(__('lunarpanel::product.table.brand.label'))

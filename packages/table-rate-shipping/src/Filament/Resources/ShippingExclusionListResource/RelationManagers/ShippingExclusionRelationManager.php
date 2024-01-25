@@ -54,19 +54,10 @@ class ShippingExclusionRelationManager extends RelationManager
                     ->limit(1)
                     ->square()
                     ->label(''),
-                Tables\Columns\TextColumn::make('purchasable.attribute_data.name')
-                    ->formatStateUsing(fn (Model $record): string => $record->purchasable->translateAttribute('name'))
+                \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('attribute_data.name')
+                    ->attributeData(true)
+                    ->limitedTooltip()
                     ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-                        $state = $column->getState();
-                        $record = $record->purchasable;
-
-                        if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
-                            return null;
-                        }
-
-                        return $record->translateAttribute('name');
-                    })
                     ->label(__('lunarpanel::product.table.name.label')),
                 Tables\Columns\TextColumn::make('purchasable.variants.sku')
                     ->label(__('lunarpanel::product.table.sku.label'))
