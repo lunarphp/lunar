@@ -34,7 +34,7 @@ class ManageProductCollections extends ManageRelatedRecords
             ->recordTitleAttribute('name')
             ->columns([
                 \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('attribute_data.name')
-                    ->attributeData(true)
+                    ->attributeData()
                     ->limitedTooltip()
                     ->limit(50)
                     ->label(__('lunarpanel::product.table.name.label')),

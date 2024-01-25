@@ -50,16 +50,16 @@ class TranslatedTextColumn extends TextColumn
         return $this;
     }
 
-    public function attributeData(bool $attributeData): static
+    public function attributeData(): static
     {
-        $this->attributeData = $attributeData;
+        $this->attributeData = true;
 
         $this->fieldHydrated(Str::replace('attribute_data.', '', $this->getName()));
 
         $name = $this->getFieldHydrated();
 
-        $this->formatStateUsing(static function (Model $record) use ($name, $attributeData) {
-            return $attributeData ? $record->translateAttribute($name) : $record->translate($name);
+        $this->formatStateUsing(static function (Model $record) use ($name) {
+            return $record->translateAttribute($name);
         });
 
         return $this;
