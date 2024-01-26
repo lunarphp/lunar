@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Extending;
 
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 
 abstract class BaseExtension
@@ -10,9 +11,13 @@ abstract class BaseExtension
     {
         return $actions;
     }
-
     public function extendTable(Table $table): Table
     {
         return $table;
+    }
+
+    public function extendForm(Form $form): Form
+    {
+        return $form;
     }
 }
