@@ -2,17 +2,11 @@
 
 namespace Lunar\Tests\Shipping;
 
-use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Support\Facades\Config;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
-use Lunar\LunarServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
-use Spatie\Activitylog\ActivitylogServiceProvider;
-use Spatie\LaravelBlink\BlinkServiceProvider;
-use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends \Lunar\Tests\Admin\TestCase
 {
     protected function setUp(): void
     {
@@ -23,31 +17,11 @@ class TestCase extends \Orchestra\Testbench\TestCase
         activity()->disableLogging();
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
-            LunarServiceProvider::class,
-            MediaLibraryServiceProvider::class,
-            ActivitylogServiceProvider::class,
-            ConverterServiceProvider::class,
-            NestedSetServiceProvider::class,
+            ...parent::getPackageProviders($app),
             ShippingServiceProvider::class,
-            BlinkServiceProvider::class,
         ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        // perform environment setup
-    }
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
     }
 }
