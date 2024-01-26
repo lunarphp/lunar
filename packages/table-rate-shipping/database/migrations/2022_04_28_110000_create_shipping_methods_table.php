@@ -10,13 +10,12 @@ class CreateShippingMethodsTable extends Migration
     {
         Schema::create($this->prefix.'shipping_methods', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('shipping_zone_id')->constrained(
-                $this->prefix.'shipping_zones'
-            );
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('code')->index()->nullable();
             $table->boolean('enabled')->default(true);
+            $table->boolean('stock_available')->default(false);
+            $table->time('cutoff')->nullable();
             $table->json('data')->nullable();
             $table->string('driver');
             $table->timestamps();

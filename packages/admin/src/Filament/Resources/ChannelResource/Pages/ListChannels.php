@@ -10,7 +10,7 @@ class ListChannels extends BaseListRecords
 {
     protected static string $resource = ChannelResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

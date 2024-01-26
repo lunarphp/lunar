@@ -28,6 +28,11 @@ trait HasPrices
         return $this->prices()->whereTier(1)->whereNull('customer_group_id');
     }
 
+    public function tieredPrices(): MorphMany
+    {
+        return $this->prices()->where('tier', '>', 1);
+    }
+
     /**
      * Return a PricingManager for this model.
      */

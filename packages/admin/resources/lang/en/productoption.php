@@ -16,9 +16,6 @@ return [
         'handle' => [
             'label' => 'Handle',
         ],
-        'position' => [
-            'label' => 'Position',
-        ],
     ],
 
     'form' => [
@@ -30,9 +27,6 @@ return [
         ],
         'handle' => [
             'label' => 'Handle',
-        ],
-        'position' => [
-            'label' => 'Position',
         ],
     ],
 
