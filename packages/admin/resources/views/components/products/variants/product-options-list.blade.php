@@ -64,7 +64,11 @@
                     class="text-sm font-semibold text-red-500 hover:underline mt-2"
                     wire:click.prevent="removeOption('{{ $itemIndex }}')"
                   >
-                    {{ __('lunarpanel::components.product-options-list.delete-option.label') }}
+                    {{ __(
+                        !$item['readonly'] ?
+                            'lunarpanel::components.product-options-list.delete-option.label' :
+                            'lunarpanel::components.product-options-list.remove-shared-option.label'
+                    ) }}
                   </button>
                 </div>
               </div>
