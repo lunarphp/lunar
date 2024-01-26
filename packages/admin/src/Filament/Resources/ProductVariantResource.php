@@ -43,10 +43,10 @@ class ProductVariantResource extends BaseResource
         return $page->generateNavigationItems([
             Pages\EditProductVariant::class,
             Pages\ManageVariantMedia::class,
+            Pages\ManageVariantPricing::class,
             Pages\ManageVariantIdentifiers::class,
             Pages\ManageVariantInventory::class,
             Pages\ManageVariantShipping::class,
-            Pages\ManageVariantPricing::class,
         ]);
     }
 
@@ -291,11 +291,11 @@ class ProductVariantResource extends BaseResource
         return [
             'index' => Pages\ListProductVariants::route('/'),
             'edit' => Pages\EditProductVariant::route('/{record}/edit'),
+            'pricing' => Pages\ManageVariantPricing::route('/{record}/pricing'),
             'media' => Pages\ManageVariantMedia::route('/{record}/media'),
             'identifiers' => Pages\ManageVariantIdentifiers::route('/{record}/identifiers'),
             'inventory' => Pages\ManageVariantInventory::route('/{record}/inventory'),
             'shipping' => Pages\ManageVariantShipping::route('/{record}/shipping'),
-            'pricing' => Pages\ManageVariantPricing::route('/{record}/pricing'),
         ];
     }
 }
