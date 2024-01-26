@@ -73,7 +73,7 @@
               </div>
             @else
               <div>
-                <x-lunarpanel::forms.toggle :statePath="$statePath . '.'.$itemIndex.'.enabled'" />
+                <x-filament::input.checkbox wire:model.live="{{ $statePath }}.{{ $itemIndex }}.enabled" />
               </div>
             @endif
           </div>

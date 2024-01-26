@@ -146,7 +146,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     'id' => null,
                     'value' => '',
                     'position' => 1,
-                    'readonly' => false,
                     'enabled' => true,
                 ],
             ],
@@ -441,7 +440,6 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     {
         return [
             'id' => $value->id,
-            'key' => "option_value_{$value->id}",
             'enabled' => $enabled,
             'value' => $value->translate('name'),
             'position' => $value->position,
