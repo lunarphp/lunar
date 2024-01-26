@@ -89,21 +89,21 @@ class ProductVariantResource extends BaseResource
     public static function getGtinFormComponent(): Forms\Components\TextInput
     {
         return Forms\Components\TextInput::make('gtin')->label(
-            __('lunarpanel::product.pages.identifiers.form.gtin.label')
+            __('lunarpanel::productvariant.form.gtin.label')
         );
     }
 
     public static function getMpnFormComponent(): Forms\Components\TextInput
     {
         return Forms\Components\TextInput::make('mpn')->label(
-            __('lunarpanel::product.pages.identifiers.form.mpn.label')
+            __('lunarpanel::productvariant.form.mpn.label')
         );
     }
 
     public static function getEanFormComponent(): Forms\Components\TextInput
     {
         return Forms\Components\TextInput::make('ean')->label(
-            __('lunarpanel::product.pages.identifiers.form.ean.label')
+            __('lunarpanel::productvariant.form.ean.label')
         );
     }
 
@@ -111,7 +111,7 @@ class ProductVariantResource extends BaseResource
     {
         return Forms\Components\TextInput::make('stock')
             ->label(
-                __('lunarpanel::product.pages.inventory.form.stock.label')
+                __('lunarpanel::productvariant.form.stock.label')
             )->numeric();
     }
 
@@ -120,7 +120,7 @@ class ProductVariantResource extends BaseResource
         return
             Forms\Components\TextInput::make('backorder')
                 ->label(
-                    __('lunarpanel::product.pages.inventory.form.backorder.label')
+                    __('lunarpanel::productvariant.form.backorder.label')
                 )->numeric();
     }
 
@@ -128,12 +128,12 @@ class ProductVariantResource extends BaseResource
     {
         return Forms\Components\Select::make('purchasable')
             ->options([
-                'always' => __('lunarpanel::product.pages.inventory.form.purchasable.options.always'),
-                'in_stock' => __('lunarpanel::product.pages.inventory.form.purchasable.options.in_stock'),
-                'backorder' => __('lunarpanel::product.pages.inventory.form.purchasable.options.backorder'),
+                'always' => __('lunarpanel::productvariant.form.purchasable.options.always'),
+                'in_stock' => __('lunarpanel::productvariant.form.purchasable.options.in_stock'),
+                'backorder' => __('lunarpanel::productvariant.form.purchasable.options.backorder'),
             ])
             ->label(
-                __('lunarpanel::product.pages.inventory.form.purchasable.label')
+                __('lunarpanel::productvariant.form.purchasable.label')
             );
     }
 
@@ -141,9 +141,9 @@ class ProductVariantResource extends BaseResource
     {
         return Forms\Components\TextInput::make('unit_quantity')
             ->label(
-                __('lunarpanel::product.pages.inventory.form.unit_quantity.label')
+                __('lunarpanel::productvariant.form.unit_quantity.label')
             )->helperText(
-                __('lunarpanel::product.pages.inventory.form.unit_quantity.helper_text')
+                __('lunarpanel::productvariant.form.unit_quantity.helper_text')
             )->numeric();
     }
 
@@ -151,9 +151,9 @@ class ProductVariantResource extends BaseResource
     {
         return Forms\Components\TextInput::make('quantity_increment')
             ->label(
-                __('lunarpanel::product.pages.inventory.form.quantity_increment.label')
+                __('lunarpanel::productvariant.form.quantity_increment.label')
             )->helperText(
-                __('lunarpanel::product.pages.inventory.form.quantity_increment.helper_text')
+                __('lunarpanel::productvariant.form.quantity_increment.helper_text')
             )->numeric();
     }
 
@@ -161,16 +161,16 @@ class ProductVariantResource extends BaseResource
     {
         return Forms\Components\TextInput::make('min_quantity')
             ->label(
-                __('lunarpanel::product.pages.inventory.form.min_quantity.label')
+                __('lunarpanel::productvariant.form.min_quantity.label')
             )->helperText(
-                __('lunarpanel::product.pages.inventory.form.min_quantity.helper_text')
+                __('lunarpanel::productvariant.form.min_quantity.helper_text')
             )->numeric();
     }
 
     public static function getShippableFormComponent(): Forms\Components\Toggle
     {
         return Forms\Components\Toggle::make('shippable')->label(
-            __('lunarpanel::product.pages.shipping.form.shippable.label')
+            __('lunarpanel::productvariant.form.shippable.label')
         )->columnSpan(2);
     }
 
@@ -189,7 +189,7 @@ class ProductVariantResource extends BaseResource
     {
         return TextInputSelectAffix::make('length_value')
             ->label(
-                __('lunarpanel::product.pages.shipping.form.length_value.label')
+                __('lunarpanel::productvariant.form.length_value.label')
             )
             ->numeric()
             ->select(
@@ -198,7 +198,7 @@ class ProductVariantResource extends BaseResource
                         static::getMeasurements('length')
                     )
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.length_unit.label')
+                        __('lunarpanel::productvariant.form.length_unit.label')
                     )->selectablePlaceholder(false)
             );
     }
@@ -207,7 +207,7 @@ class ProductVariantResource extends BaseResource
     {
         return TextInputSelectAffix::make('width_value')
             ->label(
-                __('lunarpanel::product.pages.shipping.form.width_value.label')
+                __('lunarpanel::productvariant.form.width_value.label')
             )
             ->numeric()
             ->select(
@@ -216,7 +216,7 @@ class ProductVariantResource extends BaseResource
                         static::getMeasurements('length')
                     )
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.width_unit.label')
+                        __('lunarpanel::productvariant.form.width_unit.label')
                     )->selectablePlaceholder(false)
             );
     }
@@ -225,7 +225,7 @@ class ProductVariantResource extends BaseResource
     {
         return TextInputSelectAffix::make('height_value')
             ->label(
-                __('lunarpanel::product.pages.shipping.form.height_value.label')
+                __('lunarpanel::productvariant.form.height_value.label')
             )
             ->numeric()
             ->select(
@@ -234,7 +234,7 @@ class ProductVariantResource extends BaseResource
                         static::getMeasurements('length')
                     )
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.height_unit.label')
+                        __('lunarpanel::productvariant.form.height_unit.label')
                     )->selectablePlaceholder(false)
             );
     }
@@ -243,7 +243,7 @@ class ProductVariantResource extends BaseResource
     {
         return TextInputSelectAffix::make('weight_value')
             ->label(
-                __('lunarpanel::product.pages.shipping.form.weight_value.label')
+                __('lunarpanel::productvariant.form.weight_value.label')
             )
             ->numeric()
             ->select(
@@ -252,7 +252,7 @@ class ProductVariantResource extends BaseResource
                         static::getMeasurements('weight')
                     )
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.weight_unit.label')
+                        __('lunarpanel::productvariant.form.weight_unit.label')
                     )->selectablePlaceholder(false)
             );
     }

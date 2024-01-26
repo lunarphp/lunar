@@ -20,8 +20,6 @@ class ManageVariantPricing extends ManageRelatedRecords
 
     protected static string $relationship = 'prices';
 
-    protected static ?string $title = 'Pricing';
-
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::product-pricing');
@@ -35,6 +33,18 @@ class ManageVariantPricing extends ManageRelatedRecords
     public static function getNavigationLabel(): string
     {
         return __('lunarpanel::relationmanagers.pricing.title');
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            ...ProductVariantResource::getBaseBreadcrumbs(
+                $this->getRecord()
+            ),
+            ProductVariantResource::getUrl('pricing', [
+                'record' => $this->getRecord(),
+            ]) => $this->getTitle(),
+        ];
     }
 
     public function form(Form $form): Form

@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
@@ -11,18 +12,19 @@ class EditProductVariant extends BaseEditRecord
 
     protected static ?string $title = 'Basic Information';
 
+    public function getTitle(): string|Htmlable
+    {
+        return __('lunarpanel::productvariant.pages.edit.title');
+    }
+
     public static bool $formActionsAreSticky = true;
 
     public function getBreadcrumbs(): array
     {
-        return [
-            ...ProductVariantResource::getBaseBreadcrumbs(
-                $this->getRecord()
-            ),
-            ProductVariantResource::getUrl('edit', [
-                'record' => $this->getRecord(),
-            ]) => $this->getRecord()->sku,
-        ];
+
+        return ProductVariantResource::getBaseBreadcrumbs(
+            $this->getRecord()
+        );
     }
 
     public function mount(int|string $record): void

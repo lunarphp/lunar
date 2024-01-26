@@ -17,12 +17,12 @@ class ManageVariantShipping extends BaseEditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return __('lunarpanel::product.pages.shipping.label');
+        return __('lunarpanel::productvariant.pages.shipping.title');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('lunarpanel::product.pages.shipping.label');
+        return __('lunarpanel::productvariant.pages.shipping.title');
     }
 
     public static function getNavigationIcon(): ?string
@@ -33,6 +33,18 @@ class ManageVariantShipping extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            ...ProductVariantResource::getBaseBreadcrumbs(
+                $this->getRecord()
+            ),
+            ProductVariantResource::getUrl('shipping', [
+                'record' => $this->getRecord(),
+            ]) => $this->getTitle(),
+        ];
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model

@@ -15,12 +15,12 @@ class ManageVariantInventory extends BaseEditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return __('lunarpanel::product.pages.inventory.label');
+        return __('lunarpanel::productvariant.pages.inventory.title');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('lunarpanel::product.pages.inventory.label');
+        return __('lunarpanel::productvariant.pages.inventory.title');
     }
 
     public function getBreadcrumbs(): array
@@ -31,7 +31,7 @@ class ManageVariantInventory extends BaseEditRecord
             ),
             ProductVariantResource::getUrl('inventory', [
                 'record' => $this->getRecord(),
-            ]) => 'Inventory',
+            ]) => $this->getTitle(),
         ];
     }
 
