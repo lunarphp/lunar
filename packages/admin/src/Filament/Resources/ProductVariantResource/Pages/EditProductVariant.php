@@ -10,9 +10,12 @@ class EditProductVariant extends BaseEditRecord
 {
     protected static string $resource = ProductVariantResource::class;
 
-    protected static ?string $title = 'Basic Information';
-
     public function getTitle(): string|Htmlable
+    {
+        return __('lunarpanel::productvariant.pages.edit.title');
+    }
+
+    public static function getNavigationLabel(): string
     {
         return __('lunarpanel::productvariant.pages.edit.title');
     }
