@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Lunar\Models\Language;
 
-class TranslatedText extends TextInput
+class TranslatedText extends RichEditor
 {
     protected string $view = 'lunarpanel::forms.components.translated-text';
 
@@ -24,22 +24,56 @@ class TranslatedText extends TextInput
     public $default;
 
     /**
+     * Is rich text ?
+     *
+     * @var bool richtext
+     */
+    public $richtext = false;
+
+    /**
+     * Is attribute data
+     *
+     * @var bool attributeData
+     */
+    public $attributeData = false;
+
+    /**
      * Languages exclude default language
      *
      * @var Language
      */
     public $languages;
 
-    public function setUp() : void
+    public function setUp(): void
     {
-        $languages = Language::orderBy('created_at', 'asc')->get();
+        $languages = Language::orderBy('default', 'desc')->get();
 
         $this->languages = $languages->filter(fn ($lang) => ! $lang->default);
+
         $this->default = $languages->first(fn ($lang) => $lang->default);
 
         $this->default(static function (TranslatedText $component): array {
             return $component->getLanguageDefaults();
         });
+    }
+
+    public function richtext(bool $richtext): static
+    {
+        $this->richtext = $richtext;
+
+        return $this;
+    }
+
+    public function attributeData(): static
+    {
+        $this->attributeData = true;
+
+        return $this;
+    }
+
+    public function getRichtext()
+    {
+        return $this->richtext;
     }
 
     public function getExpanded()
@@ -56,7 +90,7 @@ class TranslatedText extends TextInput
     {
         return $this->getLanguages()->mapWithKeys(fn ($language) => [$language->code => null])->toArray();
     }
- 
+
     public function getLanguages()
     {
         return $this->languages;

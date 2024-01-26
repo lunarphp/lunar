@@ -18,6 +18,8 @@ class TranslatedText extends BaseFieldType
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {
-        return TranslatedTextInput::make($attribute->handle);
+        return TranslatedTextInput::make($attribute->handle)
+            ->richtext($attribute->configuration->get('richtext'))
+            ->attributeData();
     }
 }
