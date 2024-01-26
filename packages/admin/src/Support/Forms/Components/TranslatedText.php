@@ -31,13 +31,6 @@ class TranslatedText extends RichEditor
     public $richtext = false;
 
     /**
-     * Is attribute data
-     *
-     * @var bool attributeData
-     */
-    public $attributeData = false;
-
-    /**
      * Languages exclude default language
      *
      * @var Language
@@ -46,6 +39,8 @@ class TranslatedText extends RichEditor
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $languages = Language::orderBy('default', 'desc')->get();
 
         $this->languages = $languages->filter(fn ($lang) => ! $lang->default);
@@ -53,20 +48,25 @@ class TranslatedText extends RichEditor
         $this->default = $languages->first(fn ($lang) => $lang->default);
 
         $this->default(static function (TranslatedText $component): array {
-            return $component->getLanguageDefaults();
+            return $component->getLanguageDefaults();   
         });
+
+        $this->rules([
+            function (TranslatedText $component) {
+                return function (string $attribute, $value, Closure $fail) use ($component) {
+                    $defaultLanguage = $component->getDefault();
+
+                    if (blank($value[$defaultLanguage->code] ?? null)) {
+                        $fail("The {$defaultLanguage->name} :attribute is required.");
+                    }
+                };
+            },
+        ], fn (TranslatedText $component) => $component->isRequired());
     }
 
     public function richtext(bool $richtext): static
     {
         $this->richtext = $richtext;
-
-        return $this;
-    }
-
-    public function attributeData(): static
-    {
-        $this->attributeData = true;
 
         return $this;
     }

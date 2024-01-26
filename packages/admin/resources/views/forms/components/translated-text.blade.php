@@ -13,7 +13,7 @@
             </div>
         @else
             <x-filament::input.wrapper class="w-full">
-                <x-filament::input type="text" x-model="state.lunar_translatedtext_field.{{ $getDefault()->code }}" />
+                <x-filament::input type="text" x-model="state.{{ $getDefault()->code }}" />
             </x-filament::input.wrapper>
         @endif
 
@@ -33,7 +33,7 @@
                     </div>
                 @else
                     <x-filament::input.wrapper class="w-full">
-                        <x-filament::input type="text" x-model="state.lunar_translatedtext_field.{{ $language->code }}" />
+                        <x-filament::input type="text" x-model="state.{{ $language->code }}" />
                     </x-filament::input.wrapper>
                 @endif
             </div>
