@@ -7,6 +7,14 @@ return [
         'edit' => [
             'title' => 'Basic Information',
         ],
+        'media' => [
+            'title' => 'Media',
+            'form' => [
+                'images' => [
+                    'label' => 'Primary Image',
+                ],
+            ],
+        ],
         'identifiers' => [
             'title' => 'Identifiers',
         ],
