@@ -10,7 +10,7 @@ class ListCustomerGroups extends BaseListRecords
 {
     protected static string $resource = CustomerGroupResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

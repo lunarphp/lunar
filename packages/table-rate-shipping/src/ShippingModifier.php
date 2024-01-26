@@ -11,11 +11,11 @@ class ShippingModifier
 {
     public function handle(Cart $cart)
     {
-        $shippingMethods = Shipping::shippingMethods($cart)->get();
+        $shippingRates = Shipping::shippingRates($cart)->get();
 
         $options = Shipping::shippingOptions($cart)->get(
             new ShippingOptionLookup(
-                shippingMethods: $shippingMethods
+                shippingRates: $shippingRates
             )
         );
 

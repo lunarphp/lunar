@@ -25,14 +25,14 @@ class ShippingServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunarpanel.shipping');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
 
         $shippingModifiers->add(
-            ShippingModifier::class, // TODO: param typed incorrectly
+            ShippingModifier::class,
         );
 
         Order::observe(OrderObserver::class);
