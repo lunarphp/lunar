@@ -11,7 +11,7 @@ class ListStaff extends BaseListRecords
 {
     protected static string $resource = StaffResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\Action::make('access-control')
