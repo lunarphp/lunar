@@ -15,7 +15,9 @@ class TranslatedText extends TextInput
 
     public Language $defaultLanguage;
 
-    public $richtext = false;
+    public $optionRichtext = false;
+
+    public $optionRequired = false;
 
     public array $components = [];
 
@@ -28,24 +30,36 @@ class TranslatedText extends TextInput
         $this->languages = Language::orderBy('default', 'desc')->get();
 
         foreach ($this->getLanguages() as $lang) {
-            $this->components[] = $this->getRichtext() ?
-              TranslatedRichEditor::make($lang->code) :
-              TranslatedTextInput::make($lang->code)->required($lang == $this->getDefaultLanguage());
+            $this->components[] = $this->getOptionRichtext() ?
+              TranslatedRichEditor::make($lang->code)->required($this->getOptionRequired()) :
+              TranslatedTextInput::make($lang->code)->required($this->getOptionRequired() || $lang == $this->getDefaultLanguage());
         }
 
         $this->childComponents($this->components);
     }
 
-    public function richtext(bool $richtext): static
+    public function optionRichtext(bool $optionRichtext): static
     {
-        $this->richtext = $richtext;
+        $this->optionRichtext = $optionRichtext;
 
         return $this;
     }
 
-    public function getRichtext()
+    public function optionRequired(bool $optionRequired): static
     {
-        return $this->richtext;
+        $this->optionRequired = $optionRequired;
+
+        return $this;
+    }
+
+    public function getOptionRichtext()
+    {
+        return $this->optionRichtext;
+    }
+
+    public function getOptionRequired()
+    {
+        return $this->optionRequired;
     }
 
     public function getExpanded()
