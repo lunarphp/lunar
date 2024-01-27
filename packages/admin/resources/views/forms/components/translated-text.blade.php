@@ -33,7 +33,7 @@
         @endif
     </div>
 
-    @if ($getLanguages()->count())
+    @if ($getMoreLanguages()->count())
         <div class="mt-0">
             <x-filament::button 
                 x-on:click.prevent="showTranslations = !showTranslations" 
