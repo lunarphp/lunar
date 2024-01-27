@@ -2,9 +2,9 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
-use Filament\Forms\Components\RichEditor as RichEditorComponent;
+use Filament\Forms\Components\RichEditor;
 
-class TranslatedRichEditor extends RichEditorComponent
+class TranslatedRichEditor extends RichEditor
 {
     public function setUp(): void
     {

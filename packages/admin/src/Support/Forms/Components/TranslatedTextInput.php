@@ -9,5 +9,7 @@ class TranslatedTextInput extends TextInput
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->hiddenLabel();
     }
 }

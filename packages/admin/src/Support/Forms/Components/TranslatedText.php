@@ -2,10 +2,9 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
-use Closure;
-use Illuminate\Support\Collection;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Collection;
 use Lunar\Models\Language;
 
 class TranslatedText extends TextInput
@@ -18,7 +17,7 @@ class TranslatedText extends TextInput
 
     public $richtext = false;
 
-    public array $subComponents = [];
+    public array $components = [];
 
     public Collection $languages;
 
@@ -28,39 +27,13 @@ class TranslatedText extends TextInput
 
         $this->languages = Language::orderBy('default', 'desc')->get();
 
-        /**
-         *  All subcomponent
-         *  without attribute data : make('name.en')
-         *  with attribute data : make('handle.en')
-         */
-        // $this->afterStateHydrated(static function ($state, TranslatedText $component) {
-        //     $defaults = $component->getLanguageDefaults();
-
-        //     foreach ($defaults as $language => $_) {
-        //         $defaults[$language] = $state[$language] ?? null;
-        //     }
-
-        //     $component->state($defaults);
-        // });
-
-        // $this->rules([
-        //     function (TranslatedText $component) {
-        //         return function (string $attribute, $value, Closure $fail) use ($component) {
-        //             $defaultLanguage = $component->getDefaultLanguage();
-
-        //             if (blank($value[$defaultLanguage->code] ?? null)) {
-        //                 $fail("The {$defaultLanguage->name} :attribute is required.");
-        //             }
-        //         };
-        //     },
-        // ], fn (TranslatedText $component) => $component->isRequired());
-
-        // Use child component to instanciate RichEditor
         foreach ($this->getLanguages() as $lang) {
-          $this->subComponents[] = TranslatedRichEditor::make($lang->code);
+            $this->components[] = $this->getRichtext() ?
+              TranslatedRichEditor::make($lang->code) :
+              TranslatedTextInput::make($lang->code)->required($lang == $this->getDefaultLanguage());
         }
 
-        $this->childComponents($this->subComponents);
+        $this->childComponents($this->components);
     }
 
     public function richtext(bool $richtext): static
@@ -100,7 +73,7 @@ class TranslatedText extends TextInput
         return $this->languages;
     }
 
-    public function getRichEditorComponent(Language $language): RichEditor
+    public function getComponentByLanguage(Language $language): Component
     {
         return collect($this->getChildComponentContainer()->getComponents())
             ->filter(static fn ($component): bool => $component->getName() == $language->code)->first();
