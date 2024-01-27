@@ -66,7 +66,7 @@ class InstallLunar extends Command
         DB::transaction(function () {
 
             if (! Staff::whereAdmin(true)->exists()) {
-                $this->components->info('Creating as lunar admin user');
+                $this->components->info('First create a lunar admin user');
                 $this->call('lunar:create-admin');
             }
 
