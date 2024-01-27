@@ -28,6 +28,8 @@ class TranslatedText extends TextInput
         parent::setUp();
 
         $this->languages = Language::orderBy('default', 'desc')->get();
+
+        $this->prepareChildComponent();
     }
 
     public function prepareChildComponent(): static

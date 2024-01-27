@@ -27,7 +27,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name.en')
+                \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
                     ->label(
                         __('lunarpanel::attribute.form.name.label')
                     )

@@ -23,7 +23,7 @@ class ValuesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name.en')
+                \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
                     ->required()
                     ->maxLength(255),
             ]);
