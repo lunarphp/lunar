@@ -28,7 +28,7 @@ class AddressData extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $this->components->info('Importing Countries and States');
 
@@ -82,6 +82,6 @@ class AddressData extends Command
 
         $this->components->info('Countries and States imported successfully');
 
-        exit(self::SUCCESS);
+        return static::SUCCESS;
     }
 }

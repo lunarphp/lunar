@@ -4,6 +4,7 @@ namespace Lunar\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Lunar\Admin\Models\Staff;
 use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\AdminHubServiceProvider;
@@ -63,6 +64,12 @@ class InstallLunar extends Command
         }
 
         DB::transaction(function () {
+
+            if (! Staff::whereAdmin(true)->exists()) {
+                $this->components->info('Creating as lunar admin user');
+                $this->call('lunar:create-admin');
+            }
+
             if (! Country::count()) {
                 $this->components->info('Importing countries');
                 $this->call('lunar:import:address-data');
