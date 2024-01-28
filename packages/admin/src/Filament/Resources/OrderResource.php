@@ -88,14 +88,14 @@ class OrderResource extends BaseResource
                 ->searchable(),
             Tables\Columns\TextColumn::make('customer_reference')
                 ->label(__('lunarpanel::order.table.customer_reference.label')),
+            Tables\Columns\TextColumn::make('shippingAddress.fullName')
+                ->label(__('lunarpanel::order.table.customer.label')),
             Tables\Columns\TextColumn::make('new_customer')
                 ->label(__('lunarpanel::order.table.new_customer.label'))
                 ->formatStateUsing(fn (bool $state) => CustomerStatus::getLabel($state))
                 ->color(fn (bool $state) => CustomerStatus::getColor($state))
                 ->icon(fn (bool $state) => CustomerStatus::getIcon($state))
                 ->badge(),
-            Tables\Columns\TextColumn::make('shippingAddress.fullName')
-                ->label(__('lunarpanel::order.table.customer.label')),
             Tables\Columns\TextColumn::make('shippingAddress.postcode')
                 ->label(__('lunarpanel::order.table.postcode.label')),
             Tables\Columns\TextColumn::make('shippingAddress.contact_email')
