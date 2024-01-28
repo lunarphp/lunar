@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
+use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Collection;
@@ -19,7 +20,7 @@ class TranslatedText extends TextInput
 
     public bool $optionRequired = false;
 
-    public array $components = [];
+    public Collection $components;
 
     public Collection $languages;
 
@@ -29,20 +30,47 @@ class TranslatedText extends TextInput
 
         $this->languages = Language::orderBy('default', 'desc')->get();
 
-        $this->prepareChildComponent();
+        $this->default(static function (TranslatedText $component): array {
+            return $component->getLanguageDefaults();
+        });
     }
 
-    public function prepareChildComponent(): static
+    public function prepareChildComponents()
     {
+        $this->components = collect();
+
         foreach ($this->getLanguages() as $lang) {
-            $this->components[] = $this->getOptionRichtext() ?
-              TranslatedRichEditor::make($lang->code)->required($this->getOptionRequired()) :
-              TranslatedTextInput::make($lang->code)->required($this->getOptionRequired() || $lang == $this->getDefaultLanguage());
+            $isRequired = $this->getOptionRequired() && $lang == $this->getDefaultLanguage();
+            $this->components->add($this->getOptionRichtext() ?
+              TranslatedRichEditor::make($lang->code)->required($isRequired)->statePath($lang->code) :
+              TranslatedTextInput::make($lang->code)->required($isRequired)->statePath($lang->code)
+            );
         }
+    }
 
-        $this->childComponents($this->components);
+    public function prepareTranslateLocaleComponent(Component $component, string $locale)
+    {
+        $localeComponent = clone $component;
 
-        return $this;
+        $localeComponent->name($component->getName());
+        $localeComponent->statePath($localeComponent->getName());
+
+        return $localeComponent;
+    }
+
+    public function getComponentByLanguage(Language $language): ComponentContainer
+    {
+        $this->prepareChildComponents();
+
+        return ComponentContainer::make($this->getLivewire())
+            ->parentComponent($this)
+            ->components(
+                $this->components
+                    ->filter(fn ($component): bool => $component->getName() == $language->code)
+                    ->map(fn ($component) => $this->prepareTranslateLocaleComponent($component, $language->code))
+                    ->all()
+            )
+            ->getClone();
     }
 
     public function optionRichtext(bool $optionRichtext): static
@@ -86,17 +114,11 @@ class TranslatedText extends TextInput
 
     public function getLanguageDefaults(): array
     {
-        return $this->getLanguages()->mapWithKeys(fn ($language) => [$language->code => null])->toArray();
+        return $this->getLanguages()->mapWithKeys(fn ($language) => [$language->code => ''])->toArray();
     }
 
     public function getLanguages()
     {
         return $this->languages;
-    }
-
-    public function getComponentByLanguage(Language $language): Component
-    {
-        return collect($this->getChildComponentContainer()->getComponents())
-            ->filter(static fn ($component): bool => $component->getName() == $language->code)->first();
     }
 }

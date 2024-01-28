@@ -18,18 +18,17 @@
         </div>
 
         @if ($getMoreLanguages()->count())
-            <div x-show="showTranslations" class="flex items-center gap-2 mt-4">
-                @foreach ($getMoreLanguages() as $language)
+            @foreach ($getMoreLanguages() as $language)
+                <div x-show="showTranslations" class="flex items-center gap-2 mt-4">
                     <span x-show="showTranslations"
                         class="w-8 text-xs font-normal p-2 rounded shadow-sm bg-gray-200 text-gray-400 dark:bg-white/5 dark:text-white uppercase">
                         {{ Str::upper($language->code) }}
                     </span>
-
                     <x-filament::input.wrapper class="w-full">
                         {{ $getComponentByLanguage($language) }}
-                    </x-filament::input.wrapper>            
-                @endforeach
-            </div>
+                    </x-filament::input.wrapper>    
+                </div>        
+            @endforeach
         @endif
     </div>
 

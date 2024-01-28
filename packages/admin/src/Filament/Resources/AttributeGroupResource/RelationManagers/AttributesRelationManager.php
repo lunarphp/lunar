@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Support\Facades\AttributeData;
+use Lunar\Models\Language;
 
 class AttributesRelationManager extends RelationManager
 {
@@ -38,7 +39,7 @@ class AttributesRelationManager extends RelationManager
                         if ($operation !== 'create') {
                             return;
                         }
-                        $set('handle', Str::slug($state));
+                        $set('handle', Str::slug($state[Language::getDefault()->code])); // TODO : create new global variable on LunarPanelManager with default language ?
                     }),
                 Forms\Components\TextInput::make('handle')
                     ->label(
