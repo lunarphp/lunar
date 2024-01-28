@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Illuminate\Support\Str;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
@@ -50,6 +51,11 @@ class TagResource extends BaseResource
     {
         return Forms\Components\TextInput::make('value')
             ->label(__('lunarpanel::tag.form.value.label'))
+            ->formatStateUsing(fn (?string $state): string => Str::upper($state))
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                $set('value', Str::upper($state));
+            })
+            ->live()
             ->required()
             ->maxLength(255)
             ->autofocus();
