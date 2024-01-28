@@ -8,7 +8,7 @@ class CustomerStatus
 
     protected static array $cachedStatusLabel = [];
 
-    protected static array $cachedIcon = [];
+    protected static array $cachedStatusIcon = [];
 
     public static function getLabel($status): string
     {
@@ -22,6 +22,6 @@ class CustomerStatus
 
     public static function getIcon($status): string
     {
-        return static::$cachedIcon[$status] ??= $status ? 'heroicon-m-sparkles' : 'heroicon-m-arrow-path';
+        return static::$cachedStatusIcon[$status] ??= $status ? 'heroicon-m-sparkles' : 'heroicon-m-arrow-path';
     }
 }
