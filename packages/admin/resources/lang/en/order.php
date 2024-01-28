@@ -44,6 +44,9 @@ return [
         'date' => [
             'label' => 'Date',
         ],
+        'new_customer' => [
+            'label' => 'Customer state',
+        ],
     ],
 
     'form' => [
