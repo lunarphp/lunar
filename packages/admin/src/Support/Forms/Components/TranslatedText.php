@@ -18,8 +18,6 @@ class TranslatedText extends TextInput
 
     public bool $optionRichtext = false;
 
-    public bool $optionRequired = false;
-
     public Collection $components;
 
     public Collection $languages;
@@ -37,15 +35,12 @@ class TranslatedText extends TextInput
 
     public function prepareChildComponents()
     {
-        $this->components = collect();
-
-        foreach ($this->getLanguages() as $lang) {
-            $isRequired = $this->getOptionRequired() && $lang == $this->getDefaultLanguage();
-            $this->components->add($this->getOptionRichtext() ?
-              TranslatedRichEditor::make($lang->code)->required($isRequired)->statePath($lang->code) :
-              TranslatedTextInput::make($lang->code)->required($isRequired)->statePath($lang->code)
-            );
-        }
+        $this->components = collect(
+            $this->getLanguages()->map(fn ($lang) => $this->getOptionRichtext() ?
+                    TranslatedRichEditor::make($lang->code)->statePath($lang->code) :
+                    TranslatedTextInput::make($lang->code)->statePath($lang->code)
+            )
+        );
     }
 
     public function prepareTranslateLocaleComponent(Component $component, string $locale)
@@ -53,7 +48,10 @@ class TranslatedText extends TextInput
         $localeComponent = clone $component;
 
         $localeComponent->name($component->getName());
+
         $localeComponent->statePath($localeComponent->getName());
+
+        $localeComponent->required($this->isRequired && $locale == $this->getDefaultLanguage()->code);
 
         return $localeComponent;
     }
@@ -80,21 +78,9 @@ class TranslatedText extends TextInput
         return $this;
     }
 
-    public function optionRequired(bool $optionRequired): static
-    {
-        $this->optionRequired = $optionRequired;
-
-        return $this;
-    }
-
     public function getOptionRichtext(): bool
     {
         return $this->optionRichtext;
-    }
-
-    public function getOptionRequired(): bool
-    {
-        return $this->optionRequired;
     }
 
     public function getExpanded()
