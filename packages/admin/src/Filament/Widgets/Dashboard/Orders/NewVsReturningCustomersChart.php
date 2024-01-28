@@ -82,7 +82,7 @@ class NewVsReturningCustomersChart extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'bar',
+                'type' => 'area',
                 'stacked' => true,
                 'toolbar' => [
                     'show' => false,
