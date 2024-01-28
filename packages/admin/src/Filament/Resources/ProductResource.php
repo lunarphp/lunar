@@ -252,6 +252,8 @@ class ProductResource extends BaseResource
                 ->searchable(),
             Tables\Columns\TextColumn::make('variants.sku')
                 ->label(__('lunarpanel::product.table.sku.label'))
+                ->listWithLineBreaks()
+                ->limitList(3)
                 ->toggleable(),
             Tables\Columns\TextColumn::make('variants_sum_stock')
                 ->label(__('lunarpanel::product.table.stock.label'))
