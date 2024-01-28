@@ -10,7 +10,7 @@ class ListCollectionGroups extends ListRecords
 {
     protected static string $resource = CollectionGroupResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

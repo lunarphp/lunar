@@ -10,7 +10,7 @@ class ListCurrencies extends BaseListRecords
 {
     protected static string $resource = CurrencyResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),
