@@ -14,7 +14,7 @@ return [
                     'label' => 'You do not currently have an image selected for this variant.',
                 ],
                 'no_media_available' => [
-                    'label' => 'There is currently not media available on this product.',
+                    'label' => 'There is currently no media available on this product.',
                 ],
                 'images' => [
                     'label' => 'Primary Image',
