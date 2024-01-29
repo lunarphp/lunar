@@ -13,6 +13,9 @@ return [
                 'no_selection' => [
                     'label' => 'You do not currently have an image selected for this variant.',
                 ],
+                'no_media_available' => [
+                    'label' => 'There is currently not media available on this product.',
+                ],
                 'images' => [
                     'label' => 'Primary Image',
                     'helper_text' => 'Select the product image which represents this variant.',

@@ -81,9 +81,17 @@ class ManageVariantMedia extends BaseEditRecord
                 Shout::make('no_selection')->content(
                     __('lunarpanel::productvariant.pages.media.form.no_selection.label')
                 )->visible(
-                    fn (Get $get) => ! $get('images')
+                    fn (Get $get) => ! $get('images') && $this->getRecord()->product->media()->count()
+                ),
+                Shout::make('no_media_available')->content(
+                    __('lunarpanel::productvariant.pages.media.form.no_media_available.label')
+                )->visible(
+                    fn (Get $get) => ! $this->getRecord()->product->media()->count()
                 ),
                 MediaSelect::make('images')
+                    ->visible(
+                        fn () => $this->getRecord()->product->media()->count()
+                    )
                     ->label(
                         __('lunarpanel::productvariant.pages.media.form.images.label')
                     )
