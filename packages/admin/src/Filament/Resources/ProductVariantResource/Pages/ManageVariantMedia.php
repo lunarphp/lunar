@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
 use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -84,12 +83,12 @@ class ManageVariantMedia extends BaseEditRecord
                 )->visible(
                     fn (Get $get) => ! $get('images')
                 ),
-                Placeholder::make('')->content(
-                    __('lunarpanel::productvariant.pages.media.form.description.label')
-                ),
                 MediaSelect::make('images')
                     ->label(
                         __('lunarpanel::productvariant.pages.media.form.images.label')
+                    )
+                    ->helperText(
+                        __('lunarpanel::productvariant.pages.media.form.images.helper_text')
                     )
                     ->afterStateHydrated(function (ProductVariant $record, MediaSelect $component) {
                         $image = $record->images->first(function ($media) {
