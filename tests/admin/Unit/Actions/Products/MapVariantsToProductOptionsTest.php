@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Admin\Support\Actions\Products\MapVariantsToProductOptions;
+use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
 
 uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('support.actions');

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Admin\Support\Actions\Products;
+namespace Lunar\Admin\Actions\Products;
 
 use Illuminate\Support\Str;
 use Lunar\Utils\Arr;

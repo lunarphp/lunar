@@ -13,7 +13,7 @@ use Filament\Notifications\Notification;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Lunar\Admin\Support\Actions\Products\MapVariantsToProductOptions;
+use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Facades\DB;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
