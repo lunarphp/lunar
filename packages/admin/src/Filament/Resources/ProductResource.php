@@ -36,6 +36,8 @@ class ProductResource extends BaseResource
 
     protected static ?string $model = Product::class;
 
+    protected static ?string $recordTitleAttribute = 'recordTitle';
+
     protected static ?int $navigationSort = 1;
 
     protected static int $globalSearchResultsLimit = 5;
