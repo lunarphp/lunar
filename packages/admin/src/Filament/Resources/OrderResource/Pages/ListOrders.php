@@ -13,7 +13,7 @@ class ListOrders extends BaseListRecords
 {
     protected static string $resource = OrderResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             // Actions\CreateAction::make(),
