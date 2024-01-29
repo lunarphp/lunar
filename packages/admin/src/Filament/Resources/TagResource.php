@@ -51,11 +51,10 @@ class TagResource extends BaseResource
     {
         return Forms\Components\TextInput::make('value')
             ->label(__('lunarpanel::tag.form.value.label'))
-            ->formatStateUsing(fn (?string $state): string => Str::upper($state))
-            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
-                $set('value', Str::upper($state));
-            })
-            ->live()
+            ->dehydrateStateUsing(
+                fn (string $state): string =>  Str::upper($state)
+            )
+            ->unique()
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -82,7 +81,8 @@ class TagResource extends BaseResource
     {
         return [
             Tables\Columns\TextColumn::make('value')
-                ->label(__('lunarpanel::tag.table.value.label')),
+                ->label(__('lunarpanel::tag.table.value.label'))
+                ->searchable(),
         ];
     }
 
