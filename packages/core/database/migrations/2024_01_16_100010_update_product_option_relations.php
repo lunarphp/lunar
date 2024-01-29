@@ -42,7 +42,7 @@ class UpdateProductOptionRelations extends Migration
             "{$optionsTable}.position",
         ])->groupBy(['product_id', 'product_option_id'])
             ->orderBy('product_id')
-            ->chunk(2, function ($rows) {
+            ->chunk(200, function ($rows) {
                 DB::table(
                     $this->prefix.'product_product_option'
                 )->insert(
