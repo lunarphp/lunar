@@ -13,6 +13,7 @@ use Filament\Notifications\Notification;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Facades\DB;
 use Lunar\Models\Language;
@@ -425,6 +426,14 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     __('lunarpanel::productoption.widgets.product-options.notifications.save-variants.success.title')
                 )->success()->send();
             });
+    }
+
+    public function getVariantLink($variantId)
+    {
+        return ProductVariantResource::getUrl('edit', [
+            'product' => $this->record,
+            'record' => $variantId,
+        ]);
     }
 
     protected function mapOptionValue(ProductOptionValue $value, bool $enabled = true)
