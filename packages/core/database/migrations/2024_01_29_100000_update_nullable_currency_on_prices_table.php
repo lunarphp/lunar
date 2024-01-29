@@ -6,8 +6,6 @@ use Lunar\Base\Migration;
 
 class UpdateNullableCurrencyOnPricesTable extends Migration
 {
-    public $withinTransaction = true;
-
     public function up()
     {
         Schema::table($this->prefix.'prices', function (Blueprint $table) {
