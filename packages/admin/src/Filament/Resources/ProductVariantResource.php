@@ -3,12 +3,14 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -78,7 +80,6 @@ class ProductVariantResource extends BaseResource
     {
         return [
             static::getSkuFormComponent(),
-
         ];
     }
 
@@ -256,6 +257,20 @@ class ProductVariantResource extends BaseResource
                         __('lunarpanel::productvariant.form.weight_unit.label')
                     )->selectablePlaceholder(false)
             );
+    }
+
+    public static function getVariantSwitcherWidget(Model $record): Action
+    {
+        return Action::make('switch_variant')
+            ->label(
+                __('lunarpanel::widgets.variant_switcher.label')
+            )
+            ->modalContent(function () use ($record) {
+                return view('lunarpanel::actions.switch-variant', [
+                    'record' => $record->product,
+                ]);
+            })
+            ->slideOver();
     }
 
     protected static function getAttributeDataFormComponent(): Component

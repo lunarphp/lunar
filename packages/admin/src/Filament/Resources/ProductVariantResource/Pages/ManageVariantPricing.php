@@ -35,6 +35,15 @@ class ManageVariantPricing extends ManageRelatedRecords
         return __('lunarpanel::relationmanagers.pricing.title');
     }
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            ProductVariantResource::getVariantSwitcherWidget(
+                $this->getRecord()
+            ),
+        ];
+    }
+
     public function getBreadcrumbs(): array
     {
         return [

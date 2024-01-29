@@ -33,7 +33,11 @@ class ManageVariantMedia extends BaseEditRecord
 
     protected function getDefaultHeaderActions(): array
     {
-        return [];
+        return [
+            ProductVariantResource::getVariantSwitcherWidget(
+                $this->getRecord()
+            ),
+        ];
     }
 
     public function getBreadcrumbs(): array

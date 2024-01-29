@@ -57,6 +57,15 @@ class ManageVariantIdentifiers extends BaseEditRecord
         ]);
     }
 
+    protected function getDefaultHeaderActions(): array
+    {
+        return [
+            ProductVariantResource::getVariantSwitcherWidget(
+                $this->getRecord()
+            ),
+        ];
+    }
+
     public function getRelationManagers(): array
     {
         return [];
