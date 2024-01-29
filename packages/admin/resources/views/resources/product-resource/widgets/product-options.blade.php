@@ -162,7 +162,7 @@
                     <x-filament-tables::cell>
                       <div class="flex items-center space-x-2">
                         @if($permutation['variant_id'])
-                          <x-filament::link href="#">
+                          <x-filament::link :href="$this->getVariantLink($permutation['variant_id'])">
                             {{ __('lunarpanel::productoption.widgets.product-options.variants-table.actions.edit.label') }}
                           </x-filament::link>
                         @endif
