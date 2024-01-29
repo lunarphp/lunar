@@ -2,9 +2,12 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -76,6 +79,14 @@ class ManageVariantMedia extends BaseEditRecord
     {
         return $form->schema([
             Section::make()->schema([
+                Shout::make('no_selection')->content(
+                    __('lunarpanel::productvariant.pages.media.form.no_selection.label')
+                )->visible(
+                    fn (Get $get) => ! $get('images')
+                ),
+                Placeholder::make('')->content(
+                    __('lunarpanel::productvariant.pages.media.form.description.label')
+                ),
                 MediaSelect::make('images')
                     ->label(
                         __('lunarpanel::productvariant.pages.media.form.images.label')

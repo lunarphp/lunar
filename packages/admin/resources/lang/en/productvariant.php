@@ -10,6 +10,12 @@ return [
         'media' => [
             'title' => 'Media',
             'form' => [
+                'no_selection' => [
+                    'label' => 'You do not currently have an image selected for this variant.',
+                ],
+                'description' => [
+                    'label' => 'Select the product image which represents this variant.',
+                ],
                 'images' => [
                     'label' => 'Primary Image',
                 ],
