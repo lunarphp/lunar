@@ -64,6 +64,8 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 use Lunar\Models\Url;
 use Lunar\Observers\AddressObserver;
@@ -75,6 +77,8 @@ use Lunar\Observers\CustomerGroupObserver;
 use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
+use Lunar\Observers\ProductOptionObserver;
+use Lunar\Observers\ProductVariantObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
 
@@ -277,6 +281,8 @@ class LunarServiceProvider extends ServiceProvider
         Url::observe(UrlObserver::class);
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
+        ProductOption::observe(ProductOptionObserver::class);
+        ProductVariant::observe(ProductVariantObserver::class);
         Order::observe(OrderObserver::class);
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
