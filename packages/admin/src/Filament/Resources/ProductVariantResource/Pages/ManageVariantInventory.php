@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
-use Filament\Actions\Action;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
@@ -65,20 +64,6 @@ class ManageVariantInventory extends BaseEditRecord
                 'xl' => 3,
             ]),
         ]);
-    }
-
-    public static function getVariantSwitcherWidget(Model $record): Action
-    {
-        return Action::make('switch_variant')
-            ->label(
-                __('lunarpanel::widgets.variant_switcher.label')
-            )
-            ->modalContent(function () use ($record) {
-                return view('lunarpanel::actions.switch-variant', [
-                    'record' => $record->product,
-                ]);
-            })
-            ->slideOver();
     }
 
     public function getRelationManagers(): array
