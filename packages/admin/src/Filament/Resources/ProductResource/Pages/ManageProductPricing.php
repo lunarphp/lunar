@@ -4,22 +4,17 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
-use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Models\Currency;
-use Lunar\Models\Price;
+use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
+use Lunar\Models\TaxClass;
 
-class ManageProductPricing extends ManageRelatedRecords
+class ManageProductPricing extends BaseEditRecord
 {
     protected static string $resource = ProductResource::class;
-
-    protected static string $relationship = 'prices';
 
     protected static ?string $title = 'Pricing';
 
@@ -41,6 +36,34 @@ class ManageProductPricing extends ManageRelatedRecords
     public function getOwnerRecord(): Model
     {
         return $this->getRecord()->variants()->first();
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form->schema([
+            Forms\Components\Section::make()
+                ->schema([
+                    Forms\Components\Group::make([
+                        Forms\Components\Select::make('tax_class_id')
+                            ->options(
+                                TaxClass::all()->pluck('name', 'id')
+                            ),
+                        Forms\Components\TextInput::make('tax_reference'),
+                    ])->columns(2),
+                    Forms\Components\Group::make([
+                        Forms\Components\TextInput::make('unit_quantity')->numeric(),
+                        Forms\Components\TextInput::make('base_price')->numeric(),
+                        Forms\Components\TextInput::make('compare_at')->numeric(),
+                    ])->columns(3),
+                ]),
+        ]);
+    }
+
+    public function getRelationManagers(): array
+    {
+        return [
+            PriceRelationManager::class,
+        ];
     }
 
     public static function getNavigationLabel(): string
