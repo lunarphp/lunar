@@ -3,11 +3,13 @@
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
@@ -37,6 +39,15 @@ class ManageVariantShipping extends BaseEditRecord
                 $this->getRecord()
             ),
         ];
+    }
+
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()->url(function (Model $record) {
+            return ProductResource::getUrl('variants', [
+                'record' => $record->product,
+            ]);
+        });
     }
 
     public function getBreadcrumbs(): array

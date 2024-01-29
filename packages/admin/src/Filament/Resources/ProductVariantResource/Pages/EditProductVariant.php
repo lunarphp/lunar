@@ -2,7 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
+use Filament\Actions\Action;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
@@ -28,6 +31,15 @@ class EditProductVariant extends BaseEditRecord
         return ProductVariantResource::getBaseBreadcrumbs(
             $this->getRecord()
         );
+    }
+
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()->url(function (Model $record) {
+            return ProductResource::getUrl('variants', [
+                'record' => $record->product,
+            ]);
+        });
     }
 
     public function mount(int|string $record): void

@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -9,7 +10,9 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
@@ -42,6 +45,15 @@ class ManageVariantPricing extends ManageRelatedRecords
                 $this->getRecord()
             ),
         ];
+    }
+
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()->url(function (Model $record) {
+            return ProductResource::getUrl('variants', [
+                'record' => $record->product,
+            ]);
+        });
     }
 
     public function getBreadcrumbs(): array
