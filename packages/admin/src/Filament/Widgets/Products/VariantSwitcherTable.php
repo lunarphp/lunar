@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Widgets\Products;
 
+use Closure;
 use Filament\Tables;
 use Filament\Widgets\TableWidget;
 use Illuminate\Contracts\Support\Htmlable;
@@ -85,20 +86,17 @@ class VariantSwitcherTable extends TableWidget
         ];
     }
 
+    protected function getTableRecordUrlUsing(): ?Closure
+    {
+        return function (ProductVariant $variant) {
+            return ProductVariantResource::getUrl('edit', [
+                'record' => $variant,
+            ]);
+        };
+    }
+
     protected function getTableHeading(): string|Htmlable|null
     {
         return '';
-    }
-
-    protected function getTableActions(): array
-    {
-        return [
-            Tables\Actions\EditAction::make('variant')
-                ->url(function (ProductVariant $variant) {
-                    return ProductVariantResource::getUrl('edit', [
-                        'record' => $variant,
-                    ]);
-                }),
-        ];
     }
 }
