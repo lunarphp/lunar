@@ -38,6 +38,8 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public array $configuredOptions = [];
 
     public bool $configuringOptions = false;
+    
+    protected static bool $isLazy = false;
 
     public function mount()
     {
