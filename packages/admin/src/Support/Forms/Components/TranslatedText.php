@@ -12,11 +12,11 @@ class TranslatedText extends TextInput
 {
     protected string $view = 'lunarpanel::forms.components.translated-text';
 
-    public $expanded = false;
-
-    public Language $defaultLanguage;
+    public bool $expanded = false;
 
     public bool $optionRichtext = false;
+
+    public Language $defaultLanguage;
 
     public Collection $components;
 

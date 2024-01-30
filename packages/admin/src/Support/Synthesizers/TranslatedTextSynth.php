@@ -2,8 +2,8 @@
 
 namespace Lunar\Admin\Support\Synthesizers;
 
-use Lunar\FieldTypes\TranslatedText;
 use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Language;
 
 class TranslatedTextSynth extends AbstractFieldSynth
@@ -16,14 +16,11 @@ class TranslatedTextSynth extends AbstractFieldSynth
     {
         $languages = Language::orderBy('default', 'desc')->get();
 
-        if ($target->getValue()->count() <= 0 ) {
-            return [
-                $languages->mapWithKeys(fn ($language) => [$language->code => new Text])->toArray(),
-                []
-            ];
-        }
-
-        return [$target->getValue()->toArray(), []];
+        return [
+            $languages->mapWithKeys(fn ($language) => [$language->code => new Text((string) $target->getValue()->get($language->code))]
+            )->toArray(),
+            [],
+        ];
     }
 
     public function hydrate($value)

@@ -168,7 +168,7 @@ class ProductResource extends BaseResource
 
     public static function getBaseNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
             ->label(__('lunarpanel::product.form.name.label'))->required();
     }
 
