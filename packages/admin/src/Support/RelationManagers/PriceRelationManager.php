@@ -7,13 +7,19 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 
 class PriceRelationManager extends RelationManager
 {
-    protected static string $relationship = 'basePrices';
+    protected static string $relationship = 'prices';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::relationmanagers.pricing.title');
+    }
 
     public function form(Form $form): Form
     {
@@ -77,26 +83,33 @@ class PriceRelationManager extends RelationManager
                         __('lunarpanel::relationmanagers.pricing.table.price.label')
                     )->formatStateUsing(
                         fn ($state) => $state->formatted,
-                    ),
+                    )->sortable(),
                 Tables\Columns\TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')
-                ),
+                )->sortable(),
                 Tables\Columns\TextColumn::make('tier')->label(
                     __('lunarpanel::relationmanagers.pricing.table.tier.label')
-                ),
+                )->sortable(),
                 Tables\Columns\TextColumn::make('customerGroup.name')->label(
                     __('lunarpanel::relationmanagers.pricing.table.customer_group.label')
-                ),
+                )->placeholder(
+                    __('lunarpanel::relationmanagers.pricing.table.customer_group.placeholder')
+                )->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('currency')
                     ->relationship(name: 'currency', titleAttribute: 'name')
-                    ->preload(),
+                    ->preload()
+                    ->label(
+                        __('lunarpanel::relationmanagers.pricing.table.currency.label')
+                    ),
                 Tables\Filters\SelectFilter::make('tier')->options(
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
                         ->where('priceable_type', get_class($this->getOwnerRecord()))
                         ->get()
                         ->pluck('tier', 'tier')
+                )->label(
+                    __('lunarpanel::relationmanagers.pricing.table.tier.label')
                 ),
             ])
             ->headerActions([
@@ -106,7 +119,9 @@ class PriceRelationManager extends RelationManager
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;
-                }),
+                })->label(
+                    __('lunarpanel::relationmanagers.pricing.table.actions.create.label')
+                ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->mutateFormDataUsing(function (array $data): array {

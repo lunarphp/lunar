@@ -8,9 +8,9 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
-use Lunar\Models\TaxClass;
 
 class ManageProductPricing extends BaseEditRecord
 {
@@ -67,19 +67,8 @@ class ManageProductPricing extends BaseEditRecord
             Forms\Components\Section::make()
                 ->schema([
                     Forms\Components\Group::make([
-                        Forms\Components\Select::make('tax_class_id')
-                            ->label(
-                                __('lunarpanel::product.pages.pricing.form.tax_class_id.label')
-                            )
-                            ->options(
-                                TaxClass::all()->pluck('name', 'id')
-                            )->required(),
-                        Forms\Components\TextInput::make('tax_ref')
-                            ->label(
-                                __('lunarpanel::product.pages.pricing.form.tax_ref.label')
-                            )->helperText(
-                                __('lunarpanel::product.pages.pricing.form.tax_ref.helper_text')
-                            ),
+                        ProductVariantResource::getTaxClassIdFormComponent(),
+                        ProductVariantResource::getTaxRefFormComponent(),
                     ])->columns(2),
                 ]),
         ])->statePath('');

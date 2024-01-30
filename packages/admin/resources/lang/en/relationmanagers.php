@@ -125,11 +125,17 @@ return [
         'title' => 'Pricing',
         'title_plural' => 'Pricing',
         'table' => [
+            'actions' => [
+                'create' => [
+                    'label' => 'Add New Price',
+                ],
+            ],
             'price' => [
                 'label' => 'Price',
             ],
             'customer_group' => [
                 'label' => 'Customer Group',
+                'placeholder' => 'All Customer Groups',
             ],
             'quantity_break' => [
                 'label' => 'Quantity Break',

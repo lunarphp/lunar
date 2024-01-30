@@ -15,6 +15,7 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
 use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
 
 class ProductVariantResource extends BaseResource
@@ -167,6 +168,27 @@ class ProductVariantResource extends BaseResource
             )->helperText(
                 __('lunarpanel::productvariant.form.min_quantity.helper_text')
             )->numeric();
+    }
+
+    public static function getTaxClassIdFormComponent(): Forms\Components\Select
+    {
+        return Forms\Components\Select::make('tax_class_id')
+            ->label(
+                __('lunarpanel::productvariant.form.tax_class_id.label')
+            )
+            ->options(
+                TaxClass::all()->pluck('name', 'id')
+            )->required();
+    }
+
+    public static function getTaxRefFormComponent(): Forms\Components\TextInput
+    {
+        return Forms\Components\TextInput::make('tax_ref')
+            ->label(
+                __('lunarpanel::product.pages.pricing.form.tax_ref.label')
+            )->helperText(
+                __('lunarpanel::product.pages.pricing.form.tax_ref.helper_text')
+            );
     }
 
     public static function getShippableFormComponent(): Forms\Components\Toggle
