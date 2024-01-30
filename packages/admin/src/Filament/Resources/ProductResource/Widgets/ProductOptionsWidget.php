@@ -32,6 +32,8 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
     public array $variants = [];
 
+    protected static bool $isLazy = false;
+
     /**
      * The product options which are being actively configured.
      */
