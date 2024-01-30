@@ -236,7 +236,6 @@ class ProductResource extends BaseResource
                 ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
                 ->limit(50)
                 ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-                    $state = $column->getState();
 
                     if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
                         return null;
@@ -252,6 +251,20 @@ class ProductResource extends BaseResource
                 ->searchable(),
             Tables\Columns\TextColumn::make('variants.sku')
                 ->label(__('lunarpanel::product.table.sku.label'))
+                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
+
+                    if ($record->variants->count() <= $column->getListLimit()) {
+                        return null;
+                    }
+
+                    if ($record->variants->count() > 30) {
+                        $record->variants = $record->variants->slice(0, 30);
+                    }
+
+                    return $record->variants
+                        ->map(fn ($variant) => $variant->sku)
+                        ->implode(', ');
+                })
                 ->listWithLineBreaks()
                 ->limitList(3)
                 ->toggleable(),
