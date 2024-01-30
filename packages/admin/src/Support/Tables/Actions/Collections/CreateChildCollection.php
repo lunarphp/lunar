@@ -25,7 +25,7 @@ class CreateChildCollection extends CreateAction
         });
 
         $this->form([
-            TextInput::make('name')->required(),
+            \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')->required(),
         ]);
 
         $this->createAnother(false);

@@ -3,13 +3,10 @@
 namespace Lunar\Admin\Support\Actions\Collections;
 
 use Filament\Actions\CreateAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Lunar\Facades\DB;
-use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 use Lunar\Models\Collection;
-use Lunar\Models\Language;
 
 class CreateRootCollection extends CreateAction
 {
@@ -23,22 +20,12 @@ class CreateRootCollection extends CreateAction
             DB::beginTransaction();
 
             $record = $this->process(function (array $data) {
-                $attribute = Attribute::whereHandle('name')->whereAttributeType(Collection::class)->first();
-                $nameValue = $data['name'];
-
-                $fieldType = $attribute->type;
-
-                if ($fieldType == TranslatedText::class) {
-                    $language = Language::getDefault();
-                    $nameValue = collect([
-                        $language->code => $data['name'],
-                    ]);
-                }
+                $attribute = Attribute::whereHandle('name')->whereAttributeType(Collection::class)->first()->type;
 
                 return Collection::create([
                     'collection_group_id' => $data['collection_group_id'],
                     'attribute_data' => [
-                        'name' => new $fieldType($nameValue),
+                        'name' => new $attribute($data['name']),
                     ],
                 ]);
             });
@@ -68,7 +55,7 @@ class CreateRootCollection extends CreateAction
         });
 
         $this->form([
-            TextInput::make('name')->required(),
+            \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')->required(),
         ]);
 
         $this->label(

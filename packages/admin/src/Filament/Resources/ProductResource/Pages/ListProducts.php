@@ -54,14 +54,15 @@ class ListProducts extends BaseListRecords
 
         $nameAttribute = Attribute::whereAttributeType($model)
             ->whereHandle('name')
-            ->first();
+            ->first()
+            ->type;
 
         DB::beginTransaction();
         $product = $model::create([
             'status' => 'draft',
             'product_type_id' => $data['product_type_id'],
             'attribute_data' => [
-                'name' => new $nameAttribute->type($data['name']),
+                'name' => new $nameAttribute($data['name']),
             ],
         ]);
         $variant = $product->variants()->create([
