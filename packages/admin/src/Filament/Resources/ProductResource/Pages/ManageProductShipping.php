@@ -11,6 +11,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Models\ProductVariant;
 use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
@@ -83,7 +84,20 @@ class ManageProductShipping extends BaseEditRecord
             ...[
                 'shippable' => $this->shippable,
                 'volume_unit' => 'l',
-                'volume_value' => $this->volume,
+                'volume_value' => ManageVariantShipping::getVolume(
+                    [
+                        'value' => $this->dimensions['width_value'],
+                        'unit' => $this->dimensions['width_unit'],
+                    ],
+                    [
+                        'value' => $this->dimensions['length_value'],
+                        'unit' => $this->dimensions['length_unit'],
+                    ],
+                    [
+                        'value' => $this->dimensions['height_value'],
+                        'unit' => $this->dimensions['height_unit'],
+                    ]
+                ),
             ],
             ...$this->dimensions,
         ]);
@@ -101,30 +115,6 @@ class ManageProductShipping extends BaseEditRecord
         return [
             $this->getSaveFormAction(),
         ];
-    }
-
-    public function getVolumeProperty()
-    {
-        $dimensions = $this->dimensions;
-
-        $width = Converter::value($dimensions['width_value'])
-            ->from('length.'.$dimensions['width_unit'])
-            ->to('length.cm')
-            ->convert()
-            ->getValue();
-        $length = Converter::value($dimensions['length_value'])
-            ->from('length.'.$dimensions['length_unit'])
-            ->to('length.cm')
-            ->convert()
-            ->getValue();
-
-        $height = Converter::value($dimensions['height_value'])
-            ->from('length.'.$dimensions['height_unit'])
-            ->to('length.cm')
-            ->convert()
-            ->getValue();
-
-        return Converter::from('volume.ml')->to('volume.l')->value($length * $width * $height)->convert()->getValue();
     }
 
     public function form(Form $form): Form
