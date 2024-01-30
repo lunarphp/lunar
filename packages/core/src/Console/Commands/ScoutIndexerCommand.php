@@ -66,7 +66,7 @@ class ScoutIndexerCommand extends Command
         if ($this->option('flush') && $this->option('refresh')) {
             $this->components->error('You can\'t use the [--refresh] and [--flush] options together.');
 
-            exit(self::FAILURE);
+            return static::FAILURE;
         }
 
         // Return searchable models from config
@@ -80,7 +80,7 @@ class ScoutIndexerCommand extends Command
                 $this->components->error('No model passed on call');
                 $this->components->info('When using the [--ignore] option, you must provide at least one model to index.');
 
-                exit(self::FAILURE);
+                return static::FAILURE;
             } else {
                 // Run the indexer commands
                 $this->indexer($this->argument('models'));
