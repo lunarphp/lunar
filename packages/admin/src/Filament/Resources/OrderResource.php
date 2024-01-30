@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Actions\Orders\UpdateStatusBulkAction;
+use Lunar\Admin\Support\CustomerStatus;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Order;
@@ -89,6 +90,12 @@ class OrderResource extends BaseResource
                 ->label(__('lunarpanel::order.table.customer_reference.label')),
             Tables\Columns\TextColumn::make('shippingAddress.fullName')
                 ->label(__('lunarpanel::order.table.customer.label')),
+            Tables\Columns\TextColumn::make('new_customer')
+                ->label(__('lunarpanel::order.table.new_customer.label'))
+                ->formatStateUsing(fn (bool $state) => CustomerStatus::getLabel($state))
+                ->color(fn (bool $state) => CustomerStatus::getColor($state))
+                ->icon(fn (bool $state) => CustomerStatus::getIcon($state))
+                ->badge(),
             Tables\Columns\TextColumn::make('shippingAddress.postcode')
                 ->label(__('lunarpanel::order.table.postcode.label')),
             Tables\Columns\TextColumn::make('shippingAddress.contact_email')
