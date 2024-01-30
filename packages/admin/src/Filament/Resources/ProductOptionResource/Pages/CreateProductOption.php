@@ -12,7 +12,7 @@ class CreateProductOption extends BaseCreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['shared'] = true;
-    
+
         return $data;
     }
 }
