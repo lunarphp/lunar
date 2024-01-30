@@ -45,7 +45,7 @@ return [
             'label' => 'Date',
         ],
         'new_customer' => [
-            'label' => 'Customer state',
+            'label' => 'Customer Type',
         ],
     ],
 
