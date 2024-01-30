@@ -104,4 +104,15 @@ return [
             ],
         ],
     ],
+    'variant_switcher' => [
+        'label' => 'Switch Variant',
+        'table' => [
+            'sku' => [
+                'label' => 'SKU',
+            ],
+            'values' => [
+                'label' => 'Values',
+            ],
+        ],
+    ],
 ];

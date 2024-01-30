@@ -56,6 +56,7 @@ class LunarPanelManager
         Resources\ProductOptionResource::class,
         Resources\ProductResource::class,
         Resources\ProductTypeResource::class,
+        Resources\ProductVariantResource::class,
         Resources\StaffResource::class,
         Resources\TagResource::class,
         Resources\TaxClassResource::class,

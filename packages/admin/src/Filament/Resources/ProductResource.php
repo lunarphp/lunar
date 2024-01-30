@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
+use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
+use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
@@ -33,6 +35,8 @@ class ProductResource extends BaseResource
     protected static ?string $permission = 'catalog:manage-products';
 
     protected static ?string $model = Product::class;
+
+    protected static ?string $recordTitleAttribute = 'recordTitle';
 
     protected static ?int $navigationSort = 1;
 
@@ -75,6 +79,14 @@ class ProductResource extends BaseResource
             Pages\ManageProductCollections::class,
             Pages\ManageProductAssociations::class,
         ]);
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ProductOptionsWidget::class,
+            VariantSwitcherTable::class,
+        ];
     }
 
     public static function getDefaultForm(Form $form): Form
