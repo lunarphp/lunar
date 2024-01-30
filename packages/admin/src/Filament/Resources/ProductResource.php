@@ -266,7 +266,7 @@ class ProductResource extends BaseResource
                         ->implode(', ');
                 })
                 ->listWithLineBreaks()
-                ->limitList(3)
+                ->limitList(1)
                 ->toggleable(),
             Tables\Columns\TextColumn::make('variants_sum_stock')
                 ->label(__('lunarpanel::product.table.stock.label'))
