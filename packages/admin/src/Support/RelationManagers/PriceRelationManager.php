@@ -7,7 +7,6 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
@@ -16,41 +15,53 @@ class PriceRelationManager extends RelationManager
 {
     protected static string $relationship = 'basePrices';
 
-    public function getOwnerRecord(): Model
-    {
-        return parent::getOwnerRecord()->variants()->first();
-    }
-
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('price')->formatStateUsing(
-                    fn ($state) => $state?->decimal(rounding: false)
-                )->numeric()->unique(
-                    modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
-                        $owner = $this->getOwnerRecord();
+                Forms\Components\Group::make([
+                    Forms\Components\Select::make('currency_id')
+                        ->label(
+                            __('lunarpanel::relationmanagers.pricing.form.currency_id.label')
+                        )->relationship(name: 'currency', titleAttribute: 'name')
+                        ->helperText(
+                            __('lunarpanel::relationmanagers.pricing.form.currency_id.helper_text')
+                        )->required(),
+                    Forms\Components\Select::make('customer_group_id')
+                        ->label(
+                            __('lunarpanel::relationmanagers.pricing.form.customer_group_id.label')
+                        )->placeholder(
+                            __('lunarpanel::relationmanagers.pricing.form.customer_group_id.placeholder')
+                        )->helperText(
+                            __('lunarpanel::relationmanagers.pricing.form.customer_group_id.helper_text')
+                        )->relationship(name: 'customerGroup', titleAttribute: 'name'),
+                    Forms\Components\TextInput::make('tier')
+                        ->label(
+                            __('lunarpanel::relationmanagers.pricing.form.tier.label')
+                        )->helperText(
+                            __('lunarpanel::relationmanagers.pricing.form.tier.helper_text')
+                        )->numeric()->minValue(1)->required(),
+                ])->columns(3),
 
-                        return $rule->where('customer_group_id', $get('customer_group_id'))
-                            ->where('tier', $get('tier'))
-                            ->where('currency_id', $get('currency_id'))
-                            ->where('priceable_type', get_class($owner))
-                            ->where('priceable_id', $owner->id);
-                    }
-                )->required(),
-                Forms\Components\TextInput::make('tier')
-                    ->label(
-                        __('lunarpanel::relationmanagers.pricing.form.tier.label')
-                    )->numeric()->minValue(1)->required(),
-                Forms\Components\Select::make('currency_id')
-                    ->label(
-                        __('lunarpanel::relationmanagers.pricing.form.currency_id.label')
-                    )->relationship(name: 'currency', titleAttribute: 'name')->required(),
-                Forms\Components\Select::make('customer_group_id')
-                    ->label(
-                        __('lunarpanel::relationmanagers.pricing.form.customer_group_id.label')
-                    )->relationship(name: 'customerGroup', titleAttribute: 'name'),
-            ]);
+                Forms\Components\Group::make([
+                    Forms\Components\TextInput::make('price')->formatStateUsing(
+                        fn ($state) => $state?->decimal(rounding: false)
+                    )->numeric()->unique(
+                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                            $owner = $this->getOwnerRecord();
+
+                            return $rule->where('customer_group_id', $get('customer_group_id'))
+                                ->where('tier', 1)
+                                ->where('currency_id', 1)
+                                ->where('priceable_type', get_class($owner))
+                                ->where('priceable_id', $owner->id);
+                        }
+                    )->required(),
+                    Forms\Components\TextInput::make('compare_price')->formatStateUsing(
+                        fn ($state) => $state?->decimal(rounding: false)
+                    )->numeric(),
+                ])->columns(2),
+            ])->columns(1);
     }
 
     public function table(Table $table): Table

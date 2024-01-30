@@ -18,6 +18,20 @@ class ManageProductPricing extends BaseEditRecord
 
     protected static ?string $title = 'Pricing';
 
+    public ?string $tax_class_id = '';
+
+    public ?string $tax_ref = '';
+
+    public function mount(int|string $record): void
+    {
+        parent::mount($record);
+
+        $variant = $this->getOwnerRecord();
+
+        $this->tax_class_id = $variant->tax_class_id;
+        $this->tax_ref = $variant->tax_ref;
+    }
+
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::product-pricing');
@@ -38,6 +52,15 @@ class ManageProductPricing extends BaseEditRecord
         return $this->getRecord()->variants()->first();
     }
 
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $variant = $this->getOwnerRecord();
+
+        $variant->update($data);
+
+        return $record;
+    }
+
     public function form(Form $form): Form
     {
         return $form->schema([
@@ -45,24 +68,29 @@ class ManageProductPricing extends BaseEditRecord
                 ->schema([
                     Forms\Components\Group::make([
                         Forms\Components\Select::make('tax_class_id')
+                            ->label(
+                                __('lunarpanel::product.pages.pricing.form.tax_class_id.label')
+                            )
                             ->options(
                                 TaxClass::all()->pluck('name', 'id')
+                            )->required(),
+                        Forms\Components\TextInput::make('tax_ref')
+                            ->label(
+                                __('lunarpanel::product.pages.pricing.form.tax_ref.label')
+                            )->helperText(
+                                __('lunarpanel::product.pages.pricing.form.tax_ref.helper_text')
                             ),
-                        Forms\Components\TextInput::make('tax_reference'),
                     ])->columns(2),
-                    Forms\Components\Group::make([
-                        Forms\Components\TextInput::make('unit_quantity')->numeric(),
-                        Forms\Components\TextInput::make('base_price')->numeric(),
-                        Forms\Components\TextInput::make('compare_at')->numeric(),
-                    ])->columns(3),
                 ]),
-        ]);
+        ])->statePath('');
     }
 
     public function getRelationManagers(): array
     {
         return [
-            PriceRelationManager::class,
+            PriceRelationManager::make([
+                'ownerRecord' => $this->getOwnerRecord(),
+            ]),
         ];
     }
 

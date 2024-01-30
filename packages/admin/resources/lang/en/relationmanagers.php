@@ -144,12 +144,16 @@ return [
             ],
             'customer_group_id' => [
                 'label' => 'Customer Group',
+                'placeholder' => 'All Customer Groups',
+                'helper_text' => 'Select which customer group to apply this price to.',
             ],
             'quantity_break' => [
                 'label' => 'Quantity Break',
+                'helper_text' => 'Select the lower limit this price will be available for.',
             ],
             'currency_id' => [
                 'label' => 'Currency',
+                'helper_text' => 'Select the currency for this price.',
             ],
         ],
     ],
