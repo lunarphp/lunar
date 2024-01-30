@@ -252,7 +252,16 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             ];
         })->toArray();
 
-        $this->variants = MapVariantsToProductOptions::map($optionValues, $variants, $fillMissing);
+        $variantPermutations = MapVariantsToProductOptions::map($optionValues, $variants, $fillMissing);
+
+        $this->variants = [
+            ...collect($variantPermutations)
+                ->filter(fn ($v) => ! $v['variant_id'])
+                ->toArray(),
+            ...collect($variantPermutations)
+                ->reject(fn ($v) => ! $v['variant_id'])
+                ->toArray(),
+        ];
     }
 
     public function getHasNewVariantsProperty()
