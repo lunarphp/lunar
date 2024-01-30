@@ -347,13 +347,16 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 if (! count($this->variants)) {
                     $variant = $this->record->variants()->first();
                     $variant->values()->detach();
-                    $this->record->productOptions()->exclusive()->delete();
+                    $this->record->productOptions()->exclusive()->each(
+                        fn (ProductOption $productOption) => $productOption->delete()
+                    );
+
                     $this->record->productOptions()->shared()->detach();
                     $this->record->variants()
                         ->where('id', '!=', $variant->id)
                         ->get()
                         ->each(
-                            fn ($variant) => $variant->delete()
+                            fn (ProductVariant $variant) => $variant->delete()
                         );
 
                     DB::commit();
