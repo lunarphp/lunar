@@ -13,8 +13,9 @@
         <div class="space-y-6">
             @if (!$this->hasChannelAvailability)
                 <div>
+                    {{-- TODO: check component below (discount)--}}
                     <x-hub::alert level="danger">
-                        This discount has no availability across channels
+                        {{__('This discount has no availability across channels')}}
                     </x-hub::alert>
                 </div>
             @endif
@@ -90,7 +91,7 @@
 
     <x-hub::layout.page-menu>
         <nav class="space-y-2"
-         aria-label="Sidebar"
+         aria-label="{{ __('adminhub:global.sidebar') }}"
          x-data="{ activeAnchorLink: '' }"
          x-init="activeAnchorLink = window.location.hash">
         @foreach ($this->sideMenu as $item)

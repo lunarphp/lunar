@@ -4,7 +4,7 @@
             @if($discount->id)
                 {{ $discount->name }}
             @else
-                Create Discount
+                {{ __('adminhub::global.new_discount') }}
             @endif
         </h1>
     </header>

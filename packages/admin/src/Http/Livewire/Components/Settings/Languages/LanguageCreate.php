@@ -53,7 +53,7 @@ class LanguageCreate extends Component
         $this->language->save();
 
         $this->notify(
-            'Language successfully created.',
+            __('adminhub::notifications.languages.added'),
             'hub.languages.index'
         );
     }

@@ -5,7 +5,7 @@
 
     <div>
         <div class="text-xs uppercase font-semibold text-gray-400">
-          {{ __('adminhub::components.dashboard.top_timeframe', [
+          {{ trans_choice('adminhub::components.dashboard.top_timeframe', 14, [
             'period' => 14
           ]) }}
         </div>

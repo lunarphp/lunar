@@ -166,7 +166,7 @@
             <div>
                 <div class="hidden sm:block">
                     <nav class="flex space-x-4"
-                         aria-label="Tabs">
+                         aria-label="{{ __('adminhub:global.tabs') }}">
 
                         <button type="button"
                                 x-on:click.prevent="tab = 'order_history'"
