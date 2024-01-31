@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Models\Currency;
@@ -21,6 +22,11 @@ class PriceRelationManager extends RelationManager
         return __('lunarpanel::relationmanagers.pricing.title');
     }
 
+    protected function getTableHeading(): string|Htmlable|null
+    {
+        return '';
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -30,6 +36,9 @@ class PriceRelationManager extends RelationManager
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.currency_id.label')
                         )->relationship(name: 'currency', titleAttribute: 'name')
+                        ->default(function () {
+                            return Currency::getDefault()?->id;
+                        })
                         ->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.currency_id.helper_text')
                         )->required(),
@@ -44,7 +53,7 @@ class PriceRelationManager extends RelationManager
                     Forms\Components\TextInput::make('tier')
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.tier.label')
-                        )->helperText(
+                        )->default(1)->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.tier.helper_text')
                         )->numeric()->minValue(1)->required(),
                 ])->columns(3),
@@ -65,6 +74,8 @@ class PriceRelationManager extends RelationManager
                     )->required(),
                     Forms\Components\TextInput::make('compare_price')->formatStateUsing(
                         fn ($state) => $state?->decimal(rounding: false)
+                    )->label(
+                        __('lunarpanel::relationmanagers.pricing.form.compare_price.label')
                     )->numeric(),
                 ])->columns(2),
             ])->columns(1);

@@ -122,8 +122,8 @@ return [
         ],
     ],
     'pricing' => [
-        'title' => 'Pricing',
-        'title_plural' => 'Pricing',
+        'title' => 'Prices',
+        'title_plural' => 'Prices',
         'table' => [
             'actions' => [
                 'create' => [
@@ -160,6 +160,9 @@ return [
             'currency_id' => [
                 'label' => 'Currency',
                 'helper_text' => 'Select the currency for this price.',
+            ],
+            'compare_price' => [
+                'label' => 'Comparison Price',
             ],
         ],
     ],
