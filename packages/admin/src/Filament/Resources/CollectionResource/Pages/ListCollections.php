@@ -2,8 +2,8 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Support\Pages\BaseListRecords;
 
 class ListCollections extends BaseListRecords
 {

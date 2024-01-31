@@ -3,8 +3,8 @@
 namespace Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 
 use Filament\Actions;
-use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
+use Lunar\Admin\Support\Pages\BaseListRecords;
 
 class ListCollectionGroups extends BaseListRecords
 {
