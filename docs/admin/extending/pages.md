@@ -238,6 +238,36 @@ class MyListExtension extends ListPageExtension
 LunarPanel::registerExtension(new MyListExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class);
 ```
 
+## ViewPageExtension
+
+An example of extending a view page.
+
+```php
+use Filament\Actions;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Lunar\Admin\Support\Extending\ViewPageExtension;
+
+class MyViewExtension extends ViewPageExtension
+{
+    public function headerActions(array $actions): array
+    {
+        $actions = [
+            ...$actions,
+            Actions\ActionGroup::make([
+                Actions\Action::make('Download PDF')
+            ])
+        ];
+
+        return $actions;
+    }
+  
+}
+
+// Typically placed in your AppServiceProvider file...
+LunarPanel::registerExtension(new MyViewExtension, \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class);
+```
+
 ## Extending Pages In Addons
 
 If you are building an addon for Lunar, you may need to take a slightly different approach when modifying forms, etc.

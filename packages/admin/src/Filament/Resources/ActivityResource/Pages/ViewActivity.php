@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources\ActivityResource\Pages;
 
-use Filament\Resources\Pages\ViewRecord;
+use Lunar\Admin\Support\Pages\BaseViewRecord;
 use Lunar\Admin\Filament\Resources\ActivityResource;
 
-class ViewActivity extends ViewRecord
+class ViewActivity extends BaseViewRecord
 {
     protected static string $resource = ActivityResource::class;
 }
