@@ -165,7 +165,7 @@ return [
             ],
             'compare_price' => [
                 'label' => 'Comparison Price',
-                'helper_text' => "A product's original or RRP, for easy comparison with its current price.",
+                'helper_text' => 'The original price or RRP, for comparison with its purchase price.',
             ],
         ],
     ],
