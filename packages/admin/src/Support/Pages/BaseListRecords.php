@@ -8,7 +8,9 @@ use Lunar\Base\Traits\Searchable;
 
 abstract class BaseListRecords extends ListRecords
 {
+    use Concerns\ExtendsFooterWidgets;
     use Concerns\ExtendsHeaderActions;
+    use Concerns\ExtendsHeaderWidgets;
     use \Lunar\Admin\Support\Concerns\CallsHooks;
 
     protected function applySearchToTableQuery(Builder $query): Builder
