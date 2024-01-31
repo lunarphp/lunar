@@ -140,7 +140,7 @@ class CustomerShowTest extends TestCase
 
         $customer = Customer::factory()->create();
 
-        $customer->mappedAttributes()->attach(Attribute::get());
+        $customer->mappedAttributes()->saveMany(Attribute::get());
 
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(CustomerShow::class, [

@@ -272,7 +272,7 @@ class ProductShowTest extends TestCase
             ]);
         }
 
-        $product->productType->mappedAttributes()->attach(Attribute::get());
+        $product->productType->attributables()->attach(Attribute::get());
 
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
@@ -542,7 +542,7 @@ class ProductShowTest extends TestCase
             ]);
         }
 
-        $product->productType->mappedAttributes()->attach(Attribute::get());
+        $product->productType->attributables()->attach(Attribute::get());
 
         $component = LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
@@ -605,7 +605,7 @@ class ProductShowTest extends TestCase
             ]);
         }
 
-        $product->productType->mappedAttributes()->attach(Attribute::get());
+        $product->productType->attributables()->attach(Attribute::get());
 
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
@@ -669,7 +669,7 @@ class ProductShowTest extends TestCase
             ]);
         }
 
-        $product->productType->mappedAttributes()->attach(Attribute::get());
+        $product->productType->attributables()->attach(Attribute::get());
 
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [
@@ -733,7 +733,7 @@ class ProductShowTest extends TestCase
             ]);
         }
 
-        $product->productType->mappedAttributes()->attach(Attribute::get());
+        $product->productType->attributables()->attach(Attribute::get());
 
         LiveWire::actingAs($staff, 'staff')
             ->test(ProductShow::class, [

@@ -11,7 +11,9 @@ For example, a television might have the following attributes assigned...
 * Tuner
 * Resolution
 
-## Attributes
+## Models 
+
+### Attributes
 
 ```php
 Lunar\Models\Attribute
@@ -19,8 +21,8 @@ Lunar\Models\Attribute
 
 |Field|Description|
 |:-|:-|
-|`attribute_type`|Model type that can use attribute, e.g. `Lunar\Models\ProductType`|
-|`attribute_group_id`|The associated group|
+|`attribute_type`|Model type that can use attribute, e.g. `Lunar\Models\Product`|
+|`attribute_group_id`|Attributes must associated to a group|
 |`position`|An integer used to define the sorting order of attributes within attribute groups|
 |`name`|Laravel Collection of translations `{'en': 'Screen Size'}`|
 |`handle`|Kebab-cased reference, e.g. `screen-size`|
@@ -30,9 +32,28 @@ Lunar\Models\Attribute
 |`default_value`||
 |`configuration`|Meta data stored as a Laravel Collection|
 |`system`|If set to true, indicates it should not be deleted|
+|`validation_rules`||
+|`filterable`||
+|`searchable`||
+
+### Attribute Groups
+
+Attribute Groups form a collection of attributes that are logically grouped together for display purposes.
+
+A good example might be a "Details" attribute group which has attributes for "Name" and "Description" or a "SEO" attribute group which has attributes for "Meta Title" and "Meta Description".
+
+```php
+Lunar\Models\AttributeGroup
+```
+
+|Field|Description|
+|:-|:-|
+|`attributable_type`|Model type the use the attribute group, e.g. `Lunar\Models\Product`|
+|`name`|Laravel Collection of translations `{'en': 'SEO'}`|
+|`handle`|Kebab-cased reference, e.g. `seo`|
+|`position`|An integer used to define the sorting order of groups|
 
 ### Field Types
-
 
 |Type|Config|
 |:-|:-|
@@ -45,13 +66,15 @@ Lunar\Models\Attribute
 More field types will be coming soon.
 :::
 
-### Models that use Attributes
+## Models that use Attributes by default
 
+* Lunar\Models\Brand
+* Lunar\Models\Collection
+* Lunar\Models\Customer
 * Lunar\Models\Product
 * Lunar\Models\ProductVariant
-* Lunar\Models\Collection
 
-### Saving Attribute Data
+## Saving Attribute Data
 
 ```php
 $product->attribute_data = collect([
@@ -65,38 +88,7 @@ $product->attribute_data = collect([
 ```
 
 
-### Adding attributes to your own model
-
-```php
-use Lunar\Base\Casts\AsAttributeData;
-use Lunar\Base\Traits\HasAttributes;
-
-class Collection extends Model
-{
-    use HasAttributes;
-
-    /**
-     * Define which attributes should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'attribute_data' => AsAttributeData::class,
-    ];
-
-    //...
-}
-
-```
-
-Then ensure you have a [JSON field](https://laravel.com/docs/8.x/migrations#column-method-json) on your model's table called `attribute_data`.
-
-
-::: tip
-When loading models it is advised you eager load the attribute data required.
-:::
-
-### Accessing Attribute Data.
+## Accessing Attribute Data.
 
 There will come times where you need to be able to retrieve the attribute data you have stored against a model. When you target the `attribute_data` property it will be cast as a collection and resolved into it's corresponding field type.
 
@@ -140,74 +132,47 @@ $product->translateAttribute('name', 'fr');
 $product->translateAttribute('name', 'FOO');
 // We will default here to either the current system locale or the first value available.
 ```
+## Mapped attributes
 
-### Advanced usage
+The `mappedAttributes()` method in the `HasAttributes` trait defines a `HasMany` relation between the model with attribute data and the defined attributes.
+
+::: warning
+It is possible to [store](#saving-attribute-data) and [access](#saving-attribute-data) `attribute_data` without to define the relating `Attribute` models, but with various restrictions, e.G. they won't be available in admin hub and will not indexed from [Search](/core/reference/search) engine by default.
+:::
+
+::: tip
+When loading models it is advised you eager load the `mappedAttributes` relation if required.
+:::
+
+## Adding attributes to your own model
 
 ```php
 use Lunar\Base\Traits\HasAttributes;
 
-class ProductType extends Model
+class SomeModel extends Model
 {
     use HasAttributes;
-
     //...
 }
 
 ```
 
-```php
-
-use Lunar\Base\Casts\AsAttributeData;
-
-class Product extends Model
-{
-    /**
-     * Define which attributes should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'attribute_data' => AsAttributeData::class,
-    ];
-
-    //...
-}
-
-```
+Then ensure you have a JSON field on your model's migration files called `attribute_data`:
 
 ```php
-
-use Lunar\Base\Casts\AsAttributeData;
-
-class ProductVariant extends Model
-{
-    /**
-     * Define which attributes should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'attribute_data' => AsAttributeData::class,
-    ];
-
-    //...
-}
-
+//...
+$this->json('attribute_data');
+//...
 ```
 
-
-## Attribute Groups
-
-Attribute Groups form a collection of attributes that are logically grouped together for display purposes.
-
-A good example might be an "SEO" attribute group which has attributes for "Meta Title" and "Meta Description".
+or simply
 
 ```php
-Lunar\Models\AttributeGroup
+//...
+$this->attributeData();
+//...
 ```
 
-|Field|Description|
-|:-|:-|
-|`name`|Laravel Collection of translations `{'en': 'SEO'}`|
-|`handle`|Kebab-cased reference, e.g. `seo`|
-|`position`|An integer used to define the sorting order of groups|
+::: warning
+The attributes of your own model will not be available in admin hub by default.
+:::

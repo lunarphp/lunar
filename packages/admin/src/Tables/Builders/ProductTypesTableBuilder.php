@@ -14,7 +14,7 @@ class ProductTypesTableBuilder extends TableBuilder
      */
     public function getData(): iterable
     {
-        $query = ProductType::query()->withCount(['products', 'mappedAttributes']);
+        $query = ProductType::query()->withCount(['products', 'attributables']);
 
         if ($this->searchTerm) {
             $query->where('name', 'LIKE', '%'.$this->searchTerm.'%');

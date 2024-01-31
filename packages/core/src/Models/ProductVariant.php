@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Purchasable;
+use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasDimensions;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasPrices;
@@ -49,6 +49,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class ProductVariant extends BaseModel implements Purchasable
 {
+    use HasAttributes;
     use HasDimensions;
     use HasFactory;
     use HasMacros;
@@ -68,7 +69,6 @@ class ProductVariant extends BaseModel implements Purchasable
      */
     protected $casts = [
         'requires_shipping' => 'bool',
-        'attribute_data' => AsAttributeData::class,
     ];
 
     /**

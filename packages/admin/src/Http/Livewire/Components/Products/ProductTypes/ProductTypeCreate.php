@@ -45,7 +45,7 @@ class ProductTypeCreate extends AbstractProductType
 
         $this->productType->save();
 
-        $this->productType->mappedAttributes()->sync(
+        $this->productType->attributables()->sync(
             array_merge(
                 $this->selectedProductAttributes->pluck('id')->toArray(),
                 $this->selectedVariantAttributes->pluck('id')->toArray()

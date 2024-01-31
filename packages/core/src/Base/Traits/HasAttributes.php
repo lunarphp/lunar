@@ -3,10 +3,23 @@
 namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Models\Attribute;
 
 trait HasAttributes
 {
+    /**
+     * Method when trait is initialized.
+     *
+     * @return void
+     */
+    public function initializeHasAttributes(): void
+    {
+        $this->mergeCasts([
+            'attribute_data' => AsAttributeData::class,
+        ]);
+    }
+
     /**
      * Getter to return the class name used with attribute relationships.
      *

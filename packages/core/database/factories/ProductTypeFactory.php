@@ -4,6 +4,7 @@ namespace Lunar\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\ProductType;
+use Lunar\FieldTypes\Text;
 
 class ProductTypeFactory extends Factory
 {
@@ -13,6 +14,9 @@ class ProductTypeFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'attribute_data' => collect([
+                'description' => new Text($this->faker->sentence),
+            ]),
         ];
     }
 }

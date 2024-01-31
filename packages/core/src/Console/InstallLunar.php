@@ -231,7 +231,7 @@ class InstallLunar extends Command
                     'name' => 'Stock',
                 ]);
 
-                $type->mappedAttributes()->attach(
+                $type->attributables()->attach(
                     Attribute::whereAttributeType(Product::class)->get()->pluck('id')
                 );
             }
