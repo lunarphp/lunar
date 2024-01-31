@@ -28,6 +28,12 @@ return [
         'account_reference' => [
             'label' => 'Account Reference',
         ],
+        'new' => [
+            'label' => 'New',
+        ],
+        'returning' => [
+            'label' => 'Returning',
+        ],
     ],
 
     'form' => [
