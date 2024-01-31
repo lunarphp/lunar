@@ -26,7 +26,7 @@ return [
             'richtext' => [
                 'label' => 'Rich Text',
             ],
-            'locales' => 'Locales'
+            'locales' => 'Locales',
         ],
     ],
     'toggle' => [
