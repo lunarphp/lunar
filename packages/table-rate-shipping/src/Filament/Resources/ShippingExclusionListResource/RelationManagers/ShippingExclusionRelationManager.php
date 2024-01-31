@@ -8,6 +8,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Product;
 
 class ShippingExclusionRelationManager extends RelationManager
@@ -54,7 +55,7 @@ class ShippingExclusionRelationManager extends RelationManager
                     ->limit(1)
                     ->square()
                     ->label(''),
-                \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('attribute_data.name')
+                TranslatedTextColumn::make('attribute_data.name')
                     ->attributeData()
                     ->limitedTooltip()
                     ->limit(50)
