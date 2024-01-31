@@ -30,7 +30,7 @@ return [
         ],
         'description' => [
             'label' => 'Description',
-            'helper' => 'Use to display the helper text below the entry'
+            'helper' => 'Use to display the helper text below the entry',
         ],
         'handle' => [
             'label' => 'Handle',
