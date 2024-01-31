@@ -71,11 +71,15 @@ class PriceRelationManager extends RelationManager
                                 ->where('priceable_type', get_class($owner))
                                 ->where('priceable_id', $owner->id);
                         }
+                    )->helperText(
+                        __('lunarpanel::relationmanagers.pricing.form.price.helper_text')
                     )->required(),
                     Forms\Components\TextInput::make('compare_price')->formatStateUsing(
                         fn ($state) => $state?->decimal(rounding: false)
                     )->label(
                         __('lunarpanel::relationmanagers.pricing.form.compare_price.label')
+                    )->helperText(
+                        __('lunarpanel::relationmanagers.pricing.form.compare_price.helper_text')
                     )->numeric(),
                 ])->columns(2),
             ])->columns(1);
