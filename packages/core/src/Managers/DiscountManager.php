@@ -212,6 +212,13 @@ class DiscountManager implements DiscountManagerInterface
         return $cart;
     }
 
+    public function resetDiscounts(): self
+    {
+        $this->discounts = null;
+
+        return $this;
+    }
+
     public function validateCoupon(string $coupon): bool
     {
         return app(
