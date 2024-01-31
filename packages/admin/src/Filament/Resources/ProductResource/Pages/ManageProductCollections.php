@@ -8,6 +8,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Collection;
 
 class ManageProductCollections extends ManageRelatedRecords
@@ -33,7 +34,7 @@ class ManageProductCollections extends ManageRelatedRecords
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('attribute_data.name')
+                TranslatedTextColumn::make('attribute_data.name')
                     ->attributeData()
                     ->limitedTooltip()
                     ->limit(50)

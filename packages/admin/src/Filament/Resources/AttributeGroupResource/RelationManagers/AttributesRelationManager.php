@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Support\Facades\AttributeData;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 
 class AttributesRelationManager extends RelationManager
 {
@@ -101,7 +102,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('name')->label(
+                TranslatedTextColumn::make('name')->label(
                     __('lunarpanel::attribute.table.name.label')
                 ),
                 Tables\Columns\TextColumn::make('description.en')->label(
