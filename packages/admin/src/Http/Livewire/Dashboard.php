@@ -115,7 +115,7 @@ class Dashboard extends Component
             DB::RAW('SUM(sub_total) as total')
         )->first();
 
-        return new Price($query->total->value, $this->defaultCurrency, 1);
+        return new Price($query->total->value ?? 0, $this->defaultCurrency, 1);
     }
 
     /**

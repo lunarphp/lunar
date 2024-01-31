@@ -35,7 +35,7 @@ use Lunar\Database\Factories\OrderFactory;
  * @property int $tax_total
  * @property int $total
  * @property ?string $notes
- * @property string $currency
+ * @property string $currency_code
  * @property ?string $compare_currency_code
  * @property float $exchange_rate
  * @property ?\Illuminate\Support\Carbon $placed_at

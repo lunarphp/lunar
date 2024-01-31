@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -118,7 +119,7 @@ class Product extends BaseModel implements SpatieHasMedia
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
-            Collection::class,
+            \Lunar\Models\Collection::class,
             config('lunar.database.table_prefix').'collection_product'
         )->withPivot(['position'])->withTimestamps();
     }
