@@ -122,9 +122,10 @@ return [
         ],
     ],
     'pricing' => [
-        'title' => 'Prices',
-        'title_plural' => 'Prices',
+        'title' => 'Pricing',
+        'title_plural' => 'Pricing',
         'table' => [
+            'heading' => 'Prices',
             'actions' => [
                 'create' => [
                     'label' => 'Add New Price',

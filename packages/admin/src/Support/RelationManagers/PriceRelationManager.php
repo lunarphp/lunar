@@ -24,7 +24,7 @@ class PriceRelationManager extends RelationManager
 
     protected function getTableHeading(): string|Htmlable|null
     {
-        return '';
+        return __('lunarpanel::relationmanagers.pricing.table.heading');
     }
 
     public function form(Form $form): Form
