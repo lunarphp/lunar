@@ -15,6 +15,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaRelationManager extends RelationManager
 {
+    protected static bool $isLazy = false;
+
     protected static string $relationship = 'media';
 
     public string $mediaCollection = 'default';
