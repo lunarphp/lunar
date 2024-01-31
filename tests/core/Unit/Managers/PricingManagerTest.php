@@ -40,7 +40,7 @@ test('can set up available guest pricing', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
     Price::factory()->create([
@@ -48,7 +48,7 @@ test('can set up available guest pricing', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 10,
+        'quantity_break' => 10,
     ]);
 
     Price::factory()->create([
@@ -56,7 +56,7 @@ test('can set up available guest pricing', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
         'customer_group_id' => CustomerGroup::factory(),
     ]);
 
@@ -64,7 +64,7 @@ test('can set up available guest pricing', function () {
 
     expect($pricing)->toBeInstanceOf(PricingResponse::class);
     expect($pricing->customerGroupPrices)->toHaveCount(0);
-    expect($pricing->tiered)->toHaveCount(1);
+    expect($pricing->quantityBreaks)->toHaveCount(1);
     expect($pricing->base->id)->toEqual($base->id);
     expect($pricing->matched->id)->toEqual($base->id);
 });
@@ -90,7 +90,7 @@ test('can get purchasable price with defaults', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
     $pricing = $manager->for($variant)->get();
@@ -123,7 +123,7 @@ test('can fetch customer group price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
     $customerGroupPrice = Price::factory()->create([
@@ -131,7 +131,7 @@ test('can fetch customer group price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
         'customer_group_id' => $customerGroups->first()->id,
     ]);
 
@@ -152,7 +152,7 @@ test('can fetch customer group price', function () {
     expect($pricing->matched->id)->toEqual($base->id);
 });
 
-test('can fetch tiered price', function () {
+test('can fetch quantity break price', function () {
     $manager = new PricingManager();
 
     $currency = Currency::factory()->create([
@@ -173,31 +173,31 @@ test('can fetch tiered price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
-    $tiered10 = Price::factory()->create([
+    $break10 = Price::factory()->create([
         'price' => 90,
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 10,
+        'quantity_break' => 10,
     ]);
 
-    $tiered20 = Price::factory()->create([
+    $break20 = Price::factory()->create([
         'price' => 80,
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 20,
+        'quantity_break' => 20,
     ]);
 
-    $tiered30 = Price::factory()->create([
+    $break30 = Price::factory()->create([
         'price' => 70,
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 30,
+        'quantity_break' => 30,
     ]);
 
     $pricing = $manager->qty(1)->for($variant)->get();
@@ -213,32 +213,32 @@ test('can fetch tiered price', function () {
     $pricing = $manager->qty(10)->for($variant)->get();
 
     expect($pricing->base->id)->toEqual($base->id);
-    expect($pricing->matched->id)->toEqual($tiered10->id);
+    expect($pricing->matched->id)->toEqual($break10->id);
 
     $pricing = $manager->qty(15)->for($variant)->get();
 
     expect($pricing->base->id)->toEqual($base->id);
-    expect($pricing->matched->id)->toEqual($tiered10->id);
+    expect($pricing->matched->id)->toEqual($break10->id);
 
     $pricing = $manager->qty(20)->for($variant)->get();
 
     expect($pricing->base->id)->toEqual($base->id);
-    expect($pricing->matched->id)->toEqual($tiered20->id);
+    expect($pricing->matched->id)->toEqual($break20->id);
 
     $pricing = $manager->qty(25)->for($variant)->get();
 
     expect($pricing->base->id)->toEqual($base->id);
-    expect($pricing->matched->id)->toEqual($tiered20->id);
+    expect($pricing->matched->id)->toEqual($break20->id);
 
     $pricing = $manager->qty(30)->for($variant)->get();
 
     expect($pricing->base->id)->toEqual($base->id);
-    expect($pricing->matched->id)->toEqual($tiered30->id);
+    expect($pricing->matched->id)->toEqual($break30->id);
 
     $pricing = $manager->qty(100)->for($variant)->get();
 
     expect($pricing->base->id)->toEqual($base->id);
-    expect($pricing->matched->id)->toEqual($tiered30->id);
+    expect($pricing->matched->id)->toEqual($break30->id);
 });
 
 test('can match based on currency', function () {
@@ -267,7 +267,7 @@ test('can match based on currency', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
     $additional = Price::factory()->create([
@@ -275,7 +275,7 @@ test('can match based on currency', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $secondCurrency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
     $pricing = $manager->qty(1)->for($variant)->get();
@@ -318,7 +318,7 @@ function can_fetch_correct_price_for_user()
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
     $groupPrice = Price::factory()->create([
@@ -326,7 +326,7 @@ function can_fetch_correct_price_for_user()
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
         'customer_group_id' => $group->id,
     ]);
 
@@ -372,7 +372,7 @@ test('can pipeline purchasable price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
     ]);
 
     $pricing = $manager->for($variant)->get();

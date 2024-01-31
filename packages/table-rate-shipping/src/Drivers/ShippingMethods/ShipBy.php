@@ -77,7 +77,7 @@ class ShipBy implements ShippingRateInterface
         // Do we have a suitable tier price?
         $pricing = Pricing::for($shippingRate)->customerGroups($customerGroups)->qty($tier)->get();
 
-        $prices = $pricing->tiered;
+        $prices = $pricing->quantityBreaks;
 
         // If there are customer group prices, they need to take priority.
         if (! $pricing->customerGroupPrices->isEmpty()) {
@@ -85,8 +85,8 @@ class ShipBy implements ShippingRateInterface
         }
 
         $matched = $prices->filter(function ($price) use ($tier) {
-            return $tier >= $price->tier;
-        })->sortByDesc('tier')->first() ?: $pricing->base;
+            return $tier >= $price->quantity_break;
+        })->sortByDesc('quantity_break')->first() ?: $pricing->base;
 
         if (! $matched) {
             return null;
