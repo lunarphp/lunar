@@ -148,7 +148,7 @@ return [
         'form' => [
             'price' => [
                 'label' => 'Price',
-                'helper_text' => 'The price which you intend to sell the product, before any additional discounts.',
+                'helper_text' => 'The purchase price, before discounts.',
             ],
             'customer_group_id' => [
                 'label' => 'Customer Group',
