@@ -17,7 +17,7 @@ class TranslatedTextColumn extends TextColumn
         parent::setUp();
 
         $name = $this->getName();
-        
+
         $this->formatStateUsing(static function (Model $record) use ($name) {
             return $record->translate($name);
         });
