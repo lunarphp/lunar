@@ -40,9 +40,13 @@ class UpdateProductOptionRelations extends Migration
             "{$productsTable}.id as product_id",
             "{$optionsTable}.id as product_option_id",
             "{$optionsTable}.position",
-        ])->groupBy(['product_id', 'product_option_id'])
-            ->orderBy('product_id')
-            ->chunk(2, function ($rows) {
+        ])->groupBy([
+            "{$productsTable}.id",
+            "{$optionsTable}.id",
+            "{$optionsTable}.position",
+        ])
+            ->orderBy("{$productsTable}.id")
+            ->chunk(200, function ($rows) {
                 DB::table(
                     $this->prefix.'product_product_option'
                 )->insert(

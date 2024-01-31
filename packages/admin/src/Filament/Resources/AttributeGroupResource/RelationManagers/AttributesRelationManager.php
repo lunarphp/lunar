@@ -27,7 +27,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name.en')
+                Forms\Components\TextInput::make('name.en') // TODO: localise
                     ->label(
                         __('lunarpanel::attribute.form.name.label')
                     )
@@ -40,6 +40,14 @@ class AttributesRelationManager extends RelationManager
                         }
                         $set('handle', Str::slug($state));
                     }),
+                Forms\Components\TextInput::make('description.en') // TODO: localise
+                    ->label(
+                        __('lunarpanel::attribute.form.description.label')
+                    )
+                    ->helperText(
+                        __('lunarpanel::attribute.form.description.helper')
+                    )
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('handle')
                     ->label(
                         __('lunarpanel::attribute.form.handle.label')
@@ -95,6 +103,9 @@ class AttributesRelationManager extends RelationManager
             ->columns([
                 \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('name')->label(
                     __('lunarpanel::attribute.table.name.label')
+                ),
+                Tables\Columns\TextColumn::make('description.en')->label(
+                    __('lunarpanel::attribute.table.description.label')
                 ),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(

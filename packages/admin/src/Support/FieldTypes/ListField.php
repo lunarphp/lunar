@@ -15,6 +15,6 @@ class ListField extends BaseFieldType
     {
         return KeyValue::make($attribute->handle)->dehydrateStateUsing(function ($state) {
             return $state;
-        });
+        })->helperText($attribute->translate('description'));
     }
 }

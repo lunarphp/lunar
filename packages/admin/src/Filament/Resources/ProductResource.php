@@ -18,11 +18,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
+use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
+use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
+use \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
@@ -33,6 +36,8 @@ class ProductResource extends BaseResource
     protected static ?string $permission = 'catalog:manage-products';
 
     protected static ?string $model = Product::class;
+
+    protected static ?string $recordTitleAttribute = 'recordTitle';
 
     protected static ?int $navigationSort = 1;
 
@@ -75,6 +80,14 @@ class ProductResource extends BaseResource
             Pages\ManageProductCollections::class,
             Pages\ManageProductAssociations::class,
         ]);
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ProductOptionsWidget::class,
+            VariantSwitcherTable::class,
+        ];
     }
 
     public static function getDefaultForm(Form $form): Form
@@ -232,7 +245,7 @@ class ProductResource extends BaseResource
                 ->limit(1)
                 ->square()
                 ->label(''),
-            \Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn::make('attribute_data.name')
+            TranslatedTextColumn::make('attribute_data.name')
                 ->attributeData()
                 ->limitedTooltip()
                 ->limit(50)
@@ -243,6 +256,22 @@ class ProductResource extends BaseResource
                 ->searchable(),
             Tables\Columns\TextColumn::make('variants.sku')
                 ->label(__('lunarpanel::product.table.sku.label'))
+                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
+
+                    if ($record->variants->count() <= $column->getListLimit()) {
+                        return null;
+                    }
+
+                    if ($record->variants->count() > 30) {
+                        $record->variants = $record->variants->slice(0, 30);
+                    }
+
+                    return $record->variants
+                        ->map(fn ($variant) => $variant->sku)
+                        ->implode(', ');
+                })
+                ->listWithLineBreaks()
+                ->limitList(1)
                 ->toggleable(),
             Tables\Columns\TextColumn::make('variants_sum_stock')
                 ->label(__('lunarpanel::product.table.stock.label'))
