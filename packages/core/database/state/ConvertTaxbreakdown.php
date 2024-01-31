@@ -15,7 +15,6 @@ class ConvertTaxbreakdown
     public function run()
     {
         DB::usingConnection(config('lunar.database.connection') ?: DB::getDefaultConnection(), function () {
-
             $prefix = config('lunar.database.table_prefix');
             $updateTime = now();
 
@@ -74,7 +73,6 @@ class ConvertTaxbreakdown
                         });
                     });
             }
-
         });
     }
 

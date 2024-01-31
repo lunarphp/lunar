@@ -22,7 +22,9 @@ class ActivityLogFeed extends Component
      * The new comment for the subject.
      */
     public ?string $comment = null;
-
+    
+    protected $listeners = ['activityUpdated' => '$refresh'];
+    
     /**
      * {@inheritDoc}
      */
