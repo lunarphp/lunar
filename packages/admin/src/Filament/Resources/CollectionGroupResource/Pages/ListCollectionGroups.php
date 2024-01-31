@@ -3,10 +3,10 @@
 namespace Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
+use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
 
-class ListCollectionGroups extends ListRecords
+class ListCollectionGroups extends BaseListRecords
 {
     protected static string $resource = CollectionGroupResource::class;
 
