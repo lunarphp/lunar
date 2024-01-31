@@ -26,12 +26,13 @@ trait CreatesChildCollections
             ]);
         }
 
-        Collection::create([
+        // Fix : alnoy/nestedset package, create($attributes, $parent) have an issue ?
+        $parent->appendNode(Collection::create([
             'collection_group_id' => $parent->collection_group_id,
             'attribute_data' => [
                 'name' => new $fieldType($nameValue),
             ],
-        ], $parent);
+        ]));
 
         DB::commit();
     }
