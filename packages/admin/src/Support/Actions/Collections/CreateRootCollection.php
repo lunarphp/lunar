@@ -4,6 +4,7 @@ namespace Lunar\Admin\Support\Actions\Collections;
 
 use Filament\Actions\CreateAction;
 use Filament\Forms\Form;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Facades\DB;
 use Lunar\Models\Attribute;
 use Lunar\Models\Collection;
@@ -55,7 +56,7 @@ class CreateRootCollection extends CreateAction
         });
 
         $this->form([
-            \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')->required(),
+            TranslatedText::make('name')->required(),
         ]);
 
         $this->label(

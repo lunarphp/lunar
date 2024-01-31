@@ -7,6 +7,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Models\ProductOptionValue;
 
 class ValuesRelationManager extends RelationManager
@@ -22,7 +23,7 @@ class ValuesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
+                TranslatedText::make('name')
                     ->required()
                     ->maxLength(255),
             ]);

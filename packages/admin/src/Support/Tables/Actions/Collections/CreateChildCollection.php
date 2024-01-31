@@ -5,6 +5,7 @@ namespace Lunar\Admin\Support\Tables\Actions\Collections;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Lunar\Admin\Support\Actions\Traits\CreatesChildCollections;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 
 class CreateChildCollection extends CreateAction
 {
@@ -24,7 +25,7 @@ class CreateChildCollection extends CreateAction
         });
 
         $this->form([
-            \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')->required(),
+            TranslatedText::make('name')->required(),
         ]);
 
         $this->createAnother(false);

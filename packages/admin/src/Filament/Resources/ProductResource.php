@@ -22,6 +22,7 @@ use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
 use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -168,7 +169,7 @@ class ProductResource extends BaseResource
 
     public static function getBaseNameFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
+        return TranslatedText::make('name')
             ->label(__('lunarpanel::product.form.name.label'))->required();
     }
 

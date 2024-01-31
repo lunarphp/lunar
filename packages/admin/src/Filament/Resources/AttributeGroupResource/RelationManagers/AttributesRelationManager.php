@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Support\Facades\AttributeData;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Models\Language;
 
 class AttributesRelationManager extends RelationManager
@@ -28,7 +29,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
+                TranslatedText::make('name')
                     ->label(
                         __('lunarpanel::attribute.form.name.label')
                     )
