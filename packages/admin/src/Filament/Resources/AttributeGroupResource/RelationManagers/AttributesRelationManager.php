@@ -41,6 +41,14 @@ class AttributesRelationManager extends RelationManager
                         }
                         $set('handle', Str::slug($state[Language::getDefault()->code])); // TODO : create new global variable on LunarPanelManager with default language ?
                     }),
+                Forms\Components\TextInput::make('description.en') // TODO: localise
+                    ->label(
+                        __('lunarpanel::attribute.form.description.label')
+                    )
+                    ->helperText(
+                        __('lunarpanel::attribute.form.description.helper')
+                    )
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('handle')
                     ->label(
                         __('lunarpanel::attribute.form.handle.label')
@@ -96,6 +104,9 @@ class AttributesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name.en')->label(
                     __('lunarpanel::attribute.table.name.label')
+                ),
+                Tables\Columns\TextColumn::make('description.en')->label(
+                    __('lunarpanel::attribute.table.description.label')
                 ),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(

@@ -10,6 +10,9 @@ return [
         'name' => [
             'label' => 'Name',
         ],
+        'description' => [
+            'label' => 'Description',
+        ],
         'handle' => [
             'label' => 'Handle',
         ],
@@ -24,6 +27,10 @@ return [
         ],
         'name' => [
             'label' => 'Name',
+        ],
+        'description' => [
+            'label' => 'Description',
+            'helper' => 'Use to display the helper text below the entry',
         ],
         'handle' => [
             'label' => 'Handle',

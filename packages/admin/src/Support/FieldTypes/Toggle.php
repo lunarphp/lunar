@@ -13,6 +13,10 @@ class Toggle extends BaseFieldType
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {
-        return ToggleInput::make($attribute->handle)->default('true')->live();
+        return ToggleInput::make($attribute->handle)->default('true')
+            ->helperText(
+                $attribute->translate('description')
+            )
+            ->live();
     }
 }

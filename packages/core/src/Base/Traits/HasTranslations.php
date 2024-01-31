@@ -12,7 +12,7 @@ trait HasTranslations
      *
      * @param  string  $attribute
      * @param  string  $locale
-     * @return string
+     * @return string|null
      */
     public function translate($attribute, $locale = null)
     {
@@ -43,7 +43,7 @@ trait HasTranslations
      *
      * @param  string  $attribute
      * @param  string  $locale
-     * @return string
+     * @return string|null
      */
     public function translateAttribute($attribute, $locale = null)
     {
@@ -61,9 +61,9 @@ trait HasTranslations
 
         $value = Arr::get($translations, $locale ?: app()->getLocale(), Arr::first($translations));
 
-        // We we don't have a value, we just return null as it may not have a value.
+        // When we don't have a value, we just return null as it may not have a value.
         if (! $value) {
-            return;
+            return null;
         }
 
         /**
@@ -80,7 +80,7 @@ trait HasTranslations
     /**
      * Shorthand to translate an attribute.
      *
-     * @return void
+     * @return string|null
      */
     public function attr(...$params)
     {

@@ -67,7 +67,7 @@ class OrdersSalesChart extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'bar',
+                'type' => 'area',
                 'stacked' => false,
                 'toolbar' => [
                     'show' => false,

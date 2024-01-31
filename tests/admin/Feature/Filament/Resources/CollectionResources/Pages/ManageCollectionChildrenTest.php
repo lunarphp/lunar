@@ -30,6 +30,9 @@ it('can create child categories', function () {
         'name' => [
             'en' => 'Name',
         ],
+        'description' => [
+            'en' => 'Description',
+        ],
         'handle' => 'name',
         'type' => \Lunar\FieldTypes\TranslatedText::class,
         'attribute_type' => \Lunar\Models\Collection::class,

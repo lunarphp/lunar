@@ -20,6 +20,9 @@ test('can make a attribute', function () {
             'name' => [
                 'en' => 'Meta Description',
             ],
+            'description' => [
+                'en' => 'Meta Description',
+            ],
             'handle' => 'meta_description',
             'section' => 'product_variant',
             'type' => \Lunar\FieldTypes\Text::class,
