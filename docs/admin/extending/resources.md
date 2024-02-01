@@ -31,12 +31,10 @@ class MyProductResourceExtension extends \Lunar\Panel\Support\Extending\Resource
     
     public function extendTable(\Filament\Tables\Table $table): \Filament\Tables\Table
     {
-        $actions = [
+        return $table->columns([
             ...$table->getColumns(),
             \Filament\Tables\Columns\TextColumn::make('product_code')
-        ];
-
-        return $table;
+        ]);
     }
     
     public function getRelations(array $managers) : array
