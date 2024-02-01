@@ -7,89 +7,24 @@ use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Support\Concerns\Products\UpdatesPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
 
 class ManageProductPricing extends BaseEditRecord
 {
+    use UpdatesPricing;
+
     protected static string $resource = ProductResource::class;
-
-    protected static ?string $title = 'Pricing';
-
-    public ?string $tax_class_id = '';
-
-    public ?string $tax_ref = '';
-
-    public array $basePrices = [];
-
-    public function mount(int|string $record): void
-    {
-        parent::mount($record);
-
-        $variant = $this->getOwnerRecord();
-
-        $this->tax_class_id = $variant->tax_class_id;
-        $this->tax_ref = $variant->tax_ref;
-    }
-
-    public static function getBasePrices(Model|ProductVariant $variant): array
-    {
-        // Get enabled currencies
-        $currencies = Currency::whereEnabled(true)->get();
-
-        $prices = collect([]);
-
-        foreach ($variant->basePrices()->get() as $price) {
-            $prices->put(
-                $price->currency->code,
-                [
-                    'id' => $price->id,
-                    'value' => $price->price->decimal(rounding: false),
-                    'factor' => $price->currency->factor,
-                    'label' => $price->currency->name,
-                    'currency_code' => $price->currency->code,
-                    'default_currency' => $price->currency->default,
-                    'currency_id' => $price->currency_id,
-                ]
-            );
-        }
-
-        $defaultCurrencyPrice = $prices->first(
-            fn ($price) => $price['default_currency']
-        );
-
-        foreach ($currencies as $currency) {
-            if (! $prices->get($currency->code)) {
-                $prices->put($currency->code, [
-                    'id' => null,
-                    'value' => round(($defaultCurrencyPrice['value'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
-                    'factor' => $currency->factor,
-                    'label' => $currency->name,
-                    'currency_code' => $currency->code,
-                    'default_currency' => $currency->default,
-                    'currency_id' => $currency->id,
-                ]);
-            }
-        }
-
-        return $prices->values()->toArray();
-    }
 
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::product-pricing');
-    }
-
-    public function getTitle(): string|Htmlable
-    {
-        return __('lunarpanel::relationmanagers.pricing.title');
     }
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
@@ -102,42 +37,10 @@ class ManageProductPricing extends BaseEditRecord
         return $this->getRecord()->variants()->first();
     }
 
-    protected function handleRecordUpdate(Model $record, array $data): Model
-    {
-        $variant = $this->getOwnerRecord();
-
-        $prices = collect($data['basePrices']);
-        unset($data['basePrices']);
-        $variant->update($data);
-
-        $prices->filter(
-            fn ($price) => ! $price['id']
-        )->each(fn ($price) => $variant->prices()->create([
-            'currency_id' => $price['currency_id'],
-            'price' => (int) ($price['value'] * $price['factor']),
-            'min_quantity' => 1,
-            'customer_group_id' => null,
-        ])
-        );
-
-        $prices->filter(
-            fn ($price) => $price['id']
-        )->each(fn ($price) => Price::whereId($price['id'])->update([
-            'price' => (int) ($price['value'] * $price['factor']),
-        ])
-        );
-
-        $this->basePrices = static::getBasePrices($variant);
-
-        return $record;
-    }
-
     public function form(Form $form): Form
     {
         if (! count($this->basePrices)) {
-            $this->basePrices = static::getBasePrices(
-                $this->getOwnerRecord()
-            );
+            $this->basePrices = $this->getBasePrices();
         }
 
         return $form->schema([
@@ -148,34 +51,7 @@ class ManageProductPricing extends BaseEditRecord
                         ProductVariantResource::getTaxRefFormComponent(),
                     ])->columns(2),
                 ]),
-            Forms\Components\Section::make(
-                __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
-            )
-                ->schema(
-                    collect($this->basePrices)->map(function ($price, $index): Forms\Components\TextInput {
-                        return Forms\Components\TextInput::make('value')
-                            ->label('')
-                            ->statePath($index.'.value')
-                            ->label($price['label'])
-                            ->hintColor('warning')
-                            ->extraInputAttributes([
-                                'class' => '',
-                            ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                                if ($get('basePrices.'.$index.'.id', true)) {
-                                    return null;
-                                }
-
-                                return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                                if ($get('basePrices.'.$index.'.id', true)) {
-                                    return null;
-                                }
-
-                                return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
-                            })->live();
-                    })->toArray()
-                )->statePath('basePrices')->columns(3),
+            $this->getBasePriceFormSection(),
         ])->statePath('');
     }
 
