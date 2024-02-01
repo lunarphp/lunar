@@ -4,6 +4,7 @@ namespace Lunar\Admin\Support\Concerns\Products;
 
 use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
