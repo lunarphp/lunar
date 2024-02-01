@@ -26,12 +26,12 @@ trait CreatesChildCollections
             ]);
         }
 
-        Collection::create([
+        $parent->appendNode(Collection::create([
             'collection_group_id' => $parent->collection_group_id,
             'attribute_data' => [
                 'name' => new $fieldType($nameValue),
             ],
-        ], $parent);
+        ]));
 
         DB::commit();
     }
