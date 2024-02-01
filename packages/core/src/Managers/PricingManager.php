@@ -195,25 +195,25 @@ class PricingManager implements PricingManagerInterface
         })->sortBy('price');
 
         // Get our base price
-        $basePrice = $prices->first(fn ($price) => $price->tier == 1 && ! $price->customer_group_id);
+        $basePrice = $prices->first(fn ($price) => $price->quantity_break == 1 && ! $price->customer_group_id);
 
         // To start, we'll set the matched price to the base price.
         $matched = $basePrice;
 
         // If we have customer group prices, we should find the cheapest one and send that back.
         $potentialGroupPrice = $prices->filter(function ($price) {
-            return (bool) $price->customer_group_id && $price->tier == 1;
+            return (bool) $price->customer_group_id && ($price->quantity_break == 1);
         })->sortBy('price');
 
         $matched = $potentialGroupPrice->first() ?: $matched;
 
-        // Get all tiers that match for the given quantity. These take priority over the other steps
+        // Get all quantity breaks that match for the given quantity. These take priority over the other steps
         // as we could be bulk purchasing.
-        $tieredPricing = $prices->filter(function ($price) {
-            return $price->tier > 1 && $this->qty >= $price->tier;
+        $quantityBreaks = $prices->filter(function ($price) {
+            return $price->quantity_break > 1 && $this->qty >= $price->quantity_break;
         })->sortBy('price');
 
-        $matched = $tieredPricing->first() ?: $matched;
+        $matched = $quantityBreaks->first() ?: $matched;
 
         if (! $matched) {
             throw new \ErrorException('No price set.');
@@ -221,8 +221,8 @@ class PricingManager implements PricingManagerInterface
 
         $this->pricing = new PricingResponse(
             matched: $matched,
-            base: $prices->first(fn ($price) => $price->tier == 1),
-            tiered: $prices->filter(fn ($price) => $price->tier > 1),
+            base: $prices->first(fn ($price) => $price->quantity_break == 1),
+            quantityBreaks: $prices->filter(fn ($price) => $price->quantity_break > 1),
             customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
         );
 

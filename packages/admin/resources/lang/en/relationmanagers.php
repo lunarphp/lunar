@@ -131,8 +131,8 @@ return [
             'customer_group' => [
                 'label' => 'Customer Group',
             ],
-            'tier' => [
-                'label' => 'Tier',
+            'quantity_break' => [
+                'label' => 'Quantity Break',
             ],
             'currency' => [
                 'label' => 'Currency',
@@ -145,8 +145,8 @@ return [
             'customer_group_id' => [
                 'label' => 'Customer Group',
             ],
-            'tier' => [
-                'label' => 'Tier',
+            'quantity_break' => [
+                'label' => 'Quantity Break',
             ],
             'currency_id' => [
                 'label' => 'Currency',

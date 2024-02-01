@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
@@ -22,7 +23,7 @@ test('can calculate lines', function ($expectedUnitPrice, $incomingUnitPrice, $u
 
     Price::factory()->create([
         'price' => $incomingUnitPrice,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
