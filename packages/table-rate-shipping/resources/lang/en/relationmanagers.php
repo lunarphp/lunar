@@ -20,7 +20,7 @@ return [
                 'label' => 'Price',
             ],
             'prices' => [
-                'label' => 'Quantity Breaks',
+                'label' => 'Price Breaks',
                 'repeater' => [
                     'customer_group_id' => [
                         'label' => 'Customer Group',

@@ -25,7 +25,7 @@ trait HasPrices
      */
     public function basePrices(): MorphMany
     {
-        return $this->prices()->whereQuantityBreak(1)->whereNull('customer_group_id');
+        return $this->prices()->whereMinQuantity(1)->whereNull('customer_group_id');
     }
 
     public function priceBreaks(): MorphMany

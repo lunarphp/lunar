@@ -31,7 +31,7 @@ for further information.
 The `position` field has been removed from the `product_options` table and is now found on the `product_product_option` 
 pivot table. Any position data will be automatically adjusted when running migrations.
 
-#### Tiers renamed to Quantity Breaks
+#### Tiers renamed to Price Breaks
 
 The `tier` column on pricing has been renamed to `min_quantity`, any references in code to `tiers` needs to be updated.
 

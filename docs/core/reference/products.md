@@ -493,9 +493,9 @@ You can specify which customer group the price applies to by setting the `custom
 the price will apply to all customer groups. This is useful if you want to have different pricing for certain customer
 groups and also different price quantity breaks per customer group.
 
-### Quantity Break Pricing
+### Price Break Pricing
 
-Quantity Break pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing
+Price Break pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing
 on Lunar, this is determined by the `min_quantity` column when creating prices. For example:
 
 ```php
