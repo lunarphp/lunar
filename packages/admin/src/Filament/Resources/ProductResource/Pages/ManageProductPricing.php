@@ -5,12 +5,16 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
+use Lunar\Models\Currency;
+use Lunar\Models\Price;
 
 class ManageProductPricing extends BaseEditRecord
 {
@@ -22,6 +26,8 @@ class ManageProductPricing extends BaseEditRecord
 
     public ?string $tax_ref = '';
 
+    public array $basePrices = [];
+
     public function mount(int|string $record): void
     {
         parent::mount($record);
@@ -30,6 +36,49 @@ class ManageProductPricing extends BaseEditRecord
 
         $this->tax_class_id = $variant->tax_class_id;
         $this->tax_ref = $variant->tax_ref;
+    }
+
+    protected function mapBasePrices()
+    {
+        // Get enabled currencies
+        $currencies = Currency::whereEnabled(true)->get();
+
+        $prices = collect([]);
+
+        foreach ($this->getOwnerRecord()->basePrices()->get() as $price) {
+            $prices->put(
+                $price->currency->code,
+                [
+                    'id' => $price->id,
+                    'value' => $price->price->decimal(rounding: false),
+                    'factor' => $price->currency->factor,
+                    'label' => $price->currency->name,
+                    'currency_code' => $price->currency->code,
+                    'default_currency' => $price->currency->default,
+                    'currency_id' => $price->currency_id,
+                ]
+            );
+        }
+
+        $defaultCurrencyPrice = $prices->first(
+            fn ($price) => $price['default_currency']
+        );
+
+        foreach ($currencies as $currency) {
+            if (! $prices->get($currency->code)) {
+                $prices->put($currency->code, [
+                    'id' => null,
+                    'value' => round(($defaultCurrencyPrice['value'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
+                    'factor' => $currency->factor,
+                    'label' => $currency->name,
+                    'currency_code' => $currency->code,
+                    'default_currency' => $currency->default,
+                    'currency_id' => $currency->id,
+                ]);
+            }
+        }
+
+        $this->basePrices = $prices->values()->toArray();
     }
 
     public static function getNavigationIcon(): ?string
@@ -56,13 +105,38 @@ class ManageProductPricing extends BaseEditRecord
     {
         $variant = $this->getOwnerRecord();
 
+        $prices = collect($data['basePrices']);
+        unset($data['basePrices']);
         $variant->update($data);
+
+        $prices->filter(
+            fn ($price) => ! $price['id']
+        )->each(fn ($price) => $variant->prices()->create([
+            'currency_id' => $price['currency_id'],
+            'price' => (int) ($price['value'] * $price['factor']),
+            'quantity_break' => 1,
+            'customer_group_id' => null,
+        ])
+        );
+
+        $prices->filter(
+            fn ($price) => $price['id']
+        )->each(fn ($price) => Price::whereId($price['id'])->update([
+            'price' => (int) ($price['value'] * $price['factor']),
+        ])
+        );
+
+        $this->mapBasePrices();
 
         return $record;
     }
 
     public function form(Form $form): Form
     {
+        if (! count($this->basePrices)) {
+            $this->mapBasePrices();
+        }
+
         return $form->schema([
             Forms\Components\Section::make()
                 ->schema([
@@ -71,6 +145,32 @@ class ManageProductPricing extends BaseEditRecord
                         ProductVariantResource::getTaxRefFormComponent(),
                     ])->columns(2),
                 ]),
+            Forms\Components\Section::make('Base Prices')
+                ->schema(
+                    collect($this->basePrices)->map(function ($price, $index): Forms\Components\TextInput {
+                        return Forms\Components\TextInput::make('value')
+                            ->label('')
+                            ->statePath($index.'.value')
+                            ->label($price['label'])
+                            ->hintColor('warning')
+                            ->extraInputAttributes([
+                                'class' => '',
+                            ])
+                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                                if ($get('basePrices.'.$index.'.id', true)) {
+                                    return null;
+                                }
+
+                                return FilamentIcon::resolve('lunar::info');
+                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                                if ($get('basePrices.'.$index.'.id', true)) {
+                                    return null;
+                                }
+
+                                return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
+                            })->live();
+                    })->toArray()
+                )->statePath('basePrices')->columns(3),
         ])->statePath('');
     }
 

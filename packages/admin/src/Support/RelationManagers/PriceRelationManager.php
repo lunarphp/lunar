@@ -50,11 +50,11 @@ class PriceRelationManager extends RelationManager
                         )->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.customer_group_id.helper_text')
                         )->relationship(name: 'customerGroup', titleAttribute: 'name'),
-                    Forms\Components\TextInput::make('tier')
+                    Forms\Components\TextInput::make('quantity_break')
                         ->label(
-                            __('lunarpanel::relationmanagers.pricing.form.tier.label')
+                            __('lunarpanel::relationmanagers.pricing.form.quantity_break.label')
                         )->default(1)->helperText(
-                            __('lunarpanel::relationmanagers.pricing.form.tier.helper_text')
+                            __('lunarpanel::relationmanagers.pricing.form.quantity_break.helper_text')
                         )->numeric()->minValue(1)->required(),
                 ])->columns(3),
 
@@ -90,7 +90,9 @@ class PriceRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(
-                fn ($query) => $query->orderBy('quantity_break', 'asc')
+                fn ($query) => $query->where('quantity_break', '>', 1)->orderBy('quantity_break', 'asc')
+            )->emptyStateHeading(
+                __('lunarpanel::relationmanagers.pricing.table.empty_state.label')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('price')
