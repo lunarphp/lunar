@@ -28,9 +28,9 @@ trait HasPrices
         return $this->prices()->whereQuantityBreak(1)->whereNull('customer_group_id');
     }
 
-    public function quantityBreaks(): MorphMany
+    public function priceBreaks(): MorphMany
     {
-        return $this->prices()->where('quantity_break', '>', 1);
+        return $this->prices()->where('min_quantity', '>', 1);
     }
 
     /**

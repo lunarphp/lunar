@@ -48,7 +48,7 @@ test('can run pipeline', function () {
 
     \Lunar\Models\Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -56,7 +56,7 @@ test('can run pipeline', function () {
 
     \Lunar\Models\Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,

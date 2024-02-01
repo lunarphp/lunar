@@ -440,7 +440,7 @@ front end.
 | `price`             | A integer value for the price                                                        | `null`  | yes      |
 | `compare_price`     | For display purposes, allows you to show a comparison price, e.g. RRP.               | `null`  | no       |
 | `currency_id`       | The ID of the related currency                                                       | `null`  | yes      |
-| `quantity_break`    | The lower limit to get this price, 1 is the default for base pricing.                | `1`     | no       |
+| `min_quantity`      | The minimum quantity required to get this price.                                     | `1`     | no       |
 | `customer_group_id` | The customer group this price relates to, leaving as `null` means any customer group | `null`  | no       |
 | `priceable_type`    | This is the class reference to the related model which owns the price                | `null`  | yes      |
 | `priceable_id`      | This is the id of the related model which owns the price                             | `null`  | yes      |
@@ -450,7 +450,7 @@ $price = \Lunar\Models\Price::create([
     'price' => 199,
     'compare_price' => 299,
     'currency_id' => 1,
-    'quantity_break' => 1,
+    'min_quantity' => 1,
     'customer_group_id' => null,
     'priceable_type' => 'Lunar\Models\ProductVariant',
     'priceable_id' => 1,
@@ -476,7 +476,7 @@ relationship method.
     'price' => 199,
     'compare_price' => 299,
     'currency_id' => 1,
-    'quantity_break' => 1,
+    'min_quantity' => 1,
     'customer_group_id' => null,
     'priceable_type' => 'Lunar\Models\ProductVariant',
     'priceable_id' => 1,
@@ -496,21 +496,21 @@ groups and also different price quantity breaks per customer group.
 ### Quantity Break Pricing
 
 Quantity Break pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing
-on Lunar, this is determined by the `quantity_break` column when creating prices. For example:
+on Lunar, this is determined by the `min_quantity` column when creating prices. For example:
 
 ```php
 Price::create([
     // ...
     'price' => 199,
     'compare_price' => 399,
-    'quantity_break' => 1,
+    'min_quantity' => 1,
 ]);
 
 Price::create([
     // ...
     'price' => 150,
     'compare_price' => 399,
-    'quantity_break' => 10,
+    'min_quantity' => 10,
 ]);
 ```
 
@@ -607,7 +607,7 @@ $pricing->base;
 /**
  * A collection of all the price quantity breaks available for the given criteria.
  */
-$pricing->quantityBreaks;
+$pricing->priceBreaks;
 
 /**
  * All customer group pricing available for the given criteria.

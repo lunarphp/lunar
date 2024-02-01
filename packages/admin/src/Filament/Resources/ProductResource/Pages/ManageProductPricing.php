@@ -114,7 +114,7 @@ class ManageProductPricing extends BaseEditRecord
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
             'price' => (int) ($price['value'] * $price['factor']),
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'customer_group_id' => null,
         ])
         );
@@ -193,7 +193,7 @@ class ManageProductPricing extends BaseEditRecord
         return $table
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(
-                fn ($query) => $query->orderBy('quantity_break', 'asc')
+                fn ($query) => $query->orderBy('min_quantity', 'asc')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('price')
@@ -205,8 +205,8 @@ class ManageProductPricing extends BaseEditRecord
                 Tables\Columns\TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')
                 ),
-                Tables\Columns\TextColumn::make('quantity_break')->label(
-                    __('lunarpanel::relationmanagers.pricing.table.quantity_break.label')
+                Tables\Columns\TextColumn::make('min_quantity')->label(
+                    __('lunarpanel::relationmanagers.pricing.table.min_quantity.label')
                 ),
                 Tables\Columns\TextColumn::make('customerGroup.name')->label(
                     __('lunarpanel::relationmanagers.pricing.table.customer_group.label')
@@ -216,11 +216,11 @@ class ManageProductPricing extends BaseEditRecord
                 Tables\Filters\SelectFilter::make('currency')
                     ->relationship(name: 'currency', titleAttribute: 'name')
                     ->preload(),
-                Tables\Filters\SelectFilter::make('quantity_break')->options(
+                Tables\Filters\SelectFilter::make('min_quantity')->options(
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
                         ->where('priceable_type', get_class($this->getOwnerRecord()))
                         ->get()
-                        ->pluck('quantity_break', 'quantity_break')
+                        ->pluck('min_quantity', 'min_quantity')
                 ),
             ])
             ->headerActions([

@@ -33,7 +33,7 @@ pivot table. Any position data will be automatically adjusted when running migra
 
 #### Tiers renamed to Quantity Breaks
 
-The `tier` column on pricing has been renamed to `quantity_break`, any references in code to `tiers` needs to be updated.
+The `tier` column on pricing has been renamed to `min_quantity`, any references in code to `tiers` needs to be updated.
 
 ##### Price Model
 
@@ -41,12 +41,12 @@ The `tier` column on pricing has been renamed to `quantity_break`, any reference
 // Old
 $priceModel->tier
 // New
-$priceModel->quantity_break
+$priceModel->min_quantity
 
 // Old
 $priceModel->tiers
 // New
-$priceModel->quantityBreaks
+$priceModel->min_quantity
 ```
 
 ##### Lunar\Base\DataTransferObjects\PricingResponse
@@ -55,7 +55,7 @@ $priceModel->quantityBreaks
 // Old
 public Collection $tiered,
 // New
-public Collection $quantityBreaks,
+public Collection $priceBreaks,
 ```
 
 ## 0.7
