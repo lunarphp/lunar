@@ -66,7 +66,7 @@ class PriceRelationManager extends RelationManager
                             $owner = $this->getOwnerRecord();
 
                             return $rule->where('customer_group_id', $get('customer_group_id'))
-                                ->where('tier', 1)
+                                ->where('quantity_break', 1)
                                 ->where('currency_id', 1)
                                 ->where('priceable_type', get_class($owner))
                                 ->where('priceable_id', $owner->id);
@@ -90,7 +90,7 @@ class PriceRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(
-                fn ($query) => $query->orderBy('tier', 'asc')
+                fn ($query) => $query->orderBy('quantity_break', 'asc')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('price')
@@ -102,8 +102,8 @@ class PriceRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')
                 )->sortable(),
-                Tables\Columns\TextColumn::make('tier')->label(
-                    __('lunarpanel::relationmanagers.pricing.table.tier.label')
+                Tables\Columns\TextColumn::make('quantity_break')->label(
+                    __('lunarpanel::relationmanagers.pricing.table.quantity_break.label')
                 )->sortable(),
                 Tables\Columns\TextColumn::make('customerGroup.name')->label(
                     __('lunarpanel::relationmanagers.pricing.table.customer_group.label')
@@ -118,13 +118,13 @@ class PriceRelationManager extends RelationManager
                     ->label(
                         __('lunarpanel::relationmanagers.pricing.table.currency.label')
                     ),
-                Tables\Filters\SelectFilter::make('tier')->options(
+                Tables\Filters\SelectFilter::make('quantity_break')->options(
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
                         ->where('priceable_type', get_class($this->getOwnerRecord()))
                         ->get()
-                        ->pluck('tier', 'tier')
+                        ->pluck('quantity_break', 'quantity_break')
                 )->label(
-                    __('lunarpanel::relationmanagers.pricing.table.tier.label')
+                    __('lunarpanel::relationmanagers.pricing.table.quantity_break.label')
                 ),
             ])
             ->headerActions([

@@ -88,38 +88,6 @@ class ManageProductPricing extends BaseEditRecord
         return __('lunarpanel::relationmanagers.pricing.title');
     }
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('price')->formatStateUsing(
-                    fn ($state) => $state?->decimal(rounding: false)
-                )->numeric()->unique(
-                    modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
-                        $owner = $this->getOwnerRecord();
-
-                        return $rule->where('customer_group_id', $get('customer_group_id'))
-                            ->where('quantity_break', $get('quantity_break'))
-                            ->where('currency_id', $get('currency_id'))
-                            ->where('priceable_type', get_class($owner))
-                            ->where('priceable_id', $owner->id);
-                    }
-                )->required(),
-                Forms\Components\TextInput::make('quantity_break')
-                    ->label(
-                        __('lunarpanel::relationmanagers.pricing.form.quantity_break.label')
-                    )->numeric()->minValue(1)->required(),
-                Forms\Components\Select::make('currency_id')
-                    ->label(
-                        __('lunarpanel::relationmanagers.pricing.form.currency_id.label')
-                    )->relationship(name: 'currency', titleAttribute: 'name')->required(),
-                Forms\Components\Select::make('customer_group_id')
-                    ->label(
-                        __('lunarpanel::relationmanagers.pricing.form.customer_group_id.label')
-                    )->relationship(name: 'customerGroup', titleAttribute: 'name'),
-            ]);
-    }
-
     public function table(Table $table): Table
     {
         return $table
