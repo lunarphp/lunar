@@ -15,6 +15,7 @@ use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
+use Lunar\Models\ProductVariant;
 
 class ManageProductPricing extends BaseEditRecord
 {
@@ -38,14 +39,14 @@ class ManageProductPricing extends BaseEditRecord
         $this->tax_ref = $variant->tax_ref;
     }
 
-    protected function mapBasePrices()
+    public static function getBasePrices(Model|ProductVariant $variant): array
     {
         // Get enabled currencies
         $currencies = Currency::whereEnabled(true)->get();
 
         $prices = collect([]);
 
-        foreach ($this->getOwnerRecord()->basePrices()->get() as $price) {
+        foreach ($variant->basePrices()->get() as $price) {
             $prices->put(
                 $price->currency->code,
                 [
@@ -78,7 +79,7 @@ class ManageProductPricing extends BaseEditRecord
             }
         }
 
-        $this->basePrices = $prices->values()->toArray();
+        return $prices->values()->toArray();
     }
 
     public static function getNavigationIcon(): ?string
@@ -126,7 +127,7 @@ class ManageProductPricing extends BaseEditRecord
         ])
         );
 
-        $this->mapBasePrices();
+        $this->basePrices = static::getBasePrices($variant);
 
         return $record;
     }
@@ -134,7 +135,9 @@ class ManageProductPricing extends BaseEditRecord
     public function form(Form $form): Form
     {
         if (! count($this->basePrices)) {
-            $this->mapBasePrices();
+            $this->basePrices = static::getBasePrices(
+                $this->getOwnerRecord()
+            );
         }
 
         return $form->schema([
@@ -145,7 +148,9 @@ class ManageProductPricing extends BaseEditRecord
                         ProductVariantResource::getTaxRefFormComponent(),
                     ])->columns(2),
                 ]),
-            Forms\Components\Section::make('Base Prices')
+            Forms\Components\Section::make(
+                __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
+            )
                 ->schema(
                     collect($this->basePrices)->map(function ($price, $index): Forms\Components\TextInput {
                         return Forms\Components\TextInput::make('value')
