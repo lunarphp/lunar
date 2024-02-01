@@ -87,10 +87,14 @@ class PriceRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $priceTable = (new Price)->getTable();
+
         return $table
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(
-                fn ($query) => $query->where('min_quantity', '>', 1)->orderBy('min_quantity', 'asc')
+                fn ($query) => $query
+                    ->where("{$priceTable}.min_quantity", '>', 1)
+                    ->orderBy("{$priceTable}.min_quantity", 'asc')
             )->emptyStateHeading(
                 __('lunarpanel::relationmanagers.pricing.table.empty_state.label')
             )
