@@ -125,13 +125,13 @@ return [
         'title' => 'Pricing',
         'title_plural' => 'Pricing',
         'table' => [
-            'heading' => 'Quantity Breaks',
+            'heading' => 'Price Breaks',
             'empty_state' => [
                 'label' => 'No quantity break prices exist.',
             ],
             'actions' => [
                 'create' => [
-                    'label' => 'Add Quantity Break',
+                    'label' => 'Add Price Break',
                 ],
             ],
             'price' => [
@@ -141,8 +141,8 @@ return [
                 'label' => 'Customer Group',
                 'placeholder' => 'All Customer Groups',
             ],
-            'quantity_break' => [
-                'label' => 'Quantity Break',
+            'min_quantity' => [
+                'label' => 'Minimum Quantity',
             ],
             'currency' => [
                 'label' => 'Currency',
@@ -158,9 +158,9 @@ return [
                 'placeholder' => 'All Customer Groups',
                 'helper_text' => 'Select which customer group to apply this price to.',
             ],
-            'quantity_break' => [
-                'label' => 'Quantity Break',
-                'helper_text' => 'Select the lower limit this price will be available for.',
+            'min_quantity' => [
+                'label' => 'Minimum Quantity',
+                'helper_text' => 'Select the minimum quantity this price will be available for.',
             ],
             'currency_id' => [
                 'label' => 'Currency',

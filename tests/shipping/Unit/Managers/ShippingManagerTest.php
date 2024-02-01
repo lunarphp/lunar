@@ -54,17 +54,17 @@ test('can fetch expected shipping rates', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'quantity_break' => 800,
+            'min_quantity' => 800,
             'currency_id' => $currency->id,
         ],
     ]);

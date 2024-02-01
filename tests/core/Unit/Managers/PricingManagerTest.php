@@ -40,7 +40,7 @@ test('can set up available guest pricing', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     Price::factory()->create([
@@ -48,7 +48,7 @@ test('can set up available guest pricing', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 10,
+        'min_quantity' => 10,
     ]);
 
     Price::factory()->create([
@@ -56,7 +56,7 @@ test('can set up available guest pricing', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'customer_group_id' => CustomerGroup::factory(),
     ]);
 
@@ -64,7 +64,7 @@ test('can set up available guest pricing', function () {
 
     expect($pricing)->toBeInstanceOf(PricingResponse::class);
     expect($pricing->customerGroupPrices)->toHaveCount(0);
-    expect($pricing->quantityBreaks)->toHaveCount(1);
+    expect($pricing->priceBreaks)->toHaveCount(1);
     expect($pricing->base->id)->toEqual($base->id);
     expect($pricing->matched->id)->toEqual($base->id);
 });
@@ -90,7 +90,7 @@ test('can get purchasable price with defaults', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     $pricing = $manager->for($variant)->get();
@@ -123,7 +123,7 @@ test('can fetch customer group price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     $customerGroupPrice = Price::factory()->create([
@@ -131,7 +131,7 @@ test('can fetch customer group price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'customer_group_id' => $customerGroups->first()->id,
     ]);
 
@@ -173,7 +173,7 @@ test('can fetch quantity break price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     $break10 = Price::factory()->create([
@@ -181,7 +181,7 @@ test('can fetch quantity break price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 10,
+        'min_quantity' => 10,
     ]);
 
     $break20 = Price::factory()->create([
@@ -189,7 +189,7 @@ test('can fetch quantity break price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 20,
+        'min_quantity' => 20,
     ]);
 
     $break30 = Price::factory()->create([
@@ -197,7 +197,7 @@ test('can fetch quantity break price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 30,
+        'min_quantity' => 30,
     ]);
 
     $pricing = $manager->qty(1)->for($variant)->get();
@@ -267,7 +267,7 @@ test('can match based on currency', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     $additional = Price::factory()->create([
@@ -275,7 +275,7 @@ test('can match based on currency', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $secondCurrency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     $pricing = $manager->qty(1)->for($variant)->get();
@@ -318,7 +318,7 @@ function can_fetch_correct_price_for_user()
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     $groupPrice = Price::factory()->create([
@@ -326,7 +326,7 @@ function can_fetch_correct_price_for_user()
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'customer_group_id' => $group->id,
     ]);
 
@@ -372,7 +372,7 @@ test('can pipeline purchasable price', function () {
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     $pricing = $manager->for($variant)->get();

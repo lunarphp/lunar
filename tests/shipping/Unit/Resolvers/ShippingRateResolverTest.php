@@ -50,17 +50,17 @@ test('can fetch shipping rates by country', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'quantity_break' => 800,
+            'min_quantity' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -137,17 +137,17 @@ test('can fetch shipping rates by state', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'quantity_break' => 800,
+            'min_quantity' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -207,17 +207,17 @@ test('can fetch shipping rates by postcode', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'quantity_break' => 800,
+            'min_quantity' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -279,17 +279,17 @@ test('can reject shipping rates when stock is not available', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'quantity_break' => 800,
+            'min_quantity' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -301,7 +301,7 @@ test('can reject shipping rates when stock is not available', function () {
 
     Price::factory()->create([
         'price' => 200,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
