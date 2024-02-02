@@ -21,4 +21,11 @@ return [
         ],
     ],
 
+    'action' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'This brand can not be deleted as there are products associated.',
+            ],
+        ],
+    ],
 ];
