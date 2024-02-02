@@ -19,6 +19,8 @@ trait ManagesProductPricing
 
     public array $basePrices = [];
 
+    public array $comparisonPrices = [];
+
     public function mount(int|string $record): void
     {
         parent::mount($record);
@@ -52,6 +54,7 @@ trait ManagesProductPricing
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
             'price' => (int) ($price['value'] * $price['factor']),
+            'compare_price' => (int) ($price['compare_price'] * $price['factor']),
             'min_quantity' => 1,
             'customer_group_id' => null,
         ])
@@ -61,6 +64,7 @@ trait ManagesProductPricing
             fn ($price) => $price['id']
         )->each(fn ($price) => Price::whereId($price['id'])->update([
             'price' => (int) ($price['value'] * $price['factor']),
+            'compare_price' => (int) ($price['compare_price'] * $price['factor']),
         ])
         );
 
@@ -75,30 +79,63 @@ trait ManagesProductPricing
             __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
         )
             ->schema(
-                collect($this->basePrices)->map(function ($price, $index): Forms\Components\TextInput {
-                    return Forms\Components\TextInput::make('value')
-                        ->label('')
-                        ->statePath($index.'.value')
-                        ->label($price['label'])
-                        ->hintColor('warning')
-                        ->extraInputAttributes([
-                            'class' => '',
-                        ])
-                        ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                            if ($get('basePrices.'.$index.'.id', true)) {
-                                return null;
-                            }
+                collect($this->basePrices)->map(function ($price, $index): Forms\Components\Fieldset {
+                    return Forms\Components\Fieldset::make($price['label'])->schema([
+                        Forms\Components\TextInput::make('value')
+                            ->label('')
+                            ->statePath($index.'.value')
+                            ->label(
+                                __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.label')
+                            )
+                            ->helperText(
+                                __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.helper_text')
+                            )
+                            ->hintColor('warning')
+                            ->extraInputAttributes([
+                                'class' => '',
+                            ])
+                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                                if ($get('basePrices.'.$index.'.id', true)) {
+                                    return null;
+                                }
 
-                            return FilamentIcon::resolve('lunar::info');
-                        })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                            if ($get('basePrices.'.$index.'.id', true)) {
-                                return null;
-                            }
+                                return FilamentIcon::resolve('lunar::info');
+                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                                if ($get('basePrices.'.$index.'.id', true)) {
+                                    return null;
+                                }
 
-                            return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
-                        })->live();
+                                return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
+                            })->live(),
+                        Forms\Components\TextInput::make('compare_price')
+                            ->label('')
+                            ->statePath($index.'.compare_price')
+                            ->label(
+                                __('lunarpanel::relationmanagers.pricing.form.basePrices.form.compare_price.label')
+                            )
+                            ->helperText(
+                                __('lunarpanel::relationmanagers.pricing.form.basePrices.form.compare_price.helper_text')
+                            )
+                            ->hintColor('warning')
+                            ->extraInputAttributes([
+                                'class' => '',
+                            ])
+                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                                if ($get('basePrices.'.$index.'.id', true)) {
+                                    return null;
+                                }
+
+                                return FilamentIcon::resolve('lunar::info');
+                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                                if ($get('basePrices.'.$index.'.id', true)) {
+                                    return null;
+                                }
+
+                                return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
+                            })->live(),
+                    ])->columns(2);
                 })->toArray()
-            )->statePath('basePrices')->columns(3);
+            )->statePath('basePrices')->columns(1);
     }
 
     public function form(Forms\Form $form): Forms\Form
@@ -131,6 +168,7 @@ trait ManagesProductPricing
                 [
                     'id' => $price->id,
                     'value' => $price->price->decimal(rounding: false),
+                    'compare_price' => $price->compare_price->decimal(rounding: false),
                     'factor' => $price->currency->factor,
                     'label' => $price->currency->name,
                     'currency_code' => $price->currency->code,
@@ -149,6 +187,7 @@ trait ManagesProductPricing
                 $prices->put($currency->code, [
                     'id' => null,
                     'value' => round(($defaultCurrencyPrice['value'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
+                    'compare_price' => round(($defaultCurrencyPrice['compare_price'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
                     'factor' => $currency->factor,
                     'label' => $currency->name,
                     'currency_code' => $currency->code,

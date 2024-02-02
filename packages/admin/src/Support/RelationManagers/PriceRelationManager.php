@@ -91,6 +91,9 @@ class PriceRelationManager extends RelationManager
 
         return $table
             ->recordTitleAttribute('name')
+            ->description(
+                __('lunarpanel::relationmanagers.pricing.table.description')
+            )
             ->modifyQueryUsing(
                 fn ($query) => $query
                     ->where("{$priceTable}.min_quantity", '>', 1)
