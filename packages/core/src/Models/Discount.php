@@ -36,6 +36,11 @@ class Discount extends BaseModel
 
     protected $guarded = [];
 
+    const ACTIVE = 'active';
+    const PENDING = 'pending';
+    const EXPIRED = 'expired';
+    const SCHEDULED = 'scheduled';
+
     /**
      * Define which attributes should be cast.
      *
@@ -53,6 +58,23 @@ class Discount extends BaseModel
     protected static function newFactory(): DiscountFactory
     {
         return DiscountFactory::new();
+    }
+
+    public function getStatusAttribute()
+    {
+        $active = $this->starts_at?->isPast() && ! $this->ends_at?->isPast();
+        $expired = $this->ends_at?->isPast();
+        $future = $this->starts_at?->isFuture();
+
+        if ($expired) {
+            return static::EXPIRED;
+        }
+
+        if ($future) {
+            return static::SCHEDULED;
+        }
+
+        return $active ? static::ACTIVE : static::PENDING;
     }
 
     public function users(): BelongsToMany
