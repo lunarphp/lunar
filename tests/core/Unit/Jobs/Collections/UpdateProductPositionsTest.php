@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Jobs\Collections\UpdateProductPositions;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
@@ -32,7 +33,7 @@ test('can reorder products by price', function () {
                 'priceable_type' => ProductVariant::class,
                 'priceable_id' => $variant->id,
                 'currency_id' => $currency->id,
-                'tier' => 1,
+                'quantity_break' => 1,
                 'price' => $prices[$index],
             ]);
         }

@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Support\Facades\Config;
 use Lunar\Exceptions\MissingCurrencyPriceException;
 use Lunar\Facades\Pricing;
@@ -57,30 +58,30 @@ test('can get correct price', function () {
         [
             'price' => 100,
             'currency_id' => $currency->id,
-            'tier' => 1,
+            'quantity_break' => 1,
         ],
         [
             'price' => 90,
             'currency_id' => $currency->id,
             'customer_group_id' => $groupA->id,
-            'tier' => 1,
+            'quantity_break' => 1,
         ],
         [
             'price' => 80,
             'currency_id' => $currency->id,
             'customer_group_id' => $groupB->id,
-            'tier' => 1,
+            'quantity_break' => 1,
         ],
         [
             'price' => 30,
             'currency_id' => $currency->id,
             'customer_group_id' => $groupB->id,
-            'tier' => 5,
+            'quantity_break' => 5,
         ],
         [
             'price' => 60,
             'currency_id' => $currency->id,
-            'tier' => 5,
+            'quantity_break' => 5,
         ],
     ]);
 
@@ -118,12 +119,12 @@ test('can get correct price based on currency', function () {
         [
             'price' => 100,
             'currency_id' => $currencyA->id,
-            'tier' => 1,
+            'quantity_break' => 1,
         ],
         [
             'price' => 200,
             'currency_id' => $currencyB->id,
-            'tier' => 1,
+            'quantity_break' => 1,
         ],
     ]);
 
@@ -209,21 +210,21 @@ test('can get correct price inc tax based on tax class', function () {
     Price::factory()->create([
         'price' => 10000,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $genericProductVariant->id,
     ]);
     Price::factory()->create([
         'price' => 8000,
         'currency_id' => $currency->id,
-        'tier' => 10,
+        'quantity_break' => 10,
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $genericProductVariant->id,
     ]);
     Price::factory()->create([
         'price' => 400,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
         'priceable_type' => ProductVariant::class,
         'priceable_id' => $foodProductVariant->id,
     ]);

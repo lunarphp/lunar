@@ -55,7 +55,7 @@ them, first we'll create a standard price model.
 $priceModel = \Lunar\Models\Price::create([
     // ...
     'price' => 1000, // Price is an int and should be in the lowest common denominator
-    'tier' => 1,
+    'quantity_break' => 1,
 ]);
 
 // Lunar\DataTypes\Price
