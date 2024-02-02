@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Actions\Carts\CalculateLine;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\DataTypes\Price as DataTypesPrice;
@@ -43,7 +44,7 @@ test('can calculate line', function () {
     Price::factory()->create([
         'price' => 100,
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
     ]);
@@ -107,7 +108,7 @@ test('can calculate multi unit quantity line', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -172,7 +173,7 @@ test('can calculate large unit quantity line', function () {
 
     Price::factory()->create([
         'price' => 1000,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -237,7 +238,7 @@ test('can calculate multiple quantities', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -304,7 +305,7 @@ function check_for_know_rounding_error_on_unit_price_with_unit_quantity_of_one()
     Price::factory()->create([
         'price' => 912, //Known failing value
         'currency_id' => $currency->id,
-        'tier' => 1,
+        'quantity_break' => 1,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
     ]);

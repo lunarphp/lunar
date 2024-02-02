@@ -79,15 +79,15 @@ class ManageVariantPricing extends ManageRelatedRecords
                         $owner = $this->getOwnerRecord();
 
                         return $rule->where('customer_group_id', $get('customer_group_id'))
-                            ->where('tier', $get('tier'))
+                            ->where('quantity_break', $get('quantity_break'))
                             ->where('currency_id', $get('currency_id'))
                             ->where('priceable_type', get_class($owner))
                             ->where('priceable_id', $owner->id);
                     }
                 )->required(),
-                Forms\Components\TextInput::make('tier')
+                Forms\Components\TextInput::make('quantity_break')
                     ->label(
-                        __('lunarpanel::relationmanagers.pricing.form.tier.label')
+                        __('lunarpanel::relationmanagers.pricing.form.quantity_break.label')
                     )->numeric()->minValue(1)->required(),
                 Forms\Components\Select::make('currency_id')
                     ->label(
@@ -105,7 +105,7 @@ class ManageVariantPricing extends ManageRelatedRecords
         return $table
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(
-                fn ($query) => $query->orderBy('tier', 'asc')
+                fn ($query) => $query->orderBy('quantity_break', 'asc')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('price')
@@ -117,8 +117,8 @@ class ManageVariantPricing extends ManageRelatedRecords
                 Tables\Columns\TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')
                 ),
-                Tables\Columns\TextColumn::make('tier')->label(
-                    __('lunarpanel::relationmanagers.pricing.table.tier.label')
+                Tables\Columns\TextColumn::make('quantity_break')->label(
+                    __('lunarpanel::relationmanagers.pricing.table.quantity_break.label')
                 ),
                 Tables\Columns\TextColumn::make('customerGroup.name')->label(
                     __('lunarpanel::relationmanagers.pricing.table.customer_group.label')
@@ -128,11 +128,11 @@ class ManageVariantPricing extends ManageRelatedRecords
                 Tables\Filters\SelectFilter::make('currency')
                     ->relationship(name: 'currency', titleAttribute: 'name')
                     ->preload(),
-                Tables\Filters\SelectFilter::make('tier')->options(
+                Tables\Filters\SelectFilter::make('quantity_break')->options(
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
                         ->where('priceable_type', get_class($this->getOwnerRecord()))
                         ->get()
-                        ->pluck('tier', 'tier')
+                        ->pluck('quantity_break', 'quantity_break')
                 ),
             ])
             ->headerActions([
