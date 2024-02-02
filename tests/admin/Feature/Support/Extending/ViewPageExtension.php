@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Str;
 use Filament\Infolists\Infolist;
+use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Facades\LunarPanel;
 
@@ -54,6 +54,6 @@ it('can extend Infolist', function () {
     \Livewire\Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
     ])
-    ->assertSee($this->order->reference)
-    ->assertSee('custom_title');
+        ->assertSee($this->order->reference)
+        ->assertSee('custom_title');
 });
