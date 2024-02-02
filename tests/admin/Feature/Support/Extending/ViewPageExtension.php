@@ -2,11 +2,8 @@
 
 use Illuminate\Support\Str;
 use Filament\Infolists\Infolist;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Facades\LunarPanel;
-use Lunar\Admin\Filament\Widgets;
 
 uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('extending.view');
