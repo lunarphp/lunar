@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\ProductOption;
 
 class ProductOptionResource extends BaseResource
@@ -79,14 +80,9 @@ class ProductOptionResource extends BaseResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->formatStateUsing(
-                        fn (ProductOption $option) => $option->translate('name'),
-                    )->label(__('lunarpanel::productoption.table.name.label')),
-                Tables\Columns\TextColumn::make('label')
-                    ->formatStateUsing(
-                        fn (ProductOption $option) => $option->translate('label'),
-                    )
+                TranslatedTextColumn::make('name')
+                    ->label(__('lunarpanel::productoption.table.name.label')),
+                TranslatedTextColumn::make('label')
                     ->label(__('lunarpanel::productoption.table.label.label')),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(__('lunarpanel::productoption.table.handle.label')),

@@ -8,7 +8,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Models\ProductOptionValue;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 
 class ValuesRelationManager extends RelationManager
 {
@@ -34,10 +34,7 @@ class ValuesRelationManager extends RelationManager
         return $table
 
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->formatStateUsing(
-                        fn (ProductOptionValue $productOption) => $productOption->translate('name')
-                    ),
+                TranslatedTextColumn::make('name'),
                 Tables\Columns\TextColumn::make('position'),
             ])
             ->filters([
