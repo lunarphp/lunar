@@ -9,7 +9,7 @@ uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('resource.attribute-group');
 
 it('can render relation manager', function () {
-    
+
     $this->asStaff();
 
     $attributeGroup = AttributeGroup::factory()->create();
@@ -24,7 +24,7 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
 
     $lang = \Lunar\Models\Language::factory()->create([
         'default' => true,
-        'code' => 'en'
+        'code' => 'en',
     ]);
 
     $this->asStaff();
@@ -35,7 +35,7 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
         'ownerRecord' => $attributeGroup,
         'pageClass' => EditAttributeGroup::class,
     ])->callTableAction(\Filament\Actions\CreateAction::class, data: [
-        'name.' . $lang->code => 'Foobar',
+        'name.'.$lang->code => 'Foobar',
         'type' => $type,
         'handle' => 'foobar',
         'configuration' => $configuration,

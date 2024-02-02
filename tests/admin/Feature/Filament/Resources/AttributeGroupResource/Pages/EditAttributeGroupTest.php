@@ -9,7 +9,7 @@ uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('resource.attribute-group');
 
 it('can render attribute group edit page', function () {
-    
+
     \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
@@ -23,9 +23,9 @@ it('can retrieve attribute group data', function () {
 
     $lang = \Lunar\Models\Language::factory()->create([
         'default' => true,
-        'code' => 'en'
+        'code' => 'en',
     ]);
-    
+
     $this->asStaff();
 
     $attributeGroup = AttributeGroup::factory()->create();
@@ -34,6 +34,6 @@ it('can retrieve attribute group data', function () {
         'record' => $attributeGroup->getRouteKey(),
     ])
         ->assertFormSet([
-            'name.' . $lang->code => $attributeGroup->translate('name', $lang->code), 
+            'name.'.$lang->code => $attributeGroup->translate('name', $lang->code),
         ]);
 });
