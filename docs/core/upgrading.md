@@ -46,7 +46,7 @@ $priceModel->min_quantity
 // Old
 $priceModel->tiers
 // New
-$priceModel->min_quantity
+$priceModel->priceBreaks
 ```
 
 ##### Lunar\Base\DataTransferObjects\PricingResponse

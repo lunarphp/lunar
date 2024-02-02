@@ -11,7 +11,7 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 
-trait UpdatesPricing
+trait ManagesProductPricing
 {
     public ?string $tax_class_id = '';
 

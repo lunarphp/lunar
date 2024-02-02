@@ -7,13 +7,13 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
-use Lunar\Admin\Support\Concerns\Products\UpdatesPricing;
+use Lunar\Admin\Support\Concerns\Products\ManagesProductPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 
 class ManageVariantPricing extends BaseEditRecord
 {
-    use UpdatesPricing;
+    use ManagesProductPricing;
 
     protected static string $resource = ProductVariantResource::class;
 

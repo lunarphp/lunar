@@ -10,7 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
-use Lunar\Admin\Support\Concerns\Products\UpdatesPricing;
+use Lunar\Admin\Support\Concerns\Products\ManagesProductPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Models\Currency;
@@ -18,7 +18,7 @@ use Lunar\Models\Price;
 
 class ManageProductPricing extends BaseEditRecord
 {
-    use UpdatesPricing;
+    use ManagesProductPricing;
 
     protected static string $resource = ProductResource::class;
 
