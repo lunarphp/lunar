@@ -63,7 +63,7 @@ class ProductVariantsTable extends Table
             TextColumn::make('price', function ($record) {
                 $price = $record->basePrices->first(fn ($price) => $price->currency->default);
 
-                return $price->price->formatted;
+                return $price->price->formatted ?? 0;
             }),
             TextColumn::make('stock'),
             TextColumn::make('backorder'),
