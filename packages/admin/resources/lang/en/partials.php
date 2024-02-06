@@ -132,7 +132,7 @@ return [
     'pricing.customer_groups.title' => 'Customer group pricing',
     'pricing.customer_groups.strapline' => 'Determines if you would like different pricing across customer groups.',
     'pricing.tiers.title' => 'Tiered Pricing',
-    'pricing.tiers.strapline' => 'Tired pricing allows you to offer discounted pricing based on units sold.',
+    'pricing.tiers.strapline' => 'Tiered pricing allows you to offer discounted pricing based on units sold.',
     'pricing.non_default_currency_alert' => 'Some fields can only be changed when using the default currency.',
     'pricing.tiers.add_tier_btn' => 'Add Tier',
     /**
