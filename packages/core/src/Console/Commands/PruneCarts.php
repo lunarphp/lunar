@@ -28,11 +28,11 @@ class PruneCarts extends Command
      * @return void
      */
     public function handle()
-    {        
+    {
         $this->info('Beginning prune');
-        
+
         $query = Cart::query();
-            
+
         $carts = app(Pipeline::class)
             ->send($query)
             ->through(
@@ -40,15 +40,20 @@ class PruneCarts extends Command
             )->then(function ($query) {
                 $query->chunk(200, function ($carts) {
                     $carts->each(function ($cart) {
-                        Cart::where('merged_id', $cart->id)->update(['merged_id' => null]);
-                        
-                        $cart->lines()->delete();
-                        $cart->addresses()->delete();
-                        $cart->delete();
+                        Cart::where('merged_id', $cart->id)->get()->each(fn ($cart) => $this->pruneCart($cart));
+
+                        $this->pruneCart($cart);
                     });
                 });
             });
-                
+
         $this->info('Prune complete');
+    }
+
+    public function pruneCart(Cart $cart)
+    {
+        $cart->lines()->delete();
+        $cart->addresses()->delete();
+        $cart->delete();
     }
 }
