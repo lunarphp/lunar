@@ -39,11 +39,7 @@ class PruneCarts extends Command
                 config('lunar.cart.prune_tables.pipelines', [])
             )->then(function ($query) {
                 $query->chunk(200, function ($carts) {
-                    $carts->each(function ($cart) {
-                        Cart::where('merged_id', $cart->id)->get()->each(fn ($cart) => $this->pruneCart($cart));
-
-                        $this->pruneCart($cart);
-                    });
+                    $carts->each(fn ($cart) => $this->pruneCart($cart));
                 });
             });
 
@@ -52,6 +48,8 @@ class PruneCarts extends Command
 
     public function pruneCart(Cart $cart)
     {
+        Cart::where('merged_id', $cart->id)->get()->each(fn ($merged) => $this->pruneCart($merged));
+
         $cart->lines()->delete();
         $cart->addresses()->delete();
         $cart->delete();
