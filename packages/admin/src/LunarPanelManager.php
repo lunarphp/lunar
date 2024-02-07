@@ -86,7 +86,7 @@ class LunarPanelManager
             $panel = $fn($panel);
         }
 
-        $panel->id($this->panelId);
+        //$panel->id($this->panelId);
 
         Filament::registerPanel($panel);
 

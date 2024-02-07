@@ -52,15 +52,17 @@ class ManageUrlsRelatedRecords extends ManageRelatedRecords
                             fn ($state) => Str::slug($state)
                         )->unique(
                             ignoreRecord: true,
-                            modifyRuleUsing: function (Unique $rule) {
-                                return $rule->where('element_type', static::$model);
+                            modifyRuleUsing: function (Unique $rule, callable $get) {
+                                return $rule
+                                    ->where('element_type', static::$model)
+                                    ->where('language_id', $get('language_id'));
                             }
                         )
                         ->maxLength(255)
                         ->required(),
                     Forms\Components\Select::make('language_id')->label(
                         __('lunarpanel::relationmanagers.urls.table.language.label')
-                    )->relationship(name: 'language', titleAttribute: 'name')->required(),
+                    )->relationship(name: 'language', titleAttribute: 'name')->required()->reactive(),
                 ])->columns(2)->columnSpan(2),
             ]);
     }
