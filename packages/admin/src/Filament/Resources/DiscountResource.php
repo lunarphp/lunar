@@ -17,6 +17,9 @@ use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionL
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\DiscountTypes\AmountOff;
+use Lunar\Facades\Discounts;
+use Lunar\Models\Currency;
 use Lunar\Models\Discount;
 
 class DiscountResource extends BaseResource
@@ -55,6 +58,19 @@ class DiscountResource extends BaseResource
             Forms\Components\Section::make('')->schema(
                 static::getMainFormComponents()
             ),
+            Forms\Components\Section::make('amount_off')
+                ->heading('Amount Off')
+                ->visible(
+                    fn (Forms\Get $get) => $get('type') == AmountOff::class
+                )->schema(
+                    static::getAmountOffFormComponents()
+                ),
+
+            Forms\Components\Section::make('conditions')->schema(
+                static::getConditionsFormComponents()
+            )->heading(
+                __('lunarpanel::discount.form.conditions.heading')
+            ),
         ]);
     }
 
@@ -71,8 +87,25 @@ class DiscountResource extends BaseResource
             ])->columns(2),
             Forms\Components\Group::make([
                 static::getPriorityFormComponent(),
-                static::getStopFormComponent(),
+                static::getDiscountTypeFormComponent(),
             ])->columns(2),
+            static::getStopFormComponent(),
+        ];
+    }
+
+    protected static function getConditionsFormComponents(): array
+    {
+        return [
+            Forms\Components\Group::make([
+                static::getCouponFormComponent(),
+                static::getMaxUsesFormComponent(),
+                static::getMaxUsesPerUserFormComponent(),
+            ])->columns(3),
+            Forms\Components\Fieldset::make()->schema(
+                static::getMinimumCartAmountsFormComponents()
+            )->label(
+                __('lunarpanel::discount.form.minimum_cart_amount.label')
+            ),
         ];
     }
 
@@ -139,6 +172,100 @@ class DiscountResource extends BaseResource
             ->label(
                 __('lunarpanel::discount.form.stop.label')
             );
+    }
+
+    protected static function getCouponFormComponent(): Component
+    {
+        return Forms\Components\TextInput::make('coupon')
+            ->label(
+                __('lunarpanel::discount.form.coupon.label')
+            )->helperText(
+                __('lunarpanel::discount.form.coupon.helper_text')
+            );
+    }
+
+    protected static function getMaxUsesFormComponent(): Component
+    {
+        return Forms\Components\TextInput::make('max_uses')
+            ->label(
+                __('lunarpanel::discount.form.max_uses.label')
+            )->helperText(
+                __('lunarpanel::discount.form.max_uses.helper_text')
+            );
+    }
+
+    protected static function getMaxUsesPerUserFormComponent(): Component
+    {
+        return Forms\Components\TextInput::make('max_uses_per_user')
+            ->label(
+                __('lunarpanel::discount.form.max_uses_per_user.label')
+            )->helperText(
+                __('lunarpanel::discount.form.max_uses_per_user.helper_text')
+            );
+    }
+
+    protected static function getMinimumCartAmountsFormComponents(): array
+    {
+        $currencies = Currency::get();
+        $inputs = [];
+
+        foreach ($currencies as $currency) {
+            $inputs[] = Forms\Components\TextInput::make('data.min_prices.'.$currency->code)->label(
+                $currency->code
+            )->afterStateHydrated(function (Forms\Components\TextInput $component, $state) {
+                $currencyCode = last(explode('.', $component->getStatePath()));
+                $currency = Currency::whereCode($currencyCode)->first();
+
+                if ($currency) {
+                    $component->state($state / $currency->factor);
+                }
+            });
+        }
+
+        return $inputs;
+    }
+
+    protected static function getDiscountTypeFormComponent(): Component
+    {
+        return Forms\Components\Select::make('type')->options(
+            Discounts::getTypes()->mapWithKeys(
+                fn ($type) => [get_class($type) => $type->getName()]
+            )
+        )->live();
+    }
+
+    protected static function getAmountOffFormComponents(): array
+    {
+        $currencies = Currency::get();
+
+        $currencyInputs = [];
+
+        foreach ($currencies as $currency) {
+            $currencyInputs[] = Forms\Components\TextInput::make(
+                'data.fixed_values.'.$currency->code
+            )->label($currency->name)->afterStateHydrated(function (Forms\Components\TextInput $component, $state) use ($currencies) {
+                $currencyCode = last(explode('.', $component->getStatePath()));
+                $currency = $currencies->first(
+                    fn ($currency) => $currency->code == $currencyCode
+                );
+
+                if ($currency) {
+                    $component->state($state / $currency->factor);
+                }
+            });
+        }
+
+        return [
+            Forms\Components\Toggle::make('data.fixed_value')->live(),
+            Forms\Components\TextInput::make('data.percentage')->visible(
+                fn (Forms\Get $get) => ! $get('data.fixed_value')
+            ),
+            Forms\Components\Group::make(
+                $currencyInputs
+            )->visible(
+                fn (Forms\Get $get) => (bool) $get('data.fixed_value')
+            )->columns(3),
+        ];
     }
 
     public static function getDefaultTable(Table $table): Table

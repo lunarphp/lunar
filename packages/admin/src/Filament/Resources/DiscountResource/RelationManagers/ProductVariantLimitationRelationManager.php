@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
@@ -61,6 +62,25 @@ class ProductVariantLimitationRelationManager extends RelationManager
                     return $data;
                 }),
             ])->columns([
+                Tables\Columns\TextColumn::make('purchasable')
+                    ->formatStateUsing(
+                        fn (Model $model) => $model->purchasable->getDescription()
+                    )
+                    ->label(
+                        __('lunarpanel::discount.relationmanagers.productvariants.table.name.label')
+                    ),
+                Tables\Columns\TextColumn::make('purchasable.sku')
+                    ->label(
+                        __('lunarpanel::discount.relationmanagers.productvariants.table.sku.label')
+                    ),
+                Tables\Columns\TextColumn::make('purchasable.values')
+                    ->formatStateUsing(function (Model $record) {
+                        return $record->purchasable->values->map(
+                            fn ($value) => $value->translate('name')
+                        )->join(', ');
+                    })->label(
+                        __('lunarpanel::discount.relationmanagers.productvariants.table.values.label')
+                    ),
             ])->actions([
                 Tables\Actions\DeleteAction::make(),
             ]);

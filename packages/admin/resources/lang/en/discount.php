@@ -4,6 +4,9 @@ return [
     'plural_label' => 'Discounts',
     'label' => 'Discount',
     'form' => [
+        'conditions' => [
+            'heading' => 'Conditions',
+        ],
         'name' => [
             'label' => 'Name',
         ],
@@ -33,6 +36,21 @@ return [
         ],
         'stop' => [
             'label' => 'Stop other discounts applying after this one',
+        ],
+        'coupon' => [
+            'label' => 'Coupon',
+            'helper_text' => 'Enter the coupon required for the discount to apply, if left blank it will apply automatically.',
+        ],
+        'max_uses' => [
+            'label' => 'Max uses',
+            'helper_text' => 'Leave blank for unlimited uses.',
+        ],
+        'max_uses_per_user' => [
+            'label' => 'Max uses per user',
+            'helper_text' => 'Leave blank for unlimited uses.',
+        ],
+        'minimum_cart_amount' => [
+            'label' => 'Minimum Cart Amount',
         ],
     ],
     'table' => [
@@ -187,14 +205,11 @@ return [
                 'name' => [
                     'label' => 'Name',
                 ],
-                'type' => [
-                    'label' => 'Type',
-                    'limitation' => [
-                        'label' => 'Limitation',
-                    ],
-                    'exclusion' => [
-                        'label' => 'Exclusion',
-                    ],
+                'sku' => [
+                    'label' => 'SKU',
+                ],
+                'values' => [
+                    'label' => 'Option(s)',
                 ],
             ],
             'form' => [
