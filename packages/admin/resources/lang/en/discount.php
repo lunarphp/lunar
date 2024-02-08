@@ -52,6 +52,18 @@ return [
         'minimum_cart_amount' => [
             'label' => 'Minimum Cart Amount',
         ],
+        'min_qty' => [
+            'label' => 'Product Quantity',
+            'helper_text' => 'Set how many qualifying products are required for the discount to apply.',
+        ],
+        'reward_qty' => [
+            'label' => 'No. of free items',
+            'helper_text' => 'How many of each item are discounted.',
+        ],
+        'max_reward_qty' => [
+            'label' => 'Maximum reward quantity',
+            'helper_text' => 'The maximum amount of products which can be discounted, regardless of criteria.',
+        ],
     ],
     'table' => [
         'name' => [
@@ -83,6 +95,9 @@ return [
         ],
     ],
     'pages' => [
+        'availability' => [
+            'label' => 'Availability',
+        ],
         'limitations' => [
             'label' => 'Limitations',
         ],
@@ -161,6 +176,76 @@ return [
         'products' => [
             'title' => 'Products',
             'description' => 'Select which products this discount should be limited to.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Product',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
+                ],
+                'type' => [
+                    'label' => 'Type',
+                    'limitation' => [
+                        'label' => 'Limitation',
+                    ],
+                    'exclusion' => [
+                        'label' => 'Exclusion',
+                    ],
+                ],
+            ],
+            'form' => [
+                'type' => [
+                    'options' => [
+                        'limitation' => [
+                            'label' => 'Limitation',
+                        ],
+                        'exclusion' => [
+                            'label' => 'Exclusion',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'rewards' => [
+            'title' => 'Product Rewards',
+            'description' => 'Select which products will be discounted if they exist in the cart and the above conditions are met.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Product',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
+                ],
+                'type' => [
+                    'label' => 'Type',
+                    'limitation' => [
+                        'label' => 'Limitation',
+                    ],
+                    'exclusion' => [
+                        'label' => 'Exclusion',
+                    ],
+                ],
+            ],
+            'form' => [
+                'type' => [
+                    'options' => [
+                        'limitation' => [
+                            'label' => 'Limitation',
+                        ],
+                        'exclusion' => [
+                            'label' => 'Exclusion',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'conditions' => [
+            'title' => 'Product Conditions',
+            'description' => 'Select the products required for the discount to apply.',
             'actions' => [
                 'attach' => [
                     'label' => 'Add Product',

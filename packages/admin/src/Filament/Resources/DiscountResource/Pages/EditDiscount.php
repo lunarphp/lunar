@@ -5,6 +5,7 @@ namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Filament\Actions;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Models\Currency;
 
 class EditDiscount extends BaseEditRecord
@@ -51,6 +52,13 @@ class EditDiscount extends BaseEditRecord
 
     public function getRelationManagers(): array
     {
-        return [];
+        $managers = [];
+
+        if ($this->form->getState()['type'] == BuyXGetY::class) {
+            $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
+            $managers[] = DiscountResource\RelationManagers\ProductConditionRelationManager::class;
+        }
+
+        return $managers;
     }
 }

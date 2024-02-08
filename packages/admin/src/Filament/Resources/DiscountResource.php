@@ -14,10 +14,13 @@ use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\DiscountTypes\AmountOff;
+use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
@@ -58,6 +61,18 @@ class DiscountResource extends BaseResource
             Forms\Components\Section::make('')->schema(
                 static::getMainFormComponents()
             ),
+            Forms\Components\Section::make('conditions')->schema(
+                static::getConditionsFormComponents()
+            )->heading(
+                __('lunarpanel::discount.form.conditions.heading')
+            ),
+            Forms\Components\Section::make('buy_x_get_y')
+                ->heading('Buy X Get Y')
+                ->visible(
+                    fn (Forms\Get $get) => $get('type') == BuyXGetY::class
+                )->schema(
+                    static::getBuyXGetYFormComponents()
+                ),
             Forms\Components\Section::make('amount_off')
                 ->heading('Amount Off')
                 ->visible(
@@ -65,12 +80,6 @@ class DiscountResource extends BaseResource
                 )->schema(
                     static::getAmountOffFormComponents()
                 ),
-
-            Forms\Components\Section::make('conditions')->schema(
-                static::getConditionsFormComponents()
-            )->heading(
-                __('lunarpanel::discount.form.conditions.heading')
-            ),
         ]);
     }
 
@@ -259,12 +268,38 @@ class DiscountResource extends BaseResource
             Forms\Components\Toggle::make('data.fixed_value')->live(),
             Forms\Components\TextInput::make('data.percentage')->visible(
                 fn (Forms\Get $get) => ! $get('data.fixed_value')
-            ),
+            )->numeric(),
             Forms\Components\Group::make(
                 $currencyInputs
             )->visible(
                 fn (Forms\Get $get) => (bool) $get('data.fixed_value')
             )->columns(3),
+        ];
+    }
+
+    public static function getBuyXGetYFormComponents(): array
+    {
+        return [
+            Forms\Components\TextInput::make('data.min_qty')
+                ->label(
+                    __('lunarpanel::discount.form.min_qty.label')
+                )->helperText(
+                    __('lunarpanel::discount.form.min_qty.helper_text')
+                )->numeric(),
+            Forms\Components\Group::make([
+                Forms\Components\TextInput::make('data.reward_qty')
+                    ->label(
+                        __('lunarpanel::discount.form.reward_qty.label')
+                    )->helperText(
+                        __('lunarpanel::discount.form.reward_qty.helper_text')
+                    )->numeric(),
+                Forms\Components\TextInput::make('data.max_reward_qty')
+                    ->label(
+                        __('lunarpanel::discount.form.max_reward_qty.label')
+                    )->helperText(
+                        __('lunarpanel::discount.form.max_reward_qty.helper_text')
+                    )->numeric(),
+            ])->columns(2),
         ];
     }
 
@@ -320,6 +355,7 @@ class DiscountResource extends BaseResource
     {
         return $page->generateNavigationItems([
             Pages\EditDiscount::class,
+            Pages\ManageDiscountAvailability::class,
             Pages\ManageDiscountLimitations::class,
         ]);
     }
@@ -331,6 +367,8 @@ class DiscountResource extends BaseResource
             BrandLimitationRelationManager::class,
             ProductLimitationRelationManager::class,
             ProductVariantLimitationRelationManager::class,
+            ProductRewardRelationManager::class,
+            ProductConditionRelationManager::class,
         ];
     }
 
@@ -340,6 +378,7 @@ class DiscountResource extends BaseResource
             'index' => Pages\ListDiscounts::route('/'),
             'edit' => Pages\EditDiscount::route('/{record}'),
             'limitations' => Pages\ManageDiscountLimitations::route('/{record}/limitations'),
+            'availability' => Pages\ManageDiscountAvailability::route('/{record}/availability'),
         ];
     }
 }
