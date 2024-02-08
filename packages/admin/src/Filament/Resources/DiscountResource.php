@@ -118,7 +118,7 @@ class DiscountResource extends BaseResource
         ];
     }
 
-    protected static function getNameFormComponent(): Component
+    public static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('lunarpanel::discount.form.name.label'))
@@ -134,7 +134,7 @@ class DiscountResource extends BaseResource
             ->autofocus();
     }
 
-    protected static function getHandleFormComponent(): Component
+    public static function getHandleFormComponent(): Component
     {
         return Forms\Components\TextInput::make('handle')
             ->label(__('lunarpanel::discount.form.handle.label'))
@@ -144,7 +144,7 @@ class DiscountResource extends BaseResource
             ->autofocus();
     }
 
-    protected static function getStartsAtFormComponent(): Component
+    public static function getStartsAtFormComponent(): Component
     {
         return Forms\Components\DateTimePicker::make('starts_at')
             ->label(__('lunarpanel::discount.form.starts_at.label'))
@@ -154,7 +154,7 @@ class DiscountResource extends BaseResource
             });
     }
 
-    protected static function getEndsAtFormComponent(): Component
+    public static function getEndsAtFormComponent(): Component
     {
         return Forms\Components\DateTimePicker::make('ends_at')
             ->label(__('lunarpanel::discount.form.ends_at.label'));
@@ -235,13 +235,13 @@ class DiscountResource extends BaseResource
         return $inputs;
     }
 
-    protected static function getDiscountTypeFormComponent(): Component
+    public static function getDiscountTypeFormComponent(): Component
     {
         return Forms\Components\Select::make('type')->options(
             Discounts::getTypes()->mapWithKeys(
                 fn ($type) => [get_class($type) => $type->getName()]
             )
-        )->live();
+        )->required()->live();
     }
 
     protected static function getAmountOffFormComponents(): array
