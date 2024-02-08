@@ -37,8 +37,11 @@ class Discount extends BaseModel
     protected $guarded = [];
 
     const ACTIVE = 'active';
+
     const PENDING = 'pending';
+
     const EXPIRED = 'expired';
+
     const SCHEDULED = 'scheduled';
 
     /**
