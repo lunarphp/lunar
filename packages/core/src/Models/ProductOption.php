@@ -52,14 +52,6 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         return ProductOptionFactory::new();
     }
 
-    protected function label(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => json_decode($value),
-            set: fn ($value) => json_encode($value),
-        );
-    }
-
     /**
      * Define which attributes should be
      * protected from mass assignment.
