@@ -47,14 +47,14 @@ class EditDiscount extends BaseEditRecord
             $data['data']['fixed_values'][$currencyCode] = (int) round($fixedPrice * $currency->factor);
         }
 
-        return parent::mutateFormDataBeforeSave($data);
+        return $data;
     }
 
     public function getRelationManagers(): array
     {
         $managers = [];
 
-        if ($this->form->getState()['type'] == BuyXGetY::class) {
+        if ($this->record->type == BuyXGetY::class) {
             $managers[] = DiscountResource\RelationManagers\ProductConditionRelationManager::class;
             $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
         }

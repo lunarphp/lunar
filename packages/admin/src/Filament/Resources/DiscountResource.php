@@ -19,8 +19,6 @@ use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimi
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\DiscountTypes\AmountOff;
-use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
@@ -148,6 +146,7 @@ class DiscountResource extends BaseResource
     {
         return Forms\Components\DateTimePicker::make('starts_at')
             ->label(__('lunarpanel::discount.form.starts_at.label'))
+            ->required()
             ->before(function (Forms\Get $get) {
                 return $get('ends_at');
             });
@@ -367,6 +366,8 @@ class DiscountResource extends BaseResource
             BrandLimitationRelationManager::class,
             ProductLimitationRelationManager::class,
             ProductVariantLimitationRelationManager::class,
+            ProductRewardRelationManager::class,
+            ProductConditionRelationManager::class,
             ProductRewardRelationManager::class,
             ProductConditionRelationManager::class,
         ];
