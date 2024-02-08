@@ -55,8 +55,8 @@ class EditDiscount extends BaseEditRecord
         $managers = [];
 
         if ($this->form->getState()['type'] == BuyXGetY::class) {
-            $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
             $managers[] = DiscountResource\RelationManagers\ProductConditionRelationManager::class;
+            $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
         }
 
         return $managers;
