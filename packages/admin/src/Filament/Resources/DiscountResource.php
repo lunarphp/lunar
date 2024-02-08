@@ -19,6 +19,8 @@ use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimi
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\DiscountTypes\AmountOff;
+use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
 use Lunar\Models\Currency;
 use Lunar\Models\Discount;
