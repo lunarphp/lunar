@@ -13,6 +13,9 @@ it('can create product', function () {
         'name' => [
             'en' => 'Name',
         ],
+        'description' => [
+            'en' => 'Description',
+        ],
     ]);
     \Lunar\Models\TaxClass::factory()->create([
         'default' => true,

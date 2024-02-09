@@ -115,7 +115,7 @@ class AverageOrderValueChart extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'bar',
+                'type' => 'area',
                 'toolbar' => [
                     'show' => false,
                 ],

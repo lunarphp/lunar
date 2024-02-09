@@ -18,7 +18,8 @@ class Dropdown extends BaseFieldType
             collect($attribute->configuration->get('lookups'))->mapWithKeys(
                 fn ($lookup) => [$lookup['value'] => $lookup['label'] ?? $lookup['value']]
             )
-        );
+        )
+            ->helperText($attribute->translate('description'));
     }
 
     public static function getConfigurationFields(): array

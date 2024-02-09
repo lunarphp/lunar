@@ -18,7 +18,7 @@
       </x-hub::input.group>
 
       <div class="mt-4">
-        <strong>Tiers</strong><br>
+        <strong>Quantity Breaks</strong><br>
 
         <div class="space-y-4">
           <div class="grid items-center grid-cols-4 gap-2">

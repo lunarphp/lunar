@@ -32,7 +32,6 @@ test('can fetch shipping options', function () {
     $shippingZone->countries()->attach($country);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'minimum_spend' => [
@@ -41,20 +40,26 @@ test('can fetch shipping options', function () {
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -68,7 +73,7 @@ test('can fetch shipping options', function () {
         ])->toArray()
     );
 
-    $shippingMethods = Shipping::shippingMethods(
+    $shippingRates = Shipping::shippingRates(
         $cart->refresh()->calculate()
     )->get();
 
@@ -76,7 +81,7 @@ test('can fetch shipping options', function () {
         $cart->refresh()->calculate()
     )->get(
         new ShippingOptionLookup(
-            shippingMethods: $shippingMethods
+            shippingRates: $shippingRates
         )
     );
 

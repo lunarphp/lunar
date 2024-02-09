@@ -2,9 +2,11 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -39,6 +41,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     protected $casts = [
         'name' => AsCollection::class,
         'label' => AsCollection::class,
+        'shared' => 'boolean',
     ];
 
     /**
@@ -75,6 +78,16 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
+    public function scopeShared(Builder $builder)
+    {
+        return $builder->where('shared', '=', true);
+    }
+
+    public function scopeExclusive(Builder $builder)
+    {
+        return $builder->where('shared', '=', false);
+    }
+
     /**
      * Get the values.
      *
@@ -83,5 +96,15 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     public function values(): HasMany
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('position');
+    }
+
+    public function products(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Product::class,
+            "{$prefix}product_product_option"
+        )->withPivot(['position'])->orderByPivot('position');
     }
 }

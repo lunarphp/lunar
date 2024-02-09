@@ -27,7 +27,6 @@ test('can get flat rate shipping', function () {
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'flat-rate',
         'data' => [
             'minimum_spend' => [
@@ -36,10 +35,16 @@ test('can get flat rate shipping', function () {
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -50,7 +55,7 @@ test('can get flat rate shipping', function () {
 
     $request = new ShippingOptionRequest(
         cart: $cart,
-        shippingMethod: $shippingMethod
+        shippingRate: $shippingRate
     );
 
     $shippingOption = $driver->resolve($request);

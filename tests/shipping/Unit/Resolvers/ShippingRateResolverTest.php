@@ -16,7 +16,7 @@ use Lunar\Shipping\Models\ShippingZone;
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 uses(\Lunar\Tests\Shipping\TestUtils::class);
 
-test('can fetch shipping methods by country', function () {
+test('can fetch shipping rates by country', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -34,7 +34,6 @@ test('can fetch shipping methods by country', function () {
     $shippingZone->countries()->attach($country);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'minimum_spend' => [
@@ -43,20 +42,25 @@ test('can fetch shipping methods by country', function () {
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -70,12 +74,12 @@ test('can fetch shipping methods by country', function () {
         ])->toArray()
     );
 
-    $shippingMethods = Shipping::shippingMethods(
+    $shippingRates = Shipping::shippingRates(
         $cart->refresh()->calculate()
     )->get();
 
-    expect($shippingMethods)->toHaveCount(1);
-    expect($shippingMethods->first()->id)->toEqual($shippingMethod->id);
+    expect($shippingRates)->toHaveCount(1);
+    expect($shippingRates->first()->id)->toEqual($shippingRate->id);
 
     $cart = $this->createCart($currency, 500);
 
@@ -88,14 +92,14 @@ test('can fetch shipping methods by country', function () {
         ])->toArray()
     );
 
-    $shippingMethods = Shipping::shippingMethods(
+    $shippingRates = Shipping::shippingRates(
         $cart->refresh()->calculate()
     )->get();
 
-    expect($shippingMethods)->toBeEmpty();
+    expect($shippingRates)->toBeEmpty();
 });
 
-test('can fetch shipping methods by state', function () {
+test('can fetch shipping rates by state', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -117,7 +121,6 @@ test('can fetch shipping methods by state', function () {
     $shippingZone->states()->attach($state);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'minimum_spend' => [
@@ -126,20 +129,25 @@ test('can fetch shipping methods by state', function () {
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -153,15 +161,15 @@ test('can fetch shipping methods by state', function () {
         ])->toArray()
     );
 
-    $shippingMethods = Shipping::shippingMethods(
+    $shippingRates = Shipping::shippingRates(
         $cart->refresh()->calculate()
     )->get();
 
-    expect($shippingMethods)->toHaveCount(1);
-    expect($shippingMethods->first()->id)->toEqual($shippingMethod->id);
+    expect($shippingRates)->toHaveCount(1);
+    expect($shippingRates->first()->id)->toEqual($shippingRate->id);
 });
 
-test('can fetch shipping methods by postcode', function () {
+test('can fetch shipping rates by postcode', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -183,7 +191,6 @@ test('can fetch shipping methods by postcode', function () {
     $shippingZone->countries()->attach($country);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'minimum_spend' => [
@@ -192,20 +199,25 @@ test('can fetch shipping methods by postcode', function () {
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -220,15 +232,15 @@ test('can fetch shipping methods by postcode', function () {
         ])->toArray()
     );
 
-    $shippingMethods = Shipping::shippingMethods(
+    $shippingRates = Shipping::shippingRates(
         $cart->refresh()->calculate()
     )->get();
 
-    expect($shippingMethods)->toHaveCount(1);
-    expect($shippingMethods->first()->id)->toEqual($shippingMethod->id);
+    expect($shippingRates)->toHaveCount(1);
+    expect($shippingRates->first()->id)->toEqual($shippingRate->id);
 });
 
-test('can reject shipping methods when stock is not available', function () {
+test('can reject shipping rates when stock is not available', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -250,7 +262,6 @@ test('can reject shipping methods when stock is not available', function () {
     $shippingZone->countries()->attach($country);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'minimum_spend' => [
@@ -260,20 +271,25 @@ test('can reject shipping methods when stock is not available', function () {
         'stock_available' => 1,
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -285,7 +301,7 @@ test('can reject shipping methods when stock is not available', function () {
 
     Price::factory()->create([
         'price' => 200,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -305,9 +321,9 @@ test('can reject shipping methods when stock is not available', function () {
         ])->toArray()
     );
 
-    $shippingMethods = Shipping::shippingMethods(
+    $shippingRates = Shipping::shippingRates(
         $cart->refresh()->calculate()
     )->get();
 
-    expect($shippingMethods)->toHaveCount(0);
+    expect($shippingRates)->toHaveCount(0);
 });

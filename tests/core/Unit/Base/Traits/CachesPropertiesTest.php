@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
@@ -20,7 +21,7 @@ test('can cache model properties', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,

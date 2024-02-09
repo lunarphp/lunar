@@ -27,6 +27,37 @@ The `lunar.media.conversions` configuration has been removed, in favour of regis
 Media definition classes allow you to register media collections, conversions and much more. See [Media Collections](/core/reference/media.html#media-collections)
 for further information.
 
+#### Product Options
+The `position` field has been removed from the `product_options` table and is now found on the `product_product_option` 
+pivot table. Any position data will be automatically adjusted when running migrations.
+
+#### Tiers renamed to Quantity Breaks
+
+The `tier` column on pricing has been renamed to `quantity_break`, any references in code to `tiers` needs to be updated.
+
+##### Price Model
+
+```php
+// Old
+$priceModel->tier
+// New
+$priceModel->quantity_break
+
+// Old
+$priceModel->tiers
+// New
+$priceModel->quantityBreaks
+```
+
+##### Lunar\Base\DataTransferObjects\PricingResponse
+
+```php
+// Old
+public Collection $tiered,
+// New
+public Collection $quantityBreaks,
+```
+
 ## 0.7
 
 ### High Impact

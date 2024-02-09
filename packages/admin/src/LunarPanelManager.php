@@ -57,6 +57,7 @@ class LunarPanelManager
         Resources\ProductOptionResource::class,
         Resources\ProductResource::class,
         Resources\ProductTypeResource::class,
+        Resources\ProductVariantResource::class,
         Resources\StaffResource::class,
         Resources\TagResource::class,
         Resources\TaxClassResource::class,
@@ -85,8 +86,6 @@ class LunarPanelManager
             $fn = $this->closure;
             $panel = $fn($panel);
         }
-
-        $panel->id($this->panelId);
 
         Filament::registerPanel($panel);
 
@@ -270,7 +269,9 @@ class LunarPanelManager
     {
         if (isset($this->extensions[$class])) {
             foreach ($this->extensions[$class] as $extension) {
-                $args[0] = $extension->{$hookName}(...$args);
+                if (method_exists($extension, $hookName)) {
+                    $args[0] = $extension->{$hookName}(...$args);
+                }
             }
         }
 

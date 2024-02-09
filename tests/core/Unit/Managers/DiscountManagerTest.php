@@ -298,7 +298,7 @@ test('can get discount with coupon', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,

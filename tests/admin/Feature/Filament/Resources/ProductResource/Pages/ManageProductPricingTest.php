@@ -96,17 +96,15 @@ it('can create product price', function () {
     \Livewire\Livewire::test(
         \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing::class, [
             'record' => $record->getRouteKey(),
-        ])->assertFormSet([
-            'price' => null,
         ])->callTableAction('create', data: [
             'price' => 10.99,
             'currency_id' => $currency->id,
-            'tier' => 1,
+            'quantity_break' => 1,
         ])->assertHasNoErrors();
 
     $this->assertDatabaseHas((new \Lunar\Models\Price())->getTable(), [
         'price' => 1099,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'customer_group_id' => null,
     ]);
