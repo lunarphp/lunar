@@ -7,6 +7,12 @@ return [
         'conditions' => [
             'heading' => 'Conditions',
         ],
+        'buy_x_get_y' => [
+            'heading' => 'Buy X Get Y',
+        ],
+        'amount_off' => [
+            'heading' => 'Amount Off',
+        ],
         'name' => [
             'label' => 'Name',
         ],

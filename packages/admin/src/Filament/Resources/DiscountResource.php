@@ -67,14 +67,18 @@ class DiscountResource extends BaseResource
                 __('lunarpanel::discount.form.conditions.heading')
             ),
             Forms\Components\Section::make('buy_x_get_y')
-                ->heading('Buy X Get Y')
+                ->heading(
+                    __('lunarpanel::discount.form.buy_x_get_y.heading')
+                )
                 ->visible(
                     fn (Forms\Get $get) => $get('type') == BuyXGetY::class
                 )->schema(
                     static::getBuyXGetYFormComponents()
                 ),
             Forms\Components\Section::make('amount_off')
-                ->heading('Amount Off')
+                ->heading(
+                    __('lunarpanel::discount.form.amount_off.heading')
+                )
                 ->visible(
                     fn (Forms\Get $get) => $get('type') == AmountOff::class
                 )->schema(
