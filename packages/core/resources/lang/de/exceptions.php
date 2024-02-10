@@ -3,8 +3,8 @@
 return [
     'non_purchasable_item' => 'Das Model ":class" implementiert nicht das "Bestellbar (purchasable)" Interface.',
     'cart_line_id_mismatch' => 'Die Position gehört nicht zu diesem Warenkorb.',
-    'invalid_cart_line_quantity' => 'Die Bestellmenge muss mindestens "1" sein, angegeben wurden ":quantity"n.',
-    'maximum_cart_line_quantity' => 'Die Bestellmenge darf nicht mehr als :quantity betragen.',
+    'invalid_cart_line_quantity' => 'Die Bestellmenge muss mindestens "1" sein, angegeben wurden ":quantity".',
+    'maximum_cart_line_quantity' => 'Die Bestellmenge darf nicht mehr als ":quantity" betragen.',
     'carts.shipping_missing' => 'Eine Lieferadresse ist erforderlich',
     'carts.billing_missing' => 'Eine Rechnungsadresse ist erforderlich',
     'carts.billing_incomplete' => 'Die Rechnungsadresse ist unvollständig',
