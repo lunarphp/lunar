@@ -86,8 +86,6 @@ class LunarPanelManager
             $panel = $fn($panel);
         }
 
-        $panel->id($this->panelId);
-
         Filament::registerPanel($panel);
 
         FilamentIcon::register([
@@ -264,7 +262,9 @@ class LunarPanelManager
     {
         if (isset($this->extensions[$class])) {
             foreach ($this->extensions[$class] as $extension) {
-                $args[0] = $extension->{$hookName}(...$args);
+                if (method_exists($extension, $hookName)) {
+                    $args[0] = $extension->{$hookName}(...$args);
+                }
             }
         }
 

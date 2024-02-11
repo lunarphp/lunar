@@ -49,17 +49,17 @@ test('can fetch shipping options', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);

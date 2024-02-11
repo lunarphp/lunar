@@ -99,12 +99,12 @@ it('can create product price', function () {
         ])->callTableAction('create', data: [
             'price' => 10.99,
             'currency_id' => $currency->id,
-            'tier' => 1,
+            'quantity_break' => 1,
         ])->assertHasNoErrors();
 
     $this->assertDatabaseHas((new \Lunar\Models\Price())->getTable(), [
         'price' => 1099,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'customer_group_id' => null,
     ]);

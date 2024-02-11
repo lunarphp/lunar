@@ -50,17 +50,17 @@ test('can fetch shipping rates by country', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -137,17 +137,17 @@ test('can fetch shipping rates by state', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -207,17 +207,17 @@ test('can fetch shipping rates by postcode', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -279,17 +279,17 @@ test('can reject shipping rates when stock is not available', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'quantity_break' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'quantity_break' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -301,7 +301,7 @@ test('can reject shipping rates when stock is not available', function () {
 
     Price::factory()->create([
         'price' => 200,
-        'tier' => 1,
+        'quantity_break' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,

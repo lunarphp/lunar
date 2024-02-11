@@ -50,7 +50,7 @@
     </div>
 
     <div class="space-y-4">
-      @if(count($tieredPrices))
+      @if(count($quantityBreaks))
         <div>
         @if(!$this->currency->default)
           <x-hub::alert>
@@ -74,11 +74,11 @@
           </div>
 
           <div class="space-y-2">
-            @foreach($tieredPrices as $index => $tier)
-              <div wire:key="tier_{{ $index }}">
+            @foreach($quantityBreaks as $index => $quantityBreak)
+              <div wire:key="qb_{{ $index }}">
                 <div class="flex items-center">
                   <div class="grid grid-cols-3 gap-4">
-                      <x-hub::input.select wire:model='tieredPrices.{{ $index }}.customer_group_id' :disabled="!$this->currency->default">
+                      <x-hub::input.select wire:model='quantityBreaks.{{ $index }}.customer_group_id' :disabled="!$this->currency->default">
                         <option value="*">{{ __('adminhub::global.any') }}</option>
                         @foreach($this->customerGroups as $group)
                           <option value="{{ $group->id }}">{{ $group->name }}</option>
@@ -86,24 +86,24 @@
                       </x-hub::input.select>
 
                       <x-hub::input.text
-                        id="tier_field_{{ $index }}"
-                        wire:model='tieredPrices.{{ $index }}.tier'
+                        id="quantity_break_field_{{ $index }}"
+                        wire:model='quantityBreaks.{{ $index }}.quantity_break'
                         :symbol="$this->currency->format"
                         :currencyCode="$this->currency->code"
                         type="number"
                         step="any"
                         required
                         :disabled="!$this->currency->default"
-                        :error="$errors->first('tieredPrices.'.$index.'.tier')"
+                        :error="$errors->first('quantityBreaks.'.$index.'.quantity_break')"
                       />
 
-                    <x-hub::input.price wire:model="tieredPrices.{{ $index }}.prices.{{ $currency->code }}.price" :symbol="$this->currency->format" :currencyCode="$this->currency->code" />
+                    <x-hub::input.price wire:model="quantityBreaks.{{ $index }}.prices.{{ $currency->code }}.price" :symbol="$this->currency->format" :currencyCode="$this->currency->code" />
                   </div>
                   <div class="ml-4">
                     <button class="text-gray-500 hover:text-red-500" wire:click.prevent="removeTier('{{ $index }}')"><x-hub::icon ref="trash" class="w-4" /></button>
                   </div>
                 </div>
-                @foreach($errors->get('tieredPrices.'.$index.'*') as $error)
+                @foreach($errors->get('quantityBreaks.'.$index.'*') as $error)
                   @foreach($error as $text)
                     <p class="mt-2 text-sm text-red-600">{{ $text }}</p>
                   @endforeach

@@ -10,6 +10,8 @@ use Filament\Tables\Table;
 
 class CustomerGroupRelationManager extends RelationManager
 {
+    protected static bool $isLazy = false;
+
     protected static string $relationship = 'customerGroups';
 
     public function isReadOnly(): bool
