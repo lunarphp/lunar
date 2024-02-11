@@ -174,6 +174,7 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -192,6 +193,7 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -210,6 +212,7 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -228,6 +231,7 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
+                    'description' => '',
                 ]);
             }
 
