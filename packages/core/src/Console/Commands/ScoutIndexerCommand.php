@@ -60,7 +60,7 @@ class ScoutIndexerCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle()
     {
         // Check if --refresh and --flush options has been passed
         if ($this->option('flush') && $this->option('refresh')) {
@@ -94,6 +94,6 @@ class ScoutIndexerCommand extends Command
             $this->indexer($models);
         }
 
-        return static::SUCCESS;
+        return Command::SUCCESS;
     }
 }

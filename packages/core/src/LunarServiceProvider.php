@@ -37,6 +37,7 @@ use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
+use Lunar\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Console\Commands\MigrateGetCandy;
 use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\ScoutIndexerCommand;
@@ -210,6 +211,7 @@ class LunarServiceProvider extends ServiceProvider
                 ScoutIndexerCommand::class,
                 MigrateGetCandy::class,
                 SyncNewCustomerOrders::class,
+                MakeLunarAdminCommand::class,
             ]);
         }
 

@@ -42,7 +42,7 @@ class InstallLunar extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle()
     {
         $this->components->info('Installing Lunar...');
 
@@ -260,6 +260,8 @@ class InstallLunar extends Command
 
             $this->components->info('Thank you!');
         }
+
+        return Command::SUCCESS;
     }
 
     /**

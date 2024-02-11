@@ -73,7 +73,7 @@ class MakeLunarAdminCommand extends Command
         $this->components->info('Success! '.($user->getAttribute('email') ?? 'You')." may now log in at {$loginUrl}");
     }
 
-    public function handle(): int
+    public function handle()
     {
         $this->options = $this->options();
 
@@ -86,6 +86,6 @@ class MakeLunarAdminCommand extends Command
         $user = $this->createUser();
         $this->sendSuccessMessage($user);
 
-        return static::SUCCESS;
+        return Command::SUCCESS;
     }
 }
