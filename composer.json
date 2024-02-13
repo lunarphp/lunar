@@ -16,7 +16,7 @@
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
-        "filament/filament": "^3.1.23",
+        "filament/filament": "^3.2.25",
         "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/http": "^10.0",
@@ -24,6 +24,7 @@
         "laravel/framework": "^10.0",
         "laravel/scout": "^10.0",
         "leandrocfe/filament-apex-charts": "^3.1.2",
+        "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
         "marvinosswald/filament-input-select-affix": "^0.1.0",
         "php": "^8.1",
@@ -31,6 +32,7 @@
         "spatie/laravel-blink": "^1.6",
         "spatie/laravel-medialibrary": "^10.0.0",
         "spatie/laravel-permission": "^5.10",
+        "stripe/stripe-php": "^7.114",
         "technikermathe/blade-lucide-icons": "^v2.24.0"
     },
     "require-dev": {
@@ -65,7 +67,8 @@
             ],
             "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
-            "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories"
+            "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
+            "Lunar\\Stripe\\": "packages/stripe/src/"
         }
     },
     "autoload-dev": {
@@ -77,6 +80,7 @@
             "Lunar\\Tests\\ScoutDatabaseEngine\\": "tests/scout-database-engine",
             "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests"
+            "Lunar\\Tests\\Stripe\\": "tests/stripe"
         }
     },
     "extra": {
@@ -84,11 +88,13 @@
             "name": [
                 "Table Rate Shipping",
                 "Opayo Payments",
-                "Paypal Payments"
+                "Paypal Payments",
+                "Stripe Payments"
             ]
         },
         "laravel": {
             "providers": [
+                "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
@@ -104,6 +110,7 @@
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
         "lunarphp/scout-database-engine": "self.version",
+        "lunarphp/stripe": "self.version",
         "lunarphp/table-rate-shipping": "self.version"
     },
     "scripts": {
