@@ -5,16 +5,17 @@ namespace Lunar\Tests\Stripe\Stripe;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Stripe\HttpClient\ClientInterface;
+use Stripe\PaymentIntent;
 
 class MockClient implements ClientInterface
 {
-    public $rbody = '{}';
+    public string $rBody = '{}';
 
-    public $rcode = 200;
+    public int $rcode = 200;
 
-    public $rheaders = [];
+    public array $rheaders = [];
 
-    public $url;
+    public string $url;
 
     public function __construct()
     {
@@ -26,6 +27,24 @@ class MockClient implements ClientInterface
         $id = array_slice(explode('/', $absUrl), -1)[0];
 
         $policy = config('lunar.stripe.policy');
+
+        if ($method == 'get' && str_contains($absUrl, 'charges')) {
+
+            $status = 'succeeded';
+            $failureCode = null;
+
+            if (($params['payment_intent'] ?? null) == 'PI_FAIL') {
+                $status = 'failed';
+                $failureCode = 'FAILED';
+            }
+
+            $this->rBody = $this->getResponse('charges', [
+                'status' => $status,
+                'failure_code' => $failureCode,
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
 
         if ($method == 'get' && str_contains($absUrl, 'payment_intents')) {
             if (str_contains($absUrl, 'PI_CAPTURE')) {
@@ -58,6 +77,20 @@ class MockClient implements ClientInterface
 
             if (str_contains($absUrl, 'PI_REQUIRES_PAYMENT_METHOD')) {
                 $this->rBody = $this->getResponse('payment_intent_requires_payment_method');
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
+            if (str_contains($absUrl, 'PI_REQUIRES_ACTION')) {
+                $this->rBody = $this->getResponse('payment_intent_paid', [
+                    'id' => $id,
+                    'status' => PaymentIntent::STATUS_REQUIRES_ACTION,
+                    'capture_method' => 'automatic',
+                    'payment_status' => 'failed',
+                    'payment_error' => 'foo',
+                    'failure_code' => 1234,
+                    'captured' => false,
+                ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }

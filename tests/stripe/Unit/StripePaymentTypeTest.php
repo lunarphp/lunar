@@ -6,6 +6,8 @@ use Lunar\Stripe\Facades\StripeFacade;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
 
+use function Pest\Laravel\assertDatabaseHas;
+
 uses(\Lunar\Tests\Stripe\Unit\TestCase::class);
 
 it('can capture an order', function () {
@@ -21,7 +23,7 @@ it('can capture an order', function () {
     expect($cart->refresh()->completedOrder->placed_at)->not()->toBeNull();
     expect($cart->meta['payment_intent'])->toEqual('PI_CAPTURE');
 
-    $this->assertDatabaseHas((new Transaction)->getTable(), [
+    assertDatabaseHas((new Transaction)->getTable(), [
         'order_id' => $cart->refresh()->completedOrder->id,
         'type' => 'capture',
     ]);
@@ -36,16 +38,19 @@ it('can handle failed payments', function () {
         'payment_intent' => 'PI_FAIL',
     ])->authorize();
 
+    $order = $cart->refresh()->draftOrder;
+
     expect($response)->toBeInstanceOf(PaymentAuthorize::class);
     expect($response->success)->toBeFalse();
     expect($cart->refresh()->completedOrder)->toBeNull();
     expect($cart->refresh()->draftOrder)->not()->toBeNull();
 
-    $this->assertDatabaseMissing((new Transaction)->getTable(), [
-        'order_id' => $cart->refresh()->draftOrder->id,
+    assertDatabaseHas((new Transaction)->getTable(), [
+        'order_id' => $order->id,
         'type' => 'capture',
+        'success' => false,
     ]);
-});
+})->group('foo');
 
 it('can retrieve existing payment intent', function () {
     $cart = CartBuilder::build([

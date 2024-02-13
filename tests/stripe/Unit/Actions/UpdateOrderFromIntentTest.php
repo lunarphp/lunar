@@ -16,5 +16,4 @@ it('creates pending transaction when status is requires_action', function () {
 
     expect($updatedOrder->status)->toBe($order->status);
     expect($updatedOrder->placed_at)->toBeNull();
-    expect($updatedOrder->refresh()->transactions)->toBeEmpty();
 })->group('lunar.stripe.actions');

@@ -43,4 +43,5 @@ it('updates existing transactions', function () {
     $order = app(\Lunar\Stripe\Actions\StoreCharges::class)->store($order, $charges);
 
     expect($order->transactions)->toHaveCount(1);
+
 })->group('lunar.stripe.actions');
