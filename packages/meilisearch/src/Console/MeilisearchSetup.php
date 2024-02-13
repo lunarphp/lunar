@@ -23,14 +23,15 @@ class MeilisearchSetup extends Command
      */
     protected $description = 'Set up filterable and sortable attributes to Meilisearch';
 
+    /**
+     * Meilisearch engine
+     */
     protected MeiliSearchEngine $engine;
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle(EngineManager $engine)
+    public function handle(EngineManager $engine): void
     {
         // Return the models we want to search on.
         $searchables = config('lunar.search.models', []);
@@ -49,22 +50,24 @@ class MeilisearchSetup extends Command
             } catch (ApiException $e) {
                 $this->warn($e->getMessage());
                 $this->info("Creating index {$indexName} for {$searchable}");
-                $this->engine->createIndex($indexName);
-                sleep(1);
+
+                $task = $this->engine->createIndex($indexName);
+                $this->engine->waitForTask($task['taskUid']);
+
                 $index = $this->engine->getIndex($indexName);
             }
 
-            $this->info("Adding filterable fields to {$searchable}");
-
-            $index->updateFilterableAttributes(
+            $this->info("Update filterable fields to {$searchable}");
+            $task = $index->updateFilterableAttributes(
                 $model->getFilterableAttributes()
             );
+            $this->engine->waitForTask($task['taskUid']);
 
-            $this->info("Adding sortable fields to {$searchable}");
-
-            $index->updateSortableAttributes(
+            $this->info("Update sortable fields to {$searchable}");
+            $task = $index->updateSortableAttributes(
                 $model->getSortableAttributes()
             );
+            $this->engine->waitForTask($task['taskUid']);
 
             $this->newLine();
         }

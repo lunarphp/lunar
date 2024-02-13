@@ -41,6 +41,7 @@ The command will import the records of the models listed in the `lunar/indexer.p
 ## Meilisearch
 
 If you used the Meilisearch package you would like to use the command to create filterable and searchable attributes on Meilisearch indexes. 
+
 ```sh
 php artisan lunar:meilisearch:setup
 ```
