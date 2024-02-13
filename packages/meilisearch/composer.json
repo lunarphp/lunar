@@ -1,0 +1,32 @@
+{
+  "name": "lunarphp/meilisearch",
+  "description": "Meilisearch Addon",
+  "keywords": ["lunarphp", "laravel", "ecommerce", "e-commerce", "headless", "store", "meilisearch"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "require": {
+      "meilisearch/meilisearch-php": "^1.6",
+  },
+  "autoload": {
+      "psr-4": {
+          "Lunar\\Meilisearch\\": "src/"
+      }
+  },
+  "extra": {
+    "lunar": {
+        "name": "Meilisearch"
+    },
+    "laravel": {
+        "providers": [
+            "Lunar\\Meilisearch\\MeilisearchServiceProvider"
+        ]
+    }
+  },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
