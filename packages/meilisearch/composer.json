@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-      "meilisearch/meilisearch-php": "^1.6",
+      "meilisearch/meilisearch-php": "^v1.6.0"
   },
   "autoload": {
       "psr-4": {

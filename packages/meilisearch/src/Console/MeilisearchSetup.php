@@ -2,10 +2,10 @@
 
 namespace Lunar\Meilisearch\Console;
 
+use Exception;
 use Illuminate\Console\Command;
 use Laravel\Scout\EngineManager;
-use Laravel\Scout\Engines\MeiliSearchEngine;
-use MeiliSearch\Exceptions\ApiException;
+use Laravel\Scout\Engines\MeilisearchEngine;
 
 class MeilisearchSetup extends Command
 {
@@ -26,7 +26,7 @@ class MeilisearchSetup extends Command
     /**
      * Meilisearch engine
      */
-    protected MeiliSearchEngine $engine;
+    protected MeilisearchEngine $engine;
 
     /**
      * Execute the console command.
@@ -47,7 +47,7 @@ class MeilisearchSetup extends Command
             try {
                 $index = $this->engine->getIndex($indexName);
                 $this->warn("Index {$indexName} found for {$searchable}");
-            } catch (ApiException $e) {
+            } catch (Exception $e) {
                 $this->warn($e->getMessage());
                 $this->info("Creating index {$indexName} for {$searchable}");
 
