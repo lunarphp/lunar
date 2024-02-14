@@ -18,6 +18,9 @@
             <directory suffix="Test.php">tests/opayo/Feature</directory>
             <directory suffix="Test.php">tests/opayo/Unit</directory>
         </testsuite>
+        <testsuite name="stripe">
+            <directory suffix="Test.php">tests/stripe/Unit</directory>
+        </testsuite>
         <testsuite name="scout-database-engine">
             <directory suffix="Test.php">tests/scout-database-engine/Feature</directory>
             <directory suffix="Test.php">tests/scout-database-engine/Unit</directory>
