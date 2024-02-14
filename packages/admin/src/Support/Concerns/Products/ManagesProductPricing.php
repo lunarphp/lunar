@@ -55,7 +55,7 @@ trait ManagesProductPricing
             'currency_id' => $price['currency_id'],
             'price' => (int) ($price['value'] * $price['factor']),
             'compare_price' => (int) ($price['compare_price'] * $price['factor']),
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'customer_group_id' => null,
         ])
         );

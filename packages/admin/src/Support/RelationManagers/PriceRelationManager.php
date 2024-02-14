@@ -50,11 +50,11 @@ class PriceRelationManager extends RelationManager
                         )->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.customer_group_id.helper_text')
                         )->relationship(name: 'customerGroup', titleAttribute: 'name'),
-                    Forms\Components\TextInput::make('quantity_break')
+                    Forms\Components\TextInput::make('min_quantity')
                         ->label(
-                            __('lunarpanel::relationmanagers.pricing.form.quantity_break.label')
+                            __('lunarpanel::relationmanagers.pricing.form.min_quantity.label')
                         )->default(1)->helperText(
-                            __('lunarpanel::relationmanagers.pricing.form.quantity_break.helper_text')
+                            __('lunarpanel::relationmanagers.pricing.form.min_quantity.helper_text')
                         )->numeric()->minValue(1)->required(),
                 ])->columns(3),
 
@@ -66,7 +66,7 @@ class PriceRelationManager extends RelationManager
                             $owner = $this->getOwnerRecord();
 
                             return $rule->where('customer_group_id', $get('customer_group_id'))
-                                ->where('quantity_break', 1)
+                                ->where('min_quantity', 1)
                                 ->where('currency_id', 1)
                                 ->where('priceable_type', get_class($owner))
                                 ->where('priceable_id', $owner->id);
@@ -96,8 +96,8 @@ class PriceRelationManager extends RelationManager
             )
             ->modifyQueryUsing(
                 fn ($query) => $query
-                    ->where("{$priceTable}.quantity_break", '>', 1)
-                    ->orderBy("{$priceTable}.quantity_break", 'asc')
+                    ->where("{$priceTable}.min_quantity", '>', 1)
+                    ->orderBy("{$priceTable}.min_quantity", 'asc')
             )->emptyStateHeading(
                 __('lunarpanel::relationmanagers.pricing.table.empty_state.label')
             )
@@ -111,7 +111,7 @@ class PriceRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')
                 )->sortable(),
-                Tables\Columns\TextColumn::make('quantity_break')->label(
+                Tables\Columns\TextColumn::make('min_quantity')->label(
                     __('lunarpanel::relationmanagers.pricing.table.min_quantity.label')
                 )->sortable(),
                 Tables\Columns\TextColumn::make('customerGroup.name')->label(
@@ -131,9 +131,9 @@ class PriceRelationManager extends RelationManager
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
                         ->where('priceable_type', get_class($this->getOwnerRecord()))
                         ->get()
-                        ->pluck('quantity_break', 'quantity_break')
+                        ->pluck('min_quantity', 'min_quantity')
                 )->label(
-                    __('lunarpanel::relationmanagers.pricing.table.quantity_break.label')
+                    __('lunarpanel::relationmanagers.pricing.table.min_quantity.label')
                 ),
             ])
             ->headerActions([
