@@ -23,7 +23,7 @@ test('can create a price', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 123,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ];
 
     Price::factory()->create($data);
@@ -43,7 +43,7 @@ test('price is cast to a datatype', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 123,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->price)->toBeInstanceOf(DataTypesPrice::class);
@@ -64,7 +64,7 @@ function can_handle_non_int_values()
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 12.99,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->price->value)->toEqual(1299);
@@ -81,7 +81,7 @@ function can_handle_non_int_values()
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 12.995,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->price->value)->toEqual(12995);
@@ -93,7 +93,7 @@ function can_handle_non_int_values()
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 1299,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->price->value)->toEqual(1299);
@@ -110,7 +110,7 @@ function can_handle_non_int_values()
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => '1,250.950',
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->price->value)->toEqual(1250950);
@@ -122,7 +122,7 @@ function can_handle_non_int_values()
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => '1,250.955',
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->price->value)->toEqual(1250955);
@@ -144,7 +144,7 @@ test('compare price is cast correctly', function () {
         'priceable_type' => ProductVariant::class,
         'price' => 12.99,
         'compare_price' => 13.99,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->compare_price)->toBeInstanceOf(DataTypesPrice::class);
@@ -177,7 +177,7 @@ test('can get a price', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 123,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     Price::factory()->create([
@@ -185,7 +185,7 @@ test('can get a price', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 99,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     Price::factory()->create([
@@ -193,7 +193,7 @@ test('can get a price', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 101,
-        'quantity_break' => 5,
+        'min_quantity' => 5,
     ]);
 
     Price::factory()->create([
@@ -202,7 +202,7 @@ test('can get a price', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 75,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     // Check we get the default currency price
@@ -242,7 +242,7 @@ test('can get a price ex tax', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 999,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->priceExTax()->value)->toEqual(833);
@@ -264,7 +264,7 @@ test('can get a price inc tax', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => ProductVariant::class,
         'price' => 833,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
     ]);
 
     expect($price->priceIncTax()->value)->toEqual(1000);
