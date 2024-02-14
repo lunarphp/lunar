@@ -10,7 +10,7 @@ class PricingResponse
     public function __construct(
         public Price $matched,
         public Price $base,
-        public Collection $quantityBreaks,
+        public Collection $priceBreaks,
         public Collection $customerGroupPrices,
     ) {
         //
