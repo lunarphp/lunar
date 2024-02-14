@@ -142,8 +142,8 @@ return [
                 'label' => 'Customer Group',
                 'placeholder' => 'All Customer Groups',
             ],
-            'min_quantity' => [
-                'label' => 'Minimum Quantity',
+            'quantity_break' => [
+                'label' => 'Quantity Break',
             ],
             'currency' => [
                 'label' => 'Currency',
@@ -159,8 +159,8 @@ return [
                 'placeholder' => 'All Customer Groups',
                 'helper_text' => 'Select which customer group to apply this price to.',
             ],
-            'min_quantity' => [
-                'label' => 'Minimum Quantity',
+            'quantity_break' => [
+                'label' => 'Quantity Break',
                 'helper_text' => 'Select the minimum quantity this price will be available for.',
             ],
             'currency_id' => [

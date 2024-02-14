@@ -78,7 +78,7 @@ class ListProducts extends BaseListRecords
             'sku' => $data['sku'],
         ]);
         $variant->prices()->create([
-            'min_quantity' => 1,
+            'quantity_break' => 1,
             'currency_id' => $currency->id,
             'price' => (int) bcmul($data['base_price'], $currency->factor),
         ]);
