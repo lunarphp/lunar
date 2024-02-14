@@ -44,7 +44,7 @@ test('can calculate line', function () {
     Price::factory()->create([
         'price' => 100,
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
     ]);
@@ -108,7 +108,7 @@ test('can calculate multi unit quantity line', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -173,7 +173,7 @@ test('can calculate large unit quantity line', function () {
 
     Price::factory()->create([
         'price' => 1000,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -238,7 +238,7 @@ test('can calculate multiple quantities', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -305,7 +305,7 @@ function check_for_know_rounding_error_on_unit_price_with_unit_quantity_of_one()
     Price::factory()->create([
         'price' => 912, //Known failing value
         'currency_id' => $currency->id,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
     ]);
