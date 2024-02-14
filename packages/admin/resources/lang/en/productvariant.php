@@ -71,6 +71,9 @@ return [
             'label' => 'Quantity Increment',
             'helper_text' => 'The product variant must be purchased in multiples of this quantity.',
         ],
+        'tax_class_id' => [
+            'label' => 'Tax Class',
+        ],
         'shippable' => [
             'label' => 'Shippable',
         ],

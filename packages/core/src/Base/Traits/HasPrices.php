@@ -25,12 +25,12 @@ trait HasPrices
      */
     public function basePrices(): MorphMany
     {
-        return $this->prices()->whereQuantityBreak(1)->whereNull('customer_group_id');
+        return $this->prices()->whereMinQuantity(1)->whereNull('customer_group_id');
     }
 
-    public function quantityBreaks(): MorphMany
+    public function priceBreaks(): MorphMany
     {
-        return $this->prices()->where('quantity_break', '>', 1);
+        return $this->prices()->where('min_quantity', '>', 1);
     }
 
     /**

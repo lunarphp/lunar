@@ -23,7 +23,7 @@ test('can calculate lines', function ($expectedUnitPrice, $incomingUnitPrice, $u
 
     Price::factory()->create([
         'price' => $incomingUnitPrice,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,

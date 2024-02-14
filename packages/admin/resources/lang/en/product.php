@@ -91,6 +91,17 @@ return [
         'inventory' => [
             'label' => 'Inventory',
         ],
+        'pricing' => [
+            'form' => [
+                'tax_class_id' => [
+                    'label' => 'Tax Class',
+                ],
+                'tax_ref' => [
+                    'label' => 'Tax Reference',
+                    'helper_text' => 'Optional, for integration with 3rd party systems.',
+                ],
+            ],
+        ],
         'shipping' => [
             'label' => 'Shipping',
         ],

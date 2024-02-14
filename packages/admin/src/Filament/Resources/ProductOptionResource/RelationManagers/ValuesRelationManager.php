@@ -2,12 +2,12 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Models\ProductOptionValue;
 
 class ValuesRelationManager extends RelationManager
@@ -23,7 +23,7 @@ class ValuesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name.en')
+                TranslatedText::make('name')
                     ->required()
                     ->maxLength(255),
             ]);

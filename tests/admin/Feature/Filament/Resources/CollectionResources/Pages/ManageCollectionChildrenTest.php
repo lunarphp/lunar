@@ -20,7 +20,7 @@ it('can render the collection children page', function () {
 });
 
 it('can create child categories', function () {
-    \Lunar\Models\Language::factory()->create([
+    $language = \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
 
@@ -45,7 +45,7 @@ it('can create child categories', function () {
     \Livewire\Livewire::test(ManageCollectionChildren::class, [
         'record' => $record->getKey(),
     ])->callTableAction('createChildCollection', data: [
-        'name' => 'Test Child Category',
+        'name' => [$language->code => 'Test Child Category'],
     ])->assertHasNoErrors();
 
     expect($record->children()->count())->toBe(1);
