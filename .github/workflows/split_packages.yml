@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: ["admin", "core", "opayo", "paypal", "scout-database-engine", "table-rate-shipping", "meilisearch"]
+        package: ["admin", "core", "opayo", "paypal", "scout-database-engine", "table-rate-shipping", "stripe", "meilisearch"]
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
