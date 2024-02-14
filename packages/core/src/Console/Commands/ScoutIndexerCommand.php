@@ -60,13 +60,11 @@ class ScoutIndexerCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         // Check if --refresh and --flush options has been passed
         if ($this->option('flush') && $this->option('refresh')) {
             $this->components->error('You can\'t use the [--refresh] and [--flush] options together.');
-
-            return Command::FAILURE;
         }
 
         // Return searchable models from config
@@ -79,8 +77,6 @@ class ScoutIndexerCommand extends Command
                 // Error if option [--ignore] is passed and no model is informed
                 $this->components->error('No model passed on call');
                 $this->components->info('When using the [--ignore] option, you must provide at least one model to index.');
-
-                return Command::FAILURE;
             } else {
                 // Run the indexer commands
                 $this->indexer($this->argument('models'));
@@ -93,7 +89,5 @@ class ScoutIndexerCommand extends Command
             // Run the indexer commands
             $this->indexer($models);
         }
-
-        return Command::SUCCESS;
     }
 }

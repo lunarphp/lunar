@@ -28,7 +28,7 @@ class AddressData extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $this->components->info('Importing Countries and States');
 
@@ -47,8 +47,6 @@ class AddressData extends Command
 
         if (! $newCountries->count()) {
             $this->components->info('There are no new countries to import');
-
-            return Command::SUCCESS;
         }
 
         progress(
@@ -81,7 +79,5 @@ class AddressData extends Command
         );
 
         $this->components->info('Countries and States imported successfully');
-
-        return Command::SUCCESS;
     }
 }

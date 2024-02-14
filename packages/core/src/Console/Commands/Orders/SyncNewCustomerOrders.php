@@ -25,14 +25,12 @@ class SyncNewCustomerOrders extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         Order::orderBy('id')->chunk(500, function ($orders) {
             foreach ($orders as $order) {
                 MarkAsNewCustomer::dispatch($order->id);
             }
         });
-
-        return Command::SUCCESS;
     }
 }

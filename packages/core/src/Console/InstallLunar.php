@@ -42,7 +42,7 @@ class InstallLunar extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $this->components->info('Installing Lunar...');
 
@@ -65,7 +65,7 @@ class InstallLunar extends Command
 
         DB::transaction(function () {
 
-            if (! Staff::whereAdmin(true)->exists()) {
+            if (class_exists(Staff::class) && ! Staff::whereAdmin(true)->exists()) {
                 $this->components->info('First create a lunar admin user');
                 $this->call('lunar:create-admin');
             }
@@ -253,6 +253,9 @@ class InstallLunar extends Command
             $this->call('lunar:hub:install');
         }
 
+        $this->components->info('Publishing Filament assets');
+        $this->call('filament:assets');
+
         $this->components->info('Lunar is now installed 🚀');
 
         if (confirm('Would you like to show some love by giving us a star on GitHub?')) {
@@ -264,8 +267,6 @@ class InstallLunar extends Command
 
             $this->components->info('Thank you!');
         }
-
-        return Command::SUCCESS;
     }
 
     /**

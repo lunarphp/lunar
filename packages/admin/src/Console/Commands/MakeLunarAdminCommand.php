@@ -1,13 +1,12 @@
 <?php
 
-namespace Lunar\Console\Commands;
+namespace Lunar\Admin\Console\Commands;
 
 use Filament\Facades\Filament;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Lunar\Admin\Models\Staff;
-
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;
 
@@ -73,19 +72,11 @@ class MakeLunarAdminCommand extends Command
         $this->components->info('Success! '.($user->getAttribute('email') ?? 'You')." may now log in at {$loginUrl}");
     }
 
-    public function handle()
+    public function handle(): void
     {
         $this->options = $this->options();
 
-        if (! Filament::getCurrentPanel()) {
-            $this->error('Filament has not been installed yet: php artisan filament:install --panels');
-
-            return Command::INVALID;
-        }
-
         $user = $this->createUser();
         $this->sendSuccessMessage($user);
-
-        return Command::SUCCESS;
     }
 }
