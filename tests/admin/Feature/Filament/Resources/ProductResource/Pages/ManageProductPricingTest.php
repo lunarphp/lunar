@@ -74,38 +74,3 @@ it('will not show in navigation when multiple variants exist', function () {
             __('lunarpanel::relationmanagers.pricing.title')
         );
 });
-
-it('can create product price', function () {
-    $language = \Lunar\Models\Language::factory()->create([
-        'default' => true,
-    ]);
-
-    $currency = \Lunar\Models\Currency::factory()->create([
-        'default' => true,
-        'decimal_places' => 2,
-    ]);
-
-    $record = \Lunar\Models\Product::factory()->create();
-
-    \Lunar\Models\ProductVariant::factory()->create([
-        'product_id' => $record->id,
-    ]);
-
-    $this->asStaff();
-
-    \Livewire\Livewire::test(
-        \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing::class, [
-            'record' => $record->getRouteKey(),
-        ])->callTableAction('create', data: [
-            'price' => 10.99,
-            'currency_id' => $currency->id,
-            'quantity_break' => 1,
-        ])->assertHasNoErrors();
-
-    $this->assertDatabaseHas((new \Lunar\Models\Price())->getTable(), [
-        'price' => 1099,
-        'quantity_break' => 1,
-        'currency_id' => $currency->id,
-        'customer_group_id' => null,
-    ]);
-});

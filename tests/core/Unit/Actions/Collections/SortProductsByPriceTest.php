@@ -33,7 +33,7 @@ test('can sort products', function () {
                 'priceable_type' => ProductVariant::class,
                 'priceable_id' => $variant->id,
                 'currency_id' => $currency->id,
-                'quantity_break' => 1,
+                'min_quantity' => 1,
                 'price' => $prices[$index],
             ]);
         }
