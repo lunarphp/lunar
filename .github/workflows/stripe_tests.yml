@@ -1,4 +1,4 @@
-name: Lunar Table Rate Shipping Tests
+name: Lunar Stripe Tests
 on:
   pull_request:
 defaults:
@@ -43,4 +43,4 @@ jobs:
           APP_ENV: testing
           DB_CONNECTION: testing
           DB_DATABASE: ":memory:"
-        run: vendor/bin/pest  --testsuite shipping
+        run: vendor/bin/pest  --testsuite stripe
