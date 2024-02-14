@@ -21,7 +21,7 @@ This addon is currently in Alpha, whilst every step is taken to ensure this is w
 
 ## Minimum Requirements
 
-- Lunar >= `0.6`
+- Lunar  `1.x`
 - A [Stripe](http://stripe.com/) account with secret and public keys
 
 ## Optional Requirements
