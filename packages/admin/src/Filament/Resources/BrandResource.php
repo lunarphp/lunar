@@ -55,6 +55,7 @@ class BrandResource extends BaseResource
         return $page->generateNavigationItems([
             Pages\EditBrand::class,
             Pages\ManageBrandMedia::class,
+            Pages\ManageBrandUrls::class,
         ]);
     }
 
@@ -143,6 +144,7 @@ class BrandResource extends BaseResource
             'create' => Pages\CreateBrand::route('/create'),
             'edit' => Pages\EditBrand::route('/{record}/edit'),
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
+            'urls' => Pages\ManageBrandUrls::route('/{record}/urls'),
         ];
     }
 
