@@ -44,7 +44,7 @@ test('can get flat rate shipping', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
     ]);

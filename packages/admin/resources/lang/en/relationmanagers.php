@@ -125,14 +125,25 @@ return [
         'title' => 'Pricing',
         'title_plural' => 'Pricing',
         'table' => [
+            'heading' => 'Price Breaks',
+            'description' => 'Reduce the price when a customer purchases in larger quantities.',
+            'empty_state' => [
+                'label' => 'No price breaks exist.',
+            ],
+            'actions' => [
+                'create' => [
+                    'label' => 'Add Price Break',
+                ],
+            ],
             'price' => [
                 'label' => 'Price',
             ],
             'customer_group' => [
                 'label' => 'Customer Group',
+                'placeholder' => 'All Customer Groups',
             ],
-            'quantity_break' => [
-                'label' => 'Quantity Break',
+            'min_quantity' => [
+                'label' => 'Minimum Quantity',
             ],
             'currency' => [
                 'label' => 'Currency',
@@ -141,15 +152,38 @@ return [
         'form' => [
             'price' => [
                 'label' => 'Price',
+                'helper_text' => 'The purchase price, before discounts.',
             ],
             'customer_group_id' => [
                 'label' => 'Customer Group',
+                'placeholder' => 'All Customer Groups',
+                'helper_text' => 'Select which customer group to apply this price to.',
             ],
-            'quantity_break' => [
-                'label' => 'Quantity Break',
+            'min_quantity' => [
+                'label' => 'Minimum Quantity',
+                'helper_text' => 'Select the minimum quantity this price will be available for.',
             ],
             'currency_id' => [
                 'label' => 'Currency',
+                'helper_text' => 'Select the currency for this price.',
+            ],
+            'compare_price' => [
+                'label' => 'Comparison Price',
+                'helper_text' => 'The original price or RRP, for comparison with its purchase price.',
+            ],
+            'basePrices' => [
+                'title' => 'Prices',
+                'form' => [
+                    'price' => [
+                        'label' => 'Price',
+                        'helper_text' => 'The purchase price, before discounts.',
+                    ],
+                    'compare_price' => [
+                        'label' => 'Comparison Price',
+                        'helper_text' => 'The original price or RRP, for comparison with its purchase price.',
+                    ],
+                ],
+                'tooltip' => 'Automatically generated based on currency exchange rates.',
             ],
         ],
     ],

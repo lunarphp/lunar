@@ -136,55 +136,55 @@ class ManageProductShipping extends BaseEditRecord
         return $form->schema([
             Section::make()->schema([
                 Toggle::make('shippable')->label(
-                    __('lunarpanel::product.pages.shipping.form.shippable.label')
+                    __('lunarpanel::productvariant.form.shippable.label')
                 )->columnSpan(2),
 
                 TextInputSelectAffix::make('dimensions.length_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.length_value.label')
+                        __('lunarpanel::productvariant.form.length_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('length_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.length_unit.label')
+                                __('lunarpanel::pproductvariant.form.length_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.width_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.width_value.label')
+                        __('lunarpanel::productvariant.form.width_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('width_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.width_unit.label')
+                                __('lunarpanel::productvariant.form.width_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.height_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.height_value.label')
+                        __('lunarpanel::productvariant.form.height_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('height_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.height_unit.label')
+                                __('lunarpanel::productvariant.form.height_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.weight_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.weight_value.label')
+                        __('lunarpanel::productvariant.form.weight_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('weight_unit')
                             ->options($weights)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.weight_unit.label')
+                                __('lunarpanel::productvariant.form.weight_unit.label')
                             )->selectablePlaceholder(false)
                     ),
             ])->columns([
