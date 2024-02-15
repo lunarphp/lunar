@@ -47,7 +47,6 @@ class AddressData extends Command
 
         if (! $newCountries->count()) {
             $this->components->info('There are no new countries to import');
-
             exit(self::SUCCESS);
         }
 
