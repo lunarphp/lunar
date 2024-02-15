@@ -71,7 +71,6 @@ class ManageProductShipping extends BaseEditRecord
 
         $this->dimensions = [
             ...$variant->only(array_keys($this->dimensions)),
-            ...$this->dimensions,
         ];
         $this->shippable = $variant->shippable;
     }
