@@ -41,14 +41,6 @@ class User extends Authenticatable
 }
 ```
 
-### Add Scout engine to ENV
-
-Add the following line to your `.env` file.
-
-```
-SCOUT_DRIVER=database_index
-```
-
 ## Register the admin panel
 
 The admin panel needs registering in your app service provider before you can use it.
