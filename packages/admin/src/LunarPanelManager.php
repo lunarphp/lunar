@@ -112,6 +112,7 @@ class LunarPanelManager
             'lunar::dashboard' => 'lucide-bar-chart-big',
             'lunar::discounts' => 'lucide-percent-circle',
             'lunar::discount-limitations' => 'lucide-list-x',
+            'lunar::info' => 'lucide-info',
             'lunar::languages' => 'lucide-languages',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',

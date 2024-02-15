@@ -20,7 +20,7 @@ return [
                 'label' => 'Price',
             ],
             'prices' => [
-                'label' => 'Quantity Breaks',
+                'label' => 'Price Breaks',
                 'repeater' => [
                     'customer_group_id' => [
                         'label' => 'Customer Group',
@@ -29,7 +29,7 @@ return [
                     'currency_id' => [
                         'label' => 'Currency',
                     ],
-                    'quantity_break' => [
+                    'min_quantity' => [
                         'label' => 'Min. Spend',
                     ],
                     'price' => [
@@ -45,8 +45,8 @@ return [
             'price' => [
                 'label' => 'Price',
             ],
-            'quantity_breaks_count' => [
-                'label' => 'Quantity Breaks',
+            'price_breaks_count' => [
+                'label' => 'Price Breaks',
             ],
         ],
     ],

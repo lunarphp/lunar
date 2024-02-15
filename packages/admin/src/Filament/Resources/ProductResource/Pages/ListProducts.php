@@ -12,10 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Facades\DB;
-use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 use Lunar\Models\Currency;
-use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\TaxClass;
 
@@ -52,25 +50,19 @@ class ListProducts extends BaseListRecords
 
     public static function createRecord(array $data, string $model): Model
     {
-        $language = Language::getDefault();
         $currency = Currency::getDefault();
 
         $nameAttribute = Attribute::whereAttributeType($model)
             ->whereHandle('name')
-            ->first();
-
-        $name = $data['name'];
-
-        if ($nameAttribute->type == TranslatedText::class) {
-            $name = [$language->code => $name];
-        }
+            ->first()
+            ->type;
 
         DB::beginTransaction();
         $product = $model::create([
             'status' => 'draft',
             'product_type_id' => $data['product_type_id'],
             'attribute_data' => [
-                'name' => new $nameAttribute->type($name),
+                'name' => new $nameAttribute($data['name']),
             ],
         ]);
         $variant = $product->variants()->create([
@@ -78,7 +70,7 @@ class ListProducts extends BaseListRecords
             'sku' => $data['sku'],
         ]);
         $variant->prices()->create([
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
             'price' => (int) bcmul($data['base_price'], $currency->factor),
         ]);
