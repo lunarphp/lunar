@@ -27,4 +27,11 @@ return [
         ],
     ],
 
+    'action' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'This collection group can not be deleted as there are collections associated.',
+            ],
+        ],
+    ],
 ];
