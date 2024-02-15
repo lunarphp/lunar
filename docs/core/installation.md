@@ -1,5 +1,9 @@
 # Installation
 
+::: danger Work In Progress
+This package is very much in-development. It is incomplete and not production ready.
+:::
+
 ## Server Requirements
 
 - PHP ^8.1
