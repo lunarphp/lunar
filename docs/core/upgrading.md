@@ -31,6 +31,33 @@ for further information.
 The `position` field has been removed from the `product_options` table and is now found on the `product_product_option` 
 pivot table. Any position data will be automatically adjusted when running migrations.
 
+#### Tiers renamed to Price Breaks
+
+The `tier` column on pricing has been renamed to `min_quantity`, any references in code to `tiers` needs to be updated.
+
+##### Price Model
+
+```php
+// Old
+$priceModel->tier
+// New
+$priceModel->min_quantity
+
+// Old
+$priceModel->tiers
+// New
+$priceModel->priceBreaks
+```
+
+##### Lunar\Base\DataTransferObjects\PricingResponse
+
+```php
+// Old
+public Collection $tiered,
+// New
+public Collection $priceBreaks,
+```
+
 ## 0.7
 
 ### High Impact

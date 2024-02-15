@@ -3,12 +3,12 @@
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Models\ProductVariant;
 
@@ -94,24 +94,15 @@ class ManageProductIdentifiers extends BaseEditRecord
 
         return $form->schema([
             Section::make()->schema([
-                TextInput::make('sku')
-                    ->label(
-                        __('lunarpanel::product.pages.identifiers.form.sku.label')
-                    )
+                ProductVariantResource::getSkuFormComponent()
                     ->live()->unique(
                         table: fn () => $variant->getTable(),
                         ignorable: $variant,
                         ignoreRecord: true,
                     ),
-                TextInput::make('gtin')->label(
-                    __('lunarpanel::product.pages.identifiers.form.gtin.label')
-                ),
-                TextInput::make('mpn')->label(
-                    __('lunarpanel::product.pages.identifiers.form.mpn.label')
-                ),
-                TextInput::make('ean')->label(
-                    __('lunarpanel::product.pages.identifiers.form.ean.label')
-                ),
+                ProductVariantResource::getGtinFormComponent(),
+                ProductVariantResource::getMpnFormComponent(),
+                ProductVariantResource::getEanFormComponent(),
             ])->columns(1),
         ])->statePath('');
     }

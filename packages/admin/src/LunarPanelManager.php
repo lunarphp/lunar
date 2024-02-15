@@ -56,6 +56,7 @@ class LunarPanelManager
         Resources\ProductOptionResource::class,
         Resources\ProductResource::class,
         Resources\ProductTypeResource::class,
+        Resources\ProductVariantResource::class,
         Resources\StaffResource::class,
         Resources\TagResource::class,
         Resources\TaxClassResource::class,
@@ -85,8 +86,6 @@ class LunarPanelManager
             $panel = $fn($panel);
         }
 
-        $panel->id($this->panelId);
-
         Filament::registerPanel($panel);
 
         FilamentIcon::register([
@@ -112,6 +111,8 @@ class LunarPanelManager
             'lunar::customer-groups' => 'lucide-users',
             'lunar::dashboard' => 'lucide-bar-chart-big',
             'lunar::discounts' => 'lucide-percent-circle',
+            'lunar::discount-limitations' => 'lucide-list-x',
+            'lunar::info' => 'lucide-info',
             'lunar::languages' => 'lucide-languages',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',
@@ -263,7 +264,9 @@ class LunarPanelManager
     {
         if (isset($this->extensions[$class])) {
             foreach ($this->extensions[$class] as $extension) {
-                $args[0] = $extension->{$hookName}(...$args);
+                if (method_exists($extension, $hookName)) {
+                    $args[0] = $extension->{$hookName}(...$args);
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Models\Cart;
@@ -22,7 +23,7 @@ test('can add cart lines', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -48,7 +49,7 @@ test('cannot add zero quantity line', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -74,7 +75,7 @@ test('can update existing cart line', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,

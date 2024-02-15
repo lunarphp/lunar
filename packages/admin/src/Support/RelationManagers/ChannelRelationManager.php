@@ -11,6 +11,8 @@ use Filament\Tables\Table;
 
 class ChannelRelationManager extends RelationManager
 {
+    protected static bool $isLazy = false;
+
     protected static string $relationship = 'channels';
 
     public function isReadOnly(): bool

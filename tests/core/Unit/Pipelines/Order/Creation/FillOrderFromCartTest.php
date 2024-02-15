@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
@@ -21,7 +22,7 @@ test('can run pipeline', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,

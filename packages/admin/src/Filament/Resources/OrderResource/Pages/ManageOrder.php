@@ -14,7 +14,6 @@ use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\FontWeight;
@@ -35,6 +34,7 @@ use Lunar\Admin\Support\Infolists\Components\Tags;
 use Lunar\Admin\Support\Infolists\Components\Timeline;
 use Lunar\Admin\Support\Infolists\Components\Transaction as InfolistsTransaction;
 use Lunar\Admin\Support\OrderStatus;
+use Lunar\Admin\Support\Pages\BaseViewRecord;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Country;
 use Lunar\Models\State;
@@ -55,7 +55,7 @@ use Lunar\Models\Transaction;
  * @property float $availableToRefund
  * @property bool $canBeRefunded
  */
-class ManageOrder extends ViewRecord
+class ManageOrder extends BaseViewRecord
 {
     use CanDispatchActivityUpdated;
 
@@ -655,7 +655,7 @@ class ManageOrder extends ViewRecord
             ->slideOver();
     }
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             $this->getCaptureAction(),
