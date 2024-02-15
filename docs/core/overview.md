@@ -1,7 +1,7 @@
 # Welcome to Lunar!
 
 ::: danger Work In Progress
-This package is very much in-development. It is incomplete and not production ready.
+Version 1.x is very much in-development. It is incomplete and not production ready.
 :::
 
 We are delighted you are considering Lunar for your project. We've spent a lot of time developing this package to bring headless e-commerce functionality to Laravel.
