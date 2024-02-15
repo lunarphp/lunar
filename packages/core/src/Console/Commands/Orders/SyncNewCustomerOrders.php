@@ -32,5 +32,7 @@ class SyncNewCustomerOrders extends Command
                 MarkAsNewCustomer::dispatch($order->id);
             }
         });
+
+        exit(self::SUCCESS);
     }
 }

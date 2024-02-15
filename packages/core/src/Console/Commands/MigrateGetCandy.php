@@ -113,6 +113,8 @@ class MigrateGetCandy extends Command
                 ),
             ]);
         }
+
+        exit(self::SUCCESS);
     }
 
     protected function migrateTableNames($tables)

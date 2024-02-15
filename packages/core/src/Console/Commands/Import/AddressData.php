@@ -47,7 +47,7 @@ class AddressData extends Command
 
         if (! $newCountries->count()) {
             $this->components->info('There are no new countries to import');
-            return;
+            exit(self::SUCCESS);
         }
 
         progress(
@@ -80,5 +80,7 @@ class AddressData extends Command
         );
 
         $this->components->info('Countries and States imported successfully');
+
+        exit(self::SUCCESS);
     }
 }
