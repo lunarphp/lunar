@@ -24,7 +24,7 @@ class EditDiscount extends BaseEditRecord
         $minPrices = $data['data']['min_prices'] ?? [];
         $fixedPrices = $data['data']['fixed_values'] ?? [];
         $currencies = Currency::enabled()->get();
-        
+
         foreach ($minPrices as $currencyCode => $value) {
             $currency = $currencies->first(
                 fn ($currency) => $currency->code == $currencyCode
