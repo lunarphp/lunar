@@ -1,0 +1,40 @@
+{
+  "name": "lunarphp/stripe",
+  "type": "project",
+  "description": "Stripe payment driver for Lunar.",
+  "keywords": ["lunarphp", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart", "stripe"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "require": {
+      "php": "^8.1",
+      "lunarphp/core": "self.version",
+      "stripe/stripe-php": "^7.114"
+  },
+  "autoload": {
+      "psr-4": {
+          "Lunar\\Stripe\\": "src/"
+      }
+  },
+  "extra": {
+    "lunar": {
+        "name": "Stripe Payments"
+    },
+    "laravel": {
+        "providers": [
+            "Lunar\\Stripe\\StripePaymentsServiceProvider"
+        ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
