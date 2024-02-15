@@ -220,7 +220,7 @@ class DiscountResource extends BaseResource
 
     protected static function getMinimumCartAmountsFormComponents(): array
     {
-        $currencies = Currency::get();
+        $currencies = Currency::enabled()->get();
         $inputs = [];
 
         foreach ($currencies as $currency) {
