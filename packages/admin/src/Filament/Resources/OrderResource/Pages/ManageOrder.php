@@ -189,6 +189,7 @@ class ManageOrder extends BaseViewRecord
                                                     ->getStateUsing(function ($record) {
                                                         $paid = $record->transactions()
                                                             ->whereType('capture')
+                                                            ->whereSuccess(true)
                                                             ->get()
                                                             ->sum('amount.value');
 

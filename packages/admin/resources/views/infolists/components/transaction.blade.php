@@ -16,6 +16,7 @@
             'intent' => 'border-sky-300',
             'capture' => 'border-green-300',
         },
+        '!border-red-500' => !$transaction->success,
     ])
 >    
     <div class="p-2 space-y-2">
@@ -54,6 +55,7 @@
             <strong 
                 @class([
                     "text-sm",
+                    'text-red-500' => !$transaction->success,
                     match($transaction->type){
                         'refund' => "text-orange-500",
                         default => "text-gray-900 dark:text-gray-100",
@@ -111,6 +113,7 @@
     <div 
         @class([
             "bottom-0 left-0 block w-full text-center rounded-b-lg border-t text-xs py-1",
+            "bg-red-50 dark:bg-red-400/10 !border-red-300 text-red-600 !dark:text-red-400" => !$transaction->success,
             match($transaction->type){
                 'refund' => "bg-orange-50 dark:bg-orange-400/10 border-orange-300 text-orange-600 dark:text-orange-400",
                 'intent' => "bg-sky-50 dark:bg-sky-400/10 border-sky-300 text-sky-600 dark:text-sky-400",
