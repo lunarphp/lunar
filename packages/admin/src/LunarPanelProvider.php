@@ -106,7 +106,7 @@ class LunarPanelProvider extends ServiceProvider
             Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
         ], 'lunarphp/panel');
 
-        if ($this->app['request']->is($this->app['lunar-panel']->getPanel()->getPath().'*')) {
+        if ($this->app['request']->is($this->app->get('lunar-panel')->getPanel()->getPath().'*')) {
             $this->app['config']->set('livewire.inject_assets', true);
         }
     }
