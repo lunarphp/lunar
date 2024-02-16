@@ -52,7 +52,7 @@ class OrderIndexer extends ScoutIndexer
             'customer_reference' => $model->customer_reference,
             'status' => $model->status,
             'placed_at' => optional($model->placed_at)->timestamp,
-            'created_at' => (integer) $model->created_at->timestamp,
+            'created_at' => (int) $model->created_at->timestamp,
             'sub_total' => $model->sub_total->value,
             'total' => $model->total->value,
             'currency_code' => $model->currency_code,

@@ -43,7 +43,7 @@ class CustomerIndexer extends ScoutIndexer
             'company_name' => $model->company_name,
             'vat_no' => $model->vat_no,
             'account_ref' => $model->account_ref,
-            'created_at' => (integer) $model->created_at->timestamp,
+            'created_at' => (int) $model->created_at->timestamp,
         ], $this->mapSearchableAttributes($model));
 
         foreach ($metaFields as $key => $value) {

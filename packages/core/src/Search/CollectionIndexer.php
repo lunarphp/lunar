@@ -33,7 +33,7 @@ class CollectionIndexer extends ScoutIndexer
     {
         return array_merge([
             'id' => (string) $model->id,
-            'created_at' => (integer) $model->created_at->timestamp,
+            'created_at' => (int) $model->created_at->timestamp,
         ], $this->mapSearchableAttributes($model));
     }
 }
