@@ -43,7 +43,7 @@ class CreateShippingLine
                 'tax_total' => $shippingAddress->shippingTaxTotal->value,
                 'total' => $shippingAddress->shippingTotal->value,
                 'notes' => null,
-                'meta' => [],
+                'meta' => $shippingOption->meta,
             ])->save();
         }
 
