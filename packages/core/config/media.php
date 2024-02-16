@@ -14,12 +14,12 @@ return [
     ],
 
     'media_collection' => [
-        Lunar\Models\Asset::class => 'asset',
-        Lunar\Models\Brand::class => 'brand',
-        Lunar\Models\Collection::class => 'collection',
-        Lunar\Models\Product::class => 'product',
-        Lunar\Models\ProductOption::class => 'product_option',
-        Lunar\Models\ProductOptionValue::class => 'product_option_value',
+        Lunar\Models\Asset::class => 'assets',
+        Lunar\Models\Brand::class => 'brands',
+        Lunar\Models\Collection::class => 'collections',
+        Lunar\Models\Product::class => 'products',
+        Lunar\Models\ProductOption::class => 'product_options',
+        Lunar\Models\ProductOptionValue::class => 'product_options_values',
         'default' => 'images',
     ],
 
