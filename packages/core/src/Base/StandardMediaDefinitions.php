@@ -26,7 +26,9 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
         // Reset to avoid duplication
         $model->mediaCollections = [];
 
-        $collection = $model->addMediaCollection('images');
+        $collection = $model->addMediaCollection(
+            collect(config('lunar.media.media_collection'))->get($model::class) ?? config('lunar.media.media_collection.default')
+        );
 
         if ($fallbackUrl) {
             $collection = $collection->useFallbackUrl($fallbackUrl);

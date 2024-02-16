@@ -13,6 +13,16 @@ return [
         Lunar\Models\ProductOptionValue::class => StandardMediaDefinitions::class,
     ],
 
+    'media_collection' => [
+        Lunar\Models\Asset::class => 'asset',
+        Lunar\Models\Brand::class => 'brand',
+        Lunar\Models\Collection::class => 'collection',
+        Lunar\Models\Product::class => 'product',
+        Lunar\Models\ProductOption::class => 'product_option',
+        Lunar\Models\ProductOptionValue::class => 'product_option_value',
+        'default' => 'images',
+    ],
+
     'fallback' => [
         'url' => env('FALLBACK_IMAGE_URL', null),
         'path' => env('FALLBACK_IMAGE_PATH', null),
