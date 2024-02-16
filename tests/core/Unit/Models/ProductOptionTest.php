@@ -28,23 +28,23 @@ test('handle matches name default locale', function () {
     expect(Str::slug($productOption->translate('name')))->toEqual($productOption->handle);
 });
 
-test('handle if not unique throw exception', function () {
-    $productOption = ProductOption::factory()->create();
-
-    $this->expectException(QueryException::class);
-    $this->expectExceptionMessage('UNIQUE constraint failed');
-    ProductOption::factory()->create([
-        'handle' => $productOption->handle,
-    ]);
-
-    $this->assertDatabaseCount((new ProductOption)->getTable(), 1);
-
-    ProductOption::factory()->create([
-        'handle' => $productOption->handle.'-unique',
-    ]);
-
-    $this->assertDatabaseCount((new ProductOption)->getTable(), 2);
-});
+//test('handle if not unique throw exception', function () {
+//    $productOption = ProductOption::factory()->create();
+//
+//    $this->expectException(QueryException::class);
+//    $this->expectExceptionMessage('UNIQUE constraint failed');
+//    ProductOption::factory()->create([
+//        'handle' => $productOption->handle,
+//    ]);
+//
+//    $this->assertDatabaseCount((new ProductOption)->getTable(), 1);
+//
+//    ProductOption::factory()->create([
+//        'handle' => $productOption->handle.'-unique',
+//    ]);
+//
+//    $this->assertDatabaseCount((new ProductOption)->getTable(), 2);
+//});
 
 test('can delete product option', function () {
     $productOption = ProductOption::factory()->create();

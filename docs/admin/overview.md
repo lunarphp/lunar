@@ -1,7 +1,7 @@
 # Introduction
 
 ::: danger Work In Progress
-This package is very much in-development. It is incomplete and not production ready.
+Version 1.x is very much in-development. It is incomplete and not production ready.
 :::
 
 Lunar's admin panel is powered by Filament v3. It allows you to easily extend the admin panel to suit your project.
