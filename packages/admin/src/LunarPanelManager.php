@@ -14,7 +14,6 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -141,10 +140,6 @@ class LunarPanelManager
             'chartPrimary' => Color::Blue,
             'chartSecondary' => Color::Green,
         ]);
-
-        if (Request::is(Filament::getPanel()->getPath().'*')) {
-            config()->set('livewire.inject_assets', true);
-        }
 
         return $this;
     }
