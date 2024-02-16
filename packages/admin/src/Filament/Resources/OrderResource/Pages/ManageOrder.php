@@ -155,11 +155,20 @@ class ManageOrder extends BaseViewRecord
                                                     ->inlineLabel()
                                                     ->alignEnd()
                                                     ->formatStateUsing(fn ($state) => $state->formatted),
-                                                Infolists\Components\TextEntry::make('shipping_total')
-                                                    ->label(__('lunarpanel::order.infolist.shipping_total.label'))
-                                                    ->inlineLabel()
-                                                    ->alignEnd()
-                                                    ->formatStateUsing(fn ($state) => $state->formatted),
+                                                Infolists\Components\Group::make()
+                                                    ->statePath('shipping_breakdown')
+                                                    ->schema(function ($state) {
+                                                        $shipping = [];
+                                                        foreach ($state->items ?? [] as $shippingIndex => $shippingItem) {
+                                                            $shipping[] = Infolists\Components\TextEntry::make('shipping_'.$shippingIndex)
+                                                                ->label(fn () => $shippingItem->name)
+                                                                ->inlineLabel()
+                                                                ->alignEnd()
+                                                                ->state(fn () => $shippingItem->price->formatted);
+                                                        }
+
+                                                        return $shipping;
+                                                    }),
 
                                                 Infolists\Components\Group::make()
                                                     ->statePath('tax_breakdown')
@@ -222,7 +231,7 @@ class ManageOrder extends BaseViewRecord
                                 Infolists\Components\RepeatableEntry::make('transactions')
                                     ->hiddenLabel()
                                     ->placeholder(__('lunarpanel::order.infolist.transactions.placeholder'))
-                                    ->getStateUsing(fn ($record) => $record->transactions->sortByDesc('created_at')->sortBy('id'))
+                                    ->getStateUsing(fn ($record) => $record->transactions)
                                     ->contained(false)
                                     ->schema([
                                         InfolistsTransaction::make('transactions'),
@@ -392,7 +401,7 @@ class ManageOrder extends BaseViewRecord
     public function captureTotal(): int
     {
         return $this->transactions->filter(function ($transaction) {
-            return $transaction->type == 'capture';
+            return $transaction->type == 'capture' && $transaction->success;
         })->sum('amount.value');
     }
 
@@ -403,7 +412,7 @@ class ManageOrder extends BaseViewRecord
     public function refundTotal(): int
     {
         return $this->transactions->filter(function ($transaction) {
-            return $transaction->type == 'refund';
+            return $transaction->type == 'refund' && $transaction->success;
         })->sum('amount.value');
     }
 
@@ -414,7 +423,7 @@ class ManageOrder extends BaseViewRecord
     public function intentTotal(): int
     {
         return $this->transactions->filter(function ($transaction) {
-            return $transaction->type == 'intent';
+            return $transaction->type == 'intent' && $transaction->success;
         })->sum('amount.value');
     }
 

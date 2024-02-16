@@ -14,6 +14,7 @@ return [
         'capture' => 'Captured',
         'intent' => 'Intent',
         'refund' => 'Refunded',
+        'failed' => 'Failed',
     ],
 
     'table' => [
