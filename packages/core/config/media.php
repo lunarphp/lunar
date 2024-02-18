@@ -13,14 +13,9 @@ return [
         Lunar\Models\ProductOptionValue::class => StandardMediaDefinitions::class,
     ],
 
-    'media_collection' => [
-        Lunar\Models\Asset::class => 'assets',
-        Lunar\Models\Brand::class => 'brands',
-        Lunar\Models\Collection::class => 'collections',
-        Lunar\Models\Product::class => 'products',
-        Lunar\Models\ProductOption::class => 'product_options',
-        Lunar\Models\ProductOptionValue::class => 'product_options_values',
-        'default' => 'images',
+    'collection' => [
+        'images' => 'images',
+        'videos' => 'videos',
     ],
 
     'fallback' => [

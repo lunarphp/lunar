@@ -55,12 +55,12 @@ class MediaRelationManager extends RelationManager
             ->heading(function () {
                 $product = $this->getOwnerRecord();
 
-                return $product->getMediaCollectionTitle('images') ?? Str::ucfirst($this->mediaCollection);
+                return $product->getMediaCollectionTitle(config('lunar.media.collection.images')) ?? Str::ucfirst($this->mediaCollection);
             })
             ->description(function () {
                 $product = $this->getOwnerRecord();
 
-                return $product->getMediaCollectionDescription('images') ?? '';
+                return $product->getMediaCollectionDescription(config('lunar.media.collection.images')) ?? '';
             })
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))
@@ -84,7 +84,7 @@ class MediaRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->using(function (array $data, string $model): Model {
                         $product = $this->getOwnerRecord();
-
+    dd($this->mediaCollection);
                         return $product->addMedia($data['media'])
                             ->withCustomProperties([
                                 'name' => $data['custom_properties']['name'],
