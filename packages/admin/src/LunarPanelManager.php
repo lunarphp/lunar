@@ -141,6 +141,10 @@ class LunarPanelManager
             'chartSecondary' => Color::Green,
         ]);
 
+        if (app('request')->is($panel->getPath().'*')) {
+            app('config')->set('livewire.inject_assets', true);
+        }
+
         return $this;
     }
 
