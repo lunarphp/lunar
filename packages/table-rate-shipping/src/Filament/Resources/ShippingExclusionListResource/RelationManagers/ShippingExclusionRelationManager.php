@@ -49,7 +49,7 @@ class ShippingExclusionRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('purchasable.thumbnail')
-                    ->collection('images')
+                    ->collection(config('lunar.media.collection.images'))
                     ->conversion('small')
                     ->limit(1)
                     ->square()
