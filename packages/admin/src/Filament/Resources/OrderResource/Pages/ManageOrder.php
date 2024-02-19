@@ -77,7 +77,7 @@ class ManageOrder extends BaseViewRecord
         return "{$label} #".$this->record->id;
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function getDefaultInfolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
