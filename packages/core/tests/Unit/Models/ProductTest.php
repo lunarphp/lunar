@@ -533,4 +533,32 @@ class ProductTest extends TestCase
 
         $this->assertCount(1, $product->refresh()->prices);
     }
+
+    /** @test */
+    public function can_retrieve_correct_models_and_relationships()
+    {
+        $attribute_data = collect([
+            'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
+            'pack_qty' => new \Lunar\FieldTypes\Number(12345),
+            'description' => new \Lunar\FieldTypes\TranslatedText(collect([
+                'en' => new \Lunar\FieldTypes\Text('Blue'),
+                'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+            ])),
+        ]);
+
+        $collection = Collection::factory()->create();
+
+        $product = Product::factory()
+            ->for(ProductType::factory())
+            ->create([
+                'attribute_data' => $attribute_data,
+            ]);
+
+        $product->collections()->attach($collection);
+
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $product->mappedAttributes());
+        $this->assertInstanceOf(Collection::class, $product->collections()->getRelated());
+        $this->assertCount(1, $product->collections()->get());
+        $this->assertEquals($collection->id, $product->collections()->get()->first()->id);
+    }
 }
