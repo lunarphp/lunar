@@ -35,12 +35,12 @@ use Lunar\Admin\Filament\Widgets;
 
 class MyCreateExtension extends CreatePageExtension
 {
-    public function Heading($title): string
+    public function heading($title): string
     {
         return $title . ' - Example';
     }
 
-    public function Subheading($title): string
+    public function subheading($title): string
     {
         return $title . ' - Example';
     }
@@ -120,12 +120,12 @@ use Lunar\Admin\Filament\Widgets;
 
 class MyEditExtension extends EditPageExtension
 {
-    public function Heading($title): string
+    public function heading($title): string
     {
         return $title . ' - Example';
     }
 
-    public function Subheading($title): string
+    public function subheading($title): string
     {
         return $title . ' - Example';
     }
@@ -219,12 +219,12 @@ use Lunar\Admin\Filament\Widgets;
 
 class MyListExtension extends ListPageExtension
 {
-    public function Heading($title): string
+    public function heading($title): string
     {
         return $title . ' - Example';
     }
 
-    public function Subheading($title): string
+    public function subheading($title): string
     {
         return $title . ' - Example';
     }
@@ -280,12 +280,12 @@ use Lunar\Admin\Support\Extending\ViewPageExtension;
 
 class MyViewExtension extends ViewPageExtension
 {
-    public function Heading($title): string
+    public function heading($title): string
     {
         return $title . ' - Example';
     }
 
-    public function Subheading($title): string
+    public function subheading($title): string
     {
         return $title . ' - Example';
     }
