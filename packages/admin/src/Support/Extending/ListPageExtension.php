@@ -2,8 +2,6 @@
 
 namespace Lunar\Admin\Support\Extending;
 
-use Filament\Tables\Table;
-
 abstract class ListPageExtension extends BaseExtension
 {
     public function heading($title): string
