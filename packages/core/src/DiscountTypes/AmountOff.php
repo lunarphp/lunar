@@ -29,9 +29,9 @@ class AmountOff extends AbstractDiscountType
             return $cart;
         }
 
-        if ($fixedValue = $data['fixed_value'] ?? null) {
+        if (!empty($data['fixed_value'])) {
             return $this->applyFixedValue(
-                values: $fixedValue,
+                values: $data['fixed_value'],
                 cart: $cart,
             );
         }
