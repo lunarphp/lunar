@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 
 class ManageCollectionMedia extends BaseManageRelatedRecords

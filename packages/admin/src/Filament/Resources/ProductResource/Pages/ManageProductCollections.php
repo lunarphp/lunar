@@ -3,11 +3,11 @@
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms;
-use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Models\Collection;
 
 class ManageProductCollections extends BaseManageRelatedRecords

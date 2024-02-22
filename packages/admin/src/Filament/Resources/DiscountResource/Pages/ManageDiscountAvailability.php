@@ -2,11 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
-use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 
 class ManageDiscountAvailability extends BaseManageRelatedRecords
