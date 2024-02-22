@@ -6,6 +6,16 @@ use Filament\Tables\Table;
 
 abstract class ListPageExtension extends BaseExtension
 {
+    public function heading($title): string
+    {
+        return $title;
+    }
+
+    public function subheading($title): string|null
+    {
+        return $title;
+    }
+
     public function extendTable(Table $table): Table
     {
         return $table;
