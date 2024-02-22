@@ -31,6 +31,6 @@ it('can customise page headings', function () {
     \Livewire\Livewire::test(ManageProductMedia::class, [
         'record' => $product->getRouteKey(),
     ])
-    ->assertSee('New Heading')
-    ->assertSee('New Subheading');
+        ->assertSee('New Heading')
+        ->assertSee('New Subheading');
 });
