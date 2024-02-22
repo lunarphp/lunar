@@ -2,13 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Filament\Resources\Pages\ManageRelatedRecords;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 
-class ManageCollectionMedia extends ManageRelatedRecords
+class ManageCollectionMedia extends BaseManageRelatedRecords
 {
     protected static string $resource = CollectionResource::class;
 

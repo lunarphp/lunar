@@ -4,13 +4,13 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
 
-class ManageProductVariants extends ManageRelatedRecords
+class ManageProductVariants extends BaseManageRelatedRecords
 {
     protected static string $resource = ProductResource::class;
 

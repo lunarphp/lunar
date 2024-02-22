@@ -2,14 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
-use Filament\Resources\Pages\ManageRelatedRecords;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 
-class ManageDiscountAvailability extends ManageRelatedRecords
+class ManageDiscountAvailability extends BaseManageRelatedRecords
 {
     protected static string $resource = DiscountResource::class;
 

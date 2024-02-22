@@ -2,14 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Filament\Resources\Pages\ManageRelatedRecords;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 
-class ManageCollectionAvailability extends ManageRelatedRecords
+class ManageCollectionAvailability extends BaseManageRelatedRecords
 {
     protected static string $resource = CollectionResource::class;
 

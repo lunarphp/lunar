@@ -3,7 +3,7 @@
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Tables\Actions\Collections\CreateChildCollection;
 
-class ManageCollectionChildren extends ManageRelatedRecords
+class ManageCollectionChildren extends BaseManageRelatedRecords
 {
     protected static string $resource = CollectionResource::class;
 
