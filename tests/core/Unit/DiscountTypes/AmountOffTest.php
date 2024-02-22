@@ -1759,3 +1759,55 @@ test('can apply discount dynamically', function () {
     expect($cart->taxTotal->value)->toEqual(190);
     expect($cart->discounts)->toHaveCount(1);
 });
+
+test('can handle malformed discount', function () {
+    $currency = Currency::getDefault();
+
+    $customerGroup = CustomerGroup::getDefault();
+
+    $channel = Channel::getDefault();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $purchasableA = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasableA),
+        'priceable_id' => $purchasableA->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasableA),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 2,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'coupon' => '10OFF',
+        'data' => [],
+    ]);
+
+    // Calculate method called for the first time
+    CartSession::use($cart)->calculate();
+
+    // Update cart with coupon code
+    $cart->update([
+        'coupon_code' => '10OFF',
+    ]);
+
+    // Get current cart which runs the calculate method for the second time
+    $cart = CartSession::current();
+
+    // Calculate method called for the third time
+    $cart = $cart->calculate();
+
+    expect($cart->discountTotal->value)->toEqual(0);
+})->group('this');
