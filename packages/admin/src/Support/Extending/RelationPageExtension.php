@@ -4,7 +4,7 @@ namespace Lunar\Admin\Support\Extending;
 
 use Illuminate\Database\Eloquent\Model;
 
-abstract class ViewPageExtension extends BaseExtension
+abstract class RelationPageExtension extends BaseExtension
 {
     public function heading($title, Model $record): string
     {

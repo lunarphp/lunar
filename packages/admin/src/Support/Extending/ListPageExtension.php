@@ -16,11 +16,6 @@ abstract class ListPageExtension extends BaseExtension
         return $title;
     }
 
-    public function extendTable(Table $table): Table
-    {
-        return $table;
-    }
-
     public function relationManagers(array $managers): array
     {
         return $managers;

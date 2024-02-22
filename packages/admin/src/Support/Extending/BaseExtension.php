@@ -10,9 +10,4 @@ abstract class BaseExtension
     {
         return $actions;
     }
-
-    public function extendTable(Table $table): Table
-    {
-        return $table;
-    }
 }

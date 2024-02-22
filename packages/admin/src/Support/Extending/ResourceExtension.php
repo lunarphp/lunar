@@ -8,4 +8,9 @@ abstract class ResourceExtension extends BaseExtension
     {
         return $managers;
     }
+
+    public function extendTable(Table $table): Table
+    {
+        return $table;
+    }
 }
