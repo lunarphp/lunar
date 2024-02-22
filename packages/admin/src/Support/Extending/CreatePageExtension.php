@@ -12,7 +12,7 @@ abstract class CreatePageExtension extends BaseExtension
         return $title;
     }
 
-    public function subheading($title): string|null
+    public function subheading($title): ?string
     {
         return $title;
     }

@@ -12,7 +12,7 @@ abstract class EditPageExtension extends BaseExtension
         return $title;
     }
 
-    public function subheading($title, Model $record): string|null
+    public function subheading($title, Model $record): ?string
     {
         return $title;
     }
