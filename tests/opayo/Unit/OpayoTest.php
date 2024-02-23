@@ -89,8 +89,7 @@ it('can return valid auth payload', function () {
         ->and($payload['strongCustomerAuthentication']['browserScreenWidth'])
         ->toBe($params->browserScreenWidth)
         ->and($payload['strongCustomerAuthentication']['browserTZ'])
-        ->toBe($params->browserTZ)
-    ;
+        ->toBe($params->browserTZ);
 });
 
 it('does not try and save or reuse payments by default', function () {
@@ -214,5 +213,5 @@ it('can allow card reuse in the payload', function () {
             'initiatedType' => 'CIT',
             'mitType' => 'Unscheduled',
         ])->and($payload['strongCustomerAuthentication']['threeDSRequestorPriorAuthenticationInfo']['threeDSReqPriorRef'])
-            ->toBe($params->authCode);
+        ->toBe($params->authCode);
 });

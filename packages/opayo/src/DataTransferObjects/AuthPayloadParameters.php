@@ -33,5 +33,6 @@ class AuthPayloadParameters
         public bool $saveCard = false,
         public bool $reusable = false,
         public ?string $authCode = null
-    ) {}
+    ) {
+    }
 }

@@ -321,7 +321,6 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Get the payload for authorizing a payment
      *
-     * @param  string  $type
      * @return array
      */
     protected function getAuthPayload(string $type = 'Payment')
@@ -368,16 +367,16 @@ class OpayoPaymentType extends AbstractPayment
     }
 
     /**
-     * @param \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|mixed|string $policy
+     * @param  \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|mixed|string  $policy
      */
     public function setPolicy(mixed $policy): void
     {
         $this->policy = $policy;
     }
 
-    private function saveCard(Order $order, object $details, ?string $authCode = null)
+    private function saveCard(Order $order, object $details, string $authCode = null)
     {
-        if (!$order->user_id) {
+        if (! $order->user_id) {
             return;
         }
         OpayoToken::where('last_four', '=', $details->lastFourDigits)
