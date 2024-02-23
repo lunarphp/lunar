@@ -365,8 +365,7 @@ $order->refunds; // Get all transactions that are refunds.
 We will be looking to add support for the most popular payment providers, so keep an eye out here as we will list them
 all out.
 
-In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind if
-you what payment provider you use or plan to use.
+In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind what payment provider you use or plan to use.
 
 In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table,
 the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier
