@@ -1,18 +1,5 @@
 # Extending Pages
 
-You can add and change the behaviour of existing Filament pages. This might be useful if you wish to add a button for 
-additional custom functionality.
-
-To extend a page you need to create and register an extension.
-
-For example, the code below will register a custom extension called `MyEditExtension` for the `EditProduct` Filament page.
-
-```php
-use Lunar\Admin\Support\Facades\LunarPanel;
-
-LunarPanel::registerExtension(new MyEditExtension, EditProduct::class);
-```
-
 ## Writing Extensions
 
 There are three extension types Lunar provides, these are for Create, Edit and Listing pages.

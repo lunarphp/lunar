@@ -1,18 +1,5 @@
 # Extending Resources
 
-You can add and change the behaviour of existing Filament resources. This might be useful if you wish to add a button for 
-additional custom functionality.
-
-Much like extending pages, to extend a resource you need to create and register an extension.
-
-For example, the code below will register a custom extension called `MyProductResourceExtension` for the `ProductResource` Filament resource.
-
-```php
-use Lunar\Admin\Support\Facades\LunarPanel;
-
-LunarPanel::registerExtension(new MyProductResourceExtension, \Lunar\Panel\Filament\Resources\ProductResource::class);
-```
-
 ## MyProductResourceExtension
 
 An example of extending the ProductResource

@@ -228,9 +228,18 @@ class LunarPanelManager
             ])->sidebarCollapsibleOnDesktop();
     }
 
-    public function registerExtension(BaseExtension|ResourceExtension $extension, string $pageClass): self
+    public function registerExtension(BaseExtension|ResourceExtension|string $extension, string $pageClass): self
     {
-        $this->extensions[$pageClass][] = $extension;
+        $this->extensions[$pageClass][] = new $extension;
+
+        return $this;
+    }
+
+    public function registerExtensions(array $extensions, string $pageClass): self
+    {
+        foreach ($extensions as $extension) {
+            $this->extensions[$pageClass][] = new $extension;
+        }
 
         return $this;
     }
