@@ -183,7 +183,7 @@ $myModel->scheduleCustomerGroup(
 // Schedule the product to be enabled straight away
 $myModel->scheduleCustomerGroup($customerGroup);
 
-// The schedule method will accept and array or collection of customer groups.
+// The schedule method will accept an array or collection of customer groups.
 $myModel->scheduleCustomerGroup(CustomerGroup::get());
 ```
 
