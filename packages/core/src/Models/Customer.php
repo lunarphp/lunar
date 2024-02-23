@@ -4,6 +4,9 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
@@ -60,10 +63,8 @@ class Customer extends BaseModel
 
     /**
      * Return the customer group relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function customerGroups()
+    public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -75,10 +76,8 @@ class Customer extends BaseModel
 
     /**
      * Return the customer group relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -90,25 +89,24 @@ class Customer extends BaseModel
 
     /**
      * Return the addresses relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function addresses()
+    public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);
     }
 
-    public function orders()
+    /**
+     * Return the orders relationship.
+     */
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
     /**
      * Get the mapped attributes relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function mappedAttributes()
+    public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 

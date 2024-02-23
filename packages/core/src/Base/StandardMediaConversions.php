@@ -2,11 +2,12 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Manipulations;
 
 class StandardMediaConversions
 {
-    public function apply(BaseModel $model)
+    public function apply(Model $model)
     {
         $conversions = [
             'zoom' => [

@@ -4,7 +4,6 @@ namespace Lunar\Tests\Unit\Actions\Taxes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Taxes\GetTaxZone;
-use Lunar\Actions\Taxes\GetTaxZoneCountry;
 use Lunar\Models\Address;
 use Lunar\Models\Country;
 use Lunar\Models\State;
