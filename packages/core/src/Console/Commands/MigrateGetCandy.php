@@ -27,7 +27,7 @@ class MigrateGetCandy extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle()
     {
         $tableNames = collect(
             DB::connection()->getDoctrineSchemaManager()->listTableNames()
@@ -114,7 +114,7 @@ class MigrateGetCandy extends Command
             ]);
         }
 
-        exit(self::SUCCESS);
+        return self::SUCCESS;
     }
 
     protected function migrateTableNames($tables)

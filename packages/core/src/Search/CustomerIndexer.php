@@ -38,11 +38,12 @@ class CustomerIndexer extends ScoutIndexer
         $metaFields = (array) $model->meta;
 
         $data = array_merge([
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'name' => $model->fullName,
             'company_name' => $model->company_name,
             'vat_no' => $model->vat_no,
             'account_ref' => $model->account_ref,
+            'created_at' => (int) $model->created_at->timestamp,
         ], $this->mapSearchableAttributes($model));
 
         foreach ($metaFields as $key => $value) {

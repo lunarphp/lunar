@@ -100,7 +100,6 @@
                 "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
-                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\Meilisearch\\MeilisearchServiceProvider",
                 "Lunar\\LunarServiceProvider"

@@ -46,13 +46,13 @@ class OrderIndexer extends ScoutIndexer
     public function toSearchableArray(Model $model): array
     {
         $data = [
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'channel' => $model->channel->name,
             'reference' => $model->reference,
             'customer_reference' => $model->customer_reference,
             'status' => $model->status,
             'placed_at' => optional($model->placed_at)->timestamp,
-            'created_at' => $model->created_at->timestamp,
+            'created_at' => (int) $model->created_at->timestamp,
             'sub_total' => $model->sub_total->value,
             'total' => $model->total->value,
             'currency_code' => $model->currency_code,
