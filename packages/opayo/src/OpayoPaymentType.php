@@ -5,8 +5,11 @@ namespace Lunar\Opayo;
 use Illuminate\Support\Str;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Models\Order;
 use Lunar\Models\Transaction;
+use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 use Lunar\Opayo\Facades\Opayo;
+use Lunar\Opayo\Models\OpayoToken;
 use Lunar\Opayo\Responses\PaymentAuthorize;
 use Lunar\Opayo\Responses\ThreeDSecureResponse;
 use Lunar\PaymentTypes\AbstractPayment;
@@ -45,8 +48,8 @@ class OpayoPaymentType extends AbstractPayment
             // Somethings gone wrong!
             return new PaymentAuthorize(
                 success: false,
-                message: 'This order has already been placed',
                 status: Opayo::ALREADY_PLACED,
+                message: 'This order has already been placed',
             );
         }
 
@@ -83,6 +86,14 @@ class OpayoPaymentType extends AbstractPayment
         }
 
         $successful = $response->status == 'Ok';
+
+        if ($successful && $response->paymentMethod?->card?->reusable) {
+            $this->saveCard(
+                $this->order,
+                $response->paymentMethod?->card,
+                $response->acsTransId ?? null,
+            );
+        }
 
         $this->storeTransaction(
             transaction: $response,
@@ -247,6 +258,14 @@ class OpayoPaymentType extends AbstractPayment
 
         $successful = $transaction->status == 'Ok';
 
+        if ($successful && $data->paymentMethod?->card?->reusable) {
+            $this->saveCard(
+                $this->order,
+                $data->paymentMethod?->card,
+                $data->acsTransId ?? null,
+            );
+        }
+
         $this->storeTransaction(
             transaction: $transaction,
             success: $successful
@@ -305,71 +324,72 @@ class OpayoPaymentType extends AbstractPayment
      * @param  string  $type
      * @return array
      */
-    protected function getAuthPayload($type = 'Payment')
+    protected function getAuthPayload(string $type = 'Payment')
     {
-        $payload = [
-            'transactionType' => $type,
-            'paymentMethod' => [
-                'card' => [
-                    'merchantSessionKey' => $this->data['merchant_key'],
-                    'cardIdentifier' => $this->data['card_identifier'],
-                ],
-            ],
-            'vendorTxCode' => Str::random(40),
-            'amount' => $this->order->total->value,
-            'currency' => $this->order->currency_code,
-            'description' => 'Webstore Transaction',
-            'apply3DSecure' => 'UseMSPSetting',
-            'customerFirstName' => $this->order->billingAddress->first_name,
-            'customerLastName' => $this->order->billingAddress->last_name,
-            'billingAddress' => [
-                'address1' => $this->order->billingAddress->line_one,
-                'city' => $this->order->billingAddress->city,
-                'postalCode' => $this->order->billingAddress->postcode,
-                'country' => $this->order->billingAddress->country->iso2,
-            ],
-            'strongCustomerAuthentication' => [
-                'customerMobilePhone' => $this->order->billingAddress->phone,
-                'transType' => 'GoodsAndServicePurchase',
-                'browserLanguage' => $this->data['browserLanguage'] ?? null,
-                'challengeWindowSize' => $this->data['challengeWindowSize'] ?? null,
-                'browserIP' => $this->data['browserIP'] ?? null,
-                'notificationURL' => route('opayo.threed.response'),
-                'browserAcceptHeader' => $this->data['browserAcceptHeader'] ?? null,
-                'browserJavascriptEnabled' => true,
-                'browserUserAgent' => $this->data['browserUserAgent'] ?? null,
-                'browserJavaEnabled' => (bool) ($this->data['browserJavaEnabled'] ?? null),
-                'browserColorDepth' => $this->data['browserColorDepth'] ?? null,
-                'browserScreenHeight' => $this->data['browserScreenHeight'] ?? null,
-                'browserScreenWidth' => $this->data['browserScreenWidth'] ?? null,
-                'browserTZ' => $this->data['browserTZ'] ?? null,
-            ],
-            'entryMethod' => 'Ecommerce',
-        ];
+        $billingAddress = $this->order->billingAddress;
 
-        if (! empty($this->data['save'])) {
-            $payload['credentialType'] = [
-                'cofUsage' => 'First',
-                'initiatedType' => 'CIT',
-                'mitType' => 'Unscheduled',
-            ];
-            $payload['paymentMethod']['card']['save'] = true;
-        }
-        // dd($payload);
+        $payload = new AuthPayloadParameters(
+            transactionType: $type,
+            merchantSessionKey: $this->data['merchant_key'],
+            cardIdentifier: $this->data['card_identifier'],
+            vendorTxCode: Str::random(40),
+            amount: $this->order->total->value,
+            currency: $this->order->currency_code,
+            customerFirstName: $billingAddress->first_name,
+            customerLastName: $billingAddress->last_name,
+            billingAddressLineOne: $billingAddress->line_one,
+            billingAddressCity: $billingAddress->city,
+            billingAddressPostcode: $billingAddress->postcode,
+            billingAddressCountryIso: $billingAddress->country->iso2,
+            customerMobilePhone: $billingAddress->contact_phone,
+            notificationURL: route('opayo.threed.response'),
+            browserLanguage: $this->data['browserLanguage'] ?? null,
+            challengeWindowSize: $this->data['challengeWindowSize'] ?? null,
+            browserIP: $this->data['browserIP'] ?? null,
+            browserAcceptHeader: $this->data['browserAcceptHeader'] ?? null,
+            browserJavascriptEnabled: true,
+            browserUserAgent: $this->data['browserUserAgent'] ?? null,
+            browserJavaEnabled: (bool) ($this->data['browserJavaEnabled'] ?? null),
+            browserColorDepth: $this->data['browserColorDepth'] ?? null,
+            browserScreenHeight: $this->data['browserScreenHeight'] ?? null,
+            browserScreenWidth: $this->data['browserScreenWidth'] ?? null,
+            browserTZ: $this->data['browserTZ'] ?? null,
+            saveCard: $this->data['saveCard'] ?? false,
+            reusable: $this->data['reusable'] ?? false,
+        );
 
-        if (! empty($this->data['reusable'])) {
-            // $reusedCard = ReusablePayment::whereToken($this->token)->first();
-            // $payload['credentialType'] = [
-            //     'cofUsage' => 'Subsequent',
-            //     'initiatedType' => 'CIT',
-            //     'mitType' => 'Unscheduled',
-            // ];
-            // if ($reusedCard->auth_code) {
-            //     $payload['strongCustomerAuthentication']['threeDSRequestorPriorAuthenticationInfo']['threeDSReqPriorRef'] = $reusedCard->auth_code;
-            // }
-            // $payload['paymentMethod']['card']['reusable'] = true;
+        if ($payload->reusable) {
+            $reusedCard = OpayoToken::whereToken($payload->cardIdentifier)->first();
+
+            $payload->authCode = $reusedCard?->auth_code;
         }
 
-        return $payload;
+        return Opayo::getAuthPayload($payload);
+    }
+
+    /**
+     * @param \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|mixed|string $policy
+     */
+    public function setPolicy(mixed $policy): void
+    {
+        $this->policy = $policy;
+    }
+
+    private function saveCard(Order $order, object $details, ?string $authCode = null)
+    {
+        if (!$order->user_id) {
+            return;
+        }
+        OpayoToken::where('last_four', '=', $details->lastFourDigits)
+            ->where('user_id', '=', $order->user_id)->delete();
+
+        $payment = new OpayoToken();
+        $payment->user_id = $this->order->user_id;
+        $payment->card_type = strtolower($details->cardType);
+        $payment->last_four = $details->lastFourDigits;
+        $payment->expires_at = \Carbon\Carbon::createFromFormat('my', $details->expiryDate)->endOfMonth();
+        $payment->token = $details->cardIdentifier;
+        $payment->auth_code = $authCode;
+        $payment->save();
     }
 }

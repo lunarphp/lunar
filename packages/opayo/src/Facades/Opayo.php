@@ -3,8 +3,12 @@
 namespace Lunar\Opayo\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 use Lunar\Opayo\OpayoInterface;
 
+/**
+ * @method static getAuthPayload(AuthPayloadParameters $parameters): array
+ */
 class Opayo extends Facade
 {
     /**
