@@ -41,7 +41,7 @@ class Attributes extends Forms\Components\Group
                     if ($modelClass == ProductVariant::class) {
                         $productTypeId = $record->product?->product_type_id ?: ProductType::first()->id;
 
-                        // If we have a product variant type, the attributes should be based off that.
+                        // If we have a product type, the attributes should be based off that.
                         if ($productTypeId) {
                             $attributeQuery = ProductType::find($productTypeId)->variantAttributes();
                         }
