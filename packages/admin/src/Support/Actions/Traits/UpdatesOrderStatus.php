@@ -101,7 +101,7 @@ trait UpdatesOrderStatus
                 return ! count(
                     static::getMailers($get('status'))
                 );
-            })
+            }),
         ];
     }
 
