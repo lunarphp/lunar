@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
 use Awcodes\Shout\Components\Shout;
 use Awcodes\Shout\Components\ShoutEntry;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Closure;
 use Filament\Actions;
 use Filament\Facades\Filament;
@@ -13,7 +12,6 @@ use Filament\Infolists;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\FontWeight;
@@ -27,6 +25,7 @@ use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
 use Lunar\Admin\Support\Actions\Orders\UpdateStatusAction;
+use Lunar\Admin\Support\Actions\PdfDownload;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\Infolists\Components\Livewire;
@@ -676,17 +675,12 @@ class ManageOrder extends BaseViewRecord
                         $this->dispatchActivityUpdated();
                     }
                 ),
-            Actions\Action::make('download_pdf')
+            PdfDownload::make('download_pdf')
+                ->pdfView('lunarpanel::pdf.order')
                 ->label(__('lunarpanel::order.action.download_order_pdf.label'))
-                ->action(function ($record) {
-                    Notification::make()->title(__('lunarpanel::order.action.download_order_pdf.notification'))->success()->send();
-
-                    return response()->streamDownload(function () use ($record) {
-                        echo Pdf::loadView('lunarpanel::pdf.order', [
-                            'order' => $record,
-                        ])->stream();
-                    }, name: "Order-{$record->reference}.pdf");
-                }),
+                ->filename(function ($record) {
+                    return "Order-{$record->reference}.pdf";
+                })
         ];
     }
 
