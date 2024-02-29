@@ -68,6 +68,8 @@ class Cart extends BaseModel
      */
     public $cachableProperties = [
         'subTotal',
+        'shippingSubTotal',
+        'shippingTaxTotal',
         'shippingTotal',
         'taxTotal',
         'discounts',
@@ -95,6 +97,11 @@ class Cart extends BaseModel
      * The shipping sub total for the cart.
      */
     public ?Price $shippingSubTotal = null;
+
+    /**
+     * The shipping tax total for the cart.
+     */
+    public ?Price $shippingTaxTotal = null;
 
     /**
      * The shipping total for the cart.
