@@ -2,12 +2,9 @@
 
 namespace Lunar\Admin\Http\Controllers;
 
-use App\Data\SiteMessageData;
-use App\Models\SiteMessage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Inertia\Inertia;
 
 class DownloadPdfController extends Controller
 {

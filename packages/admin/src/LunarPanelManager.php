@@ -190,7 +190,6 @@ class LunarPanelManager
                 ->name('lunar.pdf.download')->middleware($panelMiddleware);
         }
 
-
         return Panel::make()
             ->spa()
             ->default()

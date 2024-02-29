@@ -680,7 +680,7 @@ class ManageOrder extends BaseViewRecord
                 ->label(__('lunarpanel::order.action.download_order_pdf.label'))
                 ->filename(function ($record) {
                     return "Order-{$record->reference}.pdf";
-                })
+                }),
         ];
     }
 

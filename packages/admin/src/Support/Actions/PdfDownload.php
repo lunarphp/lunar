@@ -11,7 +11,7 @@ class PdfDownload extends Action
 {
     protected string $pdfView = '';
 
-    protected \Closure | string | null $filename = null;
+    protected \Closure|string|null $filename = null;
 
     public function pdfView(string $pdfView): self
     {
@@ -20,12 +20,13 @@ class PdfDownload extends Action
         return $this;
     }
 
-    public function filename(\Closure | string | null $filename) : self
+    public function filename(\Closure|string|null $filename): self
     {
         $this->filename = $filename;
 
         return $this;
     }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,7 +39,7 @@ class PdfDownload extends Action
                     [
                         'record' => $record->id,
                         'record_type' => get_class($record),
-                        'view' => $this->evaluate($this->pdfView)
+                        'view' => $this->evaluate($this->pdfView),
                     ]
                 );
             }, shouldOpenInNewTab: true);
