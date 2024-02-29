@@ -49,16 +49,10 @@ class OrderItemsTable extends TableComponent
                                     ->getStateUsing(fn ($record) => $record->purchasable?->getOptions())
                                     ->badge(),
                             ]),
-
                             Tables\Columns\Layout\Stack::make([
                                 Tables\Columns\TextColumn::make('unit')
                                     ->alignEnd()
-                                    ->color(Color::Gray)
-                                    ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->unit_price->formatted}"),
-                                Tables\Columns\TextColumn::make('sub_total')
-                                    ->alignEnd()
-                                    ->weight(FontWeight::Bold)
-                                    ->formatStateUsing(fn ($state) => $state->formatted),
+                                    ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->sub_total->formatted}"),
                             ]),
                         ])
                             ->extraAttributes(['style' => 'align-items: start;']),
