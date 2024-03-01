@@ -17,10 +17,10 @@ it('can handle a successful payment', function () {
     $order = $cart->completedOrder()->first();
 
     expect($response->success)->toBe(true)
-    ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_SUCCESSFUL)
-    ->and($order)->toBeInstanceOf(\Lunar\Models\Order::class)
-    ->and($order->status)->toBe('payment-received')
-    ->and($order->placed_at)->not->toBeNull();
+        ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_SUCCESSFUL)
+        ->and($order)->toBeInstanceOf(\Lunar\Models\Order::class)
+        ->and($order->status)->toBe('payment-received')
+        ->and($order->placed_at)->not->toBeNull();
 
     assertDatabaseHas(\Lunar\Models\Transaction::class, [
         'success' => true,
@@ -29,7 +29,7 @@ it('can handle a successful payment', function () {
         'reference' => 'DB79BA2D-05DA-5B85-D188-1293D16BBAC7',
         'status' => 'Ok',
         'card_type' => 'Visa',
-        'last_four' => '1111'
+        'last_four' => '1111',
     ]);
 });
 
@@ -56,7 +56,7 @@ it('can handle a failed payment', function () {
         'reference' => 'DB79BA2D-05DA-5B85-D188-1293D16BBAC7',
         'status' => 'NotAuthed',
         'card_type' => 'Visa',
-        'last_four' => '1111'
+        'last_four' => '1111',
     ]);
 });
 
@@ -102,7 +102,7 @@ it('can process a failed 3DSv2 response', function () {
         'reference' => 'DB79BA2D-05DA-5B85-D188-1293D16BBAC7',
         'status' => 'NotAuthed',
         'card_type' => 'Visa',
-        'last_four' => '1111'
+        'last_four' => '1111',
     ]);
 });
 
@@ -131,6 +131,6 @@ it('can process a successful 3DSv2 response', function () {
         'reference' => 'DB79BA2D-05DA-5B85-D188-1293D16BBAC7',
         'status' => 'Ok',
         'card_type' => 'Visa',
-        'last_four' => '1111'
+        'last_four' => '1111',
     ]);
 });

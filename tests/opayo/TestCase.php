@@ -31,17 +31,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
         );
 
         Http::fake([
-            'https://pi-test.sagepay.com/api/v1/transactions' => fn (Request $request) =>
-                match ($request->data()['paymentMethod']['card']['merchantSessionKey']) {
-                    'SUCCESS' => $getResponse('transaction_201'),
-                    'FAILED' => $getResponse('transaction_not_authed'),
-                    'SUCCESS_3DSV2' => $getResponse('transaction_202'),
-                    default => Http::response('ok'),
-                },
+            'https://pi-test.sagepay.com/api/v1/transactions' => fn (Request $request) => match ($request->data()['paymentMethod']['card']['merchantSessionKey']) {
+                'SUCCESS' => $getResponse('transaction_201'),
+                'FAILED' => $getResponse('transaction_not_authed'),
+                'SUCCESS_3DSV2' => $getResponse('transaction_202'),
+                default => Http::response('ok'),
+            },
             'https://pi-test.sagepay.com/api/v1/transactions/3DSV2_SUCCESS/3d-secure-challenge' => fn (Request $request) => $getResponse('3dsv2_successful'),
             'https://pi-test.sagepay.com/api/v1/transactions/3DSV2_FAILURE/3d-secure-challenge' => fn (Request $request) => $getResponse('3dsv2_not_authed'),
             'https://pi-test.sagepay.com/api/v1/transactions/3DSV2_SUCCESS' => fn (Request $request) => $getResponse('3dsv2_successful'),
-            'https://pi-test.sagepay.com/api/v1/transactions/3DSV2_FAILURE' => fn (Request $request) => $getResponse('3dsv2_not_authed')
+            'https://pi-test.sagepay.com/api/v1/transactions/3DSV2_FAILURE' => fn (Request $request) => $getResponse('3dsv2_not_authed'),
         ]);
     }
 
