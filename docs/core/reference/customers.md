@@ -217,7 +217,7 @@ You can override any of these yourself as they are merged behind the scenes.
 
 The `HasCustomerGroup` trait adds a `customerGroup` scope to the model. This lets you query based on availability for a specific or multiple customer groups.
 
-The scope will accept either a single ID or instance of `CustomerGroup` and will accept accept an array.
+The scope will accept either a single ID or instance of `CustomerGroup` and will accept an array.
 
 ```php
 $results = MyModel::customerGroup(1, $startDate, $endDate)->paginate();
