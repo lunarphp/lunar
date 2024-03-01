@@ -75,7 +75,7 @@ class OpayoPaymentType extends AbstractPayment
         if ($response->status == '3DAuth') {
             return new ThreeDSecureResponse(
                 success: true,
-                status: Opayo::THREE_D_AUTH,
+                status: Opayo::THREED_AUTH,
                 acsUrl: $response->acsUrl,
                 acsTransId: $response->acsTransId ?? null,
                 dsTransId: $response->dsTransId ?? null,

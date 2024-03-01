@@ -24,7 +24,7 @@ class Opayo extends Facade
     /**
      * Status when the payment requires Three D Secure authentication.
      */
-    const THREE_D_AUTH = 20;
+    const THREED_AUTH = 20;
 
     /**
      * Status for when Three D Secure fails.
