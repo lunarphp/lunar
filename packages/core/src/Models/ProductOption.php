@@ -50,7 +50,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     {
         return ProductOptionFactory::new();
     }
-    
+
     /**
      * Define which attributes should be
      * protected from mass assignment.

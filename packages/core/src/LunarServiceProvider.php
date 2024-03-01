@@ -214,7 +214,7 @@ class LunarServiceProvider extends ServiceProvider
                 SyncNewCustomerOrders::class,
                 PruneCarts::class,
             ]);
-            
+
             if (config('lunar.cart.prune_tables.enabled', false)) {
                 $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
                     $schedule->command('lunar:prune:carts')->daily();
