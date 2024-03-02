@@ -2,34 +2,32 @@
 
 namespace Lunar\Exceptions\Carts;
 
-use Exception;
 use Illuminate\Contracts\Support\MessageBag;
+use Lunar\Exceptions\LunarException;
 
-class CartException extends Exception
+class CartException extends LunarException
 {
     /**
-     * The cart exception message bag
+     * The cart exception message bag.
      */
     protected MessageBag $messageBag;
 
-    public function __construct(MessageBag $messageBag = null)
+    public function __construct(MessageBag $messageBag)
     {
         parent::__construct(static::summarize($messageBag));
+
         $this->messageBag = $messageBag;
     }
 
     /**
-     * Create an error message summary from the validation errors.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return string
+     * Create a summary from the error messages.
      */
-    protected static function summarize($messageBag)
+    protected static function summarize(MessageBag $messageBag): string
     {
         $messages = $messageBag->all();
 
         if (! count($messages) || ! is_string($messages[0])) {
-            return 'The cart action was invalid';
+            return __('lunar::exceptions.carts.invalid_action');
         }
 
         $message = array_shift($messages);
@@ -43,7 +41,10 @@ class CartException extends Exception
         return $message;
     }
 
-    public function errors()
+    /**
+     * Get the error message bag.
+     */
+    public function errors(): MessageBag
     {
         return $this->messageBag;
     }

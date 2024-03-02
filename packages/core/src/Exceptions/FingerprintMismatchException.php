@@ -2,8 +2,7 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class FingerprintMismatchException extends Exception
+class FingerprintMismatchException extends LunarException
 {
+    //
 }

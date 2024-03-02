@@ -2,8 +2,7 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class InvalidCartLineQuantityException extends Exception
+class InvalidCartLineQuantityException extends LunarException
 {
+    //
 }

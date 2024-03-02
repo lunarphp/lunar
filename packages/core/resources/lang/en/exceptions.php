@@ -5,6 +5,7 @@ return [
     'cart_line_id_mismatch' => 'This cart line does not belong to this cart',
     'invalid_cart_line_quantity' => 'Expected quantity to be at least "1", ":quantity" found.',
     'maximum_cart_line_quantity' => 'Quantity cannot exceed :quantity.',
+    'carts.invalid_action' => 'The cart action was invalid',
     'carts.shipping_missing' => 'A shipping address is required',
     'carts.billing_missing' => 'A billing address is required',
     'carts.billing_incomplete' => 'The billing address is incomplete',

@@ -2,8 +2,7 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class FieldTypeException extends Exception
+class FieldTypeException extends LunarException
 {
+    //
 }

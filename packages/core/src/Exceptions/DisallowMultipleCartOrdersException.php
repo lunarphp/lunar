@@ -2,9 +2,7 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class DisallowMultipleCartOrdersException extends Exception
+class DisallowMultipleCartOrdersException extends LunarException
 {
     public function __construct()
     {
