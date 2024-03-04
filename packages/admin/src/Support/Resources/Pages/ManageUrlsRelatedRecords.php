@@ -4,7 +4,6 @@ namespace Lunar\Admin\Support\Resources\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,8 +12,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 
-class ManageUrlsRelatedRecords extends ManageRelatedRecords
+class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
 {
     protected static string $relationship = 'urls';
 

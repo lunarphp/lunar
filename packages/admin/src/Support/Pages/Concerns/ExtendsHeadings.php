@@ -13,7 +13,7 @@ trait ExtendsHeadings
 
     public function getHeading(): string|Htmlable
     {
-        return $this->callLunarHook('heading', $this->getDefaultHeading());
+        return $this->callLunarHook('heading', $this->getDefaultHeading(), $this->record ?? null);
     }
 
     public function getDefaultSubheading(): ?string
@@ -23,6 +23,6 @@ trait ExtendsHeadings
 
     public function getSubheading(): string|Htmlable|null
     {
-        return $this->callLunarHook('subHeading', $this->getDefaultSubheading());
+        return $this->callLunarHook('subHeading', $this->getDefaultSubheading(), $this->record ?? null);
     }
 }

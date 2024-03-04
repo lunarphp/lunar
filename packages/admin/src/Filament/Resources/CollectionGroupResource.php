@@ -43,7 +43,7 @@ class CollectionGroupResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function form(Form $form): Form
+    public static function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
