@@ -42,12 +42,14 @@ class Attributes extends Forms\Components\Group
                     $groups = AttributeGroup::where(
                         'attributable_type',
                         $modelClass
-                    )->get()->map(function ($group) use ($attributes) {
-                        return [
-                            'model' => $group,
-                            'fields' => $attributes->groupBy('attribute_group_id')->get($group->id, []),
-                        ];
-                    });
+                    )->orderBy('position', 'asc')
+                        ->get()
+                        ->map(function ($group) use ($attributes) {
+                            return [
+                                'model' => $group,
+                                'fields' => $attributes->groupBy('attribute_group_id')->get($group->id, []),
+                            ];
+                        });
 
                     $groupComponents = [];
 
