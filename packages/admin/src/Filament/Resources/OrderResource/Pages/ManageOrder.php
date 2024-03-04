@@ -103,11 +103,11 @@ class ManageOrder extends BaseViewRecord
                             ->formatStateUsing(fn ($state) => $state->formatted),
                         Infolists\Components\TextEntry::make('notes')
                             ->hidden(
-                                fn ($state) => !$state
+                                fn ($state) => ! $state
                             )
                             ->placeholder(
                                 __('lunarpanel::order.infolist.notes.placeholder')
-                            )
+                            ),
                     ]),
             ]);
     }

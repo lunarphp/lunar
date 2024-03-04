@@ -83,7 +83,7 @@ class OrderItemsTable extends TableComponent
 
                                 $states = [];
 
-                                $states['unit_price'] = "{$record->unit_price->unitFormatted(decimalPlaces:4)}";
+                                $states['unit_price'] = "{$record->unit_price->unitFormatted(decimalPlaces: 4)}";
                                 $states['quantity'] = $record->quantity;
                                 $states['sub_total'] = $record->sub_total?->formatted;
                                 $states['discount_total'] = $record->discount_total?->formatted;
