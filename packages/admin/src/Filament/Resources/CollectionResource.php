@@ -94,6 +94,7 @@ class CollectionResource extends BaseResource
         return $page->generateNavigationItems([
             Pages\EditCollection::class,
             Pages\ManageCollectionChildren::class,
+            Pages\ManageCollectionProducts::class,
             Pages\ManageCollectionAvailability::class,
             Pages\ManageCollectionMedia::class,
             Pages\ManageCollectionUrls::class,
@@ -106,6 +107,7 @@ class CollectionResource extends BaseResource
             'index' => Pages\ListCollections::route('/'),
             'availability' => Pages\ManageCollectionAvailability::route('/{record}/availability'),
             'children' => Pages\ManageCollectionChildren::route('/{record}/children'),
+            'products' => Pages\ManageCollectionProducts::route('/{record}/products'),
             'edit' => Pages\EditCollection::route('/{record}/edit'),
             'media' => Pages\ManageCollectionMedia::route('/{record}/media'),
             'urls' => Pages\ManageCollectionUrls::route('/{record}/urls'),
