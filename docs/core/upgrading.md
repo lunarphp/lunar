@@ -18,6 +18,7 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+
 ## 1.0
 
 ### High Impact
@@ -57,6 +58,10 @@ public Collection $tiered,
 // New
 public Collection $priceBreaks,
 ```
+
+## 0.8
+
+No significant changes.
 
 ## 0.7
 
