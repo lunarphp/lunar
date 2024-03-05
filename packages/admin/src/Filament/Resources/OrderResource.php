@@ -102,6 +102,11 @@ class OrderResource extends BaseResource
                 ->color(fn (bool $state) => CustomerStatus::getColor($state))
                 ->icon(fn (bool $state) => CustomerStatus::getIcon($state))
                 ->badge(),
+            Tables\Columns\TextColumn::make('tags.value')
+                ->label(__('lunarpanel::order.table.tags.label'))
+                ->badge()
+                ->toggleable()
+                ->separator(','),
             Tables\Columns\TextColumn::make('shippingAddress.postcode')
                 ->label(__('lunarpanel::order.table.postcode.label'))
                 ->toggleable(),
@@ -146,6 +151,10 @@ class OrderResource extends BaseResource
                             fn (Builder $query, $date): Builder => $query->whereDate('placed_at', '<=', $date),
                         );
                 }),
+            Tables\Filters\SelectFilter::make('tags')
+                ->label(__('lunarpanel::order.table.tags.label'))
+                ->multiple()
+                ->relationship('tags', 'value'),
         ];
     }
 

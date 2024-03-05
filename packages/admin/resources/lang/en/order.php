@@ -30,6 +30,9 @@ return [
         'customer' => [
             'label' => 'Customer',
         ],
+        'tags' => [
+            'label' => 'Tags',
+        ],
         'postcode' => [
             'label' => 'Postcode',
         ],
