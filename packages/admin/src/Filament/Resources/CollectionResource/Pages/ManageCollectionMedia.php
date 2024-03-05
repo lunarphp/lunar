@@ -19,6 +19,15 @@ class ManageCollectionMedia extends BaseManageRelatedRecords
         return __('lunarpanel::collection.pages.media.label');
     }
 
+    public function getBreadcrumbs(): array
+    {
+        $crumbs = static::getResource()::getCollectionBreadcrumbs($this->getRecord());
+
+        $crumbs[] = $this->getBreadcrumb();
+
+        return $crumbs;
+    }
+
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::media');
