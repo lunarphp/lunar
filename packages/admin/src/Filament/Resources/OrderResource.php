@@ -135,9 +135,12 @@ class OrderResource extends BaseResource
                 ->options(collect(config('lunar.orders.statuses', []))
                     ->mapWithKeys(fn ($data, $status) => [$status => $data['label']])),
             Tables\Filters\Filter::make('placed_at')
+
                 ->form([
-                    Forms\Components\DatePicker::make('placed_after'),
+                    Forms\Components\DatePicker::make('placed_after')
+                        ->label(__('lunarpanel::order.table.placed_after.label')),
                     Forms\Components\DatePicker::make('placed_before')
+                        ->label(__('lunarpanel::order.table.placed_before.label'))
                         ->default(now()),
                 ])
                 ->query(function (Builder $query, array $data): Builder {

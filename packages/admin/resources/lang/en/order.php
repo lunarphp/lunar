@@ -51,6 +51,12 @@ return [
         'new_customer' => [
             'label' => 'Customer Type',
         ],
+        'placed_after' => [
+            'label' => 'Placed after',
+        ],
+        'placed_before' => [
+            'label' => 'Placed before',
+        ],
     ],
 
     'form' => [
