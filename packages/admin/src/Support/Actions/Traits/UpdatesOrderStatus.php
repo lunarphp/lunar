@@ -19,10 +19,6 @@ trait UpdatesOrderStatus
                 return ! count(
                     static::getMailers($get('status'))
                 );
-            })->hidden(function (Forms\Get $get) {
-                return ! count(
-                    static::getMailers($get('status'))
-                );
             });
     }
 
@@ -85,7 +81,7 @@ trait UpdatesOrderStatus
             return ! count(
                 static::getMailers($get('status'))
             );
-        });
+        })->live();
     }
 
     protected function getFormSteps()
@@ -94,9 +90,16 @@ trait UpdatesOrderStatus
             static::getStatusSelectInput(),
             Forms\Components\Group::make([
                 static::getMailersCheckboxInput(),
-                static::getAdditionalContentInput(),
-                static::getEmailAddressesInput(),
-                static::getAdditionalEmailInput(),
+                Forms\Components\Group::make([
+                    static::getAdditionalContentInput(),
+                    static::getEmailAddressesInput(),
+                    static::getAdditionalEmailInput(),
+                ])->hidden(function (Forms\Get $get) {
+                    return ! count($get('mailers')) ||
+                        ! count(
+                            static::getMailers($get('status'))
+                        );
+                })
             ])->hidden(function (Forms\Get $get) {
                 return ! count(
                     static::getMailers($get('status'))
