@@ -49,7 +49,7 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
     public function form(Form $form): Form
     {
         return $form->schema([
-            Tables\Columns\TextColumn::make('foo')
+            Tables\Columns\TextColumn::make('foo'),
         ]);
     }
 
@@ -70,7 +70,7 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
             Tables\Actions\DetachAction::make(),
             Tables\Actions\EditAction::make()->url(
                 fn (Model $record) => ProductResource::getUrl('edit', [
-                    'record' => $record
+                    'record' => $record,
                 ])
             ),
         ])->headerActions([
@@ -78,25 +78,25 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                 ->label(
                     __('lunarpanel::collection.pages.products.actions.attach.label')
                 )->form([
-                Forms\Components\Select::make('recordId')
-                    ->label('Product')
-                    ->required()
-                    ->searchable(true)
-                    ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                        return Product::search($search)
-                            ->get()
-                            ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translateAttribute('name')])
-                            ->all();
-                    }),
-            ])->action(function (array $arguments, array $data, Form $form, Table $table) {
-                $relationship = Relation::noConstraints(fn () => $table->getRelationship());
+                    Forms\Components\Select::make('recordId')
+                        ->label('Product')
+                        ->required()
+                        ->searchable(true)
+                        ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                            return Product::search($search)
+                                ->get()
+                                ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                                ->all();
+                        }),
+                ])->action(function (array $arguments, array $data, Form $form, Table $table) {
+                    $relationship = Relation::noConstraints(fn () => $table->getRelationship());
 
-                $product = Product::find($data['recordId']);
+                    $product = Product::find($data['recordId']);
 
-                $relationship->attach($product, [
-                    'position' => $relationship->count() + 1,
-                ]);
-            })
+                    $relationship->attach($product, [
+                        'position' => $relationship->count() + 1,
+                    ]);
+                }),
         ])->reorderable('position');
     }
 }
