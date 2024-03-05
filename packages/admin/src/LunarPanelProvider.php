@@ -67,6 +67,12 @@ class LunarPanelProvider extends ServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
+            collect($this->configFiles)->each(function ($config) {
+                $this->publishes([
+                    "{$this->root}/config/$config.php" => config_path("lunar/$config.php"),
+                ], 'lunar');
+            });
+
             $this->commands([
                 MakeLunarAdminCommand::class,
             ]);
