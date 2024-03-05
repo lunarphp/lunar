@@ -60,7 +60,8 @@ class OrderResource extends BaseResource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->url(fn ($record) => ManageOrder::getUrl(['record' => $record])),
             ])
             ->recordUrl(fn ($record) => ManageOrder::getUrl(['record' => $record]))
             ->bulkActions([
