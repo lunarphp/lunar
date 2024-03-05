@@ -1,0 +1,48 @@
+{
+  "transactionId": "DB79BA2D-05DA-5B85-D188-1293D16BBAC7",
+  "acsTransId": "43b04fd1-692c-4b76-ac20-a75527ad0a25",
+  "dsTransId": "7980e36f-907b-4530-84fd-ccc1f40bf9ae",
+  "transactionType": "Payment",
+  "status": "NotAuthed",
+  "statusCode": 1,
+  "statusDetail": "The Authorisation was Successful.",
+  "additionalDeclineDetail": {
+    "additionalDeclineCode": "N7",
+    "additionalDeclineCodeDescription": "Incorrect CVV",
+    "additionalDeclineCodeCategory": "02"
+  },
+  "retrievalReference": 9493946,
+  "settlementReferenceText": "123456GRTY234",
+  "bankResponseCode": "1A",
+  "bankAuthorisationCode": 999777,
+  "avsCvcCheck": {
+    "status": "AllMatched",
+    "address": "Matched",
+    "postalCode": "Matched",
+    "securityCode": "Matched"
+  },
+  "paymentMethod": {
+    "card": {
+      "cardType": "Visa",
+      "lastFourDigits": "1111",
+      "expiryDate": "Visa",
+      "cardIdentifier": "7F3CCA38-0BDA-453B-BF62-9CBD5891F77E",
+      "reusable": false
+    }
+  },
+  "amount": {
+    "totalAmount": 1000,
+    "saleAmount": 1000,
+    "surchargeAmount": 0
+  },
+  "currency": "GBP",
+  "3DSecure": {
+    "status": "Authenticated"
+  },
+  "fiRecipient": {
+    "accountNumber": "1234567890",
+    "surname": "Surname",
+    "postcode": "EC1V 8AB",
+    "dateOfBirth": "19900101"
+  }
+}
