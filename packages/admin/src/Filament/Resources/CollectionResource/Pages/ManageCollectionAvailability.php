@@ -20,6 +20,15 @@ class ManageCollectionAvailability extends BaseManageRelatedRecords
         return __('lunarpanel::product.pages.availability.label');
     }
 
+    public function getBreadcrumbs(): array
+    {
+        $crumbs = static::getResource()::getCollectionBreadcrumbs($this->getRecord());
+
+        $crumbs[] = $this->getBreadcrumb();
+
+        return $crumbs;
+    }
+
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::availability');

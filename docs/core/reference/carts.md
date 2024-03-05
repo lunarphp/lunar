@@ -279,7 +279,7 @@ CartSession::add($purchasable, $quantity);
 ```php
 CartSession::addLines([
     [
-        'id' => 1,
+        'purchasable' => \Lunar\Models\ProductVariant::find(123),
         'quantity' => 25,
         'meta' => ['foo' => 'bar'],
     ],
@@ -466,3 +466,33 @@ return [
 ```
 
 In most cases you won't need to change this.
+
+## Pruning cart data
+
+Over time you will experience a build up of carts in your database that you may want to regularly remove.
+
+You can enable automatic removal of these carts using the `lunar.carts.prune_tables.enabled` config. By setting this to `true` any carts without an order associated will be removed after 90 days.
+
+You can change the number of days carts are retained for using the `lunar.carts.prune_tables. prune_interval` config.
+
+If you have specific needs around pruning you can also change the `lunar.carts.prune_tables.pipelines` array to determine what carts should be removed.
+
+
+
+```php
+return [
+    // ...
+    'prune_tables' => [
+
+        'enabled' => false,
+
+        'pipelines' => [
+            Lunar\Pipelines\CartPrune\PruneAfter::class,
+            Lunar\Pipelines\CartPrune\WithoutOrders::class,
+        ],
+
+        'prune_interval' => 90, // days
+
+    ],
+];
+```
