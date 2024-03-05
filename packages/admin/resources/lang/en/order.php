@@ -30,6 +30,9 @@ return [
         'customer' => [
             'label' => 'Customer',
         ],
+        'tags' => [
+            'label' => 'Tags',
+        ],
         'postcode' => [
             'label' => 'Postcode',
         ],
@@ -47,6 +50,12 @@ return [
         ],
         'new_customer' => [
             'label' => 'Customer Type',
+        ],
+        'placed_after' => [
+            'label' => 'Placed after',
+        ],
+        'placed_before' => [
+            'label' => 'Placed before',
         ],
     ],
 

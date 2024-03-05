@@ -102,6 +102,11 @@ class OrderResource extends BaseResource
                 ->color(fn (bool $state) => CustomerStatus::getColor($state))
                 ->icon(fn (bool $state) => CustomerStatus::getIcon($state))
                 ->badge(),
+            Tables\Columns\TextColumn::make('tags.value')
+                ->label(__('lunarpanel::order.table.tags.label'))
+                ->badge()
+                ->toggleable()
+                ->separator(','),
             Tables\Columns\TextColumn::make('shippingAddress.postcode')
                 ->label(__('lunarpanel::order.table.postcode.label'))
                 ->toggleable(),
@@ -130,9 +135,12 @@ class OrderResource extends BaseResource
                 ->options(collect(config('lunar.orders.statuses', []))
                     ->mapWithKeys(fn ($data, $status) => [$status => $data['label']])),
             Tables\Filters\Filter::make('placed_at')
+
                 ->form([
-                    Forms\Components\DatePicker::make('placed_after'),
+                    Forms\Components\DatePicker::make('placed_after')
+                        ->label(__('lunarpanel::order.table.placed_after.label')),
                     Forms\Components\DatePicker::make('placed_before')
+                        ->label(__('lunarpanel::order.table.placed_before.label'))
                         ->default(now()),
                 ])
                 ->query(function (Builder $query, array $data): Builder {
@@ -146,6 +154,10 @@ class OrderResource extends BaseResource
                             fn (Builder $query, $date): Builder => $query->whereDate('placed_at', '<=', $date),
                         );
                 }),
+            Tables\Filters\SelectFilter::make('tags')
+                ->label(__('lunarpanel::order.table.tags.label'))
+                ->multiple()
+                ->relationship('tags', 'value'),
         ];
     }
 
