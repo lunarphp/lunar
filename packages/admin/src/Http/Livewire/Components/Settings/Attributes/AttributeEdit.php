@@ -181,9 +181,6 @@ class AttributeEdit extends Component
         if (! $this->attribute->id) {
             $this->attribute->attribute_type = $this->group->attributable_type;
             $this->attribute->attribute_group_id = $this->group->id;
-            $this->attribute->position = Attribute::whereAttributeGroupId(
-                $this->group->id
-            )->count() + 1;
             $this->attribute->save();
             $this->notify(
                 __('adminhub::notifications.attribute-edit.created')

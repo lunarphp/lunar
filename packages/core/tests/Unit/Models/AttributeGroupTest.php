@@ -48,4 +48,34 @@ class AttributeGroupTest extends TestCase
 
         $this->assertCount(1, $attributeGroup->refresh()->attributes);
     }
+
+    /** @test */
+    public function can_handle_emtpy_position()
+    {
+        AttributeGroup::factory()->create([
+            'position' => null,
+        ]);
+
+        AttributeGroup::factory()->create([
+            'position' => '',
+        ]);
+
+        AttributeGroup::factory()->create([
+            'position' => 0,
+        ]);
+
+        $this->assertEquals(range(1,3), AttributeGroup::pluck('position')->all());
+    }
+
+    /** @test */
+    public function can_handle_non_unique_position()
+    {
+        AttributeGroup::factory()
+            ->count(3)
+            ->create([
+                'position' => 1,
+            ]);
+            
+        $this->assertEquals(range(1,3), AttributeGroup::pluck('position')->all());
+    }
 }
