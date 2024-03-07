@@ -38,6 +38,7 @@ return [
         ],
         'email' => [
             'label' => 'Email',
+            'copy_message' => 'Email address copied',
         ],
         'phone' => [
             'label' => 'Phone',

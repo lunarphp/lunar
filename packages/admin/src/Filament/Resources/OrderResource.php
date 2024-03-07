@@ -74,7 +74,8 @@ class OrderResource extends BaseResource
             ->defaultSort('id', 'DESC')
             ->paginated([10, 25, 50, 100])
             ->selectCurrentPageOnly()
-            ->deferLoading();
+            ->deferLoading()
+            ->poll('60s');
     }
 
     public static function getTableColumns(): array
@@ -113,7 +114,10 @@ class OrderResource extends BaseResource
                 ->toggleable(),
             Tables\Columns\TextColumn::make('shippingAddress.contact_email')
                 ->label(__('lunarpanel::order.table.email.label'))
-                ->toggleable(),
+                ->toggleable()
+                ->copyable()
+                ->copyMessage(__('lunarpanel::order.table.email.copy_message'))
+                ->copyMessageDuration(1500),
             Tables\Columns\TextColumn::make('shippingAddress.contact_phone')
                 ->label(__('lunarpanel::order.table.phone.label'))
                 ->toggleable(),
