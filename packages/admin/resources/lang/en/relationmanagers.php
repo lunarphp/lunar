@@ -162,6 +162,9 @@ return [
             'min_quantity' => [
                 'label' => 'Minimum Quantity',
                 'helper_text' => 'Select the minimum quantity this price will be available for.',
+                'validation' => [
+                    'unique' => 'Customer Group and Minimum Quantity must be unique.',
+                ],
             ],
             'currency_id' => [
                 'label' => 'Currency',

@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\RelationManagers;
 
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -53,9 +54,33 @@ class PriceRelationManager extends RelationManager
                     Forms\Components\TextInput::make('min_quantity')
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.min_quantity.label')
-                        )->default(1)->helperText(
+                        )->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.min_quantity.helper_text')
-                        )->numeric()->minValue(1)->required(),
+                        )->numeric()
+                        ->default(2)
+                        ->minValue(2)
+                        ->required()
+                        ->rules([
+                            fn (Forms\Get $get) => function (string $attribute, $value, Closure $fail) use ($get, $form) {
+                                $owner = $this->getOwnerRecord();
+
+                                $price = $form->getModel();
+
+                                $exist = $price::query()
+                                    ->when(blank($get('customer_group_id')),
+                                        fn ($query) => $query->whereNull('customer_group_id'),
+                                        fn ($query) => $query->where('customer_group_id', $get('customer_group_id')))
+                                    ->where('currency_id', $get('currency_id'))
+                                    ->where('priceable_type', get_class($owner))
+                                    ->where('priceable_id', $owner->id)
+                                    ->where('min_quantity', $get('min_quantity'))
+                                    ->count();
+
+                                if ($exist) {
+                                    $fail(__('lunarpanel::relationmanagers.pricing.form.min_quantity.validation.unique'));
+                                }
+                            },
+                        ]),
                 ])->columns(3),
 
                 Forms\Components\Group::make([
@@ -65,9 +90,12 @@ class PriceRelationManager extends RelationManager
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
                             $owner = $this->getOwnerRecord();
 
-                            return $rule->where('customer_group_id', $get('customer_group_id'))
-                                ->where('min_quantity', 1)
-                                ->where('currency_id', 1)
+                            return $rule
+                                ->when(blank($get('customer_group_id')),
+                                    fn (Unique $rule) => $rule->whereNull('customer_group_id'),
+                                    fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
+                                ->where('min_quantity', $get('min_quantity'))
+                                ->where('currency_id', $get('currency_id'))
                                 ->where('priceable_type', get_class($owner))
                                 ->where('priceable_id', $owner->id);
                         }
