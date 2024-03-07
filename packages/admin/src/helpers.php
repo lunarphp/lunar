@@ -1,6 +1,13 @@
 <?php
 
+use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Builder;
+use Lunar\Base\Traits\Searchable;
 use Lunar\DataTypes\Price;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\Attribute;
+
+use function Filament\Support\generate_search_term_expression;
 
 if (! function_exists('price')) {
     function price($value, $currency, $unitQty = 1)
@@ -32,5 +39,60 @@ if (! function_exists('db_date')) {
         }
 
         return $select;
+    }
+}
+
+if (! function_exists('get_search_builder')) {
+
+    function get_search_builder($model, $search): Laravel\Scout\Builder|Builder
+    {
+        $scoutEnabled = config('lunar.search.scout_enabled', false);
+        $isScoutSearchable = in_array(Searchable::class, class_uses_recursive($model));
+
+        if (
+            $scoutEnabled &&
+            $isScoutSearchable
+        ) {
+            return $model::search($search);
+        } else {
+            $query = $model::query();
+
+            /** @var Connection $databaseConnection */
+            $databaseConnection = $query->getConnection();
+
+            $search = generate_search_term_expression($search, true, $databaseConnection);
+
+            foreach (explode(' ', $search) as $searchWord) {
+                $query->where(function (Builder $query) use ($model, $searchWord) {
+                    $attributes = Attribute::whereAttributeType($model)
+                        ->whereSearchable(true)
+                        ->get();
+
+                    $searchableAttributes = [];
+
+                    foreach ($attributes as $attribute) {
+                        if ($attribute->type == TranslatedText::class) {
+                            array_push($searchableAttributes, 'attribute_data->'.$attribute->handle.'->value');
+                        }
+                    }
+
+                    $isFirst = true;
+
+                    foreach ($searchableAttributes as $searchAttribute) {
+                        $whereClause = $isFirst ? 'where' : 'orWhere';
+
+                        $query->{$whereClause}(
+                            $searchAttribute,
+                            'like',
+                            "%{$searchWord}%",
+                        );
+
+                        $isFirst = false;
+                    }
+                });
+            }
+
+            return $query;
+        }
     }
 }

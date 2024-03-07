@@ -82,8 +82,10 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                         ->label('Product')
                         ->required()
                         ->searchable(true)
-                        ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                            return Product::search($search)
+                        ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageCollectionProducts $livewire): array {
+                            $relationModel = $livewire->getRelationship()->getRelated()::class;
+
+                            return get_search_builder($relationModel, $search)
                                 ->get()
                                 ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();

@@ -49,7 +49,7 @@ class ProductRewardRelationManager extends RelationManager
                             Forms\Components\MorphToSelect\Type::make(Product::class)
                                 ->titleAttribute('name.en')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    return Product::search($search)
+                                    return get_search_builder(Product::class, $search)
                                         ->get()
                                         ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->attr('name')])
                                         ->all();
