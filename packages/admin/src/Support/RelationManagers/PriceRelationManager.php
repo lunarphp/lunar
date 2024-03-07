@@ -11,7 +11,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Facades\DB;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 
 class PriceRelationManager extends RelationManager
@@ -116,6 +118,7 @@ class PriceRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         $priceTable = (new Price)->getTable();
+        $cgTable = CustomerGroup::query()->select([DB::raw('id as cg_id'), 'name']);
 
         return $table
             ->recordTitleAttribute('name')
@@ -124,9 +127,11 @@ class PriceRelationManager extends RelationManager
             )
             ->modifyQueryUsing(
                 fn ($query) => $query
+                    ->leftJoinSub($cgTable, 'cg', fn ($join) => $join->on('customer_group_id', 'cg.cg_id'))
                     ->where("{$priceTable}.min_quantity", '>', 1)
-                    ->orderBy("{$priceTable}.min_quantity", 'asc')
-            )->emptyStateHeading(
+            )
+            ->defaultSort(fn ($query) => $query->orderBy('cg.name')->orderBy('min_quantity'))
+            ->emptyStateHeading(
                 __('lunarpanel::relationmanagers.pricing.table.empty_state.label')
             )
             ->columns([
