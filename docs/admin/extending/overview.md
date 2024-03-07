@@ -4,10 +4,11 @@
 The Lunar Panel is highly customizable, you can add and change the behaviour of existing Filament resources. This might be useful if you wish to add a button for
 additional custom functionality. 
 
-
 ##  Extending Pages
 
 To extend a page you need to create and register an extension.
+
+### Extending edit resource
 
 For example, the code below will register a custom extension called `MyEditExtension` for the `EditProduct` Filament page.
 
@@ -16,9 +17,13 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Panel\Filament\Resources\ProductResource\Pages\EditProduct;
 use App\Admin\Filament\Resources\Pages\MyEditExtension;
 
-LunarPanel::registerExtension(new MyEditExtension, EditProduct::class);
+LunarPanel::extensions([
+    MyEditExtension::class => EditProduct::class
+]);
 
 ```
+
+### Extending list resource
 
 For example, the code below will register a custom extension called `MyListExtension` for the `ListProduct` Filament page.
 
@@ -27,7 +32,9 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Panel\Filament\Resources\ProductResource\Pages\ListProduct;
 use App\Admin\Filament\Resources\Pages\MyEditExtension;
 
-LunarPanel::registerExtension(new MyListExtension, ListProduct::class);
+LunarPanel::extensions([
+    MyListExtension::class => ListProduct::class
+]);
 
 ```
 
@@ -41,20 +48,11 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Panel\Filament\Resources\ProductResource;
 use App\Admin\Filament\Resources\MyProductResourceExtension;
 
-LunarPanel::registerExtension(new MyProductResourceExtension, ProductResource::class);
-```
-
-##  Register multiple extensions
-Lunar includes several methods, you can use registerExtensions to register multiple class
-
-```php
-LunarPanel::registerExtensions([
-    MyEditExtension::class => EditProduct::class
+LunarPanel::extensions([
     MyProductResourceExtension::class => ProductResource::class
-    // ...
 ]);
 
-```````
+```
 
 ## Extendable resources
 

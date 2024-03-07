@@ -10,5 +10,8 @@ For example, the following would change the panel's URL to `/admin` rather than 
 use Lunar\Admin\Support\Facades\LunarPanel;
 
 LunarPanel::panel(fn($panel) => $panel->path('admin'))
+    ->extensions([
+        // ...
+    ])
     ->register();
 ```
