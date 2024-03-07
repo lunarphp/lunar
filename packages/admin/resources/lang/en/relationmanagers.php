@@ -144,6 +144,7 @@ return [
     'pricing' => [
         'title' => 'Pricing',
         'title_plural' => 'Pricing',
+        'tab_name' => 'Price Breaks',
         'table' => [
             'heading' => 'Price Breaks',
             'description' => 'Reduce the price when a customer purchases in larger quantities.',

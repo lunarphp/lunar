@@ -22,7 +22,7 @@ class PriceRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::relationmanagers.pricing.title');
+        return __('lunarpanel::relationmanagers.pricing.tab_name');
     }
 
     protected function getTableHeading(): string|Htmlable|null
