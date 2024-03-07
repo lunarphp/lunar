@@ -116,7 +116,7 @@ class OrderResource extends BaseResource
                 ->label(__('lunarpanel::order.table.email.label'))
                 ->toggleable()
                 ->copyable()
-                ->copyMessage('Email address copied')
+                ->copyMessage(__('lunarpanel::order.table.email.copy_message'))
                 ->copyMessageDuration(1500),
             Tables\Columns\TextColumn::make('shippingAddress.contact_phone')
                 ->label(__('lunarpanel::order.table.phone.label'))
