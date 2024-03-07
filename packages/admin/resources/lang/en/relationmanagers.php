@@ -121,6 +121,26 @@ return [
             ],
         ],
     ],
+    'customer_group_pricing' => [
+        'title' => 'Customer Group Pricing',
+        'title_plural' => 'Customer Group Pricing',
+        'table' => [
+            'heading' => 'Customer Group Pricing',
+            'description' => 'Associate price to customer groups to determine product price.',
+            'empty_state' => [
+                'label' => 'No customer group pricing exist.',
+                'description' => 'Create a customer group price to get started.',
+            ],
+            'actions' => [
+                'create' => [
+                    'label' => 'Add Customer Group Price',
+                    'modal' => [
+                        'heading' => 'Create Customer Group Price',
+                    ],
+                ],
+            ],
+        ],
+    ],
     'pricing' => [
         'title' => 'Pricing',
         'title_plural' => 'Pricing',
