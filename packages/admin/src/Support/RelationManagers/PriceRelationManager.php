@@ -63,12 +63,13 @@ class PriceRelationManager extends RelationManager
                         ->minValue(2)
                         ->required()
                         ->rules([
-                            fn (Forms\Get $get) => function (string $attribute, $value, Closure $fail) use ($get, $form) {
+                            fn (Forms\Get $get, $record) => function (string $attribute, $value, Closure $fail) use ($get, $form, $record) {
                                 $owner = $this->getOwnerRecord();
 
                                 $price = $form->getModel();
 
                                 $exist = $price::query()
+                                    ->when(filled($record), fn ($query) => $query->where('id', '!=', $record->id))
                                     ->when(blank($get('customer_group_id')),
                                         fn ($query) => $query->whereNull('customer_group_id'),
                                         fn ($query) => $query->where('customer_group_id', $get('customer_group_id')))
