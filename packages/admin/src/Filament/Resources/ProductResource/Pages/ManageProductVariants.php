@@ -4,19 +4,26 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 
-class ManageProductVariants extends ManageRelatedRecords
+class ManageProductVariants extends BaseManageRelatedRecords
 {
     protected static string $resource = ProductResource::class;
 
     protected static string $relationship = 'variants';
 
     protected static ?string $title = 'Variants';
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ProductResource\Widgets\ProductOptionsWidget::class,
+        ];
+    }
 
     public static function getNavigationIcon(): ?string
     {
@@ -54,6 +61,8 @@ class ManageProductVariants extends ManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        return $table;
+
         return $table
             ->recordTitleAttribute('name')
             ->columns([

@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Actions\Carts\MergeCart;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
@@ -50,7 +51,7 @@ test('can merge cart', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'min_quantity' => 1,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
     ]);
@@ -121,7 +122,7 @@ test('can handle merging of lines with different metas', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'min_quantity' => 1,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
     ]);

@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Actions\Orders\UpdateStatusBulkAction;
+use Lunar\Admin\Support\CustomerStatus;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Order;
@@ -58,7 +60,8 @@ class OrderResource extends BaseResource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->url(fn ($record) => ManageOrder::getUrl(['record' => $record])),
             ])
             ->recordUrl(fn ($record) => ManageOrder::getUrl(['record' => $record]))
             ->bulkActions([
@@ -67,10 +70,12 @@ class OrderResource extends BaseResource
                         ->deselectRecordsAfterCompletion(),
                 ]),
             ])
+            ->filters(static::getTableFilters())
             ->defaultSort('id', 'DESC')
             ->paginated([10, 25, 50, 100])
             ->selectCurrentPageOnly()
-            ->deferLoading();
+            ->deferLoading()
+            ->poll('60s');
     }
 
     public static function getTableColumns(): array
@@ -78,6 +83,7 @@ class OrderResource extends BaseResource
         return [
             Tables\Columns\TextColumn::make('status')
                 ->label(__('lunarpanel::order.table.status.label'))
+                ->toggleable()
                 ->formatStateUsing(fn (string $state) => OrderStatus::getLabel($state))
                 ->color(fn (string $state) => OrderStatus::getColor($state))
                 ->badge(),
@@ -86,21 +92,77 @@ class OrderResource extends BaseResource
                 ->toggleable()
                 ->searchable(),
             Tables\Columns\TextColumn::make('customer_reference')
-                ->label(__('lunarpanel::order.table.customer_reference.label')),
+                ->label(__('lunarpanel::order.table.customer_reference.label'))
+                ->toggleable(),
             Tables\Columns\TextColumn::make('shippingAddress.fullName')
-                ->label(__('lunarpanel::order.table.customer.label')),
+                ->label(__('lunarpanel::order.table.customer.label'))
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('new_customer')
+                ->label(__('lunarpanel::order.table.new_customer.label'))
+                ->toggleable()
+                ->formatStateUsing(fn (bool $state) => CustomerStatus::getLabel($state))
+                ->color(fn (bool $state) => CustomerStatus::getColor($state))
+                ->icon(fn (bool $state) => CustomerStatus::getIcon($state))
+                ->badge(),
+            Tables\Columns\TextColumn::make('tags.value')
+                ->label(__('lunarpanel::order.table.tags.label'))
+                ->badge()
+                ->toggleable()
+                ->separator(','),
             Tables\Columns\TextColumn::make('shippingAddress.postcode')
-                ->label(__('lunarpanel::order.table.postcode.label')),
+                ->label(__('lunarpanel::order.table.postcode.label'))
+                ->toggleable(),
             Tables\Columns\TextColumn::make('shippingAddress.contact_email')
-                ->label(__('lunarpanel::order.table.email.label')),
+                ->label(__('lunarpanel::order.table.email.label'))
+                ->toggleable()
+                ->copyable()
+                ->copyMessage(__('lunarpanel::order.table.email.copy_message'))
+                ->copyMessageDuration(1500),
             Tables\Columns\TextColumn::make('shippingAddress.contact_phone')
-                ->label(__('lunarpanel::order.table.phone.label')),
+                ->label(__('lunarpanel::order.table.phone.label'))
+                ->toggleable(),
             Tables\Columns\TextColumn::make('total')
                 ->label(__('lunarpanel::order.table.total.label'))
+                ->toggleable()
                 ->formatStateUsing(fn ($state): string => $state->formatted),
             Tables\Columns\TextColumn::make('placed_at')
                 ->label(__('lunarpanel::order.table.date.label'))
+                ->toggleable()
                 ->dateTime(),
+        ];
+    }
+
+    public static function getTableFilters(): array
+    {
+        return [
+            Tables\Filters\SelectFilter::make('status')
+                ->label(__('lunarpanel::order.table.status.label'))
+                ->options(collect(config('lunar.orders.statuses', []))
+                    ->mapWithKeys(fn ($data, $status) => [$status => $data['label']])),
+            Tables\Filters\Filter::make('placed_at')
+
+                ->form([
+                    Forms\Components\DatePicker::make('placed_after')
+                        ->label(__('lunarpanel::order.table.placed_after.label')),
+                    Forms\Components\DatePicker::make('placed_before')
+                        ->label(__('lunarpanel::order.table.placed_before.label'))
+                        ->default(now()),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['placed_after'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('placed_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['placed_before'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('placed_at', '<=', $date),
+                        );
+                }),
+            Tables\Filters\SelectFilter::make('tags')
+                ->label(__('lunarpanel::order.table.tags.label'))
+                ->multiple()
+                ->relationship('tags', 'value'),
         ];
     }
 

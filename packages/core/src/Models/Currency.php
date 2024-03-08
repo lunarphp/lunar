@@ -44,6 +44,11 @@ class Currency extends BaseModel
         return CurrencyFactory::new();
     }
 
+    public function scopeEnabled($query, $enabled = true)
+    {
+        return $query->whereEnabled($enabled);
+    }
+
     /**
      * Return the prices relationship
      */

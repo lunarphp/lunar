@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
 use Lunar\Admin\Filament\Pages;
@@ -28,6 +29,7 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
+use Lunar\Admin\Http\Controllers\DownloadPdfController;
 use Lunar\Admin\Support\Extending\BaseExtension;
 use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
@@ -56,6 +58,7 @@ class LunarPanelManager
         Resources\ProductOptionResource::class,
         Resources\ProductResource::class,
         Resources\ProductTypeResource::class,
+        Resources\ProductVariantResource::class,
         Resources\StaffResource::class,
         Resources\TagResource::class,
         Resources\TaxClassResource::class,
@@ -85,8 +88,6 @@ class LunarPanelManager
             $panel = $fn($panel);
         }
 
-        $panel->id($this->panelId);
-
         Filament::registerPanel($panel);
 
         FilamentIcon::register([
@@ -112,6 +113,8 @@ class LunarPanelManager
             'lunar::customer-groups' => 'lucide-users',
             'lunar::dashboard' => 'lucide-bar-chart-big',
             'lunar::discounts' => 'lucide-percent-circle',
+            'lunar::discount-limitations' => 'lucide-list-x',
+            'lunar::info' => 'lucide-info',
             'lunar::languages' => 'lucide-languages',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',
@@ -170,6 +173,23 @@ class LunarPanelManager
             }
         };
 
+        $panelMiddleware = [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+        ];
+
+        if (config('lunar.panel.pdf_rendering', 'download') == 'stream') {
+            Route::get('lunar/pdf/download', DownloadPdfController::class)
+                ->name('lunar.pdf.download')->middleware($panelMiddleware);
+        }
+
         return Panel::make()
             ->spa()
             ->default()
@@ -187,17 +207,7 @@ class LunarPanelManager
                 'primary' => Color::Sky,
             ])
             ->font('Poppins')
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
+            ->middleware($panelMiddleware)
             ->pages(
                 static::getPages()
             )
@@ -263,7 +273,9 @@ class LunarPanelManager
     {
         if (isset($this->extensions[$class])) {
             foreach ($this->extensions[$class] as $extension) {
-                $args[0] = $extension->{$hookName}(...$args);
+                if (method_exists($extension, $hookName)) {
+                    $args[0] = $extension->{$hookName}(...$args);
+                }
             }
         }
 

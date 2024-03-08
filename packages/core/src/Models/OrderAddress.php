@@ -72,8 +72,9 @@ class OrderAddress extends BaseModel implements Addressable
         'delivery_instructions',
         'contact_email',
         'contact_phone',
-        'meta',
         'type',
+        'shipping_option',
+        'meta',
     ];
 
     /**

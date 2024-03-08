@@ -195,7 +195,8 @@ class CustomerResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->selectCurrentPageOnly();
     }
 
     public static function getDefaultRelations(): array

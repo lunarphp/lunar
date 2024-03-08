@@ -2,13 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 
-class ManageCollectionMedia extends ManageRelatedRecords
+class ManageCollectionMedia extends BaseManageRelatedRecords
 {
     protected static string $resource = CollectionResource::class;
 
@@ -17,6 +17,15 @@ class ManageCollectionMedia extends ManageRelatedRecords
     public function getTitle(): string
     {
         return __('lunarpanel::collection.pages.media.label');
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        $crumbs = static::getResource()::getCollectionBreadcrumbs($this->getRecord());
+
+        $crumbs[] = $this->getBreadcrumb();
+
+        return $crumbs;
     }
 
     public static function getNavigationIcon(): ?string

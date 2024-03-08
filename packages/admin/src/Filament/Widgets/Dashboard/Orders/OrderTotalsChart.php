@@ -47,11 +47,9 @@ class OrderTotalsChart extends ApexChartWidget
         $currentPeriod = $this->getTotalsForPeriod($from, $date);
         $previousPeriod = $this->getTotalsForPeriod($from->clone()->subYear(), $date->clone()->subYear());
 
-        //        dd($currentPeriod);
-
         return [
             'chart' => [
-                'type' => 'bar',
+                'type' => 'area',
                 'toolbar' => [
                     'show' => false,
                 ],

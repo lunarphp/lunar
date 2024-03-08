@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Actions\Carts\GenerateFingerprint;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
@@ -27,7 +28,7 @@ test('can generate cart fingerprint', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($variant),
         'priceable_id' => $variant->id,

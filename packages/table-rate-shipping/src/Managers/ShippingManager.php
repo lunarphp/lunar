@@ -9,8 +9,8 @@ use Lunar\Shipping\Drivers\ShippingMethods\FlatRate;
 use Lunar\Shipping\Drivers\ShippingMethods\FreeShipping;
 use Lunar\Shipping\Drivers\ShippingMethods\ShipBy;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
-use Lunar\Shipping\Resolvers\ShippingMethodResolver;
 use Lunar\Shipping\Resolvers\ShippingOptionResolver;
+use Lunar\Shipping\Resolvers\ShippingRateResolver;
 use Lunar\Shipping\Resolvers\ShippingZoneResolver;
 
 class ShippingManager extends Manager implements ShippingMethodManagerInterface
@@ -35,7 +35,7 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
         return $this->buildProvider(Collection::class);
     }
 
-    public function getSupportedDrivers()
+    public function getSupportedDrivers(): \Illuminate\Support\Collection
     {
         return collect([
             'free-shipping' => $this->createDriver('free-shipping'),
@@ -53,27 +53,24 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
 
     /**
      * Find the zone for a given address.
-     *
-     * @param  Cart  $cart
-     * @return Collection
      */
-    public function zones()
+    public function zones(): ShippingZoneResolver
     {
         return new ShippingZoneResolver();
     }
 
-    public function shippingMethods(Cart $cart = null)
+    public function shippingRates(Cart $cart = null): ShippingRateResolver
     {
-        return new ShippingMethodResolver($cart);
+        return new ShippingRateResolver($cart);
     }
 
-    public function shippingOptions(Cart $cart = null)
+    public function shippingOptions(Cart $cart = null): ShippingOptionResolver
     {
         return new ShippingOptionResolver($cart);
     }
 
     /**
-     * Build a tax provider instance.
+     * Build a shipping provider instance
      *
      * @param  string  $provider
      * @return mixed

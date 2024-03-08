@@ -4,6 +4,7 @@ namespace Lunar\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Lunar\Admin\Models\Staff;
 use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\AdminHubServiceProvider;
@@ -63,6 +64,12 @@ class InstallLunar extends Command
         }
 
         DB::transaction(function () {
+
+            if (class_exists(Staff::class) && ! Staff::whereAdmin(true)->exists()) {
+                $this->components->info('First create a lunar admin user');
+                $this->call('lunar:create-admin');
+            }
+
             if (! Country::count()) {
                 $this->components->info('Importing countries');
                 $this->call('lunar:import:address-data');
@@ -167,6 +174,7 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -185,6 +193,7 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -203,6 +212,7 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -221,6 +231,7 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
+                    'description' => '',
                 ]);
             }
 
@@ -241,6 +252,9 @@ class InstallLunar extends Command
             $this->components->info('Installing Admin Hub.');
             $this->call('lunar:hub:install');
         }
+
+        $this->components->info('Publishing Filament assets');
+        $this->call('filament:assets');
 
         $this->components->info('Lunar is now installed 🚀');
 

@@ -13,6 +13,7 @@ class File extends BaseFieldType
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {
-        return TextInput::make($attribute->handle);
+        return TextInput::make($attribute->handle)
+            ->helperText($attribute->translate('description'));
     }
 }

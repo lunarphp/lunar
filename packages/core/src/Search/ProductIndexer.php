@@ -41,11 +41,11 @@ class ProductIndexer extends ScoutIndexer
         // Do this here so other additions to the data appear under the attributes,
         // more of a vanity thing than anything else.
         $data = array_merge([
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'status' => $model->status,
             'product_type' => $model->productType->name,
             'brand' => $model->brand?->name,
-            'created_at' => $model->created_at->timestamp,
+            'created_at' => (int) $model->created_at->timestamp,
         ], $this->mapSearchableAttributes($model));
 
         if ($thumbnail = $model->thumbnail) {

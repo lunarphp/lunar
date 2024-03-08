@@ -41,4 +41,12 @@ return [
         'no_attributes' => 'There are no attributes available.',
     ],
 
+    'action' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'This product type can not be deleted as there are products associated.',
+            ],
+        ],
+    ],
+
 ];

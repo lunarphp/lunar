@@ -9,18 +9,20 @@ use Lunar\Shipping\Facades\Shipping;
 
 class ShippingModifier
 {
-    public function handle(Cart $cart)
+    public function handle(Cart $cart, \Closure $next)
     {
-        $shippingMethods = Shipping::shippingMethods($cart)->get();
+        $shippingRates = Shipping::shippingRates($cart)->get();
 
         $options = Shipping::shippingOptions($cart)->get(
             new ShippingOptionLookup(
-                shippingMethods: $shippingMethods
+                shippingRates: $shippingRates
             )
         );
 
         foreach ($options as $option) {
             ShippingManifest::addOption($option->option);
         }
+
+        return $next($cart);
     }
 }

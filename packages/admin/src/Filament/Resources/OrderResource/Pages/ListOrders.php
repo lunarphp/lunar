@@ -13,7 +13,7 @@ class ListOrders extends BaseListRecords
 {
     protected static string $resource = OrderResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             // Actions\CreateAction::make(),
@@ -41,7 +41,7 @@ class ListOrders extends BaseListRecords
 
     protected function paginateTableQuery(Builder $query): Paginator
     {
-        return $query->simplePaginate($this->getTableRecordsPerPage());
+        return $query->paginate($this->getTableRecordsPerPage());
     }
 
     public function getMaxContentWidth(): MaxWidth
