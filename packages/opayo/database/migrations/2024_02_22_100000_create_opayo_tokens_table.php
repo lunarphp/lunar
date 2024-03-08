@@ -9,6 +9,7 @@ class CreateOpayoTokensTable extends Migration
     public function up()
     {
         Schema::create($this->prefix.'opayo_tokens', function (Blueprint $table) {
+            $table->id();
             $table->userForeignKey();
             $table->string('card_type')->index();
             $table->string('last_four');
