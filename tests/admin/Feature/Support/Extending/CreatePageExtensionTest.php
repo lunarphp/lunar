@@ -20,7 +20,9 @@ it('can customise page headings', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, CreateCustomer::class);
+    LunarPanel::extensions([
+        $class::class => CreateCustomer::class,
+    ]);
 
     $this->asStaff(admin: true);
 
@@ -40,7 +42,9 @@ it('can change data before creation', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, CreateCustomer::class);
+    LunarPanel::extensions([
+        $class::class => CreateCustomer::class,
+    ]);
 
     $this->asStaff(admin: true);
 
@@ -70,7 +74,9 @@ it('can manipulate model after creation', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, CreateCustomer::class);
+    LunarPanel::extensions([
+        $class::class => CreateCustomer::class,
+    ]);
 
     $this->asStaff(admin: true);
 

@@ -11,6 +11,7 @@ use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables\Table;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -30,8 +31,6 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Http\Controllers\DownloadPdfController;
-use Lunar\Admin\Support\Extending\BaseExtension;
-use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
 
 class LunarPanelManager
@@ -143,6 +142,16 @@ class LunarPanelManager
             'chartSecondary' => Color::Green,
         ]);
 
+        if (app('request')->is($panel->getPath().'*')) {
+            app('config')->set('livewire.inject_assets', true);
+        }
+
+        Table::configureUsing(function (Table $table): void {
+            $table
+                ->paginationPageOptions([10, 25, 50, 100])
+                ->defaultPaginationPageOption(25);
+        });
+
         return $this;
     }
 
@@ -237,9 +246,11 @@ class LunarPanelManager
             ])->sidebarCollapsibleOnDesktop();
     }
 
-    public function registerExtension(BaseExtension|ResourceExtension $extension, string $pageClass): self
+    public function extensions(array $extensions): self
     {
-        $this->extensions[$pageClass][] = $extension;
+        foreach ($extensions as $class => $extension) {
+            $this->extensions[$extension][] = new $class;
+        }
 
         return $this;
     }

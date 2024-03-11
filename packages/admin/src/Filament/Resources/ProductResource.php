@@ -17,6 +17,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
+use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
 use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
@@ -311,6 +312,7 @@ class ProductResource extends BaseResource
             ]),
             MediaRelationManager::class,
             PriceRelationManager::class,
+            CustomerGroupPricingRelationManager::class,
         ];
     }
 

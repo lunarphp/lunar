@@ -1,8 +1,7 @@
 <?php
 
-namespace Lunar\Admin\Support\RelationManagers;
+namespace Lunar\Admin\Filament\Resources\ProductResource\RelationManagers;
 
-use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -16,18 +15,18 @@ use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 
-class PriceRelationManager extends RelationManager
+class CustomerGroupPricingRelationManager extends RelationManager
 {
     protected static string $relationship = 'prices';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::relationmanagers.pricing.tab_name');
+        return __('lunarpanel::relationmanagers.customer_group_pricing.title');
     }
 
     protected function getTableHeading(): string|Htmlable|null
     {
-        return __('lunarpanel::relationmanagers.pricing.table.heading');
+        return __('lunarpanel::relationmanagers.customer_group_pricing.table.heading');
     }
 
     public function form(Form $form): Form
@@ -48,43 +47,23 @@ class PriceRelationManager extends RelationManager
                     Forms\Components\Select::make('customer_group_id')
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.customer_group_id.label')
-                        )->placeholder(
-                            __('lunarpanel::relationmanagers.pricing.form.customer_group_id.placeholder')
                         )->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.customer_group_id.helper_text')
-                        )->relationship(name: 'customerGroup', titleAttribute: 'name'),
-                    Forms\Components\TextInput::make('min_quantity')
-                        ->label(
-                            __('lunarpanel::relationmanagers.pricing.form.min_quantity.label')
-                        )->helperText(
-                            __('lunarpanel::relationmanagers.pricing.form.min_quantity.helper_text')
-                        )->numeric()
-                        ->default(2)
-                        ->minValue(2)
+                        )->relationship(name: 'customerGroup', titleAttribute: 'name')
                         ->required()
-                        ->rules([
-                            fn (Forms\Get $get, $record) => function (string $attribute, $value, Closure $fail) use ($get, $form, $record) {
-                                $owner = $this->getOwnerRecord();
+                        ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                            $owner = $this->getOwnerRecord();
 
-                                $price = $form->getModel();
-
-                                $exist = $price::query()
-                                    ->when(filled($record), fn ($query) => $query->where('id', '!=', $record->id))
-                                    ->when(blank($get('customer_group_id')),
-                                        fn ($query) => $query->whereNull('customer_group_id'),
-                                        fn ($query) => $query->where('customer_group_id', $get('customer_group_id')))
-                                    ->where('currency_id', $get('currency_id'))
-                                    ->where('priceable_type', get_class($owner))
-                                    ->where('priceable_id', $owner->id)
-                                    ->where('min_quantity', $get('min_quantity'))
-                                    ->count();
-
-                                if ($exist) {
-                                    $fail(__('lunarpanel::relationmanagers.pricing.form.min_quantity.validation.unique'));
-                                }
-                            },
-                        ]),
-                ])->columns(3),
+                            return $rule
+                                ->when(blank($get('customer_group_id')),
+                                    fn (Unique $rule) => $rule->whereNull('customer_group_id'),
+                                    fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
+                                ->where('min_quantity', 1)
+                                ->where('currency_id', $get('currency_id'))
+                                ->where('priceable_type', get_class($owner))
+                                ->where('priceable_id', $owner->id);
+                        }),
+                ])->columns(2),
 
                 Forms\Components\Group::make([
                     Forms\Components\TextInput::make('price')->formatStateUsing(
@@ -97,7 +76,7 @@ class PriceRelationManager extends RelationManager
                                 ->when(blank($get('customer_group_id')),
                                     fn (Unique $rule) => $rule->whereNull('customer_group_id'),
                                     fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
-                                ->where('min_quantity', $get('min_quantity'))
+                                ->where('min_quantity', 1)
                                 ->where('currency_id', $get('currency_id'))
                                 ->where('priceable_type', get_class($owner))
                                 ->where('priceable_id', $owner->id);
@@ -124,17 +103,19 @@ class PriceRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->description(
-                __('lunarpanel::relationmanagers.pricing.table.description')
+                __('lunarpanel::relationmanagers.customer_group_pricing.table.description')
             )
             ->modifyQueryUsing(
                 fn ($query) => $query
                     ->leftJoinSub($cgTable, 'cg', fn ($join) => $join->on('customer_group_id', 'cg.cg_id'))
-                    ->where("{$priceTable}.min_quantity", '>', 1)
+                    ->where("{$priceTable}.min_quantity", 1)
+                    ->whereNotNull("{$priceTable}.customer_group_id")
             )
             ->defaultSort(fn ($query) => $query->orderBy('cg.name')->orderBy('min_quantity'))
             ->emptyStateHeading(
-                __('lunarpanel::relationmanagers.pricing.table.empty_state.label')
+                __('lunarpanel::relationmanagers.customer_group_pricing.table.empty_state.label')
             )
+            ->emptyStateDescription(__('lunarpanel::relationmanagers.customer_group_pricing.table.empty_state.description'))
             ->columns([
                 Tables\Columns\TextColumn::make('price')
                     ->label(
@@ -145,13 +126,8 @@ class PriceRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')
                 )->sortable(),
-                Tables\Columns\TextColumn::make('min_quantity')->label(
-                    __('lunarpanel::relationmanagers.pricing.table.min_quantity.label')
-                )->sortable(),
                 Tables\Columns\TextColumn::make('customerGroup.name')->label(
                     __('lunarpanel::relationmanagers.pricing.table.customer_group.label')
-                )->placeholder(
-                    __('lunarpanel::relationmanagers.pricing.table.customer_group.placeholder')
                 )->sortable(),
             ])
             ->filters([
@@ -161,30 +137,25 @@ class PriceRelationManager extends RelationManager
                     ->label(
                         __('lunarpanel::relationmanagers.pricing.table.currency.label')
                     ),
-                Tables\Filters\SelectFilter::make('min_quantity')->options(
-                    Price::where('priceable_id', $this->getOwnerRecord()->id)
-                        ->where('priceable_type', get_class($this->getOwnerRecord()))
-                        ->get()
-                        ->pluck('min_quantity', 'min_quantity')
-                )->label(
-                    __('lunarpanel::relationmanagers.pricing.table.min_quantity.label')
-                ),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data) {
                     $currencyModel = Currency::find($data['currency_id']);
 
+                    $data['min_quantity'] = 1;
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;
                 })->label(
-                    __('lunarpanel::relationmanagers.pricing.table.actions.create.label')
-                ),
+                    __('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.label')
+                )
+                    ->modalHeading(__('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.modal.heading')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->mutateFormDataUsing(function (array $data): array {
                     $currencyModel = Currency::find($data['currency_id']);
 
+                    $data['min_quantity'] = 1;
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;

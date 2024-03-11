@@ -1,18 +1,5 @@
 # Extending Pages
 
-You can add and change the behaviour of existing Filament pages. This might be useful if you wish to add a button for 
-additional custom functionality.
-
-To extend a page you need to create and register an extension.
-
-For example, the code below will register a custom extension called `MyEditExtension` for the `EditProduct` Filament page.
-
-```php
-use Lunar\Admin\Support\Facades\LunarPanel;
-
-LunarPanel::registerExtension(new MyEditExtension, EditProduct::class);
-```
-
 ## Writing Extensions
 
 There are three extension types Lunar provides, these are for Create, Edit and Listing pages.
@@ -102,7 +89,9 @@ class MyCreateExtension extends CreatePageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyCreateExtension, \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class);
+LunarPanel::extensions([
+    MyCreateExtension::class => \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class,
+]);
 ```
 
 ## EditPageExtension
@@ -199,7 +188,9 @@ class MyEditExtension extends EditPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyEditExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class);
+LunarPanel::extensions([
+    MyEditExtension::class => \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class,
+]);
 ```
 
 ## ListPageExtension
@@ -259,7 +250,9 @@ class MyListExtension extends ListPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyListExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class);
+LunarPanel::extensions([
+    MyListExtension::class => \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class,
+]);
 ```
 
 ## ViewPageExtension
@@ -297,7 +290,9 @@ class MyViewExtension extends ViewPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyViewExtension, \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class);
+LunarPanel::extensions([
+    MyViewExtension::class => \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class,
+]);
 ```
 
 ## RelationPageExtension
@@ -334,7 +329,9 @@ class MyRelationExtension extends RelationPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyRelationExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class);
+LunarPanel::extensions([
+    MyRelationExtension::class => \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class,
+]);
 ```
 
 ## Extending Pages In Addons
