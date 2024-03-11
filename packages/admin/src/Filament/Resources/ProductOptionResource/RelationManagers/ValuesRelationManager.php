@@ -7,8 +7,8 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 
 class ValuesRelationManager extends RelationManager
 {

@@ -7,8 +7,8 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Collection;
 
 class ManageProductCollections extends BaseManageRelatedRecords
