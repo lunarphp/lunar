@@ -4,7 +4,7 @@ uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('actions');
 
 beforeEach(function () {
-    Config::set('lunar.search.scout_enabled', false);
+    Config::set('lunar.panel.scout_enabled', false);
 
     $this->asStaff(admin: true);
 });

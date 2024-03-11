@@ -19,7 +19,7 @@ Version 1.x is very much in-development. It is incomplete and not production rea
 ### Composer Require Package
 
 ```sh
-composer require lunarphp/lunar:1.x-dev -W
+composer require lunarphp/lunar:"^1.0.0-alpha" -W
 ```
 
 ::: tip

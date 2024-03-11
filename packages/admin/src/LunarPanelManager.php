@@ -11,6 +11,7 @@ use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables\Table;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -140,6 +141,16 @@ class LunarPanelManager
             'chartPrimary' => Color::Blue,
             'chartSecondary' => Color::Green,
         ]);
+
+        if (app('request')->is($panel->getPath().'*')) {
+            app('config')->set('livewire.inject_assets', true);
+        }
+
+        Table::configureUsing(function (Table $table): void {
+            $table
+                ->paginationPageOptions([10, 25, 50, 100])
+                ->defaultPaginationPageOption(25);
+        });
 
         return $this;
     }
