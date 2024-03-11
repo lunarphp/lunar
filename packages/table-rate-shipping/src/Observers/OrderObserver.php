@@ -35,14 +35,14 @@ class OrderObserver
             $shippingZones = Shipping::zones()->postcode($postcodeLookup)->get();
 
             if ($shippingZone = $shippingZones->first()) {
-                 DB::table(
-                     config('lunar.database.table_prefix').'order_shipping_zone'
-                 )->insert([
-                     'order_id' => $order->id,
-                     'shipping_zone_id' => $shippingZone->id,
-                     'created_at' => now(),
-                     'updated_at' => now(),
-                 ]);
+                DB::table(
+                    config('lunar.database.table_prefix').'order_shipping_zone'
+                )->insert([
+                    'order_id' => $order->id,
+                    'shipping_zone_id' => $shippingZone->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
                 $meta = (array) $order->meta;
                 $meta['shipping_zone'] = $shippingZone->name;
                 $order->meta = $meta;
