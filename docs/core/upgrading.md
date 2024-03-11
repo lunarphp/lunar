@@ -59,6 +59,15 @@ public Collection $tiered,
 public Collection $priceBreaks,
 ```
 
+##### Lunar\Base\DataTransferObjects\PaymentAuthorize
+
+Two new properties have been added to the constructor for this DTO.
+
+```php
+public ?int $orderId = null,
+public ?string $paymentType = null
+```
+
 ## 0.8
 
 No significant changes.
