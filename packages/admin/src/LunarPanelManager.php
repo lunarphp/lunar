@@ -31,8 +31,6 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Http\Controllers\DownloadPdfController;
-use Lunar\Admin\Support\Extending\BaseExtension;
-use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
 
 class LunarPanelManager
@@ -248,9 +246,11 @@ class LunarPanelManager
             ])->sidebarCollapsibleOnDesktop();
     }
 
-    public function registerExtension(BaseExtension|ResourceExtension $extension, string $pageClass): self
+    public function extensions(array $extensions): self
     {
-        $this->extensions[$pageClass][] = $extension;
+        foreach ($extensions as $class => $extension) {
+            $this->extensions[$extension][] = new $class;
+        }
 
         return $this;
     }
