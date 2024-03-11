@@ -144,6 +144,10 @@ class LunarPanelManager
             'chartSecondary' => Color::Green,
         ]);
 
+        if (app('request')->is($panel->getPath().'*')) {
+            app('config')->set('livewire.inject_assets', true);
+        }
+
         Table::configureUsing(function (Table $table): void {
             $table
                 ->paginationPageOptions([10, 25, 50, 100])
