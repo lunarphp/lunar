@@ -146,10 +146,10 @@ class LunarPanelManager
 
         Table::configureUsing(function (Table $table): void {
             $table
-                ->paginationPageOptions([20, 50, 100])
-                ->defaultPaginationPageOption(20);
+                ->paginationPageOptions([10, 25, 50, 100])
+                ->defaultPaginationPageOption(25);
         });
-       
+
         return $this;
     }
 
