@@ -5,6 +5,7 @@ namespace Lunar\Opayo;
 use Illuminate\Support\Str;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
 use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
@@ -45,12 +46,19 @@ class OpayoPaymentType extends AbstractPayment
         }
 
         if ($this->order->placed_at) {
-            // Somethings gone wrong!
-            return new PaymentAuthorize(
+
+            // Something's gone wrong!
+            $failedResponse = new PaymentAuthorize(
                 success: false,
                 status: Opayo::ALREADY_PLACED,
                 message: 'This order has already been placed',
+                orderId: $this->order->id,
+                paymentType: 'opayo',
             );
+
+            PaymentAttemptEvent::dispatch($failedResponse);
+
+            return $failedResponse;
         }
 
         $transactionType = 'Payment';
@@ -64,10 +72,16 @@ class OpayoPaymentType extends AbstractPayment
         $response = Opayo::api()->post('transactions', $payload);
 
         if (! $response->successful()) {
-            return new PaymentAuthorize(
+            $failedResponse = new PaymentAuthorize(
                 success: false,
-                message: 'An unknown error occured'
+                message: 'An unknown error occured',
+                orderId: $this->order->id,
+                paymentType: 'opayo',
             );
+
+            PaymentAttemptEvent::dispatch($failedResponse);
+
+            return $failedResponse;
         }
 
         $response = $response->object();
@@ -109,10 +123,16 @@ class OpayoPaymentType extends AbstractPayment
             ]);
         }
 
-        return new PaymentAuthorize(
+        $response = new PaymentAuthorize(
             success: $successful,
-            status: $successful ? Opayo::AUTH_SUCCESSFUL : Opayo::AUTH_FAILED
+            status: $successful ? Opayo::AUTH_SUCCESSFUL : Opayo::AUTH_FAILED,
+            orderId: $this->order->id,
+            paymentType: 'opayo',
         );
+
+        PaymentAttemptEvent::dispatch($response);
+
+        return $response;
     }
 
     /**
@@ -222,9 +242,15 @@ class OpayoPaymentType extends AbstractPayment
         $response = Opayo::api()->post('transactions/'.$this->data['transaction_id'].'/'.$path, $payload);
 
         if (! $response->successful()) {
-            return new PaymentAuthorize(
-                success: false
+            $failedResponse = new PaymentAuthorize(
+                success: false,
+                orderId: $this->order->id,
+                paymentType: 'opayo',
             );
+
+            PaymentAttemptEvent::dispatch($failedResponse);
+
+            return $failedResponse;
         }
 
         $data = $response->object();
@@ -241,17 +267,29 @@ class OpayoPaymentType extends AbstractPayment
                 'card_type' => 'unknown',
             ]);
 
-            return new PaymentAuthorize(
+            $threedFailure = new PaymentAuthorize(
                 success: false,
-                status: Opayo::THREED_SECURE_FAILED
+                status: Opayo::THREED_SECURE_FAILED,
+                orderId: $this->order->id,
+                paymentType: 'opayo',
             );
+
+            PaymentAttemptEvent::dispatch($threedFailure);
+
+            return $threedFailure;
         }
 
         if (! empty($data->status) && $data->status == 'NotAuthenticated') {
-            return new PaymentAuthorize(
+            $threedFailure = new PaymentAuthorize(
                 success: false,
-                status: Opayo::THREED_SECURE_FAILED
+                status: Opayo::THREED_SECURE_FAILED,
+                orderId: $this->order->id,
+                paymentType: 'opayo',
             );
+
+            PaymentAttemptEvent::dispatch($threedFailure);
+
+            return $threedFailure;
         }
 
         $transaction = Opayo::getTransaction($this->data['transaction_id']);
@@ -280,10 +318,15 @@ class OpayoPaymentType extends AbstractPayment
             ]);
         }
 
-        return new PaymentAuthorize(
+        $response = new PaymentAuthorize(
             success: $successful,
-            status: $successful ? Opayo::AUTH_SUCCESSFUL : Opayo::AUTH_FAILED
+            status: $successful ? Opayo::AUTH_SUCCESSFUL : Opayo::AUTH_FAILED,
+            orderId: $this->order->id,
         );
+
+        PaymentAttemptEvent::dispatch($response);
+
+        return $response;
     }
 
     /**
