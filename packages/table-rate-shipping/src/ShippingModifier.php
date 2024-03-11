@@ -9,7 +9,7 @@ use Lunar\Shipping\Facades\Shipping;
 
 class ShippingModifier
 {
-    public function handle(Cart $cart)
+    public function handle(Cart $cart, \Closure $next)
     {
         $shippingRates = Shipping::shippingRates($cart)->get();
 
@@ -22,5 +22,7 @@ class ShippingModifier
         foreach ($options as $option) {
             ShippingManifest::addOption($option->option);
         }
+
+        return $next($cart);
     }
 }

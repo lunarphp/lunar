@@ -22,10 +22,12 @@ class Price implements CastsAttributes
     {
         $currency = $model->currency ?: Currency::getDefault();
 
-        /**
-         * Make it an integer based on currency requirements.
-         */
-        $value = preg_replace('/[^0-9]/', '', $value);
+        if (! is_null($value)) {
+            /**
+             * Make it an integer based on currency requirements.
+             */
+            $value = preg_replace('/[^0-9]/', '', $value);
+        }
 
         Validator::make([
             $key => $value,

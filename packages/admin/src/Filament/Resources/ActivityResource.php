@@ -40,7 +40,7 @@ class ActivityResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    public static function form(Form $form): Form
+    public static function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([

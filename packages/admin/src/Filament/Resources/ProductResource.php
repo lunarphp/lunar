@@ -230,7 +230,7 @@ class ProductResource extends BaseResource
             ->deferLoading();
     }
 
-    protected static function getTableColumns(): array
+    public static function getTableColumns(): array
     {
         return [
             Tables\Columns\TextColumn::make('status')

@@ -65,7 +65,6 @@
                 "packages/paypal/src",
                 "packages/paypal/src/"
             ],
-            "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
             "Lunar\\Stripe\\": "packages/stripe/src/",
@@ -78,7 +77,6 @@
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
             "Lunar\\Tests\\Paypal\\": "tests/paypal",
-            "Lunar\\Tests\\ScoutDatabaseEngine\\": "tests/scout-database-engine",
             "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
             "Lunar\\Tests\\Stripe\\": "tests/stripe"
@@ -111,7 +109,6 @@
         "lunarphp/core": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
-        "lunarphp/scout-database-engine": "self.version",
         "lunarphp/stripe": "self.version",
         "lunarphp/table-rate-shipping": "self.version",
         "lunarphp/meilisearch": "self.version"
