@@ -6,7 +6,6 @@ use Filament\Actions;
 use Filament\Forms\Components\Grid;
 use Filament\Resources\Components\Tab;
 use Filament\Support\Enums\MaxWidth;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
