@@ -30,4 +30,11 @@ return [
         ],
     ],
 
+    'action' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'This customer group can not be deleted as there are customers associated.',
+            ],
+        ],
+    ],
 ];

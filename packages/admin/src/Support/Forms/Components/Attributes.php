@@ -11,6 +11,7 @@ use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
 
 class Attributes extends Forms\Components\Group
 {
@@ -30,11 +31,20 @@ class Attributes extends Forms\Components\Group
                     // to try and find the product type ID
                     if ($modelClass == Product::class) {
                         $productTypeId = $record?->product_type_id ?: ProductType::first()->id;
+
+                        // If we have a product type, the attributes should be based off that.
+                        if ($productTypeId) {
+                            $attributeQuery = ProductType::find($productTypeId)->productAttributes();
+                        }
                     }
 
-                    // If we have a product type, the attributes should be based off that.
-                    if ($productTypeId) {
-                        $attributeQuery = ProductType::find($productTypeId)->productAttributes();
+                    if ($modelClass == ProductVariant::class) {
+                        $productTypeId = $record->product?->product_type_id ?: ProductType::first()->id;
+
+                        // If we have a product type, the attributes should be based off that.
+                        if ($productTypeId) {
+                            $attributeQuery = ProductType::find($productTypeId)->variantAttributes();
+                        }
                     }
 
                     $attributes = $attributeQuery->orderBy('position')->get();
@@ -42,12 +52,14 @@ class Attributes extends Forms\Components\Group
                     $groups = AttributeGroup::where(
                         'attributable_type',
                         $modelClass
-                    )->get()->map(function ($group) use ($attributes) {
-                        return [
-                            'model' => $group,
-                            'fields' => $attributes->groupBy('attribute_group_id')->get($group->id, []),
-                        ];
-                    });
+                    )->orderBy('position', 'asc')
+                        ->get()
+                        ->map(function ($group) use ($attributes) {
+                            return [
+                                'model' => $group,
+                                'fields' => $attributes->groupBy('attribute_group_id')->get($group->id, []),
+                            ];
+                        });
 
                     $groupComponents = [];
 

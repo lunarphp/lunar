@@ -76,4 +76,11 @@ class Brand extends BaseModel implements SpatieHasMedia
     {
         return $this->hasMany(Product::class);
     }
+
+    public function discounts()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(Discount::class, "{$prefix}brand_discount");
+    }
 }

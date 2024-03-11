@@ -35,7 +35,7 @@ use Lunar\Database\Factories\OrderFactory;
  * @property int $tax_total
  * @property int $total
  * @property ?string $notes
- * @property string $currency
+ * @property string $currency_code
  * @property ?string $compare_currency_code
  * @property float $exchange_rate
  * @property ?\Illuminate\Support\Carbon $placed_at
@@ -184,7 +184,7 @@ class Order extends BaseModel
      */
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class)->orderBy('created_at', 'desc');
     }
 
     /**
@@ -243,5 +243,12 @@ class Order extends BaseModel
     public function isPlaced(): bool
     {
         return ! blank($this->placed_at);
+    }
+
+    public static function getDefaultLogExcept(): array
+    {
+        return [
+            'status',
+        ];
     }
 }

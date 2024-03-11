@@ -4,15 +4,15 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
 
-class ManageProductAssociations extends ManageRelatedRecords
+class ManageProductAssociations extends BaseManageRelatedRecords
 {
     protected static string $resource = ProductResource::class;
 

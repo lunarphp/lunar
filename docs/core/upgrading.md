@@ -18,6 +18,7 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+
 ## 1.0
 
 ### High Impact
@@ -31,9 +32,9 @@ for further information.
 The `position` field has been removed from the `product_options` table and is now found on the `product_product_option` 
 pivot table. Any position data will be automatically adjusted when running migrations.
 
-#### Tiers renamed to Quantity Breaks
+#### Tiers renamed to Price Breaks
 
-The `tier` column on pricing has been renamed to `quantity_break`, any references in code to `tiers` needs to be updated.
+The `tier` column on pricing has been renamed to `min_quantity`, any references in code to `tiers` needs to be updated.
 
 ##### Price Model
 
@@ -41,12 +42,12 @@ The `tier` column on pricing has been renamed to `quantity_break`, any reference
 // Old
 $priceModel->tier
 // New
-$priceModel->quantity_break
+$priceModel->min_quantity
 
 // Old
 $priceModel->tiers
 // New
-$priceModel->quantityBreaks
+$priceModel->priceBreaks
 ```
 
 ##### Lunar\Base\DataTransferObjects\PricingResponse
@@ -55,8 +56,21 @@ $priceModel->quantityBreaks
 // Old
 public Collection $tiered,
 // New
-public Collection $quantityBreaks,
+public Collection $priceBreaks,
 ```
+
+##### Lunar\Base\DataTransferObjects\PaymentAuthorize
+
+Two new properties have been added to the constructor for this DTO.
+
+```php
+public ?int $orderId = null,
+public ?string $paymentType = null
+```
+
+## 0.8
+
+No significant changes.
 
 ## 0.7
 

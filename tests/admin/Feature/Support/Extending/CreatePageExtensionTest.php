@@ -6,6 +6,31 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('extending');
 
+it('can customise page headings', function () {
+    $class = new class extends \Lunar\Admin\Support\Extending\CreatePageExtension
+    {
+        public function heading($title): string
+        {
+            return 'New Heading';
+        }
+
+        public function subheading($title): string
+        {
+            return 'New Subheading';
+        }
+    };
+
+    LunarPanel::extensions([
+        $class::class => CreateCustomer::class,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    \Livewire\Livewire::test(CreateCustomer::class)
+        ->assertSee('New Heading')
+        ->assertSee('New Subheading');
+});
+
 it('can change data before creation', function () {
     $class = new class extends \Lunar\Admin\Support\Extending\CreatePageExtension
     {
@@ -17,7 +42,9 @@ it('can change data before creation', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, CreateCustomer::class);
+    LunarPanel::extensions([
+        $class::class => CreateCustomer::class,
+    ]);
 
     $this->asStaff(admin: true);
 
@@ -47,7 +74,9 @@ it('can manipulate model after creation', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, CreateCustomer::class);
+    LunarPanel::extensions([
+        $class::class => CreateCustomer::class,
+    ]);
 
     $this->asStaff(admin: true);
 

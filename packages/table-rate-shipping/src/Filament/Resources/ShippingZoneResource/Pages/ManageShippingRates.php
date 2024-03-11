@@ -97,9 +97,9 @@ class ManageShippingRates extends ManageRelatedRecords
                         )->default(
                             Currency::getDefault()->id
                         )->required()->preload(),
-                    Forms\Components\TextInput::make('quantity_break')
+                    Forms\Components\TextInput::make('min_quantity')
                         ->label(
-                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.quantity_break.label')
+                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_quantity.label')
                         )
                         ->numeric()
                         ->required(),
@@ -113,12 +113,12 @@ class ManageShippingRates extends ManageRelatedRecords
                     static function (Forms\Components\Repeater $component, Model $record = null): void {
                         if ($record) {
                             $component->state(
-                                $record->quantityBreaks->map(function ($price) {
+                                $record->priceBreaks->map(function ($price) {
                                     return [
                                         'customer_group_id' => $price->customer_group_id,
                                         'price' => $price->price->decimal,
                                         'currency_id' => $price->currency_id,
-                                        'quantity_break' => $price->quantity_break / 100,
+                                        'min_quantity' => $price->min_quantity / 100,
                                     ];
                                 })->toArray()
                             );
@@ -140,10 +140,10 @@ class ManageShippingRates extends ManageRelatedRecords
             )->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.table.price.label')
             ),
-            TextColumn::make('quantity_breaks_count')
+            TextColumn::make('price_breaks_count')
                 ->label(
-                    __('lunarpanel.shipping::relationmanagers.shipping_rates.table.quantity_breaks_count.label')
-                )->counts('quantityBreaks'),
+                    __('lunarpanel.shipping::relationmanagers.shipping_rates.table.price_breaks_count.label')
+                )->counts('priceBreaks'),
         ])->headerActions([
             Tables\Actions\CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
@@ -177,11 +177,11 @@ class ManageShippingRates extends ManageRelatedRecords
         $basePrice->customer_group_id = null;
         $basePrice->save();
 
-        $shippingRate->quantityBreaks()->delete();
+        $shippingRate->priceBreaks()->delete();
 
         $tiers = collect($data['prices'] ?? [])->map(
             function ($price) {
-                $price['quantity_break'] = $price['quantity_break'] * 100;
+                $price['min_quantity'] = $price['min_quantity'] * 100;
 
                 return $price;
             }

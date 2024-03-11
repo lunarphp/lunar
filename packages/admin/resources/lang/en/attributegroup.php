@@ -36,4 +36,11 @@ return [
         ],
     ],
 
+    'action' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'This attribute group can not be deleted as there are attributes associated.',
+            ],
+        ],
+    ],
 ];

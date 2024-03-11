@@ -38,7 +38,6 @@
         "spatie/laravel-activitylog": "^4.4",
         "laravel/scout": "^10.0",
         "cartalyst/converter": "^8.0",
-        "lunarphp/scout-database-engine": "self.version",
         "kalnoy/nestedset": "^6.0",
         "doctrine/dbal": "^3.6",
         "spatie/laravel-blink": "^1.6",

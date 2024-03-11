@@ -17,13 +17,16 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
+use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
 use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
+use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Currency;
@@ -169,7 +172,7 @@ class ProductResource extends BaseResource
 
     public static function getBaseNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TranslatedText::make('name')
             ->label(__('lunarpanel::product.form.name.label'))->required();
     }
 
@@ -229,7 +232,7 @@ class ProductResource extends BaseResource
             ->deferLoading();
     }
 
-    protected static function getTableColumns(): array
+    public static function getTableColumns(): array
     {
         return [
             Tables\Columns\TextColumn::make('status')
@@ -301,6 +304,8 @@ class ProductResource extends BaseResource
                 CustomerGroupRelationManager::class,
             ]),
             MediaRelationManager::class,
+            PriceRelationManager::class,
+            CustomerGroupPricingRelationManager::class,
         ];
     }
 

@@ -60,13 +60,20 @@ class ScoutIndexerCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle()
     {
         // Check if --refresh and --flush options has been passed
         if ($this->option('flush') && $this->option('refresh')) {
             $this->components->error('You can\'t use the [--refresh] and [--flush] options together.');
 
-            exit(self::FAILURE);
+            return self::FAILURE;
+        }
+
+        // Execute setup meilisearch
+        if (config('scout.driver') == 'meilisearch') {
+            if (! $this->getApplication()->has('lunar:meilisearch:setup')) {
+                $this->components->warn('Laravel scout config to use meilisearch driver, you would like to install and setup lunarphp/meilisearch package.');
+            }
         }
 
         // Return searchable models from config
@@ -80,7 +87,7 @@ class ScoutIndexerCommand extends Command
                 $this->components->error('No model passed on call');
                 $this->components->info('When using the [--ignore] option, you must provide at least one model to index.');
 
-                exit(self::FAILURE);
+                return self::FAILURE;
             } else {
                 // Run the indexer commands
                 $this->indexer($this->argument('models'));
@@ -94,6 +101,6 @@ class ScoutIndexerCommand extends Command
             $this->indexer($models);
         }
 
-        exit(self::SUCCESS);
+        return self::SUCCESS;
     }
 }

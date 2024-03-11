@@ -17,7 +17,9 @@ it('can extend header actions', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, ChannelResource\Pages\CreateChannel::class);
+    LunarPanel::extensions([
+        $class::class => ChannelResource\Pages\CreateChannel::class,
+    ]);
 
     $this->asStaff(admin: true);
 
@@ -36,7 +38,9 @@ it('can extend form actions', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, ChannelResource\Pages\CreateChannel::class);
+    LunarPanel::extensions([
+        $class::class => ChannelResource\Pages\CreateChannel::class,
+    ]);
 
     $this->asStaff(admin: true);
 

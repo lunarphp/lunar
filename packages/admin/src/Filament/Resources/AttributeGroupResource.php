@@ -42,7 +42,7 @@ class AttributeGroupResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    public static function form(Form $form): Form
+    public static function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
@@ -73,7 +73,7 @@ class AttributeGroupResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name') // TODO: we need a custom field type for this
+        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
             ->label(__('lunarpanel::attributegroup.form.name.label'))
             ->required()
             ->maxLength(255)

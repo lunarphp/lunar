@@ -38,7 +38,7 @@
     "require-dev": {
         "laravel/pint": "1.13.1",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/larastan": "^2.0",
+        "larastan/larastan": "^2.9",
         "orchestra/testbench": "^8.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
@@ -65,10 +65,10 @@
                 "packages/paypal/src",
                 "packages/paypal/src/"
             ],
-            "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
-            "Lunar\\Stripe\\": "packages/stripe/src/"
+            "Lunar\\Stripe\\": "packages/stripe/src/",
+            "Lunar\\Meilisearch\\": "packages/meilisearch/src"
         }
     },
     "autoload-dev": {
@@ -77,7 +77,6 @@
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
             "Lunar\\Tests\\Paypal\\": "tests/paypal",
-            "Lunar\\Tests\\ScoutDatabaseEngine\\": "tests/scout-database-engine",
             "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
             "Lunar\\Tests\\Stripe\\": "tests/stripe"
@@ -89,7 +88,8 @@
                 "Table Rate Shipping",
                 "Opayo Payments",
                 "Paypal Payments",
-                "Stripe Payments"
+                "Stripe Payments",
+                "Meilisearch"
             ]
         },
         "laravel": {
@@ -98,8 +98,8 @@
                 "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
-                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
+                "Lunar\\Meilisearch\\MeilisearchServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
         }
@@ -109,9 +109,9 @@
         "lunarphp/core": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
-        "lunarphp/scout-database-engine": "self.version",
         "lunarphp/stripe": "self.version",
-        "lunarphp/table-rate-shipping": "self.version"
+        "lunarphp/table-rate-shipping": "self.version",
+        "lunarphp/meilisearch": "self.version"
     },
     "scripts": {
         "pint": "pint",

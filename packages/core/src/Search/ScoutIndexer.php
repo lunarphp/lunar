@@ -61,7 +61,7 @@ class ScoutIndexer implements ScoutIndexerInterface
         }
 
         return array_merge([
-            'id' => $model->id,
+            'id' => (string) $model->id,
         ], $data);
     }
 

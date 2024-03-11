@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Admin\Auth\Manifest;
+use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Admin\Database\State\EnsureBaseRolesAndPermissions;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Models\Staff;
@@ -23,7 +24,6 @@ use Lunar\Admin\Support\Synthesizers\PriceSynth;
 class LunarPanelProvider extends ServiceProvider
 {
     protected $configFiles = [
-        'search',
         'panel',
     ];
 
@@ -64,6 +64,18 @@ class LunarPanelProvider extends ServiceProvider
         collect($this->configFiles)->each(function ($config) {
             $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar.$config");
         });
+
+        if ($this->app->runningInConsole()) {
+            collect($this->configFiles)->each(function ($config) {
+                $this->publishes([
+                    "{$this->root}/config/$config.php" => config_path("lunar/$config.php"),
+                ], 'lunar');
+            });
+
+            $this->commands([
+                MakeLunarAdminCommand::class,
+            ]);
+        }
 
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunarpanel'),
