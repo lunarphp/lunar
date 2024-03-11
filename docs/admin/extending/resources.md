@@ -37,4 +37,8 @@ class MyProductResourceExtension extends \Lunar\Panel\Support\Extending\Resource
 
 // Typically placed in your AppServiceProvider file...
 LunarPanel::registerExtension(new MyCreateExtension, CreateProduct::class);
+
+LunarPanel::extensions([
+    MyProductResourceExtension => \Lunar\Admin\Filament\Resources\ProductResource::class,
+]);
 ```
