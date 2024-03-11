@@ -72,7 +72,6 @@ class OrderResource extends BaseResource
             ])
             ->filters(static::getTableFilters())
             ->defaultSort('id', 'DESC')
-            ->paginated([10, 25, 50, 100])
             ->selectCurrentPageOnly()
             ->deferLoading()
             ->poll('60s');
