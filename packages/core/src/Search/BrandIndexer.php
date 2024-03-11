@@ -32,8 +32,9 @@ class BrandIndexer extends ScoutIndexer
     public function toSearchableArray(Model $model): array
     {
         return array_merge([
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'name' => $model->name,
+            'created_at' => (int) $model->created_at->timestamp,
         ], $this->mapSearchableAttributes($model));
     }
 }

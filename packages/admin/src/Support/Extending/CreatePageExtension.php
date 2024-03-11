@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class CreatePageExtension extends BaseExtension
 {
+    public function heading($title): string
+    {
+        return $title;
+    }
+
+    public function subheading($title): ?string
+    {
+        return $title;
+    }
+
     public function formActions(array $actions): array
     {
         return $actions;

@@ -43,7 +43,7 @@ class ProductTypeResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function form(Forms\Form $form): Forms\Form
+    public static function getDefaultForm(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([

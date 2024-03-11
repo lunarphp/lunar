@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\RelationManagers;
 
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -10,7 +11,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Facades\DB;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 
 class PriceRelationManager extends RelationManager
@@ -19,7 +22,7 @@ class PriceRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::relationmanagers.pricing.title');
+        return __('lunarpanel::relationmanagers.pricing.tab_name');
     }
 
     protected function getTableHeading(): string|Htmlable|null
@@ -53,9 +56,34 @@ class PriceRelationManager extends RelationManager
                     Forms\Components\TextInput::make('min_quantity')
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.min_quantity.label')
-                        )->default(1)->helperText(
+                        )->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.min_quantity.helper_text')
-                        )->numeric()->minValue(1)->required(),
+                        )->numeric()
+                        ->default(2)
+                        ->minValue(2)
+                        ->required()
+                        ->rules([
+                            fn (Forms\Get $get, $record) => function (string $attribute, $value, Closure $fail) use ($get, $form, $record) {
+                                $owner = $this->getOwnerRecord();
+
+                                $price = $form->getModel();
+
+                                $exist = $price::query()
+                                    ->when(filled($record), fn ($query) => $query->where('id', '!=', $record->id))
+                                    ->when(blank($get('customer_group_id')),
+                                        fn ($query) => $query->whereNull('customer_group_id'),
+                                        fn ($query) => $query->where('customer_group_id', $get('customer_group_id')))
+                                    ->where('currency_id', $get('currency_id'))
+                                    ->where('priceable_type', get_class($owner))
+                                    ->where('priceable_id', $owner->id)
+                                    ->where('min_quantity', $get('min_quantity'))
+                                    ->count();
+
+                                if ($exist) {
+                                    $fail(__('lunarpanel::relationmanagers.pricing.form.min_quantity.validation.unique'));
+                                }
+                            },
+                        ]),
                 ])->columns(3),
 
                 Forms\Components\Group::make([
@@ -65,9 +93,12 @@ class PriceRelationManager extends RelationManager
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
                             $owner = $this->getOwnerRecord();
 
-                            return $rule->where('customer_group_id', $get('customer_group_id'))
-                                ->where('min_quantity', 1)
-                                ->where('currency_id', 1)
+                            return $rule
+                                ->when(blank($get('customer_group_id')),
+                                    fn (Unique $rule) => $rule->whereNull('customer_group_id'),
+                                    fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
+                                ->where('min_quantity', $get('min_quantity'))
+                                ->where('currency_id', $get('currency_id'))
                                 ->where('priceable_type', get_class($owner))
                                 ->where('priceable_id', $owner->id);
                         }
@@ -88,6 +119,7 @@ class PriceRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         $priceTable = (new Price)->getTable();
+        $cgTable = CustomerGroup::query()->select([DB::raw('id as cg_id'), 'name']);
 
         return $table
             ->recordTitleAttribute('name')
@@ -96,9 +128,11 @@ class PriceRelationManager extends RelationManager
             )
             ->modifyQueryUsing(
                 fn ($query) => $query
+                    ->leftJoinSub($cgTable, 'cg', fn ($join) => $join->on('customer_group_id', 'cg.cg_id'))
                     ->where("{$priceTable}.min_quantity", '>', 1)
-                    ->orderBy("{$priceTable}.min_quantity", 'asc')
-            )->emptyStateHeading(
+            )
+            ->defaultSort(fn ($query) => $query->orderBy('cg.name')->orderBy('min_quantity'))
+            ->emptyStateHeading(
                 __('lunarpanel::relationmanagers.pricing.table.empty_state.label')
             )
             ->columns([

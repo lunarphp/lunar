@@ -5,6 +5,7 @@ namespace Lunar\Paypal;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Paypal\Facades\Paypal;
@@ -39,10 +40,16 @@ class PaypalPaymentType extends AbstractPayment
 
         if ($this->order->placed_at) {
             // Somethings gone wrong!
-            return new PaymentAuthorize(
+            $failure = new PaymentAuthorize(
                 success: false,
                 message: 'This order has already been placed',
+                orderId: $this->order->id,
+                paymentType: 'paypal',
             );
+
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
         }
 
         $paypalOrder = Paypal::getOrder(
@@ -50,9 +57,15 @@ class PaypalPaymentType extends AbstractPayment
         );
 
         if (isset($paypalOrder['name']) && $paypalOrder['name'] == 'RESOURCE_NOT_FOUND') {
-            return new PaymentAuthorize(
+            $failedResponse = new PaymentAuthorize(
                 success: false,
+                orderId: $this->order?->id,
+                paymentType: 'paypal',
             );
+
+            PaymentAttemptEvent::dispatch($failedResponse);
+
+            return $failedResponse;
         }
 
         if ($paypalOrder['status'] == 'APPROVED') {
@@ -92,16 +105,28 @@ class PaypalPaymentType extends AbstractPayment
             'placed_at' => now(),
         ]);
 
-        return new PaymentAuthorize(
+        $response = new PaymentAuthorize(
             success: true,
+            orderId: $this->order->id,
+            paymentType: 'paypal',
         );
+
+        PaymentAttemptEvent::dispatch($response);
+
+        return $response;
     }
 
     private function failAuthorize()
     {
-        return new PaymentAuthorize(
+        $response = new PaymentAuthorize(
             success: false,
+            orderId: $this->order?->id,
+            paymentType: 'paypal',
         );
+
+        PaymentAttemptEvent::dispatch($response);
+
+        return $response;
     }
 
     /**
