@@ -6,6 +6,7 @@ use Filament\Actions\Action;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Concerns\Products\ManagesProductPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
@@ -60,6 +61,7 @@ class ManageVariantPricing extends BaseEditRecord
     public function getRelationManagers(): array
     {
         return [
+            CustomerGroupPricingRelationManager::class,
             PriceRelationManager::class,
         ];
     }
