@@ -46,6 +46,7 @@ namespace App\PaymentTypes;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Models\Transaction;
 
 class CustomPayment extends AbstractPayment
@@ -62,8 +63,17 @@ class CustomPayment extends AbstractPayment
         }
 
         // ...
+        
+        $response = new PaymentAuthorize(
+            success: true,
+            message: 'The payment was successful',
+            orderId: $this->order->id,
+            paymentType: 'custom-type'
+        );
+        
+        PaymentAttemptEvent::dispatch($response)
 
-        return new PaymentAuthorize(true);
+        return $response;
     }
 
     /**
