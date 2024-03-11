@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Base\Traits\Searchable;
 
@@ -48,5 +49,10 @@ abstract class BaseListRecords extends ListRecords
         }
 
         return $query;
+    }
+
+    protected function paginateTableQuery(Builder $query): Paginator
+    {
+        return $query->paginate($this->getTableRecordsPerPage());
     }
 }
