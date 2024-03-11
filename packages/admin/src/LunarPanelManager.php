@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Config;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
 use Lunar\Admin\Filament\Pages;
@@ -141,8 +142,8 @@ class LunarPanelManager
             'chartSecondary' => Color::Green,
         ]);
 
-        if (app('request')->is($panel->getPath().'*')) {
-            app('config')->set('livewire.inject_assets', true);
+        if (Filament::getCurrentPanel()) {
+            Config::set('livewire.inject_assets', true);
         }
 
         return $this;
