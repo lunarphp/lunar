@@ -91,11 +91,6 @@ class ListProducts extends BaseListRecords
         ];
     }
 
-    protected function paginateTableQuery(Builder $query): Paginator
-    {
-        return $query->simplePaginate($this->getTableRecordsPerPage());
-    }
-
     public function getMaxContentWidth(): MaxWidth
     {
         return MaxWidth::Full;
