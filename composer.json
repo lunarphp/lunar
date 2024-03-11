@@ -67,7 +67,8 @@
             ],
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
-            "Lunar\\Stripe\\": "packages/stripe/src/"
+            "Lunar\\Stripe\\": "packages/stripe/src/",
+            "Lunar\\Meilisearch\\": "packages/meilisearch/src"
         }
     },
     "autoload-dev": {
@@ -87,7 +88,8 @@
                 "Table Rate Shipping",
                 "Opayo Payments",
                 "Paypal Payments",
-                "Stripe Payments"
+                "Stripe Payments",
+                "Meilisearch"
             ]
         },
         "laravel": {
@@ -97,6 +99,7 @@
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
+                "Lunar\\Meilisearch\\MeilisearchServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
         }
@@ -107,7 +110,8 @@
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
         "lunarphp/stripe": "self.version",
-        "lunarphp/table-rate-shipping": "self.version"
+        "lunarphp/table-rate-shipping": "self.version",
+        "lunarphp/meilisearch": "self.version"
     },
     "scripts": {
         "pint": "pint",
