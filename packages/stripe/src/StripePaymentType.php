@@ -5,6 +5,7 @@ namespace Lunar\Stripe;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
@@ -56,10 +57,14 @@ class StripePaymentType extends AbstractPayment
             try {
                 $this->order = $this->cart->createOrder();
             } catch (DisallowMultipleCartOrdersException $e) {
-                return new PaymentAuthorize(
+                $failure = new PaymentAuthorize(
                     success: false,
                     message: $e->getMessage(),
+                    orderId: $this->order?->id,
+                    paymentType: 'stripe'
                 );
+                PaymentAttemptEvent::dispatch($failure);
+                return $failure;
             }
         }
 
@@ -70,11 +75,16 @@ class StripePaymentType extends AbstractPayment
         );
 
         if (! $this->paymentIntent) {
-            return new PaymentAuthorize(
+            $failure = new PaymentAuthorize(
                 success: false,
                 message: 'Unable to locate payment intent',
                 orderId: $this->order->id,
+                paymentType: 'stripe',
             );
+
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
         }
 
         if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
@@ -101,11 +111,16 @@ class StripePaymentType extends AbstractPayment
             $this->paymentIntent
         );
 
-        return new PaymentAuthorize(
+        $response = new PaymentAuthorize(
             success: (bool) $order->placed_at,
             message: $this->paymentIntent->last_payment_error,
-            orderId: $order->id
+            orderId: $order->id,
+            paymentType: 'stripe',
         );
+
+        PaymentAttemptEvent::dispatch($response);
+
+        return $response;
     }
 
     /**
