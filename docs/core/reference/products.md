@@ -424,7 +424,6 @@ When creating variants there are some exceptions that will be thrown if certain 
 
 | Exception                                        | Conditions                                                                             |
 |:-------------------------------------------------|:---------------------------------------------------------------------------------------|
-| `Lunar\Exceptions\InvalidProductValuesException` | Thrown if you try and create a variant with less option values than what are required. |
 | `Illuminate\Validation\ValidationException`      | Thrown if validation fails on the value options array.                                 |
 
 ## Pricing

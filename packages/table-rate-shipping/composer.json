@@ -37,6 +37,6 @@
   },
   "require": {
     "php": "^8.1",
-    "lunarphp/admin": "self.version"
+    "lunarphp/lunar": "self.version"
   }
 }

@@ -55,12 +55,12 @@ class MediaRelationManager extends RelationManager
             ->heading(function () {
                 $product = $this->getOwnerRecord();
 
-                return $product->getMediaCollectionTitle('images') ?? Str::ucfirst($this->mediaCollection);
+                return $product->getMediaCollectionTitle($this->mediaCollection) ?? Str::ucfirst($this->mediaCollection);
             })
             ->description(function () {
                 $product = $this->getOwnerRecord();
 
-                return $product->getMediaCollectionDescription('images') ?? '';
+                return $product->getMediaCollectionDescription($this->mediaCollection) ?? '';
             })
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))

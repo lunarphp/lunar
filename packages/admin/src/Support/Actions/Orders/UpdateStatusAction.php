@@ -21,7 +21,7 @@ class UpdateStatusAction extends Action
 
         $this->modalWidth(MaxWidth::TwoExtraLarge);
 
-        $this->steps(
+        $this->form(
             $this->getFormSteps()
         );
 

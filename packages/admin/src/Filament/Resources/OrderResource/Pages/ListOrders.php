@@ -41,7 +41,7 @@ class ListOrders extends BaseListRecords
 
     protected function paginateTableQuery(Builder $query): Paginator
     {
-        return $query->simplePaginate($this->getTableRecordsPerPage());
+        return $query->paginate($this->getTableRecordsPerPage());
     }
 
     public function getMaxContentWidth(): MaxWidth
