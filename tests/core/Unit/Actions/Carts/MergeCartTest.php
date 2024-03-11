@@ -51,7 +51,7 @@ test('can merge cart', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
     ]);
@@ -122,7 +122,7 @@ test('can handle merging of lines with different metas', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
     ]);

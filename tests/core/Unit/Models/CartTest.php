@@ -398,7 +398,7 @@ test('can calculate the cart', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -419,7 +419,7 @@ test('can calculate the cart', function () {
 
     Price::factory()->create([
         'price' => 158,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -468,7 +468,7 @@ test('can calculate the cart inc vat', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -489,7 +489,7 @@ test('can calculate the cart inc vat', function () {
 
     Price::factory()->create([
         'price' => 158,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -531,7 +531,7 @@ test('can add cart lines', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -555,7 +555,7 @@ test('can remove cart lines', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -583,7 +583,7 @@ test('cannot add zero quantity line', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -607,7 +607,7 @@ test('can update existing cart line', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -684,7 +684,7 @@ test('can calculate shipping', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -773,7 +773,7 @@ test('can create a discount breakdown', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($variant),
         'priceable_id' => $variant->id,
@@ -812,7 +812,7 @@ test('can validate fingerprint', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($variant),
         'priceable_id' => $variant->id,
@@ -871,7 +871,7 @@ test('can override shipping calculation', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -932,7 +932,7 @@ test('can get estimated shipping', function () {
 
     Price::factory()->create([
         'price' => 100,
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,

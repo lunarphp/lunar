@@ -26,7 +26,7 @@ trait TestUtils
 
         Price::factory()->create([
             'price' => $price,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
             'priceable_type' => get_class($purchasable),
             'priceable_id' => $purchasable->id,

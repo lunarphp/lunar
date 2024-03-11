@@ -28,13 +28,21 @@ An example of extending a create page.
 
 ```php
 use Filament\Actions;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Lunar\Admin\Support\Extending\CreatePageExtension;
 use Lunar\Admin\Filament\Widgets;
 
 class MyCreateExtension extends CreatePageExtension
 {
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+
     public function headerWidgets(array $widgets): array
     {
         $widgets = [
@@ -103,13 +111,21 @@ An example of extending an edit page.
 
 ```php
 use Filament\Actions;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Lunar\Admin\Support\Extending\EditPageExtension;
 use Lunar\Admin\Filament\Widgets;
 
 class MyEditExtension extends EditPageExtension
 {
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+
     public function headerWidgets(array $widgets): array
     {
         $widgets = [
@@ -192,13 +208,21 @@ An example of extending a list page.
 
 ```php
 use Filament\Actions;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Lunar\Admin\Support\Extending\ListPageExtension;
 use Lunar\Admin\Filament\Widgets;
 
 class MyListExtension extends ListPageExtension
 {
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+
     public function headerWidgets(array $widgets): array
     {
         $widgets = [
@@ -244,12 +268,20 @@ An example of extending a view page.
 
 ```php
 use Filament\Actions;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Lunar\Admin\Support\Extending\ViewPageExtension;
 
 class MyViewExtension extends ViewPageExtension
 {
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+    
     public function headerActions(array $actions): array
     {
         $actions = [
@@ -266,6 +298,43 @@ class MyViewExtension extends ViewPageExtension
 
 // Typically placed in your AppServiceProvider file...
 LunarPanel::registerExtension(new MyViewExtension, \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class);
+```
+
+## RelationPageExtension
+
+An example of extending a relation page.
+
+```php
+use Filament\Actions;
+use Lunar\Admin\Support\Extending\RelationPageExtension;
+
+class MyRelationExtension extends RelationPageExtension
+{
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+    
+    public function headerActions(array $actions): array
+    {
+        $actions = [
+            ...$actions,
+            Actions\ActionGroup::make([
+                Actions\Action::make('Download PDF')
+            ])
+        ];
+
+        return $actions;
+    }
+}
+
+// Typically placed in your AppServiceProvider file...
+LunarPanel::registerExtension(new MyRelationExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class);
 ```
 
 ## Extending Pages In Addons

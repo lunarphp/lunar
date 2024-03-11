@@ -40,7 +40,7 @@ class CustomerGroupRelationManager extends RelationManager
     {
         $columns = collect($pivotColumns)->map(function ($column) {
             return Filament\Forms\Components\Toggle::make($column)->label(
-                __("lunarpanel::relationmanagers.customer_groups.form.${column}.label")
+                __("lunarpanel::relationmanagers.customer_groups.form.{$column}.label")
             );
         });
 

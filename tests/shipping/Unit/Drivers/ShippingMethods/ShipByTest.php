@@ -42,12 +42,12 @@ test('can get shipping option by cart total', function () {
     $shippingRate->prices()->createMany([
         [
             'price' => 1000,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -117,12 +117,12 @@ test('can get shipping option by cart total when prices include tax', function (
     $shippingRate->prices()->createMany([
         [
             'price' => 1000,
-            'quantity_break' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -176,7 +176,7 @@ test('can get shipping option if outside tier without default price', function (
     $shippingRate->prices()->createMany([
         [
             'price' => 500,
-            'quantity_break' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
     ]);

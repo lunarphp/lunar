@@ -38,14 +38,6 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
     ];
 
     /**
-     * Return a new factory instance for the model.
-     */
-    protected static function newFactory(): ProductOptionValueFactory
-    {
-        return ProductOptionValueFactory::new();
-    }
-
-    /**
      * Define which attributes should be
      * protected from mass assignment.
      *
@@ -53,14 +45,12 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
-    public function getNameAttribute(string $value): mixed
+    /**
+     * Return a new factory instance for the model.
+     */
+    protected static function newFactory(): ProductOptionValueFactory
     {
-        return json_decode($value);
-    }
-
-    protected function setNameAttribute(mixed $value): void
-    {
-        $this->attributes['name'] = json_encode($value);
+        return ProductOptionValueFactory::new();
     }
 
     public function option(): BelongsTo

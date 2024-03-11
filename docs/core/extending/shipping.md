@@ -21,7 +21,7 @@ use Lunar\Models\TaxClass;
 
 class CustomShippingModifier extends ShippingModifier
 {
-    public function handle(Cart $cart)
+    public function handle(Cart $cart, \Closure $next)
     {
         // Get the tax class
         $taxClass = TaxClass::first();
@@ -65,6 +65,8 @@ class CustomShippingModifier extends ShippingModifier
                 taxClass: $taxClass
             )
         ]));
+        
+        return $next($cart);
     }
 }
 
