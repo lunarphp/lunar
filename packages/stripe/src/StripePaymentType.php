@@ -64,6 +64,7 @@ class StripePaymentType extends AbstractPayment
                     paymentType: 'stripe'
                 );
                 PaymentAttemptEvent::dispatch($failure);
+
                 return $failure;
             }
         }
