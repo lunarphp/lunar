@@ -84,7 +84,9 @@ test('can get breakdown', function () {
     $address = Address::factory()->create();
     $currency = Currency::factory()->create();
     $variant = ProductVariant::factory()->create();
-    $line = CartLine::factory()->create();
+    $line = CartLine::factory()->create([
+        'purchasable_id' => $variant->id,
+    ]);
     $subTotal = 833;
 
     // 8.33 in decimal
