@@ -18,7 +18,7 @@ use Lunar\Panel\Filament\Resources\ProductResource\Pages\EditProduct;
 use App\Admin\Filament\Resources\Pages\MyEditExtension;
 
 LunarPanel::extensions([
-    MyEditExtension::class => EditProduct::class
+    EditProduct::class => MyEditExtension::class,
 ]);
 
 ```
@@ -33,7 +33,7 @@ use Lunar\Panel\Filament\Resources\ProductResource\Pages\ListProduct;
 use App\Admin\Filament\Resources\Pages\MyEditExtension;
 
 LunarPanel::extensions([
-    MyListExtension::class => ListProduct::class
+    ListProduct::class => MyListExtension::class,
 ]);
 
 ```
@@ -49,7 +49,7 @@ use Lunar\Panel\Filament\Resources\ProductResource;
 use App\Admin\Filament\Resources\MyProductResourceExtension;
 
 LunarPanel::extensions([
-    MyProductResourceExtension::class => ProductResource::class
+    ProductResource::class => MyProductResourceExtension::class,
 ]);
 
 ```

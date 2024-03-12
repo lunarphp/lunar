@@ -25,7 +25,7 @@ it('can customise page headings', function () {
     $product = \Lunar\Models\Product::factory()->create();
 
     LunarPanel::extensions([
-        $class::class => ManageProductMedia::class,
+        ManageProductMedia::class => $class::class,
     ]);
 
     $this->asStaff(admin: true);
