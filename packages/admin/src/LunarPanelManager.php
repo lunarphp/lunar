@@ -249,7 +249,7 @@ class LunarPanelManager
     public function extensions(array $extensions): self
     {
         foreach ($extensions as $class => $extension) {
-            $this->extensions[$extension][] = new $class;
+            $this->extensions[$class][] = new $extension;
         }
 
         return $this;
