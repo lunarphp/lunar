@@ -26,6 +26,19 @@ class TaxZone extends BaseModel
     use HasFactory;
     use HasMacros;
 
+    protected static function booted(): void
+    {
+        $handleDefaultFunction = fn (TaxZone $taxZone) => TaxZone::when(
+            $taxZone->default,
+            fn ($query) => $query->where('id', '!=', $taxZone->id)->update([
+                'default' => false,
+            ])
+        );
+        static::created($handleDefaultFunction);
+
+        static::updated($handleDefaultFunction);
+    }
+
     /**
      * Return a new factory instance for the model.
      */

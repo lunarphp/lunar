@@ -90,7 +90,7 @@ class MyCreateExtension extends CreatePageExtension
 
 // Typically placed in your AppServiceProvider file...
 LunarPanel::extensions([
-    MyCreateExtension::class => \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class,
+    \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class => MyCreateExtension::class,
 ]);
 ```
 
@@ -189,7 +189,7 @@ class MyEditExtension extends EditPageExtension
 
 // Typically placed in your AppServiceProvider file...
 LunarPanel::extensions([
-    MyEditExtension::class => \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class,
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class => MyEditExtension::class,
 ]);
 ```
 
@@ -251,7 +251,7 @@ class MyListExtension extends ListPageExtension
 
 // Typically placed in your AppServiceProvider file...
 LunarPanel::extensions([
-    MyListExtension::class => \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class,
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class => MyListExtension::class,
 ]);
 ```
 
@@ -291,7 +291,7 @@ class MyViewExtension extends ViewPageExtension
 
 // Typically placed in your AppServiceProvider file...
 LunarPanel::extensions([
-    MyViewExtension::class => \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class,
+    \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class => MyViewExtension::class,
 ]);
 ```
 
@@ -330,7 +330,7 @@ class MyRelationExtension extends RelationPageExtension
 
 // Typically placed in your AppServiceProvider file...
 LunarPanel::extensions([
-    MyRelationExtension::class => \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class,
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class => MyRelationExtension::class,
 ]);
 ```
 

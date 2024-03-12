@@ -18,7 +18,7 @@ it('can extend header actions', function () {
     };
 
     LunarPanel::extensions([
-        $class::class => EditCustomer::class,
+        EditCustomer::class => $class::class,
     ]);
 
     $this->asStaff(admin: true);
@@ -44,7 +44,7 @@ it('can extend form actions', function () {
     };
 
     LunarPanel::extensions([
-        $class::class => EditCustomer::class,
+        EditCustomer::class => $class::class,
     ]);
 
     $this->asStaff(admin: true);
