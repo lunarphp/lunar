@@ -32,7 +32,7 @@ class ChannelRelationManager extends RelationManager
         return [
             Filament\Forms\Components\Toggle::make('enabled')->label(
                 __('lunarpanel::relationmanagers.channels.form.enabled.label')
-            )->hint(fn (Forms\Get $get): string => match ($get('enabled')) {
+            )->hint(fn (bool $state): string => match ($state) {
                 false => __('lunarpanel::relationmanagers.channels.form.enabled.helper_text_false'),
                 true => '',
             })->hintColor('danger')->live()->columnSpan(2),
@@ -75,12 +75,12 @@ class ChannelRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('enabled')->label(
                     __('lunarpanel::relationmanagers.channels.table.enabled.label')
                 )
-                    ->color(fn (string $state): string => match ($state) {
-                        '1' => 'success',
-                        '0' => 'warning',
-                    })->icon(fn (string $state): string => match ($state) {
-                        '0' => 'heroicon-o-x-circle',
-                        '1' => 'heroicon-o-check-circle',
+                    ->color(fn (bool $state): string => match ($state) {
+                        true => 'success',
+                        false => 'warning',
+                    })->icon(fn (bool $state): string => match ($state) {
+                        false => 'heroicon-o-x-circle',
+                        true => 'heroicon-o-check-circle',
                     }),
                 Tables\Columns\TextColumn::make('starts_at')->label(
                     __('lunarpanel::relationmanagers.channels.table.starts_at.label')
