@@ -84,7 +84,9 @@ test('can get breakdown', function () {
     $address = Address::factory()->create();
     $currency = Currency::factory()->create();
     $variant = ProductVariant::factory()->create();
-    $line = CartLine::factory()->create();
+    $line = CartLine::factory()->create([
+        'purchasable_id' => $variant->id,
+    ]);
     $subTotal = 833;
 
     // 8.33 in decimal
@@ -98,7 +100,7 @@ test('can get breakdown', function () {
 
     expect($breakdown)->toBeInstanceOf(TaxBreakdown::class);
     expect($breakdown->amounts[0]->price->value)->toEqual(167);
-});
+})->group('ello');
 
 test('can get breakdown price inc', function () {
     Config::set('lunar.pricing.stored_inclusive_of_tax', true);
