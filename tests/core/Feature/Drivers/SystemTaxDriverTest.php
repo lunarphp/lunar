@@ -100,7 +100,7 @@ test('can get breakdown', function () {
 
     expect($breakdown)->toBeInstanceOf(TaxBreakdown::class);
     expect($breakdown->amounts[0]->price->value)->toEqual(167);
-})->group('ello');
+});
 
 test('can get breakdown price inc', function () {
     Config::set('lunar.pricing.stored_inclusive_of_tax', true);
