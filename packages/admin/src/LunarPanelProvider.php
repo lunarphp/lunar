@@ -24,7 +24,6 @@ use Lunar\Admin\Support\Synthesizers\PriceSynth;
 class LunarPanelProvider extends ServiceProvider
 {
     protected $configFiles = [
-        'search',
         'panel',
     ];
 

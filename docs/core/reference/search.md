@@ -38,6 +38,14 @@ php artisan lunar:search:index
 
 The command will import the records of the models listed in the `lunar/indexer.php` configuration file. Type `--help` to see the available options.
 
+## Meilisearch
+
+If you used the Meilisearch package you would like to use the command to create filterable and searchable attributes on Meilisearch indexes. 
+
+```sh
+php artisan lunar:meilisearch:setup
+```
+
 ## Engine Mapping
 
 By default, Scout will use the driver defined in your .env file as `SCOUT_DRIVER`. So if that's set to `meilisearch`, all your models will be indexed via the Meilisearch driver. This can present some issues, if you wanted to use a service like Algolia for Products, you wouldn't want all your Orders being indexed there since it will ramp up the record count and the cost.

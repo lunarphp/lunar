@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Collection;
 
 class ManageProductCollections extends BaseManageRelatedRecords
@@ -33,20 +34,10 @@ class ManageProductCollections extends BaseManageRelatedRecords
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('attribute_data.name')
-                    ->formatStateUsing(fn (Collection $record): string => $record->translateAttribute('name'))
+                TranslatedTextColumn::make('attribute_data.name')
+                    ->attributeData()
+                    ->limitedTooltip()
                     ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column, Collection $record): ?string {
-                        $state = $column->getState();
-
-                        if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
-                            return null;
-                        }
-
-                        // Only render the tooltip if the column contents exceeds the length limit.
-                        return $record->translateAttribute('name');
-                    })
-                    ->description(fn (Collection $record): string => $record->breadcrumb->join(' > '))
                     ->label(__('lunarpanel::product.table.name.label')),
             ])
             ->filters([
