@@ -44,6 +44,24 @@
         "pestphp/pest-plugin-laravel": "^2.0",
         "symplify/monorepo-builder": "^10.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/adam-code-labx/filament-input-select-affix"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/adam-code-labx/filament-apex-charts"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/adam-code-labx/converter"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/adam-code-labx/laravel-nestedset"
+        }
+    ],
     "autoload": {
         "files": [
             "packages/admin/src/helpers.php",
