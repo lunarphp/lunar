@@ -162,12 +162,12 @@ class OrderResource extends BaseResource
                     $indicators = [];
 
                     if ($data['placed_after'] ?? null) {
-                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_after.label') . ' ' . Carbon::parse($data['placed_after'])->toFormattedDateString())
+                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_after.label').' '.Carbon::parse($data['placed_after'])->toFormattedDateString())
                             ->removeField('placed_after');
                     }
 
                     if ($data['placed_before'] ?? null) {
-                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_before.label') . ' ' . Carbon::parse($data['placed_before'])->toFormattedDateString())
+                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_before.label').' '.Carbon::parse($data['placed_before'])->toFormattedDateString())
                             ->removeField('placed_before');
                     }
 
