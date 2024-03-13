@@ -2,9 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
+use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,9 +58,8 @@ class OrderResource extends BaseResource
     {
         return $table
             ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
+            ->filters(static::getTableFilters())
+            ->persistFiltersInSession()
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->url(fn ($record) => ManageOrder::getUrl(['record' => $record])),
@@ -70,7 +71,6 @@ class OrderResource extends BaseResource
                         ->deselectRecordsAfterCompletion(),
                 ]),
             ])
-            ->filters(static::getTableFilters())
             ->defaultSort('id', 'DESC')
             ->selectCurrentPageOnly()
             ->deferLoading()
@@ -142,10 +142,10 @@ class OrderResource extends BaseResource
 
                 ->form([
                     Forms\Components\DatePicker::make('placed_after')
-                        ->label(__('lunarpanel::order.table.placed_after.label')),
+                        ->label(__('lunarpanel::order.table.placed_after.label'))
+                        ->default(Carbon::now()->subMonths(6)),
                     Forms\Components\DatePicker::make('placed_before')
-                        ->label(__('lunarpanel::order.table.placed_before.label'))
-                        ->default(now()),
+                        ->label(__('lunarpanel::order.table.placed_before.label')),
                 ])
                 ->query(function (Builder $query, array $data): Builder {
                     return $query
@@ -157,6 +157,21 @@ class OrderResource extends BaseResource
                             $data['placed_before'],
                             fn (Builder $query, $date): Builder => $query->whereDate('placed_at', '<=', $date),
                         );
+                })
+                ->indicateUsing(function (array $data): array {
+                    $indicators = [];
+
+                    if ($data['placed_after'] ?? null) {
+                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_after.label') . ' ' . Carbon::parse($data['placed_after'])->toFormattedDateString())
+                            ->removeField('placed_after');
+                    }
+
+                    if ($data['placed_before'] ?? null) {
+                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_before.label') . ' ' . Carbon::parse($data['placed_before'])->toFormattedDateString())
+                            ->removeField('placed_before');
+                    }
+
+                    return $indicators;
                 }),
             Tables\Filters\SelectFilter::make('tags')
                 ->label(__('lunarpanel::order.table.tags.label'))
