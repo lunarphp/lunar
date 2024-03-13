@@ -4,9 +4,11 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
+use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\CustomerGroup;
@@ -94,11 +96,14 @@ class CustomerGroupResource extends BaseResource
     {
         return [
             Tables\Columns\TextColumn::make('name')
+                ->iconPosition(IconPosition::After)
+                ->iconColor('success')
+                ->icon(function (Model $model) {
+                    return $model->default ? 'heroicon-o-check-circle' : '';
+                })
                 ->label(__('lunarpanel::customergroup.table.name.label')),
             Tables\Columns\TextColumn::make('handle')
                 ->label(__('lunarpanel::customergroup.table.handle.label')),
-            Tables\Columns\BooleanColumn::make('default')
-                ->label(__('lunarpanel::customergroup.table.default.label')),
         ];
     }
 

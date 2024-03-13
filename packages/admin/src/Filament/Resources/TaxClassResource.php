@@ -4,9 +4,11 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
+use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\TaxClass;
@@ -82,10 +84,12 @@ class TaxClassResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\BooleanColumn::make('default')
-                ->label(__('lunarpanel::taxzone.table.default.label')),
             Tables\Columns\TextColumn::make('name')
-                ->label(__('lunarpanel::taxclass.table.name.label')),
+                ->iconPosition(IconPosition::After)
+                ->iconColor('success')
+                ->icon(function (Model $model) {
+                    return $model->default ? 'heroicon-o-check-circle' : '';
+                })->label(__('lunarpanel::taxclass.table.name.label')),
         ];
     }
 
