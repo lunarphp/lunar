@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Livewire\Attributes\On;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
@@ -191,5 +192,11 @@ class PriceRelationManager extends RelationManager
                 }),
                 Tables\Actions\DeleteAction::make(),
             ]);
+    }
+
+    #[On('base-prices-updated')]
+    public function basePricesUpdated()
+    {
+        // force a re-render
     }
 }
