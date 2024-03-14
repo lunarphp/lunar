@@ -3,10 +3,10 @@
 namespace Lunar\Admin\Filament\Resources\CustomerResource\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\ViewRecord;
 use Lunar\Admin\Filament\Resources\CustomerResource;
+use Lunar\Admin\Support\Pages\BaseViewRecord;
 
-class ViewCustomer extends ViewRecord
+class ViewCustomer extends BaseViewRecord
 {
     protected static string $resource = CustomerResource::class;
 
@@ -20,14 +20,14 @@ class ViewCustomer extends ViewRecord
         return $this->record->company_name;
     }
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\EditAction::make(),
         ];
     }
 
-    protected function getHeaderWidgets(): array
+    protected function getDefaultHeaderWidgets(): array
     {
         return [
             CustomerResource\Widgets\CustomerStatsOverviewWidget::class,
