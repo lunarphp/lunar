@@ -1,6 +1,5 @@
 <div class="space-y-4">
 
-
     <header class="flex items-center justify-between">
         <div>
             <strong>Qualify Products</strong>
@@ -100,6 +99,14 @@
             </div>
         @endforeach
     </div>
+    
+    @if($this->purchasableRewards->count())
+    <div class="grid grid-cols-2">
+        <x-hub::input.group for="automatically_add_rewards" :error="$errors->first('discount.data.automatically_add_rewards')" label="Automatically add rewards" instructions="Switch on to add reward products when not present in the basket">
+            <x-hub::input.toggle id="automatically_add_rewards" wire:model="discount.data.automatically_add_rewards" />
+        </x-hub::input.group>
+    </div>
+    @endif
 
     <x-hub::alert>
         If one or more items are in the cart, the cheapest item will be discounted.

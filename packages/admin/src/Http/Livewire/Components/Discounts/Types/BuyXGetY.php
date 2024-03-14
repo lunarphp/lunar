@@ -35,6 +35,7 @@ class BuyXGetY extends AbstractDiscountType
             'discount.data.min_qty' => 'required',
             'discount.data.reward_qty' => 'required|numeric',
             'discount.data.max_reward_qty' => 'required|numeric',
+            'discount.data.automatically_add_rewards' => 'nullable|boolean',
             'selectedConditions' => 'array|min:1',
             'selectedRewards' => 'array|min:1',
         ];
