@@ -42,12 +42,13 @@ class AttributeData
         ] ?? TextField::class;
 
         return $fieldType::getFilamentComponent($attribute)->label(
-                $attribute->translate('name')
-            )
+            $attribute->translate('name')
+        )
             ->formatStateUsing(fn ($state) => ($state ?: (new $attribute->type))->getValue())
             ->dehydrateStateUsing(function ($state) use ($attribute) {
                 $field = new $attribute->type;
                 $field->setValue($state);
+
                 return $field;
             })
             ->required($attribute->required)
