@@ -146,7 +146,7 @@ trait ManagesProductPricing
             $this->basePrices = $this->getBasePrices();
         }
 
-        return $form->schema([
+        $form->schema([
             Forms\Components\Section::make()->schema([
                 Forms\Components\Group::make([
                     ProductVariantResource::getTaxClassIdFormComponent(),
@@ -155,6 +155,10 @@ trait ManagesProductPricing
             ]),
             $this->getBasePriceFormSection(),
         ])->statePath('');
+
+        $this->callLunarHook('extendForm', $form);
+
+        return $form;
     }
 
     protected function getBasePrices(): array
