@@ -108,11 +108,11 @@ class LunarPanelProvider extends ServiceProvider
 
     protected function registerPanelAssets(): void
     {
-        if (Filament::isServing()) {
+        Filament::serving(function() {
             FilamentAsset::register([
                 Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
             ], 'lunarphp/panel');
-        }
+        });
     }
 
     /**
