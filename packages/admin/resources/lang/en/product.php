@@ -105,6 +105,12 @@ return [
         'shipping' => [
             'label' => 'Shipping',
         ],
+        'collections' => [
+            'label' => 'Collections',
+        ],
+        'associations' => [
+            'label' => 'Product Associations',
+        ],
     ],
 
 ];
