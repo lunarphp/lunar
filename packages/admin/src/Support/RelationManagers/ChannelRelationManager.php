@@ -5,11 +5,10 @@ namespace Lunar\Admin\Support\RelationManagers;
 use Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class ChannelRelationManager extends RelationManager
+class ChannelRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 

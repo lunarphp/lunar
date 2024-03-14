@@ -4,19 +4,18 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
-use Livewire\Attributes\On;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 
-class CustomerGroupPricingRelationManager extends RelationManager
+class CustomerGroupPricingRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'prices';
 
@@ -163,11 +162,5 @@ class CustomerGroupPricingRelationManager extends RelationManager
                 }),
                 Tables\Actions\DeleteAction::make(),
             ]);
-    }
-
-    #[On('base-prices-updated')]
-    public function basePricesUpdated()
-    {
-        // force a re-render
     }
 }
