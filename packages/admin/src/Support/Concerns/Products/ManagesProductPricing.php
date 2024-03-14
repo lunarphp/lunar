@@ -43,6 +43,8 @@ trait ManagesProductPricing
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        $data = $this->callLunarHook('beforeUpdate', $data, $record);
+
         $variant = $this->getOwnerRecord();
 
         $prices = collect($data['basePrices']);
@@ -70,7 +72,7 @@ trait ManagesProductPricing
 
         $this->basePrices = $this->getBasePrices($variant);
 
-        return $record;
+        return $this->callLunarHook('afterUpdate', $record, $data);
     }
 
     public function getBasePriceFormSection(): Section
