@@ -5,7 +5,7 @@
 An example of extending the ProductResource
 
 ```php
-class MyProductResourceExtension extends \Lunar\Panel\Support\Extending\ResourceExtension
+class MyProductResourceExtension extends \Lunar\Admin\Support\Extending\ResourceExtension
 {
     public function extendForm(\Filament\Forms\Form $form): \Filament\Forms\Form
     {
@@ -56,9 +56,7 @@ class MyProductResourceExtension extends \Lunar\Panel\Support\Extending\Resource
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyCreateExtension, CreateProduct::class);
-
 LunarPanel::extensions([
-    MyProductResourceExtension => \Lunar\Admin\Filament\Resources\ProductResource::class,
+    \Lunar\Admin\Filament\Resources\ProductResource::class => MyProductResourceExtension::class,
 ]);
 ```
