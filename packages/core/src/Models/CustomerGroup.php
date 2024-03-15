@@ -17,7 +17,7 @@ use Lunar\Database\Factories\CustomerGroupFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CustomerGroup extends BaseModel
+class CustomerGroup extends BaseModel implements \Lunar\Models\Contracts\CustomerGroup
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -36,9 +36,6 @@ class CustomerGroup extends BaseModel
         return CustomerGroupFactory::new();
     }
 
-    /**
-     * Return the customer's relationship.
-     */
     public function customers(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
@@ -57,7 +54,7 @@ class CustomerGroup extends BaseModel
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::class,
+            Discount::modelClass(),
             "{$prefix}customer_group_discount"
         )->withTimestamps();
     }
@@ -70,20 +67,17 @@ class CustomerGroup extends BaseModel
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::class,
+            Product::modelClass(),
             "{$prefix}customer_group_product"
         )->withTimestamps();
     }
 
-    /**
-     * Return the product relationship.
-     */
     public function collections(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Collection::class,
+            Collection::modelClass(),
             "{$prefix}collection_customer_group"
         )->withTimestamps();
     }

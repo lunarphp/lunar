@@ -88,7 +88,7 @@ class ModelManifest implements ModelManifestInterface
         return Str::camel($shortName);
     }
 
-    public function guessContractClass(string $modelClass)
+    public function guessContractClass(string $modelClass): string
     {
         $shortName = (new \ReflectionClass($modelClass))->getShortName();
 

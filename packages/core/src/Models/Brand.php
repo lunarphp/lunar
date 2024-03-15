@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Brand extends BaseModel implements SpatieHasMedia
+class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHasMedia
 {
     use HasAttributes,
         HasFactory,
@@ -55,25 +55,22 @@ class Brand extends BaseModel implements SpatieHasMedia
         return BrandFactory::new();
     }
 
-    /**
-     * Return the product relationship.
-     */
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::modelClass());
     }
 
     public function discounts()
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->belongsToMany(Discount::class, "{$prefix}brand_discount");
+        return $this->belongsToMany(Discount::modelClass(), "{$prefix}brand_discount");
     }
 
     public function collections(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->belongsToMany(Collection::class, "{$prefix}brand_collection");
+        return $this->belongsToMany(Collection::modelClass(), "{$prefix}brand_collection");
     }
 }

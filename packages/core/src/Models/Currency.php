@@ -21,7 +21,7 @@ use Lunar\Database\Factories\CurrencyFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Currency extends BaseModel
+class Currency extends BaseModel implements \Lunar\Models\Contracts\Currency
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -54,13 +54,9 @@ class Currency extends BaseModel
      */
     public function prices(): HasMany
     {
-        return $this->hasMany(Price::class);
+        return $this->hasMany(Price::modelClass());
     }
 
-    /**
-     * Returns the amount we need to multiply or divide the price
-     * for the cents/pence.
-     */
     public function getFactorAttribute(): string
     {
         /**
