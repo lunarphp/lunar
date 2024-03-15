@@ -106,10 +106,9 @@ You can use our `dev-laravel-11` branch of this repository.
 ### Forked Repositories
 While we wait for our 3rd party dependencies to be update their packages to Laravel 11, we have forked the following repositories to provide Laravel 11 support for Lunar v1.
 
-- [marvinosswald/filament-input-select-affix](https://github.com/adam-code-labx/filament-input-select-affix)
 - [leandrocfe/filament-apex-charts](https://github.com/adam-code-labx/filament-apex-charts)
-- [cartalyst/converter](https://github.com/adam-code-labx/converter)
-- [kalnoy/nestedset](https://github.com/adam-code-labx/laravel-nestedset)
+- [cartalyst/converter](https://github.com/laravel-shift/converter.git)
+- [kalnoy/nestedset](https://github.com/laravel-shift/laravel-nestedset.git)
 
 You can use these forks by updating your main project `composer.json` to include the following repositories.
 
@@ -117,19 +116,15 @@ You can use these forks by updating your main project `composer.json` to include
 "repositories": [
     {
         "type": "vcs",
-        "url": "https://github.com/adam-code-labx/filament-input-select-affix"
-    },
-    {
-        "type": "vcs",
         "url": "https://github.com/adam-code-labx/filament-apex-charts"
     },
     {
         "type": "vcs",
-        "url": "https://github.com/adam-code-labx/converter"
+        "url": "https://github.com/laravel-shift/converter.git"
     },
     {
         "type": "vcs",
-        "url": "https://github.com/adam-code-labx/laravel-nestedset"
+        "url": "https://github.com/laravel-shift/laravel-nestedset.git"
     }
 ]
 ```

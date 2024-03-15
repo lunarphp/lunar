@@ -11,27 +11,27 @@
     "require": {
         "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
-        "cartalyst/converter": "dev-main",
+        "cartalyst/converter": "dev-l11-compatibility",
         "doctrine/dbal": "^3.6",
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
         "filament/filament": "^3.2.25",
-        "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
+        "filament/spatie-laravel-media-library-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/http": "^10.0|^11.0",
-        "kalnoy/nestedset": "dev-main",
+        "kalnoy/nestedset": "dev-l11-compatibility",
         "laravel/framework": "^10.0|^11.0",
         "laravel/scout": "^10.0",
         "leandrocfe/filament-apex-charts": "dev-master",
         "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
-        "marvinosswald/filament-input-select-affix": "dev-main",
+        "marvinosswald/filament-input-select-affix": "0.2.0",
         "php": "^8.1",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
-        "spatie/laravel-medialibrary": "^10.0|^11.0",
-        "spatie/laravel-permission": "^5.10|^6.4",
+        "spatie/laravel-medialibrary": "^11.0",
+        "spatie/laravel-permission": "^6.4",
         "stripe/stripe-php": "^7.114",
         "technikermathe/blade-lucide-icons": "^v3.0"
     },
@@ -47,19 +47,15 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/adam-code-labx/filament-input-select-affix"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/adam-code-labx/filament-apex-charts"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/adam-code-labx/converter"
+            "url": "https://github.com/laravel-shift/converter.git"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/adam-code-labx/laravel-nestedset"
+            "url": "https://github.com/laravel-shift/laravel-nestedset.git"
         }
     ],
     "autoload": {
