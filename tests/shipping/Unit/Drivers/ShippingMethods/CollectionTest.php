@@ -27,9 +27,13 @@ test('can get free shipping', function () {
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'free-shipping',
         'data' => [],
+    ]);
+
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
     ]);
 
     $cart = $this->createCart($currency, 500);
@@ -38,7 +42,7 @@ test('can get free shipping', function () {
 
     $request = new ShippingOptionRequest(
         cart: $cart,
-        shippingMethod: $shippingMethod
+        shippingRate: $shippingRate
     );
 
     $shippingOption = $driver->resolve($request);

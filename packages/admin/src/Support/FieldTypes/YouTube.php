@@ -16,7 +16,7 @@ class YouTube extends BaseFieldType
         return YouTubeInput::make($attribute->handle)
             ->live(debounce: 200)
             ->helperText(
-                __('lunarpanel::components.forms.youtube.helperText')
+                $attribute->translate('description') ?? __('lunarpanel::components.forms.youtube.helperText')
             );
     }
 }

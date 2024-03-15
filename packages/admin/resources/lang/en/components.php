@@ -2,13 +2,6 @@
 
 return [
     'tags' => [
-
-        'input' => [
-
-            'placeholder' => 'Seperate tags with ,',
-
-        ],
-
         'notification' => [
 
             'updated' => 'Tags updated',
@@ -98,6 +91,27 @@ return [
             'delete' => [
                 'danger' => 'Unable to delete collection',
             ],
+        ],
+    ],
+
+    'product-options-list' => [
+        'add-option' => [
+            'label' => 'Add Option',
+        ],
+        'delete-option' => [
+            'label' => 'Delete Option',
+        ],
+        'remove-shared-option' => [
+            'label' => 'Remove Shared Option',
+        ],
+        'add-value' => [
+            'label' => 'Add Another Value',
+        ],
+        'name' => [
+            'label' => 'Name',
+        ],
+        'values' => [
+            'label' => 'Values',
         ],
     ],
 ];

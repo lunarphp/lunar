@@ -26,8 +26,6 @@ class MigrateGetCandy extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle()
     {
@@ -35,19 +33,15 @@ class MigrateGetCandy extends Command
             DB::connection()->getDoctrineSchemaManager()->listTableNames()
         );
 
-        $tables = $tableNames->filter(function ($table) {
-            return str_contains($table, 'getcandy_');
-        });
+        $tables = $tableNames->filter(fn ($table) => str_contains($table, 'getcandy_'));
 
-        $lunarTables = $tableNames->filter(function ($table) {
-            return str_contains($table, 'lunar_');
-        });
+        $lunarTables = $tableNames->filter(fn ($table) => str_contains($table, 'lunar_'));
 
         if ($tables->count() && ! $lunarTables->count()) {
             $this->migrateTableNames($tables);
         }
 
-        $this->info('Updating Polymorphic relationships');
+        $this->components->info('Updating Polymorphic relationships');
 
         $prefix = config('lunar.database.table_prefix');
 
@@ -87,7 +81,7 @@ class MigrateGetCandy extends Command
         ];
 
         foreach ($tables as $table => $rows) {
-            $this->line("Updating {$table}");
+            $this->components->info("Updating {$table}");
             DB::transaction(function () use ($table, $rows) {
                 foreach ($rows as $row) {
                     DB::table($table)->update([
@@ -99,7 +93,7 @@ class MigrateGetCandy extends Command
             });
         }
 
-        $this->line('Updating attribute data');
+        $this->components->info('Updating attribute data');
 
         $tables = [
             'products',
@@ -111,7 +105,7 @@ class MigrateGetCandy extends Command
         foreach ($tables as $table) {
             $tableName = $prefix.$table;
 
-            $this->line("Migrating {$tableName}");
+            $this->components->info("Migrating {$tableName}");
 
             DB::table($tableName)->update([
                 'attribute_data' => DB::RAW(
@@ -120,7 +114,7 @@ class MigrateGetCandy extends Command
             ]);
         }
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     protected function migrateTableNames($tables)
@@ -139,7 +133,7 @@ class MigrateGetCandy extends Command
             return $file->getBasename('.'.$file->getExtension());
         });
 
-        $this->line('Removing old migrations');
+        $this->components->line('Removing old migrations');
 
         DB::table('migrations')->whereIn('migration', $migrations)->delete();
 
@@ -155,7 +149,7 @@ class MigrateGetCandy extends Command
                 continue;
             }
 
-            $this->line("Migrating {$old} into {$new}");
+            $this->components->info("Migrating {$old} into {$new}");
 
             if ($old == 'getcandy_products') {
                 if (Schema::hasColumn('getcandy_products', 'brand')) {
@@ -191,11 +185,11 @@ class MigrateGetCandy extends Command
                 DB::table($new)->insert($insert);
             });
 
-            $this->info("Migrated {$new}");
+            $this->components->info("Migrated {$new}");
         }
 
         Schema::enableForeignKeyConstraints();
 
-        $this->info('Migration finished, you can safely delete the old getcandy_ tables.');
+        $this->components->info('Migration finished, you can safely delete the old getcandy_ tables.');
     }
 }

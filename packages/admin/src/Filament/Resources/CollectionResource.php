@@ -6,6 +6,9 @@ use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Pages\Page;
 use Filament\Pages\SubNavigationPosition;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -16,6 +19,8 @@ class CollectionResource extends BaseResource
     protected static ?string $permission = 'catalog:manage-collections';
 
     protected static ?string $model = Collection::class;
+
+    protected static int $globalSearchResultsLimit = 5;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -37,6 +42,7 @@ class CollectionResource extends BaseResource
     public static function getCollectionBreadcrumbs(Collection $collection): array
     {
         $crumbs = [
+            CollectionGroupResource::getUrl('index') => CollectionGroupResource::getPluralLabel(),
             CollectionGroupResource::getUrl('edit', [
                 'record' => $collection->group,
             ]) => $collection->group->name,
@@ -88,6 +94,7 @@ class CollectionResource extends BaseResource
         return $page->generateNavigationItems([
             Pages\EditCollection::class,
             Pages\ManageCollectionChildren::class,
+            Pages\ManageCollectionProducts::class,
             Pages\ManageCollectionAvailability::class,
             Pages\ManageCollectionMedia::class,
             Pages\ManageCollectionUrls::class,
@@ -100,9 +107,29 @@ class CollectionResource extends BaseResource
             'index' => Pages\ListCollections::route('/'),
             'availability' => Pages\ManageCollectionAvailability::route('/{record}/availability'),
             'children' => Pages\ManageCollectionChildren::route('/{record}/children'),
+            'products' => Pages\ManageCollectionProducts::route('/{record}/products'),
             'edit' => Pages\EditCollection::route('/{record}/edit'),
             'media' => Pages\ManageCollectionMedia::route('/{record}/media'),
             'urls' => Pages\ManageCollectionUrls::route('/{record}/urls'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->translateAttribute('name');
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'group.name', // Needed to trig canGloballySearch()
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'group',
+        ]);
     }
 }

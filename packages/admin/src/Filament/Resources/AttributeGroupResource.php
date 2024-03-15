@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\AttributeGroup;
 
 class AttributeGroupResource extends BaseResource
@@ -41,7 +42,7 @@ class AttributeGroupResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    public static function form(Form $form): Form
+    public static function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
@@ -72,7 +73,7 @@ class AttributeGroupResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name') // TODO: we need a custom field type for this
+        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
             ->label(__('lunarpanel::attributegroup.form.name.label'))
             ->required()
             ->maxLength(255)
@@ -103,7 +104,7 @@ class AttributeGroupResource extends BaseResource
             ->columns([
                 Tables\Columns\TextColumn::make('attributable_type')
                     ->label(__('lunarpanel::attributegroup.table.attributable_type.label')),
-                Tables\Columns\TextColumn::make('name.en')  // TODO: Need to determine correct way to localise, maybe custom column type?
+                TranslatedTextColumn::make('name')
                     ->label(__('lunarpanel::attributegroup.table.name.label')),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(__('lunarpanel::attributegroup.table.handle.label')),

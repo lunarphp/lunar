@@ -27,7 +27,6 @@ test('can get free shipping', function () {
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'free-shipping',
         'data' => [
             'minimum_spend' => [
@@ -36,13 +35,19 @@ test('can get free shipping', function () {
         ],
     ]);
 
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
     $cart = $this->createCart($currency, 500);
 
     $driver = new FreeShipping();
 
     $request = new ShippingOptionRequest(
         cart: $cart,
-        shippingMethod: $shippingMethod
+        shippingRate: $shippingRate
     );
 
     $shippingOption = $driver->resolve($request);
@@ -64,7 +69,6 @@ test('cant get free shipping if minimum isnt met', function () {
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'free-shipping',
         'data' => [
             'minimum_spend' => [
@@ -73,13 +77,19 @@ test('cant get free shipping if minimum isnt met', function () {
         ],
     ]);
 
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
     $cart = $this->createCart($currency, 50);
 
     $driver = new FreeShipping();
 
     $request = new ShippingOptionRequest(
         cart: $cart,
-        shippingMethod: $shippingMethod
+        shippingRate: $shippingRate
     );
 
     $shippingOption = $driver->resolve($request);
@@ -101,7 +111,6 @@ test('cant get free shipping if currency isnt met', function () {
     ]);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'free-shipping',
         'data' => [
             'minimum_spend' => [
@@ -110,13 +119,19 @@ test('cant get free shipping if currency isnt met', function () {
         ],
     ]);
 
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
     $cart = $this->createCart($currency, 10000);
 
     $driver = new FreeShipping();
 
     $request = new ShippingOptionRequest(
+        shippingRate: $shippingRate,
         cart: $cart,
-        shippingMethod: $shippingMethod
     );
 
     $shippingOption = $driver->resolve($request);

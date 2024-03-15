@@ -39,7 +39,7 @@ test('can return searchable array', function () {
     $data = app(ScoutIndexer::class)->toSearchableArray($product);
 
     expect($data)->toBe([
-        'id' => $product->id,
+        'id' => (string) $product->id,
     ]);
 });
 

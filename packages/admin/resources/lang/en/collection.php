@@ -35,6 +35,14 @@ return [
         'media' => [
             'label' => 'Media',
         ],
+        'products' => [
+            'label' => 'Products',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Attach Product',
+                ],
+            ],
+        ],
     ],
 
 ];

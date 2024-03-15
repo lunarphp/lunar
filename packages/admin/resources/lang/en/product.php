@@ -6,6 +6,16 @@ return [
 
     'plural_label' => 'Products',
 
+    'status' => [
+        'unpublished' => [
+            'content' => 'Currently in draft status, this product is hidden across all channels and customer groups.',
+        ],
+        'availability' => [
+            'customer_groups' => 'This product is currently unavailable for all customer groups.',
+            'channels' => 'This product is currently unavailable for all channels.',
+        ],
+    ],
+
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -27,6 +37,13 @@ return [
         ],
     ],
 
+    'actions' => [
+        'edit_status' => [
+            'label' => 'Update Status',
+            'heading' => 'Update Status',
+        ],
+    ],
+
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -42,6 +59,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
+            'options' => [
+                'published' => [
+                    'label' => 'Published',
+                    'description' => 'This product will be available across all enabled customer groups and channels',
+                ],
+                'draft' => [
+                    'label' => 'Draft',
+                    'description' => 'This product will be hidden across all channels and customer groups',
+                ],
+            ],
         ],
         'tags' => [
             'label' => 'Tags',
@@ -60,83 +87,32 @@ return [
         ],
         'identifiers' => [
             'label' => 'Product Identifiers',
-            'form' => [
-                'sku' => [
-                    'label' => 'SKU',
-                ],
-                'gtin' => [
-                    'label' => 'Global Trade Item Number (GTIN)',
-                ],
-                'mpn' => [
-                    'label' => 'Manufacturer Part Number (MPN)',
-                ],
-                'ean' => [
-                    'label' => 'UPC/EAN',
-                ],
-            ],
         ],
         'inventory' => [
             'label' => 'Inventory',
+        ],
+        'pricing' => [
             'form' => [
-                'stock' => [
-                    'label' => 'In Stock',
+                'tax_class_id' => [
+                    'label' => 'Tax Class',
                 ],
-                'backorder' => [
-                    'label' => 'On Backorder',
-                ],
-                'purchasable' => [
-                    'label' => 'Purchasability',
-                    'options' => [
-                        'always' => 'Always',
-                        'in_stock' => 'In Stock',
-                        'backorder' => 'Backorder Only',
-                    ],
-                ],
-                'unit_quantity' => [
-                    'label' => 'Unit Quantity',
-                    'helper_text' => 'How many individual items make up 1 unit.',
-                ],
-                'min_quantity' => [
-                    'label' => 'Minimum Quantity',
-                    'helper_text' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
-                ],
-                'quantity_increment' => [
-                    'label' => 'Quantity Increment',
-                    'helper_text' => 'The product variant must be purchased in multiples of this quantity.',
+                'tax_ref' => [
+                    'label' => 'Tax Reference',
+                    'helper_text' => 'Optional, for integration with 3rd party systems.',
                 ],
             ],
         ],
         'shipping' => [
             'label' => 'Shipping',
-            'form' => [
-                'shippable' => [
-                    'label' => 'Shippable',
-                ],
-                'length_value' => [
-                    'label' => 'Length',
-                ],
-                'length_unit' => [
-                    'label' => 'Length Unit',
-                ],
-                'width_value' => [
-                    'label' => 'Width',
-                ],
-                'width_unit' => [
-                    'label' => 'Width Unit',
-                ],
-                'height_value' => [
-                    'label' => 'Height',
-                ],
-                'height_unit' => [
-                    'label' => 'Height Unit',
-                ],
-                'weight_value' => [
-                    'label' => 'Weight',
-                ],
-                'weight_unit' => [
-                    'label' => 'Weight Unit',
-                ],
-            ],
+        ],
+        'variants' => [
+            'label' => 'Variants',
+        ],
+        'collections' => [
+            'label' => 'Collections',
+        ],
+        'associations' => [
+            'label' => 'Product Associations',
         ],
     ],
 

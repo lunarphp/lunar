@@ -14,6 +14,7 @@ return [
         'capture' => 'Captured',
         'intent' => 'Intent',
         'refund' => 'Refunded',
+        'failed' => 'Failed',
     ],
 
     'table' => [
@@ -29,11 +30,15 @@ return [
         'customer' => [
             'label' => 'Customer',
         ],
+        'tags' => [
+            'label' => 'Tags',
+        ],
         'postcode' => [
             'label' => 'Postcode',
         ],
         'email' => [
             'label' => 'Email',
+            'copy_message' => 'Email address copied',
         ],
         'phone' => [
             'label' => 'Phone',
@@ -43,6 +48,15 @@ return [
         ],
         'date' => [
             'label' => 'Date',
+        ],
+        'new_customer' => [
+            'label' => 'Customer Type',
+        ],
+        'placed_after' => [
+            'label' => 'Placed after',
+        ],
+        'placed_before' => [
+            'label' => 'Placed before',
         ],
     ],
 
@@ -224,8 +238,16 @@ return [
             'notification' => 'Orders status updated',
         ],
         'update_status' => [
-            'label' => 'Update Status',
-            'notification' => 'Order status updated',
+            'new_status' => [
+                'label' => 'New status',
+            ],
+            'additional_content' => [
+                'label' => 'Additional content',
+            ],
+            'additional_email_recipient' => [
+                'label' => 'Additional email recipient',
+                'placeholder' => 'optional',
+            ],
         ],
         'download_order_pdf' => [
             'label' => 'Download PDF',
@@ -246,6 +268,9 @@ return [
                 ],
             ],
         ],
+        'edit_tags' => [
+            'label' => 'Edit',
+        ],
         'capture_payment' => [
             'label' => 'Capture Payment',
 
@@ -254,7 +279,6 @@ return [
                 'success' => 'Capture successful',
             ],
         ],
-
         'refund_payment' => [
             'label' => 'Refund',
 

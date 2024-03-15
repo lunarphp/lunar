@@ -23,17 +23,17 @@ class AddonsDiscover extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle(Manifest $manifest)
     {
         $manifest->build();
 
         foreach (array_keys($manifest->manifest) as $package) {
-            $this->line("Discovered Addon: <info>{$package}</info>");
+            $this->components->line("Discovered Addon: <info>{$package}</info>");
         }
 
-        $this->info('Addon manifest generated successfully.');
+        $this->components->info('Addon manifest generated successfully.');
+
+        return self::SUCCESS;
     }
 }

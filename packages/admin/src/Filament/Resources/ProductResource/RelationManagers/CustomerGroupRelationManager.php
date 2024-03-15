@@ -10,6 +10,8 @@ use Filament\Tables\Table;
 
 class CustomerGroupRelationManager extends RelationManager
 {
+    protected static bool $isLazy = false;
+
     protected static string $relationship = 'customerGroups';
 
     public function isReadOnly(): bool
@@ -38,7 +40,7 @@ class CustomerGroupRelationManager extends RelationManager
     {
         $columns = collect($pivotColumns)->map(function ($column) {
             return Filament\Forms\Components\Toggle::make($column)->label(
-                __("lunarpanel::relationmanagers.customer_groups.form.${column}.label")
+                __("lunarpanel::relationmanagers.customer_groups.form.{$column}.label")
             );
         });
 

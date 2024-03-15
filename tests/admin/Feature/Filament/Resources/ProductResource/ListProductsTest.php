@@ -13,6 +13,9 @@ it('can create product', function () {
         'name' => [
             'en' => 'Name',
         ],
+        'description' => [
+            'en' => 'Description',
+        ],
     ]);
     \Lunar\Models\TaxClass::factory()->create([
         'default' => true,
@@ -31,7 +34,7 @@ it('can create product', function () {
 
     \Livewire\Livewire::test(ProductResource\Pages\ListProducts::class)
         ->callAction('create', data: [
-            'name' => 'Foo Bar',
+            'name' => [$language->code => 'Foo Bar'],
             'base_price' => 10.99,
             'sku' => 'ABCABCAB',
             'product_type_id' => $productType->id,

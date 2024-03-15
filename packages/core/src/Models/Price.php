@@ -19,7 +19,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property int $priceable_id
  * @property int $price
  * @property ?int $compare_price
- * @property int $tier
+ * @property int $min_quantity
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */

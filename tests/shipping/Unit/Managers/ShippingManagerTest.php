@@ -19,7 +19,7 @@ test('zones method uses shipping zone resolver', function () {
     expect($resolver)->toBeInstanceOf(ShippingZoneResolver::class);
 });
 
-test('can fetch expected shipping methods', function () {
+test('can fetch expected shipping rates', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -37,7 +37,6 @@ test('can fetch expected shipping methods', function () {
     $shippingZone->countries()->attach($country);
 
     $shippingMethod = ShippingMethod::factory()->create([
-        'shipping_zone_id' => $shippingZone->id,
         'driver' => 'ship-by',
         'data' => [
             'minimum_spend' => [
@@ -46,20 +45,26 @@ test('can fetch expected shipping methods', function () {
         ],
     ]);
 
-    $shippingMethod->prices()->createMany([
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+        ->create([
+            'shipping_method_id' => $shippingMethod->id,
+            'shipping_zone_id' => $shippingZone->id,
+        ]);
+
+    $shippingRate->prices()->createMany([
         [
             'price' => 600,
-            'tier' => 1,
+            'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 500,
-            'tier' => 700,
+            'min_quantity' => 700,
             'currency_id' => $currency->id,
         ],
         [
             'price' => 0,
-            'tier' => 800,
+            'min_quantity' => 800,
             'currency_id' => $currency->id,
         ],
     ]);
@@ -73,9 +78,9 @@ test('can fetch expected shipping methods', function () {
         ])->toArray()
     );
 
-    $shippingMethods = Shipping::shippingMethods(
+    $shippingRates = Shipping::shippingRates(
         $cart->refresh()->calculate()
     )->get();
 
-    expect($shippingMethods)->toHaveCount(1);
+    expect($shippingRates)->toHaveCount(1);
 });
