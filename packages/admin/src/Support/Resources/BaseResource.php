@@ -49,7 +49,6 @@ class BaseResource extends Resource
         return $user->can(static::$permission);
     }
 
-
     public static function getModel(): string
     {
         $class = new \ReflectionClass(static::$model);
