@@ -14,23 +14,23 @@ class TestMediaDefinition implements \Lunar\Base\MediaDefinitionsInterface
 
     public function registerMediaCollections(HasMedia $model): void
     {
-        $model->addMediaCollection(config('lunar.media.collection.images'));
-        $model->addMediaCollection(config('lunar.media.collection.video'));
+        $model->addMediaCollection(config('lunar.media.collection'));
+        $model->addMediaCollection('videos');
     }
 
     public function getMediaCollectionTitles(): array
     {
         return [
-            config('lunar.media.collection.images') => 'Images',
-            config('lunar.media.collection.video') => 'Videos',
+            config('lunar.media.collection') => 'Images',
+            'videos' => 'Videos',
         ];
     }
 
     public function getMediaCollectionDescriptions(): array
     {
         return [
-            config('lunar.media.collection.images') => 'Images',
-            config('lunar.media.collection.video') => 'Videos',
+            config('lunar.media.collection') => 'Images',
+            'videos' => 'Videos',
         ];
     }
 }

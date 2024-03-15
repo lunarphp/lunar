@@ -18,7 +18,7 @@ test('conversions are loaded', function () {
 
     $product = Product::factory()->create();
 
-    $product->addMedia($file)->toMediaCollection(config('lunar.media.collection.images'));
+    $product->addMedia($file)->toMediaCollection(config('lunar.media.collection'));
 
     $image = $product->images->first();
 

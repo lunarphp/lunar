@@ -241,7 +241,7 @@ class ProductResource extends BaseResource
                     'published' => 'success',
                 }),
             SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection(config('lunar.media.collection.images'))
+                ->collection(config('lunar.media.collection'))
                 ->conversion('small')
                 ->limit(1)
                 ->square()

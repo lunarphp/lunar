@@ -13,10 +13,7 @@ return [
         Lunar\Models\ProductOptionValue::class => StandardMediaDefinitions::class,
     ],
 
-    'collection' => [
-        'images' => 'images',
-        'videos' => 'videos',
-    ],
+    'collection' => 'images',
 
     'fallback' => [
         'url' => env('FALLBACK_IMAGE_URL', null),
