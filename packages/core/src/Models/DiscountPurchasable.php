@@ -18,7 +18,7 @@ use Lunar\Database\Factories\DiscountPurchasableFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class DiscountPurchasable extends BaseModel
+class DiscountPurchasable extends BaseModel implements \Lunar\Models\Contracts\DiscountPurchasable
 {
     use HasFactory;
 
@@ -62,8 +62,8 @@ class DiscountPurchasable extends BaseModel
     /**
      * Scope a query where type is condition.
      */
-    public function scopeCondition(Builder $query): void
+    public function scopeCondition(Builder $query): Builder
     {
-        $query->whereType('condition');
+        return $query->whereType('condition');
     }
 }

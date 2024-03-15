@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
@@ -44,7 +45,7 @@ class Currency extends BaseModel implements \Lunar\Models\Contracts\Currency
         return CurrencyFactory::new();
     }
 
-    public function scopeEnabled($query, $enabled = true)
+    public function scopeEnabled(Builder $query, $enabled = true): Builder
     {
         return $query->whereEnabled($enabled);
     }

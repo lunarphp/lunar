@@ -38,9 +38,6 @@ class ProductType extends BaseModel implements Contracts\ProductType
      */
     protected $guarded = [];
 
-    /**
-     * Get the mapped attributes relation.
-     */
     public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
@@ -52,25 +49,16 @@ class ProductType extends BaseModel implements Contracts\ProductType
         )->withTimestamps();
     }
 
-    /**
-     * Return the product attributes relationship.
-     */
     public function productAttributes(): MorphToMany
     {
         return $this->mappedAttributes()->whereAttributeType(Product::class);
     }
 
-    /**
-     * Return the variant attributes relationship.
-     */
     public function variantAttributes(): MorphToMany
     {
         return $this->mappedAttributes()->whereAttributeType(ProductVariant::class);
     }
 
-    /**
-     * Get the products relation.
-     */
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

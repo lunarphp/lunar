@@ -35,7 +35,7 @@ use Lunar\Database\Factories\OrderAddressFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class OrderAddress extends BaseModel implements Addressable
+class OrderAddress extends BaseModel implements Addressable, \Lunar\Models\Contracts\OrderAddress
 {
     use HasFactory;
     use HasMacros;
@@ -86,17 +86,11 @@ class OrderAddress extends BaseModel implements Addressable
         'meta' => AsArrayObject::class,
     ];
 
-    /**
-     * Return the order relationship.
-     */
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Return the country relationship.
-     */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

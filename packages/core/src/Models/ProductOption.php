@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductOption extends BaseModel implements SpatieHasMedia
+class ProductOption extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contracts\ProductOption
 {
     use HasFactory;
     use HasMacros;
@@ -59,21 +59,16 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
-    public function scopeShared(Builder $builder)
+    public function scopeShared(Builder $builder): Builder
     {
         return $builder->where('shared', '=', true);
     }
 
-    public function scopeExclusive(Builder $builder)
+    public function scopeExclusive(Builder $builder): Builder
     {
         return $builder->where('shared', '=', false);
     }
 
-    /**
-     * Get the values.
-     *
-     * @return HasMany<ProductOptionValue>
-     */
     public function values(): HasMany
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('position');

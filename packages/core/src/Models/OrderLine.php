@@ -36,7 +36,7 @@ use Lunar\Database\Factories\OrderLineFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class OrderLine extends BaseModel
+class OrderLine extends BaseModel implements \Lunar\Models\Contracts\OrderLine
 {
     use HasFactory;
     use HasMacros;
@@ -74,26 +74,17 @@ class OrderLine extends BaseModel
         'discount_total' => Price::class,
         'total' => Price::class,
     ];
-
-    /**
-     * Return the order relationship.
-     */
+    
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Return the polymorphic relation.
-     */
     public function purchasable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * Return the currency relationship.
-     */
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(

@@ -50,7 +50,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Purchasable
+class ProductVariant extends BaseModel implements Purchasable, \Lunar\Models\Contracts\ProductVariant
 {
     use HasAttributes;
     use HasDimensions;
@@ -83,25 +83,16 @@ class ProductVariant extends BaseModel implements Purchasable
         return ProductVariantFactory::new();
     }
 
-    /**
-     * The related product.
-     */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class)->withTrashed();
     }
 
-    /**
-     * Return the tax class relationship.
-     */
     public function taxClass(): BelongsTo
     {
         return $this->belongsTo(TaxClass::class);
     }
 
-    /**
-     * Return the related product option values.
-     */
     public function values(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
