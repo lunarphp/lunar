@@ -11,10 +11,12 @@ class CreateCartsTable extends Migration
         Schema::create($this->prefix.'carts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->userForeignKey(nullable: true);
+            $table->foreignId('customer_id')->nullable()->constrained($this->prefix.'customers');
             $table->foreignId('merged_id')->nullable()->constrained($this->prefix.'carts');
             $table->foreignId('currency_id')->constrained($this->prefix.'currencies');
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
-            $table->foreignId('order_id')->nullable()->constrained($this->prefix.'orders');
+            // @todo Note removed constraint as the orders table comes after the carts table
+            $table->foreignId('order_id')->nullable();
             $table->string('coupon_code')->index()->nullable();
             $table->dateTime('completed_at')->nullable()->index();
             $table->json('meta')->nullable();

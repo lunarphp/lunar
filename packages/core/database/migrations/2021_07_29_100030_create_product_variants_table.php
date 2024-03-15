@@ -17,8 +17,11 @@ class CreateProductVariantsTable extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained($this->prefix.'products');
             $table->foreignId('tax_class_id')->constrained($this->prefix.'tax_classes');
+            $table->json('attribute_data')->nullable();
             $table->string('tax_ref')->index()->nullable();
             $table->integer('unit_quantity')->unsigned()->index()->default(1);
+            $table->integer('quantity_increment')->unsigned()->default(1)->index();
+            $table->integer('min_quantity')->unsigned()->default(1)->index();
             $table->string('sku')->nullable()->index();
             $table->string('gtin')->nullable()->index();
             $table->string('mpn')->nullable()->index();

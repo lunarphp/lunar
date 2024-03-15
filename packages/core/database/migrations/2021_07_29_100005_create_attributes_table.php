@@ -19,13 +19,17 @@ class CreateAttributesTable extends Migration
             $table->foreignId('attribute_group_id')->constrained($this->prefix.'attribute_groups');
             $table->integer('position')->index();
             $table->json('name');
+            $table->json('description');
             $table->string('handle');
-            $table->string('section');
+            $table->string('section')->nullable();
             $table->string('type')->index();
             $table->boolean('required');
             $table->string('default_value')->nullable();
             $table->json('configuration');
             $table->boolean('system');
+            $table->boolean('searchable')->default(true)->index();
+            $table->boolean('filterable')->default(false)->index();
+            $table->string('validation_rules')->nullable();
             $table->timestamps();
 
             $table->unique(['attribute_type', 'handle']);

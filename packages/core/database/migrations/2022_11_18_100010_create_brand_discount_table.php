@@ -12,6 +12,7 @@ class CreateBrandDiscountTable extends Migration
             $table->id();
             $table->foreignId('brand_id')->constrained($this->prefix.'brands')->cascadeOnDelete();
             $table->foreignId('discount_id')->constrained($this->prefix.'discounts')->cascadeOnDelete();
+            $table->string('type', 20)->default('limitation');
             $table->timestamps();
         });
     }

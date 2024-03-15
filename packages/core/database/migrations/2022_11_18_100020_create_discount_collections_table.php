@@ -12,6 +12,7 @@ class CreateDiscountCollectionsTable extends Migration
             $table->id();
             $table->foreignId('discount_id')->constrained($this->prefix.'discounts')->cascadeOnDelete();
             $table->foreignId('collection_id')->constrained($this->prefix.'collections')->cascadeOnDelete();
+            $table->string('type', 20)->default('limitation');
             $table->timestamps();
         });
     }
