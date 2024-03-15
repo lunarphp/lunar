@@ -20,7 +20,7 @@ use Lunar\Database\Factories\TaxZoneFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxZone extends BaseModel
+class TaxZone extends BaseModel implements \Lunar\Models\Contracts\TaxZone
 {
     use HasDefaultRecord;
     use HasFactory;

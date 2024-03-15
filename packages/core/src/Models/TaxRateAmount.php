@@ -16,7 +16,7 @@ use Lunar\Database\Factories\TaxRateAmountFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxRateAmount extends BaseModel
+class TaxRateAmount extends BaseModel implements \Lunar\Models\Contracts\TaxRateAmount
 {
     use HasFactory;
     use HasMacros;

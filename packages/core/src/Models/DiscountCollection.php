@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Database\Factories\DiscountPurchasableFactory;
 
-class DiscountCollection extends BaseModel
+class DiscountCollection extends BaseModel implements \Lunar\Models\Contracts\DiscountCollection
 {
     use HasFactory;
 
@@ -31,17 +31,11 @@ class DiscountCollection extends BaseModel
         return DiscountPurchasableFactory::new();
     }
 
-    /**
-     * Return the discount relationship.
-     */
     public function discount(): BelongsTo
     {
         return $this->belongsTo(Discount::class);
     }
 
-    /**
-     * Return the collection relationship.
-     */
     public function collection(): BelongsTo
     {
         return $this->belongsTo(Collection::class);

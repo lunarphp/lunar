@@ -17,7 +17,7 @@ use Lunar\Database\Factories\LanguageFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Language extends BaseModel
+class Language extends BaseModel implements \Lunar\Models\Contracts\Language
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -38,10 +38,7 @@ class Language extends BaseModel
      * @var array
      */
     protected $guarded = [];
-
-    /**
-     * Return the URLs relationship
-     */
+    
     public function urls(): HasMany
     {
         return $this->hasMany(Url::class);

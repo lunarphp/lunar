@@ -17,7 +17,7 @@ use Lunar\Database\Factories\ProductAssociationFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductAssociation extends BaseModel
+class ProductAssociation extends BaseModel implements \Lunar\Models\Contracts\ProductAssociation
 {
     use HasFactory;
     use HasMacros;
@@ -75,25 +75,25 @@ class ProductAssociation extends BaseModel
     /**
      * Apply the cross-sell scope.
      */
-    public function scopeCrossSell(Builder $query): void
+    public function scopeCrossSell(Builder $query): Builder
     {
-        $query->type(self::CROSS_SELL);
+        return $query->type(self::CROSS_SELL);
     }
 
     /**
      * Apply the upsell scope.
      */
-    public function scopeUpSell(Builder $query): void
+    public function scopeUpSell(Builder $query): Builder
     {
-        $query->type(self::UP_SELL);
+        return $query->type(self::UP_SELL);
     }
 
     /**
      * Apply the up alternate scope.
      */
-    public function scopeAlternate(Builder $query): void
+    public function scopeAlternate(Builder $query): Builder
     {
-        $query->type(self::ALTERNATE);
+        return $query->type(self::ALTERNATE);
     }
 
     /**

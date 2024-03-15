@@ -17,13 +17,13 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property ?int $currency_id
  * @property string $priceable_type
  * @property int $priceable_id
- * @property int $price
+ * @property \Lunar\DataTypes\Price $price
  * @property ?int $compare_price
  * @property int $min_quantity
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Price extends BaseModel
+class Price extends BaseModel implements \Lunar\Models\Contracts\Price
 {
     use HasFactory;
     use HasMacros;

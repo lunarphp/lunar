@@ -15,7 +15,7 @@ use Lunar\Database\Factories\TaxZoneStateFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxZoneState extends BaseModel
+class TaxZoneState extends BaseModel implements \Lunar\Models\Contracts\TaxZoneState
 {
     use HasFactory;
     use HasMacros;

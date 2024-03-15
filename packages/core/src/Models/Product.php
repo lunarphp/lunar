@@ -38,7 +38,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Product extends BaseModel implements SpatieHasMedia
+class Product extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contracts\Product
 {
     use HasChannels;
     use HasCustomerGroups;
@@ -92,41 +92,26 @@ class Product extends BaseModel implements SpatieHasMedia
         );
     }
 
-    /**
-     * Returns the attributes to be stored against this model.
-     */
     public function mappedAttributes(): Collection
     {
         return $this->productType->mappedAttributes;
     }
 
-    /**
-     * Return the product type relation.
-     */
     public function productType(): BelongsTo
     {
         return $this->belongsTo(ProductType::modelClass());
     }
 
-    /**
-     * Return the product images relation.
-     */
     public function images(): MorphMany
     {
         return $this->media()->where('collection_name', 'images');
     }
 
-    /**
-     * Return the product variants relation.
-     */
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }
 
-    /**
-     * Return the product collections relation.
-     */
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -135,41 +120,26 @@ class Product extends BaseModel implements SpatieHasMedia
         )->withPivot(['position'])->withTimestamps();
     }
 
-    /**
-     * Return the associations relationship.
-     */
     public function associations(): HasMany
     {
         return $this->hasMany(ProductAssociation::class, 'product_parent_id');
     }
 
-    /**
-     * Return the associations relationship.
-     */
     public function inverseAssociations(): HasMany
     {
         return $this->hasMany(ProductAssociation::class, 'product_target_id');
     }
 
-    /**
-     * Associate a product to another with a type.
-     */
     public function associate(mixed $product, string $type): void
     {
         Associate::dispatch($this, $product, $type);
     }
 
-    /**
-     * Dissociate a product to another with a type.
-     */
     public function dissociate(mixed $product, string $type = null): void
     {
         Dissociate::dispatch($this, $product, $type);
     }
 
-    /**
-     * Return the customer groups relationship.
-     */
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
@@ -186,25 +156,16 @@ class Product extends BaseModel implements SpatieHasMedia
         ])->withTimestamps();
     }
 
-    /**
-     * Return the brand relationship.
-     */
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
     }
 
-    /**
-     * Apply the status scope.
-     */
     public function scopeStatus(Builder $query, string $status): Builder
     {
         return $query->whereStatus($status);
     }
 
-    /**
-     * Return the prices relationship.
-     */
     public function prices(): HasManyThrough
     {
         return $this->hasManyThrough(

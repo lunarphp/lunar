@@ -16,7 +16,7 @@ use Lunar\Database\Factories\TaxZonePostcodeFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxZonePostcode extends BaseModel
+class TaxZonePostcode extends BaseModel implements \Lunar\Models\Contracts\TaxZonePostcode
 {
     use HasFactory;
     use HasMacros;
