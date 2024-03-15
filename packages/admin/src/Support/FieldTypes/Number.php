@@ -14,7 +14,7 @@ class Number extends BaseFieldType
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         $min = (int) $attribute->configuration->get('min');
-        $max = (int) $attribute->configuration->get('min');
+        $max = (int) $attribute->configuration->get('max');
 
         $input = TextField::getFilamentComponent($attribute)->numeric();
 

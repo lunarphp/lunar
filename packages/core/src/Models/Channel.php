@@ -31,6 +31,10 @@ class Channel extends BaseModel
     use LogsActivity;
     use SoftDeletes;
 
+    public $casts = [
+        'enabled' => 'boolean',
+    ];
+
     /**
      * Return a new factory instance for the model.
      */
