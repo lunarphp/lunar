@@ -1,11 +1,12 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Http\UploadedFile;
 use Lunar\Base\StandardMediaDefinitions;
 use Lunar\Models\Product;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
 
 test('conversions are loaded', function () {
     $definitions = config('lunar.media.definitions');
@@ -26,7 +27,7 @@ test('conversions are loaded', function () {
     expect($image->hasGeneratedConversion('medium'))->toBeTrue();
     expect($image->hasGeneratedConversion('large'))->toBeTrue();
     expect($image->hasGeneratedConversion('zoom'))->toBeTrue();
-});
+})->skipOnPhp('<=8.1');
 
 test('images can have fallback url', function () {
     $testImageUrl = 'https://picsum.photos/200';
