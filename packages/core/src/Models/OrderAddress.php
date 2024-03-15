@@ -35,7 +35,7 @@ use Lunar\Database\Factories\OrderAddressFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class OrderAddress extends BaseModel implements Addressable, \Lunar\Models\Contracts\OrderAddress
+class OrderAddress extends BaseModel implements \Lunar\Models\Contracts\OrderAddress, Addressable
 {
     use HasFactory;
     use HasMacros;

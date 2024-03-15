@@ -11,7 +11,7 @@ interface TaxRate
      * Return the tax zone relation.
      */
     public function taxZone(): BelongsTo;
-    
+
     /**
      * Return the tax rate amounts relation.
      */

@@ -50,7 +50,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Purchasable, \Lunar\Models\Contracts\ProductVariant
+class ProductVariant extends BaseModel implements \Lunar\Models\Contracts\ProductVariant, Purchasable
 {
     use HasAttributes;
     use HasDimensions;

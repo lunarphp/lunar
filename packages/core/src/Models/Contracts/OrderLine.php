@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 interface OrderLine
 {
-
     /**
      * Return the order relationship.
      */
@@ -18,7 +17,7 @@ interface OrderLine
      * Return the polymorphic relation.
      */
     public function purchasable(): MorphTo;
-    
+
     /**
      * Return the currency relationship.
      */
