@@ -1,6 +1,6 @@
 name: Lunar Admin Tests
 on:
-  push:
+  pull_request:
 defaults:
   run:
     working-directory: ./
