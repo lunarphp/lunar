@@ -188,7 +188,9 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->registerObservers();
         $this->registerBlueprintMacros();
-        $this->registerStateListeners();
+
+        // @todo This will shortly be replaced by the lunar:upgrade command
+        // $this->registerStateListeners();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
