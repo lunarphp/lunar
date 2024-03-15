@@ -16,8 +16,6 @@ class ManageProductVariants extends BaseManageRelatedRecords
 
     protected static string $relationship = 'variants';
 
-    protected static ?string $title = 'Variants';
-
     protected function getHeaderWidgets(): array
     {
         return [
@@ -44,9 +42,14 @@ class ManageProductVariants extends BaseManageRelatedRecords
         return parent::canAccess($parameters);
     }
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::product.pages.variants.label');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return 'Variants';
+        return __('lunarpanel::product.pages.variants.label');
     }
 
     public function form(Form $form): Form

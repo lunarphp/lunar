@@ -12,6 +12,7 @@ use Filament\Infolists;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\FontWeight;
@@ -769,7 +770,9 @@ class ManageOrder extends BaseViewRecord
                 $response = $transaction->refund(bcmul($data['amount'], $record->currency->factor), $data['notes']);
 
                 if (! $response->success) {
-                    $action->failureNotification(fn () => $response->message);
+                    $action->failureNotification(
+                        fn () => Notification::make('refund_failure')->color('danger')->title($response->message)
+                    );
 
                     $action->failure();
 

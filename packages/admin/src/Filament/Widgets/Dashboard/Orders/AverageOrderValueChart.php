@@ -16,6 +16,8 @@ class AverageOrderValueChart extends ApexChartWidget
      */
     protected static ?string $chartId = 'averageOrderValue';
 
+    protected static ?string $pollingInterval = '60s';
+
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.orders.average_order_value.heading');

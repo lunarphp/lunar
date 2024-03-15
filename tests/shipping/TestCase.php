@@ -21,6 +21,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('providers.users.model', User::class);
         Config::set('lunar.urls.generator', null);
         activity()->disableLogging();
+
     }
 
     protected function getPackageProviders($app)

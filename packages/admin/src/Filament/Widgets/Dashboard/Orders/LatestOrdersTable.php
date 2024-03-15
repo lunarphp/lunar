@@ -9,6 +9,11 @@ use Lunar\Models\Order;
 
 class LatestOrdersTable extends TableWidget
 {
+    protected function getTablePollingInterval(): ?string
+    {
+        return '60s';
+    }
+
     protected int|string|array $columnSpan = 'full';
 
     public static function getHeading(): ?string

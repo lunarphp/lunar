@@ -2,6 +2,7 @@
 
 namespace Lunar\Paypal;
 
+use Illuminate\Http\Client\HttpClientException;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
@@ -147,8 +148,35 @@ class PaypalPaymentType extends AbstractPayment
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
 
-        return new PaymentRefund(
-            success: true
-        );
+        $currencyCode = $transaction->order->currency_code;
+
+        try {
+            $response = Paypal::refund(
+                $transaction->reference,
+                (string) ($amount / 100),
+                $currencyCode
+            );
+
+            $transaction->order->transactions()->create([
+                'success' => true,
+                'type' => 'refund',
+                'driver' => 'paypal',
+                'amount' => $amount,
+                'reference' => $response['id'] ?? $transaction->reference,
+                'status' => $response['status'] ?? 'COMPLETED',
+                'notes' => $notes,
+                'card_type' => $transaction->card_type,
+                'last_four' => $transaction->last_four,
+            ]);
+
+            return new PaymentRefund(
+                success: true
+            );
+        } catch (HttpClientException $e) {
+            return new PaymentRefund(
+                success: false,
+                message: $e->getMessage(),
+            );
+        }
     }
 }

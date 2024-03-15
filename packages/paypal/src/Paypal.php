@@ -51,6 +51,20 @@ class Paypal implements PaypalInterface
             ->json();
     }
 
+    public function refund($transactionId, string $amount, string $currencyCode)
+    {
+        return $this->baseHttpClient()->withToken($this->getAccessToken())
+            ->withBody(json_encode([
+                'amount' => [
+                    'value' => $amount,
+                    'currency_code' => $currencyCode,
+                ],
+            ]), 'application/json')
+            ->post("/v2/payments/captures/{$transactionId}/refund")
+            ->throw()
+            ->json();
+    }
+
     public function buildInitialOrder(Cart $cart): array
     {
         $billingAddress = $cart->billingAddress;

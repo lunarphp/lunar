@@ -15,6 +15,8 @@ class NewVsReturningCustomersChart extends ApexChartWidget
      */
     protected static ?string $chartId = 'newVsReturningCustomers';
 
+    protected static ?string $pollingInterval = '60s';
+
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.orders.new_returning_customers.heading');
@@ -45,13 +47,13 @@ class NewVsReturningCustomersChart extends ApexChartWidget
             ->select(
                 DB::RAW('SUM(
                     CASE
-                        WHEN new_customer THEN 1 
+                        WHEN new_customer THEN 1
                         ELSE 0
                     END
                 ) as new_customer_count'),
                 DB::RAW('SUM(
                     CASE
-                        WHEN NOT new_customer THEN 1 
+                        WHEN NOT new_customer THEN 1
                         ELSE 0
                     END
                 ) as returning_customer_count'),
