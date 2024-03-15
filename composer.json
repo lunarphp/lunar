@@ -30,7 +30,7 @@
         "php": "^8.1",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
-        "spatie/laravel-medialibrary": "^11.0",
+        "spatie/laravel-medialibrary": "^10.0|^11.0",
         "spatie/laravel-permission": "^6.4",
         "stripe/stripe-php": "^7.114",
         "technikermathe/blade-lucide-icons": "^v3.0"

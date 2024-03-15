@@ -34,7 +34,7 @@
         "ext-exif": "*",
         "ext-intl": "*",
         "laravel/framework": "^10.0|^11.0",
-        "spatie/laravel-medialibrary": "^11.0",
+        "spatie/laravel-medialibrary": "^10.0|^11.0",
         "spatie/laravel-activitylog": "^4.4",
         "laravel/scout": "^10.0",
         "cartalyst/converter": "dev-l11-compatibility",
