@@ -23,7 +23,7 @@ use Lunar\Database\Factories\ChannelFactory;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Channel extends BaseModel
+class Channel extends BaseModel implements \Lunar\Models\Contracts\Channel
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -55,17 +55,11 @@ class Channel extends BaseModel
         $this->attributes['handle'] = Str::slug($val);
     }
 
-    /**
-     * Get the parent channelable model.
-     */
     public function channelable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * Return the products relationship
-     */
     public function products(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');

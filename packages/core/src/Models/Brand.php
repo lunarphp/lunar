@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Brand extends BaseModel implements SpatieHasMedia
+class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHasMedia
 {
     use HasAttributes,
         HasFactory,
@@ -55,9 +55,6 @@ class Brand extends BaseModel implements SpatieHasMedia
         return BrandFactory::new();
     }
 
-    /**
-     * Get the mapped attributes relation.
-     */
     public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
@@ -69,9 +66,6 @@ class Brand extends BaseModel implements SpatieHasMedia
         )->withTimestamps();
     }
 
-    /**
-     * Return the product relationship.
-     */
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

@@ -32,7 +32,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Collection extends BaseModel implements SpatieHasMedia
+class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection, SpatieHasMedia
 {
     use HasChannels,
         HasCustomerGroups,
@@ -108,9 +108,6 @@ class Collection extends BaseModel implements SpatieHasMedia
         });
     }
 
-    /**
-     * Return the customer groups relationship.
-     */
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
@@ -126,7 +123,7 @@ class Collection extends BaseModel implements SpatieHasMedia
         ])->withTimestamps();
     }
 
-    public function discounts()
+    public function discounts(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 

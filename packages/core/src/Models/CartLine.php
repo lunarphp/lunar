@@ -26,7 +26,7 @@ use Lunar\DataTypes\Price;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CartLine extends BaseModel
+class CartLine extends BaseModel implements \Lunar\Models\Contracts\CartLine
 {
     use CachesProperties;
     use HasFactory;
@@ -114,17 +114,11 @@ class CartLine extends BaseModel
         'meta' => AsArrayObject::class,
     ];
 
-    /**
-     * Return the cart relationship.
-     */
     public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);
     }
 
-    /**
-     * Return the tax class relationship.
-     */
     public function taxClass(): HasOneThrough
     {
         return $this->hasOneThrough(
@@ -135,9 +129,6 @@ class CartLine extends BaseModel
         );
     }
 
-    /**
-     * Return the cart line discount.
-     */
     public function discounts(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
@@ -148,9 +139,6 @@ class CartLine extends BaseModel
         );
     }
 
-    /**
-     * Return the polymorphic relation.
-     */
     public function purchasable(): MorphTo
     {
         return $this->morphTo();

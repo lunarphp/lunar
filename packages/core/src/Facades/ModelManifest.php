@@ -2,14 +2,13 @@
 
 namespace Lunar\Facades;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 use Lunar\Base\ModelManifestInterface;
 
 /**
  * Class ModelManifest.
  *
- * @method static \Illuminate\Support\Collection register(Collection $models)
+ * @method static \Illuminate\Support\Collection register()
  * @method static \Illuminate\Support\Collection getRegisteredModels()
  * @method static \Illuminate\Database\Eloquent\Model getRegisteredModel(string $baseModelClass)
  * @method static void removeModel(string $baseModelClass)

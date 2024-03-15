@@ -38,7 +38,7 @@ use Lunar\DataTypes\ShippingOption;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CartAddress extends BaseModel implements Addressable
+class CartAddress extends BaseModel implements \Lunar\Models\Contracts\CartAddress, Addressable
 {
     use CachesProperties;
     use HasFactory;
@@ -126,17 +126,11 @@ class CartAddress extends BaseModel implements Addressable
         'meta' => AsArrayObject::class,
     ];
 
-    /**
-     * Return the cart relationship.
-     */
     public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);
     }
 
-    /**
-     * Return the country relationship.
-     */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
