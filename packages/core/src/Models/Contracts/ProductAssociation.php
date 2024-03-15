@@ -31,7 +31,7 @@ interface ProductAssociation
      * Apply the up alternate scope.
      */
     public function scopeAlternate(Builder $query): Builder;
-    
+
     /**
      * Apply the type scope.
      */

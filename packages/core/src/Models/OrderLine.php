@@ -74,7 +74,7 @@ class OrderLine extends BaseModel implements \Lunar\Models\Contracts\OrderLine
         'discount_total' => Price::class,
         'total' => Price::class,
     ];
-    
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);

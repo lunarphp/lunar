@@ -10,7 +10,7 @@ interface DiscountCollection
      * Return the discount relationship.
      */
     public function discount(): BelongsTo;
-    
+
     /**
      * Return the collection relationship.
      */

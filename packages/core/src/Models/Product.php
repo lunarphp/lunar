@@ -38,7 +38,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Product extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contracts\Product
+class Product extends BaseModel implements \Lunar\Models\Contracts\Product, SpatieHasMedia
 {
     use HasChannels;
     use HasCustomerGroups;

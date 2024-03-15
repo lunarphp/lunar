@@ -10,7 +10,7 @@ interface TaxClass
      * Return the tax rate amounts relationship.
      */
     public function taxRateAmounts(): HasMany;
-    
+
     /**
      * Return the ProductVariants relationship.
      */

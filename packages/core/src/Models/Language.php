@@ -38,7 +38,7 @@ class Language extends BaseModel implements \Lunar\Models\Contracts\Language
      * @var array
      */
     protected $guarded = [];
-    
+
     public function urls(): HasMany
     {
         return $this->hasMany(Url::class);

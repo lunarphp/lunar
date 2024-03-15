@@ -36,7 +36,7 @@ class State extends BaseModel implements \Lunar\Models\Contracts\State
      * @var array
      */
     protected $guarded = [];
-    
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

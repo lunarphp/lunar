@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 interface Price
 {
-
     /**
      * Return the priceable relationship.
      */
